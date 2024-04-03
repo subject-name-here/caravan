@@ -9,10 +9,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
+import com.unicorns.invisible.caravan.model.CardBack
 
 
 class MainActivity : AppCompatActivity() {
     var deckSelection = mutableStateOf(false)
+    var selectedDeck = CardBack.STANDARD
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
