@@ -19,6 +19,8 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.unicorns.invisible.caravan.model.CardBack
+import com.unicorns.invisible.caravan.model.Game
+import com.unicorns.invisible.caravan.model.primitives.Deck
 import com.unicorns.invisible.caravan.save.Save
 import com.unicorns.invisible.caravan.save.loadSave
 
@@ -26,6 +28,7 @@ import com.unicorns.invisible.caravan.save.loadSave
 class MainActivity : AppCompatActivity() {
     var deckSelection = mutableStateOf(false)
     var showAbout = mutableStateOf(false)
+    var showGame = mutableStateOf(false)
     var selectedDeck = mutableStateOf(CardBack.STANDARD)
 
     var save: Save? = null
@@ -37,14 +40,20 @@ class MainActivity : AppCompatActivity() {
         }
 
         setContent {
-            if (deckSelection.value) {
-                DeckSelection(this)
-                return@setContent
-            } else if (showAbout.value) {
-                ShowAbout(activity = this)
-                return@setContent
+            when {
+                deckSelection.value -> {
+                    DeckSelection(this)
+                }
+                showAbout.value -> {
+                    ShowAbout(activity = this)
+                }
+                showGame.value -> {
+                    ShowGame(activity = this, Game(Deck(selectedDeck.value), Deck(CardBack.entries.random())).also { it.startGame() })
+                }
+                else -> {
+                    MainMenu()
+                }
             }
-            MainMenu()
         }
     }
 
@@ -57,6 +66,22 @@ class MainActivity : AppCompatActivity() {
                 .fillMaxSize()
         ) {
             Text(
+                text = "PvEasy",
+                modifier = Modifier.clickable {
+                    showGame.value = true
+                },
+                style = TextStyle(color = Color(getColor(R.color.colorPrimaryDark)), fontSize = 20.sp)
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                text = "PvMedium",
+                modifier = Modifier.clickable {
+
+                },
+                style = TextStyle(color = Color(getColor(R.color.colorPrimaryDark)), fontSize = 20.sp)
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(
                 text = "PvAI",
                 modifier = Modifier.clickable {
 
@@ -65,23 +90,7 @@ class MainActivity : AppCompatActivity() {
             )
             Spacer(modifier = Modifier.height(16.dp))
             Text(
-                text = "PvE",
-                modifier = Modifier.clickable {
-
-                },
-                style = TextStyle(color = Color(getColor(R.color.colorPrimaryDark)), fontSize = 20.sp)
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-            Text(
-                text = "PvP",
-                modifier = Modifier.clickable {
-
-                },
-                style = TextStyle(color = Color(getColor(R.color.colorPrimaryDark)), fontSize = 20.sp)
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-            Text(
-                text = "Deck",
+                text = "Select Deck",
                 modifier = Modifier.clickable {
                     deckSelection.value = true
                 },
