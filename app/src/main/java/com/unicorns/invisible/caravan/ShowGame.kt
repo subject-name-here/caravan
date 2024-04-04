@@ -27,7 +27,7 @@ import com.unicorns.invisible.caravan.model.getCardName
 
 
 @Composable
-fun ShowGame(activity: MainActivity, game: Game) {
+fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
     Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -52,13 +52,25 @@ fun ShowGame(activity: MainActivity, game: Game) {
             // TODO
         }
         Spacer(modifier = Modifier.height(48.dp))
-        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxHeight(0.75f)) {
-            LazyHorizontalGrid(rows = GridCells.Fixed(2)) {
-                items(game.playerDeck.hand) {
-                    AsyncImage(
-                        model = "file:///android_asset/caravan_cards/${getCardName(it)}",
-                        contentDescription = ""
-                    )
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Column {
+                Row {
+                    val firstFour = game.playerDeck.hand.subList(0, 4)
+                    firstFour.forEach {
+                        AsyncImage(
+                            model = "file:///android_asset/caravan_cards/${getCardName(it)}",
+                            contentDescription = ""
+                        )
+                    }
+                }
+                Row {
+                    val lastFour = game.playerDeck.hand.subList(4, 8)
+                    lastFour.forEach {
+                        AsyncImage(
+                            model = "file:///android_asset/caravan_cards/${getCardName(it)}",
+                            contentDescription = ""
+                        )
+                    }
                 }
             }
             Spacer(modifier = Modifier.width(24.dp))
@@ -72,7 +84,7 @@ fun ShowGame(activity: MainActivity, game: Game) {
         Text(
             text = "Back to Menu",
             modifier = Modifier.clickable {
-                activity.showGame.value = false
+                goBack()
             },
             style = TextStyle(color = Color(activity.getColor(R.color.colorPrimaryDark)), fontSize = 16.sp)
         )

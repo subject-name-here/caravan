@@ -27,7 +27,7 @@ import com.unicorns.invisible.caravan.save.save
 
 
 @Composable
-fun ShowAbout(activity: MainActivity) {
+fun ShowAbout(activity: MainActivity, goBack: () -> Unit) {
     activity.save?.let {
         it.availableDecks[CardBack.LUCKY_38] = true
         save(activity, it)
@@ -77,7 +77,7 @@ fun ShowAbout(activity: MainActivity) {
         Text(
             text = "Back to Menu",
             modifier = Modifier.clickable {
-                activity.showAbout.value = false
+                goBack()
             },
             style = TextStyle(color = Color(activity.getColor(R.color.colorPrimaryDark)), fontSize = 16.sp)
         )

@@ -11,7 +11,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -26,39 +29,50 @@ import com.unicorns.invisible.caravan.save.loadSave
 
 
 class MainActivity : AppCompatActivity() {
-    var deckSelection = mutableStateOf(false)
-    var showAbout = mutableStateOf(false)
-    var showGame = mutableStateOf(false)
-    var selectedDeck = mutableStateOf(CardBack.STANDARD)
-
     var save: Save? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        save = (loadSave(this) ?: Save()).apply {
-            this@MainActivity.selectedDeck.value = selectedDeck
-        }
+        save = loadSave(this) ?: Save()
 
         setContent {
+            var deckSelection by rememberSaveable { mutableStateOf(false) }
+            var showAbout by rememberSaveable { mutableStateOf(false) }
+            var showGame by rememberSaveable { mutableStateOf(false) }
+            var selectedDeck by rememberSaveable { mutableStateOf(save?.selectedDeck ?: CardBack.STANDARD) }
+
             when {
-                deckSelection.value -> {
-                    DeckSelection(this)
+                deckSelection -> {
+                    DeckSelection(
+                        this,
+                        { selectedDeck },
+                        { selectedDeck = it },
+                        { deckSelection = false }
+                    )
                 }
-                showAbout.value -> {
-                    ShowAbout(activity = this)
+                showAbout -> {
+                    ShowAbout(activity = this, { showAbout = false })
                 }
-                showGame.value -> {
-                    ShowGame(activity = this, Game(Deck(selectedDeck.value), Deck(CardBack.entries.random())).also { it.startGame() })
+                showGame -> {
+                    ShowGame(activity = this, Game(Deck(selectedDeck), Deck(CardBack.entries.random())).also { it.startGame() }, { showGame = false })
                 }
                 else -> {
-                    MainMenu()
+                    MainMenu(
+                        { deckSelection = true },
+                        { showAbout = true },
+                        { showGame = true },
+                    )
                 }
             }
         }
     }
 
     @Composable
-    fun MainMenu() {
+    fun MainMenu(
+        showDeckSelection: () -> Unit,
+        showAbout: () -> Unit,
+        showGame: () -> Unit,
+    ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
@@ -68,7 +82,7 @@ class MainActivity : AppCompatActivity() {
             Text(
                 text = "PvEasy",
                 modifier = Modifier.clickable {
-                    showGame.value = true
+                    showGame()
                 },
                 style = TextStyle(color = Color(getColor(R.color.colorPrimaryDark)), fontSize = 20.sp)
             )
@@ -92,7 +106,7 @@ class MainActivity : AppCompatActivity() {
             Text(
                 text = "Select Deck",
                 modifier = Modifier.clickable {
-                    deckSelection.value = true
+                    showDeckSelection()
                 },
                 style = TextStyle(color = Color(getColor(R.color.colorPrimaryDark)), fontSize = 20.sp)
             )
@@ -100,7 +114,7 @@ class MainActivity : AppCompatActivity() {
             Text(
                 text = "About",
                 modifier = Modifier.clickable {
-                    showAbout.value = true
+                    showAbout()
                 },
                 style = TextStyle(color = Color(getColor(R.color.colorPrimaryDark)), fontSize = 20.sp)
             )

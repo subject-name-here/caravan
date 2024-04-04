@@ -24,18 +24,23 @@ import com.unicorns.invisible.caravan.save.save
 
 
 @Composable
-fun DeckSelection(activity: MainActivity) {
+fun DeckSelection(
+    activity: MainActivity,
+    getSelectedBack: () -> CardBack,
+    setSelectedBack: (CardBack) -> Unit,
+    goBack: () -> Unit,
+) {
     fun getModifier(cardBack: CardBack): Modifier {
         activity.save?.let {
             if (it.availableDecks[cardBack] == true) {
                 return Modifier.clickable {
-                    activity.selectedDeck.value = cardBack
-                    activity.save?.let {
-                        it.selectedDeck = cardBack
+                    setSelectedBack(cardBack)
+                    activity.save?.let { save ->
+                        save.selectedDeck = cardBack
                         save(activity, it)
                     }
                 }.border(
-                    width = (if (activity.selectedDeck.value == cardBack) 4 else 0).dp,
+                    width = (if (getSelectedBack() == cardBack) 4 else 0).dp,
                     color = Color(activity.getColor(R.color.colorAccent))
                 )
             }
@@ -97,7 +102,7 @@ fun DeckSelection(activity: MainActivity) {
         Text(
             text = "Back to Menu",
             modifier = Modifier.clickable {
-                activity.deckSelection.value = false
+                goBack()
             },
             style = TextStyle(color = Color(activity.getColor(R.color.colorPrimaryDark)), fontSize = 20.sp)
         )
