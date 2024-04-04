@@ -2,6 +2,7 @@ package com.unicorns.invisible.caravan
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -22,6 +23,7 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.getCardName
+import com.unicorns.invisible.caravan.model.primitives.Card
 
 
 @Composable
@@ -34,7 +36,7 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .fillMaxHeight(0.25f),
+                .fillMaxHeight(0.20f),
             verticalAlignment = Alignment.CenterVertically
         ) {
             val handSize = game.enemyDeck.hand.size
@@ -63,35 +65,28 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .fillMaxHeight(0.5f),
+                .fillMaxHeight(0.45f),
         ) {
             // TODO
         }
         Spacer(modifier = Modifier.height(48.dp))
         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier
             .fillMaxWidth()
-            .fillMaxHeight(0.75f)
+            .fillMaxHeight(0.8f)
         ) {
-            Column {
-                Row(Modifier.weight(0.5f)) {
-                    val firstFour = game.playerDeck.hand.subList(0, 4)
-                    firstFour.forEach {
-                        AsyncImage(
-                            model = "file:///android_asset/caravan_cards/${getCardName(it)}",
-                            contentDescription = ""
-                        )
+            BoxWithConstraints {
+                if (maxWidth < 400.dp) {
+                    Column {
+                        RowOfCards(cards = game.playerDeck.hand.subList(0, 4), game = game)
+                        RowOfCards(cards = game.playerDeck.hand.subList(4, 8), game = game)
                     }
-                }
-                Row(Modifier.weight(0.5f)) {
-                    val lastFour = game.playerDeck.hand.subList(4, 8)
-                    lastFour.forEach {
-                        AsyncImage(
-                            model = "file:///android_asset/caravan_cards/${getCardName(it)}",
-                            contentDescription = ""
-                        )
+                } else {
+                    Row {
+                        RowOfCards(cards = game.playerDeck.hand, game = game)
                     }
                 }
             }
+
             Spacer(modifier = Modifier.width(24.dp))
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Text(
@@ -106,16 +101,28 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
                 )
             }
         }
-        Spacer(modifier = Modifier.width(48.dp))
-        Text(
-            text = "Back to Menu",
-            modifier = Modifier
-                .clickable {
-                    goBack()
-                }
-                .fillMaxSize(),
-            style = TextStyle(color = Color(activity.getColor(R.color.colorPrimaryDark)), fontSize = 16.sp, textAlign = TextAlign.Center)
-        )
+        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxSize()) {
+            Text(
+                text = "Back to Menu",
+                modifier = Modifier
+                    .clickable {
+                        goBack()
+                    }
+                    .fillMaxWidth(),
+                style = TextStyle(color = Color(activity.getColor(R.color.colorPrimaryDark)), fontSize = 16.sp, textAlign = TextAlign.Center),
+            )
+        }
     }
+}
 
+@Composable
+fun RowOfCards(cards: List<Card>, game: Game) {
+    Row {
+        cards.forEach {
+            AsyncImage(
+                model = "file:///android_asset/caravan_cards/${getCardName(it)}",
+                contentDescription = ""
+            )
+        }
+    }
 }
