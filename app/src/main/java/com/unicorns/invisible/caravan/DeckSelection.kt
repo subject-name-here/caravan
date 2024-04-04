@@ -13,23 +13,34 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.unicorns.invisible.caravan.model.CardBack
+import com.unicorns.invisible.caravan.save.save
 
 
 @Composable
 fun DeckSelection(activity: MainActivity) {
     fun getModifier(cardBack: CardBack): Modifier {
-        return Modifier.clickable {
-            activity.selectedDeck.value = cardBack
-        }.border(
-            width = (if (activity.selectedDeck.value == cardBack) 4 else 0).dp,
-            color = Color(activity.getColor(R.color.colorAccent))
-        )
+        activity.save?.let {
+            if (it.availableDecks[cardBack] == true) {
+                return Modifier.clickable {
+                    activity.selectedDeck.value = cardBack
+                    activity.save?.let {
+                        it.selectedDeck = cardBack
+                        save(activity, it)
+                    }
+                }.border(
+                    width = (if (activity.selectedDeck.value == cardBack) 4 else 0).dp,
+                    color = Color(activity.getColor(R.color.colorAccent))
+                )
+            }
+        }
+        return Modifier.alpha(0.5f)
     }
 
     Column(

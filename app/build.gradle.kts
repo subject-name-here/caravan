@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
+    alias(libs.plugins.jetbrainsKotlinSerialization)
 }
 
 android {
@@ -60,4 +61,6 @@ dependencies {
     implementation(libs.compose.activity)
 
     implementation(libs.coil)
+
+    implementation(libs.serialization)
 }

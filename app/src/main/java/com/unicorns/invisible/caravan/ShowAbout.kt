@@ -22,10 +22,17 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.unicorns.invisible.caravan.model.CardBack
+import com.unicorns.invisible.caravan.save.save
 
 
 @Composable
 fun ShowAbout(activity: MainActivity) {
+    activity.save?.let {
+        it.availableDecks[CardBack.LUCKY_38] = true
+        save(activity, it)
+    }
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,

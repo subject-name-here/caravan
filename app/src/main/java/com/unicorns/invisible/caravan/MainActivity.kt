@@ -19,6 +19,8 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.unicorns.invisible.caravan.model.CardBack
+import com.unicorns.invisible.caravan.save.Save
+import com.unicorns.invisible.caravan.save.loadSave
 
 
 class MainActivity : AppCompatActivity() {
@@ -26,8 +28,14 @@ class MainActivity : AppCompatActivity() {
     var showAbout = mutableStateOf(false)
     var selectedDeck = mutableStateOf(CardBack.STANDARD)
 
+    var save: Save? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        save = (loadSave(this) ?: Save()).apply {
+            this@MainActivity.selectedDeck.value = selectedDeck
+        }
+
         setContent {
             if (deckSelection.value) {
                 DeckSelection(this)
