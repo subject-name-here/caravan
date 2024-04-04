@@ -1,16 +1,14 @@
 package com.unicorns.invisible.caravan
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -21,6 +19,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.getCardName
 import com.unicorns.invisible.caravan.model.primitives.Card
@@ -31,24 +30,34 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
     Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize().background(Color(activity.getColor(R.color.colorPrimaryDark)))
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .fillMaxHeight(0.20f),
-            verticalAlignment = Alignment.CenterVertically
+                .fillMaxHeight(0.3f),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
         ) {
-            val handSize = game.enemyDeck.hand.size
-            repeat(handSize) { numOfCard ->
-                AsyncImage(
-                    model = "file:///android_asset/caravan_cards_back/${game.enemyDeck.back.getCardBackName()}",
-                    contentDescription = "",
-                    modifier = Modifier.fillMaxWidth(1f / (handSize - numOfCard + 3))
-                )
+            BoxWithConstraints(modifier = Modifier
+                .fillMaxWidth(0.75f)
+                .fillMaxHeight(),
+            ) {
+                if (maxWidth < 400.dp) {
+                    val handSize = game.enemyDeck.hand.size
+                    Column {
+                        RowOfEnemyCards(minOf(4, handSize), game.enemyDeck.back)
+                        if (handSize - 4 > 0) {
+                            RowOfEnemyCards(handSize - 4, game.enemyDeck.back)
+                        }
+                    }
+                } else {
+                    Row {
+                        RowOfEnemyCards(game.enemyDeck.hand.size, game.enemyDeck.back)
+                    }
+                }
             }
-            Spacer(modifier = Modifier.width(24.dp))
-            Column {
+            Column(modifier = Modifier.fillMaxHeight()) {
                 Text(
                     text = game.enemyDeck.deckSize.toString(),
                     modifier = Modifier.fillMaxWidth(),
@@ -61,7 +70,6 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
                 )
             }
         }
-        Spacer(modifier = Modifier.height(48.dp))
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -69,26 +77,28 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
         ) {
             // TODO
         }
-        Spacer(modifier = Modifier.height(48.dp))
         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier
             .fillMaxWidth()
             .fillMaxHeight(0.8f)
         ) {
-            BoxWithConstraints {
+            BoxWithConstraints(modifier = Modifier
+                .fillMaxWidth(0.75f)
+                .fillMaxHeight(),
+            ) {
                 if (maxWidth < 400.dp) {
                     Column {
-                        RowOfCards(cards = game.playerDeck.hand.subList(0, 4), game = game)
-                        RowOfCards(cards = game.playerDeck.hand.subList(4, 8), game = game)
+                        RowOfCards(cards = game.playerDeck.hand.subList(0, 4))
+                        RowOfCards(cards = game.playerDeck.hand.subList(4, 8))
                     }
                 } else {
                     Row {
-                        RowOfCards(cards = game.playerDeck.hand, game = game)
+                        RowOfCards(cards = game.playerDeck.hand)
                     }
                 }
             }
-
-            Spacer(modifier = Modifier.width(24.dp))
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Column(
+                modifier = Modifier.fillMaxHeight()
+            ) {
                 Text(
                     text = game.playerDeck.deckSize.toString(),
                     modifier = Modifier.fillMaxWidth(),
@@ -97,7 +107,7 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
                 AsyncImage(
                     model = "file:///android_asset/caravan_cards_back/${game.playerDeck.back.getCardBackName()}",
                     contentDescription = "",
-                    modifier = Modifier.weight(1f, fill = false),
+                    modifier = Modifier.fillMaxWidth(),
                 )
             }
         }
@@ -109,18 +119,33 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
                         goBack()
                     }
                     .fillMaxWidth(),
-                style = TextStyle(color = Color(activity.getColor(R.color.colorPrimaryDark)), fontSize = 16.sp, textAlign = TextAlign.Center),
+                style = TextStyle(color = Color(activity.getColor(R.color.colorAccent)), fontSize = 16.sp, textAlign = TextAlign.Center),
             )
         }
     }
 }
 
 @Composable
-fun RowOfCards(cards: List<Card>, game: Game) {
+fun RowOfCards(cards: List<Card>) {
     Row {
         cards.forEach {
             AsyncImage(
                 model = "file:///android_asset/caravan_cards/${getCardName(it)}",
+                contentDescription = ""
+            )
+        }
+    }
+}
+
+@Composable
+fun RowOfEnemyCards(numOfCards: Int, back: CardBack) {
+    if (numOfCards <= 0) {
+        return
+    }
+    Row {
+        repeat(numOfCards) {
+            AsyncImage(
+                model = "file:///android_asset/caravan_cards_back/${back.getCardBackName()}",
                 contentDescription = ""
             )
         }
