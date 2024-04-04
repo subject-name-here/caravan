@@ -2,18 +2,15 @@ package com.unicorns.invisible.caravan
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -26,16 +23,20 @@ import com.unicorns.invisible.caravan.model.CardBack
 
 @Composable
 fun DeckSelection(activity: MainActivity) {
-    var selectedDeck by remember { mutableStateOf(activity.selectedDeck) }
-
     fun getModifier(cardBack: CardBack): Modifier {
         return Modifier.clickable {
-            activity.selectedDeck = cardBack
-            selectedDeck = cardBack
-        }.border(width = (if (selectedDeck == cardBack) 4 else 0).dp, color = Color(activity.getColor(R.color.colorAccent)))
+            activity.selectedDeck.value = cardBack
+        }.border(
+            width = (if (activity.selectedDeck.value == cardBack) 4 else 0).dp,
+            color = Color(activity.getColor(R.color.colorAccent))
+        )
     }
 
-    Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+    ) {
         Spacer(modifier = Modifier.height(8.dp))
         Text(
             text = "Select the Deck",
@@ -81,7 +82,7 @@ fun DeckSelection(activity: MainActivity) {
                 modifier = getModifier(CardBack.SIERRA_MADRE)
             )
         }
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(48.dp))
         Text(
             text = "Back to Menu",
             modifier = Modifier.clickable {
