@@ -23,11 +23,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
+import com.unicorns.invisible.caravan.model.GameSaver
 import com.unicorns.invisible.caravan.model.primitives.Deck
 import com.unicorns.invisible.caravan.save.Save
 import com.unicorns.invisible.caravan.save.loadSave
 
 
+@Suppress("MoveLambdaOutsideParentheses")
 class MainActivity : AppCompatActivity() {
     var save: Save? = null
 
@@ -54,7 +56,10 @@ class MainActivity : AppCompatActivity() {
                     ShowAbout(activity = this, { showAbout = false })
                 }
                 showGame -> {
-                    ShowGame(activity = this, Game(Deck(selectedDeck), Deck(CardBack.entries.random())).also { it.startGame() }, { showGame = false })
+                    val game by rememberSaveable(stateSaver = GameSaver) {
+                        mutableStateOf(Game(Deck(selectedDeck), Deck(CardBack.entries.random())).also { it.startGame() })
+                    }
+                    ShowGame(activity = this, game, { showGame = false })
                 }
                 else -> {
                     MainMenu(

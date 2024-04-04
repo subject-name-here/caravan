@@ -6,7 +6,7 @@ import kotlinx.serialization.json.Json
 import java.io.File
 
 
-private val json = Json {
+val json = Json {
     allowStructuredMapKeys = true
     ignoreUnknownKeys = true
 }

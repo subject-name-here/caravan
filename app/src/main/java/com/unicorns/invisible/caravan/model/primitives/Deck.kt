@@ -1,24 +1,28 @@
 package com.unicorns.invisible.caravan.model.primitives
 
 import com.unicorns.invisible.caravan.model.CardBack
+import kotlinx.serialization.EncodeDefault
+import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.Serializable
 
 
+@Serializable
 class Deck(val back: CardBack) {
-    private val cards: MutableList<Card> = mutableListOf()
-    val hand: MutableList<Card> = mutableListOf()
-
-    init {
+    @OptIn(ExperimentalSerializationApi::class)
+    @EncodeDefault
+    private val cards: MutableList<Card> = mutableListOf<Card>().apply {
         Rank.entries.forEach { rank ->
             if (rank == Rank.JOKER) {
-                cards.add(Card(rank, Suit.HEARTS, back))
-                cards.add(Card(rank, Suit.SPADES, back))
+                add(Card(rank, Suit.HEARTS, back))
+                add(Card(rank, Suit.SPADES, back))
             } else {
                 Suit.entries.forEach { suit ->
-                    cards.add(Card(rank, suit, back))
+                    add(Card(rank, suit, back))
                 }
             }
         }
     }
+    val hand: MutableList<Card> = mutableListOf()
 
     fun shuffle() {
         cards.shuffle()
@@ -34,5 +38,6 @@ class Deck(val back: CardBack) {
         hand.add(cards.removeAt(0))
     }
 
-    val deckSize: Int = cards.size
+    val deckSize: Int
+        get() = cards.size
 }
