@@ -7,9 +7,12 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -93,15 +96,34 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
                 .fillMaxWidth()
                 .fillMaxHeight(0.45f),
         ) {
-            // TODO
+            Spacer(modifier = Modifier.weight(0.03f))
+            Column(modifier = Modifier.weight(0.25f).fillMaxHeight(), verticalArrangement = Arrangement.Center) {
+
+                HorizontalDivider()
+
+            }
+            Column(modifier = Modifier.weight(0.25f).fillMaxHeight(), verticalArrangement = Arrangement.Center) {
+
+                HorizontalDivider()
+
+            }
+            Column(modifier = Modifier.weight(0.25f).fillMaxHeight(), verticalArrangement = Arrangement.Center) {
+
+                HorizontalDivider()
+
+            }
+            Column(modifier = Modifier.weight(0.22f).fillMaxHeight(), verticalArrangement = Arrangement.Center) {
+                Text(text = "OK", textAlign = TextAlign.Center, color = Color(activity.getColor(R.color.colorAccent)), modifier = Modifier.fillMaxWidth())
+            }
         }
-        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier
+        Row(verticalAlignment = Alignment.Bottom, modifier = Modifier
             .fillMaxWidth()
             .fillMaxHeight(0.8f)
         ) {
             BoxWithConstraints(modifier = Modifier
                 .fillMaxWidth(0.75f)
                 .fillMaxHeight(),
+                contentAlignment = Alignment.BottomCenter
             ) {
                 if (maxWidth < 400.dp) {
                     Column {
@@ -115,7 +137,8 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
                 }
             }
             Column(
-                modifier = Modifier.fillMaxHeight()
+                modifier = Modifier.fillMaxHeight(),
+                verticalArrangement = Arrangement.Bottom
             ) {
                 Text(
                     text = game.playerDeck.deckSize.toString(),
@@ -148,17 +171,18 @@ fun RowOfCards(cards: List<Card>, offset: Int = 0, selectedCard: Card?, selected
     Row {
         cards.forEachIndexed { index, it ->
             val modifier = if (it == selectedCard) {
-                Modifier.clickable {
-                    onClick(offset + index)
-                }.border(
+                Modifier.border(
                     width = 4.dp,
                     color = selectedCardColor
                 )
             } else {
-                Modifier.clickable {
+                Modifier
+            }
+                .clickable {
                     onClick(offset + index)
                 }
-            }
+                .padding(4.dp)
+                .weight(1f, fill = false)
             AsyncImage(
                 model = "file:///android_asset/caravan_cards/${getCardName(it)}",
                 contentDescription = "",
