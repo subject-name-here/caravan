@@ -4,7 +4,12 @@ import kotlinx.serialization.Serializable
 
 
 @Serializable
-data class CardWithModifier(val card: Card, val numOfKings: Int, val topQueen: Card) {
+class CardWithModifier(
+    val card: Card,
+    val numOfKings: Int = 0,
+    val topQueen: Card? = null,
+    val modifiers: MutableList<Card> = mutableListOf()
+) {
     fun getValue(): Int {
         return if (card.isFace()) {
             0

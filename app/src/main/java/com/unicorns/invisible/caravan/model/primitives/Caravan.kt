@@ -10,4 +10,6 @@ class Caravan {
     fun dropCaravan() {
         cards.clear()
     }
+
+    fun isFull() = cards.size >= 10
 }

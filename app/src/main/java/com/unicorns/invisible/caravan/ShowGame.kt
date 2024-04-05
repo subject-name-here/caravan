@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -12,6 +13,8 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -22,6 +25,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -30,6 +34,7 @@ import coil.compose.AsyncImage
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.getCardName
+import com.unicorns.invisible.caravan.model.primitives.Caravan
 import com.unicorns.invisible.caravan.model.primitives.Card
 
 
@@ -97,22 +102,30 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
                 .fillMaxHeight(0.45f),
         ) {
             Spacer(modifier = Modifier.weight(0.03f))
-            Column(modifier = Modifier.weight(0.25f).fillMaxHeight(), verticalArrangement = Arrangement.Center) {
-
+            Column(modifier = Modifier
+                .weight(0.25f)
+                .fillMaxHeight()) {
+                CaravanOnField(activity, game.enemyCaravans[0], true)
                 HorizontalDivider()
-
+                CaravanOnField(activity, game.playerCaravans[0], false)
             }
-            Column(modifier = Modifier.weight(0.25f).fillMaxHeight(), verticalArrangement = Arrangement.Center) {
-
+            Column(modifier = Modifier
+                .weight(0.25f)
+                .fillMaxHeight()) {
+                CaravanOnField(activity, game.enemyCaravans[1], true)
                 HorizontalDivider()
-
+                CaravanOnField(activity, game.playerCaravans[1], false)
             }
-            Column(modifier = Modifier.weight(0.25f).fillMaxHeight(), verticalArrangement = Arrangement.Center) {
-
+            Column(modifier = Modifier
+                .weight(0.25f)
+                .fillMaxHeight()) {
+                CaravanOnField(activity, game.enemyCaravans[2], true)
                 HorizontalDivider()
-
+                CaravanOnField(activity, game.playerCaravans[2], false)
             }
-            Column(modifier = Modifier.weight(0.22f).fillMaxHeight(), verticalArrangement = Arrangement.Center) {
+            Column(modifier = Modifier
+                .weight(0.22f)
+                .fillMaxHeight(), verticalArrangement = Arrangement.Center) {
                 Text(text = "OK", textAlign = TextAlign.Center, color = Color(activity.getColor(R.color.colorAccent)), modifier = Modifier.fillMaxWidth())
             }
         }
@@ -203,6 +216,57 @@ fun RowOfEnemyCards(numOfCards: Int, back: CardBack) {
                 model = "file:///android_asset/caravan_cards_back/${back.getCardBackName()}",
                 contentDescription = ""
             )
+        }
+    }
+}
+
+@Composable
+fun CaravanOnField(activity: MainActivity, caravan: Caravan, isEnemy: Boolean) {
+    if (isEnemy) {
+        LazyColumn(
+            verticalArrangement = Arrangement.Bottom,
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.fillMaxHeight(0.5f).fillMaxWidth()
+        ) {
+            if (!caravan.isFull()) {
+                item {
+                    Box(modifier = Modifier
+                        .fillParentMaxWidth()
+                        .fillParentMaxHeight(0.25f)
+                        .background(Color(activity.getColor(R.color.colorPrimary)))
+                        .border(4.dp, Color(activity.getColor(R.color.colorAccent)))
+                    ) {}
+                }
+            }
+            items(caravan.cards.reversed()) {
+                AsyncImage(
+                    model = "file:///android_asset/caravan_cards/${getCardName(it.card)}",
+                    contentDescription = "",
+                )
+            }
+        }
+    } else {
+        LazyColumn(
+            verticalArrangement = Arrangement.Top,
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.fillMaxHeight().fillMaxWidth()
+        ) {
+            items(caravan.cards) {
+                AsyncImage(
+                    model = "file:///android_asset/caravan_cards/${getCardName(it.card)}",
+                    contentDescription = "",
+                )
+            }
+            if (!caravan.isFull()) {
+                item {
+                    Box(modifier = Modifier
+                        .fillParentMaxWidth()
+                        .fillParentMaxHeight(0.25f)
+                        .background(Color(activity.getColor(R.color.colorPrimary)))
+                        .border(4.dp, Color(activity.getColor(R.color.colorAccent)))
+                    ) {}
+                }
+            }
         }
     }
 }
