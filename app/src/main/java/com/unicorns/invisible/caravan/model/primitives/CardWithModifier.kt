@@ -6,10 +6,13 @@ import kotlinx.serialization.Serializable
 @Serializable
 class CardWithModifier(
     val card: Card,
-    val numOfKings: Int = 0,
-    val topQueen: Card? = null,
     val modifiers: MutableList<Card> = mutableListOf()
 ) {
+    val numOfKings: Int
+        get() = modifiers.count { it.rank == Rank.KING }
+    val topQueen: Card?
+        get() = modifiers.findLast { it.rank == Rank.QUEEN }
+
     fun getValue(): Int {
         return if (card.isFace()) {
             0

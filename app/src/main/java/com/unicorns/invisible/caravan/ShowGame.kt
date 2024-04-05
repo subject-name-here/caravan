@@ -1,5 +1,6 @@
 package com.unicorns.invisible.caravan
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -12,6 +13,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
@@ -23,6 +25,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -40,6 +43,7 @@ import com.unicorns.invisible.caravan.model.getCardName
 import com.unicorns.invisible.caravan.model.primitives.Caravan
 import com.unicorns.invisible.caravan.model.primitives.Card
 import com.unicorns.invisible.caravan.model.primitives.CardWithModifier
+import com.unicorns.invisible.caravan.model.primitives.Rank
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
@@ -105,71 +109,110 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
                 )
             }
         }
+        val state1Enemy = rememberLazyListState()
+        val state1Player = rememberLazyListState()
+        val state2Enemy = rememberLazyListState()
+        val state2Player = rememberLazyListState()
+        val state3Enemy = rememberLazyListState()
+        val state3Player = rememberLazyListState()
         key(caravansKey) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .fillMaxHeight(0.45f),
             ) {
-                fun addCardToEnemyCaravan(caravanNum: Int, position: Int) {
-                    val caravan = game.enemyCaravans[caravanNum]
+                fun addCardToCaravan(caravan: Caravan, position: Int, isEnemy: Boolean = false) {
+                    fun onCaravanCardInserted(card: Card) {
+                        game.playerDeck.hand.remove(card)
+                        caravansKey = !caravansKey
+                        selectedCard = null
+                    }
+
                     val card = selectedCard
                     if (card != null) {
-                        caravan.cards.add(position, CardWithModifier(card))
-                        game.playerDeck.hand.remove(card)
+                        when (card.rank.value) {
+                            in 1..10 -> {
+                                if (position == caravan.cards.size && !isEnemy) {
+                                    caravan.cards.add(position, CardWithModifier(card))
+                                    onCaravanCardInserted(card)
+                                }
+                            }
+                            Rank.JACK.value -> {
+                                if (position in caravan.cards.indices) {
+                                    caravan.cards.removeAt(position)
+                                    onCaravanCardInserted(card)
+                                }
+                            }
+                            Rank.QUEEN.value, Rank.KING.value -> {
+                                if (position in caravan.cards.indices && caravan.cards[position].modifiers.size < 3) {
+                                    caravan.cards[position].modifiers.add(card)
+                                    onCaravanCardInserted(card)
+                                }
+                            }
+                            Rank.JOKER.value -> {
+                                // TODO
+                                if (position in caravan.cards.indices && caravan.cards[position].modifiers.size < 3) {
+                                    caravan.cards[position].modifiers.add(card)
+                                    onCaravanCardInserted(card)
+                                }
+                            }
+                        }
                     }
-                    selectedCard = null
-                    caravansKey = !caravansKey
+                }
+                fun addCardToEnemyCaravan(caravanNum: Int, position: Int) {
+                    addCardToCaravan(game.enemyCaravans[caravanNum], position, isEnemy = true)
                 }
                 fun addCardToPlayerCaravan(caravanNum: Int, position: Int) {
-                    val caravan = game.playerCaravans[caravanNum]
-                    val card = selectedCard
-                    if (card != null) {
-                        caravan.cards.add(position, CardWithModifier(card))
-                        game.playerDeck.hand.remove(card)
-                    }
-                    selectedCard = null
-                    caravansKey = !caravansKey
+                    addCardToCaravan(game.playerCaravans[caravanNum], position, isEnemy = false)
                 }
 
                 Spacer(modifier = Modifier.weight(0.03f))
                 Column(modifier = Modifier
                     .weight(0.25f)
                     .fillMaxHeight()) {
-                    CaravanOnField(activity, game.enemyCaravans[0], true) {
+                    CaravanOnField(activity, game.enemyCaravans[0], true, state1Enemy) {
                         addCardToEnemyCaravan(0, it)
                     }
                     HorizontalDivider()
-                    CaravanOnField(activity, game.playerCaravans[0], false) {
+                    CaravanOnField(activity, game.playerCaravans[0], false, state1Player) {
                         addCardToPlayerCaravan(0, it)
                     }
                 }
                 Column(modifier = Modifier
                     .weight(0.25f)
                     .fillMaxHeight()) {
-                    CaravanOnField(activity, game.enemyCaravans[1], true) {
+                    CaravanOnField(activity, game.enemyCaravans[1], true, state2Enemy) {
                         addCardToEnemyCaravan(1, it)
                     }
                     HorizontalDivider()
-                    CaravanOnField(activity, game.playerCaravans[1], false) {
+                    CaravanOnField(activity, game.playerCaravans[1], false, state2Player) {
                         addCardToPlayerCaravan(1, it)
                     }
                 }
                 Column(modifier = Modifier
                     .weight(0.25f)
                     .fillMaxHeight()) {
-                    CaravanOnField(activity, game.enemyCaravans[2], true) {
+                    CaravanOnField(activity, game.enemyCaravans[2], true, state3Enemy) {
                         addCardToEnemyCaravan(2, it)
                     }
                     HorizontalDivider()
-                    CaravanOnField(activity, game.playerCaravans[2], false) {
+                    CaravanOnField(activity, game.playerCaravans[2], false, state3Player) {
                         addCardToPlayerCaravan(2, it)
                     }
                 }
                 Column(modifier = Modifier
                     .weight(0.22f)
                     .fillMaxHeight(), verticalArrangement = Arrangement.Center) {
-                    Text(text = "OK", textAlign = TextAlign.Center, color = Color(activity.getColor(R.color.colorAccent)), modifier = Modifier.fillMaxWidth())
+                    Text(
+                        text = "OK",
+                        textAlign = TextAlign.Center,
+                        color = Color(activity.getColor(R.color.colorAccent)),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable {
+
+                            }
+                    )
                 }
             }
         }
@@ -271,11 +314,12 @@ fun CaravanOnField(
     activity: MainActivity,
     caravan: Caravan,
     isEnemy: Boolean,
+    state: LazyListState,
     addSelectedCardOnPosition: (Int) -> Unit,
 ) {
     if (isEnemy) {
         LazyColumn(
-            state = rememberLazyListState(),
+            state = state,
             verticalArrangement = Arrangement.Bottom,
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
@@ -297,18 +341,27 @@ fun CaravanOnField(
             }
 
             itemsIndexed(caravan.cards.reversed()) { index, it ->
-                AsyncImage(
-                    model = "file:///android_asset/caravan_cards/${getCardName(it.card)}",
-                    contentDescription = "",
-                    modifier = Modifier.clickable {
-                        addSelectedCardOnPosition(caravan.cards.lastIndex - index)
+                Box {
+                    AsyncImage(
+                        model = "file:///android_asset/caravan_cards/${getCardName(it.card)}",
+                        contentDescription = "",
+                        modifier = Modifier.clickable {
+                            addSelectedCardOnPosition(caravan.cards.lastIndex - index)
+                        }
+                    )
+                    it.modifiers.forEachIndexed { index, card ->
+                        AsyncImage(
+                            model = "file:///android_asset/caravan_cards/${getCardName(card)}",
+                            contentDescription = "",
+                            modifier = Modifier.offset(x = (10.dp) * (index + 1))
+                        )
                     }
-                )
+                }
             }
         }
     } else {
-        // TODO: save scroll state forever!!!
         LazyColumn(
+            state = state,
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
@@ -316,13 +369,22 @@ fun CaravanOnField(
                 .fillMaxWidth()
         ) {
             itemsIndexed(caravan.cards) { index, it ->
-                AsyncImage(
-                    model = "file:///android_asset/caravan_cards/${getCardName(it.card)}",
-                    contentDescription = "",
-                    modifier = Modifier.clickable {
-                        addSelectedCardOnPosition(index)
+                Box {
+                    AsyncImage(
+                        model = "file:///android_asset/caravan_cards/${getCardName(it.card)}",
+                        contentDescription = "",
+                        modifier = Modifier.clickable {
+                            addSelectedCardOnPosition(index)
+                        }
+                    )
+                    it.modifiers.forEachIndexed { index, card ->
+                        AsyncImage(
+                            model = "file:///android_asset/caravan_cards/${getCardName(card)}",
+                            contentDescription = "",
+                            modifier = Modifier.offset(x = (10.dp) * (index + 1))
+                        )
                     }
-                )
+                }
             }
             if (!caravan.isFull()) {
                 item {
