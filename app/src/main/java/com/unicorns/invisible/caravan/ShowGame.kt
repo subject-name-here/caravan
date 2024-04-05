@@ -120,14 +120,14 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
                 fun addCardToCaravan(caravan: Caravan, position: Int, isEnemy: Boolean = false) {
                     fun onCaravanCardInserted(card: Card) {
                         game.playerDeck.hand.remove(card)
-                        game.afterPlayerMove()
+                        game.afterPlayerMove { caravansKey = !caravansKey }
                         selectedCard = null
                         selectedCaravan = -1
                         caravansKey = !caravansKey
                     }
 
                     val card = selectedCard
-                    if (card != null) {
+                    if (card != null && game.isPlayerTurn) {
                         when (card.rank.value) {
                             in 1..10 -> {
                                 if (position == caravan.cards.size && !isEnemy) {
@@ -173,7 +173,13 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
                         addCardToEnemyCaravan(0, it)
                     }
                     HorizontalDivider()
-                    CaravanOnField(activity, game.playerCaravans[0], false, state1Player, { selectedCaravan = 0 }) {
+                    CaravanOnField(activity, game.playerCaravans[0], false, state1Player, {
+                        selectedCaravan = if (selectedCaravan == 0) {
+                            -1
+                        } else {
+                            0
+                        }
+                    }) {
                         addCardToPlayerCaravan(0, it)
                     }
                 }
@@ -184,7 +190,13 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
                         addCardToEnemyCaravan(1, it)
                     }
                     HorizontalDivider()
-                    CaravanOnField(activity, game.playerCaravans[1], false, state2Player, { selectedCaravan = 1 }) {
+                    CaravanOnField(activity, game.playerCaravans[1], false, state2Player, {
+                        selectedCaravan = if (selectedCaravan == 1) {
+                            -1
+                        } else {
+                            1
+                        }
+                    }) {
                         addCardToPlayerCaravan(1, it)
                     }
                 }
@@ -195,7 +207,13 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
                         addCardToEnemyCaravan(2, it)
                     }
                     HorizontalDivider()
-                    CaravanOnField(activity, game.playerCaravans[2], false, state3Player, { selectedCaravan = 2 }) {
+                    CaravanOnField(activity, game.playerCaravans[2], false, state3Player, {
+                        selectedCaravan = if (selectedCaravan == 2) {
+                            -1
+                        } else {
+                            2
+                        }
+                    }) {
                         addCardToPlayerCaravan(2, it)
                     }
                 }
@@ -217,16 +235,18 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
                         modifier = Modifier
                             .fillMaxWidth()
                             .clickable {
+                                if (!game.isPlayerTurn) return@clickable
                                 if (selectedCard != null) {
                                     game.playerDeck.hand.remove(selectedCard)
-                                    game.afterPlayerMove()
                                     selectedCard = null
+                                    selectedCaravan = -1
+                                    game.afterPlayerMove { caravansKey = !caravansKey }
                                 } else if (selectedCaravan in (0..2)) {
                                     game.playerCaravans[selectedCaravan].dropCaravan()
-                                    game.afterPlayerMove()
                                     caravansKey = !caravansKey
                                     selectedCard = null
                                     selectedCaravan = -1
+                                    game.afterPlayerMove { caravansKey = !caravansKey }
                                 }
                             }
                     )
