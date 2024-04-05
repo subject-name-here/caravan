@@ -133,8 +133,9 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
                         when (card.rank.value) {
                             in 1..10 -> {
                                 if (position == caravan.cards.size && !isEnemy) {
-                                    caravan.cards.add(position, CardWithModifier(card))
-                                    onCaravanCardInserted(card)
+                                    if (caravan.putCardOnTop(card)) {
+                                        onCaravanCardInserted(card)
+                                    }
                                 }
                             }
                             Rank.JACK.value -> {

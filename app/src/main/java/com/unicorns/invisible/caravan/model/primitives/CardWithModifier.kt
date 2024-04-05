@@ -20,4 +20,12 @@ class CardWithModifier(
             card.rank.value * (numOfKings + 1)
         }
     }
+
+    fun getTopSuit(): Suit {
+        return if (topQueen == null) {
+            card.suit
+        } else {
+            topQueen?.suit ?: card.suit
+        }
+    }
 }
