@@ -11,6 +11,10 @@ class Caravan {
         cards.clear()
     }
 
+    fun getValue(): Int {
+        return cards.sumOf { it.getValue() }
+    }
+
     fun isFull() = cards.size >= 10
 
     fun putCardOnTop(card: Card): Boolean {

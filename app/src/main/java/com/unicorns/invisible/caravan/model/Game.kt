@@ -21,6 +21,12 @@ class Game(val playerDeck: Deck, val enemyDeck: Deck) {
         playerDeck.initHand()
         enemyDeck.initHand()
     }
+
+    fun afterPlayerMove() {
+        if (playerDeck.hand.size < 5 && playerDeck.deckSize > 0) {
+            playerDeck.addToHand()
+        }
+    }
 }
 
 val GameSaver = Saver<Game, String>(

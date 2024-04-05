@@ -1,6 +1,5 @@
 package com.unicorns.invisible.caravan
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -22,7 +21,6 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableIntStateOf
@@ -42,17 +40,15 @@ import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.getCardName
 import com.unicorns.invisible.caravan.model.primitives.Caravan
 import com.unicorns.invisible.caravan.model.primitives.Card
-import com.unicorns.invisible.caravan.model.primitives.CardWithModifier
 import com.unicorns.invisible.caravan.model.primitives.Rank
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.launch
 
 
 @Composable
 fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
     var selectedCard by remember { mutableStateOf<Card?>(null) }
     val selectedCardColor = Color(activity.getColor(R.color.colorAccent))
+
+    var selectedCaravan by remember { mutableIntStateOf(-1) }
 
     var caravansKey by remember { mutableStateOf(true) }
 
@@ -124,8 +120,10 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
                 fun addCardToCaravan(caravan: Caravan, position: Int, isEnemy: Boolean = false) {
                     fun onCaravanCardInserted(card: Card) {
                         game.playerDeck.hand.remove(card)
-                        caravansKey = !caravansKey
+                        game.afterPlayerMove()
                         selectedCard = null
+                        selectedCaravan = -1
+                        caravansKey = !caravansKey
                     }
 
                     val card = selectedCard
@@ -175,7 +173,7 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
                         addCardToEnemyCaravan(0, it)
                     }
                     HorizontalDivider()
-                    CaravanOnField(activity, game.playerCaravans[0], false, state1Player) {
+                    CaravanOnField(activity, game.playerCaravans[0], false, state1Player, { selectedCaravan = 0 }) {
                         addCardToPlayerCaravan(0, it)
                     }
                 }
@@ -186,7 +184,7 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
                         addCardToEnemyCaravan(1, it)
                     }
                     HorizontalDivider()
-                    CaravanOnField(activity, game.playerCaravans[1], false, state2Player) {
+                    CaravanOnField(activity, game.playerCaravans[1], false, state2Player, { selectedCaravan = 1 }) {
                         addCardToPlayerCaravan(1, it)
                     }
                 }
@@ -197,7 +195,7 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
                         addCardToEnemyCaravan(2, it)
                     }
                     HorizontalDivider()
-                    CaravanOnField(activity, game.playerCaravans[2], false, state3Player) {
+                    CaravanOnField(activity, game.playerCaravans[2], false, state3Player, { selectedCaravan = 2 }) {
                         addCardToPlayerCaravan(2, it)
                     }
                 }
@@ -205,13 +203,31 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
                     .weight(0.22f)
                     .fillMaxHeight(), verticalArrangement = Arrangement.Center) {
                     Text(
-                        text = "OK",
+                        text = when {
+                            selectedCard != null -> {
+                                "DISCARD CARD"
+                            }
+                            selectedCaravan in (0..2) -> {
+                                "DROP CARAVAN #${selectedCaravan}"
+                            }
+                            else -> ""
+                        },
                         textAlign = TextAlign.Center,
                         color = Color(activity.getColor(R.color.colorAccent)),
                         modifier = Modifier
                             .fillMaxWidth()
                             .clickable {
-
+                                if (selectedCard != null) {
+                                    game.playerDeck.hand.remove(selectedCard)
+                                    game.afterPlayerMove()
+                                    selectedCard = null
+                                } else if (selectedCaravan in (0..2)) {
+                                    game.playerCaravans[selectedCaravan].dropCaravan()
+                                    game.afterPlayerMove()
+                                    caravansKey = !caravansKey
+                                    selectedCard = null
+                                    selectedCaravan = -1
+                                }
                             }
                     )
                 }
@@ -316,6 +332,7 @@ fun CaravanOnField(
     caravan: Caravan,
     isEnemy: Boolean,
     state: LazyListState,
+    selectCaravan: () -> Unit = {},
     addSelectedCardOnPosition: (Int) -> Unit,
 ) {
     if (isEnemy) {
@@ -360,7 +377,25 @@ fun CaravanOnField(
                 }
             }
         }
+        Text(text = caravan.getValue().toString(),
+            textAlign = TextAlign.Center,
+            color = if (caravan.getValue() > 26) Color.Red else Color(activity.getColor(R.color.colorAccent)),
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable {
+                    selectCaravan()
+                }
+        )
     } else {
+        Text(text = caravan.getValue().toString(),
+            textAlign = TextAlign.Center,
+            color = if (caravan.getValue() > 26) Color.Red else Color(activity.getColor(R.color.colorAccent)),
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable {
+                    selectCaravan()
+                }
+        )
         LazyColumn(
             state = state,
             verticalArrangement = Arrangement.Top,
