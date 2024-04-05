@@ -1,6 +1,7 @@
 package com.unicorns.invisible.caravan
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -11,6 +12,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -27,10 +32,23 @@ import com.unicorns.invisible.caravan.model.primitives.Card
 
 @Composable
 fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
+    var selectedCard by remember { mutableStateOf<Card?>(null) }
+    val selectedCardColor = Color(activity.getColor(R.color.colorAccent))
+
+    fun onCardClicked(index: Int) {
+        selectedCard = if (game.playerDeck.hand[index] == selectedCard) {
+            null
+        } else {
+            game.playerDeck.hand[index]
+        }
+    }
+
     Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.fillMaxSize().background(Color(activity.getColor(R.color.colorPrimaryDark)))
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color(activity.getColor(R.color.colorPrimaryDark)))
     ) {
         Row(
             modifier = Modifier
@@ -87,12 +105,12 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
             ) {
                 if (maxWidth < 400.dp) {
                     Column {
-                        RowOfCards(cards = game.playerDeck.hand.subList(0, 4))
-                        RowOfCards(cards = game.playerDeck.hand.subList(4, 8))
+                        RowOfCards(cards = game.playerDeck.hand.subList(0, 4), 0, selectedCard, selectedCardColor, ::onCardClicked)
+                        RowOfCards(cards = game.playerDeck.hand.subList(4, 8), 4, selectedCard, selectedCardColor, ::onCardClicked)
                     }
                 } else {
                     Row {
-                        RowOfCards(cards = game.playerDeck.hand)
+                        RowOfCards(cards = game.playerDeck.hand, 0, selectedCard, selectedCardColor, ::onCardClicked)
                     }
                 }
             }
@@ -126,12 +144,25 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
 }
 
 @Composable
-fun RowOfCards(cards: List<Card>) {
+fun RowOfCards(cards: List<Card>, offset: Int = 0, selectedCard: Card?, selectedCardColor: Color, onClick: (Int) -> Unit) {
     Row {
-        cards.forEach {
+        cards.forEachIndexed { index, it ->
+            val modifier = if (it == selectedCard) {
+                Modifier.clickable {
+                    onClick(offset + index)
+                }.border(
+                    width = 4.dp,
+                    color = selectedCardColor
+                )
+            } else {
+                Modifier.clickable {
+                    onClick(offset + index)
+                }
+            }
             AsyncImage(
                 model = "file:///android_asset/caravan_cards/${getCardName(it)}",
-                contentDescription = ""
+                contentDescription = "",
+                modifier
             )
         }
     }
