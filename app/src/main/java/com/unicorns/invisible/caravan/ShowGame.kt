@@ -30,7 +30,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.text.TextStyle
@@ -400,7 +399,7 @@ fun CaravanOnField(
                         AsyncImage(
                             model = "file:///android_asset/caravan_cards/${getCardName(card)}",
                             contentDescription = "",
-                            modifier = Modifier.offset(x = (10.dp) * (index + 1))
+                            modifier = Modifier.offset(x = -(10.dp) * (index + 1))
                         )
                     }
                 }
@@ -443,8 +442,7 @@ fun CaravanOnField(
                         layout(constraints.maxWidth, height) {
                             placeable.place(offsetWidth, 0)
                         }
-                    }
-                    .clipToBounds()) {
+                    }) {
                     AsyncImage(
                         model = "file:///android_asset/caravan_cards/${getCardName(it.card)}",
                         contentDescription = "",

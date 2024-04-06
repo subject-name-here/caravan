@@ -132,7 +132,7 @@ class MainActivity : AppCompatActivity() {
             modifier = Modifier.fillMaxSize()
         ) {
             Text(
-                text = "PvEasy",
+                text = "PvE1",
                 modifier = Modifier.clickable {
                     showGame()
                 },
@@ -140,7 +140,7 @@ class MainActivity : AppCompatActivity() {
             )
             Spacer(modifier = Modifier.height(16.dp))
             Text(
-                text = "PvMedium",
+                text = "PvE2",
                 modifier = Modifier.clickable {
                     showGameMedium()
                 },
