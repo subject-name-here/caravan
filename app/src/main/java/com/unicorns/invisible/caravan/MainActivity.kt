@@ -64,7 +64,7 @@ class MainActivity : AppCompatActivity() {
                         mutableStateOf(Game(
                             Deck(selectedDeck),
                             Deck(CardBack.ULTRA_LUXE),
-                            EnemyEasy()
+                            EnemyEasy
                         ).also {
                             it.onWin = {
                                 save?.let { save ->
@@ -86,7 +86,7 @@ class MainActivity : AppCompatActivity() {
                         mutableStateOf(Game(
                             Deck(selectedDeck),
                             Deck(CardBack.GOMORRAH),
-                            EnemyMedium()
+                            EnemyMedium
                         ).also {
                             it.onWin = {
                                 save?.let { save ->

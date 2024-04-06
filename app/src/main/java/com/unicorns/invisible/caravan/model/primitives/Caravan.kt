@@ -18,7 +18,7 @@ class Caravan {
     fun isFull() = cards.size >= 10
 
     fun putCardOnTop(card: Card): Boolean {
-        if (isFull()) return false
+        if (isFull() || card.rank.value > 10) return false
         if (cards.isEmpty()) {
             cards.add(CardWithModifier(card))
             return true

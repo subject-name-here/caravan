@@ -5,7 +5,7 @@ import kotlinx.serialization.Serializable
 
 
 @Serializable
-class EnemyMedium : Enemy() {
+data object EnemyMedium : Enemy() {
     override suspend fun makeMove(game: Game) {
         val deck = game.enemyDeck
         // TODO!!
