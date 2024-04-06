@@ -168,9 +168,9 @@ private fun getUltraLuxeName(card: Card): String {
         Rank.KING to Suit.DIAMONDS -> "FNV_King_of_Diamonds_-_Ultra-Luxe.webp"
         Rank.KING to Suit.HEARTS -> "FNV_King_of_Hearts_-_Ultra-Luxe.webp"
         Rank.KING to Suit.SPADES -> "FNV_King_of_Spades_-_Ultra-Luxe.webp"
-        Rank.ACE to Suit.CLUBS -> "FNV_Ace_of_Spades_-_Ultra-Luxe.webp"
-        Rank.ACE to Suit.DIAMONDS -> "FNV_Ace_of_Spades_-_Ultra-Luxe.webp"
-        Rank.ACE to Suit.HEARTS -> "FNV_Ace_of_Spades_-_Ultra-Luxe.webp"
+        Rank.ACE to Suit.CLUBS -> "FNV_Ace_of_Clubs_-_Ultra-Luxe.webp"
+        Rank.ACE to Suit.DIAMONDS -> "FNV_Ace_of_Diamonds_-_Ultra-Luxe.webp"
+        Rank.ACE to Suit.HEARTS -> "FNV_Ace_of_Hearts_-_Ultra-Luxe.webp"
         Rank.ACE to Suit.SPADES -> "FNV_Ace_of_Spades_-_Ultra-Luxe.webp"
         else -> getStandardName(card)
     }

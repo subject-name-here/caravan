@@ -49,6 +49,5 @@ data object EnemyEasy : Enemy() {
         }
 
         deck.hand.removeAt(deck.hand.indices.random())
-        // TODO: somehow indicate action!
     }
 }

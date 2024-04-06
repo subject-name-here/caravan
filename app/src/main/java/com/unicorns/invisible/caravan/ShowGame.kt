@@ -30,12 +30,17 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.layout.AlignmentLine
 import androidx.compose.ui.layout.layout
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
 import coil.compose.AsyncImage
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
@@ -151,7 +156,6 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
                                 }
                             }
                             Rank.JOKER.value -> {
-                                // TODO
                                 if (position in caravan.cards.indices && caravan.cards[position].modifiers.size < 3) {
                                     caravan.cards[position].modifiers.add(card)
                                     game.putJokerOntoCard(caravan.cards[position].card)
@@ -368,6 +372,7 @@ fun CaravanOnField(
                 .fillMaxWidth()
         ) {
             itemsIndexed(caravan.cards.reversed()) { index, it ->
+                // TODO: cards are laid wrong.
                 Box(modifier = Modifier
                     .layout { measurable, constraints ->
                         val placeable = measurable.measure(constraints)
@@ -377,11 +382,15 @@ fun CaravanOnField(
                             placeable.height
                         }
                         val offsetWidth = constraints.maxWidth / 2 - placeable.width / 2
-                        layout(constraints.maxWidth, height) {
-                            placeable.place(offsetWidth, 0)
+                        val offsetHeight = if (index != 0) {
+                            -2 * placeable.height / 3
+                        } else {
+                            0
                         }
-                    }
-                    .clipToBounds()
+                        layout(constraints.maxWidth, height) {
+                            placeable.place(offsetWidth, offsetHeight)
+                        }
+                    }.zIndex((caravan.cards.size - index).toFloat())
                 ) {
                     AsyncImage(
                         model = "file:///android_asset/caravan_cards/${getCardName(it.card)}",
