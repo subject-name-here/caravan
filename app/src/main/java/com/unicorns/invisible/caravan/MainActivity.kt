@@ -24,12 +24,14 @@ import androidx.compose.ui.unit.sp
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.GameSaver
+import com.unicorns.invisible.caravan.model.enemy.Enemy
 import com.unicorns.invisible.caravan.model.enemy.EnemyEasy
 import com.unicorns.invisible.caravan.model.enemy.EnemyMedium
 import com.unicorns.invisible.caravan.model.primitives.Deck
 import com.unicorns.invisible.caravan.save.Save
 import com.unicorns.invisible.caravan.save.loadSave
 import com.unicorns.invisible.caravan.save.save
+import com.unicorns.invisible.caravan.toast.showToast
 
 
 @Suppress("MoveLambdaOutsideParentheses")
@@ -60,48 +62,14 @@ class MainActivity : AppCompatActivity() {
                     ShowAbout(activity = this, { showAbout = false })
                 }
                 showGameEasy -> {
-                    val game by rememberSaveable(stateSaver = GameSaver) {
-                        mutableStateOf(Game(
-                            Deck(selectedDeck),
-                            Deck(CardBack.ULTRA_LUXE),
-                            EnemyEasy
-                        ).also {
-                            it.onWin = {
-                                save?.let { save ->
-                                    save.availableDecks[CardBack.ULTRA_LUXE] = true
-                                    save(this, save)
-                                }
-                                showGameEasy = false
-                            }
-                            it.onLose = {
-                                showGameEasy = false
-                            }
-                            it.startGame()
-                        })
+                    StartGame(selectedDeck = selectedDeck, enemyCardBack = CardBack.ULTRA_LUXE, enemy = EnemyEasy) {
+                        showGameEasy = false
                     }
-                    ShowGame(activity = this, game, { showGameEasy = false })
                 }
                 showGameMedium -> {
-                    val game by rememberSaveable(stateSaver = GameSaver) {
-                        mutableStateOf(Game(
-                            Deck(selectedDeck),
-                            Deck(CardBack.GOMORRAH),
-                            EnemyMedium
-                        ).also {
-                            it.onWin = {
-                                save?.let { save ->
-                                    save.availableDecks[CardBack.GOMORRAH] = true
-                                    save(this, save)
-                                }
-                                showGameMedium = false
-                            }
-                            it.onLose = {
-                                showGameMedium = false
-                            }
-                            it.startGame()
-                        })
+                    StartGame(selectedDeck = selectedDeck, enemyCardBack = CardBack.GOMORRAH, enemy = EnemyMedium) {
+                        showGameMedium = false
                     }
-                    ShowGame(activity = this, game, { showGameMedium = false })
                 }
                 else -> {
                     MainMenu(
@@ -116,6 +84,33 @@ class MainActivity : AppCompatActivity() {
     }
 
     @Composable
+    fun StartGame(selectedDeck: CardBack, enemyCardBack: CardBack, enemy: Enemy, goBack: () -> Unit) {
+        val game by rememberSaveable(stateSaver = GameSaver) {
+            mutableStateOf(Game(
+                Deck(selectedDeck),
+                Deck(enemyCardBack),
+                enemy
+            ).also {
+                // TODO: win/lose message
+                it.onWin = {
+                    save?.let { save ->
+                        save.availableDecks[enemyCardBack] = true
+                        save(this, save)
+                    }
+                    showToast(this, "You win!")
+                    goBack()
+                }
+                it.onLose = {
+                    showToast(this, "You lose!")
+                    goBack()
+                }
+                it.startGame()
+            })
+        }
+        ShowGame(activity = this, game, goBack)
+    }
+
+    @Composable
     fun MainMenu(
         showDeckSelection: () -> Unit,
         showAbout: () -> Unit,
@@ -125,8 +120,7 @@ class MainActivity : AppCompatActivity() {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
-            modifier = Modifier
-                .fillMaxSize()
+            modifier = Modifier.fillMaxSize()
         ) {
             Text(
                 text = "PvEasy",
@@ -147,7 +141,7 @@ class MainActivity : AppCompatActivity() {
             Text(
                 text = "PvAI",
                 modifier = Modifier.clickable {
-
+                    // TODO
                 },
                 style = TextStyle(color = Color(getColor(R.color.colorPrimaryDark)), fontSize = 20.sp)
             )

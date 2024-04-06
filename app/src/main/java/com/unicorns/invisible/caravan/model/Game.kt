@@ -3,7 +3,9 @@ package com.unicorns.invisible.caravan.model
 import androidx.compose.runtime.saveable.Saver
 import com.unicorns.invisible.caravan.model.enemy.Enemy
 import com.unicorns.invisible.caravan.model.primitives.Caravan
+import com.unicorns.invisible.caravan.model.primitives.Card
 import com.unicorns.invisible.caravan.model.primitives.Deck
+import com.unicorns.invisible.caravan.model.primitives.Rank
 import com.unicorns.invisible.caravan.save.json
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -30,7 +32,7 @@ class Game(
     @Transient
     var onLose: () -> Unit = {}
 
-    var isGameOver = 0
+    private var isGameOver = 0
         set(value) {
             field = value
             when (value) {
@@ -51,13 +53,16 @@ class Game(
             playerDeck.addToHand()
         }
         isPlayerTurn = false
-
         if (checkOnGameOver()) {
             return
         }
 
         CoroutineScope(Dispatchers.Default).launch {
             enemyMove()
+            isPlayerTurn = true
+            if (checkOnGameOver()) {
+                return@launch
+            }
             callback()
         }
     }
@@ -66,11 +71,6 @@ class Game(
         enemy.makeMove(this)
         if (enemyDeck.hand.size < 5 && enemyDeck.deckSize > 0) {
             enemyDeck.addToHand()
-        }
-
-        isPlayerTurn = true
-        if (checkOnGameOver()) {
-            return
         }
     }
 
@@ -117,6 +117,24 @@ class Game(
         }
 
         return false
+    }
+
+    fun putJokerOntoCard(card: Card) {
+        if (card.rank == Rank.ACE) {
+            playerCaravans.forEach { caravan ->
+                caravan.cards.filter { it.card.suit == card.suit && it.card != card }.forEach { caravan.cards.remove(it) }
+            }
+            enemyCaravans.forEach { caravan ->
+                caravan.cards.filter { it.card.suit == card.suit && it.card != card }.forEach { caravan.cards.remove(it) }
+            }
+        } else {
+            playerCaravans.forEach { caravan ->
+                caravan.cards.filter { it.card.rank == card.rank && it.card != card }.forEach { caravan.cards.remove(it) }
+            }
+            enemyCaravans.forEach { caravan ->
+                caravan.cards.filter { it.card.rank == card.rank && it.card != card }.forEach { caravan.cards.remove(it) }
+            }
+        }
     }
 }
 

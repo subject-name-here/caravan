@@ -1,6 +1,5 @@
 package com.unicorns.invisible.caravan
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -22,8 +21,6 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableIntStateOf
@@ -46,8 +43,6 @@ import com.unicorns.invisible.caravan.model.getCardName
 import com.unicorns.invisible.caravan.model.primitives.Caravan
 import com.unicorns.invisible.caravan.model.primitives.Card
 import com.unicorns.invisible.caravan.model.primitives.Rank
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.launch
 
 
 @Composable
@@ -159,6 +154,7 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
                                 // TODO
                                 if (position in caravan.cards.indices && caravan.cards[position].modifiers.size < 3) {
                                     caravan.cards[position].modifiers.add(card)
+                                    game.putJokerOntoCard(caravan.cards[position].card)
                                     onCaravanCardInserted(card)
                                 }
                             }
@@ -385,7 +381,8 @@ fun CaravanOnField(
                             placeable.place(offsetWidth, 0)
                         }
                     }
-                    .clipToBounds()) {
+                    .clipToBounds()
+                ) {
                     AsyncImage(
                         model = "file:///android_asset/caravan_cards/${getCardName(it.card)}",
                         contentDescription = "",

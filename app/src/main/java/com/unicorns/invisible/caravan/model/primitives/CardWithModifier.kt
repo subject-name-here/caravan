@@ -8,9 +8,9 @@ class CardWithModifier(
     val card: Card,
     val modifiers: MutableList<Card> = mutableListOf()
 ) {
-    val numOfKings: Int
+    private val numOfKings: Int
         get() = modifiers.count { it.rank == Rank.KING }
-    val topQueen: Card?
+    val topQueen: Card? // TODO: maybe make it private, but give some boolean on outside???
         get() = modifiers.findLast { it.rank == Rank.QUEEN }
 
     fun getValue(): Int {

@@ -6,5 +6,5 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 sealed class Enemy {
-    abstract suspend fun makeMove(game: Game)
+    abstract suspend fun makeMove(game: Game) // TODO: move animation!
 }
