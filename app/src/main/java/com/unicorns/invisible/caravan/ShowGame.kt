@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -30,12 +31,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
-import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.layout.AlignmentLine
 import androidx.compose.ui.layout.layout
-import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -77,7 +74,7 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .fillMaxHeight(0.3f),
+                .fillMaxHeight(0.2f),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center
         ) {
@@ -122,7 +119,7 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .fillMaxHeight(0.45f),
+                    .fillMaxHeight(0.6f),
             ) {
                 fun addCardToCaravan(caravan: Caravan, position: Int, isEnemy: Boolean = false) {
                     fun onCaravanCardInserted(card: Card) {
@@ -233,7 +230,7 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
                                 "DISCARD CARD"
                             }
                             selectedCaravan in (0..2) -> {
-                                "DROP CARAVAN #${selectedCaravan}"
+                                "DROP CARAVAN #${selectedCaravan + 1}"
                             }
                             else -> ""
                         },
@@ -372,7 +369,6 @@ fun CaravanOnField(
                 .fillMaxWidth()
         ) {
             itemsIndexed(caravan.cards.reversed()) { index, it ->
-                // TODO: cards are laid wrong.
                 Box(modifier = Modifier
                     .layout { measurable, constraints ->
                         val placeable = measurable.measure(constraints)
@@ -390,7 +386,8 @@ fun CaravanOnField(
                         layout(constraints.maxWidth, height) {
                             placeable.place(offsetWidth, offsetHeight)
                         }
-                    }.zIndex((caravan.cards.size - index).toFloat())
+                    }
+                    .zIndex((caravan.cards.size - index).toFloat())
                 ) {
                     AsyncImage(
                         model = "file:///android_asset/caravan_cards/${getCardName(it.card)}",
@@ -468,7 +465,7 @@ fun CaravanOnField(
                 item {
                     Box(modifier = Modifier
                         .fillParentMaxWidth()
-                        .fillParentMaxHeight(0.25f)
+                        .height(20.dp)
                         .background(Color(activity.getColor(R.color.colorPrimary)))
                         .border(4.dp, Color(activity.getColor(R.color.colorAccent)))
                         .clickable {
