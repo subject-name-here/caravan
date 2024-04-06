@@ -24,9 +24,12 @@ import androidx.compose.ui.unit.sp
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.GameSaver
+import com.unicorns.invisible.caravan.model.enemy.EnemyEasy
+import com.unicorns.invisible.caravan.model.enemy.EnemyMedium
 import com.unicorns.invisible.caravan.model.primitives.Deck
 import com.unicorns.invisible.caravan.save.Save
 import com.unicorns.invisible.caravan.save.loadSave
+import com.unicorns.invisible.caravan.save.save
 
 
 @Suppress("MoveLambdaOutsideParentheses")
@@ -40,7 +43,8 @@ class MainActivity : AppCompatActivity() {
         setContent {
             var deckSelection by rememberSaveable { mutableStateOf(false) }
             var showAbout by rememberSaveable { mutableStateOf(false) }
-            var showGame by rememberSaveable { mutableStateOf(false) }
+            var showGameEasy by rememberSaveable { mutableStateOf(false) }
+            var showGameMedium by rememberSaveable { mutableStateOf(false) }
             var selectedDeck by rememberSaveable { mutableStateOf(save?.selectedDeck ?: CardBack.STANDARD) }
 
             when {
@@ -55,17 +59,56 @@ class MainActivity : AppCompatActivity() {
                 showAbout -> {
                     ShowAbout(activity = this, { showAbout = false })
                 }
-                showGame -> {
+                showGameEasy -> {
                     val game by rememberSaveable(stateSaver = GameSaver) {
-                        mutableStateOf(Game(Deck(selectedDeck), Deck(CardBack.entries.random())).also { it.startGame() })
+                        mutableStateOf(Game(
+                            Deck(selectedDeck),
+                            Deck(CardBack.ULTRA_LUXE),
+                            EnemyEasy()
+                        ).also {
+                            it.onWin = {
+                                save?.let { save ->
+                                    save.availableDecks[CardBack.ULTRA_LUXE] = true
+                                    save(this, save)
+                                }
+                                showGameEasy = false
+                            }
+                            it.onLose = {
+                                showGameEasy = false
+                            }
+                            it.startGame()
+                        })
                     }
-                    ShowGame(activity = this, game, { showGame = false })
+                    ShowGame(activity = this, game, { showGameEasy = false })
+                }
+                showGameMedium -> {
+                    val game by rememberSaveable(stateSaver = GameSaver) {
+                        mutableStateOf(Game(
+                            Deck(selectedDeck),
+                            Deck(CardBack.GOMORRAH),
+                            EnemyMedium()
+                        ).also {
+                            it.onWin = {
+                                save?.let { save ->
+                                    save.availableDecks[CardBack.GOMORRAH] = true
+                                    save(this, save)
+                                }
+                                showGameMedium = false
+                            }
+                            it.onLose = {
+                                showGameMedium = false
+                            }
+                            it.startGame()
+                        })
+                    }
+                    ShowGame(activity = this, game, { showGameMedium = false })
                 }
                 else -> {
                     MainMenu(
                         { deckSelection = true },
                         { showAbout = true },
-                        { showGame = true },
+                        { showGameEasy = true },
+                        { showGameMedium = true }
                     )
                 }
             }
@@ -77,6 +120,7 @@ class MainActivity : AppCompatActivity() {
         showDeckSelection: () -> Unit,
         showAbout: () -> Unit,
         showGame: () -> Unit,
+        showGameMedium: () -> Unit,
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -95,7 +139,7 @@ class MainActivity : AppCompatActivity() {
             Text(
                 text = "PvMedium",
                 modifier = Modifier.clickable {
-
+                    showGameMedium()
                 },
                 style = TextStyle(color = Color(getColor(R.color.colorPrimaryDark)), fontSize = 20.sp)
             )

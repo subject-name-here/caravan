@@ -1,5 +1,6 @@
 package com.unicorns.invisible.caravan
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -21,6 +22,8 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableIntStateOf
@@ -29,7 +32,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.layout
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -41,6 +46,8 @@ import com.unicorns.invisible.caravan.model.getCardName
 import com.unicorns.invisible.caravan.model.primitives.Caravan
 import com.unicorns.invisible.caravan.model.primitives.Card
 import com.unicorns.invisible.caravan.model.primitives.Rank
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
 
 
 @Composable
@@ -174,7 +181,7 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
                     }
                     HorizontalDivider()
                     CaravanOnField(activity, game.playerCaravans[0], false, state1Player, {
-                        selectedCaravan = if (selectedCaravan == 0) {
+                        selectedCaravan = if (selectedCaravan == 0 || game.playerCaravans[0].getValue() == 0) {
                             -1
                         } else {
                             0
@@ -191,7 +198,7 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
                     }
                     HorizontalDivider()
                     CaravanOnField(activity, game.playerCaravans[1], false, state2Player, {
-                        selectedCaravan = if (selectedCaravan == 1) {
+                        selectedCaravan = if (selectedCaravan == 1 || game.playerCaravans[1].getValue() == 0) {
                             -1
                         } else {
                             1
@@ -208,7 +215,7 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
                     }
                     HorizontalDivider()
                     CaravanOnField(activity, game.playerCaravans[2], false, state3Player, {
-                        selectedCaravan = if (selectedCaravan == 2) {
+                        selectedCaravan = if (selectedCaravan == 2 || game.playerCaravans[2].getValue() == 0) {
                             -1
                         } else {
                             2
@@ -364,22 +371,21 @@ fun CaravanOnField(
                 .fillMaxHeight(0.5f)
                 .fillMaxWidth()
         ) {
-            if (!caravan.isFull()) {
-                item {
-                    Box(modifier = Modifier
-                        .fillParentMaxWidth()
-                        .fillParentMaxHeight(0.25f)
-                        .background(Color(activity.getColor(R.color.colorPrimary)))
-                        .border(4.dp, Color(activity.getColor(R.color.colorAccent)))
-                        .clickable {
-                            addSelectedCardOnPosition(caravan.cards.size)
-                        }
-                    ) {}
-                }
-            }
-
             itemsIndexed(caravan.cards.reversed()) { index, it ->
-                Box {
+                Box(modifier = Modifier
+                    .layout { measurable, constraints ->
+                        val placeable = measurable.measure(constraints)
+                        val height = if (index != 0) {
+                            placeable.height / 3
+                        } else {
+                            placeable.height
+                        }
+                        val offsetWidth = constraints.maxWidth / 2 - placeable.width / 2
+                        layout(constraints.maxWidth, height) {
+                            placeable.place(offsetWidth, 0)
+                        }
+                    }
+                    .clipToBounds()) {
                     AsyncImage(
                         model = "file:///android_asset/caravan_cards/${getCardName(it.card)}",
                         contentDescription = "",
@@ -402,9 +408,6 @@ fun CaravanOnField(
             color = if (caravan.getValue() > 26) Color.Red else Color(activity.getColor(R.color.colorAccent)),
             modifier = Modifier
                 .fillMaxWidth()
-                .clickable {
-                    selectCaravan()
-                }
         )
     } else {
         Text(text = caravan.getValue().toString(),
@@ -425,7 +428,20 @@ fun CaravanOnField(
                 .fillMaxWidth()
         ) {
             itemsIndexed(caravan.cards) { index, it ->
-                Box {
+                Box(modifier = Modifier
+                    .layout { measurable, constraints ->
+                        val placeable = measurable.measure(constraints)
+                        val height = if (index != caravan.cards.lastIndex) {
+                            placeable.height / 3
+                        } else {
+                            placeable.height
+                        }
+                        val offsetWidth = constraints.maxWidth / 2 - placeable.width / 2
+                        layout(constraints.maxWidth, height) {
+                            placeable.place(offsetWidth, 0)
+                        }
+                    }
+                    .clipToBounds()) {
                     AsyncImage(
                         model = "file:///android_asset/caravan_cards/${getCardName(it.card)}",
                         contentDescription = "",
