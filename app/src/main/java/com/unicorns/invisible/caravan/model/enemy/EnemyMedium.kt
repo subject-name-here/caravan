@@ -12,18 +12,8 @@ data object EnemyMedium : Enemy() {
         val overWeightCaravans = game.enemyCaravans.filter { it.getValue() > 26 }
 
         deck.hand.shuffled().forEach { card ->
-            if (!card.rank.isFace()) {
-                game.enemyCaravans.shuffled().forEach { caravan ->
-                    if (caravan.getValue() + card.rank.value <= 26) {
-                        if (caravan.putCardOnTop(card)) {
-                            deck.hand.remove(card)
-                            return
-                        }
-                    }
-                }
-            }
             if (card.rank == Rank.JACK) {
-                val caravan = game.playerCaravans.filter { it.getValue() in (1..26) }.randomOrNull()
+                val caravan = game.playerCaravans.filter { it.getValue() in (1..26) }.maxByOrNull { it.getValue() }
                 if (caravan != null) {
                     caravan.cards.remove(caravan.cards.maxBy { it.getValue() })
                     deck.hand.remove(card)
@@ -50,9 +40,20 @@ data object EnemyMedium : Enemy() {
                 }
 
                 game.enemyCaravans.filter { it.getValue() in (1..25) }.forEach { enemyCaravan ->
-                    enemyCaravan.cards.forEach { caravanCard ->
-                        if (enemyCaravan.getValue() + caravanCard.card.rank.value <= 26) {
+                    enemyCaravan.cards.sortedBy { -it.card.rank.value }.forEach { caravanCard ->
+                        if (enemyCaravan.getValue() + caravanCard.card.rank.value in (16..26)) {
                             caravanCard.modifiers.add(card)
+                            deck.hand.remove(card)
+                            return
+                        }
+                    }
+                }
+            }
+
+            if (!card.rank.isFace()) {
+                game.enemyCaravans.shuffled().forEach { caravan ->
+                    if (caravan.getValue() + card.rank.value <= 26) {
+                        if (caravan.putCardOnTop(card)) {
                             deck.hand.remove(card)
                             return
                         }

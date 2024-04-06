@@ -32,6 +32,9 @@ import com.unicorns.invisible.caravan.save.Save
 import com.unicorns.invisible.caravan.save.loadSave
 import com.unicorns.invisible.caravan.save.save
 import com.unicorns.invisible.caravan.toast.showToast
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 
 @Suppress("MoveLambdaOutsideParentheses")
@@ -93,16 +96,22 @@ class MainActivity : AppCompatActivity() {
             ).also {
                 // TODO: win/lose message
                 it.onWin = {
-                    save?.let { save ->
-                        save.availableDecks[enemyCardBack] = true
-                        save(this, save)
+                    MainScope().launch {
+                        delay(2000L)
+                        save?.let { save ->
+                            save.availableDecks[enemyCardBack] = true
+                            save(this@MainActivity, save)
+                        }
+                        showToast(this@MainActivity, "You win!")
+                        goBack()
                     }
-                    showToast(this, "You win!")
-                    goBack()
                 }
                 it.onLose = {
-                    showToast(this, "You lose!")
-                    goBack()
+                    MainScope().launch {
+                        delay(2000L)
+                        showToast(this@MainActivity, "You lose!")
+                        goBack()
+                    }
                 }
                 it.startGame()
             })
