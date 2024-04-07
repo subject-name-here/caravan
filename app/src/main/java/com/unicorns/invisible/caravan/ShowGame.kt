@@ -70,7 +70,7 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
             .fillMaxSize()
             .background(Color(activity.getColor(R.color.colorPrimaryDark)))
     ) {
-        if (maxWidth > 400.dp) {
+        if (maxWidth > maxHeight) {
             Row(Modifier.fillMaxSize()) {
                 Column(
                     verticalArrangement = Arrangement.Center,

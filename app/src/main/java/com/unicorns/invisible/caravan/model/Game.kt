@@ -57,7 +57,6 @@ class Game(
         delay(500L)
         isPlayerTurn = false
         if (checkOnGameOver()) {
-            updateView()
             return@launch
         }
 
@@ -65,9 +64,11 @@ class Game(
         delay(500L)
         updateView()
         delay(500L)
+
         isPlayerTurn = true
-        checkOnGameOver()
-        updateView()
+        if (checkOnGameOver()) {
+            return@launch
+        }
     }
 
     private suspend fun enemyMove() {

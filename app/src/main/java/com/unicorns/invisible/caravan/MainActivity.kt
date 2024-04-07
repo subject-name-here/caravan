@@ -119,19 +119,19 @@ class MainActivity : AppCompatActivity() {
                 Deck(selectedDeck),
                 Deck(enemyCardBack),
                 enemy
-            ).also {
-                it.onWin = {
-                    save?.let { save ->
-                        save.availableDecks[enemyCardBack] = true
-                        save(this@MainActivity, save)
-                    }
-                    showAlertDialog("Result", "You win!")
+            ).also { it.startGame() })
+        }
+        game.also {
+            it.onWin = {
+                save?.let { save ->
+                    save.availableDecks[enemyCardBack] = true
+                    save(this@MainActivity, save)
                 }
-                it.onLose = {
-                    showAlertDialog("Result", "You lose!")
-                }
-                it.startGame()
-            })
+                showAlertDialog("Result", "You win!")
+            }
+            it.onLose = {
+                showAlertDialog("Result", "You lose!")
+            }
         }
         ShowGame(activity = this, game, goBack)
     }
