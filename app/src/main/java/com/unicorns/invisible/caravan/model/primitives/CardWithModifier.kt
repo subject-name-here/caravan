@@ -10,8 +10,10 @@ class CardWithModifier(
 ) {
     private val numOfKings: Int
         get() = modifiers.count { it.rank == Rank.KING }
-    val topQueen: Card? // TODO: maybe make it private, but give some boolean on outside???
+    private val topQueen: Card?
         get() = modifiers.findLast { it.rank == Rank.QUEEN }
+    val hasQueen: Boolean
+        get() = topQueen != null
 
     fun getValue(): Int {
         return if (card.isFace()) {
@@ -22,10 +24,6 @@ class CardWithModifier(
     }
 
     fun getTopSuit(): Suit {
-        return if (topQueen == null) {
-            card.suit
-        } else {
-            topQueen?.suit ?: card.suit
-        }
+        return topQueen?.suit ?: card.suit
     }
 }

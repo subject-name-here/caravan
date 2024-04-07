@@ -45,13 +45,13 @@ class Caravan {
                 return true
             }
             last.card.rank > preLast.card.rank -> {
-                if (card.rank > last.card.rank || last.topQueen != null) {
+                if (card.rank > last.card.rank || last.hasQueen) {
                     cards.add(CardWithModifier(card))
                     return true
                 }
             }
             last.card.rank < preLast.card.rank -> {
-                if (card.rank < last.card.rank || last.topQueen != null) {
+                if (card.rank < last.card.rank || last.hasQueen) {
                     cards.add(CardWithModifier(card))
                     return true
                 }

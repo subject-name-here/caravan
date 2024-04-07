@@ -79,7 +79,8 @@ class MainActivity : AppCompatActivity() {
                         { deckSelection = true },
                         { showAbout = true },
                         { showGameEasy = true },
-                        { showGameMedium = true }
+                        { showGameMedium = true },
+                        {}
                     )
                 }
             }
@@ -125,12 +126,21 @@ class MainActivity : AppCompatActivity() {
         showAbout: () -> Unit,
         showGame: () -> Unit,
         showGameMedium: () -> Unit,
+        showTutorial: () -> Unit,
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
             modifier = Modifier.fillMaxSize()
         ) {
+            Text(
+                text = "Tutorial",
+                modifier = Modifier.clickable {
+                    showTutorial()
+                },
+                style = TextStyle(color = Color(getColor(R.color.colorPrimaryDark)), fontSize = 20.sp)
+            )
+            Spacer(modifier = Modifier.height(16.dp))
             Text(
                 text = "PvE1",
                 modifier = Modifier.clickable {
@@ -146,14 +156,15 @@ class MainActivity : AppCompatActivity() {
                 },
                 style = TextStyle(color = Color(getColor(R.color.colorPrimaryDark)), fontSize = 20.sp)
             )
-            Spacer(modifier = Modifier.height(16.dp))
-            Text(
-                text = "PvAI",
-                modifier = Modifier.clickable {
-                    // TODO
-                },
-                style = TextStyle(color = Color(getColor(R.color.colorPrimaryDark)), fontSize = 20.sp)
-            )
+            // TODO
+//            Spacer(modifier = Modifier.height(16.dp))
+//            Text(
+//                text = "PvAI",
+//                modifier = Modifier.clickable {
+//
+//                },
+//                style = TextStyle(color = Color(getColor(R.color.colorPrimaryDark)), fontSize = 20.sp)
+//            )
             Spacer(modifier = Modifier.height(16.dp))
             Text(
                 text = "Select Deck",

@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -43,6 +44,7 @@ import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.getCardName
 import com.unicorns.invisible.caravan.model.primitives.Caravan
 import com.unicorns.invisible.caravan.model.primitives.Card
+import com.unicorns.invisible.caravan.model.primitives.Deck
 import com.unicorns.invisible.caravan.model.primitives.Rank
 
 
@@ -63,254 +65,142 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
         }
     }
 
-    Column(
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
+    BoxWithConstraints(
         modifier = Modifier
             .fillMaxSize()
             .background(Color(activity.getColor(R.color.colorPrimaryDark)))
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight(0.2f),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
-        ) {
-            BoxWithConstraints(modifier = Modifier
-                .fillMaxWidth(0.75f)
-                .fillMaxHeight(),
+        if (maxWidth > 400.dp) {
+            Row(Modifier.fillMaxSize()) {
+                Column(
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.fillMaxWidth(0.5f)
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .fillMaxHeight(0.4f),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        val handSize = game.enemyDeck.hand.size
+                        Column(Modifier.fillMaxWidth(0.8f), horizontalAlignment = Alignment.CenterHorizontally) {
+                            RowOfEnemyCards(minOf(4, handSize), game.enemyDeck.back)
+                            if (handSize - 4 > 0) {
+                                RowOfEnemyCards(handSize - 4, game.enemyDeck.back)
+                            }
+                        }
+                        Deck(game.enemyDeck, activity)
+                    }
+                    Row(verticalAlignment = Alignment.Bottom, modifier = Modifier
+                        .fillMaxWidth()
+                        .fillMaxHeight(0.8f)
+                    ) {
+                        Column(Modifier.fillMaxWidth(0.8f)) {
+                            RowOfCards(cards = game.playerDeck.hand.subList(0, minOf(4, game.playerDeck.hand.size)), 0, selectedCard, selectedCardColor, ::onCardClicked)
+                            if (game.playerDeck.hand.size >= 5) {
+                                RowOfCards(cards = game.playerDeck.hand.subList(4, game.playerDeck.hand.size), 4, selectedCard, selectedCardColor, ::onCardClicked)
+                            }
+                        }
+                        Deck(game.playerDeck, activity, isToBottom = true)
+                    }
+                    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxSize()) {
+                        Text(
+                            text = "Back to Menu",
+                            modifier = Modifier
+                                .clickable {
+                                    goBack()
+                                }
+                                .fillMaxWidth(),
+                            style = TextStyle(color = Color(activity.getColor(R.color.colorAccent)), fontSize = 16.sp, textAlign = TextAlign.Center),
+                        )
+                    }
+                }
+
+                key(caravansKey) {
+                    Caravans(
+                        game,
+                        activity,
+                        { selectedCard },
+                        { selectedCaravan },
+                        { selectedCaravan = it },
+                        { caravansKey = !caravansKey },
+                        {
+                            selectedCaravan = -1
+                            selectedCard = null
+                        },
+                        isMaxHeight = true
+                    )
+                }
+            }
+        } else {
+            Column(
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.fillMaxSize()
             ) {
-                if (maxWidth < 400.dp) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .fillMaxHeight(0.15f),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
                     val handSize = game.enemyDeck.hand.size
-                    Column {
+                    Column(Modifier.fillMaxWidth(0.8f), horizontalAlignment = Alignment.CenterHorizontally) {
                         RowOfEnemyCards(minOf(4, handSize), game.enemyDeck.back)
                         if (handSize - 4 > 0) {
                             RowOfEnemyCards(handSize - 4, game.enemyDeck.back)
                         }
                     }
-                } else {
-                    Row {
-                        RowOfEnemyCards(game.enemyDeck.hand.size, game.enemyDeck.back)
-                    }
+                    Deck(game.enemyDeck, activity)
                 }
-            }
-            Column(modifier = Modifier.fillMaxHeight()) {
-                Text(
-                    text = game.enemyDeck.deckSize.toString(),
-                    modifier = Modifier.fillMaxWidth(),
-                    style = TextStyle(color = Color(activity.getColor(R.color.colorAccent)), fontSize = 16.sp, textAlign = TextAlign.Center)
-                )
-                AsyncImage(
-                    model = "file:///android_asset/caravan_cards_back/${game.enemyDeck.back.getCardBackName()}",
-                    contentDescription = "",
-                    modifier = Modifier.fillMaxWidth(),
-                )
-            }
-        }
-        val state1Enemy = rememberLazyListState()
-        val state1Player = rememberLazyListState()
-        val state2Enemy = rememberLazyListState()
-        val state2Player = rememberLazyListState()
-        val state3Enemy = rememberLazyListState()
-        val state3Player = rememberLazyListState()
-        key(caravansKey) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight(0.6f),
-            ) {
-                fun addCardToCaravan(caravan: Caravan, position: Int, isEnemy: Boolean = false) {
-                    fun onCaravanCardInserted(card: Card) {
-                        game.playerDeck.hand.remove(card)
-                        game.afterPlayerMove { caravansKey = !caravansKey }
-                        selectedCard = null
-                        selectedCaravan = -1
-                        caravansKey = !caravansKey
-                    }
-
-                    val card = selectedCard
-                    if (card != null && game.isPlayerTurn) {
-                        when (card.rank.value) {
-                            in 1..10 -> {
-                                if (position == caravan.cards.size && !isEnemy) {
-                                    if (caravan.putCardOnTop(card)) {
-                                        onCaravanCardInserted(card)
-                                    }
-                                }
-                            }
-                            Rank.JACK.value -> {
-                                if (position in caravan.cards.indices) {
-                                    caravan.cards.removeAt(position)
-                                    onCaravanCardInserted(card)
-                                }
-                            }
-                            Rank.QUEEN.value, Rank.KING.value -> {
-                                if (position in caravan.cards.indices && caravan.cards[position].modifiers.size < 3) {
-                                    caravan.cards[position].modifiers.add(card)
-                                    onCaravanCardInserted(card)
-                                }
-                            }
-                            Rank.JOKER.value -> {
-                                if (position in caravan.cards.indices && caravan.cards[position].modifiers.size < 3) {
-                                    caravan.cards[position].modifiers.add(card)
-                                    game.putJokerOntoCard(caravan.cards[position].card)
-                                    onCaravanCardInserted(card)
-                                }
-                            }
+                key(caravansKey) {
+                    Caravans(
+                        game,
+                        activity,
+                        { selectedCard },
+                        { selectedCaravan },
+                        { selectedCaravan = it },
+                        { caravansKey = !caravansKey },
+                        {
+                            selectedCaravan = -1
+                            selectedCard = null
                         }
-                    }
-                }
-                fun addCardToEnemyCaravan(caravanNum: Int, position: Int) {
-                    addCardToCaravan(game.enemyCaravans[caravanNum], position, isEnemy = true)
-                }
-                fun addCardToPlayerCaravan(caravanNum: Int, position: Int) {
-                    addCardToCaravan(game.playerCaravans[caravanNum], position, isEnemy = false)
-                }
-
-                Spacer(modifier = Modifier.weight(0.03f))
-                Column(modifier = Modifier
-                    .weight(0.25f)
-                    .fillMaxHeight()) {
-                    CaravanOnField(activity, game.enemyCaravans[0], true, state1Enemy) {
-                        addCardToEnemyCaravan(0, it)
-                    }
-                    HorizontalDivider()
-                    CaravanOnField(activity, game.playerCaravans[0], false, state1Player, {
-                        selectedCaravan = if (selectedCaravan == 0 || game.playerCaravans[0].getValue() == 0) {
-                            -1
-                        } else {
-                            0
-                        }
-                    }) {
-                        addCardToPlayerCaravan(0, it)
-                    }
-                }
-                Column(modifier = Modifier
-                    .weight(0.25f)
-                    .fillMaxHeight()) {
-                    CaravanOnField(activity, game.enemyCaravans[1], true, state2Enemy) {
-                        addCardToEnemyCaravan(1, it)
-                    }
-                    HorizontalDivider()
-                    CaravanOnField(activity, game.playerCaravans[1], false, state2Player, {
-                        selectedCaravan = if (selectedCaravan == 1 || game.playerCaravans[1].getValue() == 0) {
-                            -1
-                        } else {
-                            1
-                        }
-                    }) {
-                        addCardToPlayerCaravan(1, it)
-                    }
-                }
-                Column(modifier = Modifier
-                    .weight(0.25f)
-                    .fillMaxHeight()) {
-                    CaravanOnField(activity, game.enemyCaravans[2], true, state3Enemy) {
-                        addCardToEnemyCaravan(2, it)
-                    }
-                    HorizontalDivider()
-                    CaravanOnField(activity, game.playerCaravans[2], false, state3Player, {
-                        selectedCaravan = if (selectedCaravan == 2 || game.playerCaravans[2].getValue() == 0) {
-                            -1
-                        } else {
-                            2
-                        }
-                    }) {
-                        addCardToPlayerCaravan(2, it)
-                    }
-                }
-                Column(modifier = Modifier
-                    .weight(0.22f)
-                    .fillMaxHeight(), verticalArrangement = Arrangement.Center) {
-                    Text(
-                        text = when {
-                            selectedCard != null -> {
-                                "DISCARD CARD"
-                            }
-                            selectedCaravan in (0..2) -> {
-                                "DROP CARAVAN #${selectedCaravan + 1}"
-                            }
-                            else -> ""
-                        },
-                        textAlign = TextAlign.Center,
-                        color = Color(activity.getColor(R.color.colorAccent)),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable {
-                                if (!game.isPlayerTurn) return@clickable
-                                if (selectedCard != null) {
-                                    game.playerDeck.hand.remove(selectedCard)
-                                    selectedCard = null
-                                    selectedCaravan = -1
-                                    game.afterPlayerMove { caravansKey = !caravansKey }
-                                } else if (selectedCaravan in (0..2)) {
-                                    game.playerCaravans[selectedCaravan].dropCaravan()
-                                    caravansKey = !caravansKey
-                                    selectedCard = null
-                                    selectedCaravan = -1
-                                    game.afterPlayerMove { caravansKey = !caravansKey }
-                                }
-                            }
                     )
                 }
-            }
-        }
-        Row(verticalAlignment = Alignment.Bottom, modifier = Modifier
-            .fillMaxWidth()
-            .fillMaxHeight(0.8f)
-        ) {
-            BoxWithConstraints(modifier = Modifier
-                .fillMaxWidth(0.75f)
-                .fillMaxHeight(),
-                contentAlignment = Alignment.BottomCenter
-            ) {
-                if (maxWidth < 400.dp) {
-                    Column {
+                Row(verticalAlignment = Alignment.Bottom, modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight(0.8f)
+                ) {
+                    Column(Modifier.fillMaxWidth(0.8f)) {
                         RowOfCards(cards = game.playerDeck.hand.subList(0, minOf(4, game.playerDeck.hand.size)), 0, selectedCard, selectedCardColor, ::onCardClicked)
-                        if (game.playerDeck.hand.size >= 4) {
+                        if (game.playerDeck.hand.size >= 5) {
                             RowOfCards(cards = game.playerDeck.hand.subList(4, game.playerDeck.hand.size), 4, selectedCard, selectedCardColor, ::onCardClicked)
                         }
                     }
-                } else {
-                    Row {
-                        RowOfCards(cards = game.playerDeck.hand, 0, selectedCard, selectedCardColor, ::onCardClicked)
-                    }
+                    Deck(game.playerDeck, activity, isToBottom = true)
+                }
+                Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxSize()) {
+                    Text(
+                        text = "Back to Menu",
+                        modifier = Modifier
+                            .clickable {
+                                goBack()
+                            }
+                            .fillMaxWidth(),
+                        style = TextStyle(color = Color(activity.getColor(R.color.colorAccent)), fontSize = 16.sp, textAlign = TextAlign.Center),
+                    )
                 }
             }
-            Column(
-                modifier = Modifier.fillMaxHeight(),
-                verticalArrangement = Arrangement.Bottom
-            ) {
-                Text(
-                    text = game.playerDeck.deckSize.toString(),
-                    modifier = Modifier.fillMaxWidth(),
-                    style = TextStyle(color = Color(activity.getColor(R.color.colorAccent)), fontSize = 16.sp, textAlign = TextAlign.Center)
-                )
-                AsyncImage(
-                    model = "file:///android_asset/caravan_cards_back/${game.playerDeck.back.getCardBackName()}",
-                    contentDescription = "",
-                    modifier = Modifier.fillMaxWidth(),
-                )
-            }
-        }
-        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxSize()) {
-            Text(
-                text = "Back to Menu",
-                modifier = Modifier
-                    .clickable {
-                        goBack()
-                    }
-                    .fillMaxWidth(),
-                style = TextStyle(color = Color(activity.getColor(R.color.colorAccent)), fontSize = 16.sp, textAlign = TextAlign.Center),
-            )
         }
     }
 }
 
 @Composable
-fun RowOfCards(cards: List<Card>, offset: Int = 0, selectedCard: Card?, selectedCardColor: Color, onClick: (Int) -> Unit) {
-    Row {
+fun ColumnScope.RowOfCards(cards: List<Card>, offset: Int = 0, selectedCard: Card?, selectedCardColor: Color, onClick: (Int) -> Unit) {
+    Row(Modifier.weight(1f).fillMaxHeight().fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
         cards.forEachIndexed { index, it ->
             val modifier = if (it == selectedCard) {
                 Modifier.border(
@@ -335,11 +225,11 @@ fun RowOfCards(cards: List<Card>, offset: Int = 0, selectedCard: Card?, selected
 }
 
 @Composable
-fun RowOfEnemyCards(numOfCards: Int, back: CardBack) {
+fun ColumnScope.RowOfEnemyCards(numOfCards: Int, back: CardBack) {
     if (numOfCards <= 0) {
         return
     }
-    Row {
+    Row(Modifier.weight(1f), horizontalArrangement = Arrangement.Center) {
         repeat(numOfCards) {
             AsyncImage(
                 model = "file:///android_asset/caravan_cards_back/${back.getCardBackName()}",
@@ -364,7 +254,7 @@ fun CaravanOnField(
             verticalArrangement = Arrangement.Bottom,
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
-                .fillMaxHeight(0.5f)
+                .fillMaxHeight(0.4f)
                 .fillMaxWidth()
         ) {
             itemsIndexed(caravan.cards.reversed()) { index, it ->
@@ -472,6 +362,167 @@ fun CaravanOnField(
                     ) {}
                 }
             }
+        }
+    }
+}
+
+@Composable
+fun Deck(deck: Deck, activity: MainActivity, isToBottom: Boolean = false) {
+    Column(
+        modifier = Modifier.fillMaxHeight(),
+        verticalArrangement = if (isToBottom) Arrangement.Bottom else Arrangement.Top
+    ) {
+        Text(
+            text = deck.deckSize.toString(),
+            modifier = Modifier.fillMaxWidth(),
+            style = TextStyle(color = Color(activity.getColor(R.color.colorAccent)), fontSize = 16.sp, textAlign = TextAlign.Center)
+        )
+        AsyncImage(
+            model = "file:///android_asset/caravan_cards_back/${deck.back.getCardBackName()}",
+            contentDescription = "",
+            modifier = Modifier.fillMaxWidth(),
+        )
+    }
+}
+
+@Composable
+fun Caravans(
+    game: Game,
+    activity: MainActivity,
+    getSelectedCard: () -> Card?,
+    getSelectedCaravan: () -> Int,
+    setSelectedCaravan: (Int) -> Unit,
+    updateCaravans: () -> Unit,
+    resetSelected: () -> Unit,
+    isMaxHeight: Boolean = false
+) {
+    val state1Enemy = rememberLazyListState()
+    val state1Player = rememberLazyListState()
+    val state2Enemy = rememberLazyListState()
+    val state2Player = rememberLazyListState()
+    val state3Enemy = rememberLazyListState()
+    val state3Player = rememberLazyListState()
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .fillMaxHeight(if (isMaxHeight) 1f else 0.65f),
+    ) {
+        fun addCardToCaravan(caravan: Caravan, position: Int, isEnemy: Boolean = false) {
+            fun onCaravanCardInserted(card: Card) {
+                game.playerDeck.hand.remove(card)
+                game.afterPlayerMove { updateCaravans() }
+                resetSelected()
+                updateCaravans()
+            }
+
+            val card = getSelectedCard()
+            if (card != null && game.isPlayerTurn) {
+                when (card.rank.value) {
+                    in 1..10 -> {
+                        if (position == caravan.cards.size && !isEnemy) {
+                            if (caravan.putCardOnTop(card)) {
+                                onCaravanCardInserted(card)
+                            }
+                        }
+                    }
+                    Rank.JACK.value -> {
+                        if (position in caravan.cards.indices) {
+                            caravan.cards.removeAt(position)
+                            onCaravanCardInserted(card)
+                        }
+                    }
+                    Rank.QUEEN.value, Rank.KING.value -> {
+                        if (position in caravan.cards.indices && caravan.cards[position].modifiers.size < 3) {
+                            caravan.cards[position].modifiers.add(card)
+                            onCaravanCardInserted(card)
+                        }
+                    }
+                    Rank.JOKER.value -> {
+                        if (position in caravan.cards.indices && caravan.cards[position].modifiers.size < 3) {
+                            caravan.cards[position].modifiers.add(card)
+                            game.putJokerOntoCard(caravan.cards[position].card)
+                            onCaravanCardInserted(card)
+                        }
+                    }
+                }
+            }
+        }
+        fun addCardToEnemyCaravan(caravanNum: Int, position: Int) {
+            addCardToCaravan(game.enemyCaravans[caravanNum], position, isEnemy = true)
+        }
+        fun addCardToPlayerCaravan(caravanNum: Int, position: Int) {
+            addCardToCaravan(game.playerCaravans[caravanNum], position, isEnemy = false)
+        }
+
+        @Composable
+        fun CaravansColumn(num: Int, enemyLazyListState: LazyListState, playerLazyListState: LazyListState) {
+            Column(modifier = Modifier
+                .weight(0.25f)
+                .fillMaxHeight()) {
+                CaravanOnField(activity, game.enemyCaravans[num], true, enemyLazyListState) {
+                    addCardToEnemyCaravan(num, it)
+                }
+                HorizontalDivider()
+                CaravanOnField(activity, game.playerCaravans[num], false, playerLazyListState, {
+                    setSelectedCaravan(if (getSelectedCaravan() == num || game.playerCaravans[num].getValue() == 0) {
+                        -1
+                    } else {
+                        num
+                    })
+                }) {
+                    addCardToPlayerCaravan(num, it)
+                }
+            }
+        }
+
+        Spacer(modifier = Modifier.weight(0.03f))
+        CaravansColumn(
+            num = 0,
+            enemyLazyListState = state1Enemy,
+            playerLazyListState = state1Player
+        )
+        CaravansColumn(
+            num = 1,
+            enemyLazyListState = state2Enemy,
+            playerLazyListState = state2Player
+        )
+        CaravansColumn(
+            num = 2,
+            enemyLazyListState = state3Enemy,
+            playerLazyListState = state3Player
+        )
+        Column(modifier = Modifier
+            .weight(0.22f)
+            .fillMaxHeight(), verticalArrangement = Arrangement.Center) {
+            Text(
+                text = when {
+                    getSelectedCard() != null -> {
+                        "DISCARD CARD"
+                    }
+                    getSelectedCaravan() in (0..2) -> {
+                        "DROP CARAVAN #${getSelectedCaravan() + 1}"
+                    }
+                    else -> ""
+                },
+                textAlign = TextAlign.Center,
+                color = Color(activity.getColor(R.color.colorAccent)),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable {
+                        if (!game.isPlayerTurn) return@clickable
+                        if (getSelectedCard() != null) {
+                            game.playerDeck.hand.remove(getSelectedCard())
+                            resetSelected()
+                            game.afterPlayerMove { updateCaravans() }
+                        } else if (getSelectedCaravan() in (0..2)) {
+                            game.playerCaravans[getSelectedCaravan()].dropCaravan()
+                            updateCaravans()
+                            resetSelected()
+                            game.afterPlayerMove { updateCaravans() }
+                        }
+                    }
+            )
         }
     }
 }

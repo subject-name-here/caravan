@@ -48,23 +48,26 @@ class Game(
         enemyDeck.initHand()
     }
 
-    fun afterPlayerMove(callback: () -> Unit) = CoroutineScope(Dispatchers.Default).launch {
-        delay(1000L)
+    fun afterPlayerMove(updateView: () -> Unit) = CoroutineScope(Dispatchers.Default).launch {
+        delay(500L)
         if (playerDeck.hand.size < 5 && playerDeck.deckSize > 0) {
             playerDeck.addToHand()
         }
+        updateView()
+        delay(500L)
         isPlayerTurn = false
         if (checkOnGameOver()) {
+            updateView()
             return@launch
         }
 
         enemyMove()
-        delay(1000L)
+        delay(500L)
+        updateView()
+        delay(500L)
         isPlayerTurn = true
-        if (checkOnGameOver()) {
-            return@launch
-        }
-        callback()
+        checkOnGameOver()
+        updateView()
     }
 
     private suspend fun enemyMove() {
