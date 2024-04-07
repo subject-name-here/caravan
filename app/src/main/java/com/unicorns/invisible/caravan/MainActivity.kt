@@ -9,10 +9,12 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -31,10 +33,6 @@ import com.unicorns.invisible.caravan.model.primitives.Deck
 import com.unicorns.invisible.caravan.save.Save
 import com.unicorns.invisible.caravan.save.loadSave
 import com.unicorns.invisible.caravan.save.save
-import com.unicorns.invisible.caravan.toast.showToast
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 
 @Suppress("MoveLambdaOutsideParentheses")
@@ -52,6 +50,27 @@ class MainActivity : AppCompatActivity() {
             var showGameMedium by rememberSaveable { mutableStateOf(false) }
             var selectedDeck by rememberSaveable { mutableStateOf(save?.selectedDeck ?: CardBack.STANDARD) }
 
+            var showAlertDialog by remember { mutableStateOf(false) }
+            var alertDialogHeader by remember { mutableStateOf("") }
+            var alertDialogMessage by remember { mutableStateOf("") }
+            fun showAlertDialog(header: String, message: String) {
+                showAlertDialog = true
+                alertDialogHeader = header
+                alertDialogMessage = message
+            }
+            fun hideAlertDialog() {
+                showAlertDialog = false
+            }
+
+            if (showAlertDialog) {
+                AlertDialog(
+                    onDismissRequest = { hideAlertDialog() },
+                    confirmButton = { Text(text = "OK", modifier = Modifier.clickable { hideAlertDialog() }) },
+                    title = { Text(text = alertDialogHeader) },
+                    text = { Text(text = alertDialogMessage) },
+                )
+            }
+
             when {
                 deckSelection -> {
                     DeckSelection(
@@ -65,12 +84,12 @@ class MainActivity : AppCompatActivity() {
                     ShowAbout(activity = this, { showAbout = false })
                 }
                 showGameEasy -> {
-                    StartGame(selectedDeck = selectedDeck, enemyCardBack = CardBack.ULTRA_LUXE, enemy = EnemyEasy) {
+                    StartGame(selectedDeck = selectedDeck, enemyCardBack = CardBack.ULTRA_LUXE, enemy = EnemyEasy, ::showAlertDialog) {
                         showGameEasy = false
                     }
                 }
                 showGameMedium -> {
-                    StartGame(selectedDeck = selectedDeck, enemyCardBack = CardBack.GOMORRAH, enemy = EnemyMedium) {
+                    StartGame(selectedDeck = selectedDeck, enemyCardBack = CardBack.GOMORRAH, enemy = EnemyMedium, ::showAlertDialog) {
                         showGameMedium = false
                     }
                 }
@@ -88,31 +107,28 @@ class MainActivity : AppCompatActivity() {
     }
 
     @Composable
-    fun StartGame(selectedDeck: CardBack, enemyCardBack: CardBack, enemy: Enemy, goBack: () -> Unit) {
+    fun StartGame(
+        selectedDeck: CardBack,
+        enemyCardBack: CardBack,
+        enemy: Enemy,
+        showAlertDialog: (String, String) -> Unit,
+        goBack: () -> Unit,
+    ) {
         val game by rememberSaveable(stateSaver = GameSaver) {
             mutableStateOf(Game(
                 Deck(selectedDeck),
                 Deck(enemyCardBack),
                 enemy
             ).also {
-                // TODO: win/lose message
                 it.onWin = {
-                    MainScope().launch {
-                        delay(2000L)
-                        save?.let { save ->
-                            save.availableDecks[enemyCardBack] = true
-                            save(this@MainActivity, save)
-                        }
-                        showToast(this@MainActivity, "You win!")
-                        goBack()
+                    save?.let { save ->
+                        save.availableDecks[enemyCardBack] = true
+                        save(this@MainActivity, save)
                     }
+                    showAlertDialog("Result", "You win!")
                 }
                 it.onLose = {
-                    MainScope().launch {
-                        delay(2000L)
-                        showToast(this@MainActivity, "You lose!")
-                        goBack()
-                    }
+                    showAlertDialog("Result", "You lose!")
                 }
                 it.startGame()
             })
@@ -156,15 +172,6 @@ class MainActivity : AppCompatActivity() {
                 },
                 style = TextStyle(color = Color(getColor(R.color.colorPrimaryDark)), fontSize = 20.sp)
             )
-            // TODO
-//            Spacer(modifier = Modifier.height(16.dp))
-//            Text(
-//                text = "PvAI",
-//                modifier = Modifier.clickable {
-//
-//                },
-//                style = TextStyle(color = Color(getColor(R.color.colorPrimaryDark)), fontSize = 20.sp)
-//            )
             Spacer(modifier = Modifier.height(16.dp))
             Text(
                 text = "Select Deck",

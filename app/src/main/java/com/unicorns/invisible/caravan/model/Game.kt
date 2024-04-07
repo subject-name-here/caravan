@@ -50,7 +50,7 @@ class Game(
 
     fun afterPlayerMove(updateView: () -> Unit) = CoroutineScope(Dispatchers.Default).launch {
         delay(500L)
-        if (playerDeck.hand.size < 5 && playerDeck.deckSize > 0) {
+        if (playerDeck.hand.size < 5) {
             playerDeck.addToHand()
         }
         updateView()
@@ -72,7 +72,7 @@ class Game(
 
     private suspend fun enemyMove() {
         enemy.makeMove(this)
-        if (enemyDeck.hand.size < 5 && enemyDeck.deckSize > 0) {
+        if (enemyDeck.hand.size < 5) {
             enemyDeck.addToHand()
         }
     }

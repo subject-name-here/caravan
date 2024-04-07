@@ -7,4 +7,6 @@
     <color name="colorPrimaryDark">#552222</color>
     <color name="colorAccent">#DDCC66</color>
 
+    <color name="alert_dialog_background">#77000000</color>
+
 </resources>

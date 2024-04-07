@@ -36,7 +36,9 @@ class Deck(val back: CardBack) {
 
     // TODO: check if we need and can do this
     fun addToHand() {
-        hand.add(cards.removeAt(0))
+        if (cards.size > 0) {
+            hand.add(cards.removeAt(0))
+        }
     }
 
     val deckSize: Int
