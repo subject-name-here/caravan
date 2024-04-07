@@ -50,21 +50,27 @@ class Game(
     }
 
     fun afterPlayerMove(updateView: () -> Unit) = CoroutineScope(Dispatchers.Default).launch {
-        delay(500L)
+        delay(1000L)
         if (playerDeck.hand.size < 5) {
             playerDeck.addToHand()
         }
         processJacks()
+        processJoker()
         updateView()
-        delay(500L)
+        delay(1000L)
         isPlayerTurn = false
         if (checkOnGameOver()) {
             return@launch
         }
 
         enemyMove()
+        updateView()
         delay(500L)
+        if (enemyDeck.hand.size < 5) {
+            enemyDeck.addToHand()
+        }
         processJacks()
+        processJoker()
         updateView()
         delay(500L)
 
@@ -87,9 +93,6 @@ class Game(
 
     private suspend fun enemyMove() {
         enemy.makeMove(this)
-        if (enemyDeck.hand.size < 5) {
-            enemyDeck.addToHand()
-        }
     }
 
     private fun checkOnGameOver(): Boolean {
@@ -137,7 +140,28 @@ class Game(
         return false
     }
 
-    fun putJokerOntoCard(card: Card) {
+    private fun processJoker() {
+        playerCaravans.forEach { caravan ->
+            val jokersOwners = caravan.cards.filter {
+                it.hasActiveJoker
+            }
+            jokersOwners.forEach {
+                putJokerOntoCard(it.card)
+                it.hasActiveJoker = false
+            }
+        }
+        enemyCaravans.forEach { caravan ->
+            val jokersOwners = caravan.cards.filter {
+                it.hasActiveJoker
+            }
+            jokersOwners.forEach {
+                putJokerOntoCard(it.card)
+                it.hasActiveJoker = false
+            }
+        }
+    }
+
+    private fun putJokerOntoCard(card: Card) {
         if (card.rank == Rank.ACE) {
             playerCaravans.forEach { caravan ->
                 caravan.cards.filter { it.card.suit == card.suit && it.card != card }.forEach { caravan.cards.remove(it) }

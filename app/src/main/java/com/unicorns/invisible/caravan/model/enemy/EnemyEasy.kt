@@ -30,7 +30,7 @@ data object EnemyEasy : Enemy() {
             if (card.rank == Rank.JACK) {
                 val caravan = game.playerCaravans.filter { it.getValue() in (1..26) }.randomOrNull()
                 if (caravan != null) {
-                    caravan.cards.remove(caravan.cards.maxBy { it.getValue() })
+                    caravan.cards.maxBy { it.getValue() }.modifiers.add(card)
                     deck.hand.remove(card)
                     return
                 }

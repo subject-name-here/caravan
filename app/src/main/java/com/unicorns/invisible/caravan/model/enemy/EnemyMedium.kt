@@ -15,7 +15,7 @@ data object EnemyMedium : Enemy() {
             if (card.rank == Rank.JACK) {
                 val caravan = game.playerCaravans.filter { it.getValue() in (1..26) }.maxByOrNull { it.getValue() }
                 if (caravan != null) {
-                    caravan.cards.remove(caravan.cards.maxBy { it.getValue() })
+                    caravan.cards.maxBy { it.getValue() }.modifiers.add(card)
                     deck.hand.remove(card)
                     return
                 }
@@ -23,7 +23,7 @@ data object EnemyMedium : Enemy() {
                 if (overWeightCaravans.isNotEmpty()) {
                     val enemyCaravan = overWeightCaravans.random()
                     val cardToDelete = enemyCaravan.cards.maxBy { it.getValue() }
-                    enemyCaravan.cards.remove(cardToDelete)
+                    cardToDelete.modifiers.add(card)
                     deck.hand.remove(card)
                     return
                 }

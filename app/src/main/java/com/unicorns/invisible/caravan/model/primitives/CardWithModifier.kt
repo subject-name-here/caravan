@@ -17,6 +17,8 @@ class CardWithModifier(
 
     fun hasJacks() = modifiers.any { it.rank == Rank.JACK }
 
+    var hasActiveJoker: Boolean = false
+
     fun getValue(): Int {
         return if (card.isFace()) {
             0
