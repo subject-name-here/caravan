@@ -58,12 +58,20 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
     var caravansKey by remember { mutableStateOf(true) }
 
     fun onCardClicked(index: Int) {
+        if (game.isOver()) return
         selectedCard = if (game.playerDeck.hand[index] == selectedCard) {
             null
         } else {
             game.playerDeck.hand[index]
         }
     }
+
+    val state1Enemy = rememberLazyListState()
+    val state1Player = rememberLazyListState()
+    val state2Enemy = rememberLazyListState()
+    val state2Player = rememberLazyListState()
+    val state3Enemy = rememberLazyListState()
+    val state3Player = rememberLazyListState()
 
     BoxWithConstraints(
         modifier = Modifier
@@ -130,7 +138,13 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
                             selectedCaravan = -1
                             selectedCard = null
                         },
-                        isMaxHeight = true
+                        isMaxHeight = true,
+                        state1Enemy,
+                        state1Player,
+                        state2Enemy,
+                        state2Player,
+                        state3Enemy,
+                        state3Player,
                     )
                 }
             }
@@ -167,7 +181,14 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
                         {
                             selectedCaravan = -1
                             selectedCard = null
-                        }
+                        },
+                        isMaxHeight = false,
+                        state1Enemy,
+                        state1Player,
+                        state2Enemy,
+                        state2Player,
+                        state3Enemy,
+                        state3Player,
                     )
                 }
                 Row(verticalAlignment = Alignment.Bottom, modifier = Modifier
@@ -394,14 +415,14 @@ fun Caravans(
     setSelectedCaravan: (Int) -> Unit,
     updateCaravans: () -> Unit,
     resetSelected: () -> Unit,
-    isMaxHeight: Boolean = false
+    isMaxHeight: Boolean = false,
+    state1Enemy: LazyListState,
+    state1Player: LazyListState,
+    state2Enemy: LazyListState,
+    state2Player: LazyListState,
+    state3Enemy: LazyListState,
+    state3Player: LazyListState,
 ) {
-    val state1Enemy = rememberLazyListState()
-    val state1Player = rememberLazyListState()
-    val state2Enemy = rememberLazyListState()
-    val state2Player = rememberLazyListState()
-    val state3Enemy = rememberLazyListState()
-    val state3Player = rememberLazyListState()
 
     Row(
         modifier = Modifier
@@ -428,7 +449,7 @@ fun Caravans(
                     }
                     Rank.JACK.value -> {
                         if (position in caravan.cards.indices) {
-                            caravan.cards.removeAt(position)
+                            caravan.cards[position].modifiers.add(card)
                             onCaravanCardInserted(card)
                         }
                     }
@@ -497,6 +518,7 @@ fun Caravans(
             .fillMaxHeight(), verticalArrangement = Arrangement.Center) {
             Text(
                 text = when {
+                    game.isOver() -> ""
                     getSelectedCard() != null -> {
                         "DISCARD CARD"
                     }

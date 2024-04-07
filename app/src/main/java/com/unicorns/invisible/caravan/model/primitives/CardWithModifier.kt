@@ -15,6 +15,8 @@ class CardWithModifier(
     val hasQueen: Boolean
         get() = topQueen != null
 
+    fun hasJacks() = modifiers.any { it.rank == Rank.JACK }
+
     fun getValue(): Int {
         return if (card.isFace()) {
             0

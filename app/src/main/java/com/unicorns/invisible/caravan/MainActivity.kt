@@ -1,6 +1,7 @@
 package com.unicorns.invisible.caravan
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.clickable
@@ -122,6 +123,7 @@ class MainActivity : AppCompatActivity() {
             ).also { it.startGame() })
         }
         game.also {
+            Log.i("dfg", "game")
             it.onWin = {
                 save?.let { save ->
                     save.availableDecks[enemyCardBack] = true

@@ -40,6 +40,7 @@ class Game(
                 1 -> onWin()
             }
         }
+    fun isOver() = isGameOver != 0
 
     fun startGame() {
         playerDeck.shuffle()
@@ -53,6 +54,7 @@ class Game(
         if (playerDeck.hand.size < 5) {
             playerDeck.addToHand()
         }
+        processJacks()
         updateView()
         delay(500L)
         isPlayerTurn = false
@@ -62,12 +64,24 @@ class Game(
 
         enemyMove()
         delay(500L)
+        processJacks()
         updateView()
         delay(500L)
 
         isPlayerTurn = true
-        if (checkOnGameOver()) {
-            return@launch
+        checkOnGameOver()
+    }
+
+    private fun processJacks() {
+        playerCaravans.forEach { caravan ->
+            caravan.cards.removeAll {
+                it.hasJacks()
+            }
+        }
+        enemyCaravans.forEach { caravan ->
+            caravan.cards.removeAll {
+                it.hasJacks()
+            }
         }
     }
 
