@@ -1,6 +1,7 @@
 package com.unicorns.invisible.caravan.model.primitives
 
 import kotlinx.serialization.Serializable
+import kotlin.math.pow
 
 
 @Serializable
@@ -23,7 +24,7 @@ class CardWithModifier(
         return if (card.isFace()) {
             0
         } else {
-            card.rank.value * (numOfKings + 1)
+            card.rank.value * (2.0.pow(numOfKings)).toInt()
         }
     }
 

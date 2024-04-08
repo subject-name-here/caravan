@@ -68,10 +68,23 @@ fun ShowAbout(activity: MainActivity, goBack: () -> Unit) {
             }
         }
         Spacer(modifier = Modifier.height(16.dp))
-        Text(
-            text = "If you want some features or have encountered a bug, please, let me know.",
-            style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 20.sp, textAlign = TextAlign.Center)
-        )
+
+        val annotatedString2 = buildAnnotatedString {
+            append("The Caravan rules and tutorial are heavily based on ")
+            pushStringAnnotation(tag = "reddit", annotation = "https://www.reddit.com/r/cardgames/comments/97c7g2/caravan_card_game_in_reallife_detailed_rules/")
+            withStyle(style = SpanStyle(color = Color(activity.getColor(R.color.colorAccent)), textDecoration = TextDecoration.Underline)) {
+                append("this Reddit post")
+            }
+            pop()
+            append(". You can thank its creator by upvote.")
+        }
+        ClickableText(text = annotatedString2,
+            style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 20.sp, textAlign = TextAlign.Center),
+        ) { offset ->
+            annotatedString2.getStringAnnotations(tag = "reddit", start = offset, end = offset).firstOrNull()?.let {
+                uriHandler.openUri(it.item)
+            }
+        }
 
         Spacer(modifier = Modifier.height(48.dp))
         Text(
@@ -79,7 +92,7 @@ fun ShowAbout(activity: MainActivity, goBack: () -> Unit) {
             modifier = Modifier.clickable {
                 goBack()
             },
-            style = TextStyle(color = Color(activity.getColor(R.color.colorPrimaryDark)), fontSize = 16.sp)
+            style = TextStyle(color = Color(activity.getColor(R.color.colorPrimaryDark)), fontSize = 24.sp)
         )
     }
 }
