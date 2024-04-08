@@ -2,11 +2,9 @@ package com.unicorns.invisible.caravan.model.enemy
 
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.primitives.Rank
-import kotlinx.serialization.Serializable
 
 
-@Serializable
-data object EnemyMedium : Enemy() {
+data object EnemyHard : Enemy() {
     override suspend fun makeMove(game: Game) {
         val deck = game.enemyDeck
         val overWeightCaravans = game.enemyCaravans.filter { it.getValue() > 26 }

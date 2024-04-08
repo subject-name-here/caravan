@@ -42,37 +42,54 @@ class Game(
         }
     fun isOver() = isGameOver != 0
 
+    fun isInitStage() = playerDeck.hand.size > 5 || enemyDeck.hand.size > 5
+
     fun startGame() {
-        playerDeck.shuffle()
-        enemyDeck.shuffle()
+        while (true) {
+            playerDeck.shuffle()
+            val hand = playerDeck.getInitHand()
+            if (hand.count { it.isFace() } <= 5) {
+                break
+            }
+        }
+        while (true) {
+            enemyDeck.shuffle()
+            val hand = enemyDeck.getInitHand()
+            if (hand.count { it.isFace() } <= 5) {
+                break
+            }
+        }
+
         playerDeck.initHand()
         enemyDeck.initHand()
     }
 
     fun afterPlayerMove(updateView: () -> Unit) = CoroutineScope(Dispatchers.Default).launch {
-        delay(1000L)
+        delay(700L)
         if (playerDeck.hand.size < 5) {
             playerDeck.addToHand()
         }
         processJacks()
         processJoker()
         updateView()
-        delay(1000L)
+        delay(700L)
+
         isPlayerTurn = false
         if (checkOnGameOver()) {
             return@launch
         }
 
-        enemyMove()
+        enemy.makeMove(this@Game)
         updateView()
-        delay(500L)
+
+        delay(700L)
         if (enemyDeck.hand.size < 5) {
             enemyDeck.addToHand()
         }
         processJacks()
         processJoker()
         updateView()
-        delay(500L)
+        delay(700L)
 
         isPlayerTurn = true
         checkOnGameOver()
@@ -89,10 +106,6 @@ class Game(
                 it.hasJacks()
             }
         }
-    }
-
-    private suspend fun enemyMove() {
-        enemy.makeMove(this)
     }
 
     private fun checkOnGameOver(): Boolean {

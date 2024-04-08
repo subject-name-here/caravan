@@ -28,13 +28,13 @@ class Deck(val back: CardBack) {
         cards.shuffle()
     }
 
+    fun getInitHand() = cards.take(8)
     fun initHand() {
         repeat(8) {
             addToHand()
         }
     }
 
-    // TODO: check if we need and can do this
     fun addToHand() {
         if (cards.size > 0) {
             hand.add(cards.removeAt(0))

@@ -31,14 +31,12 @@ fun DeckSelection(
     goBack: () -> Unit,
 ) {
     fun getModifier(cardBack: CardBack): Modifier {
-        activity.save?.let {
-            if (it.availableDecks[cardBack] == true) {
+        activity.save?.let { save ->
+            if (save.availableDecks[cardBack] == true) {
                 return Modifier.clickable {
                     setSelectedBack(cardBack)
-                    activity.save?.let { save ->
-                        save.selectedDeck = cardBack
-                        save(activity, it)
-                    }
+                    save.selectedDeck = cardBack
+                    save(activity, save)
                 }.border(
                     width = (if (getSelectedBack() == cardBack) 4 else 0).dp,
                     color = Color(activity.getColor(R.color.colorAccent))
@@ -104,7 +102,7 @@ fun DeckSelection(
             modifier = Modifier.clickable {
                 goBack()
             },
-            style = TextStyle(color = Color(activity.getColor(R.color.colorPrimaryDark)), fontSize = 20.sp)
+            style = TextStyle(color = Color(activity.getColor(R.color.colorPrimaryDark)), fontSize = 24.sp)
         )
     }
 }

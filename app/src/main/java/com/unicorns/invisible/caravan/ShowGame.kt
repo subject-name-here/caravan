@@ -86,15 +86,15 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier.fillMaxWidth(0.5f)
                 ) {
-                    key(enemyHandKey) {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .fillMaxHeight(0.4f),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.Center
-                        ) {
-                            val handSize = game.enemyDeck.hand.size
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .fillMaxHeight(0.4f),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        val handSize = game.enemyDeck.hand.size
+                        key(enemyHandKey) {
                             Column(Modifier.fillMaxWidth(0.8f), horizontalAlignment = Alignment.CenterHorizontally) {
                                 RowOfEnemyCards(minOf(4, handSize), game.enemyDeck.back)
                                 RowOfEnemyCards(handSize - 4, game.enemyDeck.back)
@@ -126,7 +126,6 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
                         )
                     }
                 }
-
                 key(caravansKey) {
                     Caravans(
                         game,
@@ -156,15 +155,15 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.fillMaxSize()
             ) {
-                key(enemyHandKey) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .fillMaxHeight(0.15f),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-                        val handSize = game.enemyDeck.hand.size
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .fillMaxHeight(0.15f),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    val handSize = game.enemyDeck.hand.size
+                    key(enemyHandKey) {
                         Column(Modifier.fillMaxWidth(0.8f), horizontalAlignment = Alignment.CenterHorizontally) {
                             RowOfEnemyCards(minOf(4, handSize), game.enemyDeck.back)
                             RowOfEnemyCards(handSize - 4, game.enemyDeck.back)
@@ -258,7 +257,7 @@ fun ColumnScope.RowOfEnemyCards(numOfCards: Int, back: CardBack) {
         repeat(numOfCards.coerceAtLeast(0)) {
             AsyncImage(
                 model = "file:///android_asset/caravan_cards_back/${back.getCardBackName()}",
-                contentDescription = ""
+                contentDescription = "",
             )
         }
     }
@@ -268,6 +267,7 @@ fun ColumnScope.RowOfEnemyCards(numOfCards: Int, back: CardBack) {
 fun CaravanOnField(
     activity: MainActivity,
     caravan: Caravan,
+    isInitStage: Boolean,
     isEnemy: Boolean,
     state: LazyListState,
     selectCaravan: () -> Unit = {},
@@ -374,7 +374,7 @@ fun CaravanOnField(
                     }
                 }
             }
-            if (!caravan.isFull()) {
+            if (!caravan.isFull() && (!isInitStage || caravan.cards.size == 0)) {
                 item {
                     Box(modifier = Modifier
                         .fillParentMaxWidth()
@@ -442,7 +442,7 @@ fun Caravans(
             }
 
             val card = getSelectedCard()
-            if (card != null && game.isPlayerTurn) {
+            if (card != null && game.isPlayerTurn && !game.isOver() && (!game.isInitStage() || !card.isFace())) {
                 when (card.rank.value) {
                     in 1..10 -> {
                         if (position == caravan.cards.size && !isEnemy) {
@@ -485,11 +485,11 @@ fun Caravans(
             Column(modifier = Modifier
                 .weight(0.25f)
                 .fillMaxHeight()) {
-                CaravanOnField(activity, game.enemyCaravans[num], true, enemyLazyListState) {
+                CaravanOnField(activity, game.enemyCaravans[num], isInitStage = game.isInitStage(), isEnemy = true, enemyLazyListState) {
                     addCardToEnemyCaravan(num, it)
                 }
                 HorizontalDivider()
-                CaravanOnField(activity, game.playerCaravans[num], false, playerLazyListState, {
+                CaravanOnField(activity, game.playerCaravans[num], isInitStage = game.isInitStage(), false, playerLazyListState, {
                     setSelectedCaravan(if (getSelectedCaravan() == num || game.playerCaravans[num].getValue() == 0) {
                         -1
                     } else {
@@ -536,7 +536,7 @@ fun Caravans(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable {
-                        if (!game.isPlayerTurn) return@clickable
+                        if (game.isOver() || !game.isPlayerTurn || game.isInitStage()) return@clickable
                         if (getSelectedCard() != null) {
                             game.playerDeck.hand.remove(getSelectedCard())
                             resetSelected()

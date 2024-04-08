@@ -10,6 +10,14 @@ data object EnemyEasy : Enemy() {
     override suspend fun makeMove(game: Game) {
         val deck = game.enemyDeck
 
+        if (game.isInitStage()) {
+            val card = deck.hand.filter { !it.isFace() }.random()
+            val caravan = game.enemyCaravans.shuffled().filter { it.cards.isEmpty() }.random()
+            caravan.putCardOnTop(card)
+            deck.hand.remove(card)
+            return
+        }
+
         val overWeightCaravans = game.enemyCaravans.filter { it.getValue() > 26 }
         if (overWeightCaravans.isNotEmpty()) {
             overWeightCaravans.random().dropCaravan()
