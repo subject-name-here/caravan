@@ -48,6 +48,7 @@ class MainActivity : AppCompatActivity() {
             var showAbout by rememberSaveable { mutableStateOf(false) }
             var showGameEasy by rememberSaveable { mutableStateOf(false) }
             var showGameMedium by rememberSaveable { mutableStateOf(false) }
+            var showTutorial by rememberSaveable { mutableStateOf(false) }
             var selectedDeck by rememberSaveable { mutableStateOf(save?.selectedDeck ?: CardBack.STANDARD) }
 
             var showAlertDialog by remember { mutableStateOf(false) }
@@ -72,6 +73,9 @@ class MainActivity : AppCompatActivity() {
             }
 
             when {
+                showTutorial -> {
+                    Tutorial(activity = this) { showTutorial = false }
+                }
                 deckSelection -> {
                     DeckSelection(
                         this,
@@ -99,7 +103,7 @@ class MainActivity : AppCompatActivity() {
                         { showAbout = true },
                         { showGameEasy = true },
                         { showGameMedium = true },
-                        {}
+                        { showTutorial = true }
                     )
                 }
             }
@@ -133,7 +137,7 @@ class MainActivity : AppCompatActivity() {
                 showAlertDialog("Result", "You lose!")
             }
         }
-        ShowGame(activity = this, game, goBack)
+        ShowGame(activity = this, game) { goBack() }
     }
 
     @Composable

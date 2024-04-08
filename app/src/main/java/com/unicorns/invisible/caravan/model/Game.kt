@@ -44,18 +44,18 @@ class Game(
 
     fun isInitStage() = playerDeck.hand.size > 5 || enemyDeck.hand.size > 5
 
-    fun startGame() {
+    fun startGame(numOfFaces: Int = 5) {
         while (true) {
             playerDeck.shuffle()
             val hand = playerDeck.getInitHand()
-            if (hand.count { it.isFace() } <= 5) {
+            if (hand.count { it.isFace() } <= numOfFaces) {
                 break
             }
         }
         while (true) {
             enemyDeck.shuffle()
             val hand = enemyDeck.getInitHand()
-            if (hand.count { it.isFace() } <= 5) {
+            if (hand.count { it.isFace() } <= numOfFaces) {
                 break
             }
         }
