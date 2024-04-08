@@ -12,16 +12,16 @@ data object EnemyMedium : Enemy() {
         val overWeightCaravans = game.enemyCaravans.filter { it.getValue() > 26 }
 
         if (game.isInitStage()) {
-            val card = deck.hand.filter { !it.isFace() }.random()
+            val card = deck.hand.filter { !it.isFace() }.minBy { it.rank.value }
             val caravan = game.enemyCaravans.shuffled().filter { it.cards.isEmpty() }.random()
             caravan.putCardOnTop(card)
             deck.hand.remove(card)
             return
         }
 
-        deck.hand.shuffled().forEach { card ->
+        deck.hand.sortedBy { -it.rank.value }.forEach { card ->
             if (card.rank == Rank.JACK) {
-                val caravan = game.playerCaravans.filter { it.getValue() in (1..26) }.maxByOrNull { it.getValue() }
+                val caravan = game.playerCaravans.filter { it.getValue() in (16..26) }.maxByOrNull { it.getValue() }
                 if (caravan != null) {
                     caravan.cards.maxBy { it.getValue() }.modifiers.add(card)
                     deck.hand.remove(card)
@@ -59,7 +59,7 @@ data object EnemyMedium : Enemy() {
             }
 
             if (!card.rank.isFace()) {
-                game.enemyCaravans.shuffled().forEach { caravan ->
+                game.enemyCaravans.sortedBy { -it.getValue() }.forEach { caravan ->
                     if (caravan.getValue() + card.rank.value <= 26) {
                         if (caravan.putCardOnTop(card)) {
                             deck.hand.remove(card)
