@@ -6,6 +6,9 @@ import kotlinx.serialization.Serializable
 @Serializable
 class Caravan {
     val cards = mutableListOf<CardWithModifier>()
+    val size: Int
+        get() = cards.size
+    fun isFull() = size >= 10
 
     fun dropCaravan() {
         cards.clear()
@@ -15,11 +18,9 @@ class Caravan {
         return cards.sumOf { it.getValue() }
     }
 
-    fun isFull() = cards.size >= 10
-
     fun putCardOnTop(card: Card): Boolean {
         if (isFull() || card.isFace()) return false
-        if (cards.isEmpty()) {
+        if (size == 0) {
             cards.add(CardWithModifier(card))
             return true
         }
@@ -45,13 +46,13 @@ class Caravan {
                 return true
             }
             last.card.rank > preLast.card.rank -> {
-                if (card.rank > last.card.rank || last.hasQueen && card.rank < last.card.rank) {
+                if (card.rank > last.card.rank || last.isQueenReversingSequence() && card.rank < last.card.rank) {
                     cards.add(CardWithModifier(card))
                     return true
                 }
             }
             last.card.rank < preLast.card.rank -> {
-                if (card.rank < last.card.rank || last.hasQueen && card.rank > last.card.rank) {
+                if (card.rank < last.card.rank || last.isQueenReversingSequence() && card.rank > last.card.rank) {
                     cards.add(CardWithModifier(card))
                     return true
                 }

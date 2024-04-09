@@ -51,13 +51,13 @@ fun ShowAbout(activity: MainActivity, goBack: () -> Unit) {
         Spacer(modifier = Modifier.height(16.dp))
 
         val annotatedString = buildAnnotatedString {
-            append("If you want, contact me at ")
+            append("If you want to request some features or report bugs, contact me at ")
             pushStringAnnotation(tag = "e-mail", annotation = "mailto:unicornsinvisible@gmail.com")
             withStyle(style = SpanStyle(color = Color(activity.getColor(R.color.colorAccent)), textDecoration = TextDecoration.Underline)) {
                 append("unicornsinvisible@gmail.com")
             }
             pop()
-            append(". Alternatively, you can leave a review in Play Store.")
+            append(". You can also leave a review in Play Store.")
         }
         val uriHandler = LocalUriHandler.current
         ClickableText(text = annotatedString,

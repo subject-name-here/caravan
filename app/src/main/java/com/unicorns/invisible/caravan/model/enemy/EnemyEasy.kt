@@ -36,7 +36,7 @@ data object EnemyEasy : Enemy() {
                 }
             }
             if (card.rank == Rank.JACK) {
-                val caravan = game.playerCaravans.filter { it.getValue() in (1..26) }.randomOrNull()
+                val caravan = game.playerCaravans.filter { it.getValue() in (13..26) }.randomOrNull()
                 if (caravan != null) {
                     caravan.cards.maxBy { it.getValue() }.modifiers.add(card)
                     deck.hand.remove(card)
@@ -44,7 +44,7 @@ data object EnemyEasy : Enemy() {
                 }
             }
             if (card.rank == Rank.KING) {
-                val caravan = game.playerCaravans.filter { it.getValue() in (21..30) }.randomOrNull()
+                val caravan = game.playerCaravans.filter { it.getValue() >= 21 }.randomOrNull()
                 if (caravan != null) {
                     val cardsToKing = caravan.cards.filter { it.card.rank.value > 5 }.maxByOrNull { it.card.rank.value }
                     if (cardsToKing != null) {

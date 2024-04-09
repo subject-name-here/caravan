@@ -5,16 +5,12 @@ import kotlin.math.pow
 
 
 @Serializable
-class CardWithModifier(
-    val card: Card,
+class CardWithModifier(val card: Card) {
     val modifiers: MutableList<Card> = mutableListOf()
-) {
+
     private val numOfKings: Int
         get() = modifiers.count { it.rank == Rank.KING }
-    private val topQueen: Card?
-        get() = modifiers.findLast { it.rank == Rank.QUEEN }
-    val hasQueen: Boolean
-        get() = topQueen != null
+    fun isQueenReversingSequence() = modifiers.count { it.rank == Rank.QUEEN } % 2 == 1
 
     fun hasJacks() = modifiers.any { it.rank == Rank.JACK }
 
@@ -29,6 +25,6 @@ class CardWithModifier(
     }
 
     fun getTopSuit(): Suit {
-        return topQueen?.suit ?: card.suit
+        return modifiers.findLast { it.rank == Rank.QUEEN }?.suit ?: card.suit
     }
 }

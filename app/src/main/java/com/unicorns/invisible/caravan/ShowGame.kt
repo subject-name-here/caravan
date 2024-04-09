@@ -59,7 +59,12 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
     var enemyHandKey by remember { mutableStateOf(true) }
 
     fun onCardClicked(index: Int) {
-        if (game.isOver()) return
+        if (game.isOver() || !game.isPlayerTurn) {
+            if (selectedCard != null) {
+                selectedCard = null
+            }
+            return
+        }
         selectedCard = if (game.playerDeck.hand[index] == selectedCard) {
             null
         } else {
@@ -99,7 +104,7 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
                                 RowOfEnemyCards(minOf(4, handSize), game.enemyDeck.back)
                                 RowOfEnemyCards(handSize - 4, game.enemyDeck.back)
                             }
-                            Deck(game.enemyDeck, activity)
+                            ShowDeck(game.enemyDeck, activity)
                         }
                     }
                     Row(verticalAlignment = Alignment.Bottom, modifier = Modifier
@@ -108,11 +113,14 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
                     ) {
                         Column(Modifier.fillMaxWidth(0.8f)) {
                             RowOfCards(cards = game.playerDeck.hand.subList(0, minOf(4, game.playerDeck.hand.size)), 0, selectedCard, selectedCardColor, ::onCardClicked)
-                            if (game.playerDeck.hand.size >= 5) {
-                                RowOfCards(cards = game.playerDeck.hand.subList(4, game.playerDeck.hand.size), 4, selectedCard, selectedCardColor, ::onCardClicked)
+                            val cards = if (game.playerDeck.hand.size >= 5) {
+                                game.playerDeck.hand.subList(4, game.playerDeck.hand.size)
+                            } else {
+                               emptyList()
                             }
+                            RowOfCards(cards = cards, 4, selectedCard, selectedCardColor, ::onCardClicked)
                         }
-                        Deck(game.playerDeck, activity, isToBottom = true)
+                        ShowDeck(game.playerDeck, activity, isToBottom = true)
                     }
                     Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxSize()) {
                         Text(
@@ -168,7 +176,7 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
                             RowOfEnemyCards(minOf(4, handSize), game.enemyDeck.back)
                             RowOfEnemyCards(handSize - 4, game.enemyDeck.back)
                         }
-                        Deck(game.enemyDeck, activity)
+                        ShowDeck(game.enemyDeck, activity)
                     }
                 }
                 key(caravansKey) {
@@ -177,7 +185,10 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
                         activity,
                         { selectedCard },
                         { selectedCaravan },
-                        { selectedCaravan = it },
+                        {
+                            selectedCaravan = it
+                            caravansKey = !caravansKey
+                        },
                         { caravansKey = !caravansKey },
                         { enemyHandKey = !enemyHandKey },
                         {
@@ -199,11 +210,14 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
                 ) {
                     Column(Modifier.fillMaxWidth(0.8f)) {
                         RowOfCards(cards = game.playerDeck.hand.subList(0, minOf(4, game.playerDeck.hand.size)), 0, selectedCard, selectedCardColor, ::onCardClicked)
-                        if (game.playerDeck.hand.size >= 5) {
-                            RowOfCards(cards = game.playerDeck.hand.subList(4, game.playerDeck.hand.size), 4, selectedCard, selectedCardColor, ::onCardClicked)
+                        val cards = if (game.playerDeck.hand.size >= 5) {
+                            game.playerDeck.hand.subList(4, game.playerDeck.hand.size)
+                        } else {
+                            emptyList()
                         }
+                        RowOfCards(cards = cards, 4, selectedCard, selectedCardColor, ::onCardClicked)
                     }
-                    Deck(game.playerDeck, activity, isToBottom = true)
+                    ShowDeck(game.playerDeck, activity, isToBottom = true)
                 }
                 Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxSize()) {
                     Text(
@@ -227,7 +241,9 @@ fun ColumnScope.RowOfCards(cards: List<Card>, offset: Int = 0, selectedCard: Car
         Modifier
             .weight(1f)
             .fillMaxHeight()
-            .fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+            .fillMaxWidth(),
+        horizontalArrangement = Arrangement.Center
+    ) {
         cards.forEachIndexed { index, it ->
             val modifier = if (it == selectedCard) {
                 Modifier.border(
@@ -267,6 +283,7 @@ fun ColumnScope.RowOfEnemyCards(numOfCards: Int, back: CardBack) {
 fun CaravanOnField(
     activity: MainActivity,
     caravan: Caravan,
+    getOpposingCaravanValue: () -> Int,
     isInitStage: Boolean,
     isEnemy: Boolean,
     state: LazyListState,
@@ -322,14 +339,24 @@ fun CaravanOnField(
         }
         Text(text = caravan.getValue().toString(),
             textAlign = TextAlign.Center,
-            color = if (caravan.getValue() > 26) Color.Red else Color(activity.getColor(R.color.colorAccent)),
+            color = if (caravan.getValue() > 26)
+                Color.Red
+            else if (caravan.getValue() in (21..26) && caravan.getValue() > getOpposingCaravanValue())
+                Color.Green
+            else
+                Color(activity.getColor(R.color.colorAccent)),
             modifier = Modifier
                 .fillMaxWidth()
         )
     } else {
         Text(text = caravan.getValue().toString(),
             textAlign = TextAlign.Center,
-            color = if (caravan.getValue() > 26) Color.Red else Color(activity.getColor(R.color.colorAccent)),
+            color = if (caravan.getValue() > 26)
+                Color.Red
+            else if (caravan.getValue() in (21..26) && caravan.getValue() > getOpposingCaravanValue())
+                Color.Green
+            else
+                Color(activity.getColor(R.color.colorAccent)),
             modifier = Modifier
                 .fillMaxWidth()
                 .clickable {
@@ -392,7 +419,7 @@ fun CaravanOnField(
 }
 
 @Composable
-fun Deck(deck: Deck, activity: MainActivity, isToBottom: Boolean = false) {
+fun ShowDeck(deck: Deck, activity: MainActivity, isToBottom: Boolean = false) {
     Column(
         modifier = Modifier.fillMaxHeight(),
         verticalArrangement = if (isToBottom) Arrangement.Bottom else Arrangement.Top
@@ -433,6 +460,7 @@ fun Caravans(
             .fillMaxWidth()
             .fillMaxHeight(if (isMaxHeight) 1f else 0.65f),
     ) {
+        // TODO: this should be in model!?!
         fun addCardToCaravan(caravan: Caravan, position: Int, isEnemy: Boolean = false) {
             fun onCaravanCardInserted(card: Card) {
                 game.playerDeck.hand.remove(card)
@@ -485,17 +513,27 @@ fun Caravans(
             Column(modifier = Modifier
                 .weight(0.25f)
                 .fillMaxHeight()) {
-                CaravanOnField(activity, game.enemyCaravans[num], isInitStage = game.isInitStage(), isEnemy = true, enemyLazyListState) {
+                CaravanOnField(activity, game.enemyCaravans[num], { game.playerCaravans[num].getValue() }, isInitStage = game.isInitStage(), isEnemy = true, enemyLazyListState) {
                     addCardToEnemyCaravan(num, it)
                 }
                 HorizontalDivider()
-                CaravanOnField(activity, game.playerCaravans[num], isInitStage = game.isInitStage(), false, playerLazyListState, {
-                    setSelectedCaravan(if (getSelectedCaravan() == num || game.playerCaravans[num].getValue() == 0) {
-                        -1
-                    } else {
-                        num
-                    })
-                }) {
+                CaravanOnField(
+                    activity,
+                    game.playerCaravans[num],
+                    { game.enemyCaravans[num].getValue() },
+                    isInitStage = game.isInitStage(),
+                    false,
+                    playerLazyListState,
+                    {
+                        setSelectedCaravan(
+                            if (getSelectedCaravan() == num || game.playerCaravans[num].getValue() == 0) {
+                                -1
+                            } else {
+                                num
+                            }
+                        )
+                    }
+                ) {
                     addCardToPlayerCaravan(num, it)
                 }
             }
@@ -522,7 +560,7 @@ fun Caravans(
             .fillMaxHeight(), verticalArrangement = Arrangement.Center) {
             Text(
                 text = when {
-                    game.isOver() -> ""
+                    game.isOver() || !game.isPlayerTurn || game.isInitStage() -> ""
                     getSelectedCard() != null -> {
                         "DISCARD CARD"
                     }

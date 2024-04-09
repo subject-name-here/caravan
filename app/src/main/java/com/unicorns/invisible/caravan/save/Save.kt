@@ -10,8 +10,18 @@ import kotlinx.serialization.Serializable
 @Serializable
 class Save {
     @EncodeDefault
-    val availableDecks = CardBack.entries.associateWith { false }.toMutableMap().apply { this[CardBack.STANDARD] = true }
+    val availableDecks = CardBack.entries.associateWith { false }.toMutableMap().apply {
+        this[CardBack.STANDARD] = true
+        this[CardBack.SIERRA_MADRE] = true // TODO: remove later.
+    }
 
     @EncodeDefault
     var selectedDeck: CardBack = CardBack.STANDARD
+
+    @EncodeDefault
+    var gamesStarted = 0
+    @EncodeDefault
+    var gamesFinished = 0
+    @EncodeDefault
+    var wins = 0
 }

@@ -24,12 +24,6 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.unicorns.invisible.caravan.model.CardBack
-import com.unicorns.invisible.caravan.model.Game
-import com.unicorns.invisible.caravan.model.GameSaver
-import com.unicorns.invisible.caravan.model.enemy.Enemy
-import com.unicorns.invisible.caravan.model.enemy.EnemyEasy
-import com.unicorns.invisible.caravan.model.enemy.EnemyMedium
-import com.unicorns.invisible.caravan.model.primitives.Deck
 import com.unicorns.invisible.caravan.save.Save
 import com.unicorns.invisible.caravan.save.loadSave
 import com.unicorns.invisible.caravan.save.save
@@ -41,13 +35,15 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        save = loadSave(this) ?: Save()
+        save = loadSave(this) ?: run {
+            save(this, Save())
+            loadSave(this)!!
+        }
 
         setContent {
             var deckSelection by rememberSaveable { mutableStateOf(false) }
             var showAbout by rememberSaveable { mutableStateOf(false) }
-            var showGameEasy by rememberSaveable { mutableStateOf(false) }
-            var showGameMedium by rememberSaveable { mutableStateOf(false) }
+            var showGameStats by rememberSaveable { mutableStateOf(false) }
             var showTutorial by rememberSaveable { mutableStateOf(false) }
             var selectedDeck by rememberSaveable { mutableStateOf(save?.selectedDeck ?: CardBack.STANDARD) }
 
@@ -87,22 +83,16 @@ class MainActivity : AppCompatActivity() {
                 showAbout -> {
                     ShowAbout(activity = this, { showAbout = false })
                 }
-                showGameEasy -> {
-                    StartGame(selectedDeck = selectedDeck, enemyCardBack = CardBack.ULTRA_LUXE, enemy = EnemyEasy, ::showAlertDialog) {
-                        showGameEasy = false
-                    }
-                }
-                showGameMedium -> {
-                    StartGame(selectedDeck = selectedDeck, enemyCardBack = CardBack.GOMORRAH, enemy = EnemyMedium, ::showAlertDialog) {
-                        showGameMedium = false
+                showGameStats -> {
+                    ShowPvE(activity = this, selectedDeck = { selectedDeck }, ::showAlertDialog) {
+                        showGameStats = false
                     }
                 }
                 else -> {
                     MainMenu(
                         { deckSelection = true },
                         { showAbout = true },
-                        { showGameEasy = true },
-                        { showGameMedium = true },
+                        { showGameStats = true },
                         { showTutorial = true }
                     )
                 }
@@ -111,41 +101,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     @Composable
-    fun StartGame(
-        selectedDeck: CardBack,
-        enemyCardBack: CardBack,
-        enemy: Enemy,
-        showAlertDialog: (String, String) -> Unit,
-        goBack: () -> Unit,
-    ) {
-        val game by rememberSaveable(stateSaver = GameSaver) {
-            mutableStateOf(Game(
-                Deck(selectedDeck),
-                Deck(enemyCardBack),
-                enemy
-            ).also { it.startGame() })
-        }
-        game.also {
-            it.onWin = {
-                save?.let { save ->
-                    save.availableDecks[enemyCardBack] = true
-                    save(this@MainActivity, save)
-                }
-                showAlertDialog("Result", "You win!")
-            }
-            it.onLose = {
-                showAlertDialog("Result", "You lose!")
-            }
-        }
-        ShowGame(activity = this, game) { goBack() }
-    }
-
-    @Composable
     fun MainMenu(
         showDeckSelection: () -> Unit,
         showAbout: () -> Unit,
-        showGame: () -> Unit,
-        showGameMedium: () -> Unit,
+        showPvE: () -> Unit,
         showTutorial: () -> Unit,
     ) {
         Column(
@@ -162,17 +121,9 @@ class MainActivity : AppCompatActivity() {
             )
             Spacer(modifier = Modifier.height(16.dp))
             Text(
-                text = "PvE1",
+                text = "PvE",
                 modifier = Modifier.clickable {
-                    showGame()
-                },
-                style = TextStyle(color = Color(getColor(R.color.colorPrimaryDark)), fontSize = 20.sp)
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-            Text(
-                text = "PvE2",
-                modifier = Modifier.clickable {
-                    showGameMedium()
+                    showPvE()
                 },
                 style = TextStyle(color = Color(getColor(R.color.colorPrimaryDark)), fontSize = 20.sp)
             )

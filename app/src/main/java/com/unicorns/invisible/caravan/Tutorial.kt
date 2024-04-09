@@ -48,7 +48,7 @@ fun Tutorial(activity: MainActivity, goBack: () -> Unit) {
                 Deck(CardBack.STANDARD),
                 Deck(CardBack.TOPS),
                 enemy
-            ).also { it.startGame(numOfFaces = 4) }
+            ).also { it.startGame(maxNumOfFaces = 4) }
         )
     }
     game.also {
@@ -87,7 +87,7 @@ fun Tutorial(activity: MainActivity, goBack: () -> Unit) {
                 showAlertDialog("Kyle says:", "You don't know rules? Ain't a problem. Gonna teach you while we are waiting.")
             }
             6 -> {
-                showAlertDialog("Kyle says:", "There are many rules. We are gonna play the balanced ones.\n" +
+                showAlertDialog("Kyle says:", "There are many rules. We play the balanced ones.\n" +
                         "It is not that popular here.")
             }
             7 -> {

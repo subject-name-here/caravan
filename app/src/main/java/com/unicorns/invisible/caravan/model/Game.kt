@@ -44,21 +44,15 @@ class Game(
 
     fun isInitStage() = playerDeck.hand.size > 5 || enemyDeck.hand.size > 5
 
-    fun startGame(numOfFaces: Int = 5) {
-        while (true) {
-            playerDeck.shuffle()
-            val hand = playerDeck.getInitHand()
-            if (hand.count { it.isFace() } <= numOfFaces) {
-                break
-            }
+    private fun shuffleDeck(deck: Deck, maxNumOfFaces: Int) {
+        deck.shuffle()
+        while (deck.getInitHand().count { it.isFace() } > maxNumOfFaces) {
+            deck.shuffle()
         }
-        while (true) {
-            enemyDeck.shuffle()
-            val hand = enemyDeck.getInitHand()
-            if (hand.count { it.isFace() } <= numOfFaces) {
-                break
-            }
-        }
+    }
+    fun startGame(maxNumOfFaces: Int = 5) {
+        shuffleDeck(playerDeck, maxNumOfFaces)
+        shuffleDeck(enemyDeck, maxNumOfFaces)
 
         playerDeck.initHand()
         enemyDeck.initHand()
@@ -66,11 +60,12 @@ class Game(
 
     fun afterPlayerMove(updateView: () -> Unit) = CoroutineScope(Dispatchers.Default).launch {
         delay(700L)
+        processJacks()
+        processJoker()
+
         if (playerDeck.hand.size < 5) {
             playerDeck.addToHand()
         }
-        processJacks()
-        processJoker()
         updateView()
         delay(700L)
 
@@ -83,11 +78,11 @@ class Game(
         updateView()
 
         delay(700L)
+        processJacks()
+        processJoker()
         if (enemyDeck.hand.size < 5) {
             enemyDeck.addToHand()
         }
-        processJacks()
-        processJoker()
         updateView()
         delay(700L)
 
@@ -96,12 +91,7 @@ class Game(
     }
 
     private fun processJacks() {
-        playerCaravans.forEach { caravan ->
-            caravan.cards.removeAll {
-                it.hasJacks()
-            }
-        }
-        enemyCaravans.forEach { caravan ->
+        (playerCaravans + enemyCaravans).forEach { caravan ->
             caravan.cards.removeAll {
                 it.hasJacks()
             }
@@ -154,20 +144,10 @@ class Game(
     }
 
     private fun processJoker() {
-        playerCaravans.forEach { caravan ->
-            val jokersOwners = caravan.cards.filter {
+        (playerCaravans + enemyCaravans).forEach { caravan ->
+            caravan.cards.filter {
                 it.hasActiveJoker
-            }
-            jokersOwners.forEach {
-                putJokerOntoCard(it.card)
-                it.hasActiveJoker = false
-            }
-        }
-        enemyCaravans.forEach { caravan ->
-            val jokersOwners = caravan.cards.filter {
-                it.hasActiveJoker
-            }
-            jokersOwners.forEach {
+            }.forEach {
                 putJokerOntoCard(it.card)
                 it.hasActiveJoker = false
             }
@@ -176,17 +156,11 @@ class Game(
 
     private fun putJokerOntoCard(card: Card) {
         if (card.rank == Rank.ACE) {
-            playerCaravans.forEach { caravan ->
-                caravan.cards.filter { it.card.suit == card.suit && it.card != card }.forEach { caravan.cards.remove(it) }
-            }
-            enemyCaravans.forEach { caravan ->
+            (playerCaravans + enemyCaravans).forEach { caravan ->
                 caravan.cards.filter { it.card.suit == card.suit && it.card != card }.forEach { caravan.cards.remove(it) }
             }
         } else {
-            playerCaravans.forEach { caravan ->
-                caravan.cards.filter { it.card.rank == card.rank && it.card != card }.forEach { caravan.cards.remove(it) }
-            }
-            enemyCaravans.forEach { caravan ->
+            (playerCaravans + enemyCaravans).forEach { caravan ->
                 caravan.cards.filter { it.card.rank == card.rank && it.card != card }.forEach { caravan.cards.remove(it) }
             }
         }
