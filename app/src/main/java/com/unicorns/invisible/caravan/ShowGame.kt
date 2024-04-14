@@ -341,7 +341,7 @@ fun CaravanOnField(
             textAlign = TextAlign.Center,
             color = if (caravan.getValue() > 26)
                 Color.Red
-            else if (caravan.getValue() in (21..26) && caravan.getValue() > getOpposingCaravanValue())
+            else if (caravan.getValue() in (21..26) && (getOpposingCaravanValue() !in (21..26) || caravan.getValue() > getOpposingCaravanValue()))
                 Color.Green
             else
                 Color(activity.getColor(R.color.colorAccent)),
@@ -353,7 +353,7 @@ fun CaravanOnField(
             textAlign = TextAlign.Center,
             color = if (caravan.getValue() > 26)
                 Color.Red
-            else if (caravan.getValue() in (21..26) && caravan.getValue() > getOpposingCaravanValue())
+            else if (caravan.getValue() in (21..26) && (getOpposingCaravanValue() !in (21..26) || caravan.getValue() > getOpposingCaravanValue()))
                 Color.Green
             else
                 Color(activity.getColor(R.color.colorAccent)),

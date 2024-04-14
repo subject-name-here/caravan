@@ -143,7 +143,13 @@ fun StartGame(
                 Deck(selectedDeck),
                 Deck(enemyCardBack),
                 enemy
-            ).also { it.startGame() }
+            ).also {
+                activity.save?.let { save ->
+                    save.gamesStarted++
+                    save(activity, save)
+                }
+                it.startGame()
+            }
         )
     }
     game.also {
@@ -163,10 +169,6 @@ fun StartGame(
             }
             showAlertDialog("Result", "You lose!")
         }
-    }
-    activity.save?.let {
-        it.gamesStarted++
-        save(activity, it)
     }
     ShowGame(activity, game) { goBack() }
 }
