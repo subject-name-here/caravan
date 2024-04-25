@@ -33,6 +33,9 @@ import com.unicorns.invisible.caravan.save.save
 class MainActivity : AppCompatActivity() {
     var save: Save? = null
 
+    // TODO: scrollbars, like, everywhere!!
+    // TODO: russian!
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         save = loadSave(this) ?: run {
@@ -45,6 +48,7 @@ class MainActivity : AppCompatActivity() {
             var showAbout by rememberSaveable { mutableStateOf(false) }
             var showGameStats by rememberSaveable { mutableStateOf(false) }
             var showTutorial by rememberSaveable { mutableStateOf(false) }
+            var showRules by rememberSaveable { mutableStateOf(false) }
             var selectedDeck by rememberSaveable { mutableStateOf(save?.selectedDeck ?: CardBack.STANDARD) }
 
             var showAlertDialog by remember { mutableStateOf(false) }
@@ -69,6 +73,9 @@ class MainActivity : AppCompatActivity() {
             }
 
             when {
+                showRules -> {
+                    ShowRules(activity = this) { showRules = false }
+                }
                 showTutorial -> {
                     Tutorial(activity = this) { showTutorial = false }
                 }
@@ -93,7 +100,8 @@ class MainActivity : AppCompatActivity() {
                         { deckSelection = true },
                         { showAbout = true },
                         { showGameStats = true },
-                        { showTutorial = true }
+                        { showTutorial = true },
+                        { showRules = true }
                     )
                 }
             }
@@ -106,13 +114,21 @@ class MainActivity : AppCompatActivity() {
         showAbout: () -> Unit,
         showPvE: () -> Unit,
         showTutorial: () -> Unit,
+        showRules: () -> Unit,
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
             modifier = Modifier.fillMaxSize()
         ) {
-            // TODO: just rules!!!
+            Text(
+                text = "Rules",
+                modifier = Modifier.clickable {
+                    showRules()
+                },
+                style = TextStyle(color = Color(getColor(R.color.colorPrimaryDark)), fontSize = 20.sp)
+            )
+            Spacer(modifier = Modifier.height(32.dp))
             Text(
                 text = "Tutorial",
                 modifier = Modifier.clickable {
