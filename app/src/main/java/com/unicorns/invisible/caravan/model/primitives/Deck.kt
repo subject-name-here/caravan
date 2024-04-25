@@ -41,6 +41,10 @@ class Deck(val back: CardBack) {
         }
     }
 
+    fun removeFromDeck(rank: Rank, suit: Suit, cardBack: CardBack = back) {
+        cards.removeAll { it.rank == rank && it.suit == suit && it.back == cardBack }
+    }
+
     val deckSize: Int
         get() = cards.size
 }

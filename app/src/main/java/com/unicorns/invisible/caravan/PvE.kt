@@ -25,6 +25,7 @@ import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.GameSaver
 import com.unicorns.invisible.caravan.model.enemy.Enemy
+import com.unicorns.invisible.caravan.model.enemy.Enemy38
 import com.unicorns.invisible.caravan.model.enemy.EnemyEasy
 import com.unicorns.invisible.caravan.model.enemy.EnemyMedium
 import com.unicorns.invisible.caravan.model.primitives.Deck
@@ -40,12 +41,12 @@ fun ShowPvE(
 ) {
     var showGameEasy by rememberSaveable { mutableStateOf(false) }
     var showGameMedium by rememberSaveable { mutableStateOf(false) }
+    var showGame38 by rememberSaveable { mutableStateOf(false) }
 
     if (showGameEasy) {
         StartGame(
             activity = activity,
             selectedDeck = selectedDeck(),
-            enemyCardBack = CardBack.ULTRA_LUXE,
             enemy = EnemyEasy,
             showAlertDialog = showAlertDialog
         ) {
@@ -56,11 +57,20 @@ fun ShowPvE(
         StartGame(
             activity = activity,
             selectedDeck = selectedDeck(),
-            enemyCardBack = CardBack.GOMORRAH,
             enemy = EnemyMedium,
             showAlertDialog = showAlertDialog
         ) {
             showGameMedium = false
+        }
+        return
+    } else if (showGame38) {
+        StartGame(
+            activity = activity,
+            selectedDeck = selectedDeck(),
+            enemy = Enemy38,
+            showAlertDialog = showAlertDialog
+        ) {
+            showGame38 = false
         }
         return
     }
@@ -91,10 +101,18 @@ fun ShowPvE(
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = "Slightly more difficult Pete",
+                text = "Slightly more difficult Peter",
                 style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 20.sp),
                 modifier = Modifier.clickable {
                     showGameMedium = true
+                }
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = "Deck-o'-38 Peterson",
+                style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 20.sp),
+                modifier = Modifier.clickable {
+                    showGame38 = true
                 }
             )
         }
@@ -132,7 +150,6 @@ fun ShowPvE(
 fun StartGame(
     activity: MainActivity,
     selectedDeck: CardBack,
-    enemyCardBack: CardBack,
     enemy: Enemy,
     showAlertDialog: (String, String) -> Unit,
     goBack: () -> Unit,
@@ -141,7 +158,6 @@ fun StartGame(
         mutableStateOf(
             Game(
                 Deck(selectedDeck),
-                Deck(enemyCardBack),
                 enemy
             ).also {
                 activity.save?.let { save ->
@@ -155,7 +171,7 @@ fun StartGame(
     game.also {
         it.onWin = {
             activity.save?.let { save ->
-                save.availableDecks[enemyCardBack] = true
+                save.availableDecks[game.enemyDeck.back] = true
                 save.gamesFinished++
                 save.wins++
                 save(activity, save)

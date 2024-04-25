@@ -112,6 +112,7 @@ class MainActivity : AppCompatActivity() {
             verticalArrangement = Arrangement.Center,
             modifier = Modifier.fillMaxSize()
         ) {
+            // TODO: just rules!!!
             Text(
                 text = "Tutorial",
                 modifier = Modifier.clickable {

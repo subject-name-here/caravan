@@ -1,12 +1,15 @@
 package com.unicorns.invisible.caravan.model.enemy
 
+import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
+import com.unicorns.invisible.caravan.model.primitives.Deck
 import com.unicorns.invisible.caravan.model.primitives.Rank
 import kotlinx.serialization.Serializable
 
 
 @Serializable
 data object EnemyMedium : Enemy() {
+    override fun createDeck(): Deck = Deck(CardBack.GOMORRAH)
     override suspend fun makeMove(game: Game) {
         val deck = game.enemyDeck
         val overWeightCaravans = game.enemyCaravans.filter { it.getValue() > 26 }
@@ -31,7 +34,7 @@ data object EnemyMedium : Enemy() {
             if (card.rank == Rank.KING) {
                 val caravan = game.playerCaravans.filter { it.getValue() in (21..26) }.randomOrNull()
                 if (caravan != null) {
-                    val cardToKing = caravan.cards.filter { caravan.getValue() + it.getValue() > 26 }.maxByOrNull { it.getValue() }
+                    val cardToKing = caravan.cards.maxByOrNull { it.getValue() }
                     if (cardToKing != null) {
                         cardToKing.modifiers.add(card)
                         deck.hand.remove(card)

@@ -1,12 +1,15 @@
 package com.unicorns.invisible.caravan.model.enemy
 
+import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
+import com.unicorns.invisible.caravan.model.primitives.Deck
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 
 
 @Serializable
 class EnemyTutorial : Enemy() {
+    override fun createDeck(): Deck = Deck(CardBack.TOPS)
     @Transient
     var update: () -> Unit = {}
     override suspend fun makeMove(game: Game) {

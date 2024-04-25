@@ -46,7 +46,6 @@ fun Tutorial(activity: MainActivity, goBack: () -> Unit) {
         mutableStateOf(
             Game(
                 Deck(CardBack.STANDARD),
-                Deck(CardBack.TOPS),
                 enemy
             ).also { it.startGame(maxNumOfFaces = 4) }
         )

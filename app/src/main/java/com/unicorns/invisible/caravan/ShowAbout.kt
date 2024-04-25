@@ -28,11 +28,6 @@ import com.unicorns.invisible.caravan.save.save
 
 @Composable
 fun ShowAbout(activity: MainActivity, goBack: () -> Unit) {
-    activity.save?.let {
-        it.availableDecks[CardBack.LUCKY_38] = true
-        save(activity, it)
-    }
-
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,

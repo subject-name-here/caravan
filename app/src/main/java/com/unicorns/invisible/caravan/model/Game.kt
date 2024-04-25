@@ -19,11 +19,12 @@ import kotlinx.serialization.encodeToString
 @Serializable
 class Game(
     val playerDeck: Deck,
-    val enemyDeck: Deck,
     private val enemy: Enemy
 ) {
     val playerCaravans = listOf(Caravan(), Caravan(), Caravan())
     val enemyCaravans = listOf(Caravan(), Caravan(), Caravan())
+
+    val enemyDeck = enemy.createDeck()
 
     var isPlayerTurn = true
 
