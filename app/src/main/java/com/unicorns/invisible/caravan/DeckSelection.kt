@@ -51,45 +51,45 @@ fun DeckSelection(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(12.dp))
         Text(
             text = "Select the Deck",
             style = TextStyle(color = Color(activity.getColor(R.color.colorPrimaryDark)), fontSize = 24.sp)
         )
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(12.dp))
         Row {
             AsyncImage(
                 model = "file:///android_asset/caravan_cards_back/FNV_Caravan_card_back_-_standard.webp",
                 contentDescription = "",
                 modifier = getModifier(CardBack.STANDARD)
             )
-            Spacer(modifier = Modifier.width(8.dp))
+            Spacer(modifier = Modifier.width(12.dp))
             AsyncImage(
                 model = "file:///android_asset/caravan_cards_back/FNV_Caravan_card_back_-_Tops.webp",
                 contentDescription = "",
                 modifier = getModifier(CardBack.TOPS)
             )
-            Spacer(modifier = Modifier.width(8.dp))
+            Spacer(modifier = Modifier.width(12.dp))
             AsyncImage(
                 model = "file:///android_asset/caravan_cards_back/FNV_Caravan_card_back_-_Lucky_38.webp",
                 contentDescription = "",
                 modifier = getModifier(CardBack.LUCKY_38)
             )
         }
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(12.dp))
         Row {
             AsyncImage(
                 model = "file:///android_asset/caravan_cards_back/FNV_Caravan_card_back_-_Ultra-Luxe.webp",
                 contentDescription = "",
                 modifier = getModifier(CardBack.ULTRA_LUXE)
             )
-            Spacer(modifier = Modifier.width(8.dp))
+            Spacer(modifier = Modifier.width(12.dp))
             AsyncImage(
                 model = "file:///android_asset/caravan_cards_back/FNV_Caravan_card_back_-_Gomorrah.webp",
                 contentDescription = "",
                 modifier = getModifier(CardBack.GOMORRAH)
             )
-            Spacer(modifier = Modifier.width(8.dp))
+            Spacer(modifier = Modifier.width(12.dp))
             AsyncImage(
                 model = "file:///android_asset/caravan_cards_back/FNV_Caravan_card_back_-_Sierra_Madre.webp",
                 contentDescription = "",

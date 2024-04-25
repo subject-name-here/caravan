@@ -73,23 +73,24 @@ class Game(
         }
     }
 
-    fun afterPlayerMove(updateView: () -> Unit) = CoroutineScope(Dispatchers.Default).launch {
-        delay(700L)
-        processFieldAndHand(playerDeck, updateView)
-
+    fun afterPlayerMove(updateView: () -> Unit) {
         isPlayerTurn = false
-        if (checkOnGameOver()) {
-            return@launch
+        CoroutineScope(Dispatchers.Default).launch {
+            delay(700L)
+            processFieldAndHand(playerDeck, updateView)
+            if (checkOnGameOver()) {
+                return@launch
+            }
+
+            enemy.makeMove(this@Game)
+            updateView()
+
+            delay(700L)
+            processFieldAndHand(enemyDeck, updateView)
+
+            isPlayerTurn = true
+            checkOnGameOver()
         }
-
-        enemy.makeMove(this@Game)
-        updateView()
-
-        delay(700L)
-        processFieldAndHand(enemyDeck, updateView)
-
-        isPlayerTurn = true
-        checkOnGameOver()
     }
 
     private fun processJacks() {

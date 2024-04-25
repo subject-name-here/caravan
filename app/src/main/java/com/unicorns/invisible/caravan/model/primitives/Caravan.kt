@@ -29,12 +29,7 @@ class Caravan {
             return false
         }
 
-        if (last.getTopSuit() == card.suit) {
-            cards.add(CardWithModifier(card))
-            return true
-        }
-
-        if (cards.size == 1) {
+        if (last.getTopSuit() == card.suit || cards.size == 1) {
             cards.add(CardWithModifier(card))
             return true
         }

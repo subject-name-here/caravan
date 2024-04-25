@@ -201,7 +201,7 @@ fun Tutorial(activity: MainActivity, goBack: () -> Unit) {
             }
             39 -> {
                 fun check(caravan: Caravan): Boolean {
-                    if (caravan.cards.size != 3) {
+                    if (caravan.size != 3) {
                         return false
                     }
                     if (caravan.cards[0].card.suit != caravan.cards[1].card.suit) {

@@ -2,6 +2,8 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
     alias(libs.plugins.jetbrainsKotlinSerialization)
+    alias(libs.plugins.firebase)
+    alias(libs.plugins.firebaseCrashlytics)
 }
 
 android {
@@ -63,4 +65,9 @@ dependencies {
     implementation(libs.coil)
 
     implementation(libs.serialization)
+
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.crahslytics)
+    implementation(libs.firebase.analytics)
+
 }

@@ -59,10 +59,7 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
     var enemyHandKey by remember { mutableStateOf(true) }
 
     fun onCardClicked(index: Int) {
-        if (game.isOver() || !game.isPlayerTurn) {
-            if (selectedCard != null) {
-                selectedCard = null
-            }
+        if (game.isOver()) {
             return
         }
         selectedCard = if (game.playerDeck.hand[index] == selectedCard) {
@@ -111,10 +108,11 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
                         .fillMaxWidth()
                         .fillMaxHeight(0.8f)
                     ) {
+                        val handSize = game.playerDeck.hand.size
                         Column(Modifier.fillMaxWidth(0.8f)) {
-                            RowOfCards(cards = game.playerDeck.hand.subList(0, minOf(4, game.playerDeck.hand.size)), 0, selectedCard, selectedCardColor, ::onCardClicked)
-                            val cards = if (game.playerDeck.hand.size >= 5) {
-                                game.playerDeck.hand.subList(4, game.playerDeck.hand.size)
+                            RowOfCards(cards = game.playerDeck.hand.subList(0, minOf(4, handSize)), 0, selectedCard, selectedCardColor, ::onCardClicked)
+                            val cards = if (handSize >= 5) {
+                                game.playerDeck.hand.subList(4, handSize)
                             } else {
                                emptyList()
                             }
@@ -578,12 +576,12 @@ fun Caravans(
                         if (getSelectedCard() != null) {
                             game.playerDeck.hand.remove(getSelectedCard())
                             resetSelected()
-                            game.afterPlayerMove { updateCaravans() }
+                            game.afterPlayerMove { updateCaravans(); updateEnemyHand() }
                         } else if (getSelectedCaravan() in (0..2)) {
                             game.playerCaravans[getSelectedCaravan()].dropCaravan()
                             updateCaravans()
                             resetSelected()
-                            game.afterPlayerMove { updateCaravans() }
+                            game.afterPlayerMove { updateCaravans(); updateEnemyHand() }
                         }
                     }
             )

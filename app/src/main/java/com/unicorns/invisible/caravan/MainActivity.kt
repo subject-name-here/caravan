@@ -119,7 +119,7 @@ class MainActivity : AppCompatActivity() {
                 },
                 style = TextStyle(color = Color(getColor(R.color.colorPrimaryDark)), fontSize = 20.sp)
             )
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(32.dp))
             Text(
                 text = "PvE",
                 modifier = Modifier.clickable {
@@ -127,7 +127,7 @@ class MainActivity : AppCompatActivity() {
                 },
                 style = TextStyle(color = Color(getColor(R.color.colorPrimaryDark)), fontSize = 20.sp)
             )
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(32.dp))
             Text(
                 text = "Select Deck",
                 modifier = Modifier.clickable {
@@ -135,7 +135,7 @@ class MainActivity : AppCompatActivity() {
                 },
                 style = TextStyle(color = Color(getColor(R.color.colorPrimaryDark)), fontSize = 20.sp)
             )
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(32.dp))
             Text(
                 text = "About",
                 modifier = Modifier.clickable {
