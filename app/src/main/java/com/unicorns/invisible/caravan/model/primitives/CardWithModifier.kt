@@ -6,6 +6,7 @@ import kotlin.math.pow
 
 @Serializable
 class CardWithModifier(val card: Card) {
+    // TODO: enemy can add modifiers even if there are too much of them
     val modifiers: MutableList<Card> = mutableListOf()
 
     private val numOfKings: Int

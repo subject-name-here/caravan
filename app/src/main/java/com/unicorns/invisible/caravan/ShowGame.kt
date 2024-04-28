@@ -39,7 +39,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import coil.compose.AsyncImage
-import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.getCardName
 import com.unicorns.invisible.caravan.model.primitives.Caravan
@@ -95,7 +94,6 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.Center
                     ) {
-                        val handSize = game.enemyDeck.hand.size
                         key(enemyHandKey) {
                             Column(Modifier.fillMaxWidth(0.8f), horizontalAlignment = Alignment.CenterHorizontally) {
                                 RowOfEnemyCards(game.enemyDeck.hand.take(4))

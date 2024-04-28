@@ -52,7 +52,7 @@ fun ShowPvE(
 
     var checkedCustomDeck by rememberSaveable { mutableStateOf(false) }
     fun getPlayerDeck(): Deck {
-        return if (checkedCustomDeck) Deck(activity.save?.customDeck!!) else Deck(selectedDeck())
+        return if (checkedCustomDeck) Deck(activity.save?.getCustomDeckCopy()!!) else Deck(selectedDeck())
     }
 
     if (showGameEasy) {
@@ -197,6 +197,12 @@ fun StartGame(
     showAlertDialog: (String, String) -> Unit,
     goBack: () -> Unit,
 ) {
+    if (playerDeck.deckSize < 30 || playerDeck.numOfNumbers < 15) {
+        showAlertDialog("Custom deck is bad!", "Deck has less than 30 cards or less than 15 numbered cards!")
+        goBack()
+        return
+    }
+
     val game by rememberSaveable(stateSaver = GameSaver) {
         mutableStateOf(
             Game(

@@ -21,6 +21,12 @@ class Save {
     @EncodeDefault
     val customDeck: CustomDeck = CustomDeck()
 
+    fun getCustomDeckCopy(): CustomDeck {
+        val deck = CustomDeck()
+        deck.addAll(customDeck.toSet())
+        return deck
+    }
+
     @EncodeDefault
     var gamesStarted = 0
     @EncodeDefault

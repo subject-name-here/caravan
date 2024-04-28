@@ -15,7 +15,8 @@ fun loadSave(activity: MainActivity): Save? {
     val saveFile = getSaveFile(activity)
     return try {
         saveFile.bufferedReader().use {
-            json.decodeFromString<Save>(it.readText())
+            val text = it.readText()
+            json.decodeFromString<Save>(text)
         }
     } catch (e: Exception) {
         null

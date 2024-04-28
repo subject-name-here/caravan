@@ -27,4 +27,7 @@ class Deck(private val cards: CustomDeck) {
 
     val deckSize: Int
         get() = cards.size
+
+    val numOfNumbers: Int
+        get() = cards.count { !it.isFace() }
 }
