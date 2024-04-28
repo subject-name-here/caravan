@@ -98,8 +98,8 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
                         val handSize = game.enemyDeck.hand.size
                         key(enemyHandKey) {
                             Column(Modifier.fillMaxWidth(0.8f), horizontalAlignment = Alignment.CenterHorizontally) {
-                                RowOfEnemyCards(minOf(4, handSize), game.enemyDeck.back)
-                                RowOfEnemyCards(handSize - 4, game.enemyDeck.back)
+                                RowOfEnemyCards(game.enemyDeck.hand.take(4))
+                                RowOfEnemyCards(game.enemyDeck.hand.subList(4, 8))
                             }
                             ShowDeck(game.enemyDeck, activity)
                         }
@@ -171,8 +171,8 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
                     val handSize = game.enemyDeck.hand.size
                     key(enemyHandKey) {
                         Column(Modifier.fillMaxWidth(0.8f), horizontalAlignment = Alignment.CenterHorizontally) {
-                            RowOfEnemyCards(minOf(4, handSize), game.enemyDeck.back)
-                            RowOfEnemyCards(handSize - 4, game.enemyDeck.back)
+                            RowOfEnemyCards(game.enemyDeck.hand.take(4))
+                            RowOfEnemyCards(game.enemyDeck.hand.takeLast((handSize - 4).coerceAtLeast(0)))
                         }
                         ShowDeck(game.enemyDeck, activity)
                     }
@@ -266,11 +266,11 @@ fun ColumnScope.RowOfCards(cards: List<Card>, offset: Int = 0, selectedCard: Car
 }
 
 @Composable
-fun ColumnScope.RowOfEnemyCards(numOfCards: Int, back: CardBack) {
+fun ColumnScope.RowOfEnemyCards(cards: List<Card>) {
     Row(Modifier.weight(1f), horizontalArrangement = Arrangement.Center) {
-        repeat(numOfCards.coerceAtLeast(0)) {
+        cards.forEach {
             AsyncImage(
-                model = "file:///android_asset/caravan_cards_back/${back.getCardBackName()}",
+                model = "file:///android_asset/caravan_cards_back/${it.back.getCardBackName()}",
                 contentDescription = "",
             )
         }
@@ -428,7 +428,7 @@ fun ShowDeck(deck: Deck, activity: MainActivity, isToBottom: Boolean = false) {
             style = TextStyle(color = Color(activity.getColor(R.color.colorAccent)), fontSize = 16.sp, textAlign = TextAlign.Center)
         )
         AsyncImage(
-            model = "file:///android_asset/caravan_cards_back/${deck.back.getCardBackName()}",
+            model = "file:///android_asset/caravan_cards_back/${deck.getDeckBack().getCardBackName()}",
             contentDescription = "",
             modifier = Modifier.fillMaxWidth(),
         )

@@ -1,6 +1,7 @@
 package com.unicorns.invisible.caravan.save
 
 import com.unicorns.invisible.caravan.model.CardBack
+import com.unicorns.invisible.caravan.model.primitives.CustomDeck
 import kotlinx.serialization.EncodeDefault
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
@@ -12,11 +13,13 @@ class Save {
     @EncodeDefault
     val availableDecks = CardBack.entries.associateWith { false }.toMutableMap().apply {
         this[CardBack.STANDARD] = true
-        this[CardBack.SIERRA_MADRE] = true // TODO: remove later.
     }
 
     @EncodeDefault
     var selectedDeck: CardBack = CardBack.STANDARD
+
+    @EncodeDefault
+    val customDeck: CustomDeck = CustomDeck()
 
     @EncodeDefault
     var gamesStarted = 0

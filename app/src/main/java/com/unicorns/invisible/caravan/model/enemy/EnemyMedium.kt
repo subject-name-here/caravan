@@ -10,6 +10,8 @@ import kotlinx.serialization.Serializable
 @Serializable
 data object EnemyMedium : Enemy() {
     override fun createDeck(): Deck = Deck(CardBack.GOMORRAH)
+    override fun getRewardDeck(): CardBack = CardBack.GOMORRAH
+
     override suspend fun makeMove(game: Game) {
         val deck = game.enemyDeck
         val overWeightCaravans = game.enemyCaravans.filter { it.getValue() > 26 }

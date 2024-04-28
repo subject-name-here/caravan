@@ -10,6 +10,8 @@ import kotlinx.serialization.Transient
 @Serializable
 class EnemyTutorial : Enemy() {
     override fun createDeck(): Deck = Deck(CardBack.TOPS)
+    override fun getRewardDeck(): CardBack = CardBack.TOPS
+
     @Transient
     var update: () -> Unit = {}
     override suspend fun makeMove(game: Game) {

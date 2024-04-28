@@ -2,6 +2,8 @@ package com.unicorns.invisible.caravan.model.enemy
 
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
+import com.unicorns.invisible.caravan.model.primitives.Card
+import com.unicorns.invisible.caravan.model.primitives.CustomDeck
 import com.unicorns.invisible.caravan.model.primitives.Deck
 import com.unicorns.invisible.caravan.model.primitives.Rank
 import com.unicorns.invisible.caravan.model.primitives.Suit
@@ -10,15 +12,21 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data object Enemy38 : Enemy() {
-    override fun createDeck(): Deck = Deck(CardBack.LUCKY_38).apply {
-        Rank.entries.forEach { rank ->
-            if (rank.value < 6) {
+    override fun createDeck(): Deck = Deck(CustomDeck().apply {
+        Rank.entries.filter { it.value >= 6 }.forEach { rank ->
+            if (rank == Rank.JOKER) {
+                add(Card(rank, Suit.HEARTS, CardBack.LUCKY_38))
+                add(Card(rank, Suit.SPADES, CardBack.LUCKY_38))
+            } else {
                 Suit.entries.forEach { suit ->
-                    removeFromDeck(rank, suit)
+                    add(Card(rank, suit, CardBack.LUCKY_38))
                 }
             }
         }
-    }
+    })
+
+    override fun getRewardDeck(): CardBack = CardBack.LUCKY_38
+
     override suspend fun makeMove(game: Game) {
         val deck = game.enemyDeck
         val overWeightCaravans = game.enemyCaravans.filter { it.getValue() > 26 }

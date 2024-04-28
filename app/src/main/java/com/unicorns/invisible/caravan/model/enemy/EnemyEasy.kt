@@ -10,6 +10,8 @@ import kotlinx.serialization.Serializable
 @Serializable
 data object EnemyEasy : Enemy() {
     override fun createDeck(): Deck = Deck(CardBack.ULTRA_LUXE)
+    override fun getRewardDeck(): CardBack = CardBack.ULTRA_LUXE
+
     override suspend fun makeMove(game: Game) {
         val deck = game.enemyDeck
 

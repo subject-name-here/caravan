@@ -45,18 +45,16 @@ class Game(
 
     fun isInitStage() = playerDeck.hand.size > 5 || enemyDeck.hand.size > 5
 
-    private fun shuffleDeck(deck: Deck, maxNumOfFaces: Int) {
-        deck.shuffle()
-        while (deck.getInitHand().count { it.isFace() } > maxNumOfFaces) {
-            deck.shuffle()
+    private fun initDeck(deck: Deck, maxNumOfFaces: Int) {
+        var tmpHand = deck.getInitHand()
+        while (tmpHand.count { it.isFace() } > maxNumOfFaces) {
+            tmpHand = deck.getInitHand()
         }
+        deck.initHand(tmpHand)
     }
     fun startGame(maxNumOfFaces: Int = 5) {
-        shuffleDeck(playerDeck, maxNumOfFaces)
-        shuffleDeck(enemyDeck, maxNumOfFaces)
-
-        playerDeck.initHand()
-        enemyDeck.initHand()
+        initDeck(playerDeck, maxNumOfFaces)
+        initDeck(enemyDeck, maxNumOfFaces)
     }
 
     private suspend fun processFieldAndHand(deck: Deck, updateView: () -> Unit) {

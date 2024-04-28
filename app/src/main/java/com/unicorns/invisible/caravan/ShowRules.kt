@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Text
@@ -22,12 +21,7 @@ import androidx.compose.ui.unit.sp
 
 @Composable
 fun ShowRules(activity: MainActivity, goBack: () -> Unit) {
-    val rules = "BUILDING A DECK\n" +
-            "Caravan decks are comprised of at least 30 cards from one or more traditional playing card sets. " +
-            "The deck may have any number of cards of any type that suits a player's strategy, although it cannot have duplicate cards from the same set. " +
-            "For example, a King of Spades from Set A and a King of Spades from the Set B deck is acceptable, " +
-            "but more than one King of Spades from Set A would be illegal.\n" +
-            "\n" +
+    val rules =
             "RULES\n" +
             "Caravan is played with two players building three opposing piles (or \"caravans\") of numbered cards. " +
             "The goal is to outbid your opponent's caravan with the highest value of numbered cards without being too light (under 21) or overburdened (over 26).\n" +
@@ -77,7 +71,7 @@ fun ShowRules(activity: MainActivity, goBack: () -> Unit) {
         verticalArrangement = Arrangement.Center,
         modifier = Modifier
             .fillMaxSize()
-            .padding(horizontal = 8.dp)
+            .padding(horizontal = 12.dp)
     ) {
         LazyColumn(Modifier.fillMaxHeight(0.85f)) {
             item {
@@ -88,7 +82,7 @@ fun ShowRules(activity: MainActivity, goBack: () -> Unit) {
             }
         }
 
-        Spacer(modifier = Modifier.height(48.dp))
+        Spacer(modifier = Modifier.fillMaxHeight(0.2f))
         Text(
             text = "Back to Menu",
             modifier = Modifier.clickable {

@@ -1,5 +1,6 @@
 package com.unicorns.invisible.caravan.model.enemy
 
+import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.primitives.Deck
 import kotlinx.serialization.Serializable
@@ -9,4 +10,5 @@ import kotlinx.serialization.Serializable
 sealed class Enemy {
     abstract suspend fun makeMove(game: Game)
     abstract fun createDeck(): Deck
+    open fun getRewardDeck(): CardBack? = null
 }

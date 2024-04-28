@@ -3,11 +3,14 @@ package com.unicorns.invisible.caravan
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -26,6 +29,7 @@ import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.GameSaver
 import com.unicorns.invisible.caravan.model.enemy.Enemy
 import com.unicorns.invisible.caravan.model.enemy.Enemy38
+import com.unicorns.invisible.caravan.model.enemy.EnemyCheater
 import com.unicorns.invisible.caravan.model.enemy.EnemyEasy
 import com.unicorns.invisible.caravan.model.enemy.EnemyMedium
 import com.unicorns.invisible.caravan.model.primitives.Deck
@@ -39,14 +43,22 @@ fun ShowPvE(
     showAlertDialog: (String, String) -> Unit,
     goBack: () -> Unit
 ) {
+    // TODO: horizontal orientation is shit.
+
     var showGameEasy by rememberSaveable { mutableStateOf(false) }
     var showGameMedium by rememberSaveable { mutableStateOf(false) }
     var showGame38 by rememberSaveable { mutableStateOf(false) }
+    var showGameCheater by rememberSaveable { mutableStateOf(false) }
+
+    var checkedCustomDeck by rememberSaveable { mutableStateOf(false) }
+    fun getPlayerDeck(): Deck {
+        return if (checkedCustomDeck) Deck(activity.save?.customDeck!!) else Deck(selectedDeck())
+    }
 
     if (showGameEasy) {
         StartGame(
             activity = activity,
-            selectedDeck = selectedDeck(),
+            playerDeck = getPlayerDeck(),
             enemy = EnemyEasy,
             showAlertDialog = showAlertDialog
         ) {
@@ -56,7 +68,7 @@ fun ShowPvE(
     } else if (showGameMedium) {
         StartGame(
             activity = activity,
-            selectedDeck = selectedDeck(),
+            playerDeck = getPlayerDeck(),
             enemy = EnemyMedium,
             showAlertDialog = showAlertDialog
         ) {
@@ -66,11 +78,22 @@ fun ShowPvE(
     } else if (showGame38) {
         StartGame(
             activity = activity,
-            selectedDeck = selectedDeck(),
+            playerDeck = getPlayerDeck(),
             enemy = Enemy38,
             showAlertDialog = showAlertDialog
         ) {
             showGame38 = false
+        }
+        return
+    }
+    else if (showGameCheater) {
+        StartGame(
+            activity = activity,
+            playerDeck = getPlayerDeck(),
+            enemy = EnemyCheater,
+            showAlertDialog = showAlertDialog
+        ) {
+            showGameCheater = false
         }
         return
     }
@@ -94,7 +117,7 @@ fun ShowPvE(
             Spacer(modifier = Modifier.height(16.dp))
             Text(
                 text = "Easy Pete",
-                style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 20.sp),
+                style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 16.sp),
                 modifier = Modifier.clickable {
                     showGameEasy = true
                 }
@@ -102,7 +125,7 @@ fun ShowPvE(
             Spacer(modifier = Modifier.height(8.dp))
             Text(
                 text = "Slightly more difficult Peter",
-                style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 20.sp),
+                style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 16.sp),
                 modifier = Modifier.clickable {
                     showGameMedium = true
                 }
@@ -110,12 +133,32 @@ fun ShowPvE(
             Spacer(modifier = Modifier.height(8.dp))
             Text(
                 text = "Deck-o'-38 Peterson",
-                style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 20.sp),
+                style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 16.sp),
                 modifier = Modifier.clickable {
                     showGame38 = true
                 }
             )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = "Petah the Cheatah",
+                style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 16.sp),
+                modifier = Modifier.clickable {
+                    showGameCheater = true
+                }
+            )
         }
+        HorizontalDivider()
+
+        Row(modifier = Modifier
+            .fillMaxHeight(0.1f)
+            .padding(8.dp)) {
+            Text(modifier = Modifier.fillMaxWidth(0.7f), text = "Use Custom Deck")
+
+            Checkbox(checked = checkedCustomDeck, onCheckedChange = {
+                checkedCustomDeck = !checkedCustomDeck
+            })
+        }
+
         HorizontalDivider()
         Column(Modifier.fillMaxSize(0.9f), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
             Text(
@@ -149,7 +192,7 @@ fun ShowPvE(
 @Composable
 fun StartGame(
     activity: MainActivity,
-    selectedDeck: CardBack,
+    playerDeck: Deck,
     enemy: Enemy,
     showAlertDialog: (String, String) -> Unit,
     goBack: () -> Unit,
@@ -157,7 +200,7 @@ fun StartGame(
     val game by rememberSaveable(stateSaver = GameSaver) {
         mutableStateOf(
             Game(
-                Deck(selectedDeck),
+                playerDeck,
                 enemy
             ).also {
                 activity.save?.let { save ->
@@ -171,7 +214,9 @@ fun StartGame(
     game.also {
         it.onWin = {
             activity.save?.let { save ->
-                save.availableDecks[game.enemyDeck.back] = true
+                enemy.getRewardDeck()?.let { cardBack ->
+                    save.availableDecks[cardBack] = true
+                }
                 save.gamesFinished++
                 save.wins++
                 save(activity, save)

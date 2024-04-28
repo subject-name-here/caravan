@@ -41,13 +41,19 @@ class Caravan {
                 return true
             }
             last.card.rank > preLast.card.rank -> {
-                if (card.rank > last.card.rank || last.isQueenReversingSequence() && card.rank < last.card.rank) {
+                if (
+                    last.isQueenReversingSequence() && card.rank < last.card.rank ||
+                    !last.isQueenReversingSequence() && card.rank > last.card.rank
+                ) {
                     cards.add(CardWithModifier(card))
                     return true
                 }
             }
             last.card.rank < preLast.card.rank -> {
-                if (card.rank < last.card.rank || last.isQueenReversingSequence() && card.rank > last.card.rank) {
+                if (
+                    last.isQueenReversingSequence() && card.rank > last.card.rank ||
+                    !last.isQueenReversingSequence() && card.rank < last.card.rank
+                ) {
                     cards.add(CardWithModifier(card))
                     return true
                 }

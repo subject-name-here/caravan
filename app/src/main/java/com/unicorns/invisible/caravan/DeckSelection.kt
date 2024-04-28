@@ -11,6 +11,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -33,17 +37,27 @@ fun DeckSelection(
     fun getModifier(cardBack: CardBack): Modifier {
         activity.save?.let { save ->
             if (save.availableDecks[cardBack] == true) {
-                return Modifier.clickable {
-                    setSelectedBack(cardBack)
-                    save.selectedDeck = cardBack
-                    save(activity, save)
-                }.border(
-                    width = (if (getSelectedBack() == cardBack) 4 else 0).dp,
-                    color = Color(activity.getColor(R.color.colorAccent))
-                )
+                return Modifier
+                    .clickable {
+                        setSelectedBack(cardBack)
+                        save.selectedDeck = cardBack
+                        save(activity, save)
+                    }
+                    .border(
+                        width = (if (getSelectedBack() == cardBack) 4 else 0).dp,
+                        color = Color(activity.getColor(R.color.colorAccent))
+                    )
             }
         }
         return Modifier.alpha(0.5f)
+    }
+
+    var setCustomDeck by rememberSaveable { mutableStateOf(false) }
+    if (setCustomDeck) {
+        SetCustomDeck(activity = activity) {
+            setCustomDeck = false
+        }
+        return
     }
 
     Column(
@@ -96,7 +110,15 @@ fun DeckSelection(
                 modifier = getModifier(CardBack.SIERRA_MADRE)
             )
         }
-        Spacer(modifier = Modifier.height(48.dp))
+        Spacer(modifier = Modifier.height(24.dp))
+        Text(
+            text = "Set Custom Deck",
+            modifier = Modifier.clickable {
+                setCustomDeck = true
+            },
+            style = TextStyle(color = Color(activity.getColor(R.color.colorPrimaryDark)), fontSize = 20.sp)
+        )
+        Spacer(modifier = Modifier.height(36.dp))
         Text(
             text = "Back to Menu",
             modifier = Modifier.clickable {
