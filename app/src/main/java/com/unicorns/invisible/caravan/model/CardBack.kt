@@ -19,7 +19,7 @@ enum class CardBack {
         }
     }
 
-    fun getName(): String = when (this) {
+    fun getDeckName(): String = when (this) {
         STANDARD -> "standard deck"
         TOPS -> "Tops deck"
         ULTRA_LUXE -> "Ultra-Luxe deck"

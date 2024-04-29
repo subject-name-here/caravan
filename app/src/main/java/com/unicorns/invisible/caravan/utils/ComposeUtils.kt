@@ -75,8 +75,6 @@ fun Modifier.scrollbar(
 
         state.layoutInfo.visibleItemsInfo.firstOrNull()?.let { firstVisibleItem ->
             if (state.isScrollInProgress || alpha > 0f) {
-                // Size of the viewport, the entire size of the scrollable composable we are decorating with
-                // this scrollbar.
                 val viewportSize =
                     if (horizontal) {
                         size.width
@@ -84,21 +82,9 @@ fun Modifier.scrollbar(
                         size.height
                     } - padding.toPx() * 2
 
-                // The size of the first visible item. We use this to estimate how many items can fit in the
-                // viewport. Of course, this works perfectly when all items have the same size. When they
-                // don't, the scrollbar knob size will grow and shrink as we scroll.
                 val firstItemSize = firstVisibleItem.size
-
-                // The *estimated* size of the entire scrollable composable, as if it's all on screen at
-                // once. It is estimated because it's possible that the size of the first visible item does
-                // not represent the size of other items. This will cause the scrollbar knob size to grow
-                // and shrink as we scroll, if the item sizes are not uniform.
                 val estimatedFullListSize = firstItemSize * state.layoutInfo.totalItemsCount
 
-                // The difference in position between the first pixels visible in our viewport as we scroll
-                // and the top of the fully-populated scrollable composable, if it were to show all the
-                // items at once. At first, the value is 0 since we start all the way to the top (or start
-                // edge). As we scroll down (or towards the end), this number will grow.
                 val viewportOffsetInFullListSpace =
                     state.firstVisibleItemIndex * firstItemSize + state.firstVisibleItemScrollOffset
 
@@ -224,23 +210,14 @@ fun Modifier.caravanScrollbar(
         }
 
         if (state.isScrollInProgress || alpha > 0f) {
-            // Size of the viewport, the entire size of the scrollable composable we are decorating with
-            // this scrollbar.
             val viewportSize = size.height - padding.toPx() * 2
 
             var totalSize = if (hasNewCardPlaceholder) 20.dp.toPx().toInt() else 0
             val totalCards = state.layoutInfo.totalItemsCount - (if (hasNewCardPlaceholder) 1 else 0)
 
-            // The size of the first visible item. We use this to estimate how many items can fit in the
-            // viewport. Of course, this works perfectly when all items have the same size. When they
-            // don't, the scrollbar knob size will grow and shrink as we scroll.
             val cardSize = state.layoutInfo.visibleItemsInfo.maxOf { it.size }
             totalSize += cardSize + cardSize / 3 * (totalCards - 1)
 
-            // The difference in position between the first pixels visible in our viewport as we scroll
-            // and the top of the fully-populated scrollable composable, if it were to show all the
-            // items at once. At first, the value is 0 since we start all the way to the top (or start
-            // edge). As we scroll down (or towards the end), this number will grow.
             val viewportOffsetInFullListSpace =
                 state.firstVisibleItemIndex * state.layoutInfo.visibleItemsInfo.first().size +
                         state.firstVisibleItemScrollOffset

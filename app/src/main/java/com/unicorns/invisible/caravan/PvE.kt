@@ -249,14 +249,14 @@ fun StartGame(
                     enemy.getRewardDeck()?.let { cardBack ->
                         if (save.availableDecks[cardBack] != true) {
                             save.availableDecks[cardBack] = true
-                            message += "\nYou have unlocked ${cardBack.getName()}!"
+                            message += "\nYou have unlocked ${cardBack.getDeckName()}!"
                         }
                         message += winCard(save, cardBack, 5)
                     }
                 } else {
                     enemy.getRewardDeck()?.let { cardBack ->
                         message += if (save.availableDecks[cardBack] == true) {
-                            winCard(save, cardBack, 2)
+                            winCard(save, cardBack, (1..2).random())
                         } else {
                             "\nTo have chance of winning card from ${cardBack.name} deck, you must defeat the enemy w/o custom deck!"
                         }
@@ -284,7 +284,7 @@ fun winCard(save: Save, cardBack: CardBack, numberOfCards: Int): String {
     fun getCardName(card: Card) = "${card.rank} of ${if (card.rank != Rank.JOKER) card.suit else (card.suit.ordinal + 1)}"
     val deck = CustomDeck(cardBack)
     val reward = deck.takeRandom(numberOfCards)
-    var result = "\nYour prize - cards from ${cardBack.getName()}:\n"
+    var result = "\nYour prize - cards from ${cardBack.getDeckName()}:\n"
     reward.forEach { card ->
         result += if (checkCard(card)) {
             save.availableCards.add(card)

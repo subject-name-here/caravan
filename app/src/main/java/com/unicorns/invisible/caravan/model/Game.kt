@@ -61,7 +61,7 @@ class Game(
     private suspend fun processFieldAndHand(cResources: CResources, updateView: () -> Unit) {
         val caravans = playerCaravans + enemyCaravans
         val cards = caravans.flatMap { it.cards }
-        if (cards.any { it.hasJacks() || it.hasActiveJoker } || cResources.hand.size < 5) {
+        if (cards.any { it.hasJacks() || it.hasActiveJoker } || (cResources.hand.size < 5 && cResources.deckSize > 0)) {
             processJacks()
             processJoker()
 

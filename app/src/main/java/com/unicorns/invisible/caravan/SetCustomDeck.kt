@@ -59,16 +59,15 @@ fun SetCustomDeck(
 
     Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
         Column(Modifier.fillMaxHeight(0.9f).weight(1f)) {
-            CardBack.entries.filter { back ->
-                activity.save?.let {
-                    it.availableDecks[back]
-                } ?: false
-            }.forEach { back ->
+            CardBack.entries.forEach { back ->
                 val state = rememberLazyListState()
                 LazyRow(
                     Modifier
                         .padding(4.dp)
-                        .weight(1f).scrollbar(state, horizontal = true), state = state) {
+                        .weight(1f).scrollbar(state, horizontal = true), state = state) lambda@ {
+                    if (activity.save?.availableDecks?.get(back) != true) {
+                        return@lambda
+                    }
                     items(CustomDeck(back).toList().sortedWith { o1, o2 ->
                         if (o1.rank != o2.rank) {
                             o2.rank.value - o1.rank.value
