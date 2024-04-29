@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
@@ -34,6 +36,7 @@ import com.unicorns.invisible.caravan.model.enemy.EnemyEasy
 import com.unicorns.invisible.caravan.model.enemy.EnemyMedium
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.save.save
+import com.unicorns.invisible.caravan.utils.scrollbar
 
 
 @Composable
@@ -43,8 +46,6 @@ fun ShowPvE(
     showAlertDialog: (String, String) -> Unit,
     goBack: () -> Unit
 ) {
-    // TODO: horizontal orientation is shit.!!!
-
     var showGameEasy by rememberSaveable { mutableStateOf(false) }
     var showGameMedium by rememberSaveable { mutableStateOf(false) }
     var showGame38 by rememberSaveable { mutableStateOf(false) }
@@ -102,99 +103,108 @@ fun ShowPvE(
         return
     }
 
-    Column(
-        Modifier.fillMaxSize(),
+    val state = rememberLazyListState()
+    LazyColumn(
+        Modifier
+            .fillMaxSize()
+            .scrollbar(state, horizontal = false),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Column(
-            Modifier
-                .fillMaxHeight(0.5f)
-                .fillMaxWidth(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(
-                text = "Select the Enemy",
-                style = TextStyle(color = Color(activity.getColor(R.color.colorPrimaryDark)), fontSize = 24.sp)
-            )
+        item {
+            Column(
+                Modifier
+                    .fillMaxHeight(0.5f)
+                    .fillMaxWidth(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = "Select the Enemy",
+                    style = TextStyle(color = Color(activity.getColor(R.color.colorPrimaryDark)), fontSize = 24.sp)
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                Text(
+                    text = "Easy Pete",
+                    style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 16.sp),
+                    modifier = Modifier.clickable {
+                        showGameEasy = true
+                    }
+                )
+                Spacer(modifier = Modifier.height(12.dp))
+                Text(
+                    text = "Slightly more difficult Peter",
+                    style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 16.sp),
+                    modifier = Modifier.clickable {
+                        showGameMedium = true
+                    }
+                )
+                Spacer(modifier = Modifier.height(12.dp))
+                Text(
+                    text = "Deck-o'-38 Peterson",
+                    style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 16.sp),
+                    modifier = Modifier.clickable {
+                        showGame38 = true
+                    }
+                )
+                Spacer(modifier = Modifier.height(12.dp))
+                Text(
+                    text = "Petah the Cheatah",
+                    style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 16.sp),
+                    modifier = Modifier.clickable {
+                        showGameCheater = true
+                    }
+                )
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+            HorizontalDivider()
+
+            Row(modifier = Modifier
+                .fillMaxHeight(0.1f)
+                .padding(8.dp), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(modifier = Modifier.fillMaxWidth(0.7f), text = "Use Custom Deck")
+
+                // TODO: checkbox color!
+                Checkbox(checked = checkedCustomDeck, onCheckedChange = {
+                    checkedCustomDeck = !checkedCustomDeck
+                    activity.save?.let {
+                        it.useCustomDeck = checkedCustomDeck
+                        save(activity, it)
+                    }
+                })
+            }
+
+            HorizontalDivider()
+            Spacer(modifier = Modifier.height(16.dp))
+            Column(Modifier.fillMaxSize(0.9f), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
+                Text(
+                    text = "Stats",
+                    style = TextStyle(color = Color(activity.getColor(R.color.colorPrimaryDark)), fontSize = 24.sp)
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                Text(
+                    text = "Games started: ${activity.save?.gamesStarted ?: 0}",
+                    style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 20.sp)
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = "Games finished: ${activity.save?.gamesFinished ?: 0}",
+                    style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 20.sp)
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = "Games won: ${activity.save?.wins ?: 0}",
+                    style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 20.sp)
+                )
+            }
             Spacer(modifier = Modifier.height(16.dp))
             Text(
-                text = "Easy Pete",
-                style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 16.sp),
-                modifier = Modifier.clickable {
-                    showGameEasy = true
-                }
-            )
-            Spacer(modifier = Modifier.height(12.dp))
-            Text(
-                text = "Slightly more difficult Peter",
-                style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 16.sp),
-                modifier = Modifier.clickable {
-                    showGameMedium = true
-                }
-            )
-            Spacer(modifier = Modifier.height(12.dp))
-            Text(
-                text = "Deck-o'-38 Peterson",
-                style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 16.sp),
-                modifier = Modifier.clickable {
-                    showGame38 = true
-                }
-            )
-            Spacer(modifier = Modifier.height(12.dp))
-            Text(
-                text = "Petah the Cheatah",
-                style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 16.sp),
-                modifier = Modifier.clickable {
-                    showGameCheater = true
-                }
+                text = "Back to Menu",
+                style = TextStyle(color = Color(activity.getColor(R.color.colorPrimaryDark)), fontSize = 24.sp),
+                modifier = Modifier.clickable { goBack() }
             )
         }
-        HorizontalDivider()
-
-        Row(modifier = Modifier
-            .fillMaxHeight(0.1f)
-            .padding(8.dp)) {
-            Text(modifier = Modifier.fillMaxWidth(0.7f), text = "Use Custom Deck")
-
-            // TODO: checkbox color!
-            Checkbox(checked = checkedCustomDeck, onCheckedChange = {
-                checkedCustomDeck = !checkedCustomDeck
-                activity.save?.let {
-                    it.useCustomDeck = checkedCustomDeck
-                    save(activity, it)
-                }
-            })
-        }
-
-        HorizontalDivider()
-        Column(Modifier.fillMaxSize(0.9f), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(
-                text = "Stats",
-                style = TextStyle(color = Color(activity.getColor(R.color.colorPrimaryDark)), fontSize = 24.sp)
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-            Text(
-                text = "Games started: ${activity.save?.gamesStarted ?: 0}",
-                style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 20.sp)
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = "Games finished: ${activity.save?.gamesFinished ?: 0}",
-                style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 20.sp)
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = "Games won: ${activity.save?.wins ?: 0}",
-                style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 20.sp)
-            )
-        }
-        Text(
-            text = "Back to Menu",
-            style = TextStyle(color = Color(activity.getColor(R.color.colorPrimaryDark)), fontSize = 24.sp),
-            modifier = Modifier.clickable { goBack() }
-        )
     }
 }
 

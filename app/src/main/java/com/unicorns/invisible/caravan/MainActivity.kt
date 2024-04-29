@@ -33,7 +33,6 @@ import com.unicorns.invisible.caravan.save.save
 class MainActivity : AppCompatActivity() {
     var save: Save? = null
 
-    // TODO: scrollbars, like, everywhere!!
     // TODO: russian!
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -129,7 +128,7 @@ class MainActivity : AppCompatActivity() {
                 },
                 style = TextStyle(color = Color(getColor(R.color.colorPrimaryDark)), fontSize = 20.sp)
             )
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(24.dp))
             Text(
                 text = "Tutorial",
                 modifier = Modifier.clickable {
@@ -137,7 +136,7 @@ class MainActivity : AppCompatActivity() {
                 },
                 style = TextStyle(color = Color(getColor(R.color.colorPrimaryDark)), fontSize = 20.sp)
             )
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(24.dp))
             Text(
                 text = "Rules",
                 modifier = Modifier.clickable {
@@ -145,7 +144,7 @@ class MainActivity : AppCompatActivity() {
                 },
                 style = TextStyle(color = Color(getColor(R.color.colorPrimaryDark)), fontSize = 20.sp)
             )
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(24.dp))
             Text(
                 text = "Deck Settings",
                 modifier = Modifier.clickable {
@@ -153,7 +152,7 @@ class MainActivity : AppCompatActivity() {
                 },
                 style = TextStyle(color = Color(getColor(R.color.colorPrimaryDark)), fontSize = 20.sp)
             )
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(24.dp))
             Text(
                 text = "About",
                 modifier = Modifier.clickable {

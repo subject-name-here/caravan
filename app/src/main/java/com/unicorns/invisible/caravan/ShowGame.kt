@@ -46,7 +46,6 @@ import com.unicorns.invisible.caravan.model.primitives.Card
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.Rank
 import com.unicorns.invisible.caravan.utils.caravanScrollbar
-import com.unicorns.invisible.caravan.utils.scrollbar
 
 
 @Composable
@@ -564,7 +563,6 @@ fun Caravans(
                 else -> ""
             }
             Text(
-                // TODO: show text on my turn!
                 text = text,
                 textAlign = TextAlign.Center,
                 color = Color(activity.getColor(R.color.colorAccent)),

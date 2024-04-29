@@ -89,6 +89,7 @@ class Game(
 
             isPlayerTurn = true
             checkOnGameOver()
+            updateView()
         }
     }
 

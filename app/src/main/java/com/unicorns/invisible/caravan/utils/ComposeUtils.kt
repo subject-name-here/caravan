@@ -14,51 +14,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
-
-/**
- * Renders a scrollbar.
- *
- * <ul> <li> A scrollbar is composed of two components: a track and a knob. The knob moves across
- * the track <li> The scrollbar appears automatically when the user starts scrolling and disappears
- * after the scrolling is finished </ul>
- *
- * @param state The [LazyListState] that has been passed into the lazy list or lazy row
- * @param horizontal If `true`, this will be a horizontally-scrolling (left and right) scroll bar,
- * if `false`, it will be vertically-scrolling (up and down)
- * @param alignEnd If `true`, the scrollbar will appear at the "end" of the scrollable composable it
- * is decorating (at the right-hand side in left-to-right locales or left-hand side in right-to-left
- * locales, for the vertical scrollbars -or- the bottom for horizontal scrollbars). If `false`, the
- * scrollbar will appear at the "start" of the scrollable composable it is decorating (at the
- * left-hand side in left-to-right locales or right-hand side in right-to-left locales, for the
- * vertical scrollbars -or- the top for horizontal scrollbars)
- * @param thickness How thick/wide the track and knob should be
- * @param fixedKnobRatio If not `null`, the knob will always have this size, proportional to the
- * size of the track. You should consider doing this if the size of the items in the scrollable
- * composable is not uniform, to avoid the knob from oscillating in size as you scroll through the
- * list
- * @param knobCornerRadius The corner radius for the knob
- * @param trackCornerRadius The corner radius for the track
- * @param knobColor The color of the knob
- * @param trackColor The color of the track. Make it [Color.Transparent] to hide it
- * @param padding Edge padding to "squeeze" the scrollbar start/end in so it's not flush with the
- * contents of the scrollable composable it is decorating
- * @param visibleAlpha The alpha when the scrollbar is fully faded-in
- * @param hiddenAlpha The alpha when the scrollbar is fully faded-out. Use a non-`0` number to keep
- * the scrollbar from ever fading out completely
- * @param fadeInAnimationDurationMs The duration of the fade-in animation when the scrollbar appears
- * once the user starts scrolling
- * @param fadeOutAnimationDurationMs The duration of the fade-out animation when the scrollbar
- * disappears after the user is finished scrolling
- * @param fadeOutAnimationDelayMs Amount of time to wait after the user is finished scrolling before
- * the scrollbar begins its fade-out animation
- */
 @Composable
 fun Modifier.scrollbar(
     state: LazyListState,
     horizontal: Boolean,
     alignEnd: Boolean = true,
     thickness: Dp = 4.dp,
-    fixedKnobRatio: Float? = null,
     knobCornerRadius: Dp = 4.dp,
     trackCornerRadius: Dp = 2.dp,
     knobColor: Color = Color.Black,
@@ -71,9 +32,6 @@ fun Modifier.scrollbar(
     fadeOutAnimationDelayMs: Int = 1000,
 ): Modifier {
     check(thickness > 0.dp) { "Thickness must be a positive integer." }
-    check(fixedKnobRatio == null || fixedKnobRatio < 1f) {
-        "A fixed knob ratio must be smaller than 1."
-    }
     check(knobCornerRadius >= 0.dp) { "Knob corner radius must be greater than or equal to 0." }
     check(trackCornerRadius >= 0.dp) { "Track corner radius must be greater than or equal to 0." }
     check(hiddenAlpha <= visibleAlpha) { "Hidden alpha cannot be greater than visible alpha." }
@@ -148,7 +106,7 @@ fun Modifier.scrollbar(
                 val knobPosition =
                     (viewportSize / estimatedFullListSize) * viewportOffsetInFullListSpace + padding.toPx()
                 // How large should the knob be.
-                val knobSize = (fixedKnobRatio ?: (viewportSize / estimatedFullListSize)) * viewportSize
+                val knobSize = (viewportSize / estimatedFullListSize) * viewportSize
 
                 // Draw the track
                 drawRoundRect(
