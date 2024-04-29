@@ -17,7 +17,7 @@ import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.GameSaver
 import com.unicorns.invisible.caravan.model.enemy.EnemyTutorial
 import com.unicorns.invisible.caravan.model.primitives.Caravan
-import com.unicorns.invisible.caravan.model.primitives.Deck
+import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.save.save
 
 
@@ -45,7 +45,7 @@ fun Tutorial(activity: MainActivity, goBack: () -> Unit) {
     val game by rememberSaveable(stateSaver = GameSaver) {
         mutableStateOf(
             Game(
-                Deck(CardBack.STANDARD),
+                CResources(CardBack.STANDARD),
                 enemy
             ).also { it.startGame(maxNumOfFaces = 4) }
         )
@@ -67,7 +67,7 @@ fun Tutorial(activity: MainActivity, goBack: () -> Unit) {
     key(update) {
         when (tutorialKey) {
             0 -> {
-                showAlertDialog("Kyle says:", "Howdy! Fine day, ain't it?")
+                showAlertDialog("Kyle says:", "Howdy! Fine day for a Sarsaparilla, ain't it?")
             }
             1 -> {
                 showAlertDialog("Kyle says:", "Days like this are the reason why I ain't leaving Mojave, not for anything.")
@@ -76,62 +76,60 @@ fun Tutorial(activity: MainActivity, goBack: () -> Unit) {
                 showAlertDialog("Kyle says:", "While we waiting, how about a game of Caravan?")
             }
             3 -> {
-                showAlertDialog("Kyle says:", "Some say that Caravan is as old as Mojave.\n" +
-                        "Others say it was created in New Reno.")
-            }
-            4 -> {
-                showAlertDialog("Kyle says:", "I think that's all bullshit. Prob'ly some caravan owner made up the rules while waiting on NCR outpost.")
-            }
-            5 -> {
                 showAlertDialog("Kyle says:", "You don't know rules? Ain't a problem. Gonna teach you while we are waiting.")
             }
-            6 -> {
-                showAlertDialog("Kyle says:", "There are many rules. We play the balanced ones.\n" +
-                        "It is not that popular here.")
+            4 -> {
+                showAlertDialog("Kyle says:", "There are many rules, but they mostly differ on how you get deck.")
             }
-            7 -> {
+            5 -> {
                 showAlertDialog("Kyle says:", "Usually people of Mojave playing with custom decks.\n" +
                         "I then say 'sticks and stones' and whip out the deck of 6s and 10s and Ks.\n" +
                         "After I beat them, they don't play with me no more. That's why I prefer balanced rules.")
             }
-            8 -> {
+            6 -> {
                 showAlertDialog("Kyle says:", "In balanced rules both players start with full deck o' 54. It is more - you guessed it - balanced.")
             }
-            9 -> {
+            7 -> {
                 showAlertDialog("Kyle says:", "Each player has three caravans - left, central and right - to sold.\n" +
                         "Caravans in the same column - opposing - are competing with each other.")
             }
-            10 -> {
+            8 -> {
                 showAlertDialog("Kyle says:", "The target is to sell two or three of your caravans at a higher sum, or \"bid\", " +
                         "than the opposing caravan. The bid is determined by the cards in caravan.")
             }
-            11 -> {
+            9 -> {
                 showAlertDialog("Kyle says:", "A caravan is considered sold when it reaches a bid of 21-26; any bid that is higher or lower is not a sold caravan.")
             }
-            12 -> {
+            10 -> {
                 showAlertDialog("Kyle says:", "The game starts like this: we take 8 cards from our decks to our hand.\n" +
                         "Then we have to start the caravans by placing ace or 2-10 card on top of each our caravan.")
             }
-            13 -> {
+            11 -> {
                 showAlertDialog("Kyle says:", "To place card on top of a caravan, select it in your hand and then click the brown rectangle with yellow border.")
             }
-            14 -> {
+            12 -> {
                 showAlertDialog("Kyle says:", "Now start your caravans.")
             }
-            15 -> {
+            13 -> {
                 if (game.playerCaravans.all { it.getValue() > 0 }) {
                     tutorialKey++
                 }
             }
-            16 -> {
+            14 -> {
                 showAlertDialog("Kyle says:", "Good job.")
             }
-            17 -> {
+            15 -> {
                 showAlertDialog("Kyle says:", "You might ask: 'What if all 8 cards are, let's say, Jacks and Kings, and no aces or 2-10?'")
             }
-            18 -> {
+            16 -> {
                 showAlertDialog("Kyle says:", "Well, if you play with someone else, you'd have to reshuffle your deck.\n" +
                         "Me though, I never had that. Probably, I am too good in deck shuffling, he-he.")
+            }
+            17 -> {
+                showAlertDialog("Kyle says:", "Sometimes there is a rule that you can discard the card in that case.")
+            }
+            18 -> {
+                showAlertDialog("Kyle says:", "But discarding cards for free seems like a huge advantage, so we ain't gonna do that,")
             }
             19 -> {
                 showAlertDialog("Kyle says:", "Now the game begins truly.")
@@ -161,7 +159,7 @@ fun Tutorial(activity: MainActivity, goBack: () -> Unit) {
                 showAlertDialog("Warning!", "If you do anything wrong, tutorial will be soft-locked, and you have to restart. Please, follow the instructions!")
             }
             28 -> {
-                if (game.playerDeck.deckSize < 46) {
+                if (game.playerCResources.deckSize < 46) {
                     tutorialKey++
                 }
             }
@@ -261,7 +259,7 @@ fun Tutorial(activity: MainActivity, goBack: () -> Unit) {
                 showAlertDialog("Kyle says:", "Now add any face card or Joker to any card from any of the caravans.")
             }
             54 -> {
-                if ((game.playerCaravans.toMutableList() + game.enemyCaravans.toMutableList()).any { it.cards.any { it.modifiers.size > 0 } }) {
+                if ((game.playerCaravans + game.enemyCaravans).any { it.cards.any { card -> card.hasModifiers() } }) {
                     tutorialKey++
                 }
             }
@@ -295,9 +293,13 @@ fun Tutorial(activity: MainActivity, goBack: () -> Unit) {
                 showAlertDialog("Kyle says:", "That's it. I am not going to tell all my tricks, you should figure the game out yourself.")
             }
             64 -> {
-                showAlertDialog("Kyle says:", "The last thing: take this Tops deck. I don't use it anymore.")
+                showAlertDialog("Kyle says:", "Oh, and you can have this deck. It's from the Tops casino. Won it in blackjack.")
             }
             65 -> {
+                showAlertDialog("Kyle says:", "Know what they say? Casino may be called Tops, but when you leave it, you're at the rock Bottoms. " +
+                        "The deck is all I managed to win that day.")
+            }
+            66 -> {
                 showAlertDialog("Kyle says:", "See ya round.")
             }
             else -> {

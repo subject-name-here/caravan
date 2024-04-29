@@ -20,10 +20,13 @@ class Save {
 
     @EncodeDefault
     val customDeck: CustomDeck = CustomDeck()
+    var useCustomDeck: Boolean = false
 
     fun getCustomDeckCopy(): CustomDeck {
         val deck = CustomDeck()
-        deck.addAll(customDeck.toSet())
+        repeat(customDeck.size) {
+            deck.add(customDeck[it])
+        }
         return deck
     }
 

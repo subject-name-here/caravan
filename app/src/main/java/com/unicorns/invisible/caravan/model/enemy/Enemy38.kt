@@ -4,7 +4,7 @@ import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.primitives.Card
 import com.unicorns.invisible.caravan.model.primitives.CustomDeck
-import com.unicorns.invisible.caravan.model.primitives.Deck
+import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.Rank
 import com.unicorns.invisible.caravan.model.primitives.Suit
 import kotlinx.serialization.Serializable
@@ -12,7 +12,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data object Enemy38 : Enemy() {
-    override fun createDeck(): Deck = Deck(CustomDeck().apply {
+    override fun createDeck(): CResources = CResources(CustomDeck().apply {
         Rank.entries.filter { it.value >= 6 }.forEach { rank ->
             if (rank == Rank.JOKER) {
                 add(Card(rank, Suit.HEARTS, CardBack.LUCKY_38))
@@ -24,38 +24,34 @@ data object Enemy38 : Enemy() {
             }
         }
     })
-
     override fun getRewardDeck(): CardBack = CardBack.LUCKY_38
 
     override suspend fun makeMove(game: Game) {
-        val deck = game.enemyDeck
         val overWeightCaravans = game.enemyCaravans.filter { it.getValue() > 26 }
         val playersReadyCaravans = game.playerCaravans.filter { it.getValue() in (21..26) }
+        val hand = game.enemyCResources.hand
 
         if (game.isInitStage()) {
-            val card = deck.hand.filter { !it.isFace() }.maxBy { it.rank.value }
+            val card = hand.filter { !it.isFace() }.maxBy { it.rank.value }
             val caravan = game.enemyCaravans.shuffled().filter { it.cards.isEmpty() }.random()
-            caravan.putCardOnTop(card)
-            deck.hand.remove(card)
+            caravan.putCardOnTop(game.enemyCResources.removeFromHand(hand.indexOf(card)))
             return
         }
 
-        deck.hand.sortedBy { -it.rank.value }.forEach { card ->
+        hand.withIndex().sortedBy { -it.value.rank.value }.forEach { (cardIndex, card) ->
             if (card.rank == Rank.KING) {
                 if (playersReadyCaravans.isNotEmpty()) {
                     val caravanToOverburden = playersReadyCaravans.maxBy { it.getValue() }
                     val cardToKing = caravanToOverburden.cards.filter { caravanToOverburden.getValue() + it.getValue() > 26 }.maxByOrNull { it.getValue() }
                     if (cardToKing != null) {
-                        cardToKing.modifiers.add(card)
-                        deck.hand.remove(card)
+                        cardToKing.addModifier(game.enemyCResources.removeFromHand(cardIndex))
                         return
                     }
                 }
                 game.enemyCaravans.forEach { enemyCaravan ->
                     enemyCaravan.cards.sortedBy { -it.card.rank.value }.forEach { caravanCard ->
                         if (enemyCaravan.getValue() + caravanCard.getValue() in (21..26)) {
-                            caravanCard.modifiers.add(card)
-                            deck.hand.remove(card)
+                            caravanCard.addModifier(game.enemyCResources.removeFromHand(cardIndex))
                             return
                         }
                     }
@@ -67,8 +63,7 @@ data object Enemy38 : Enemy() {
                     val caravanToAttack = playersReadyCaravans.random()
                     val cardToJack = caravanToAttack.cards.maxByOrNull { it.getValue() }
                     if (cardToJack != null) {
-                        cardToJack.modifiers.add(card)
-                        deck.hand.remove(card)
+                        cardToJack.addModifier(game.enemyCResources.removeFromHand(cardIndex))
                         return
                     }
                 }
@@ -76,8 +71,7 @@ data object Enemy38 : Enemy() {
                 if (overWeightCaravans.isNotEmpty()) {
                     val enemyCaravan = overWeightCaravans.random()
                     val cardToDelete = enemyCaravan.cards.maxBy { it.getValue() }
-                    cardToDelete.modifiers.add(card)
-                    deck.hand.remove(card)
+                    cardToDelete.addModifier(game.enemyCResources.removeFromHand(cardIndex))
                     return
                 }
             }
@@ -85,8 +79,8 @@ data object Enemy38 : Enemy() {
             if (!card.rank.isFace()) {
                 game.enemyCaravans.sortedBy { -it.getValue() }.forEach { caravan ->
                     if (caravan.getValue() + card.rank.value <= 26) {
-                        if (caravan.putCardOnTop(card)) {
-                            deck.hand.remove(card)
+                        if (caravan.canPutCardOnTop(card)) {
+                            caravan.putCardOnTop(game.enemyCResources.removeFromHand(cardIndex))
                             return
                         }
                     }
@@ -95,12 +89,12 @@ data object Enemy38 : Enemy() {
 
             if (card.rank == Rank.JOKER) {
                 // TODO
-                deck.hand.remove(card)
+                game.enemyCResources.removeFromHand(cardIndex)
                 return
             }
             if (card.rank == Rank.QUEEN) {
                 // TODO
-                deck.hand.remove(card)
+                game.enemyCResources.removeFromHand(cardIndex)
                 return
             }
         }
@@ -110,6 +104,6 @@ data object Enemy38 : Enemy() {
             return
         }
 
-        deck.hand.removeAt(deck.hand.indices.random())
+        game.enemyCResources.removeFromHand(hand.indices.random())
     }
 }

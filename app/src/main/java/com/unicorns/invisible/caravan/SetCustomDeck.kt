@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -27,6 +28,7 @@ import com.unicorns.invisible.caravan.model.getCardName
 import com.unicorns.invisible.caravan.model.primitives.Card
 import com.unicorns.invisible.caravan.model.primitives.CustomDeck
 import com.unicorns.invisible.caravan.save.save
+import com.unicorns.invisible.caravan.utils.scrollbar
 
 
 @Composable
@@ -34,36 +36,34 @@ fun SetCustomDeck(
     activity: MainActivity,
     goBack: () -> Unit,
 ) {
-    // TODO: horizontal orientation!!!
-
     fun isInCustomDeck(card: Card): Boolean {
         return activity.save?.customDeck?.let { deck ->
-            deck.any { it.suit == card.suit && it.back == card.back && it.rank == card.rank }
+            card in deck
         } ?: false
     }
     fun toggleToCustomDeck(card: Card) {
         activity.save?.customDeck?.let { deck ->
-            val cardInDeck = deck.find { it.suit == card.suit && it.back == card.back && it.rank == card.rank }
-            if (cardInDeck == null) {
-                deck.add(card)
+            if (card in deck) {
+                deck.remove(card)
             } else {
-                deck.remove(cardInDeck)
+                deck.add(card)
             }
             save(activity, activity.save!!)
         }
     }
 
     Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
-        Column(Modifier.fillMaxHeight(0.9f)) {
+        Column(Modifier.fillMaxHeight(0.9f).weight(1f)) {
             CardBack.entries.filter { back ->
                 activity.save?.let {
                     it.availableDecks[back]
                 } ?: false
-            }.forEach { back ->
-                if (back == CardBack.SIERRA_MADRE) {
-                    return@forEach
-                }
-                LazyRow(Modifier.padding(4.dp)) {
+            }.filter { it != CardBack.SIERRA_MADRE }.forEach { back ->
+                val state = rememberLazyListState()
+                LazyRow(
+                    Modifier
+                        .padding(4.dp)
+                        .weight(1f).scrollbar(state, horizontal = true), state = state) {
                     items(CustomDeck(back).toList().sortedWith { o1, o2 ->
                         if (o1.rank != o2.rank) {
                             o2.rank.value - o1.rank.value

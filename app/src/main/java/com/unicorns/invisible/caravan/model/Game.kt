@@ -4,7 +4,7 @@ import androidx.compose.runtime.saveable.Saver
 import com.unicorns.invisible.caravan.model.enemy.Enemy
 import com.unicorns.invisible.caravan.model.primitives.Caravan
 import com.unicorns.invisible.caravan.model.primitives.Card
-import com.unicorns.invisible.caravan.model.primitives.Deck
+import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.Rank
 import com.unicorns.invisible.caravan.save.json
 import kotlinx.coroutines.CoroutineScope
@@ -18,13 +18,13 @@ import kotlinx.serialization.encodeToString
 
 @Serializable
 class Game(
-    val playerDeck: Deck,
+    val playerCResources: CResources,
     private val enemy: Enemy
 ) {
     val playerCaravans = listOf(Caravan(), Caravan(), Caravan())
     val enemyCaravans = listOf(Caravan(), Caravan(), Caravan())
 
-    val enemyDeck = enemy.createDeck()
+    val enemyCResources = enemy.createDeck()
 
     var isPlayerTurn = true
 
@@ -43,29 +43,29 @@ class Game(
         }
     fun isOver() = isGameOver != 0
 
-    fun isInitStage() = playerDeck.hand.size > 5 || enemyDeck.hand.size > 5
+    fun isInitStage() = playerCResources.hand.size > 5 || enemyCResources.hand.size > 5
 
-    private fun initDeck(deck: Deck, maxNumOfFaces: Int) {
-        var tmpHand = deck.getInitHand()
+    private fun initDeck(cResources: CResources, maxNumOfFaces: Int) {
+        var tmpHand = cResources.getInitHand()
         while (tmpHand.count { it.isFace() } > maxNumOfFaces) {
-            tmpHand = deck.getInitHand()
+            tmpHand = cResources.getInitHand()
         }
-        deck.initHand(tmpHand)
+        cResources.initHand(tmpHand)
     }
     fun startGame(maxNumOfFaces: Int = 5) {
-        initDeck(playerDeck, maxNumOfFaces)
-        initDeck(enemyDeck, maxNumOfFaces)
+        initDeck(playerCResources, maxNumOfFaces)
+        initDeck(enemyCResources, maxNumOfFaces)
     }
 
-    private suspend fun processFieldAndHand(deck: Deck, updateView: () -> Unit) {
+    private suspend fun processFieldAndHand(cResources: CResources, updateView: () -> Unit) {
         val caravans = playerCaravans + enemyCaravans
-        val modifiers = caravans.flatMap { it.cards }.flatMap { it.modifiers }
-        if (modifiers.any { it.rank == Rank.JACK || it.rank == Rank.JOKER } || deck.hand.size < 5) {
+        val cards = caravans.flatMap { it.cards }
+        if (cards.any { it.hasJacks() || it.hasActiveJoker } || cResources.hand.size < 5) {
             processJacks()
             processJoker()
 
-            if (deck.hand.size < 5) {
-                deck.addToHand()
+            if (cResources.hand.size < 5) {
+                cResources.addToHand()
             }
             updateView()
             delay(700L)
@@ -76,7 +76,7 @@ class Game(
         isPlayerTurn = false
         CoroutineScope(Dispatchers.Default).launch {
             delay(700L)
-            processFieldAndHand(playerDeck, updateView)
+            processFieldAndHand(playerCResources, updateView)
             if (checkOnGameOver()) {
                 return@launch
             }
@@ -85,7 +85,7 @@ class Game(
             updateView()
 
             delay(700L)
-            processFieldAndHand(enemyDeck, updateView)
+            processFieldAndHand(enemyCResources, updateView)
 
             isPlayerTurn = true
             checkOnGameOver()
@@ -94,18 +94,16 @@ class Game(
 
     private fun processJacks() {
         (playerCaravans + enemyCaravans).forEach { caravan ->
-            caravan.cards.removeAll {
-                it.hasJacks()
-            }
+            caravan.removeAllJackedCards()
         }
     }
 
     private fun checkOnGameOver(): Boolean {
-        if (!isPlayerTurn && enemyDeck.hand.size == 0) {
+        if (!isPlayerTurn && enemyCResources.hand.isEmpty()) {
             isGameOver = 1
             return true
         }
-        if (isPlayerTurn && playerDeck.hand.size == 0) {
+        if (isPlayerTurn && playerCResources.hand.isEmpty()) {
             isGameOver = -1
             return true
         }
@@ -151,7 +149,7 @@ class Game(
                 it.hasActiveJoker
             }.forEach {
                 putJokerOntoCard(it.card)
-                it.hasActiveJoker = false
+                it.deactivateJoker()
             }
         }
     }
@@ -159,11 +157,11 @@ class Game(
     private fun putJokerOntoCard(card: Card) {
         if (card.rank == Rank.ACE) {
             (playerCaravans + enemyCaravans).forEach { caravan ->
-                caravan.cards.filter { it.card.suit == card.suit && it.card != card }.forEach { caravan.cards.remove(it) }
+                caravan.removeAllSuits(card)
             }
         } else {
             (playerCaravans + enemyCaravans).forEach { caravan ->
-                caravan.cards.filter { it.card.rank == card.rank && it.card != card }.forEach { caravan.cards.remove(it) }
+                caravan.removeAllRanks(card)
             }
         }
     }

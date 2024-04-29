@@ -1,14 +1,12 @@
 package com.unicorns.invisible.caravan.model.primitives
 
 import com.unicorns.invisible.caravan.model.CardBack
-import kotlinx.serialization.EncodeDefault
-import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
 
 
 @Serializable
-class CustomDeck() : MutableSet<Card> {
-    private val cards = HashSet<Card>()
+class CustomDeck() {
+    private val cards = ArrayList<Card>()
 
     constructor(back: CardBack) : this() {
         Rank.entries.forEach { rank ->
@@ -23,26 +21,23 @@ class CustomDeck() : MutableSet<Card> {
         }
     }
 
-    override fun add(element: Card): Boolean = cards.add(element)
-
-    override fun addAll(elements: Collection<Card>): Boolean = cards.addAll(elements)
-
-    override val size: Int
+    val size: Int
         get() = cards.size
 
-    override fun clear() = cards.clear()
+    fun takeRandom(n: Int) = cards.shuffled().take(n)
 
-    override fun isEmpty(): Boolean = cards.isEmpty()
+    fun add(element: Card) = cards.add(element)
+    operator fun get(index: Int) = cards[index]
 
-    override fun containsAll(elements: Collection<Card>): Boolean = cards.containsAll(elements)
+    fun count(predicate: (Card) -> Boolean) = cards.count(predicate)
+    fun firstOrNull() = cards.firstOrNull()
+    fun removeFirst() = cards.removeFirst()
+    fun remove(card: Card) = cards.removeAll { it.suit == card.suit && it.back == card.back && it.rank == card.rank }
+    fun removeAll(elements: Collection<Card>) = elements.forEach { remove(it) }
 
-    override fun contains(element: Card): Boolean = cards.contains(element)
+    operator fun contains(card: Card): Boolean {
+        return cards.any { it.suit == card.suit && it.back == card.back && it.rank == card.rank }
+    }
 
-    override fun iterator(): MutableIterator<Card> = cards.iterator()
-
-    override fun retainAll(elements: Collection<Card>): Boolean = cards.retainAll(elements.toSet())
-
-    override fun removeAll(elements: Collection<Card>): Boolean = cards.removeAll(elements.toSet())
-
-    override fun remove(element: Card): Boolean = cards.remove(element)
+    fun toList() = cards.toList()
 }

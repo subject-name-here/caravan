@@ -83,17 +83,18 @@ class MainActivity : AppCompatActivity() {
                     DeckSelection(
                         this,
                         { selectedDeck },
-                        { selectedDeck = it },
-                        { deckSelection = false }
-                    )
+                        { selectedDeck = it }
+                    ) { deckSelection = false }
                 }
                 showAbout -> {
-                    ShowAbout(activity = this, { showAbout = false })
+                    ShowAbout(activity = this) { showAbout = false }
                 }
                 showGameStats -> {
-                    ShowPvE(activity = this, selectedDeck = { selectedDeck }, ::showAlertDialog) {
-                        showGameStats = false
-                    }
+                    ShowPvE(
+                        activity = this,
+                        selectedDeck = { selectedDeck },
+                        ::showAlertDialog
+                    ) { showGameStats = false }
                 }
                 else -> {
                     MainMenu(
@@ -122,9 +123,9 @@ class MainActivity : AppCompatActivity() {
             modifier = Modifier.fillMaxSize()
         ) {
             Text(
-                text = "Rules",
+                text = "PvE",
                 modifier = Modifier.clickable {
-                    showRules()
+                    showPvE()
                 },
                 style = TextStyle(color = Color(getColor(R.color.colorPrimaryDark)), fontSize = 20.sp)
             )
@@ -138,15 +139,15 @@ class MainActivity : AppCompatActivity() {
             )
             Spacer(modifier = Modifier.height(32.dp))
             Text(
-                text = "PvE",
+                text = "Rules",
                 modifier = Modifier.clickable {
-                    showPvE()
+                    showRules()
                 },
                 style = TextStyle(color = Color(getColor(R.color.colorPrimaryDark)), fontSize = 20.sp)
             )
             Spacer(modifier = Modifier.height(32.dp))
             Text(
-                text = "Select Deck",
+                text = "Deck Settings",
                 modifier = Modifier.clickable {
                     showDeckSelection()
                 },

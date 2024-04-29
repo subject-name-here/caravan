@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -17,12 +18,13 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.unicorns.invisible.caravan.utils.scrollbar
 
 
 @Composable
 fun ShowRules(activity: MainActivity, goBack: () -> Unit) {
     val rules =
-            "RULES\n" +
+            "ORIGINAL RULES\n" +
             "Caravan is played with two players building three opposing piles (or \"caravans\") of numbered cards. " +
             "The goal is to outbid your opponent's caravan with the highest value of numbered cards without being too light (under 21) or overburdened (over 26).\n" +
             "\n" +
@@ -64,8 +66,6 @@ fun ShowRules(activity: MainActivity, goBack: () -> Unit) {
             "When each of the three competing caravans has sold, the game is over. " +
             "In the event that one of the three caravan values are tied between players, the game continues until all three caravans have sold. " +
             "The player with two or more sales wins the pot."
-
-
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
@@ -73,7 +73,8 @@ fun ShowRules(activity: MainActivity, goBack: () -> Unit) {
             .fillMaxSize()
             .padding(horizontal = 12.dp)
     ) {
-        LazyColumn(Modifier.fillMaxHeight(0.85f)) {
+        val state = rememberLazyListState()
+        LazyColumn(Modifier.fillMaxHeight(0.85f).scrollbar(state, horizontal = false), state = state) {
             item {
                 Text(
                     text = rules,

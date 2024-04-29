@@ -32,7 +32,7 @@ import com.unicorns.invisible.caravan.model.enemy.Enemy38
 import com.unicorns.invisible.caravan.model.enemy.EnemyCheater
 import com.unicorns.invisible.caravan.model.enemy.EnemyEasy
 import com.unicorns.invisible.caravan.model.enemy.EnemyMedium
-import com.unicorns.invisible.caravan.model.primitives.Deck
+import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.save.save
 
 
@@ -43,22 +43,23 @@ fun ShowPvE(
     showAlertDialog: (String, String) -> Unit,
     goBack: () -> Unit
 ) {
-    // TODO: horizontal orientation is shit.
+    // TODO: horizontal orientation is shit.!!!
 
     var showGameEasy by rememberSaveable { mutableStateOf(false) }
     var showGameMedium by rememberSaveable { mutableStateOf(false) }
     var showGame38 by rememberSaveable { mutableStateOf(false) }
     var showGameCheater by rememberSaveable { mutableStateOf(false) }
 
-    var checkedCustomDeck by rememberSaveable { mutableStateOf(false) }
-    fun getPlayerDeck(): Deck {
-        return if (checkedCustomDeck) Deck(activity.save?.getCustomDeckCopy()!!) else Deck(selectedDeck())
+    var checkedCustomDeck by rememberSaveable { mutableStateOf(activity.save?.useCustomDeck ?: false) }
+    fun getPlayerDeck(): CResources {
+        return if (checkedCustomDeck) CResources(activity.save?.getCustomDeckCopy()!!) else CResources(selectedDeck())
     }
 
     if (showGameEasy) {
         StartGame(
             activity = activity,
-            playerDeck = getPlayerDeck(),
+            playerCResources = getPlayerDeck(),
+            isCustom = checkedCustomDeck,
             enemy = EnemyEasy,
             showAlertDialog = showAlertDialog
         ) {
@@ -68,7 +69,8 @@ fun ShowPvE(
     } else if (showGameMedium) {
         StartGame(
             activity = activity,
-            playerDeck = getPlayerDeck(),
+            playerCResources = getPlayerDeck(),
+            isCustom = checkedCustomDeck,
             enemy = EnemyMedium,
             showAlertDialog = showAlertDialog
         ) {
@@ -78,7 +80,8 @@ fun ShowPvE(
     } else if (showGame38) {
         StartGame(
             activity = activity,
-            playerDeck = getPlayerDeck(),
+            playerCResources = getPlayerDeck(),
+            isCustom = checkedCustomDeck,
             enemy = Enemy38,
             showAlertDialog = showAlertDialog
         ) {
@@ -89,7 +92,8 @@ fun ShowPvE(
     else if (showGameCheater) {
         StartGame(
             activity = activity,
-            playerDeck = getPlayerDeck(),
+            playerCResources = getPlayerDeck(),
+            isCustom = checkedCustomDeck,
             enemy = EnemyCheater,
             showAlertDialog = showAlertDialog
         ) {
@@ -122,7 +126,7 @@ fun ShowPvE(
                     showGameEasy = true
                 }
             )
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(12.dp))
             Text(
                 text = "Slightly more difficult Peter",
                 style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 16.sp),
@@ -130,7 +134,7 @@ fun ShowPvE(
                     showGameMedium = true
                 }
             )
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(12.dp))
             Text(
                 text = "Deck-o'-38 Peterson",
                 style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 16.sp),
@@ -138,7 +142,7 @@ fun ShowPvE(
                     showGame38 = true
                 }
             )
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(12.dp))
             Text(
                 text = "Petah the Cheatah",
                 style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 16.sp),
@@ -154,8 +158,13 @@ fun ShowPvE(
             .padding(8.dp)) {
             Text(modifier = Modifier.fillMaxWidth(0.7f), text = "Use Custom Deck")
 
+            // TODO: checkbox color!
             Checkbox(checked = checkedCustomDeck, onCheckedChange = {
                 checkedCustomDeck = !checkedCustomDeck
+                activity.save?.let {
+                    it.useCustomDeck = checkedCustomDeck
+                    save(activity, it)
+                }
             })
         }
 
@@ -192,12 +201,13 @@ fun ShowPvE(
 @Composable
 fun StartGame(
     activity: MainActivity,
-    playerDeck: Deck,
+    playerCResources: CResources,
+    isCustom: Boolean,
     enemy: Enemy,
     showAlertDialog: (String, String) -> Unit,
     goBack: () -> Unit,
 ) {
-    if (playerDeck.deckSize < 30 || playerDeck.numOfNumbers < 15) {
+    if (playerCResources.deckSize < 30 || playerCResources.numOfNumbers < 15) {
         showAlertDialog("Custom deck is bad!", "Deck has less than 30 cards or less than 15 numbered cards!")
         goBack()
         return
@@ -206,7 +216,7 @@ fun StartGame(
     val game by rememberSaveable(stateSaver = GameSaver) {
         mutableStateOf(
             Game(
-                playerDeck,
+                playerCResources,
                 enemy
             ).also {
                 activity.save?.let { save ->
@@ -220,8 +230,10 @@ fun StartGame(
     game.also {
         it.onWin = {
             activity.save?.let { save ->
-                enemy.getRewardDeck()?.let { cardBack ->
-                    save.availableDecks[cardBack] = true
+                if (!isCustom) {
+                    enemy.getRewardDeck()?.let { cardBack ->
+                        save.availableDecks[cardBack] = true
+                    }
                 }
                 save.gamesFinished++
                 save.wins++

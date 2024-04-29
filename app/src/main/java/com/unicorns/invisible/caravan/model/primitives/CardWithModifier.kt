@@ -6,8 +6,23 @@ import kotlin.math.pow
 
 @Serializable
 class CardWithModifier(val card: Card) {
-    // TODO: enemy can add modifiers even if there are too much of them
-    val modifiers: MutableList<Card> = mutableListOf()
+    private val modifiers: MutableList<Card> = mutableListOf()
+    fun addModifier(card: Card): Boolean {
+        if (card.rank != Rank.JACK && modifiers.size >= 3) {
+            return false
+        }
+        modifiers.add(card)
+        if (card.rank == Rank.JOKER) {
+            hasActiveJoker = true
+        }
+        return true
+    }
+
+    var hasActiveJoker: Boolean = false
+        private set
+    fun deactivateJoker() {
+        hasActiveJoker = false
+    }
 
     private val numOfKings: Int
         get() = modifiers.count { it.rank == Rank.KING }
@@ -15,7 +30,8 @@ class CardWithModifier(val card: Card) {
 
     fun hasJacks() = modifiers.any { it.rank == Rank.JACK }
 
-    var hasActiveJoker: Boolean = false
+    fun hasModifiers() = modifiers.size > 0
+    fun modifiersCopy() = modifiers.toList()
 
     fun getValue(): Int {
         return if (card.isFace()) {
