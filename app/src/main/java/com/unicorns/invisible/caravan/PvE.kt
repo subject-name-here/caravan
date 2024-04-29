@@ -35,10 +35,12 @@ import com.unicorns.invisible.caravan.model.enemy.EnemyCheater
 import com.unicorns.invisible.caravan.model.enemy.EnemyEasy
 import com.unicorns.invisible.caravan.model.enemy.EnemyMedium
 import com.unicorns.invisible.caravan.model.primitives.CResources
+import com.unicorns.invisible.caravan.model.primitives.Card
 import com.unicorns.invisible.caravan.model.primitives.CustomDeck
+import com.unicorns.invisible.caravan.model.primitives.Rank
+import com.unicorns.invisible.caravan.save.Save
 import com.unicorns.invisible.caravan.save.save
 import com.unicorns.invisible.caravan.utils.scrollbar
-import kotlin.random.Random
 
 
 @Composable
@@ -241,24 +243,22 @@ fun StartGame(
     }
     game.also {
         it.onWin = {
+            var message = "You win!"
             activity.save?.let { save ->
                 if (!isCustom) {
                     enemy.getRewardDeck()?.let { cardBack ->
-                        save.availableDecks[cardBack] = true
-                        val deck = CustomDeck(cardBack)
-                        val card = deck.takeRandom(1).first()
-                        if (save.availableCards.none { aCard -> aCard.rank == card.rank && aCard.suit == card.suit && aCard.back == card.back }) {
-                            save.availableCards.add(card)
+                        if (save.availableDecks[cardBack] != true) {
+                            save.availableDecks[cardBack] = true
+                            message += "\nYou have unlocked deck from ${cardBack.name}!"
                         }
+                        message += winCard(save, cardBack, 5)
                     }
-                } else if (Random.nextBoolean()) {
+                } else {
                     enemy.getRewardDeck()?.let { cardBack ->
-                        if (save.availableDecks[cardBack] == true) {
-                            val deck = CustomDeck(cardBack)
-                            val card = deck.takeRandom(1).first()
-                            if (save.availableCards.none { aCard -> aCard.rank == card.rank && aCard.suit == card.suit && aCard.back == card.back }) {
-                                save.availableCards.add(card)
-                            }
+                        message += if (save.availableDecks[cardBack] == true) {
+                            winCard(save, cardBack, 2)
+                        } else {
+                            "\nTo have chance of winning card from ${cardBack.name} deck, you must defeat the enemy w/o custom deck!"
                         }
                     }
                 }
@@ -266,7 +266,7 @@ fun StartGame(
                 save.wins++
                 save(activity, save)
             }
-            showAlertDialog("Result", "You win!")
+            showAlertDialog("Result", message)
         }
         it.onLose = {
             activity.save?.let { save ->
@@ -277,4 +277,21 @@ fun StartGame(
         }
     }
     ShowGame(activity, game) { goBack() }
+}
+
+fun winCard(save: Save, cardBack: CardBack, numberOfCards: Int): String {
+    fun checkCard(card: Card) = save.availableCards.none { aCard -> aCard.rank == card.rank && aCard.suit == card.suit && aCard.back == card.back }
+    fun getCardName(card: Card) = "${card.rank} of ${if (card.rank != Rank.JOKER) card.suit else (card.suit.ordinal + 1)}"
+    val deck = CustomDeck(cardBack)
+    val reward = deck.takeRandom(numberOfCards)
+    var result = "\nYour prize - cards from deck ${cardBack.name}:\n"
+    reward.forEach { card ->
+        result += if (checkCard(card)) {
+            save.availableCards.add(card)
+            "New: ${getCardName(card)}.\n"
+        } else {
+            "Old: ${getCardName(card)}.\n"
+        }
+    }
+    return result
 }

@@ -137,6 +137,17 @@ fun DeckSelection(
                 },
                 style = TextStyle(color = Color(activity.getColor(R.color.colorPrimaryDark)), fontSize = 20.sp)
             )
+            Spacer(modifier = Modifier.height(12.dp))
+
+            Text(
+                text = "Win cards for custom deck by fighting enemies in PvE:" +
+                        "\n50% chance of winning card when using custom deck," +
+                        "\n100% - when playing balanced game." +
+                        "\nThe chance of winning _new_ card, however, is not 100%.",
+                Modifier.padding(12.dp),
+                textAlign = TextAlign.Center,
+                style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 14.sp)
+            )
             Spacer(modifier = Modifier.height(20.dp))
             HorizontalDivider()
             Spacer(modifier = Modifier.height(32.dp))

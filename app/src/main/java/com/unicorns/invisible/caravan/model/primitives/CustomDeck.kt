@@ -12,7 +12,7 @@ class CustomDeck() {
         Rank.entries.forEach { rank ->
             if (rank == Rank.JOKER) {
                 cards.add(Card(rank, Suit.HEARTS, back))
-                cards.add(Card(rank, Suit.SPADES, back))
+                cards.add(Card(rank, Suit.CLUBS, back))
             } else {
                 Suit.entries.forEach { suit ->
                     cards.add(Card(rank, suit, back))
