@@ -1,6 +1,7 @@
 package com.unicorns.invisible.caravan.save
 
 import com.unicorns.invisible.caravan.model.CardBack
+import com.unicorns.invisible.caravan.model.primitives.Card
 import com.unicorns.invisible.caravan.model.primitives.CustomDeck
 import kotlinx.serialization.EncodeDefault
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -21,6 +22,9 @@ class Save {
     @EncodeDefault
     val customDeck: CustomDeck = CustomDeck()
     var useCustomDeck: Boolean = false
+
+    @EncodeDefault
+    val availableCards: MutableSet<Card> = HashSet(CustomDeck(CardBack.STANDARD).toList())
 
     fun getCustomDeckCopy(): CustomDeck {
         val deck = CustomDeck()

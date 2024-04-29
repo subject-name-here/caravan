@@ -35,8 +35,10 @@ import com.unicorns.invisible.caravan.model.enemy.EnemyCheater
 import com.unicorns.invisible.caravan.model.enemy.EnemyEasy
 import com.unicorns.invisible.caravan.model.enemy.EnemyMedium
 import com.unicorns.invisible.caravan.model.primitives.CResources
+import com.unicorns.invisible.caravan.model.primitives.CustomDeck
 import com.unicorns.invisible.caravan.save.save
 import com.unicorns.invisible.caravan.utils.scrollbar
+import kotlin.random.Random
 
 
 @Composable
@@ -243,6 +245,21 @@ fun StartGame(
                 if (!isCustom) {
                     enemy.getRewardDeck()?.let { cardBack ->
                         save.availableDecks[cardBack] = true
+                        val deck = CustomDeck(cardBack)
+                        val card = deck.takeRandom(1).first()
+                        if (save.availableCards.none { aCard -> aCard.rank == card.rank && aCard.suit == card.suit && aCard.back == card.back }) {
+                            save.availableCards.add(card)
+                        }
+                    }
+                } else if (Random.nextBoolean()) {
+                    enemy.getRewardDeck()?.let { cardBack ->
+                        if (save.availableDecks[cardBack] == true) {
+                            val deck = CustomDeck(cardBack)
+                            val card = deck.takeRandom(1).first()
+                            if (save.availableCards.none { aCard -> aCard.rank == card.rank && aCard.suit == card.suit && aCard.back == card.back }) {
+                                save.availableCards.add(card)
+                            }
+                        }
                     }
                 }
                 save.gamesFinished++

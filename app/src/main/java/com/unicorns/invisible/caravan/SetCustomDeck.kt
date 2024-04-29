@@ -51,6 +51,11 @@ fun SetCustomDeck(
             save(activity, activity.save!!)
         }
     }
+    fun isAvailable(card: Card): Boolean {
+        return activity.save?.availableCards?.let { cards ->
+            cards.any { it.rank == card.rank && it.suit == card.suit && it.back == card.back }
+        } ?: false
+    }
 
     Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
         Column(Modifier.fillMaxHeight(0.9f).weight(1f)) {
@@ -58,7 +63,7 @@ fun SetCustomDeck(
                 activity.save?.let {
                     it.availableDecks[back]
                 } ?: false
-            }.filter { it != CardBack.SIERRA_MADRE }.forEach { back ->
+            }.forEach { back ->
                 val state = rememberLazyListState()
                 LazyRow(
                     Modifier
@@ -72,21 +77,31 @@ fun SetCustomDeck(
                         }
                     }) { card ->
                         var isSelected by remember { mutableStateOf(isInCustomDeck(card)) }
-                        AsyncImage(
-                            model = "file:///android_asset/caravan_cards/${getCardName(card)}",
-                            contentDescription = "",
-                            Modifier
-                                .clickable {
-                                    toggleToCustomDeck(card)
-                                    isSelected = !isSelected
-                                }
-                                .border(
-                                    width = (if (isSelected) 4 else 0).dp,
-                                    color = Color(activity.getColor(R.color.colorAccent))
-                                )
-                                .padding(4.dp)
-                                .alpha(if (isSelected) 1f else 0.5f)
-                        )
+                        if (isAvailable(card)) {
+                            AsyncImage(
+                                model = "file:///android_asset/caravan_cards/${getCardName(card)}",
+                                contentDescription = "",
+                                Modifier
+                                    .clickable {
+                                        toggleToCustomDeck(card)
+                                        isSelected = !isSelected
+                                    }
+                                    .border(
+                                        width = (if (isSelected) 4 else 0).dp,
+                                        color = Color(activity.getColor(R.color.colorAccent))
+                                    )
+                                    .padding(4.dp)
+                                    .alpha(if (isSelected) 1f else 0.5f)
+                            )
+                        } else {
+                            AsyncImage(
+                                model = "file:///android_asset/caravan_cards_back/${card.back.getCardBackName()}",
+                                contentDescription = "",
+                                Modifier
+                                    .padding(4.dp)
+                                    .alpha(0.33f)
+                            )
+                        }
                     }
                 }
             }

@@ -18,8 +18,10 @@ import com.unicorns.invisible.caravan.model.GameSaver
 import com.unicorns.invisible.caravan.model.enemy.EnemyTutorial
 import com.unicorns.invisible.caravan.model.primitives.Caravan
 import com.unicorns.invisible.caravan.model.primitives.CResources
+import com.unicorns.invisible.caravan.model.primitives.CustomDeck
 import com.unicorns.invisible.caravan.save.save
 
+// TODO: make it better!
 
 @Composable
 fun Tutorial(activity: MainActivity, goBack: () -> Unit) {
@@ -54,6 +56,7 @@ fun Tutorial(activity: MainActivity, goBack: () -> Unit) {
         it.onWin = {
             activity.save?.let { save ->
                 save.availableDecks[CardBack.TOPS] = true
+                save.availableCards.addAll(CustomDeck(CardBack.TOPS).toList())
                 save(activity, save)
             }
             showAlertDialog("Result", "You win!")
@@ -305,6 +308,7 @@ fun Tutorial(activity: MainActivity, goBack: () -> Unit) {
             else -> {
                 activity.save?.let { save ->
                     save.availableDecks[CardBack.TOPS] = true
+                    save.availableCards.addAll(CustomDeck(CardBack.TOPS).toList())
                     save(activity, save)
                 }
                 goBack()
