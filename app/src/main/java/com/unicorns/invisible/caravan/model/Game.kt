@@ -46,6 +46,7 @@ class Game(
     fun isInitStage() = playerCResources.hand.size > 5 || enemyCResources.hand.size > 5
 
     private fun initDeck(cResources: CResources, maxNumOfFaces: Int) {
+        cResources.shuffleDeck()
         var tmpHand = cResources.getInitHand()
         while (tmpHand.count { it.isFace() } > maxNumOfFaces) {
             tmpHand = cResources.getInitHand()

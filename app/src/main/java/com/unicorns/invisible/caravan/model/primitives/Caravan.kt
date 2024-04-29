@@ -20,10 +20,10 @@ class Caravan {
         cardsMutable.removeAll { it.hasJacks() }
     }
     fun removeAllRanks(card: Card) {
-        cardsMutable.removeAll { it.card.rank == card.rank }
+        cardsMutable.removeAll { it.card.rank == card.rank && !it.hasActiveJoker }
     }
     fun removeAllSuits(card: Card) {
-        cardsMutable.removeAll { it.card.suit == card.suit }
+        cardsMutable.removeAll { it.card.suit == card.suit && !it.hasActiveJoker }
     }
 
     fun getValue(): Int {

@@ -40,4 +40,6 @@ class CustomDeck() {
     }
 
     fun toList() = cards.toList()
+
+    fun shuffle() = cards.shuffle()
 }
