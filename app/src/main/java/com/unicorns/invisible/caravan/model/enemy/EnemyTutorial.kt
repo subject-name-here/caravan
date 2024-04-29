@@ -4,23 +4,19 @@ import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.Transient
 
 
 @Serializable
-class EnemyTutorial : Enemy() {
+data object EnemyTutorial : Enemy() {
     override fun createDeck(): CResources = CResources(CardBack.TOPS)
     override fun getRewardDeck(): CardBack = CardBack.TOPS
 
-    @Transient
-    var update: () -> Unit = {}
     override suspend fun makeMove(game: Game) {
-        update()
         val hand = game.enemyCResources.hand
 
         if (game.isInitStage()) {
             val cardIndex = hand.withIndex().filter { !it.value.isFace() }.random().index
-            val caravan = game.enemyCaravans.filter { it.size == 0 }.random()
+            val caravan = game.enemyCaravans.find { it.isEmpty() }!!
             caravan.putCardOnTop(game.enemyCResources.removeFromHand(cardIndex))
             return
         }

@@ -159,11 +159,11 @@ class Game(
     private fun putJokerOntoCard(card: Card) {
         if (card.rank == Rank.ACE) {
             (playerCaravans + enemyCaravans).forEach { caravan ->
-                caravan.removeAllSuits(card)
+                caravan.jokerRemoveAllSuits(card)
             }
         } else {
             (playerCaravans + enemyCaravans).forEach { caravan ->
-                caravan.removeAllRanks(card)
+                caravan.jokerRemoveAllRanks(card)
             }
         }
     }

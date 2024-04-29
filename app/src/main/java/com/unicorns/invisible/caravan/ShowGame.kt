@@ -266,7 +266,7 @@ fun ColumnScope.RowOfEnemyCards(cards: List<Card>) {
     Row(Modifier.weight(1f), horizontalArrangement = Arrangement.Center) {
         cards.forEach {
             AsyncImage(
-                model = "file:///android_asset/caravan_cards_back/${it.back.getCardBackName()}",
+                model = "file:///android_asset/caravan_cards_back/${it.back.getCardBackAsset()}",
                 contentDescription = "",
             )
         }
@@ -426,7 +426,7 @@ fun ShowDeck(cResources: CResources, activity: MainActivity, isToBottom: Boolean
             style = TextStyle(color = Color(activity.getColor(R.color.colorAccent)), fontSize = 16.sp, textAlign = TextAlign.Center)
         )
         AsyncImage(
-            model = "file:///android_asset/caravan_cards_back/${cResources.getDeckBack()?.getCardBackName()}",
+            model = "file:///android_asset/caravan_cards_back/${cResources.getDeckBack()?.getCardBackAsset()}",
             contentDescription = "",
             modifier = Modifier.fillMaxWidth(),
         )
@@ -475,14 +475,8 @@ fun Caravans(
                             }
                         }
                     }
-                    Rank.JACK.value -> {
-                        if (position in caravan.cards.indices) {
-                            caravan.cards[position].addModifier(game.playerCResources.removeFromHand(cardIndex))
-                            onCaravanCardInserted()
-                        }
-                    }
-                    Rank.QUEEN.value, Rank.KING.value, Rank.JOKER.value -> {
-                        if (position in caravan.cards.indices && caravan.cards[position].modifiersCopy().size < 3) {
+                    Rank.JACK.value, Rank.QUEEN.value, Rank.KING.value, Rank.JOKER.value -> {
+                        if (caravan.cards[position].canAddModifier(card)) {
                             caravan.cards[position].addModifier(game.playerCResources.removeFromHand(cardIndex))
                             onCaravanCardInserted()
                         }

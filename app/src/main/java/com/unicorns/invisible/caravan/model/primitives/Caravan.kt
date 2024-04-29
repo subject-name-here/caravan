@@ -9,7 +9,8 @@ class Caravan {
     val cards
         get() = cardsMutable.toList()
     val size: Int
-        get() = cards.size
+        get() = cardsMutable.size
+    fun isEmpty() = cardsMutable.size == 0
     fun isFull() = size >= 10
 
     fun dropCaravan() {
@@ -19,10 +20,10 @@ class Caravan {
     fun removeAllJackedCards() {
         cardsMutable.removeAll { it.hasJacks() }
     }
-    fun removeAllRanks(card: Card) {
+    fun jokerRemoveAllRanks(card: Card) {
         cardsMutable.removeAll { it.card.rank == card.rank && !it.hasActiveJoker }
     }
-    fun removeAllSuits(card: Card) {
+    fun jokerRemoveAllSuits(card: Card) {
         cardsMutable.removeAll { it.card.suit == card.suit && !it.hasActiveJoker }
     }
 
@@ -32,7 +33,7 @@ class Caravan {
 
     fun canPutCardOnTop(card: Card): Boolean {
         if (isFull() || card.isFace()) return false
-        if (size == 0) {
+        if (isEmpty()) {
             return true
         }
         val last = cards.last()
@@ -47,6 +48,7 @@ class Caravan {
         val preLast = cards[cards.lastIndex - 1]
         when {
             last.card.rank == preLast.card.rank -> {
+                // TODO: are we sure???
                 return true
             }
             last.card.rank > preLast.card.rank -> {

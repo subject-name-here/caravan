@@ -129,7 +129,7 @@ fun ShowPvE(
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
-                    text = "Easy Pete",
+                    text = "Ultra-Luxe visitor",
                     style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 16.sp),
                     modifier = Modifier.clickable {
                         showGameEasy = true
@@ -137,7 +137,7 @@ fun ShowPvE(
                 )
                 Spacer(modifier = Modifier.height(12.dp))
                 Text(
-                    text = "Slightly more difficult Peter",
+                    text = "Thug from Gomorrah",
                     style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 16.sp),
                     modifier = Modifier.clickable {
                         showGameMedium = true
@@ -145,7 +145,7 @@ fun ShowPvE(
                 )
                 Spacer(modifier = Modifier.height(12.dp))
                 Text(
-                    text = "Deck-o'-38 Peterson",
+                    text = "Securitron P373",
                     style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 16.sp),
                     modifier = Modifier.clickable {
                         showGame38 = true
@@ -153,7 +153,7 @@ fun ShowPvE(
                 )
                 Spacer(modifier = Modifier.height(12.dp))
                 Text(
-                    text = "Petah the Cheatah",
+                    text = "Hologram from Sierra Madre",
                     style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 16.sp),
                     modifier = Modifier.clickable {
                         showGameCheater = true
@@ -249,7 +249,7 @@ fun StartGame(
                     enemy.getRewardDeck()?.let { cardBack ->
                         if (save.availableDecks[cardBack] != true) {
                             save.availableDecks[cardBack] = true
-                            message += "\nYou have unlocked deck from ${cardBack.name}!"
+                            message += "\nYou have unlocked ${cardBack.getName()}!"
                         }
                         message += winCard(save, cardBack, 5)
                     }
@@ -284,7 +284,7 @@ fun winCard(save: Save, cardBack: CardBack, numberOfCards: Int): String {
     fun getCardName(card: Card) = "${card.rank} of ${if (card.rank != Rank.JOKER) card.suit else (card.suit.ordinal + 1)}"
     val deck = CustomDeck(cardBack)
     val reward = deck.takeRandom(numberOfCards)
-    var result = "\nYour prize - cards from deck ${cardBack.name}:\n"
+    var result = "\nYour prize - cards from ${cardBack.getName()}:\n"
     reward.forEach { card ->
         result += if (checkCard(card)) {
             save.availableCards.add(card)

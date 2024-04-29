@@ -95,7 +95,7 @@ fun SetCustomDeck(
                             )
                         } else {
                             AsyncImage(
-                                model = "file:///android_asset/caravan_cards_back/${card.back.getCardBackName()}",
+                                model = "file:///android_asset/caravan_cards_back/${card.back.getCardBackAsset()}",
                                 contentDescription = "",
                                 Modifier
                                     .padding(4.dp)

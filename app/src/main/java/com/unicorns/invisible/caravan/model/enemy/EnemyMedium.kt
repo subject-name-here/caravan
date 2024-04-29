@@ -19,7 +19,7 @@ data object EnemyMedium : Enemy() {
 
         if (game.isInitStage()) {
             val card = hand.filter { !it.isFace() }.maxBy { it.rank.value }
-            val caravan = game.enemyCaravans.shuffled().filter { it.cards.isEmpty() }.random()
+            val caravan = game.enemyCaravans.filter { it.isEmpty() }.random()
             caravan.putCardOnTop(game.enemyCResources.removeFromHand(hand.indexOf(card)))
             return
         }
@@ -27,8 +27,9 @@ data object EnemyMedium : Enemy() {
         hand.withIndex().sortedBy { -it.value.rank.value }.forEach { (cardIndex, card) ->
             if (card.rank == Rank.JACK) {
                 val caravan = game.playerCaravans.filter { it.getValue() in (16..26) }.maxByOrNull { it.getValue() }
-                if (caravan != null) {
-                    caravan.cards.maxBy { it.getValue() }.addModifier(game.enemyCResources.removeFromHand(cardIndex))
+                val cardToJack = caravan?.cards?.maxBy { it.getValue() }
+                if (cardToJack != null && cardToJack.canAddModifier(card)) {
+                    cardToJack.addModifier(game.enemyCResources.removeFromHand(cardIndex))
                     return
                 }
             }
@@ -36,7 +37,7 @@ data object EnemyMedium : Enemy() {
                 val caravan = game.playerCaravans.filter { it.getValue() in (21..26) }.randomOrNull()
                 if (caravan != null) {
                     val cardToKing = caravan.cards.maxByOrNull { it.getValue() }
-                    if (cardToKing != null) {
+                    if (cardToKing != null && cardToKing.canAddModifier(card)) {
                         cardToKing.addModifier(game.enemyCResources.removeFromHand(cardIndex))
                         return
                     }
@@ -45,8 +46,10 @@ data object EnemyMedium : Enemy() {
                 game.enemyCaravans.filter { it.getValue() in (1..25) }.forEach { enemyCaravan ->
                     enemyCaravan.cards.sortedBy { -it.card.rank.value }.forEach { caravanCard ->
                         if (enemyCaravan.getValue() + caravanCard.getValue() in (16..26)) {
-                            caravanCard.addModifier(game.enemyCResources.removeFromHand(cardIndex))
-                            return
+                            if (caravanCard.canAddModifier(card)) {
+                                caravanCard.addModifier(game.enemyCResources.removeFromHand(cardIndex))
+                                return
+                            }
                         }
                     }
                 }
@@ -66,8 +69,10 @@ data object EnemyMedium : Enemy() {
             if (card.rank == Rank.JACK && overWeightCaravans.isNotEmpty()) {
                 val enemyCaravan = overWeightCaravans.random()
                 val cardToDelete = enemyCaravan.cards.maxBy { it.getValue() }
-                cardToDelete.addModifier(game.enemyCResources.removeFromHand(cardIndex))
-                return
+                if (cardToDelete.canAddModifier(card)) {
+                    cardToDelete.addModifier(game.enemyCResources.removeFromHand(cardIndex))
+                    return
+                }
             }
         }
 

@@ -14,14 +14,10 @@ import kotlinx.serialization.Serializable
 data object EnemyCheater : Enemy() {
     override fun createDeck(): CResources = CResources(CustomDeck().apply {
         CardBack.entries.forEach { back ->
-            if (back == CardBack.STANDARD) {
-                return@forEach
-            }
             Suit.entries.forEach { suit ->
                 add(Card(Rank.SIX, suit, back))
                 add(Card(Rank.TEN, suit, back))
                 add(Card(Rank.KING, suit, back))
-                add(Card(Rank.JACK, suit, back))
             }
         }
     })
@@ -33,7 +29,7 @@ data object EnemyCheater : Enemy() {
 
         if (game.isInitStage()) {
             val card = hand.filter { !it.isFace() }.maxBy { it.rank.value }
-            val caravan = game.enemyCaravans.filter { it.cards.isEmpty() }.random()
+            val caravan = game.enemyCaravans.first { it.cards.isEmpty() }
             caravan.putCardOnTop(game.enemyCResources.removeFromHand(hand.indexOf(card)))
             return
         }
@@ -41,9 +37,9 @@ data object EnemyCheater : Enemy() {
         hand.withIndex().sortedBy { -it.value.rank.value }.forEach { (cardIndex, card) ->
             if (card.rank == Rank.KING) {
                 game.enemyCaravans.forEach { enemyCaravan ->
-                    if (enemyCaravan.getValue() in 1..20) {
-                        val ten = enemyCaravan.cards.find { it.card.rank == Rank.TEN }
-                        if (ten != null && ten.getValue() == 10) {
+                    if (enemyCaravan.getValue() in listOf(10, 16)) {
+                        val ten = enemyCaravan.cards.find { it.card.rank == Rank.TEN && it.getValue() == 10 }
+                        if (ten != null && ten.canAddModifier(card)) {
                             ten.addModifier(game.enemyCResources.removeFromHand(cardIndex))
                             return
                         }
@@ -51,18 +47,9 @@ data object EnemyCheater : Enemy() {
                 }
             }
 
-            if (card.rank == Rank.JACK) {
-                val caravanToAttack = game.playerCaravans.filter { it.getValue() <= 26 }.maxByOrNull { it.getValue() }
-                val cardToJack = caravanToAttack?.cards?.maxByOrNull { it.getValue() }
-                if (cardToJack != null) {
-                    cardToJack.addModifier(game.enemyCResources.removeFromHand(cardIndex))
-                    return
-                }
-            }
-
             if (!card.rank.isFace()) {
                 game.enemyCaravans.sortedBy { -it.getValue() }.forEach { caravan ->
-                    if (caravan.cards.size < 2 && caravan.getValue() + card.rank.value <= 26) {
+                    if (caravan.size < 2 && caravan.getValue() + card.rank.value <= 26) {
                         if (caravan.canPutCardOnTop(card)) {
                             caravan.putCardOnTop(game.enemyCResources.removeFromHand(cardIndex))
                             return

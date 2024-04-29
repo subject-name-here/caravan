@@ -7,15 +7,14 @@ import kotlin.math.pow
 @Serializable
 class CardWithModifier(val card: Card) {
     private val modifiers: MutableList<Card> = mutableListOf()
-    fun addModifier(card: Card): Boolean {
-        if (card.rank != Rank.JACK && modifiers.size >= 3) {
-            return false
-        }
+    fun addModifier(card: Card) {
         modifiers.add(card)
         if (card.rank == Rank.JOKER) {
             hasActiveJoker = true
         }
-        return true
+    }
+    fun canAddModifier(card: Card): Boolean {
+        return card.isFace() && (modifiers.size < 3 || card.rank == Rank.JACK)
     }
 
     var hasActiveJoker: Boolean = false
@@ -30,7 +29,6 @@ class CardWithModifier(val card: Card) {
 
     fun hasJacks() = modifiers.any { it.rank == Rank.JACK }
 
-    fun hasModifiers() = modifiers.size > 0
     fun modifiersCopy() = modifiers.toList()
 
     fun getValue(): Int {

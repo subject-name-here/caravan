@@ -141,8 +141,8 @@ fun DeckSelection(
 
             Text(
                 text = "Win cards for custom deck by fighting enemies in PvE:" +
-                        "\n50% chance of winning card when using custom deck," +
-                        "\n100% - when playing balanced game." +
+                        "\n1 or 2 cards when using custom deck," +
+                        "\n5 cards when playing balanced game." +
                         "\nThe chance of winning _new_ card, however, is not 100%.",
                 Modifier.padding(12.dp),
                 textAlign = TextAlign.Center,
