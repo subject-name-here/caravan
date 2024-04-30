@@ -36,23 +36,47 @@ data object EnemyCheater : Enemy() {
 
         hand.withIndex().sortedBy { -it.value.rank.value }.forEach { (cardIndex, card) ->
             if (card.rank == Rank.KING) {
-                game.enemyCaravans.forEach { enemyCaravan ->
+                game.enemyCaravans.forEachIndexed { caravanIndex, enemyCaravan ->
                     if (enemyCaravan.getValue() in listOf(10, 16)) {
                         val ten = enemyCaravan.cards.find { it.card.rank == Rank.TEN && it.getValue() == 10 }
                         if (ten != null && ten.canAddModifier(card)) {
-                            ten.addModifier(game.enemyCResources.removeFromHand(cardIndex))
-                            return
+                            val otherCaravansIndices = game.enemyCaravans.indices.filter { it != caravanIndex }
+                            var score = 0
+                            fun check(p0: Int, e0: Int) {
+                                if (p0 in (21..26) && (p0 > e0 || e0 > 26)) {
+                                    score++
+                                }
+                            }
+                            otherCaravansIndices.forEach {
+                                check(game.playerCaravans[it].getValue(), game.enemyCaravans[it].getValue())
+                            }
+                            if (!(score == 2 && enemyCaravan.getValue() == 16)) {
+                                ten.addModifier(game.enemyCResources.removeFromHand(cardIndex))
+                                return
+                            }
                         }
                     }
                 }
             }
 
             if (!card.rank.isFace()) {
-                game.enemyCaravans.sortedBy { -it.getValue() }.forEach { caravan ->
+                game.enemyCaravans.sortedBy { -it.getValue() }.forEachIndexed { caravanIndex, caravan ->
                     if (caravan.size < 2 && caravan.getValue() + card.rank.value <= 26) {
                         if (caravan.canPutCardOnTop(card)) {
-                            caravan.putCardOnTop(game.enemyCResources.removeFromHand(cardIndex))
-                            return
+                            val otherCaravansIndices = game.enemyCaravans.indices.filter { it != caravanIndex }
+                            var score = 0
+                            fun check(p0: Int, e0: Int) {
+                                if (p0 in (21..26) && (p0 > e0 || e0 > 26)) {
+                                    score++
+                                }
+                            }
+                            otherCaravansIndices.forEach {
+                                check(game.playerCaravans[it].getValue(), game.enemyCaravans[it].getValue())
+                            }
+                            if (!(score == 2 && caravan.getValue() + card.rank.value in (21..26))) {
+                                caravan.putCardOnTop(game.enemyCResources.removeFromHand(cardIndex))
+                                return
+                            }
                         }
                     }
                 }
