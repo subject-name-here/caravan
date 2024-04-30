@@ -2,6 +2,7 @@ package com.unicorns.invisible.caravan.model.primitives
 
 import com.unicorns.invisible.caravan.model.CardBack
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 
 
 @Serializable
@@ -24,7 +25,12 @@ class CResources(private val deck: CustomDeck) {
         }
     }
 
-    fun removeFromHand(index: Int) = handMutable.removeAt(index)
+    @Transient
+    var onRemoveFromHand: () -> Unit = {}
+    fun removeFromHand(index: Int): Card {
+        onRemoveFromHand()
+        return handMutable.removeAt(index)
+    }
 
     fun getDeckBack() = deck.firstOrNull()?.back
     fun shuffleDeck() = deck.shuffle()

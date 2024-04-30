@@ -63,6 +63,7 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
             return
         }
         selectedCard = if (index == selectedCard) null else index
+        selectedCaravan = -1
     }
 
     val state1Enemy = rememberLazyListState()
@@ -134,7 +135,11 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
                         activity,
                         { selectedCard },
                         { selectedCaravan },
-                        { selectedCaravan = it },
+                        {
+                            selectedCaravan = it
+                            selectedCard = null
+                            caravansKey = !caravansKey
+                        },
                         { caravansKey = !caravansKey },
                         { enemyHandKey = !enemyHandKey },
                         {
@@ -181,6 +186,7 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
                         { selectedCaravan },
                         {
                             selectedCaravan = it
+                            selectedCard = null
                             caravansKey = !caravansKey
                         },
                         { caravansKey = !caravansKey },

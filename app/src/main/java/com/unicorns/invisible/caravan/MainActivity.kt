@@ -82,37 +82,7 @@ class MainActivity : AppCompatActivity() {
                     ShowRules(activity = this) { showRules = false }
                 }
                 showTutorial -> {
-                    // Tutorial(activity = this) { showTutorial = false }
-                    showTutorial = false
-                    var r = (0..2).random()
-                    if (save?.availableCards?.find { card -> card.back == CardBack.TOPS } == null) {
-                        r = 0
-                    }
-                    when (r) {
-                        0 -> {
-                            showAlertDialog("Move along.", "Tutorial is broken and not open to general public. " +
-                                    "As a compensation, Mr. House offers this Tops card deck to any dissatisfied visitor. " +
-                                    "Thank you for your cooperation.")
-                        }
-                        1 -> {
-                            showAlertDialog("You lost?", "Hey. The tutorial is closed, even for NCR citizens. " +
-                                    "Permissions are administered at Shady Sands. People say now the place is about to fall.")
-                        }
-                        2 -> {
-                            showAlertDialog("Watch yourself, profligate.", "The tutorial is closed by the order of Caesar. " +
-                                    "Even his mark is not enough for you to pass.")
-                        }
-                    }
-                    save?.let {
-                        if (it.availableDecks[CardBack.TOPS] != true) {
-                            it.availableDecks[CardBack.TOPS] = true
-                            save(this, it)
-                        }
-                        if (it.availableCards.none { card -> card.back == CardBack.TOPS }) {
-                            it.availableCards.addAll(CustomDeck(CardBack.TOPS).toList())
-                            save(this, it)
-                        }
-                    }
+                    Tutorial(activity = this) { showTutorial = false }
                 }
                 deckSelection -> {
                     DeckSelection(
