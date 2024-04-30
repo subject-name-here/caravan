@@ -24,6 +24,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.unicorns.invisible.caravan.model.CardBack
+import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.CustomDeck
 import com.unicorns.invisible.caravan.save.Save
 import com.unicorns.invisible.caravan.save.loadSave
@@ -33,6 +34,10 @@ import com.unicorns.invisible.caravan.save.save
 @Suppress("MoveLambdaOutsideParentheses")
 class MainActivity : AppCompatActivity() {
     var save: Save? = null
+
+    fun checkIfCustomDeckCanBeUsedInGame(playerCResources: CResources): Boolean {
+        return playerCResources.deckSize >= MIN_DECK_SIZE && playerCResources.numOfNumbers >= MIN_NUM_OF_NUMBERS
+    }
 
     // TODO: russian!
 
@@ -192,5 +197,10 @@ class MainActivity : AppCompatActivity() {
                 style = TextStyle(color = Color(getColor(R.color.colorPrimaryDark)), fontSize = 20.sp)
             )
         }
+    }
+
+    companion object {
+        const val MIN_DECK_SIZE = 30
+        const val MIN_NUM_OF_NUMBERS = 15
     }
 }

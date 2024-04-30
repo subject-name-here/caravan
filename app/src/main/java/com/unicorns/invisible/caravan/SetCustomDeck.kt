@@ -2,16 +2,21 @@ package com.unicorns.invisible.caravan
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -20,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
@@ -57,14 +63,19 @@ fun SetCustomDeck(
         } ?: false
     }
 
-    Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
-        Column(Modifier.fillMaxHeight(0.9f).weight(1f)) {
+    Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Top) {
+        var updater by remember { mutableStateOf(false) }
+        key(updater) {
+            ShowCharacteristics(activity)
+        }
+        Column(Modifier.fillMaxHeight(0.9f)) {
             CardBack.entries.forEach { back ->
                 val state = rememberLazyListState()
                 LazyRow(
                     Modifier
                         .padding(4.dp)
-                        .weight(1f).scrollbar(state, horizontal = true), state = state) lambda@ {
+                        .weight(1f)
+                        .scrollbar(state, horizontal = true), state = state) lambda@ {
                     if (activity.save?.availableDecks?.get(back) != true) {
                         return@lambda
                     }
@@ -84,6 +95,7 @@ fun SetCustomDeck(
                                     .clickable {
                                         toggleToCustomDeck(card)
                                         isSelected = !isSelected
+                                        updater = !updater
                                     }
                                     .border(
                                         width = (if (isSelected) 4 else 0).dp,
@@ -107,13 +119,39 @@ fun SetCustomDeck(
         }
         Text(
             text = "Back to Menu",
-            modifier = Modifier.clickable {
-                activity.save?.let {
-                    save(activity, activity.save!!)
+            modifier = Modifier
+                .clickable {
+                    activity.save?.let {
+                        save(activity, activity.save!!)
+                    }
+                    goBack()
                 }
-                goBack()
-            },
+                .fillMaxHeight().wrapContentHeight(),
+            textAlign = TextAlign.Center,
             style = TextStyle(color = Color(activity.getColor(R.color.colorPrimaryDark)), fontSize = 24.sp)
         )
+    }
+}
+
+@Composable
+fun ShowCharacteristics(activity: MainActivity) {
+    Row(Modifier.padding(8.dp), verticalAlignment = Alignment.CenterVertically) {
+        val deckSize = activity.save?.customDeck?.size ?: -1
+        val deckSizeMin = MainActivity.MIN_DECK_SIZE
+        val color1 = if (deckSize < deckSizeMin) Color.Red else Color(activity.getColor(R.color.colorPrimaryDark))
+        Text(text = "Deck size: $deckSize" +
+                "\n(must have at least $deckSizeMin)",
+            Modifier.fillMaxWidth(0.5f),
+            textAlign = TextAlign.Center,
+            style = TextStyle(color = color1, fontSize = 12.sp))
+
+        val nonFaces = activity.save?.customDeck?.count { !it.isFace() } ?: -1
+        val nonFacesMin = MainActivity.MIN_NUM_OF_NUMBERS
+        val color2 = if (nonFaces < nonFacesMin) Color.Red else Color(activity.getColor(R.color.colorPrimaryDark))
+        Text(text = "Number of non-faces: $nonFaces" +
+                "\n(must have at least $nonFacesMin)",
+            Modifier.fillMaxWidth(),
+            textAlign = TextAlign.Center,
+            style = TextStyle(color = color2, fontSize = 12.sp))
     }
 }

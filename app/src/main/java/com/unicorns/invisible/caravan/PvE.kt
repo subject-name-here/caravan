@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CheckboxColors
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -176,7 +177,20 @@ fun ShowPvE(
                         it.useCustomDeck = checkedCustomDeck
                         save(activity, it)
                     }
-                })
+                }, colors = CheckboxColors(
+                    checkedCheckmarkColor = Color(activity.getColor(R.color.colorPrimaryDark)),
+                    uncheckedCheckmarkColor = Color.Transparent,
+                    checkedBoxColor = Color(activity.getColor(R.color.colorPrimary)),
+                    uncheckedBoxColor = Color.Transparent,
+                    disabledCheckedBoxColor = Color.Red,
+                    disabledUncheckedBoxColor = Color.Red,
+                    disabledIndeterminateBoxColor = Color.Red,
+                    checkedBorderColor = Color(activity.getColor(R.color.colorPrimaryDark)),
+                    uncheckedBorderColor = Color(activity.getColor(R.color.colorPrimaryDark)),
+                    disabledBorderColor = Color.Red,
+                    disabledUncheckedBorderColor = Color.Red,
+                    disabledIndeterminateBorderColor = Color.Red,
+                ))
             }
 
             HorizontalDivider()
@@ -221,7 +235,7 @@ fun StartGame(
     showAlertDialog: (String, String) -> Unit,
     goBack: () -> Unit,
 ) {
-    if (playerCResources.deckSize < 30 || playerCResources.numOfNumbers < 15) {
+    if (!activity.checkIfCustomDeckCanBeUsedInGame(playerCResources)) {
         showAlertDialog("Custom deck is bad!", "Deck has less than 30 cards or less than 15 numbered cards!")
         goBack()
         return
