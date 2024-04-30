@@ -154,7 +154,7 @@ fun ShowPvE(
                 )
                 Spacer(modifier = Modifier.height(12.dp))
                 Text(
-                    text = "Hologram from Sierra Madre",
+                    text = "The Courier Six",
                     style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 16.sp),
                     modifier = Modifier.clickable {
                         showGameCheater = true
