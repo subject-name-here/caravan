@@ -57,6 +57,18 @@ data object EnemyCheater : Enemy() {
                     }
                 }
             }
+
+            if (card.rank == Rank.KING) {
+                game.playerCaravans.forEach { playerCaravan ->
+                    if (playerCaravan.getValue() in (13..26)) {
+                        val cardToKing = playerCaravan.cards.maxBy { it.getValue() }
+                        if (cardToKing.canAddModifier(card)) {
+                            cardToKing.addModifier(game.enemyCResources.removeFromHand(cardIndex))
+                            return
+                        }
+                    }
+                }
+            }
         }
 
         if (overWeightCaravans.isNotEmpty()) {

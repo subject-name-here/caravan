@@ -476,7 +476,7 @@ fun Caravans(
                         }
                     }
                     Rank.JACK.value, Rank.QUEEN.value, Rank.KING.value, Rank.JOKER.value -> {
-                        if (caravan.cards[position].canAddModifier(card)) {
+                        if (position in caravan.cards.indices && caravan.cards[position].canAddModifier(card)) {
                             caravan.cards[position].addModifier(game.playerCResources.removeFromHand(cardIndex))
                             onCaravanCardInserted()
                         }
