@@ -24,6 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -118,7 +119,7 @@ fun SetCustomDeck(
             }
         }
         Text(
-            text = "Back to Menu",
+            text = stringResource(id = R.string.menu_back),
             modifier = Modifier
                 .clickable {
                     activity.save?.let {
@@ -126,7 +127,8 @@ fun SetCustomDeck(
                     }
                     goBack()
                 }
-                .fillMaxHeight().wrapContentHeight(),
+                .fillMaxHeight()
+                .wrapContentHeight(),
             textAlign = TextAlign.Center,
             style = TextStyle(color = Color(activity.getColor(R.color.colorPrimaryDark)), fontSize = 24.sp)
         )
@@ -139,8 +141,7 @@ fun ShowCharacteristics(activity: MainActivity) {
         val deckSize = activity.save?.customDeck?.size ?: -1
         val deckSizeMin = MainActivity.MIN_DECK_SIZE
         val color1 = if (deckSize < deckSizeMin) Color.Red else Color(activity.getColor(R.color.colorPrimaryDark))
-        Text(text = "Deck size: $deckSize" +
-                "\n(must have at least $deckSizeMin)",
+        Text(text = stringResource(R.string.custom_deck_size, deckSize, deckSizeMin),
             Modifier.fillMaxWidth(0.5f),
             textAlign = TextAlign.Center,
             style = TextStyle(color = color1, fontSize = 12.sp))
@@ -148,8 +149,7 @@ fun ShowCharacteristics(activity: MainActivity) {
         val nonFaces = activity.save?.customDeck?.count { !it.isFace() } ?: -1
         val nonFacesMin = MainActivity.MIN_NUM_OF_NUMBERS
         val color2 = if (nonFaces < nonFacesMin) Color.Red else Color(activity.getColor(R.color.colorPrimaryDark))
-        Text(text = "Number of non-faces: $nonFaces" +
-                "\n(must have at least $nonFacesMin)",
+        Text(text = stringResource(R.string.custom_deck_non_faces, nonFaces, nonFacesMin),
             Modifier.fillMaxWidth(),
             textAlign = TextAlign.Center,
             style = TextStyle(color = color2, fontSize = 12.sp))

@@ -25,7 +25,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.primitives.CResources
-import com.unicorns.invisible.caravan.model.primitives.CustomDeck
 import com.unicorns.invisible.caravan.save.Save
 import com.unicorns.invisible.caravan.save.loadSave
 import com.unicorns.invisible.caravan.save.save
@@ -38,8 +37,6 @@ class MainActivity : AppCompatActivity() {
     fun checkIfCustomDeckCanBeUsedInGame(playerCResources: CResources): Boolean {
         return playerCResources.deckSize >= MIN_DECK_SIZE && playerCResources.numOfNumbers >= MIN_NUM_OF_NUMBERS
     }
-
-    // TODO: russian!
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -106,6 +103,7 @@ class MainActivity : AppCompatActivity() {
                         { deckSelection = true },
                         { showAbout = true },
                         { showGameStats = true },
+                        { showAlertDialog(getString(R.string.pvp_stub_header), getString(R.string.pvp_stub_body)) },
                         { showTutorial = true },
                         { showRules = true }
                     )
@@ -119,6 +117,7 @@ class MainActivity : AppCompatActivity() {
         showDeckSelection: () -> Unit,
         showAbout: () -> Unit,
         showPvE: () -> Unit,
+        showPvP: () -> Unit,
         showTutorial: () -> Unit,
         showRules: () -> Unit,
     ) {
@@ -128,39 +127,47 @@ class MainActivity : AppCompatActivity() {
             modifier = Modifier.fillMaxSize()
         ) {
             Text(
-                text = "PvE",
+                text = getString(R.string.menu_pve),
                 modifier = Modifier.clickable {
                     showPvE()
                 },
                 style = TextStyle(color = Color(getColor(R.color.colorPrimaryDark)), fontSize = 20.sp)
             )
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(20.dp))
             Text(
-                text = "Tutorial",
+                text = getString(R.string.menu_pvp),
+                modifier = Modifier.clickable {
+                    showPvP()
+                },
+                style = TextStyle(color = Color(getColor(R.color.colorPrimaryDark)), fontSize = 20.sp)
+            )
+            Spacer(modifier = Modifier.height(20.dp))
+            Text(
+                text = getString(R.string.menu_tutorial),
                 modifier = Modifier.clickable {
                     showTutorial()
                 },
                 style = TextStyle(color = Color(getColor(R.color.colorPrimaryDark)), fontSize = 20.sp)
             )
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(20.dp))
             Text(
-                text = "Rules",
+                text = getString(R.string.menu_rules),
                 modifier = Modifier.clickable {
                     showRules()
                 },
                 style = TextStyle(color = Color(getColor(R.color.colorPrimaryDark)), fontSize = 20.sp)
             )
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(20.dp))
             Text(
-                text = "Deck Settings",
+                text = getString(R.string.menu_deck),
                 modifier = Modifier.clickable {
                     showDeckSelection()
                 },
                 style = TextStyle(color = Color(getColor(R.color.colorPrimaryDark)), fontSize = 20.sp)
             )
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(20.dp))
             Text(
-                text = "About",
+                text = getString(R.string.menu_about),
                 modifier = Modifier.clickable {
                     showAbout()
                 },

@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
@@ -23,6 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -68,7 +68,9 @@ fun DeckSelection(
 
     val state = rememberLazyListState()
     LazyColumn(
-        modifier = Modifier.scrollbar(state, horizontal = false).fillMaxSize(),
+        modifier = Modifier
+            .scrollbar(state, horizontal = false)
+            .fillMaxSize(),
         state = state,
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
@@ -76,7 +78,7 @@ fun DeckSelection(
         item {
             Spacer(modifier = Modifier.height(12.dp))
             Text(
-                text = "Select the Deck",
+                text = stringResource(R.string.deck_select),
                 style = TextStyle(color = Color(activity.getColor(R.color.colorPrimaryDark)), fontSize = 24.sp)
             )
             Spacer(modifier = Modifier.height(12.dp))
@@ -122,7 +124,7 @@ fun DeckSelection(
             Spacer(modifier = Modifier.height(24.dp))
 
             Text(
-                text = "Win new decks by defeating enemies in balanced game (w/o using custom deck).",
+                text = stringResource(R.string.deck_select_about),
                 Modifier.padding(12.dp),
                 textAlign = TextAlign.Center,
                 style = TextStyle(color = Color(activity.getColor(R.color.colorPrimaryDark)), fontSize = 16.sp)
@@ -131,7 +133,7 @@ fun DeckSelection(
             HorizontalDivider()
             Spacer(modifier = Modifier.height(20.dp))
             Text(
-                text = "Set Custom Deck",
+                text = stringResource(R.string.deck_custom),
                 modifier = Modifier.clickable {
                     setCustomDeck = true
                 },
@@ -140,10 +142,7 @@ fun DeckSelection(
             Spacer(modifier = Modifier.height(12.dp))
 
             Text(
-                text = "Win cards for custom deck by fighting enemies in PvE:" +
-                        "\n1 or 2 cards when using custom deck," +
-                        "\n5 cards when playing balanced game." +
-                        "\nThe chance of winning _new_ card, however, is not 100%.",
+                text = stringResource(R.string.deck_custom_about),
                 Modifier.padding(12.dp),
                 textAlign = TextAlign.Center,
                 style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 14.sp)
@@ -152,7 +151,7 @@ fun DeckSelection(
             HorizontalDivider()
             Spacer(modifier = Modifier.height(32.dp))
             Text(
-                text = "Back to Menu",
+                text = stringResource(R.string.menu_back),
                 modifier = Modifier.clickable {
                     goBack()
                 },

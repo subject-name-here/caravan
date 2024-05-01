@@ -12,6 +12,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.GameSaver
@@ -72,42 +73,51 @@ fun Tutorial(activity: MainActivity, goBack: () -> Unit) {
     key(updater) {
         when (tutorialKey) {
             0 -> {
-                showAlertDialog("Kyle says:", "Howdy! Fine hot day for a Sarsaparilla, ain't it?\n" +
-                        "Days like this are the reason why I ain't leaving Mojave, not for anything.")
+                showAlertDialog(
+                    stringResource(R.string.kyle),
+                    stringResource(R.string.tutorial_1_1) + stringResource(R.string.tutorial_1_2)
+                )
             }
             1 -> {
-                showAlertDialog("Kyle says:", "While we waiting, how about a game of Caravan?")
+                showAlertDialog(stringResource(R.string.kyle), stringResource(R.string.tutorial_2))
             }
             2 -> {
-                showAlertDialog("Kyle says:", "You don't know rules? Ain't a problem. Gonna teach you while we are waiting.")
+                showAlertDialog(stringResource(R.string.kyle), stringResource(R.string.tutorial_3))
             }
             3 -> {
-                showAlertDialog("Kyle says:", "There are many rules, but they mostly differ on how you get deck.")
+                showAlertDialog(stringResource(R.string.kyle), stringResource(R.string.tutorial_4))
             }
             4 -> {
-                showAlertDialog("Kyle says:", "Your deck now has only ten cards. That is only for teaching you. In the field your deck is bigger.")
+                showAlertDialog(stringResource(R.string.kyle), stringResource(R.string.tutorial_5))
             }
             5 -> {
-                showAlertDialog("Kyle says:", "Usually people of Mojave play with custom decks.\n" +
-                        "I then say 'sticks and stones' and whip out the deck of 6s and 10s and Ks.\n" +
-                        "After I beat them, they don't play with me no more. That's why I prefer balanced rules.")
+                showAlertDialog(
+                    stringResource(R.string.kyle),
+                    stringResource(R.string.tutorial_6_1) +
+                            stringResource(R.string.tutorial_6_2) +
+                            stringResource(R.string.tutorial_6_3)
+                )
             }
             6 -> {
-                showAlertDialog("Kyle says:", "In balanced rules both players start with full deck o' 54. It is more - you guessed it - balanced.")
+                showAlertDialog(stringResource(R.string.kyle), stringResource(R.string.tutorial_7))
             }
             7 -> {
-                showAlertDialog("Kyle says:", "Each player has three caravans - left, central and right - to sell.\n" +
-                        "Caravans in the same column - opposing - are competing with each other.")
+                showAlertDialog(
+                    stringResource(R.string.kyle),
+                    stringResource(R.string.tutorial_8_1) + stringResource(R.string.tutorial_8_2)
+                )
             }
             8 -> {
-                showAlertDialog("Kyle says:", "The game starts like this: we take 8 cards from our decks to our hand.\n" +
-                        "Then we have to start the caravans by placing ace or 2-10 card on top of each our caravan.")
+                showAlertDialog(
+                    stringResource(R.string.kyle),
+                    stringResource(R.string.tutorial_9_1) + stringResource(R.string.tutorial_9_2)
+                )
             }
             9 -> {
-                showAlertDialog("Kyle says:", "To place card on top of a caravan, select it in your hand and then click the brown rectangle with yellow border.")
+                showAlertDialog(stringResource(R.string.kyle), stringResource(R.string.tutorial_10))
             }
             10 -> {
-                showAlertDialog("Kyle says:", "Now start your caravans.")
+                showAlertDialog(stringResource(R.string.kyle), stringResource(R.string.tutorial_11))
             }
             11 -> {
                 if (game.playerCaravans.all { it.getValue() > 0 }) {
@@ -115,34 +125,37 @@ fun Tutorial(activity: MainActivity, goBack: () -> Unit) {
                 }
             }
             12 -> {
-                showAlertDialog("Kyle says:", "Good job.")
+                showAlertDialog(stringResource(R.string.kyle), stringResource(R.string.tutorial_12))
             }
             13 -> {
-                showAlertDialog("Kyle says:", "You might ask: 'What if all 8 cards are, let's say, Jacks and Kings, and no aces or 2-10?'")
+                showAlertDialog(stringResource(R.string.kyle), stringResource(R.string.tutorial_13))
             }
             14 -> {
-                showAlertDialog("Kyle says:", "Well, if you play with someone else, you'd have to reshuffle your deck.\n" +
-                        "Me though, I never had that.")
+                showAlertDialog(stringResource(R.string.kyle), stringResource(R.string.tutorial_14))
             }
             15 -> {
-                showAlertDialog("Kyle says:", "Sometimes there is a rule that you can discard the card during the opening phase.\n" +
-                        "If you ask me, it seems like a huge advantage, so we ain't.")
+                showAlertDialog(
+                    stringResource(R.string.kyle),
+                    stringResource(R.string.tutorial_15_1) + stringResource(R.string.tutorial_15_2)
+                )
             }
             16 -> {
-                showAlertDialog("Kyle says:", "Now the game begins truly. You have choice of four.")
+                showAlertDialog(stringResource(R.string.kyle), stringResource(R.string.tutorial_16))
             }
             17 -> {
-                showAlertDialog("Kyle says:", "Let's start with discarding cards from your hand. It is the easiest one.")
+                showAlertDialog(stringResource(R.string.kyle), stringResource(R.string.tutorial_17))
             }
             18 -> {
-                showAlertDialog("Kyle says:", "Select any card, and the button 'Discard card' will appear on your right. When you press it, the card is gone.")
+                showAlertDialog(stringResource(R.string.kyle), stringResource(R.string.tutorial_18))
             }
             19 -> {
-                showAlertDialog("Kyle says:", "Now, discard any face card. Preferably Queen or Joker, because King and Jack are valuable.")
+                showAlertDialog(stringResource(R.string.kyle), stringResource(R.string.tutorial_19))
             }
             20 -> {
-                showAlertDialog("Warning!", "You can do, actually, whatever you want. You can discard non-face card or put card onto caravan.\n" +
-                        "However, it is like travelling to Vegas through north - may break the game, difficult and not worth it ;)")
+                showAlertDialog(
+                    stringResource(R.string.tutorial_warning), stringResource(R.string.tutorial_20_1) +
+                            stringResource(R.string.tutorial_20_2)
+                )
             }
             21 -> {
                 if (game.playerCResources.deckSize < 2) {
@@ -150,36 +163,42 @@ fun Tutorial(activity: MainActivity, goBack: () -> Unit) {
                 }
             }
             22 -> {
-                showAlertDialog("Kyle says:", "Nice. Have you noticed that card was added in your hand? " +
-                        "There are always 5 cards in your hand, unless your deck is empty.")
+                showAlertDialog(stringResource(R.string.kyle),
+                    stringResource(R.string.tutorial_21_1) +
+                            stringResource(R.string.tutorial_21_2)
+                )
             }
             23 -> {
-                showAlertDialog("Kyle says:", "Now let's talk about how to build caravan. You do it with aces or 2-10 cards.")
+                showAlertDialog(stringResource(R.string.kyle), stringResource(R.string.tutorial_22))
             }
             24 -> {
-                showAlertDialog("Kyle says:", "Each of those cards has a value: 1 for ace, 2 for 2,... 10 for 10.")
+                showAlertDialog(stringResource(R.string.kyle), stringResource(R.string.tutorial_23))
             }
             25 -> {
-                showAlertDialog("Kyle says:", "However, you cannot just put any card on top. You cannot put card of the same rank as the top card.")
+                showAlertDialog(stringResource(R.string.kyle), stringResource(R.string.tutorial_24))
             }
             26 -> {
-                showAlertDialog("Kyle says:", "Also, you have to follow one of two rules:")
+                showAlertDialog(stringResource(R.string.kyle), stringResource(R.string.tutorial_25))
             }
             27 -> {
-                showAlertDialog("Kyle says:", "either the card you want to add has the same suit as the card on top of the caravan, " +
-                        "or its rank follows numerical sequence.")
+                showAlertDialog(
+                    stringResource(R.string.kyle),
+                    stringResource(R.string.tutorial_26_1) + stringResource(R.string.tutorial_26_2)
+                )
             }
             28 -> {
-                showAlertDialog("Kyle says:", "Numerical sequence is determined by the top two cards of the caravan.\n" +
-                        "If the top rank is greater than pre-top card rank, the new card must have value greater than the top.\n" +
-                        "If the top rank is less than pre-top card rank, the new card must have value less than the top.\n\n" +
-                        "In raider's terms: if it's bigger - go even bigger, if it's smaller - go even smaller.")
+                showAlertDialog(stringResource(R.string.kyle),
+                    stringResource(R.string.tutorial_27_1) +
+                            stringResource(R.string.tutorial_27_2) +
+                            stringResource(R.string.tutorial_27_3) +
+                            stringResource(R.string.tutorial_27_4)
+                )
             }
             29 -> {
-                showAlertDialog("Kyle says:", "Now put all non-face cards onto caravans. Try to build a long one. Show me how you understood the rules.")
+                showAlertDialog(stringResource(R.string.kyle), stringResource(R.string.tutorial_28))
             }
             30 -> {
-                showAlertDialog("Hint!", "You can discard cards, Kyle won't notice.")
+                showAlertDialog(stringResource(R.string.tutorial_hint), stringResource(R.string.tutorial_29))
             }
             31 -> {
                 if (game.playerCResources.hand.all { it.isFace() }) {
@@ -187,16 +206,16 @@ fun Tutorial(activity: MainActivity, goBack: () -> Unit) {
                 }
             }
             32 -> {
-                showAlertDialog("Kyle says:", "Well done. Building caravan is the most difficult part of the game.")
+                showAlertDialog(stringResource(R.string.kyle), stringResource(R.string.tutorial_30))
             }
             33 -> {
-                showAlertDialog("Kyle says:", "You can also disband caravans. You should do it, if its value is too big to handle with Jacks and Jokers.")
+                showAlertDialog(stringResource(R.string.kyle), stringResource(R.string.tutorial_31))
             }
             34 -> {
-                showAlertDialog("Kyle says:", "To disband caravan, tap its value. To your right the button will appear. Press it, and the caravan is gone.")
+                showAlertDialog(stringResource(R.string.kyle), stringResource(R.string.tutorial_32))
             }
             35 -> {
-                showAlertDialog("Kyle says:", "Disband all your caravans.")
+                showAlertDialog(stringResource(R.string.kyle), stringResource(R.string.tutorial_33))
             }
             36 -> {
                 if (game.playerCaravans.all { it.getValue() == 0 }) {
@@ -204,42 +223,40 @@ fun Tutorial(activity: MainActivity, goBack: () -> Unit) {
                 }
             }
             37 -> {
-                showAlertDialog("Kyle says:", "Now let us talk about Jacks, Queens, Kings and Jokers.")
+                showAlertDialog(stringResource(R.string.kyle), stringResource(R.string.tutorial_34))
             }
             38 -> {
-                showAlertDialog("Kyle says:", "You put them not on top of caravan, but on one of caravan's cards. Hell, even on the cards from my caravan.")
+                showAlertDialog(stringResource(R.string.kyle), stringResource(R.string.turorial_35))
             }
             39 -> {
-                showAlertDialog("Kyle says:", "First of all: you can put only three cards on a card, unless it is Jack.")
+                showAlertDialog(stringResource(R.string.kyle), stringResource(R.string.tutorial_36))
             }
             40 -> {
-                showAlertDialog("Kyle says:", "King, if you put it on a card, doubles the total value of that card.")
+                showAlertDialog(stringResource(R.string.kyle), stringResource(R.string.tutorial_37))
             }
             41 -> {
-                showAlertDialog("Kyle says:", "Jack just removes the card from caravan, with all its face cards.")
+                showAlertDialog(stringResource(R.string.kyle), stringResource(R.string.turorial_38))
             }
             42 -> {
-                showAlertDialog("Kyle says:", "Queen reverses the current numerical direction of the caravan, and changes the suit of the caravan to that of the Queen.")
+                showAlertDialog(stringResource(R.string.kyle), stringResource(R.string.tutorial_39))
             }
             43 -> {
-                showAlertDialog("Kyle says:", "Finally, Joker. It is like Jack, but way more powerful.")
+                showAlertDialog(stringResource(R.string.kyle), stringResource(R.string.tutorial_40))
             }
             44 -> {
-                showAlertDialog("Kyle says:", "If you put Joker onto ace of some suit, " +
-                        "all other number cards from both player's caravans that share the same suit of the ace are removed.")
+                showAlertDialog(stringResource(R.string.kyle), stringResource(R.string.tutorial_41))
             }
             45 -> {
-                showAlertDialog("Kyle says:", "If you put Joker onto 2-10 card, " +
-                        "all other number cards of the same rank from both player's caravans are removed.")
+                showAlertDialog(stringResource(R.string.kyle), stringResource(R.string.tutorial_42))
             }
             46 -> {
-                showAlertDialog("Kyle says:", "The card you have put Joker onto is safe for now. However, if any other Joker is played, that card can be removed.")
+                showAlertDialog(stringResource(R.string.kyle), stringResource(R.string.tutorial_43))
             }
             47 -> {
-                showAlertDialog("Kyle says:", "Hard, I know. But it is the hardest part - remembering what face cards do.")
+                showAlertDialog(stringResource(R.string.kyle), stringResource(R.string.tutorial_44))
             }
             48 -> {
-                showAlertDialog("Kyle says:", "Now get rid of all cards from your hand. Use face cards on my cards.")
+                showAlertDialog(stringResource(R.string.kyle), stringResource(R.string.tutorial_45))
             }
             49 -> {
                 if (game.playerCResources.hand.isEmpty()) {
@@ -247,39 +264,43 @@ fun Tutorial(activity: MainActivity, goBack: () -> Unit) {
                 }
             }
             50 -> {
-                showAlertDialog("Kyle says:", "Congratulations! You have lost!")
+                showAlertDialog(stringResource(R.string.kyle), stringResource(R.string.tutorial_46))
             }
             51 -> {
-                showAlertDialog("Kyle says:", "You have no cards to build caravan with. It means I win.")
+                showAlertDialog(stringResource(R.string.kyle), stringResource(R.string.tutorial_47))
             }
             52 -> {
-                showAlertDialog("Kyle says:", "However, it is rare for the game of Caravan to end like this.")
+                showAlertDialog(stringResource(R.string.kyle), stringResource(R.string.tutorial_48))
             }
             53 -> {
-                showAlertDialog("Kyle says:", "The game's target is to sell two or three of your caravans at a higher sum, or \"bid\", " +
-                        "than the opposing caravan. The bid is determined by the cards in caravan.")
+                showAlertDialog(
+                    stringResource(R.string.kyle),
+                    stringResource(R.string.tutorial_49_1) + stringResource(R.string.tutorial_49_2)
+                )
             }
             54 -> {
-                showAlertDialog("Kyle says:", "A caravan is considered sold when its bid within 21-26 range; any bid that is higher or lower is not a sold caravan.")
+                showAlertDialog(stringResource(R.string.kyle), stringResource(R.string.tutorial_50))
             }
             55 -> {
-                showAlertDialog("Kyle says:", "Usually, the game is over when in each of opposing caravan pairs one of the caravan is sold at the higher bid.")
+                showAlertDialog(stringResource(R.string.kyle), stringResource(R.string.tutorial_51))
             }
             56 -> {
-                showAlertDialog("Kyle says:", "If two caravans are sold with the same bid, the game continues until one of caravans has higher bid, but no more than 26.")
+                showAlertDialog(stringResource(R.string.kyle), stringResource(R.string.tutorial_52))
             }
             57 -> {
-                showAlertDialog("Kyle says:", "That's it. I am not going to tell all my tricks, you should figure the game out yourself.")
+                showAlertDialog(stringResource(R.string.kyle), stringResource(R.string.tutorial_53))
             }
             58 -> {
-                showAlertDialog("Kyle says:", "Oh, and you can have this deck. It's from the Tops casino. Won it in blackjack.")
+                showAlertDialog(stringResource(R.string.kyle), stringResource(R.string.tutorial_54))
             }
             59 -> {
-                showAlertDialog("Kyle says:", "Know what they say? Casino may be called Tops, but when you leave it, you're at the rock Bottoms. " +
-                        "The deck is all I managed to win that day.")
+                showAlertDialog(
+                    stringResource(R.string.kyle),
+                    stringResource(R.string.tutorial_55_1) + stringResource(R.string.tutorial_55_2)
+                )
             }
             60 -> {
-                showAlertDialog("Kyle says:", "See ya round.")
+                showAlertDialog(stringResource(R.string.kyle), stringResource(R.string.tutorial_56))
             }
             else -> {
                 activity.save?.let { save ->

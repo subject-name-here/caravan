@@ -33,6 +33,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.layout
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -119,7 +120,7 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
                     }
                     Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxSize()) {
                         Text(
-                            text = "Back to Menu",
+                            text = stringResource(R.string.back_to_menu),
                             modifier = Modifier
                                 .clickable {
                                     goBack()
@@ -221,7 +222,7 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
                 }
                 Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxSize()) {
                     Text(
-                        text = "Back to Menu",
+                        text = stringResource(R.string.back_to_menu),
                         modifier = Modifier
                             .clickable {
                                 goBack()
@@ -297,7 +298,8 @@ fun CaravanOnField(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
                 .fillMaxHeight(0.4f)
-                .fillMaxWidth().caravanScrollbar(state)
+                .fillMaxWidth()
+                .caravanScrollbar(state)
         ) {
             itemsIndexed(caravan.cards.reversed()) { index, it ->
                 Box(modifier = Modifier
@@ -369,7 +371,8 @@ fun CaravanOnField(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
                 .fillMaxHeight()
-                .fillMaxWidth().caravanScrollbar(state, hasNewCardPlaceholder = true)
+                .fillMaxWidth()
+                .caravanScrollbar(state, hasNewCardPlaceholder = true)
         ) {
             itemsIndexed(caravan.cards) { index, it ->
                 Box(modifier = Modifier
@@ -555,10 +558,10 @@ fun Caravans(
             val text = when {
                 game.isOver() || !game.isPlayerTurn || game.isInitStage() -> ""
                 getSelectedCard() != null -> {
-                    "DISCARD CARD"
+                    stringResource(R.string.discard_card)
                 }
                 getSelectedCaravan() in (0..2) -> {
-                    "DROP CARAVAN #${getSelectedCaravan() + 1}"
+                    stringResource(R.string.drop_caravan, getSelectedCaravan() + 1)
                 }
                 else -> ""
             }

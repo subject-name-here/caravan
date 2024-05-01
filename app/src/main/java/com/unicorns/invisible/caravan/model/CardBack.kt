@@ -1,5 +1,7 @@
 package com.unicorns.invisible.caravan.model
 
+import com.unicorns.invisible.caravan.R
+
 enum class CardBack {
     STANDARD,
     TOPS,
@@ -19,12 +21,12 @@ enum class CardBack {
         }
     }
 
-    fun getDeckName(): String = when (this) {
-        STANDARD -> "standard deck"
-        TOPS -> "Tops deck"
-        ULTRA_LUXE -> "Ultra-Luxe deck"
-        GOMORRAH -> "Gomorrah deck"
-        LUCKY_38 -> "Lucky 38 deck"
-        SIERRA_MADRE -> "Sierra Madre deck"
+    fun getDeckName(): Int = when (this) {
+        STANDARD -> R.string.standard_deck_name
+        TOPS -> R.string.tops_deck_name
+        ULTRA_LUXE -> R.string.ultra_luxe_deck_name
+        GOMORRAH -> R.string.gomorrah_deck_name
+        LUCKY_38 -> R.string.lucky_38_deck_name
+        SIERRA_MADRE -> R.string.sierra_madre_deck_name
     }
 }

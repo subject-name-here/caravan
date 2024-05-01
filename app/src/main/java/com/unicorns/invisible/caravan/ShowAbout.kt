@@ -14,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -32,27 +33,28 @@ fun ShowAbout(activity: MainActivity, goBack: () -> Unit) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
         modifier = Modifier
-            .fillMaxSize().padding(horizontal = 8.dp)
+            .fillMaxSize()
+            .padding(horizontal = 8.dp)
     ) {
         Text(
-            text = "Caravan is the card game from video game \"Fallout: New Vegas\", created by Obsidian and Bethesda.",
+            text = stringResource(R.string.about_1),
             style = TextStyle(color = Color(activity.getColor(R.color.colorPrimaryDark)), fontSize = 20.sp, textAlign = TextAlign.Center)
         )
         Spacer(modifier = Modifier.height(16.dp))
         Text(
-            text = "This port is created by subject_name_here, who is in no way affiliated with the creators of the original game.",
+            text = stringResource(R.string.about_2),
             style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 20.sp, textAlign = TextAlign.Center)
         )
         Spacer(modifier = Modifier.height(16.dp))
 
         val annotatedString = buildAnnotatedString {
-            append("If you want to request some features or report bugs, contact me at ")
+            append(stringResource(R.string.about_3_1))
             pushStringAnnotation(tag = "e-mail", annotation = "mailto:unicornsinvisible@gmail.com")
             withStyle(style = SpanStyle(color = Color(activity.getColor(R.color.colorAccent)), textDecoration = TextDecoration.Underline)) {
                 append("unicornsinvisible@gmail.com")
             }
             pop()
-            append(". You can also leave a review in Play Store.")
+            append(stringResource(R.string.about_3_2))
         }
         val uriHandler = LocalUriHandler.current
         ClickableText(text = annotatedString,
@@ -65,13 +67,13 @@ fun ShowAbout(activity: MainActivity, goBack: () -> Unit) {
         Spacer(modifier = Modifier.height(16.dp))
 
         val annotatedString2 = buildAnnotatedString {
-            append("The Caravan rules and tutorial are heavily based on ")
+            append(stringResource(R.string.about_4_1))
             pushStringAnnotation(tag = "reddit", annotation = "https://www.reddit.com/r/cardgames/comments/97c7g2/caravan_card_game_in_reallife_detailed_rules/")
             withStyle(style = SpanStyle(color = Color(activity.getColor(R.color.colorAccent)), textDecoration = TextDecoration.Underline)) {
-                append("this Reddit post")
+                append(stringResource(R.string.about_4_2))
             }
             pop()
-            append(". You can thank its creator by upvote.")
+            append(stringResource(R.string.about_4_3))
         }
         ClickableText(text = annotatedString2,
             style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 20.sp, textAlign = TextAlign.Center),
@@ -83,7 +85,7 @@ fun ShowAbout(activity: MainActivity, goBack: () -> Unit) {
 
         Spacer(modifier = Modifier.height(48.dp))
         Text(
-            text = "Back to Menu",
+            text = stringResource(R.string.menu_back),
             modifier = Modifier.clickable {
                 goBack()
             },
