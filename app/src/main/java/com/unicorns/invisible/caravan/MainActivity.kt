@@ -103,7 +103,6 @@ class MainActivity : AppCompatActivity() {
                         { deckSelection = true },
                         { showAbout = true },
                         { showGameStats = true },
-                        { showAlertDialog(getString(R.string.pvp_stub_header), getString(R.string.pvp_stub_body)) },
                         { showTutorial = true },
                         { showRules = true }
                     )
@@ -117,7 +116,6 @@ class MainActivity : AppCompatActivity() {
         showDeckSelection: () -> Unit,
         showAbout: () -> Unit,
         showPvE: () -> Unit,
-        showPvP: () -> Unit,
         showTutorial: () -> Unit,
         showRules: () -> Unit,
     ) {
@@ -130,14 +128,6 @@ class MainActivity : AppCompatActivity() {
                 text = getString(R.string.menu_pve),
                 modifier = Modifier.clickable {
                     showPvE()
-                },
-                style = TextStyle(color = Color(getColor(R.color.colorPrimaryDark)), fontSize = 20.sp)
-            )
-            Spacer(modifier = Modifier.height(20.dp))
-            Text(
-                text = getString(R.string.menu_pvp),
-                modifier = Modifier.clickable {
-                    showPvP()
                 },
                 style = TextStyle(color = Color(getColor(R.color.colorPrimaryDark)), fontSize = 20.sp)
             )

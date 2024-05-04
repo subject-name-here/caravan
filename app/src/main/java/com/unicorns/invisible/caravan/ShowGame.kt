@@ -504,7 +504,7 @@ fun Caravans(
         fun CaravansColumn(num: Int, enemyLazyListState: LazyListState, playerLazyListState: LazyListState) {
             Column(modifier = Modifier
                 .weight(0.25f)
-                .fillMaxHeight()) {
+                .fillMaxHeight().padding(6.dp)) {
                 CaravanOnField(activity,
                     game.enemyCaravans[num],
                     { game.playerCaravans[num].getValue() },

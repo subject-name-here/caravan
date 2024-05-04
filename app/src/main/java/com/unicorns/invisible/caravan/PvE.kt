@@ -36,6 +36,7 @@ import com.unicorns.invisible.caravan.model.enemy.Enemy38
 import com.unicorns.invisible.caravan.model.enemy.EnemyCheater
 import com.unicorns.invisible.caravan.model.enemy.EnemyEasy
 import com.unicorns.invisible.caravan.model.enemy.EnemyMedium
+import com.unicorns.invisible.caravan.model.enemy.EnemyQueen
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.Card
 import com.unicorns.invisible.caravan.model.primitives.CustomDeck
@@ -55,6 +56,7 @@ fun ShowPvE(
     var showGameMedium by rememberSaveable { mutableStateOf(false) }
     var showGame38 by rememberSaveable { mutableStateOf(false) }
     var showGameCheater by rememberSaveable { mutableStateOf(false) }
+    var showGameQueen by rememberSaveable { mutableStateOf(false) }
 
     var checkedCustomDeck by rememberSaveable { mutableStateOf(activity.save?.useCustomDeck ?: false) }
     fun getPlayerDeck(): CResources {
@@ -106,6 +108,17 @@ fun ShowPvE(
             showGameCheater = false
         }
         return
+    } else if (showGameQueen) {
+        StartGame(
+            activity = activity,
+            playerCResources = getPlayerDeck(),
+            isCustom = checkedCustomDeck,
+            enemy = EnemyQueen,
+            showAlertDialog = showAlertDialog
+        ) {
+            showGameQueen = false
+        }
+        return
     }
 
     val state = rememberLazyListState()
@@ -142,6 +155,14 @@ fun ShowPvE(
                     style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 16.sp),
                     modifier = Modifier.clickable {
                         showGameMedium = true
+                    }
+                )
+                Spacer(modifier = Modifier.height(12.dp))
+                Text(
+                    text = stringResource(R.string.pve_enemy_queen),
+                    style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 16.sp),
+                    modifier = Modifier.clickable {
+                        showGameQueen = true
                     }
                 )
                 Spacer(modifier = Modifier.height(12.dp))

@@ -28,11 +28,7 @@
     <string name="gomorrah_deck_name">Gomorrah deck</string>
     <string name="sierra_madre_deck_name">Sierra Madre deck</string>
 
-    <string name="pvp_stub_header">Ring-a-ding-ding, baby.</string>
-    <string name="pvp_stub_body">I\'ve got your back.</string>
-
     <string name="menu_pve">Quick game</string>
-    <string name="menu_pvp">Find a worthy opponent!</string>
     <string name="menu_tutorial">Tutorial</string>
     <string name="menu_rules">Rules</string>
     <string name="menu_deck">Deck Settings</string>
@@ -51,6 +47,7 @@
     <string name="pve_select_enemy">Select the Enemy</string>
     <string name="pve_enemy_easy">Ultra-Luxe visitor</string>
     <string name="pve_enemy_medium">Thug from Gomorrah</string>
+    <string name="pve_enemy_queen">Swank form Tops</string>
     <string name="pve_enemy_38">Securitron P373</string>
     <string name="pve_enemy_cheater">Courier Six</string>
     <string name="pve_use_custom_deck">Use Custom Deck</string>
@@ -64,7 +61,7 @@
     <string name="result">Result</string>
     <string name="you_lose">You lose!</string>
     <string name="you_have_unlocked_deck">\nYou have unlocked %1$s!</string>
-    <string name="you_must_unlock_deck">\nTo have chance of winning card from %1$s deck, you must defeat the enemy w/o custom deck!</string>
+    <string name="you_must_unlock_deck">\nTo have chance of winning card from %1$s, you must defeat the enemy w/o custom deck!</string>
     <string name="your_prize_cards_from">\nYour prize - cards from %1$s:\n</string>
 
     <string name="new_card">New: %1$s.\n</string>
@@ -146,16 +143,12 @@
     <string name="tutorial_46">Congratulations! You have lost!</string>
     <string name="tutorial_47">You have no cards to build caravan with. It means I win.</string>
     <string name="tutorial_48">However, it is rare for the game of Caravan to end like this.</string>
-    <string name="tutorial_49_1">"The game's target is to sell two or three of your caravans at a higher sum, or \"bid\", "</string>
+    <string name="tutorial_49_1">"The game\'s target is to sell two or three of your caravans at a higher sum, or \"bid\", "</string>
     <string name="tutorial_49_2">than the opposing caravan. The bid is determined by the cards in caravan.</string>
     <string name="tutorial_50">A caravan is considered sold when its bid within 21–26 range; any bid that is higher or lower is not a sold caravan.</string>
     <string name="tutorial_51">Usually, the game is over when in each of opposing caravan pairs one of the caravan is sold at the higher bid.</string>
     <string name="tutorial_52">If two caravans are sold with the same bid, the game continues until one of caravans has higher bid, but no more than 26.</string>
     <string name="tutorial_53">That\'s it. I am not going to tell all my tricks, you should figure the game out yourself.</string>
-    <string name="tutorial_54">Oh, and you can have this deck. It\'s from the Tops casino. Won it in blackjack.</string>
-    <string name="tutorial_55_1">"Know what they say? Casino may be called Tops, but when you leave it, you're at the rock Bottoms. "</string>
-    <string name="tutorial_55_2">The deck is all I managed to win that day.</string>
     <string name="tutorial_56">See ya round.</string>
-
 
 </resources>

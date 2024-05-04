@@ -291,28 +291,9 @@ fun Tutorial(activity: MainActivity, goBack: () -> Unit) {
                 showAlertDialog(stringResource(R.string.kyle), stringResource(R.string.tutorial_53))
             }
             58 -> {
-                showAlertDialog(stringResource(R.string.kyle), stringResource(R.string.tutorial_54))
-            }
-            59 -> {
-                showAlertDialog(
-                    stringResource(R.string.kyle),
-                    stringResource(R.string.tutorial_55_1) + stringResource(R.string.tutorial_55_2)
-                )
-            }
-            60 -> {
                 showAlertDialog(stringResource(R.string.kyle), stringResource(R.string.tutorial_56))
             }
             else -> {
-                activity.save?.let { save ->
-                    if (save.availableDecks[CardBack.TOPS] != true) {
-                        save.availableDecks[CardBack.TOPS] = true
-                        save(activity, save)
-                    }
-                    if (save.availableCards.none { card -> card.back == CardBack.TOPS }) {
-                        save.availableCards.addAll(CustomDeck(CardBack.TOPS).toList())
-                        save(activity, save)
-                    }
-                }
                 goBack()
             }
         }

@@ -8,8 +8,8 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data object EnemyTutorial : Enemy() {
-    override fun createDeck(): CResources = CResources(CardBack.TOPS)
-    override fun getRewardDeck(): CardBack = CardBack.TOPS
+    override fun createDeck(): CResources = CResources(CardBack.STANDARD)
+    override fun getRewardDeck(): CardBack? = null
 
     override suspend fun makeMove(game: Game) {
         val hand = game.enemyCResources.hand

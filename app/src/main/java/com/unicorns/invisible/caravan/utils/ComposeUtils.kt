@@ -158,7 +158,7 @@ fun Modifier.caravanScrollbar(
     trackColor: Color = Color.White,
     padding: Dp = 0.dp,
     visibleAlpha: Float = 1f,
-    hiddenAlpha: Float = 0.25f,
+    hiddenAlpha: Float = 0.4f,
     fadeInAnimationDurationMs: Int = 150,
     fadeOutAnimationDurationMs: Int = 500,
     fadeOutAnimationDelayMs: Int = 1000,
@@ -205,7 +205,7 @@ fun Modifier.caravanScrollbar(
     return drawWithContent {
         drawContent()
 
-        if (state.layoutInfo.totalItemsCount <= 3) {
+        if (state.layoutInfo.totalItemsCount <= 1) {
             return@drawWithContent
         }
 
