@@ -22,7 +22,6 @@ import com.unicorns.invisible.caravan.model.primitives.Card
 import com.unicorns.invisible.caravan.model.primitives.CustomDeck
 import com.unicorns.invisible.caravan.model.primitives.Rank
 import com.unicorns.invisible.caravan.model.primitives.Suit
-import com.unicorns.invisible.caravan.save.save
 
 @Composable
 fun Tutorial(activity: MainActivity, goBack: () -> Unit) {
@@ -102,10 +101,7 @@ fun Tutorial(activity: MainActivity, goBack: () -> Unit) {
                 showAlertDialog(stringResource(R.string.kyle), stringResource(R.string.tutorial_7))
             }
             7 -> {
-                showAlertDialog(
-                    stringResource(R.string.kyle),
-                    stringResource(R.string.tutorial_8_1) + stringResource(R.string.tutorial_8_2)
-                )
+                showAlertDialog(stringResource(R.string.kyle), stringResource(R.string.tutorial_8_1))
             }
             8 -> {
                 showAlertDialog(
@@ -226,7 +222,7 @@ fun Tutorial(activity: MainActivity, goBack: () -> Unit) {
                 showAlertDialog(stringResource(R.string.kyle), stringResource(R.string.tutorial_34))
             }
             38 -> {
-                showAlertDialog(stringResource(R.string.kyle), stringResource(R.string.turorial_35))
+                showAlertDialog(stringResource(R.string.kyle), stringResource(R.string.tutorial_35))
             }
             39 -> {
                 showAlertDialog(stringResource(R.string.kyle), stringResource(R.string.tutorial_36))
@@ -235,7 +231,7 @@ fun Tutorial(activity: MainActivity, goBack: () -> Unit) {
                 showAlertDialog(stringResource(R.string.kyle), stringResource(R.string.tutorial_37))
             }
             41 -> {
-                showAlertDialog(stringResource(R.string.kyle), stringResource(R.string.turorial_38))
+                showAlertDialog(stringResource(R.string.kyle), stringResource(R.string.tutorial_38))
             }
             42 -> {
                 showAlertDialog(stringResource(R.string.kyle), stringResource(R.string.tutorial_39))
@@ -273,24 +269,27 @@ fun Tutorial(activity: MainActivity, goBack: () -> Unit) {
                 showAlertDialog(stringResource(R.string.kyle), stringResource(R.string.tutorial_48))
             }
             53 -> {
+                showAlertDialog(stringResource(R.string.kyle), stringResource(R.string.tutorial_8_2))
+            }
+            54 -> {
                 showAlertDialog(
                     stringResource(R.string.kyle),
                     stringResource(R.string.tutorial_49_1) + stringResource(R.string.tutorial_49_2)
                 )
             }
-            54 -> {
+            55 -> {
                 showAlertDialog(stringResource(R.string.kyle), stringResource(R.string.tutorial_50))
             }
-            55 -> {
+            56 -> {
                 showAlertDialog(stringResource(R.string.kyle), stringResource(R.string.tutorial_51))
             }
-            56 -> {
+            57 -> {
                 showAlertDialog(stringResource(R.string.kyle), stringResource(R.string.tutorial_52))
             }
-            57 -> {
+            58 -> {
                 showAlertDialog(stringResource(R.string.kyle), stringResource(R.string.tutorial_53))
             }
-            58 -> {
+            59 -> {
                 showAlertDialog(stringResource(R.string.kyle), stringResource(R.string.tutorial_56))
             }
             else -> {
