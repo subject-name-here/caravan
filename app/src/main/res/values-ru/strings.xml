@@ -62,7 +62,7 @@
     <string name="result">Результат</string>
     <string name="you_lose">Поражение!</string>
     <string name="you_have_unlocked_deck">\nРазблокирована %1$s!</string>
-    <string name="you_must_unlock_deck">\nВам недоступна %1$s! Нужно сначала победить этого соперника без своей колоды!</string>
+    <string name="you_must_unlock_deck">\nВам недоступны карты из ###%1$s###! Нужно сначала победить этого соперника без своей колоды!</string>
     <string name="your_prize_cards_from">\nВаш приз - карты из ###%1$s###:\n</string>
 
     <string name="new_card">Новая: %1$s.\n</string>

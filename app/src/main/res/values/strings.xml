@@ -42,7 +42,7 @@
     <string name="deck_custom_about">Win cards for custom deck by fighting opponents:\n1 or 2 cards when using custom deck,\n5 cards when playing balanced game.\nThe chance of winning _new_ card, however, is not 100%.</string>
 
     <string name="custom_deck_size">Deck size: %1$s\n(must be at least %2$s)</string>
-    <string name="custom_deck_non_faces">Number of non-faces: %1$s\n(must be at least %2$s)</string>
+    <string name="custom_deck_non_faces">Number of non-face cards: %1$s\n(must be at least %2$s)</string>
 
     <string name="pve_select_enemy">Select the Opponent</string>
     <string name="pve_enemy_easy">Ultra-Luxe visitor</string>
@@ -61,8 +61,8 @@
     <string name="result">Result</string>
     <string name="you_lose">You lose!</string>
     <string name="you_have_unlocked_deck">\nYou have unlocked the %1$s!</string>
-    <string name="you_must_unlock_deck">\nTo have a chance of winning a card from the %1$s, you must defeat the enemy w/o custom deck!</string>
-    <string name="your_prize_cards_from">\nYour prize - cards from %1$s:\n</string>
+    <string name="you_must_unlock_deck">\nTo have a chance of winning cards from the %1$s, you must defeat the enemy w/o custom deck!</string>
+    <string name="your_prize_cards_from">\nYour reward - cards from %1$s:\n</string>
 
     <string name="new_card">New: %1$s.\n</string>
     <string name="old_card">Old: %1$s.\n</string>
