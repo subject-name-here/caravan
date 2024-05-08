@@ -84,12 +84,9 @@ fun Tutorial(activity: MainActivity, goBack: () -> Unit) {
                 showAlertDialog(stringResource(R.string.kyle), stringResource(R.string.tutorial_3))
             }
             3 -> {
-                showAlertDialog(stringResource(R.string.kyle), stringResource(R.string.tutorial_4))
-            }
-            4 -> {
                 showAlertDialog(stringResource(R.string.kyle), stringResource(R.string.tutorial_5))
             }
-            5 -> {
+            4 -> {
                 showAlertDialog(
                     stringResource(R.string.kyle),
                     stringResource(R.string.tutorial_6_1) +
@@ -97,92 +94,92 @@ fun Tutorial(activity: MainActivity, goBack: () -> Unit) {
                             stringResource(R.string.tutorial_6_3)
                 )
             }
-            6 -> {
+            5 -> {
                 showAlertDialog(stringResource(R.string.kyle), stringResource(R.string.tutorial_7))
             }
-            7 -> {
+            6 -> {
                 showAlertDialog(stringResource(R.string.kyle), stringResource(R.string.tutorial_8_1))
             }
-            8 -> {
+            7 -> {
                 showAlertDialog(
                     stringResource(R.string.kyle),
                     stringResource(R.string.tutorial_9_1) + stringResource(R.string.tutorial_9_2)
                 )
             }
-            9 -> {
+            8 -> {
                 showAlertDialog(stringResource(R.string.kyle), stringResource(R.string.tutorial_10))
             }
-            10 -> {
+            9 -> {
                 showAlertDialog(stringResource(R.string.kyle), stringResource(R.string.tutorial_11))
             }
-            11 -> {
+            10 -> {
                 if (game.playerCaravans.all { it.getValue() > 0 }) {
                     tutorialKey++
                 }
             }
-            12 -> {
+            11 -> {
                 showAlertDialog(stringResource(R.string.kyle), stringResource(R.string.tutorial_12))
             }
-            13 -> {
+            12 -> {
                 showAlertDialog(stringResource(R.string.kyle), stringResource(R.string.tutorial_13))
             }
-            14 -> {
+            13 -> {
                 showAlertDialog(stringResource(R.string.kyle), stringResource(R.string.tutorial_14))
             }
-            15 -> {
+            14 -> {
                 showAlertDialog(
                     stringResource(R.string.kyle),
                     stringResource(R.string.tutorial_15_1) + stringResource(R.string.tutorial_15_2)
                 )
             }
-            16 -> {
+            15 -> {
                 showAlertDialog(stringResource(R.string.kyle), stringResource(R.string.tutorial_16))
             }
-            17 -> {
+            16 -> {
                 showAlertDialog(stringResource(R.string.kyle), stringResource(R.string.tutorial_17))
             }
-            18 -> {
+            17 -> {
                 showAlertDialog(stringResource(R.string.kyle), stringResource(R.string.tutorial_18))
             }
-            19 -> {
+            18 -> {
                 showAlertDialog(stringResource(R.string.kyle), stringResource(R.string.tutorial_19))
             }
-            20 -> {
+            19 -> {
                 showAlertDialog(
                     stringResource(R.string.tutorial_warning), stringResource(R.string.tutorial_20_1) +
                             stringResource(R.string.tutorial_20_2)
                 )
             }
-            21 -> {
+            20 -> {
                 if (game.playerCResources.deckSize < 2) {
                     tutorialKey++
                 }
             }
-            22 -> {
+            21 -> {
                 showAlertDialog(stringResource(R.string.kyle),
                     stringResource(R.string.tutorial_21_1) +
                             stringResource(R.string.tutorial_21_2)
                 )
             }
-            23 -> {
+            22 -> {
                 showAlertDialog(stringResource(R.string.kyle), stringResource(R.string.tutorial_22))
             }
-            24 -> {
+            23 -> {
                 showAlertDialog(stringResource(R.string.kyle), stringResource(R.string.tutorial_23))
             }
-            25 -> {
+            24 -> {
                 showAlertDialog(stringResource(R.string.kyle), stringResource(R.string.tutorial_24))
             }
-            26 -> {
+            25 -> {
                 showAlertDialog(stringResource(R.string.kyle), stringResource(R.string.tutorial_25))
             }
-            27 -> {
+            26 -> {
                 showAlertDialog(
                     stringResource(R.string.kyle),
                     stringResource(R.string.tutorial_26_1) + stringResource(R.string.tutorial_26_2)
                 )
             }
-            28 -> {
+            27 -> {
                 showAlertDialog(stringResource(R.string.kyle),
                     stringResource(R.string.tutorial_27_1) +
                             stringResource(R.string.tutorial_27_2) +
@@ -190,106 +187,106 @@ fun Tutorial(activity: MainActivity, goBack: () -> Unit) {
                             stringResource(R.string.tutorial_27_4)
                 )
             }
-            29 -> {
+            28 -> {
                 showAlertDialog(stringResource(R.string.kyle), stringResource(R.string.tutorial_28))
             }
-            30 -> {
+            29 -> {
                 showAlertDialog(stringResource(R.string.tutorial_hint), stringResource(R.string.tutorial_29))
             }
-            31 -> {
+            30 -> {
                 if (game.playerCResources.hand.all { it.isFace() }) {
                     tutorialKey++
                 }
             }
-            32 -> {
+            31 -> {
                 showAlertDialog(stringResource(R.string.kyle), stringResource(R.string.tutorial_30))
             }
-            33 -> {
+            32 -> {
                 showAlertDialog(stringResource(R.string.kyle), stringResource(R.string.tutorial_31))
             }
-            34 -> {
+            33 -> {
                 showAlertDialog(stringResource(R.string.kyle), stringResource(R.string.tutorial_32))
             }
-            35 -> {
+            34 -> {
                 showAlertDialog(stringResource(R.string.kyle), stringResource(R.string.tutorial_33))
             }
-            36 -> {
+            35 -> {
                 if (game.playerCaravans.all { it.getValue() == 0 }) {
                     tutorialKey++
                 }
             }
-            37 -> {
+            36 -> {
                 showAlertDialog(stringResource(R.string.kyle), stringResource(R.string.tutorial_34))
             }
-            38 -> {
+            37 -> {
                 showAlertDialog(stringResource(R.string.kyle), stringResource(R.string.tutorial_35))
             }
-            39 -> {
+            38 -> {
                 showAlertDialog(stringResource(R.string.kyle), stringResource(R.string.tutorial_36))
             }
-            40 -> {
+            39 -> {
                 showAlertDialog(stringResource(R.string.kyle), stringResource(R.string.tutorial_37))
             }
-            41 -> {
+            40 -> {
                 showAlertDialog(stringResource(R.string.kyle), stringResource(R.string.tutorial_38))
             }
-            42 -> {
+            41 -> {
                 showAlertDialog(stringResource(R.string.kyle), stringResource(R.string.tutorial_39))
             }
-            43 -> {
+            42 -> {
                 showAlertDialog(stringResource(R.string.kyle), stringResource(R.string.tutorial_40))
             }
-            44 -> {
+            43 -> {
                 showAlertDialog(stringResource(R.string.kyle), stringResource(R.string.tutorial_41))
             }
-            45 -> {
+            44 -> {
                 showAlertDialog(stringResource(R.string.kyle), stringResource(R.string.tutorial_42))
             }
-            46 -> {
+            45 -> {
                 showAlertDialog(stringResource(R.string.kyle), stringResource(R.string.tutorial_43))
             }
-            47 -> {
+            46 -> {
                 showAlertDialog(stringResource(R.string.kyle), stringResource(R.string.tutorial_44))
             }
-            48 -> {
+            47 -> {
                 showAlertDialog(stringResource(R.string.kyle), stringResource(R.string.tutorial_45))
             }
-            49 -> {
+            48 -> {
                 if (game.playerCResources.hand.isEmpty()) {
                     tutorialKey++
                 }
             }
-            50 -> {
+            49 -> {
                 showAlertDialog(stringResource(R.string.kyle), stringResource(R.string.tutorial_46))
             }
-            51 -> {
+            50 -> {
                 showAlertDialog(stringResource(R.string.kyle), stringResource(R.string.tutorial_47))
             }
-            52 -> {
+            51 -> {
                 showAlertDialog(stringResource(R.string.kyle), stringResource(R.string.tutorial_48))
             }
-            53 -> {
+            52 -> {
                 showAlertDialog(stringResource(R.string.kyle), stringResource(R.string.tutorial_8_2))
             }
-            54 -> {
+            53 -> {
                 showAlertDialog(
                     stringResource(R.string.kyle),
                     stringResource(R.string.tutorial_49_1) + stringResource(R.string.tutorial_49_2)
                 )
             }
-            55 -> {
+            54 -> {
                 showAlertDialog(stringResource(R.string.kyle), stringResource(R.string.tutorial_50))
             }
-            56 -> {
+            55 -> {
                 showAlertDialog(stringResource(R.string.kyle), stringResource(R.string.tutorial_51))
             }
-            57 -> {
+            56 -> {
                 showAlertDialog(stringResource(R.string.kyle), stringResource(R.string.tutorial_52))
             }
-            58 -> {
+            57 -> {
                 showAlertDialog(stringResource(R.string.kyle), stringResource(R.string.tutorial_53))
             }
-            59 -> {
+            58 -> {
                 showAlertDialog(stringResource(R.string.kyle), stringResource(R.string.tutorial_56))
             }
             else -> {

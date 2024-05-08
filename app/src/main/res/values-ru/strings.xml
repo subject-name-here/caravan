@@ -39,9 +39,9 @@
     <string name="menu_back">Назад</string>
 
     <string name="deck_select">Выбор колоды</string>
-    <string name="deck_select_about">Получайте новые рубашки, играя без использования своей колоды.</string>
-    <string name="deck_custom">Настроить свою колоду</string>
-    <string name="deck_custom_about">Выигрывайте карты для своей колоды, сражаясь в быстрой игре:\n1 или 2 карты при использовании своей колоды,\n5 карт без неё.\nШанс получения _новой_ карты, правда, не 100%.</string>
+    <string name="deck_select_about">Получайте новые рубашки, играя без использования сборной колоды.</string>
+    <string name="deck_custom">Настроить сборную колоду</string>
+    <string name="deck_custom_about">Выигрывайте карты для сборной колоды, сражаясь в быстрой игре:\n1 или 2 карты при использовании сборной колоды,\n5 карт без неё.\nШанс получения _новой_ карты, правда, не 100%.</string>
 
     <string name="custom_deck_size">Размер колоды: %1$s\n(нужно хотя бы %2$s)</string>
     <string name="custom_deck_non_faces">Количество младших карт: %1$s\n(нужно хотя бы %2$s)</string>
@@ -52,18 +52,18 @@
     <string name="pve_enemy_queen">Франт из Топс</string>
     <string name="pve_enemy_38">Секьюритрон P373</string>
     <string name="pve_enemy_cheater">Курьер Шесть</string>
-    <string name="pve_use_custom_deck">Использовать свою колоду</string>
+    <string name="pve_use_custom_deck">Использовать сборную колоду</string>
     <string name="pve_stats">Статистика</string>
     <string name="pve_games_started">Игр начато: %1$s</string>
     <string name="pve_games_finished">Игр завершено: %1$s</string>
     <string name="pve_games_won">Побед: %1$s</string>
-    <string name="custom_deck_is_too_small">Своя колода слишком мала!</string>
+    <string name="custom_deck_is_too_small">Сборная колода слишком мала!</string>
     <string name="custom_deck_is_too_small_message">В колоде меньше 30 карт или меньше 15 младших карт!</string>
     <string name="you_win">Победа!</string>
     <string name="result">Результат</string>
     <string name="you_lose">Поражение!</string>
     <string name="you_have_unlocked_deck">\nРазблокирована %1$s!</string>
-    <string name="you_must_unlock_deck">\nВам недоступны карты из ###%1$s###! Нужно сначала победить этого соперника без своей колоды!</string>
+    <string name="you_must_unlock_deck">\nВам недоступны карты из ###%1$s###! Нужно сначала победить этого соперника без сборной колоды!</string>
     <string name="your_prize_cards_from">\nВаш приз - карты из ###%1$s###:\n</string>
 
     <string name="new_card">Новая: %1$s.\n</string>
@@ -89,11 +89,10 @@
     <string name="tutorial_1_2">Такие дни - причина, почему я не променяю Мохавскую пустошь ни на что другое.</string>
     <string name="tutorial_2">Пока мы ждем, как насчет партейки в Караван?</string>
     <string name="tutorial_3">Не знаешь правил? Не проблема - я научу тебя.</string>
-    <string name="tutorial_4">Есть разные правила, но основные отличия в том, как формируется колода для игры.</string>
     <string name="tutorial_5">Сейчас в твоей колоде 10 карт. Это для обучения. В полевых условиях колода должна быть больше.</string>
-    <string name="tutorial_6_1">Обычно на просторах Мохавской пустоши люди играют своими колодами.\n</string>
+    <string name="tutorial_6_1">Обычно на просторах Мохавской пустоши люди играют сборными колодами.\n</string>
     <string name="tutorial_6_2">В таком случае я достаю специально припасенную колоду из шестерок, десяток и королей.\n</string>
-    <string name="tutorial_6_3">Когда я побеждаю, они больше не хотят играть. Вот почему я предпочитаю не свою колоду, а полную.</string>
+    <string name="tutorial_6_3">Когда я побеждаю, они больше не хотят играть. Вот почему я предпочитаю не сборную колоду, а полную.</string>
     <string name="tutorial_7">В полной колоде 54 карты.</string>
     <string name="tutorial_8_1">Смотри: у каждого игрока три каравана (левый, центральный, правый).\n</string>
     <string name="tutorial_9_1">В начале игры мы берем 8 карт в руку.\n</string>

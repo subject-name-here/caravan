@@ -7,20 +7,21 @@ import com.unicorns.invisible.caravan.model.primitives.CustomDeck
 import com.unicorns.invisible.caravan.multiplayer.MoveResponse
 import com.unicorns.invisible.caravan.save.json
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 
 
 @Serializable
 class EnemyPlayer(
     private val startDeck: CustomDeck,
-    private val receiveMoveResponse: suspend () -> String,
 ) : Enemy() {
     override fun createDeck(): CResources = CResources(startDeck)
     override fun getRewardDeck(): CardBack? = null
 
+    var latestMoveResponse: String = ""
+
     override suspend fun makeMove(game: Game) {
-        val moveString = receiveMoveResponse()
         val move = try {
-            json.decodeFromString<MoveResponse>(moveString)
+            json.decodeFromString<MoveResponse>(latestMoveResponse)
         } catch (e: Exception) {
             game.isCorrupted = true
             return

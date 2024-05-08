@@ -1,5 +1,6 @@
 package com.unicorns.invisible.caravan.multiplayer
 
+import com.unicorns.invisible.caravan.model.primitives.Card
 import kotlinx.serialization.Serializable
 
 
@@ -18,5 +19,6 @@ data class MoveResponse(
     val moveCode: Int,
     val caravanCode: Int,
     val handCardNumber: Int,
-    val cardInCaravanNumber: Int
+    val cardInCaravanNumber: Int,
+    val newCardBackInHandCode: Int,
 )

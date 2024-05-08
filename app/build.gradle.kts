@@ -70,4 +70,6 @@ dependencies {
     implementation(libs.firebase.crahslytics)
     implementation(libs.firebase.analytics)
 
+    implementation(libs.cronet)
+
 }

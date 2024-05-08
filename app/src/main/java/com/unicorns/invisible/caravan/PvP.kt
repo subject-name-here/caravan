@@ -21,6 +21,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -36,13 +37,25 @@ import androidx.compose.ui.unit.sp
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.GameSaver
-import com.unicorns.invisible.caravan.model.enemy.EnemyEasy
+import com.unicorns.invisible.caravan.model.enemy.EnemyPlayer
 import com.unicorns.invisible.caravan.model.primitives.CResources
-import com.unicorns.invisible.caravan.save.save
+import com.unicorns.invisible.caravan.model.primitives.Card
+import com.unicorns.invisible.caravan.model.primitives.CustomDeck
+import com.unicorns.invisible.caravan.multiplayer.MyUrlRequestCallback
+import com.unicorns.invisible.caravan.multiplayer.RoomResponse
+import com.unicorns.invisible.caravan.save.json
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.serialization.encodeToString
+import org.chromium.net.CronetEngine
+import org.chromium.net.UrlRequest
+import org.json.JSONObject
+import java.util.concurrent.Executors
+
+
+var cronetEngine: CronetEngine? = null
 
 
 @Composable
@@ -52,10 +65,82 @@ fun ShowPvP(
     showAlertDialog: (String, String) -> Unit,
     goBack: () -> Unit
 ) {
+    if (cronetEngine == null) {
+        val myBuilder = CronetEngine.Builder(activity)
+        cronetEngine = myBuilder.build()
+    }
+
     var roomNumber by rememberSaveable { mutableStateOf("") }
     var checkedCustomDeck by rememberSaveable { mutableStateOf(false) }
     var checkedPrivate by rememberSaveable { mutableStateOf(false) }
     var isRoomCreated by rememberSaveable { mutableIntStateOf(0) }
+
+    var enemyDeck by rememberSaveable(stateSaver = Saver(
+        save = { json.encodeToString(it) },
+        restore = { json.decodeFromString<CustomDeck>(it) }
+    )) {
+        mutableStateOf(CustomDeck())
+    }
+
+    fun waitForEnemyDeck(cronetEngine: CronetEngine) {
+        CoroutineScope(Dispatchers.IO).launch {
+            val requestBuilder = cronetEngine.newUrlRequestBuilder(
+                "https://www.google.com", // TODO: encode room number
+                object : MyUrlRequestCallback(object : OnFinishRequest<JSONObject> {
+                    override fun onFinishRequest(result: JSONObject) {
+                        val response2 = try {
+                            json.decodeFromString<RoomResponse>(result.getString("body"))
+                        } catch (e: Exception) {
+                            isRoomCreated = 2
+                            CoroutineScope(Dispatchers.Unconfined).launch {
+                                delay(3800L)
+                                isRoomCreated = 0
+                            }
+                            return
+                        }
+
+                        val enemyCardList = try {
+                            json.decodeFromString<List<Card>>(response2.enemyDeckString)
+                        } catch (e: Exception) {
+                            isRoomCreated = 2
+                            CoroutineScope(Dispatchers.Unconfined).launch {
+                                delay(3800L)
+                                isRoomCreated = 0
+                            }
+                            return
+                        }
+
+                        enemyDeck = CustomDeck().also { customDeck ->
+                            enemyCardList.forEach { customDeck.add(it) }
+                        }
+                    }
+                }) {},
+                Executors.newSingleThreadExecutor()
+            )
+
+            val request: UrlRequest = requestBuilder.build()
+            request.start()
+        }
+    }
+
+
+    if (enemyDeck.size >= MainActivity.MIN_DECK_SIZE) {
+        StartPvP(
+            activity = activity,
+            playerCResources = if (checkedCustomDeck) CResources(activity.save!!.getCustomDeckCopy()) else CResources(selectedDeck()),
+            enemyStartDeck = run {
+                val deck = CustomDeck()
+                repeat(enemyDeck.size) {
+                    deck.add(enemyDeck[it])
+                }
+               deck
+            },
+            showAlertDialog = showAlertDialog
+        ) {
+            enemyDeck = CustomDeck()
+        }
+        return
+    }
 
     Column(
         Modifier.fillMaxSize(),
@@ -73,7 +158,7 @@ fun ShowPvP(
                     text = when (isRoomCreated) {
                         0 -> "Create Room"
                         1 -> "Awaiting server response......"
-                        2 -> "Timeout! Room is being destroyed."
+                        2 -> "Failure!"
                         else -> "Your Room is $isRoomCreated. Awaiting the Opponent....."
                     },
                     fontWeight = FontWeight.Bold,
@@ -85,27 +170,37 @@ fun ShowPvP(
                             if (isRoomCreated != 0) {
                                 return@clickable
                             }
-
                             isRoomCreated = 1
 
+                            val cronetEngine = cronetEngine ?: return@clickable
+
                             CoroutineScope(Dispatchers.IO).launch {
-                                delay(1000L)
-                                // TODO: send message
-                                // TODO: receive room number
-                                isRoomCreated = 22229
+                                val requestBuilder = cronetEngine.newUrlRequestBuilder(
+                                    "https://www.google.com", // TODO: encode deck and isCustom to URI
+                                    object :
+                                        MyUrlRequestCallback(object : OnFinishRequest<JSONObject> {
+                                            override fun onFinishRequest(result: JSONObject) {
+                                                val response1 = try {
+                                                    json.decodeFromString<RoomResponse>(
+                                                        result.getString(
+                                                            "body"
+                                                        )
+                                                    )
+                                                } catch (e: Exception) {
+                                                    isRoomCreated = 0
+                                                    return
+                                                }
 
-                                // TODO: await the response
+                                                isRoomCreated = response1.roomNumber
 
-                                delay(3000L)
-                                val response = 0
-                                if (response != 0) {
+                                                waitForEnemyDeck(cronetEngine)
+                                            }
+                                        }) {},
+                                    Executors.newSingleThreadExecutor()
+                                )
 
-                                } else {
-                                    isRoomCreated = 2
-                                    // TODO: send message
-                                    delay(1000L)
-                                    isRoomCreated = 0
-                                }
+                                val request: UrlRequest = requestBuilder.build()
+                                request.start()
                             }
                         }
                 )
@@ -119,6 +214,8 @@ fun ShowPvP(
 
                         Checkbox(checked = checkedCustomDeck, onCheckedChange = {
                             checkedCustomDeck = !checkedCustomDeck
+                            isRoomCreated = 0
+                            // TODO: request new free room!!!
                         }, colors = CheckboxColors(
                             checkedCheckmarkColor = Color(activity.getColor(R.color.colorPrimaryDark)),
                             uncheckedCheckmarkColor = Color.Transparent,
@@ -176,20 +273,45 @@ fun ShowPvP(
                         if (isRoomCreated != 0 || roomNumber.toIntOrNull() in listOf(0, 1, 2, null)) {
                             return@clickable
                         }
-
                         isRoomCreated = roomNumber.toIntOrNull() ?: return@clickable
-
-                        // TODO: send room number
+                        val cronetEngine = cronetEngine ?: return@clickable
 
                         CoroutineScope(Dispatchers.IO).launch {
-                            delay(1000L)
-                            // TODO: receive response
-                            val response = 0
-                            if (response != 0) {
-                                // TODO: start game
-                            } else {
-                                isRoomCreated = 0
-                            }
+                            val requestBuilder = cronetEngine.newUrlRequestBuilder(
+                                "https://www.google.com", // TODO: encode deck and room number
+                                object :
+                                    MyUrlRequestCallback(object : OnFinishRequest<JSONObject> {
+                                        override fun onFinishRequest(result: JSONObject) {
+                                            val response = try {
+                                                json.decodeFromString<RoomResponse>(
+                                                    result.getString("body")
+                                                )
+                                            } catch (e: Exception) {
+                                                isRoomCreated = 0
+                                                return
+                                            }
+
+                                            val enemyCardList = try {
+                                                json.decodeFromString<List<Card>>(response.enemyDeckString)
+                                            } catch (e: Exception) {
+                                                isRoomCreated = 2
+                                                CoroutineScope(Dispatchers.Unconfined).launch {
+                                                    delay(3800L)
+                                                    isRoomCreated = 0
+                                                }
+                                                return
+                                            }
+
+                                            enemyDeck = CustomDeck().also { customDeck ->
+                                                enemyCardList.forEach { customDeck.add(it) }
+                                            }
+                                        }
+                                    }) {},
+                                Executors.newSingleThreadExecutor()
+                            )
+
+                            val request: UrlRequest = requestBuilder.build()
+                            request.start()
                         }
                     },
                     textAlign = TextAlign.Center,
@@ -212,12 +334,13 @@ fun ShowPvP(
             Text(
                 text = "So, you wanna play with people. Two ways:\n" +
                         "1) you join Room. Two ways of getting room number: either from someone (then enter the number to 'Join Room' field) " +
-                        "or use a number provided by server (if there are public rooms without opponent, the room number will be written in 'Join Room' field). " +
+                        "or use a number provided by server (if there are public rooms without opponent, the room number will be written in 'Join Room' field).\n" +
+                        "Select whether you wanna use custom deck or not by checking the box above.\n" +
                         "Finally, press 'Join!!!'. If you didn't wait for too long, the game should start.\n" +
                         "2) You create room. Select whether to use custom deck or not, select privacy (private room number is never provided by server to other people). " +
                         "Finally, press 'Create Room', then wait.\n" +
                         "\n" +
-                        "Room number is a number from 10 to 1_000_000.\n" +
+                        "Room number is from 10 to 22229.\n" +
                         "Time limit for awaiting opponent is 38 seconds, then room is destroyed.\n" +
                         "Good luck!",
                 style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 12.sp)
@@ -236,6 +359,7 @@ fun ShowPvP(
 fun StartPvP(
     activity: MainActivity,
     playerCResources: CResources,
+    enemyStartDeck: CustomDeck,
     showAlertDialog: (String, String) -> Unit,
     goBack: () -> Unit,
 ) {
@@ -243,12 +367,10 @@ fun StartPvP(
         mutableStateOf(
             Game(
                 playerCResources,
-                EnemyEasy // EnemyPlayer()
+                EnemyPlayer(
+                    enemyStartDeck
+                )
             ).also {
-                activity.save?.let { save ->
-                    save.gamesStarted++
-                    save(activity, save)
-                }
                 it.startGame()
             }
         )
