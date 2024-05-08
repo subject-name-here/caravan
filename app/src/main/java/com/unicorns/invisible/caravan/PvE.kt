@@ -264,7 +264,7 @@ fun StartGame(
     if (!activity.checkIfCustomDeckCanBeUsedInGame(playerCResources)) {
         showAlertDialog(
             stringResource(R.string.custom_deck_is_too_small),
-            stringResource(R.string.custom_deck_is_to_small_message)
+            stringResource(R.string.custom_deck_is_too_small_message)
         )
         goBack()
         return

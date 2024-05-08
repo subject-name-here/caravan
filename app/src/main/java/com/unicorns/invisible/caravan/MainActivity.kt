@@ -20,6 +20,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -47,6 +48,7 @@ class MainActivity : AppCompatActivity() {
 
         setContent {
             var deckSelection by rememberSaveable { mutableStateOf(false) }
+            var showPvP by rememberSaveable { mutableStateOf(false) }
             var showAbout by rememberSaveable { mutableStateOf(false) }
             var showGameStats by rememberSaveable { mutableStateOf(false) }
             var showTutorial by rememberSaveable { mutableStateOf(false) }
@@ -98,11 +100,26 @@ class MainActivity : AppCompatActivity() {
                         ::showAlertDialog
                     ) { showGameStats = false }
                 }
+                showPvP -> {
+                    if (checkIfCustomDeckCanBeUsedInGame(CResources(save!!.getCustomDeckCopy()))) {
+                        showAlertDialog(
+                            stringResource(R.string.custom_deck_is_too_small),
+                            stringResource(R.string.custom_deck_is_too_small_message)
+                        )
+                    } else {
+                        ShowPvP(
+                            activity = this,
+                            selectedDeck = { selectedDeck },
+                            ::showAlertDialog
+                        ) { showPvP = false }
+                    }
+                }
                 else -> {
                     MainMenu(
                         { deckSelection = true },
                         { showAbout = true },
                         { showGameStats = true },
+                        { showPvP = true },
                         { showTutorial = true },
                         { showRules = true }
                     )
@@ -116,6 +133,7 @@ class MainActivity : AppCompatActivity() {
         showDeckSelection: () -> Unit,
         showAbout: () -> Unit,
         showPvE: () -> Unit,
+        showPvP: () -> Unit,
         showTutorial: () -> Unit,
         showRules: () -> Unit,
     ) {
@@ -128,6 +146,14 @@ class MainActivity : AppCompatActivity() {
                 text = getString(R.string.menu_pve),
                 modifier = Modifier.clickable {
                     showPvE()
+                },
+                style = TextStyle(color = Color(getColor(R.color.colorPrimaryDark)), fontSize = 20.sp)
+            )
+            Spacer(modifier = Modifier.height(20.dp))
+            Text(
+                text = getString(R.string.menu_pvp),
+                modifier = Modifier.clickable {
+                    showPvP()
                 },
                 style = TextStyle(color = Color(getColor(R.color.colorPrimaryDark)), fontSize = 20.sp)
             )

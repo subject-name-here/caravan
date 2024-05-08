@@ -29,6 +29,7 @@
     <string name="sierra_madre_deck_name">Sierra Madre deck</string>
 
     <string name="menu_pve">Quick game</string>
+    <string name="menu_pvp">Multiplayer</string>
     <string name="menu_tutorial">Tutorial</string>
     <string name="menu_rules">Rules</string>
     <string name="menu_deck">Deck Settings</string>
@@ -56,7 +57,7 @@
     <string name="pve_games_finished">Games finished: %1$s</string>
     <string name="pve_games_won">Games won: %1$s</string>
     <string name="custom_deck_is_too_small">Custom deck is too small!</string>
-    <string name="custom_deck_is_to_small_message">Deck has less than 30 cards or less than 15 numbered cards!</string>
+    <string name="custom_deck_is_too_small_message">Deck has less than 30 cards or less than 15 numbered cards!</string>
     <string name="you_win">You win!</string>
     <string name="result">Result</string>
     <string name="you_lose">You lose!</string>
@@ -112,7 +113,7 @@
     <string name="tutorial_21_2">There are always 5 cards in your hand, unless your deck is empty.</string>
     <string name="tutorial_22">Now let\'s talk about how to build a caravan. You do it with aces or 2–10 cards.</string>
     <string name="tutorial_23">Each of those cards has a value: 1 for ace, 2 for 2,… 10 for 10.</string>
-    <string name="tutorial_24">However, you cannot just put any card. You can\'t put on top of a caravan the card of the same rank as the caravan's current top card.</string>
+    <string name="tutorial_24">However, you cannot just put any card. You can\'t put on top of a caravan the card of the same rank as the caravan\'s current top card.</string>
     <string name="tutorial_25">Also, you have to follow one of two rules:</string>
     <string name="tutorial_26_1">"either the card you want to add to a caravan has the same suit as the caravan's current top card, "</string>
     <string name="tutorial_26_2">or its rank follows the caravan\'s numerical sequence.</string>

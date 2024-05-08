@@ -30,6 +30,7 @@
     <string name="sierra_madre_deck_name">колода казино Сьерра-Мадре</string>
 
     <string name="menu_pve">Быстрая игра</string>
+    <string name="menu_pvp">Играть с человеком</string>
     <string name="menu_tutorial">Обучение</string>
     <string name="menu_rules">Правила</string>
     <string name="menu_deck">Настройка колоды</string>
@@ -57,7 +58,7 @@
     <string name="pve_games_finished">Игр завершено: %1$s</string>
     <string name="pve_games_won">Побед: %1$s</string>
     <string name="custom_deck_is_too_small">Своя колода слишком мала!</string>
-    <string name="custom_deck_is_to_small_message">В колоде меньше 30 карт или меньше 15 младших карт!</string>
+    <string name="custom_deck_is_too_small_message">В колоде меньше 30 карт или меньше 15 младших карт!</string>
     <string name="you_win">Победа!</string>
     <string name="result">Результат</string>
     <string name="you_lose">Поражение!</string>
@@ -115,7 +116,7 @@
     <string name="tutorial_21_2">В руке всегда 5 карт, пока колода позволяет.</string>
     <string name="tutorial_22">Теперь поговорим о строительстве каравана. Это делается с помощью младших карт.</string>
     <string name="tutorial_23">У этих карт есть ценность: 1 для туза, 2 для двойки,…, 10 для десятки.</string>
-    <string name="tutorial_24">Однако, нельзя просто положить карту на караван. Нельзя положить карту такой же ценности, что и верхняя карта каравана, на караван.</string>
+    <string name="tutorial_24">Однако, нельзя просто положить карту на караван. Нельзя положить карту такой же ценности, что и верхняя карта каравана, на этот караван.</string>
     <string name="tutorial_25">Также нужно соблюдать одно из двух правил:</string>
     <string name="tutorial_26_1">"либо карта, которую ты кладешь, имеет ту же масть, что и верхняя карта каравана, "</string>
     <string name="tutorial_26_2">или она следует заданной последовательности.</string>

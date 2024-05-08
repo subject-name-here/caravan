@@ -43,6 +43,8 @@ class Game(
         }
     fun isOver() = isGameOver != 0
 
+    var isCorrupted = false
+
     fun isInitStage() = playerCResources.hand.size > 5 || enemyCResources.hand.size > 5
 
     private fun initDeck(cResources: CResources, maxNumOfFaces: Int) {
