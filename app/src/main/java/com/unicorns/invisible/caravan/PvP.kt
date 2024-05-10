@@ -1,5 +1,6 @@
 package com.unicorns.invisible.caravan
 
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -41,8 +42,9 @@ import com.unicorns.invisible.caravan.model.enemy.EnemyPlayer
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.Card
 import com.unicorns.invisible.caravan.model.primitives.CustomDeck
+import com.unicorns.invisible.caravan.model.primitives.Rank
+import com.unicorns.invisible.caravan.model.primitives.Suit
 import com.unicorns.invisible.caravan.multiplayer.MyUrlRequestCallback
-import com.unicorns.invisible.caravan.multiplayer.RoomResponse
 import com.unicorns.invisible.caravan.save.json
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -54,8 +56,41 @@ import org.chromium.net.UrlRequest
 import org.json.JSONObject
 import java.util.concurrent.Executors
 
-
+// TODO: android:usesCleartextTraffic="true"
 var cronetEngine: CronetEngine? = null
+
+
+fun customDeckToInts(customDeck: CustomDeck): List<ULong> {
+    val result = ArrayList<ULong>()
+
+    CardBack.entries.forEachIndexed { _, cardBack ->
+        var code = 0UL
+
+        var cnt = 0
+        Rank.entries.forEach { rank ->
+            if (rank == Rank.JOKER) {
+                if (customDeck.contains(Card(rank, Suit.HEARTS, cardBack))) {
+                    code = code or (1UL shl cnt)
+                }
+                cnt++
+                if (customDeck.contains(Card(rank, Suit.CLUBS, cardBack))) {
+                    code = code or (1UL shl cnt)
+                }
+                cnt++
+            } else {
+                Suit.entries.forEach { suit ->
+                    if (customDeck.contains(Card(rank, suit, cardBack))) {
+                        code = code or (1UL shl cnt)
+                    }
+                    cnt++
+                }
+            }
+        }
+
+        result.add(code)
+    }
+    return result
+}
 
 
 @Composable
@@ -82,49 +117,70 @@ fun ShowPvP(
         mutableStateOf(CustomDeck())
     }
 
-    fun waitForEnemyDeck(cronetEngine: CronetEngine) {
+    fun processResponse(response: List<ULong>) {
+        if (response.size != CardBack.entries.size) {
+            isRoomCreated = 2
+            CoroutineScope(Dispatchers.Unconfined).launch {
+                delay(3800L)
+                isRoomCreated = 0
+            }
+            return
+        }
+
+        val cardsList = mutableListOf<Card>()
+        fun processCard(cardBackIndex: Int, index: Int, card: Card) {
+            val n = response[cardBackIndex]
+            if ((n shr index) and 1UL == 1UL) {
+                cardsList.add(card)
+            }
+        }
+
+        CardBack.entries.forEachIndexed { index, cardBack ->
+            var cnt = 0
+            Rank.entries.forEach { rank ->
+                if (rank == Rank.JOKER) {
+                    processCard(index, cnt++, Card(rank, Suit.HEARTS, cardBack))
+                    processCard(index, cnt++, Card(rank, Suit.CLUBS, cardBack))
+                } else {
+                    Suit.entries.forEach { suit ->
+                        processCard(index, cnt++, Card(rank, suit, cardBack))
+                    }
+                }
+            }
+        }
+
+        enemyDeck = CustomDeck().also { customDeck ->
+            cardsList.forEach { customDeck.add(it) }
+        }
+    }
+
+    var isFreeRoomRequested = false
+    fun updateAvailableRoom(isCustom: Boolean) {
+        if (isFreeRoomRequested) {
+            return
+        }
         CoroutineScope(Dispatchers.IO).launch {
-            val requestBuilder = cronetEngine.newUrlRequestBuilder(
-                "https://www.google.com", // TODO: encode room number
+            val requestBuilder = cronetEngine?.newUrlRequestBuilder(
+                "http://192.168.1.191:8000/crvn/get_free_room?is_custom=${isCustom.toString().replaceFirstChar { it.uppercase() }}",
                 object : MyUrlRequestCallback(object : OnFinishRequest<JSONObject> {
                     override fun onFinishRequest(result: JSONObject) {
-                        val response2 = try {
-                            json.decodeFromString<RoomResponse>(result.getString("body"))
-                        } catch (e: Exception) {
-                            isRoomCreated = 2
-                            CoroutineScope(Dispatchers.Unconfined).launch {
-                                delay(3800L)
-                                isRoomCreated = 0
-                            }
-                            return
-                        }
-
-                        val enemyCardList = try {
-                            json.decodeFromString<List<Card>>(response2.enemyDeckString)
-                        } catch (e: Exception) {
-                            isRoomCreated = 2
-                            CoroutineScope(Dispatchers.Unconfined).launch {
-                                delay(3800L)
-                                isRoomCreated = 0
-                            }
-                            return
-                        }
-
-                        enemyDeck = CustomDeck().also { customDeck ->
-                            enemyCardList.forEach { customDeck.add(it) }
-                        }
+                        val res = result.getString("body").toIntOrNull()
+                        roomNumber = res?.toString() ?: ""
+                        isFreeRoomRequested = false
                     }
                 }) {},
                 Executors.newSingleThreadExecutor()
-            )
+            ) ?: return@launch
 
-            val request: UrlRequest = requestBuilder.build()
+            isFreeRoomRequested = true
+            val request = requestBuilder.build()
             request.start()
         }
     }
 
-
+    Log.i("ggg", "recompose ${enemyDeck.size}")
     if (enemyDeck.size >= MainActivity.MIN_DECK_SIZE) {
+        Log.i("ggg", "recompose inside")
         StartPvP(
             activity = activity,
             playerCResources = if (checkedCustomDeck) CResources(activity.save!!.getCustomDeckCopy()) else CResources(selectedDeck()),
@@ -157,7 +213,6 @@ fun ShowPvP(
                 Text(
                     text = when (isRoomCreated) {
                         0 -> "Create Room"
-                        1 -> "Awaiting server response......"
                         2 -> "Failure!"
                         else -> "Your Room is $isRoomCreated. Awaiting the Opponent....."
                     },
@@ -167,35 +222,44 @@ fun ShowPvP(
                     modifier = Modifier
                         .fillMaxWidth(0.4f)
                         .clickable {
-                            if (isRoomCreated != 0) {
+                            val roomNumberQ = roomNumber.toIntOrNull()
+                            if (isRoomCreated != 0 || roomNumberQ in listOf(null, 0, 1, 2)) {
                                 return@clickable
                             }
-                            isRoomCreated = 1
-
+                            isRoomCreated = roomNumberQ ?: return@clickable
                             val cronetEngine = cronetEngine ?: return@clickable
-
+                            val deckCodes = customDeckToInts(
+                                if (checkedCustomDeck) activity.save!!.getCustomDeckCopy() else CustomDeck(selectedDeck())
+                            )
                             CoroutineScope(Dispatchers.IO).launch {
                                 val requestBuilder = cronetEngine.newUrlRequestBuilder(
-                                    "https://www.google.com", // TODO: encode deck and isCustom to URI
-                                    object :
-                                        MyUrlRequestCallback(object : OnFinishRequest<JSONObject> {
-                                            override fun onFinishRequest(result: JSONObject) {
-                                                val response1 = try {
-                                                    json.decodeFromString<RoomResponse>(
-                                                        result.getString(
-                                                            "body"
-                                                        )
-                                                    )
-                                                } catch (e: Exception) {
+                                    "http://192.168.1.191:8000/crvn/create?is_custom=${checkedCustomDeck.toString().replaceFirstChar { it.uppercase() }}" +
+                                            "&room=${isRoomCreated.toString().replaceFirstChar { it.uppercase() }}" +
+                                            "&is_private=${checkedPrivate.toString().replaceFirstChar { it.uppercase() }}" +
+                                            "&deck0=${deckCodes[0]}" +
+                                            "&deck1=${deckCodes[1]}" +
+                                            "&deck2=${deckCodes[2]}" +
+                                            "&deck3=${deckCodes[3]}" +
+                                            "&deck4=${deckCodes[4]}" +
+                                            "&deck5=${deckCodes[5]}",
+                                    object : MyUrlRequestCallback(object : OnFinishRequest<JSONObject> {
+                                        override fun onFinishRequest(result: JSONObject) {
+                                            val response = try {
+                                                Log.i("dfsdf", result.getString("body"))
+                                                json.decodeFromString<List<ULong>>(
+                                                    result.getString("body")
+                                                )
+                                            } catch (e: Exception) {
+                                                isRoomCreated = 2
+                                                CoroutineScope(Dispatchers.Unconfined).launch {
+                                                    delay(3800L)
                                                     isRoomCreated = 0
-                                                    return
                                                 }
-
-                                                isRoomCreated = response1.roomNumber
-
-                                                waitForEnemyDeck(cronetEngine)
+                                                return
                                             }
-                                        }) {},
+                                            processResponse(response)
+                                        }
+                                    }) {},
                                     Executors.newSingleThreadExecutor()
                                 )
 
@@ -211,11 +275,9 @@ fun ShowPvP(
                         .padding(8.dp), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(modifier = Modifier.fillMaxWidth(0.7f), text = stringResource(R.string.pve_use_custom_deck))
-
                         Checkbox(checked = checkedCustomDeck, onCheckedChange = {
                             checkedCustomDeck = !checkedCustomDeck
-                            isRoomCreated = 0
-                            // TODO: request new free room!!!
+                            updateAvailableRoom(checkedCustomDeck)
                         }, colors = CheckboxColors(
                             checkedCheckmarkColor = Color(activity.getColor(R.color.colorPrimaryDark)),
                             uncheckedCheckmarkColor = Color.Transparent,
@@ -261,6 +323,7 @@ fun ShowPvP(
             Row(modifier = Modifier.height(100.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
                 TextField(
                     singleLine = true,
+                    enabled = isRoomCreated == 0,
                     value = roomNumber,
                     onValueChange = { roomNumber = it },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
@@ -275,38 +338,34 @@ fun ShowPvP(
                         }
                         isRoomCreated = roomNumber.toIntOrNull() ?: return@clickable
                         val cronetEngine = cronetEngine ?: return@clickable
-
+                        val deckCodes = customDeckToInts(activity.save!!.getCustomDeckCopy())
                         CoroutineScope(Dispatchers.IO).launch {
                             val requestBuilder = cronetEngine.newUrlRequestBuilder(
-                                "https://www.google.com", // TODO: encode deck and room number
-                                object :
-                                    MyUrlRequestCallback(object : OnFinishRequest<JSONObject> {
-                                        override fun onFinishRequest(result: JSONObject) {
-                                            val response = try {
-                                                json.decodeFromString<RoomResponse>(
-                                                    result.getString("body")
-                                                )
-                                            } catch (e: Exception) {
+                                "http://192.168.1.191:8000/crvn/join?room=$isRoomCreated" +
+                                        "&back=${selectedDeck().ordinal}" +
+                                        "&deck0=${deckCodes[0]}" +
+                                        "&deck1=${deckCodes[1]}" +
+                                        "&deck2=${deckCodes[2]}" +
+                                        "&deck3=${deckCodes[3]}" +
+                                        "&deck4=${deckCodes[4]}" +
+                                        "&deck5=${deckCodes[5]}",
+                                object : MyUrlRequestCallback(object : OnFinishRequest<JSONObject> {
+                                    override fun onFinishRequest(result: JSONObject) {
+                                        val response = try {
+                                            json.decodeFromString<List<ULong>>(
+                                                result.getString("body")
+                                            )
+                                        } catch (e: Exception) {
+                                            isRoomCreated = 2
+                                            CoroutineScope(Dispatchers.Unconfined).launch {
+                                                delay(3800L)
                                                 isRoomCreated = 0
-                                                return
                                             }
-
-                                            val enemyCardList = try {
-                                                json.decodeFromString<List<Card>>(response.enemyDeckString)
-                                            } catch (e: Exception) {
-                                                isRoomCreated = 2
-                                                CoroutineScope(Dispatchers.Unconfined).launch {
-                                                    delay(3800L)
-                                                    isRoomCreated = 0
-                                                }
-                                                return
-                                            }
-
-                                            enemyDeck = CustomDeck().also { customDeck ->
-                                                enemyCardList.forEach { customDeck.add(it) }
-                                            }
+                                            return
                                         }
-                                    }) {},
+                                        processResponse(response)
+                                    }
+                                }) {},
                                 Executors.newSingleThreadExecutor()
                             )
 
@@ -350,7 +409,12 @@ fun ShowPvP(
         Text(
             text = stringResource(R.string.menu_back),
             style = TextStyle(color = Color(activity.getColor(R.color.colorPrimaryDark)), fontSize = 24.sp),
-            modifier = Modifier.clickable { goBack() }
+            modifier = Modifier.clickable {
+                if (isRoomCreated != 0) {
+                    return@clickable
+                }
+                goBack()
+            }
         )
     }
 }
@@ -383,5 +447,5 @@ fun StartPvP(
             showAlertDialog(activity.getString(R.string.result), activity.getString(R.string.you_lose))
         }
     }
-    ShowGame(activity, game) { goBack() }
+    ShowGamePvP(activity, game) { goBack() }
 }

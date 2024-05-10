@@ -1,6 +1,7 @@
 package com.unicorns.invisible.caravan.multiplayer
 
 
+import android.util.Log
 import org.chromium.net.CronetException
 import org.chromium.net.UrlRequest
 import org.chromium.net.UrlResponseInfo
@@ -9,17 +10,8 @@ import org.json.JSONObject
 import java.nio.ByteBuffer
 
 
-//You should create a MyUrlRequestCallback.OnFinishRequest() and
-//override onFinishRequest.
-//We will send JSON String response to this interface and you can then
-//perform actions on the UI or otherwise based on the result.
-
-//All MyUrlRequestCallback functions send response to this.delegate
-//which provides it to the interface onFinishRequest which you use in
-//your activity or fragment.
-
 abstract class MyUrlRequestCallback (var delegate: OnFinishRequest<JSONObject>) : UrlRequest.Callback() {
-    private var redirectionCounter = 5
+    private var redirectionCounter = 10
 
     override fun onRedirectReceived(
         request: UrlRequest,
@@ -79,10 +71,10 @@ abstract class MyUrlRequestCallback (var delegate: OnFinishRequest<JSONObject>) 
 
     override fun onSucceeded(request: UrlRequest, info: UrlResponseInfo) {}
 
-    override fun onFailed(request: UrlRequest, info: UrlResponseInfo, error: CronetException) {
+    override fun onFailed(request: UrlRequest, info: UrlResponseInfo?, error: CronetException) {
         val results = JSONObject()
         results.put("body", "")
-        results.put("statusCode", info.httpStatusCode)
+        results.put("statusCode", info?.httpStatusCode)
         delegate.onFinishRequest(results)
     }
 

@@ -48,7 +48,6 @@ class Caravan {
         val preLast = cards[cards.lastIndex - 1]
         when {
             last.card.rank == preLast.card.rank -> {
-                // TODO: are we sure???
                 return true
             }
             last.card.rank > preLast.card.rank -> {

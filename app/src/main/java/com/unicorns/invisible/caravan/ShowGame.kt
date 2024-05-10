@@ -74,6 +74,70 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
     val state3Enemy = rememberLazyListState()
     val state3Player = rememberLazyListState()
 
+
+    fun updateCaravans() {
+        caravansKey = !caravansKey
+    }
+    fun updateEnemyHand() {
+        enemyHandKey = !enemyHandKey
+    }
+    fun resetSelected() {
+        selectedCaravan = -1
+        selectedCard = null
+    }
+    fun dropCardFromHand() {
+        val selectedCardNN = selectedCard ?: return
+        game.playerCResources.removeFromHand(selectedCardNN)
+        resetSelected()
+        game.afterPlayerMove { updateCaravans(); updateEnemyHand() }
+    }
+    fun dropCaravan() {
+        val selectedCaravanNN = selectedCaravan
+        if (selectedCaravanNN == -1) return
+        game.playerCaravans[selectedCaravanNN].dropCaravan()
+        updateCaravans()
+        resetSelected()
+        game.afterPlayerMove { updateCaravans(); updateEnemyHand() }
+    }
+
+    fun addCardToCaravan(caravan: Caravan, position: Int, isEnemy: Boolean = false) {
+        fun onCaravanCardInserted() {
+            game.afterPlayerMove { updateCaravans(); updateEnemyHand() }
+            resetSelected()
+            updateCaravans()
+        }
+
+        val cardIndex = selectedCard
+        val card = cardIndex?.let { game.playerCResources.hand[cardIndex] }
+        if (card != null && game.isPlayerTurn && !game.isOver() && (!game.isInitStage() || !card.isFace())) {
+            when (card.rank.value) {
+                in 1..10 -> {
+                    if (position == caravan.cards.size && !isEnemy) {
+                        if (caravan.canPutCardOnTop(card)) {
+                            caravan.putCardOnTop(game.playerCResources.removeFromHand(cardIndex))
+                            onCaravanCardInserted()
+                        }
+                    }
+                }
+                Rank.JACK.value, Rank.QUEEN.value, Rank.KING.value, Rank.JOKER.value -> {
+                    if (position in caravan.cards.indices && caravan.cards[position].canAddModifier(card)) {
+                        caravan.cards[position].addModifier(game.playerCResources.removeFromHand(cardIndex))
+                        onCaravanCardInserted()
+                    }
+                }
+            }
+        }
+    }
+    fun addCardToEnemyCaravan(caravanNum: Int, position: Int) {
+        addCardToCaravan(game.enemyCaravans[caravanNum], position, isEnemy = true)
+    }
+    fun addCardToPlayerCaravan(caravanNum: Int, position: Int) {
+        addCardToCaravan(game.playerCaravans[caravanNum], position, isEnemy = false)
+    }
+    fun isInitStage() = game.isInitStage()
+    fun canDiscard() = game.isOver() || !game.isPlayerTurn || game.isInitStage()
+
+
     BoxWithConstraints(
         modifier = Modifier
             .fillMaxSize()
@@ -132,7 +196,6 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
                 }
                 key(caravansKey) {
                     Caravans(
-                        game,
                         activity,
                         { selectedCard },
                         { selectedCaravan },
@@ -141,12 +204,6 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
                             selectedCard = null
                             caravansKey = !caravansKey
                         },
-                        { caravansKey = !caravansKey },
-                        { enemyHandKey = !enemyHandKey },
-                        {
-                            selectedCaravan = -1
-                            selectedCard = null
-                        },
                         isMaxHeight = true,
                         state1Enemy,
                         state1Player,
@@ -154,6 +211,14 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
                         state2Player,
                         state3Enemy,
                         state3Player,
+                        ::addCardToPlayerCaravan,
+                        ::addCardToEnemyCaravan,
+                        ::dropCardFromHand,
+                        ::dropCaravan,
+                        ::isInitStage,
+                        ::canDiscard,
+                        { num -> game.playerCaravans[num] },
+                        { num -> game.enemyCaravans[num] },
                     )
                 }
             }
@@ -181,7 +246,6 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
                 }
                 key(caravansKey) {
                     Caravans(
-                        game,
                         activity,
                         { selectedCard },
                         { selectedCaravan },
@@ -190,12 +254,6 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
                             selectedCard = null
                             caravansKey = !caravansKey
                         },
-                        { caravansKey = !caravansKey },
-                        { enemyHandKey = !enemyHandKey },
-                        {
-                            selectedCaravan = -1
-                            selectedCard = null
-                        },
                         isMaxHeight = false,
                         state1Enemy,
                         state1Player,
@@ -203,6 +261,14 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
                         state2Player,
                         state3Enemy,
                         state3Player,
+                        ::addCardToPlayerCaravan,
+                        ::addCardToEnemyCaravan,
+                        ::dropCardFromHand,
+                        ::dropCaravan,
+                        ::isInitStage,
+                        ::canDiscard,
+                        { num -> game.playerCaravans[num] },
+                        { num -> game.enemyCaravans[num] },
                     )
                 }
                 Row(verticalAlignment = Alignment.Bottom, modifier = Modifier
@@ -444,14 +510,10 @@ fun ShowDeck(cResources: CResources, activity: MainActivity, isToBottom: Boolean
 
 @Composable
 fun Caravans(
-    game: Game,
     activity: MainActivity,
     getSelectedCard: () -> Int?,
     getSelectedCaravan: () -> Int,
     setSelectedCaravan: (Int) -> Unit,
-    updateCaravans: () -> Unit,
-    updateEnemyHand: () -> Unit,
-    resetSelected: () -> Unit,
     isMaxHeight: Boolean = false,
     state1Enemy: LazyListState,
     state1Player: LazyListState,
@@ -459,56 +521,29 @@ fun Caravans(
     state2Player: LazyListState,
     state3Enemy: LazyListState,
     state3Player: LazyListState,
+    addCardToPlayerCaravan: (Int, Int) -> Unit,
+    addCardToEnemyCaravan: (Int, Int) -> Unit,
+    dropCardFromHand: () -> Unit,
+    dropSelectedCaravan: () -> Unit,
+    getIsInitStage: () -> Boolean,
+    canDiscard: () -> Boolean,
+    getPlayerCaravan: (Int) -> Caravan,
+    getEnemyCaravan: (Int) -> Caravan,
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .fillMaxHeight(if (isMaxHeight) 1f else 0.65f),
     ) {
-        fun addCardToCaravan(caravan: Caravan, position: Int, isEnemy: Boolean = false) {
-            fun onCaravanCardInserted() {
-                game.afterPlayerMove { updateCaravans(); updateEnemyHand() }
-                resetSelected()
-                updateCaravans()
-            }
-
-            val cardIndex = getSelectedCard()
-            val card = cardIndex?.let { game.playerCResources.hand[cardIndex] }
-            if (card != null && game.isPlayerTurn && !game.isOver() && (!game.isInitStage() || !card.isFace())) {
-                when (card.rank.value) {
-                    in 1..10 -> {
-                        if (position == caravan.cards.size && !isEnemy) {
-                            if (caravan.canPutCardOnTop(card)) {
-                                caravan.putCardOnTop(game.playerCResources.removeFromHand(cardIndex))
-                                onCaravanCardInserted()
-                            }
-                        }
-                    }
-                    Rank.JACK.value, Rank.QUEEN.value, Rank.KING.value, Rank.JOKER.value -> {
-                        if (position in caravan.cards.indices && caravan.cards[position].canAddModifier(card)) {
-                            caravan.cards[position].addModifier(game.playerCResources.removeFromHand(cardIndex))
-                            onCaravanCardInserted()
-                        }
-                    }
-                }
-            }
-        }
-        fun addCardToEnemyCaravan(caravanNum: Int, position: Int) {
-            addCardToCaravan(game.enemyCaravans[caravanNum], position, isEnemy = true)
-        }
-        fun addCardToPlayerCaravan(caravanNum: Int, position: Int) {
-            addCardToCaravan(game.playerCaravans[caravanNum], position, isEnemy = false)
-        }
-
         @Composable
         fun CaravansColumn(num: Int, enemyLazyListState: LazyListState, playerLazyListState: LazyListState) {
             Column(modifier = Modifier
                 .weight(0.25f)
                 .fillMaxHeight().padding(6.dp)) {
                 CaravanOnField(activity,
-                    game.enemyCaravans[num],
-                    { game.playerCaravans[num].getValue() },
-                    isInitStage = game.isInitStage(),
+                    getEnemyCaravan(num),
+                    { getPlayerCaravan(num).getValue() },
+                    isInitStage = getIsInitStage(),
                     isEnemy = true, enemyLazyListState
                 ) {
                     addCardToEnemyCaravan(num, it)
@@ -516,14 +551,14 @@ fun Caravans(
                 HorizontalDivider()
                 CaravanOnField(
                     activity,
-                    game.playerCaravans[num],
-                    { game.enemyCaravans[num].getValue() },
-                    isInitStage = game.isInitStage(),
+                    getPlayerCaravan(num),
+                    { getEnemyCaravan(num).getValue() },
+                    isInitStage = getIsInitStage(),
                     false,
                     playerLazyListState,
                     {
                         setSelectedCaravan(
-                            if (getSelectedCaravan() == num || game.playerCaravans[num].getValue() == 0) {
+                            if (getSelectedCaravan() == num || getPlayerCaravan(num).getValue() == 0) {
                                 -1
                             } else {
                                 num
@@ -556,7 +591,7 @@ fun Caravans(
             .weight(0.22f)
             .fillMaxHeight(), verticalArrangement = Arrangement.Center) {
             val text = when {
-                game.isOver() || !game.isPlayerTurn || game.isInitStage() -> ""
+                !canDiscard() -> ""
                 getSelectedCard() != null -> {
                     stringResource(R.string.discard_card)
                 }
@@ -572,17 +607,12 @@ fun Caravans(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable {
-                        if (game.isOver() || !game.isPlayerTurn || game.isInitStage()) return@clickable
+                        if (!canDiscard()) return@clickable
                         val selectedCard = getSelectedCard()
                         if (selectedCard != null) {
-                            game.playerCResources.removeFromHand(selectedCard)
-                            resetSelected()
-                            game.afterPlayerMove { updateCaravans(); updateEnemyHand() }
+                            dropCardFromHand()
                         } else if (getSelectedCaravan() in (0..2)) {
-                            game.playerCaravans[getSelectedCaravan()].dropCaravan()
-                            updateCaravans()
-                            resetSelected()
-                            game.afterPlayerMove { updateCaravans(); updateEnemyHand() }
+                            dropSelectedCaravan()
                         }
                     }
             )

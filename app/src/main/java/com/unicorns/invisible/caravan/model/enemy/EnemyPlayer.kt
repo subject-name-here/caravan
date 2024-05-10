@@ -7,7 +7,6 @@ import com.unicorns.invisible.caravan.model.primitives.CustomDeck
 import com.unicorns.invisible.caravan.multiplayer.MoveResponse
 import com.unicorns.invisible.caravan.save.json
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.Transient
 
 
 @Serializable

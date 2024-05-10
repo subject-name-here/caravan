@@ -101,11 +101,12 @@ class MainActivity : AppCompatActivity() {
                     ) { showGameStats = false }
                 }
                 showPvP -> {
-                    if (checkIfCustomDeckCanBeUsedInGame(CResources(save!!.getCustomDeckCopy()))) {
+                    if (!checkIfCustomDeckCanBeUsedInGame(CResources(save!!.getCustomDeckCopy()))) {
                         showAlertDialog(
                             stringResource(R.string.custom_deck_is_too_small),
                             stringResource(R.string.custom_deck_is_too_small_message)
                         )
+                        showPvP = false
                     } else {
                         ShowPvP(
                             activity = this,
