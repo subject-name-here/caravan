@@ -30,14 +30,12 @@ import com.unicorns.invisible.caravan.model.enemy.EnemyPlayer
 import com.unicorns.invisible.caravan.model.primitives.Caravan
 import com.unicorns.invisible.caravan.model.primitives.Rank
 import com.unicorns.invisible.caravan.multiplayer.MoveResponse
-import com.unicorns.invisible.caravan.multiplayer.MyUrlRequestCallback
 import com.unicorns.invisible.caravan.multiplayer.decodeMove
+import com.unicorns.invisible.caravan.utils.sendRequest
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import org.json.JSONObject
-import java.util.concurrent.Executors
 
 
 fun afterPlayerMove(
@@ -46,7 +44,8 @@ fun afterPlayerMove(
     isCreator: Boolean,
     isUtil: Boolean = false,
     move: MoveResponse,
-    updateView: () -> Unit
+    updateView: () -> Unit,
+    corrupt: (String) -> Unit,
 ) {
     game.isPlayerTurn = false
     CoroutineScope(Dispatchers.Default).launch {
@@ -61,70 +60,47 @@ fun afterPlayerMove(
         } else {
             move.newCardInHandBack = -1
         }
-        if (game.checkOnGameOver()) {
-            CoroutineScope(Dispatchers.IO).launch launchIO@ {
-                val requestBuilder = cronetEngine?.newUrlRequestBuilder(
-                    "http://192.168.1.191:8000/crvn/move?room=$roomNumber" +
-                            "&is_creators_move=${isCreator.toString().replaceFirstChar { it.uppercase() }}" +
-                            "&is_util=${isUtil.toString().replaceFirstChar { it.uppercase() }}" +
-                            "&move_code=${move.moveCode}" +
-                            "&caravan_code=${move.caravanCode}" +
-                            "&hand_card_number=${move.handCardNumber}" +
-                            "&card_in_caravan_number=${move.cardInCaravanNumber}" +
-                            "&new_card_back_in_hand_code=${move.newCardInHandBack}" +
-                            "&new_card_rank_in_hand_code=${move.newCardInHandRank}" +
-                            "&new_card_suit_in_hand_code=${move.newCardInHandSuit}"
-                    ,
-                    object : MyUrlRequestCallback(object : OnFinishRequest<JSONObject> {
-                        override fun onFinishRequest(result: JSONObject) {}
-                    }) {},
-                    Executors.newSingleThreadExecutor()
-                ) ?: return@launchIO
-                val request = requestBuilder.build()
-                request.start()
+        game.checkOnGameOver()
+
+        sendRequest(
+            "http://subjectn4mehere.pythonanywhere.com/crvn/move?room=$roomNumber" +
+                    "&is_creators_move=${isCreator.toPythonBool()}" +
+                    "&is_util=${isUtil.toPythonBool()}" +
+                    "&move_code=${move.moveCode}" +
+                    "&caravan_code=${move.caravanCode}" +
+                    "&hand_card_number=${move.handCardNumber}" +
+                    "&card_in_caravan_number=${move.cardInCaravanNumber}" +
+                    "&new_card_back_in_hand_code=${move.newCardInHandBack}" +
+                    "&new_card_rank_in_hand_code=${move.newCardInHandRank}" +
+                    "&new_card_suit_in_hand_code=${move.newCardInHandSuit}"
+        ) { result ->
+            if (game.isOver()) {
+                return@sendRequest
             }
-            return@launch
-        }
+            try {
+                (game.enemy as EnemyPlayer).latestMoveResponse = decodeMove(result.getString("body"))
+            } catch (e: Exception) {
+                corrupt(result.toString())
+                return@sendRequest
+            }
 
-        CoroutineScope(Dispatchers.IO).launch launchIO@ {
-            val requestBuilder = cronetEngine?.newUrlRequestBuilder(
-                "http://192.168.1.191:8000/crvn/move?room=$roomNumber" +
-                        "&is_creators_move=${isCreator.toString().replaceFirstChar { it.uppercase() }}" +
-                        "&is_util=${isUtil.toString().replaceFirstChar { it.uppercase() }}" +
-                        "&move_code=${move.moveCode}" +
-                        "&caravan_code=${move.caravanCode}" +
-                        "&hand_card_number=${move.handCardNumber}" +
-                        "&card_in_caravan_number=${move.cardInCaravanNumber}" +
-                        "&new_card_back_in_hand_code=${move.newCardInHandBack}" +
-                        "&new_card_rank_in_hand_code=${move.newCardInHandRank}" +
-                        "&new_card_suit_in_hand_code=${move.newCardInHandSuit}"
-                ,
-                object : MyUrlRequestCallback(object : OnFinishRequest<JSONObject> {
-                    override fun onFinishRequest(result: JSONObject) {
-                        (game.enemy as EnemyPlayer).latestMoveResponse = decodeMove(result.getString("body"))
-                        CoroutineScope(Dispatchers.Default).launch {
-                            game.enemy.makeMove(game)
-                            delay(350L)
-                            updateView()
-                            game.processFieldAndHand(game.enemyCResources, updateView)
+            CoroutineScope(Dispatchers.Default).launch {
+                game.enemy.makeMove(game)
+                delay(350L)
+                updateView()
+                game.processFieldAndHand(game.enemyCResources, updateView)
 
-                            game.isPlayerTurn = true
-                            game.checkOnGameOver()
-                            updateView()
-                        }
-                    }
-                }) {},
-                Executors.newSingleThreadExecutor()
-            ) ?: return@launchIO
-            val request = requestBuilder.build()
-            request.start()
+                game.isPlayerTurn = true
+                game.checkOnGameOver()
+                updateView()
+            }
         }
     }
 }
 
 
 @Composable
-fun ShowGamePvP(activity: MainActivity, game: Game, isCreator: Boolean, roomNumber: Int, goBack: () -> Unit) {
+fun ShowGamePvP(activity: MainActivity, game: Game, isCreator: Boolean, roomNumber: Int, showAlert: (String, String) -> Unit, goBack: () -> Unit) {
     var selectedCard by remember { mutableStateOf<Int?>(null) }
     val selectedCardColor = Color(activity.getColor(R.color.colorAccent))
 
@@ -141,6 +117,12 @@ fun ShowGamePvP(activity: MainActivity, game: Game, isCreator: Boolean, roomNumb
         }
         selectedCard = if (index == selectedCard) null else index
         selectedCaravan = -1
+    }
+
+    fun corruptGame(message: String) {
+        game.isCorrupted = true
+        showAlert("Corrupted!", message)
+        goBack()
     }
 
     val state1Enemy = rememberLazyListState()
@@ -168,7 +150,7 @@ fun ShowGamePvP(activity: MainActivity, game: Game, isCreator: Boolean, roomNumb
         afterPlayerMove(game, roomNumber, isCreator = isCreator, isUtil = false, MoveResponse(
             moveCode = 2,
             handCardNumber = selectedCardNN,
-        )) { updateCaravans(); updateEnemyHand() }
+        ), { updateCaravans(); updateEnemyHand() }, ::corruptGame)
     }
     fun dropCaravan() {
         if (game.isExchangingCards) return
@@ -180,7 +162,7 @@ fun ShowGamePvP(activity: MainActivity, game: Game, isCreator: Boolean, roomNumb
         afterPlayerMove(game, roomNumber, isCreator = isCreator, isUtil = false, MoveResponse(
             moveCode = 1,
             caravanCode = selectedCaravanNN,
-        )) { updateCaravans(); updateEnemyHand() }
+        ), { updateCaravans(); updateEnemyHand() }, ::corruptGame)
     }
 
     fun addCardToCaravan(caravan: Caravan, caravanIndex: Int, position: Int, isEnemy: Boolean = false) {
@@ -193,14 +175,14 @@ fun ShowGamePvP(activity: MainActivity, game: Game, isCreator: Boolean, roomNumb
                     moveCode = 3,
                     handCardNumber = cardIndex,
                     caravanCode = caravanIndex
-                )) { updateCaravans(); updateEnemyHand() }
+                ), { updateCaravans(); updateEnemyHand() }, ::corruptGame)
             } else {
                 afterPlayerMove(game, roomNumber, isCreator = isCreator, isUtil = false, MoveResponse(
                     moveCode = 4,
                     handCardNumber = cardIndex,
                     cardInCaravanNumber = cardInCaravan,
                     caravanCode = if (isEnemy) (-3 + caravanIndex) else caravanIndex
-                )) { updateCaravans(); updateEnemyHand() }
+                ), { updateCaravans(); updateEnemyHand() }, ::corruptGame)
             }
         }
 

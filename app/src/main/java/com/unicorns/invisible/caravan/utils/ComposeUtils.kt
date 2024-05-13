@@ -3,6 +3,8 @@ package com.unicorns.invisible.caravan.utils
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CheckboxColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -13,6 +15,8 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.unicorns.invisible.caravan.MainActivity
+import com.unicorns.invisible.caravan.R
 
 @Composable
 fun Modifier.scrollbar(
@@ -262,4 +266,23 @@ fun Modifier.caravanScrollbar(
             )
         }
     }
+}
+
+
+@Composable
+fun CheckboxCustom(activity: MainActivity, checked: () -> Boolean, onCheckedChange: (Boolean) -> Unit, enabled: () -> Boolean) {
+    Checkbox(checked = checked(), onCheckedChange = onCheckedChange, colors = CheckboxColors(
+        checkedCheckmarkColor = Color(activity.getColor(R.color.colorPrimaryDark)),
+        uncheckedCheckmarkColor = Color.Transparent,
+        checkedBoxColor = Color(activity.getColor(R.color.colorPrimary)),
+        uncheckedBoxColor = Color.Transparent,
+        disabledCheckedBoxColor = Color.Red,
+        disabledUncheckedBoxColor = Color.Red,
+        disabledIndeterminateBoxColor = Color.Red,
+        checkedBorderColor = Color(activity.getColor(R.color.colorPrimaryDark)),
+        uncheckedBorderColor = Color(activity.getColor(R.color.colorPrimaryDark)),
+        disabledBorderColor = Color.Red,
+        disabledUncheckedBorderColor = Color.Red,
+        disabledIndeterminateBorderColor = Color.Red,
+    ), enabled = enabled())
 }
