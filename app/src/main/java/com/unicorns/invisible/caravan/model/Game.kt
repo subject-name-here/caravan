@@ -19,7 +19,7 @@ import kotlinx.serialization.encodeToString
 @Serializable
 class Game(
     val playerCResources: CResources,
-    private val enemy: Enemy
+    val enemy: Enemy
 ) {
     val playerCaravans = listOf(Caravan(), Caravan(), Caravan())
     val enemyCaravans = listOf(Caravan(), Caravan(), Caravan())
@@ -45,7 +45,10 @@ class Game(
 
     var isCorrupted = false
 
-    fun isInitStage() = playerCResources.hand.size > 5 || enemyCResources.hand.size > 5
+    var isExchangingCards = false
+    fun isInitStage(): Boolean {
+        return playerCResources.hand.size > 5 || enemyCResources.hand.size > 5
+    }
 
     private fun initDeck(cResources: CResources, maxNumOfFaces: Int) {
         cResources.shuffleDeck()
@@ -60,7 +63,7 @@ class Game(
         initDeck(enemyCResources, maxNumOfFaces)
     }
 
-    private suspend fun processFieldAndHand(cResources: CResources, updateView: () -> Unit) {
+    suspend fun processFieldAndHand(cResources: CResources, updateView: () -> Unit) {
         val caravans = playerCaravans + enemyCaravans
         val cards = caravans.flatMap { it.cards }
         if (cards.any { it.hasJacks() || it.hasActiveJoker } || (cResources.hand.size < 5 && cResources.deckSize > 0)) {
@@ -102,7 +105,7 @@ class Game(
         }
     }
 
-    private fun checkOnGameOver(): Boolean {
+    fun checkOnGameOver(): Boolean {
         if (!isPlayerTurn && enemyCResources.hand.isEmpty()) {
             isGameOver = 1
             return true

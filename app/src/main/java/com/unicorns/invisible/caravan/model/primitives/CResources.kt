@@ -14,6 +14,7 @@ class CResources(private val deck: CustomDeck) {
         get() = handMutable.toList()
 
     fun getInitHand() = deck.takeRandom(8)
+    fun getTopHand() = deck.toList().take(8)
     fun initHand(toPutInHand: List<Card>) {
         deck.removeAll(toPutInHand)
         handMutable.addAll(toPutInHand)
@@ -23,6 +24,20 @@ class CResources(private val deck: CustomDeck) {
         if (deck.size > 0) {
             handMutable.add(deck.removeFirst())
         }
+    }
+    fun addToHandR(): Card? {
+        if (deck.size == 0) {
+            return null
+        }
+        val card = deck.removeFirst()
+        handMutable.add(card)
+        return card
+    }
+    fun addCardToHandPvP(card: Card) {
+        if (deck.size > 0) {
+            deck.removeFirst()
+        }
+        handMutable.add(card)
     }
 
     @Transient

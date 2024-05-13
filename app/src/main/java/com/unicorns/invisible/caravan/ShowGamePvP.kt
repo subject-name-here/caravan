@@ -26,12 +26,105 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 import com.unicorns.invisible.caravan.model.Game
+import com.unicorns.invisible.caravan.model.enemy.EnemyPlayer
 import com.unicorns.invisible.caravan.model.primitives.Caravan
 import com.unicorns.invisible.caravan.model.primitives.Rank
+import com.unicorns.invisible.caravan.multiplayer.MoveResponse
+import com.unicorns.invisible.caravan.multiplayer.MyUrlRequestCallback
+import com.unicorns.invisible.caravan.multiplayer.decodeMove
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import org.json.JSONObject
+import java.util.concurrent.Executors
+
+
+fun afterPlayerMove(
+    game: Game,
+    roomNumber: Int,
+    isCreator: Boolean,
+    isUtil: Boolean = false,
+    move: MoveResponse,
+    updateView: () -> Unit
+) {
+    game.isPlayerTurn = false
+    CoroutineScope(Dispatchers.Default).launch {
+        delay(350L)
+        val isNewCardAdded = game.playerCResources.deckSize > 0 && game.playerCResources.hand.size < 5
+        game.processFieldAndHand(game.playerCResources, updateView)
+        if (isNewCardAdded) {
+            val newCard = game.playerCResources.hand.last()
+            move.newCardInHandBack = newCard.back.ordinal
+            move.newCardInHandSuit = newCard.suit.ordinal
+            move.newCardInHandRank = newCard.rank.ordinal
+        } else {
+            move.newCardInHandBack = -1
+        }
+        if (game.checkOnGameOver()) {
+            CoroutineScope(Dispatchers.IO).launch launchIO@ {
+                val requestBuilder = cronetEngine?.newUrlRequestBuilder(
+                    "http://192.168.1.191:8000/crvn/move?room=$roomNumber" +
+                            "&is_creators_move=${isCreator.toString().replaceFirstChar { it.uppercase() }}" +
+                            "&is_util=${isUtil.toString().replaceFirstChar { it.uppercase() }}" +
+                            "&move_code=${move.moveCode}" +
+                            "&caravan_code=${move.caravanCode}" +
+                            "&hand_card_number=${move.handCardNumber}" +
+                            "&card_in_caravan_number=${move.cardInCaravanNumber}" +
+                            "&new_card_back_in_hand_code=${move.newCardInHandBack}" +
+                            "&new_card_rank_in_hand_code=${move.newCardInHandRank}" +
+                            "&new_card_suit_in_hand_code=${move.newCardInHandSuit}"
+                    ,
+                    object : MyUrlRequestCallback(object : OnFinishRequest<JSONObject> {
+                        override fun onFinishRequest(result: JSONObject) {}
+                    }) {},
+                    Executors.newSingleThreadExecutor()
+                ) ?: return@launchIO
+                val request = requestBuilder.build()
+                request.start()
+            }
+            return@launch
+        }
+
+        CoroutineScope(Dispatchers.IO).launch launchIO@ {
+            val requestBuilder = cronetEngine?.newUrlRequestBuilder(
+                "http://192.168.1.191:8000/crvn/move?room=$roomNumber" +
+                        "&is_creators_move=${isCreator.toString().replaceFirstChar { it.uppercase() }}" +
+                        "&is_util=${isUtil.toString().replaceFirstChar { it.uppercase() }}" +
+                        "&move_code=${move.moveCode}" +
+                        "&caravan_code=${move.caravanCode}" +
+                        "&hand_card_number=${move.handCardNumber}" +
+                        "&card_in_caravan_number=${move.cardInCaravanNumber}" +
+                        "&new_card_back_in_hand_code=${move.newCardInHandBack}" +
+                        "&new_card_rank_in_hand_code=${move.newCardInHandRank}" +
+                        "&new_card_suit_in_hand_code=${move.newCardInHandSuit}"
+                ,
+                object : MyUrlRequestCallback(object : OnFinishRequest<JSONObject> {
+                    override fun onFinishRequest(result: JSONObject) {
+                        (game.enemy as EnemyPlayer).latestMoveResponse = decodeMove(result.getString("body"))
+                        CoroutineScope(Dispatchers.Default).launch {
+                            game.enemy.makeMove(game)
+                            delay(350L)
+                            updateView()
+                            game.processFieldAndHand(game.enemyCResources, updateView)
+
+                            game.isPlayerTurn = true
+                            game.checkOnGameOver()
+                            updateView()
+                        }
+                    }
+                }) {},
+                Executors.newSingleThreadExecutor()
+            ) ?: return@launchIO
+            val request = requestBuilder.build()
+            request.start()
+        }
+    }
+}
 
 
 @Composable
-fun ShowGamePvP(activity: MainActivity, game: Game, goBack: () -> Unit) {
+fun ShowGamePvP(activity: MainActivity, game: Game, isCreator: Boolean, roomNumber: Int, goBack: () -> Unit) {
     var selectedCard by remember { mutableStateOf<Int?>(null) }
     val selectedCardColor = Color(activity.getColor(R.color.colorAccent))
 
@@ -39,6 +132,8 @@ fun ShowGamePvP(activity: MainActivity, game: Game, goBack: () -> Unit) {
 
     var caravansKey by remember { mutableStateOf(true) }
     var enemyHandKey by remember { mutableStateOf(true) }
+
+    game.enemyCResources.onRemoveFromHand = { enemyHandKey = !enemyHandKey }
 
     fun onCardClicked(index: Int) {
         if (game.isOver()) {
@@ -55,7 +150,6 @@ fun ShowGamePvP(activity: MainActivity, game: Game, goBack: () -> Unit) {
     val state3Enemy = rememberLazyListState()
     val state3Player = rememberLazyListState()
 
-
     fun updateCaravans() {
         caravansKey = !caravansKey
     }
@@ -67,25 +161,47 @@ fun ShowGamePvP(activity: MainActivity, game: Game, goBack: () -> Unit) {
         selectedCard = null
     }
     fun dropCardFromHand() {
+        if (game.isExchangingCards) return
         val selectedCardNN = selectedCard ?: return
         game.playerCResources.removeFromHand(selectedCardNN)
         resetSelected()
-        game.afterPlayerMove { updateCaravans(); updateEnemyHand() }
+        afterPlayerMove(game, roomNumber, isCreator = isCreator, isUtil = false, MoveResponse(
+            moveCode = 2,
+            handCardNumber = selectedCardNN,
+        )) { updateCaravans(); updateEnemyHand() }
     }
     fun dropCaravan() {
+        if (game.isExchangingCards) return
         val selectedCaravanNN = selectedCaravan
         if (selectedCaravanNN == -1) return
         game.playerCaravans[selectedCaravanNN].dropCaravan()
         updateCaravans()
         resetSelected()
-        game.afterPlayerMove { updateCaravans(); updateEnemyHand() }
+        afterPlayerMove(game, roomNumber, isCreator = isCreator, isUtil = false, MoveResponse(
+            moveCode = 1,
+            caravanCode = selectedCaravanNN,
+        )) { updateCaravans(); updateEnemyHand() }
     }
 
-    fun addCardToCaravan(caravan: Caravan, position: Int, isEnemy: Boolean = false) {
-        fun onCaravanCardInserted() {
-            game.afterPlayerMove { updateCaravans(); updateEnemyHand() }
+    fun addCardToCaravan(caravan: Caravan, caravanIndex: Int, position: Int, isEnemy: Boolean = false) {
+        if (game.isExchangingCards) return
+        fun onCaravanCardInserted(cardIndex: Int, caravanIndex: Int, cardInCaravan: Int? = null) {
             resetSelected()
             updateCaravans()
+            if (cardInCaravan == null) {
+                afterPlayerMove(game, roomNumber, isCreator = isCreator, isUtil = false, MoveResponse(
+                    moveCode = 3,
+                    handCardNumber = cardIndex,
+                    caravanCode = caravanIndex
+                )) { updateCaravans(); updateEnemyHand() }
+            } else {
+                afterPlayerMove(game, roomNumber, isCreator = isCreator, isUtil = false, MoveResponse(
+                    moveCode = 4,
+                    handCardNumber = cardIndex,
+                    cardInCaravanNumber = cardInCaravan,
+                    caravanCode = if (isEnemy) (-3 + caravanIndex) else caravanIndex
+                )) { updateCaravans(); updateEnemyHand() }
+            }
         }
 
         val cardIndex = selectedCard
@@ -96,28 +212,35 @@ fun ShowGamePvP(activity: MainActivity, game: Game, goBack: () -> Unit) {
                     if (position == caravan.cards.size && !isEnemy) {
                         if (caravan.canPutCardOnTop(card)) {
                             caravan.putCardOnTop(game.playerCResources.removeFromHand(cardIndex))
-                            onCaravanCardInserted()
+                            onCaravanCardInserted(
+                                cardIndex, caravanIndex, null,
+                            )
                         }
                     }
                 }
                 Rank.JACK.value, Rank.QUEEN.value, Rank.KING.value, Rank.JOKER.value -> {
                     if (position in caravan.cards.indices && caravan.cards[position].canAddModifier(card)) {
                         caravan.cards[position].addModifier(game.playerCResources.removeFromHand(cardIndex))
-                        onCaravanCardInserted()
+                        onCaravanCardInserted(
+                            cardIndex, caravanIndex, position
+                        )
                     }
                 }
             }
         }
     }
     fun addCardToEnemyCaravan(caravanNum: Int, position: Int) {
-        addCardToCaravan(game.enemyCaravans[caravanNum], position, isEnemy = true)
+        addCardToCaravan(game.enemyCaravans[caravanNum], caravanNum, position, isEnemy = true)
     }
     fun addCardToPlayerCaravan(caravanNum: Int, position: Int) {
-        addCardToCaravan(game.playerCaravans[caravanNum], position, isEnemy = false)
+        addCardToCaravan(game.playerCaravans[caravanNum], caravanNum, position, isEnemy = false)
     }
-    fun isInitStage() = game.isInitStage()
-    fun canDiscard() = game.isOver() || !game.isPlayerTurn || game.isInitStage()
-
+    fun isInitStage(): Boolean {
+        return game.isInitStage()
+    }
+    fun canDiscard(): Boolean {
+        return !(game.isOver() || !game.isPlayerTurn || game.isInitStage())
+    }
 
     BoxWithConstraints(
         modifier = Modifier
@@ -197,6 +320,7 @@ fun ShowGamePvP(activity: MainActivity, game: Game, goBack: () -> Unit) {
                         ::dropCardFromHand,
                         ::dropCaravan,
                         ::isInitStage,
+                        { game.isPlayerTurn },
                         ::canDiscard,
                         { num -> game.playerCaravans[num] },
                         { num -> game.enemyCaravans[num] },
@@ -247,6 +371,7 @@ fun ShowGamePvP(activity: MainActivity, game: Game, goBack: () -> Unit) {
                         ::dropCardFromHand,
                         ::dropCaravan,
                         ::isInitStage,
+                        { game.isPlayerTurn },
                         ::canDiscard,
                         { num -> game.playerCaravans[num] },
                         { num -> game.enemyCaravans[num] },

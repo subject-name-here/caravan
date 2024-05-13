@@ -1,6 +1,5 @@
 package com.unicorns.invisible.caravan
 
-import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -20,6 +19,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.Saver
@@ -45,6 +45,7 @@ import com.unicorns.invisible.caravan.model.primitives.CustomDeck
 import com.unicorns.invisible.caravan.model.primitives.Rank
 import com.unicorns.invisible.caravan.model.primitives.Suit
 import com.unicorns.invisible.caravan.multiplayer.MyUrlRequestCallback
+import com.unicorns.invisible.caravan.multiplayer.decodeMove
 import com.unicorns.invisible.caravan.save.json
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -55,6 +56,7 @@ import org.chromium.net.CronetEngine
 import org.chromium.net.UrlRequest
 import org.json.JSONObject
 import java.util.concurrent.Executors
+
 
 // TODO: android:usesCleartextTraffic="true"
 var cronetEngine: CronetEngine? = null
@@ -109,6 +111,7 @@ fun ShowPvP(
     var checkedCustomDeck by rememberSaveable { mutableStateOf(false) }
     var checkedPrivate by rememberSaveable { mutableStateOf(false) }
     var isRoomCreated by rememberSaveable { mutableIntStateOf(0) }
+    var isCreator by rememberSaveable { mutableStateOf(false) }
 
     var enemyDeck by rememberSaveable(stateSaver = Saver(
         save = { json.encodeToString(it) },
@@ -178,9 +181,7 @@ fun ShowPvP(
         }
     }
 
-    Log.i("ggg", "recompose ${enemyDeck.size}")
     if (enemyDeck.size >= MainActivity.MIN_DECK_SIZE) {
-        Log.i("ggg", "recompose inside")
         StartPvP(
             activity = activity,
             playerCResources = if (checkedCustomDeck) CResources(activity.save!!.getCustomDeckCopy()) else CResources(selectedDeck()),
@@ -189,8 +190,10 @@ fun ShowPvP(
                 repeat(enemyDeck.size) {
                     deck.add(enemyDeck[it])
                 }
-               deck
+                deck
             },
+            roomNumber = isRoomCreated,
+            isCreator = isCreator,
             showAlertDialog = showAlertDialog
         ) {
             enemyDeck = CustomDeck()
@@ -229,37 +232,52 @@ fun ShowPvP(
                             isRoomCreated = roomNumberQ ?: return@clickable
                             val cronetEngine = cronetEngine ?: return@clickable
                             val deckCodes = customDeckToInts(
-                                if (checkedCustomDeck) activity.save!!.getCustomDeckCopy() else CustomDeck(selectedDeck())
+                                if (checkedCustomDeck) activity.save!!.getCustomDeckCopy() else CustomDeck(
+                                    selectedDeck()
+                                )
                             )
                             CoroutineScope(Dispatchers.IO).launch {
                                 val requestBuilder = cronetEngine.newUrlRequestBuilder(
-                                    "http://192.168.1.191:8000/crvn/create?is_custom=${checkedCustomDeck.toString().replaceFirstChar { it.uppercase() }}" +
-                                            "&room=${isRoomCreated.toString().replaceFirstChar { it.uppercase() }}" +
-                                            "&is_private=${checkedPrivate.toString().replaceFirstChar { it.uppercase() }}" +
+                                    "http://192.168.1.191:8000/crvn/create?is_custom=${
+                                        checkedCustomDeck
+                                            .toString()
+                                            .replaceFirstChar { it.uppercase() }
+                                    }" +
+                                            "&room=${
+                                                isRoomCreated
+                                                    .toString()
+                                                    .replaceFirstChar { it.uppercase() }
+                                            }" +
+                                            "&is_private=${
+                                                checkedPrivate
+                                                    .toString()
+                                                    .replaceFirstChar { it.uppercase() }
+                                            }" +
                                             "&deck0=${deckCodes[0]}" +
                                             "&deck1=${deckCodes[1]}" +
                                             "&deck2=${deckCodes[2]}" +
                                             "&deck3=${deckCodes[3]}" +
                                             "&deck4=${deckCodes[4]}" +
                                             "&deck5=${deckCodes[5]}",
-                                    object : MyUrlRequestCallback(object : OnFinishRequest<JSONObject> {
-                                        override fun onFinishRequest(result: JSONObject) {
-                                            val response = try {
-                                                Log.i("dfsdf", result.getString("body"))
-                                                json.decodeFromString<List<ULong>>(
-                                                    result.getString("body")
-                                                )
-                                            } catch (e: Exception) {
-                                                isRoomCreated = 2
-                                                CoroutineScope(Dispatchers.Unconfined).launch {
-                                                    delay(3800L)
-                                                    isRoomCreated = 0
+                                    object :
+                                        MyUrlRequestCallback(object : OnFinishRequest<JSONObject> {
+                                            override fun onFinishRequest(result: JSONObject) {
+                                                val response = try {
+                                                    json.decodeFromString<List<ULong>>(
+                                                        result.getString("body")
+                                                    )
+                                                } catch (e: Exception) {
+                                                    isRoomCreated = 2
+                                                    CoroutineScope(Dispatchers.Unconfined).launch {
+                                                        delay(3800L)
+                                                        isRoomCreated = 0
+                                                    }
+                                                    return
                                                 }
-                                                return
+                                                isCreator = true
+                                                processResponse(response)
                                             }
-                                            processResponse(response)
-                                        }
-                                    }) {},
+                                        }) {},
                                     Executors.newSingleThreadExecutor()
                                 )
 
@@ -363,6 +381,7 @@ fun ShowPvP(
                                             }
                                             return
                                         }
+                                        isCreator = false
                                         processResponse(response)
                                     }
                                 }) {},
@@ -424,6 +443,8 @@ fun StartPvP(
     activity: MainActivity,
     playerCResources: CResources,
     enemyStartDeck: CustomDeck,
+    isCreator: Boolean,
+    roomNumber: Int,
     showAlertDialog: (String, String) -> Unit,
     goBack: () -> Unit,
 ) {
@@ -435,7 +456,14 @@ fun StartPvP(
                     enemyStartDeck
                 )
             ).also {
-                it.startGame()
+                it.isPlayerTurn = false
+                it.isExchangingCards = true
+                it.playerCResources.shuffleDeck()
+                var tmpHand = it.playerCResources.getTopHand()
+                while (tmpHand.count { card -> card.isFace() } > 4) {
+                    it.playerCResources.shuffleDeck()
+                    tmpHand = it.playerCResources.getTopHand()
+                }
             }
         )
     }
@@ -447,5 +475,94 @@ fun StartPvP(
             showAlertDialog(activity.getString(R.string.result), activity.getString(R.string.you_lose))
         }
     }
-    ShowGamePvP(activity, game) { goBack() }
+
+    var pvpUpdater by rememberSaveable { mutableStateOf(false) }
+
+    fun sendHandCard() {
+        val card = game.playerCResources.addToHandR() ?: return
+        val requestBuilder = cronetEngine?.newUrlRequestBuilder(
+            "http://192.168.1.191:8000/crvn/move?room=$roomNumber" +
+                    "&is_creators_move=${isCreator.toString().replaceFirstChar { it.uppercase() }}" +
+                    "&is_util=False" +
+                    "&move_code=0" +
+                    "&new_card_back_in_hand_code=${card.back.ordinal}" +
+                    "&new_card_rank_in_hand_code=${card.rank.ordinal}" +
+                    "&new_card_suit_in_hand_code=${card.suit.ordinal}"
+            ,
+            object : MyUrlRequestCallback(object : OnFinishRequest<JSONObject> {
+                override fun onFinishRequest(result: JSONObject) {
+                    val move = decodeMove(result.getString("body"))
+                    if (game.playerCResources.hand.size < 8) {
+                        val cardReceived = Card(
+                            Rank.entries[move.newCardInHandRank],
+                            Suit.entries[move.newCardInHandSuit],
+                            CardBack.entries[move.newCardInHandBack],
+                        )
+                        game.enemyCResources.addCardToHandPvP(cardReceived)
+                        pvpUpdater = !pvpUpdater
+                        sendHandCard()
+                        return
+                    }
+                    game.isExchangingCards = false
+                    game.isPlayerTurn = isCreator
+                    if (!game.isPlayerTurn) {
+                        (game.enemy as EnemyPlayer).latestMoveResponse = move
+                        CoroutineScope(Dispatchers.Default).launch {
+                            game.enemy.makeMove(game)
+                            game.processFieldAndHand(game.enemyCResources) {}
+
+                            game.isPlayerTurn = true
+                            game.checkOnGameOver()
+                        }
+                    } else {
+                        val cardReceived = Card(
+                            Rank.entries[move.newCardInHandRank],
+                            Suit.entries[move.newCardInHandSuit],
+                            CardBack.entries[move.newCardInHandBack],
+                        )
+                        game.enemyCResources.addCardToHandPvP(cardReceived)
+                    }
+                    pvpUpdater = !pvpUpdater
+                }
+            }) {},
+            Executors.newSingleThreadExecutor()
+        ) ?: return
+        val request = requestBuilder.build()
+        request.start()
+    }
+
+    if (
+        game.enemyCResources.hand.isEmpty() && game.playerCResources.hand.isEmpty() &&
+        game.enemyCResources.deckSize != 0 && game.playerCResources.deckSize != 0
+    ) {
+        if (!isCreator) {
+            val requestBuilder = cronetEngine?.newUrlRequestBuilder(
+                "http://192.168.1.191:8000/crvn/move?room=$roomNumber" +
+                        "&is_creators_move=False" +
+                        "&is_util=True"
+                ,
+                object : MyUrlRequestCallback(object : OnFinishRequest<JSONObject> {
+                    override fun onFinishRequest(result: JSONObject) {
+                        val move = decodeMove(result.getString("body"))
+                        val card = Card(
+                            Rank.entries[move.newCardInHandRank],
+                            Suit.entries[move.newCardInHandSuit],
+                            CardBack.entries[move.newCardInHandBack],
+                        )
+                        game.enemyCResources.addCardToHandPvP(card)
+                        sendHandCard()
+                    }
+                }) {},
+                Executors.newSingleThreadExecutor()
+            ) ?: return
+            val request = requestBuilder.build()
+            request.start()
+        } else {
+            sendHandCard()
+        }
+    }
+
+    key(pvpUpdater) {
+        ShowGamePvP(activity, game, isCreator, roomNumber) { goBack() }
+    }
 }

@@ -3,9 +3,11 @@ package com.unicorns.invisible.caravan.model.enemy
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.primitives.CResources
+import com.unicorns.invisible.caravan.model.primitives.Card
 import com.unicorns.invisible.caravan.model.primitives.CustomDeck
+import com.unicorns.invisible.caravan.model.primitives.Rank
+import com.unicorns.invisible.caravan.model.primitives.Suit
 import com.unicorns.invisible.caravan.multiplayer.MoveResponse
-import com.unicorns.invisible.caravan.save.json
 import kotlinx.serialization.Serializable
 
 
@@ -16,16 +18,10 @@ class EnemyPlayer(
     override fun createDeck(): CResources = CResources(startDeck)
     override fun getRewardDeck(): CardBack? = null
 
-    var latestMoveResponse: String = ""
+    var latestMoveResponse: MoveResponse? = null
 
     override suspend fun makeMove(game: Game) {
-        val move = try {
-            json.decodeFromString<MoveResponse>(latestMoveResponse)
-        } catch (e: Exception) {
-            game.isCorrupted = true
-            return
-        }
-
+        val move = latestMoveResponse ?: throw Exception()
         when (move.moveCode) {
             1 -> {
                 if (move.caravanCode !in game.enemyCaravans.indices || game.enemyCaravans[move.caravanCode].isEmpty()) {
@@ -61,7 +57,7 @@ class EnemyPlayer(
                 val card = game.enemyCResources.removeFromHand(move.handCardNumber)
 
                 val cardInCaravan = if (move.caravanCode < 0) {
-                    val playersCaravan = 3 - move.caravanCode
+                    val playersCaravan = 3 + move.caravanCode
                     if (
                         playersCaravan !in game.playerCaravans.indices ||
                         move.cardInCaravanNumber !in game.playerCaravans[playersCaravan].cards.indices
@@ -86,6 +82,14 @@ class EnemyPlayer(
                 }
                 cardInCaravan.addModifier(card)
             }
+        }
+
+        if (move.newCardInHandBack != -1) {
+            game.enemyCResources.addCardToHandPvP(Card(
+                Rank.entries[move.newCardInHandRank],
+                Suit.entries[move.newCardInHandSuit],
+                CardBack.entries[move.newCardInHandBack],
+            ))
         }
     }
 }

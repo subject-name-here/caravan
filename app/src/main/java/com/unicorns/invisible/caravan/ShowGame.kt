@@ -134,8 +134,12 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
     fun addCardToPlayerCaravan(caravanNum: Int, position: Int) {
         addCardToCaravan(game.playerCaravans[caravanNum], position, isEnemy = false)
     }
-    fun isInitStage() = game.isInitStage()
-    fun canDiscard() = game.isOver() || !game.isPlayerTurn || game.isInitStage()
+    fun isInitStage(): Boolean {
+        return game.isInitStage()
+    }
+    fun canDiscard(): Boolean {
+        return !(game.isOver() || !game.isPlayerTurn || game.isInitStage())
+    }
 
 
     BoxWithConstraints(
@@ -216,6 +220,7 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
                         ::dropCardFromHand,
                         ::dropCaravan,
                         ::isInitStage,
+                        { game.isPlayerTurn },
                         ::canDiscard,
                         { num -> game.playerCaravans[num] },
                         { num -> game.enemyCaravans[num] },
@@ -266,6 +271,7 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
                         ::dropCardFromHand,
                         ::dropCaravan,
                         ::isInitStage,
+                        { game.isPlayerTurn },
                         ::canDiscard,
                         { num -> game.playerCaravans[num] },
                         { num -> game.enemyCaravans[num] },
@@ -526,6 +532,7 @@ fun Caravans(
     dropCardFromHand: () -> Unit,
     dropSelectedCaravan: () -> Unit,
     getIsInitStage: () -> Boolean,
+    isPlayersTurn: () -> Boolean,
     canDiscard: () -> Boolean,
     getPlayerCaravan: (Int) -> Caravan,
     getEnemyCaravan: (Int) -> Caravan,
@@ -591,14 +598,16 @@ fun Caravans(
             .weight(0.22f)
             .fillMaxHeight(), verticalArrangement = Arrangement.Center) {
             val text = when {
-                !canDiscard() -> ""
+                !isPlayersTurn() -> "Wait..."
+                getIsInitStage() -> "Init stage!"
+                !canDiscard() -> "Can't act!"
                 getSelectedCard() != null -> {
                     stringResource(R.string.discard_card)
                 }
                 getSelectedCaravan() in (0..2) -> {
                     stringResource(R.string.drop_caravan, getSelectedCaravan() + 1)
                 }
-                else -> ""
+                else -> "Your turn!"
             }
             Text(
                 text = text,
