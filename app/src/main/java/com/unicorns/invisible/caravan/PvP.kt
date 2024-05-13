@@ -178,7 +178,7 @@ fun ShowPvP(
             return
         }
         isFreeRoomRequested = true
-        val link = "http://subjectn4mehere.pythonanywhere.com/crvn/get_free_room?is_custom=${isCustom.toPythonBool()}"
+        val link = "http://crvnserver.onrender.com/crvn/get_free_room?is_custom=${isCustom.toPythonBool()}"
         sendRequest(link) { result ->
             val res = result.getString("body").toIntOrNull()
             roomNumber = res?.toString() ?: ""
@@ -243,7 +243,7 @@ fun ShowPvP(
                                 )
                             )
                             sendRequest(
-                                "http://subjectn4mehere.pythonanywhere.com/crvn/create?is_custom=${checkedCustomDeck.toPythonBool()}" +
+                                "http://crvnserver.onrender.com/crvn/create?is_custom=${checkedCustomDeck.toPythonBool()}" +
                                     "&room=${isRoomCreated}" +
                                     "&is_private=${checkedPrivate.toPythonBool()}" +
                                     "&deck0=${deckCodes[0]}" +
@@ -316,7 +316,7 @@ fun ShowPvP(
                         isRoomCreated = roomNumber.toIntOrNull() ?: return@clickable
                         val deckCodes = customDeckToInts(activity.save!!.getCustomDeckCopy())
                         sendRequest(
-                            "http://subjectn4mehere.pythonanywhere.com/crvn/join?room=$isRoomCreated" +
+                            "http://crvnserver.onrender.com/crvn/join?room=$isRoomCreated" +
                                     "&back=${selectedDeck().ordinal}" +
                                     "&deck0=${deckCodes[0]}" +
                                     "&deck1=${deckCodes[1]}" +
@@ -418,7 +418,7 @@ fun StartPvP(
 
     fun sendHandCard() {
         val card = game.playerCResources.addToHandR() ?: return
-        val link = "http://subjectn4mehere.pythonanywhere.com/crvn/move?room=$roomNumber" +
+        val link = "http://crvnserver.onrender.com/crvn/move?room=$roomNumber" +
                 "&is_creators_move=${isCreator.toPythonBool()}" +
                 "&is_util=False" +
                 "&move_code=0" +
@@ -467,7 +467,7 @@ fun StartPvP(
         game.enemyCResources.deckSize != 0 && game.playerCResources.deckSize != 0
     ) {
         if (!isCreator) {
-            sendRequest("http://subjectn4mehere.pythonanywhere.com/crvn/move?room=$roomNumber" +
+            sendRequest("http://crvnserver.onrender.com/crvn/move?room=$roomNumber" +
                     "&is_creators_move=False&is_util=True") { result ->
                 val move = try {
                     decodeMove(result.getString("body"))

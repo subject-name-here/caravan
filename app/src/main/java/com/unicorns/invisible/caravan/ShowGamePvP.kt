@@ -63,7 +63,7 @@ fun afterPlayerMove(
         game.checkOnGameOver()
 
         sendRequest(
-            "http://subjectn4mehere.pythonanywhere.com/crvn/move?room=$roomNumber" +
+            "http://crvnserver.onrender.com/crvn/move?room=$roomNumber" +
                     "&is_creators_move=${isCreator.toPythonBool()}" +
                     "&is_util=${isUtil.toPythonBool()}" +
                     "&move_code=${move.moveCode}" +
