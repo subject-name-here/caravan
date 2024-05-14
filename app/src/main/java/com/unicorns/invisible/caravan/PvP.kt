@@ -356,7 +356,9 @@ fun ShowPvP(
             Spacer(modifier = Modifier.height(12.dp))
             Text(
                 text = "Room number is from 10 to 22229.\n" +
-                        "Time limit for awaiting opponent is 38 seconds, then room is destroyed.\n" +
+                        "Time limit for awaiting opponent is 38 seconds " +
+                        "(about 2 minutes waiting is possible if server wasn't used for a long time), " +
+                        "then room is destroyed.\n" +
                         "\n" +
                         "Pls no cheats thx\n" +
                         "\n" +

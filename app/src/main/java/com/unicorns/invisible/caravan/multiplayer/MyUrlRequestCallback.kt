@@ -1,7 +1,5 @@
 package com.unicorns.invisible.caravan.multiplayer
 
-
-import android.util.Log
 import org.chromium.net.CronetException
 import org.chromium.net.UrlRequest
 import org.chromium.net.UrlResponseInfo
@@ -54,6 +52,9 @@ abstract class MyUrlRequestCallback (var delegate: OnFinishRequest<JSONObject>) 
             .replace("(\r\n|\n\r|\r|\n|\r0|\n0)".toRegex(), "")
         if (responseBodyString.endsWith("0")) {
             responseBodyString = responseBodyString.substring(0, responseBodyString.length - 1)
+        }
+        if (responseBodyString.startsWith('[')) {
+            responseBodyString = responseBodyString.substringBefore(']') + ']'
         }
 
         val results = JSONObject()
