@@ -23,8 +23,6 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.unicorns.invisible.caravan.model.CardBack
-import com.unicorns.invisible.caravan.save.save
 
 
 @Composable
@@ -34,7 +32,7 @@ fun ShowAbout(activity: MainActivity, goBack: () -> Unit) {
         verticalArrangement = Arrangement.Center,
         modifier = Modifier
             .fillMaxSize()
-            .padding(horizontal = 8.dp)
+            .padding(horizontal = 16.dp)
     ) {
         Text(
             text = stringResource(R.string.about_1),

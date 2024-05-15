@@ -2,9 +2,9 @@ package com.unicorns.invisible.caravan.model
 
 import androidx.compose.runtime.saveable.Saver
 import com.unicorns.invisible.caravan.model.enemy.Enemy
+import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.Caravan
 import com.unicorns.invisible.caravan.model.primitives.Card
-import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.Rank
 import com.unicorns.invisible.caravan.save.json
 import kotlinx.coroutines.CoroutineScope

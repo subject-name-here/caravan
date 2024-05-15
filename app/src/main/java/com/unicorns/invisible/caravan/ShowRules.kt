@@ -36,9 +36,10 @@ fun ShowRules(activity: MainActivity, goBack: () -> Unit) {
         LazyColumn(
             Modifier
                 .fillMaxHeight(0.85f)
-                .scrollbar(state, horizontal = false), state = state) {
+                .scrollbar(state, horizontal = false, padding = 4.dp), state = state) {
             item {
                 Text(
+                    modifier = Modifier.padding(horizontal = 4.dp),
                     text = rules,
                     style = TextStyle(color = Color(activity.getColor(R.color.colorPrimaryDark)), fontSize = 20.sp, textAlign = TextAlign.Center)
                 )
