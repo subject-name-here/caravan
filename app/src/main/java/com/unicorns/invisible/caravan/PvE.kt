@@ -12,8 +12,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.Checkbox
-import androidx.compose.material3.CheckboxColors
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -42,6 +40,7 @@ import com.unicorns.invisible.caravan.model.primitives.Card
 import com.unicorns.invisible.caravan.model.primitives.CustomDeck
 import com.unicorns.invisible.caravan.save.Save
 import com.unicorns.invisible.caravan.save.save
+import com.unicorns.invisible.caravan.utils.CheckboxCustom
 import com.unicorns.invisible.caravan.utils.scrollbar
 
 
@@ -139,7 +138,7 @@ fun ShowPvE(
             ) {
                 Text(
                     text = stringResource(R.string.pve_select_enemy),
-                    style = TextStyle(color = Color(activity.getColor(R.color.colorPrimaryDark)), fontSize = 24.sp)
+                    style = TextStyle(color = Color(activity.getColor(R.color.colorPrimaryDark)), fontSize = 22.sp)
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
@@ -149,7 +148,7 @@ fun ShowPvE(
                         showGameEasy = true
                     }
                 )
-                Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(10.dp))
                 Text(
                     text = stringResource(R.string.pve_enemy_medium),
                     style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 16.sp),
@@ -157,7 +156,7 @@ fun ShowPvE(
                         showGameMedium = true
                     }
                 )
-                Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(10.dp))
                 Text(
                     text = stringResource(R.string.pve_enemy_queen),
                     style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 16.sp),
@@ -165,7 +164,7 @@ fun ShowPvE(
                         showGameQueen = true
                     }
                 )
-                Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(10.dp))
                 Text(
                     text = stringResource(R.string.pve_enemy_38),
                     style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 16.sp),
@@ -173,7 +172,7 @@ fun ShowPvE(
                         showGame38 = true
                     }
                 )
-                Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(10.dp))
                 Text(
                     text = stringResource(R.string.pve_enemy_cheater),
                     style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 16.sp),
@@ -190,27 +189,18 @@ fun ShowPvE(
                 .padding(8.dp), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(modifier = Modifier.fillMaxWidth(0.7f), text = stringResource(R.string.pve_use_custom_deck))
-
-                Checkbox(checked = checkedCustomDeck, onCheckedChange = {
-                    checkedCustomDeck = !checkedCustomDeck
-                    activity.save?.let {
-                        it.useCustomDeck = checkedCustomDeck
-                        save(activity, it)
-                    }
-                }, colors = CheckboxColors(
-                    checkedCheckmarkColor = Color(activity.getColor(R.color.colorPrimaryDark)),
-                    uncheckedCheckmarkColor = Color.Transparent,
-                    checkedBoxColor = Color(activity.getColor(R.color.colorPrimary)),
-                    uncheckedBoxColor = Color.Transparent,
-                    disabledCheckedBoxColor = Color.Red,
-                    disabledUncheckedBoxColor = Color.Red,
-                    disabledIndeterminateBoxColor = Color.Red,
-                    checkedBorderColor = Color(activity.getColor(R.color.colorPrimaryDark)),
-                    uncheckedBorderColor = Color(activity.getColor(R.color.colorPrimaryDark)),
-                    disabledBorderColor = Color.Red,
-                    disabledUncheckedBorderColor = Color.Red,
-                    disabledIndeterminateBorderColor = Color.Red,
-                ))
+                CheckboxCustom(
+                    activity,
+                    { checkedCustomDeck },
+                    {
+                        checkedCustomDeck = !checkedCustomDeck
+                        activity.save?.let {
+                            it.useCustomDeck = checkedCustomDeck
+                            save(activity, it)
+                        }
+                    },
+                    { true }
+                )
             }
 
             HorizontalDivider()
@@ -297,7 +287,7 @@ fun StartGame(
                                 activity.getString(cardBack.getDeckName())
                             )
                         }
-                        message += winCard(activity, save, cardBack, 5)
+                        message += winCard(activity, save, cardBack, 4)
                     }
                 } else {
                     enemy.getRewardDeck()?.let { cardBack ->
@@ -319,10 +309,7 @@ fun StartGame(
                 save.gamesFinished++
                 save(activity, save)
             }
-            showAlertDialog(
-                activity.getString(R.string.result),
-                activity.getString(R.string.you_lose)
-            )
+            showAlertDialog(activity.getString(R.string.result), activity.getString(R.string.you_lose))
         }
     }
     ShowGame(activity, game) { goBack() }

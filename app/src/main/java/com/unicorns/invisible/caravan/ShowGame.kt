@@ -423,20 +423,26 @@ fun CaravanOnField(
                 .fillMaxWidth()
         )
     } else {
-        Text(text = caravan.getValue().toString(),
-            textAlign = TextAlign.Center,
-            color = if (caravan.getValue() > 26)
-                Color.Red
-            else if (caravan.getValue() in (21..26) && (getOpposingCaravanValue() !in (21..26) || caravan.getValue() > getOpposingCaravanValue()))
-                Color.Green
-            else
-                Color(activity.getColor(R.color.colorAccent)),
-            modifier = Modifier
-                .fillMaxWidth()
-                .clickable {
-                    selectCaravan()
-                }
-        )
+        Column {
+            Text(text = caravan.getValue().toString(),
+                textAlign = TextAlign.Center,
+                color = if (caravan.getValue() > 26)
+                    Color.Red
+                else if (caravan.getValue() in (21..26) && (getOpposingCaravanValue() !in (21..26) || caravan.getValue() > getOpposingCaravanValue()))
+                    Color.Green
+                else
+                    Color(activity.getColor(R.color.colorAccent)),
+                modifier = Modifier.fillMaxWidth()
+            )
+            Text(text = "Discard!",
+                textAlign = TextAlign.Center,
+                color = Color(activity.getColor(R.color.colorAccent)),
+                modifier = Modifier.fillMaxWidth()
+                    .clickable {
+                        selectCaravan()
+                    }
+            )
+        }
         LazyColumn(
             state = state,
             verticalArrangement = Arrangement.Top,
@@ -546,7 +552,8 @@ fun Caravans(
         fun CaravansColumn(num: Int, enemyLazyListState: LazyListState, playerLazyListState: LazyListState) {
             Column(modifier = Modifier
                 .weight(0.25f)
-                .fillMaxHeight().padding(6.dp)) {
+                .fillMaxHeight()
+                .padding(6.dp)) {
                 CaravanOnField(activity,
                     getEnemyCaravan(num),
                     { getPlayerCaravan(num).getValue() },
