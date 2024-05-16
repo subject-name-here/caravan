@@ -434,10 +434,11 @@ fun CaravanOnField(
                     Color(activity.getColor(R.color.colorAccent)),
                 modifier = Modifier.fillMaxWidth()
             )
-            Text(text = "Discard!",
+            Text(text = stringResource(R.string.discard),
                 textAlign = TextAlign.Center,
                 color = Color(activity.getColor(R.color.colorAccent)),
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
                     .clickable {
                         selectCaravan()
                     }
@@ -500,7 +501,7 @@ fun CaravanOnField(
 }
 
 @Composable
-fun ShowDeck(cResources: CResources, activity: MainActivity, isToBottom: Boolean = false) {
+fun ShowDeck(cResources: CResources, activity: MainActivity, isToBottom: Boolean = false, isKnown: Boolean = true) {
     Column(
         modifier = Modifier
             .fillMaxHeight()
@@ -512,8 +513,9 @@ fun ShowDeck(cResources: CResources, activity: MainActivity, isToBottom: Boolean
             modifier = Modifier.fillMaxWidth(),
             style = TextStyle(color = Color(activity.getColor(R.color.colorAccent)), fontSize = 16.sp, textAlign = TextAlign.Center)
         )
+        val link = "file:///android_asset/caravan_cards_back/${if (isKnown) cResources.getDeckBack()?.getCardBackAsset() else null}"
         AsyncImage(
-            model = "file:///android_asset/caravan_cards_back/${cResources.getDeckBack()?.getCardBackAsset()}",
+            model = link,
             contentDescription = "",
             modifier = Modifier.fillMaxWidth(),
         )
@@ -605,16 +607,16 @@ fun Caravans(
             .weight(0.22f)
             .fillMaxHeight(), verticalArrangement = Arrangement.Center) {
             val text = when {
-                !isPlayersTurn() -> "Wait..."
-                getIsInitStage() -> "Init stage!"
-                !canDiscard() -> "Can't act!"
+                !isPlayersTurn() -> stringResource(R.string.wait)
+                getIsInitStage() -> stringResource(R.string.init_stage)
+                !canDiscard() -> stringResource(R.string.can_t_act)
                 getSelectedCard() != null -> {
                     stringResource(R.string.discard_card)
                 }
                 getSelectedCaravan() in (0..2) -> {
                     stringResource(R.string.drop_caravan, getSelectedCaravan() + 1)
                 }
-                else -> "Your turn!"
+                else -> stringResource(R.string.your_turn)
             }
             Text(
                 text = text,

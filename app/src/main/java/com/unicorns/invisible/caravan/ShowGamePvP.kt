@@ -249,7 +249,7 @@ fun ShowGamePvP(activity: MainActivity, game: Game, isCreator: Boolean, roomNumb
                                 RowOfEnemyCards(game.enemyCResources.hand.take(4))
                                 RowOfEnemyCards(game.enemyCResources.hand.takeLast((handSize - 4).coerceAtLeast(0)))
                             }
-                            ShowDeck(game.enemyCResources, activity)
+                            ShowDeck(game.enemyCResources, activity, isKnown = false)
                         }
                     }
                     Row(verticalAlignment = Alignment.Bottom, modifier = Modifier
@@ -328,7 +328,7 @@ fun ShowGamePvP(activity: MainActivity, game: Game, isCreator: Boolean, roomNumb
                             RowOfEnemyCards(game.enemyCResources.hand.take(4))
                             RowOfEnemyCards(game.enemyCResources.hand.takeLast((handSize - 4).coerceAtLeast(0)))
                         }
-                        ShowDeck(game.enemyCResources, activity)
+                        ShowDeck(game.enemyCResources, activity, isKnown = false)
                     }
                 }
                 key(caravansKey) {

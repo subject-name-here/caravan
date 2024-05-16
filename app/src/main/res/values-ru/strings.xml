@@ -153,4 +153,21 @@
     <string name="tutorial_52">Если два каравана проданы с одинаковой ценностью, игра продолжается, пока один из караванов не будет продан с большей ценностью (но не более 26).</string>
     <string name="tutorial_53">Вот и всё. Я не буду раскрывать все свои карты - исследуй игру в своем темпе.</string>
     <string name="tutorial_56">Свидимся.</string>
+
+    <string name="create_room">Создать Номер</string>
+    <string name="failure">Ошибка!</string>
+    <string name="incorrect_room_number">Некорректный Номер!</string>
+    <string name="your_room_is">Ваш Номер - %1$s. Ожидаем соперника.....</string>
+    <string name="private_room">Приватный номер</string>
+    <string name="find">Найти!!!</string>
+    <string name="join">Войти!!!</string>
+    <string name="room_number">Номер:</string>
+    <string name="no_stats_here">Никакой статистики: игра для веселья, а не для циферок!</string>
+    <string name="pvp_piece">Номер - от 10 до 22229.\nПри поиске номера приложение смотрит на галочку у пункта \"Использовать сборную колоду\".\nВремя на совершение действия - 38 секунд, по их истечении комната уничтожается.</string>
+
+    <string name="discard">Распустить!</string>
+    <string name="wait">Ждите…</string>
+    <string name="init_stage">Дебют!</string>
+    <string name="can_t_act">Нельзя ходить!</string>
+    <string name="your_turn">Твой черёд!</string>
 </resources>

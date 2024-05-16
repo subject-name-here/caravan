@@ -13,7 +13,6 @@ class CResources(private val deck: CustomDeck) {
     val hand
         get() = handMutable.toList()
 
-    fun getInitHand() = deck.takeRandom(8)
     fun getTopHand() = deck.toList().take(8)
     fun initHand(toPutInHand: List<Card>) {
         deck.removeAll(toPutInHand)

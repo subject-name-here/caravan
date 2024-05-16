@@ -13,7 +13,7 @@ import org.json.JSONObject
  *
  * CaravanCode: 0, 1, 2 - enemy's own caravans; -1, -2 , -3 - player's caravans.
  */
-//  "new_card_back_in_hand_code": 3, "new_card_rank_in_hand_code": 5, "new_card_suit_in_hand_code": 3}}
+
 
 @Serializable
 data class MoveResponse(

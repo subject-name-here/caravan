@@ -23,8 +23,6 @@ class CardWithModifier(val card: Card) {
         hasActiveJoker = false
     }
 
-    private val numOfKings: Int
-        get() = modifiers.count { it.rank == Rank.KING }
     fun isQueenReversingSequence() = modifiers.count { it.rank == Rank.QUEEN } % 2 == 1
 
     fun hasJacks() = modifiers.any { it.rank == Rank.JACK }
@@ -35,7 +33,7 @@ class CardWithModifier(val card: Card) {
         return if (card.isFace()) {
             0
         } else {
-            card.rank.value * (2.0.pow(numOfKings)).toInt()
+            card.rank.value * (2.0.pow(modifiers.count { it.rank == Rank.KING })).toInt()
         }
     }
 

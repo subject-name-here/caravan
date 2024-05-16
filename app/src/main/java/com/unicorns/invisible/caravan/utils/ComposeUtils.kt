@@ -35,20 +35,6 @@ fun Modifier.scrollbar(
     fadeOutAnimationDurationMs: Int = 500,
     fadeOutAnimationDelayMs: Int = 1000,
 ): Modifier {
-    check(thickness > 0.dp) { "Thickness must be a positive integer." }
-    check(knobCornerRadius >= 0.dp) { "Knob corner radius must be greater than or equal to 0." }
-    check(trackCornerRadius >= 0.dp) { "Track corner radius must be greater than or equal to 0." }
-    check(hiddenAlpha <= visibleAlpha) { "Hidden alpha cannot be greater than visible alpha." }
-    check(fadeInAnimationDurationMs >= 0) {
-        "Fade in animation duration must be greater than or equal to 0."
-    }
-    check(fadeOutAnimationDurationMs >= 0) {
-        "Fade out animation duration must be greater than or equal to 0."
-    }
-    check(fadeOutAnimationDelayMs >= 0) {
-        "Fade out animation delay must be greater than or equal to 0."
-    }
-
     val targetAlpha =
         if (state.isScrollInProgress) {
             visibleAlpha
@@ -167,20 +153,6 @@ fun Modifier.caravanScrollbar(
     fadeOutAnimationDurationMs: Int = 500,
     fadeOutAnimationDelayMs: Int = 1000,
 ): Modifier {
-    check(thickness > 0.dp) { "Thickness must be a positive integer." }
-    check(knobCornerRadius >= 0.dp) { "Knob corner radius must be greater than or equal to 0." }
-    check(trackCornerRadius >= 0.dp) { "Track corner radius must be greater than or equal to 0." }
-    check(hiddenAlpha <= visibleAlpha) { "Hidden alpha cannot be greater than visible alpha." }
-    check(fadeInAnimationDurationMs >= 0) {
-        "Fade in animation duration must be greater than or equal to 0."
-    }
-    check(fadeOutAnimationDurationMs >= 0) {
-        "Fade out animation duration must be greater than or equal to 0."
-    }
-    check(fadeOutAnimationDelayMs >= 0) {
-        "Fade out animation delay must be greater than or equal to 0."
-    }
-
     val targetAlpha =
         if (state.isScrollInProgress) {
             visibleAlpha

@@ -50,13 +50,16 @@ class Game(
         return playerCResources.hand.size > 5 || enemyCResources.hand.size > 5
     }
 
-    private fun initDeck(cResources: CResources, maxNumOfFaces: Int) {
+    fun initDeck(cResources: CResources, maxNumOfFaces: Int, initHand: Boolean = true) {
         cResources.shuffleDeck()
-        var tmpHand = cResources.getInitHand()
+        var tmpHand = cResources.getTopHand()
         while (tmpHand.count { it.isFace() } > maxNumOfFaces) {
-            tmpHand = cResources.getInitHand()
+            cResources.shuffleDeck()
+            tmpHand = cResources.getTopHand()
         }
-        cResources.initHand(tmpHand)
+        if (initHand) {
+            cResources.initHand(tmpHand)
+        }
     }
     fun startGame(maxNumOfFaces: Int = 5) {
         initDeck(playerCResources, maxNumOfFaces)

@@ -151,4 +151,21 @@
     <string name="tutorial_53">That\'s it. I am not going to tell all my tricks, you should figure the game out yourself.</string>
     <string name="tutorial_56">See ya round.</string>
 
+    <string name="create_room">Create Room</string>
+    <string name="failure">Failure!</string>
+    <string name="incorrect_room_number">Incorrect room number!</string>
+    <string name="your_room_is">Your Room is %1$s. Awaiting the Opponent.....</string>
+    <string name="private_room">Private room</string>
+    <string name="find">Find!!!</string>
+    <string name="join">Join!!!</string>
+    <string name="room_number">Room Number:</string>
+    <string name="no_stats_here">No stats here: the game\'s for fun, not for numbers!</string>
+    <string name="pvp_piece">Room number is from 10 to 22229.\nWhen finding room, it looks at whether \"Use custom deck\" is checked.\nActions timeout is 38 seconds, then the room is destroyed.</string>
+
+    <string name="discard">Discard!</string>
+    <string name="wait">Wait…</string>
+    <string name="init_stage">Init stage!</string>
+    <string name="can_t_act">Can\'t act!</string>
+    <string name="your_turn">Your turn!</string>
+
 </resources>

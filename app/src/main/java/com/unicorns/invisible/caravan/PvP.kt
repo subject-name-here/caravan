@@ -1,5 +1,6 @@
 package com.unicorns.invisible.caravan
 
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -164,6 +165,7 @@ fun ShowPvP(
         }
 
         if (!isCreator) {
+            Log.i("first deck:", response[0].toString())
             checkedCustomDeck = response[0] > (1UL shl 54)
         }
 
@@ -221,10 +223,10 @@ fun ShowPvP(
             Row(modifier = Modifier.height(100.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
                 Text(
                     text = when (isRoomCreated) {
-                        0 -> "Create Room"
-                        2 -> "Failure!"
-                        4 -> "Incorrect room number!"
-                        else -> "Your Room is $isRoomCreated. Awaiting the Opponent....."
+                        0 -> stringResource(R.string.create_room)
+                        2 -> stringResource(R.string.failure)
+                        4 -> stringResource(R.string.incorrect_room_number)
+                        else -> stringResource(R.string.your_room_is, isRoomCreated)
                     },
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,
@@ -244,14 +246,14 @@ fun ShowPvP(
                             )
                             sendRequest(
                                 "http://crvnserver.onrender.com/crvn/create?is_custom=${checkedCustomDeck.toPythonBool()}" +
-                                    "&room=${isRoomCreated}" +
-                                    "&is_private=${checkedPrivate.toPythonBool()}" +
-                                    "&deck0=${deckCodes[0]}" +
-                                    "&deck1=${deckCodes[1]}" +
-                                    "&deck2=${deckCodes[2]}" +
-                                    "&deck3=${deckCodes[3]}" +
-                                    "&deck4=${deckCodes[4]}" +
-                                    "&deck5=${deckCodes[5]}"
+                                        "&room=${isRoomCreated}" +
+                                        "&is_private=${checkedPrivate.toPythonBool()}" +
+                                        "&deck0=${deckCodes[0]}" +
+                                        "&deck1=${deckCodes[1]}" +
+                                        "&deck2=${deckCodes[2]}" +
+                                        "&deck3=${deckCodes[3]}" +
+                                        "&deck4=${deckCodes[4]}" +
+                                        "&deck5=${deckCodes[5]}"
                             ) { result ->
                                 val response = try {
                                     json.decodeFromString<List<ULong>>(
@@ -268,7 +270,10 @@ fun ShowPvP(
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Column {
-                    Row(modifier = Modifier.fillMaxHeight(0.5f).fillMaxWidth().padding(8.dp),
+                    Row(modifier = Modifier
+                        .fillMaxHeight(0.5f)
+                        .fillMaxWidth()
+                        .padding(8.dp),
                         horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(modifier = Modifier.fillMaxWidth(0.7f), text = stringResource(R.string.pve_use_custom_deck))
@@ -277,15 +282,16 @@ fun ShowPvP(
                             { checkedCustomDeck },
                             {
                                 checkedCustomDeck = !checkedCustomDeck
-                                updateAvailableRoom(checkedCustomDeck)
                             },
                             { isRoomCreated == 0 }
                         )
                     }
-                    Row(modifier = Modifier.fillMaxSize().padding(8.dp),
+                    Row(modifier = Modifier
+                        .fillMaxSize()
+                        .padding(8.dp),
                         horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text(modifier = Modifier.fillMaxWidth(0.7f), text = "Private room")
+                        Text(modifier = Modifier.fillMaxWidth(0.7f), text = stringResource(R.string.private_room))
                         CheckboxCustom(
                             activity,
                             { checkedPrivate },
@@ -297,17 +303,28 @@ fun ShowPvP(
             }
             Spacer(modifier = Modifier.height(16.dp))
             Row(modifier = Modifier.height(100.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
+                Text(
+                    text = stringResource(R.string.find),
+                    modifier = Modifier.clickable {
+                        updateAvailableRoom(checkedCustomDeck)
+                    },
+                    textAlign = TextAlign.Center,
+                    fontWeight = FontWeight.SemiBold,
+                    style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 14.sp)
+                )
+                Spacer(modifier = Modifier.width(12.dp))
                 TextField(
+                    modifier = Modifier.fillMaxWidth(0.5f),
                     singleLine = true,
                     enabled = isRoomCreated == 0,
                     value = roomNumber,
                     onValueChange = { roomNumber = it },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    label = { Text(text = "Join Room:", style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 16.sp)) },
+                    label = { Text(text = stringResource(R.string.room_number), style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 16.sp)) },
                 )
                 Spacer(modifier = Modifier.width(12.dp))
                 Text(
-                    text = "Join!!!",
+                    text = stringResource(R.string.join),
                     modifier = Modifier.clickable {
                         if (isRoomCreated != 0 || isRoomNumberCorrect(roomNumber)) {
                             showIncorrectRoomNumber()
@@ -349,20 +366,13 @@ fun ShowPvP(
         Column(Modifier.fillMaxSize(0.75f), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
             Text(
                 modifier = Modifier.padding(horizontal = 16.dp),
-                text = "No stats here: the game's for fun, not for numbers!",
+                text = stringResource(R.string.no_stats_here),
                 textAlign = TextAlign.Center,
                 style = TextStyle(color = Color(activity.getColor(R.color.colorPrimaryDark)), fontSize = 20.sp)
             )
             Spacer(modifier = Modifier.height(12.dp))
             Text(
-                text = "Room number is from 10 to 22229.\n" +
-                        "Time limit for awaiting opponent is 38 seconds " +
-                        "(about 2 minutes waiting is possible if server wasn't used for a long time), " +
-                        "then room is destroyed.\n" +
-                        "\n" +
-                        "Pls no cheats thx\n" +
-                        "\n" +
-                        "Good luck!",
+                text = stringResource(R.string.pvp_piece),
                 style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 12.sp)
             )
         }
@@ -398,12 +408,7 @@ fun StartPvP(
             ).also {
                 it.isPlayerTurn = false
                 it.isExchangingCards = true
-                it.playerCResources.shuffleDeck()
-                var tmpHand = it.playerCResources.getTopHand()
-                while (tmpHand.count { card -> card.isFace() } > 4) {
-                    it.playerCResources.shuffleDeck()
-                    tmpHand = it.playerCResources.getTopHand()
-                }
+                it.initDeck(playerCResources, maxNumOfFaces = 4, initHand = false)
             }
         )
     }
