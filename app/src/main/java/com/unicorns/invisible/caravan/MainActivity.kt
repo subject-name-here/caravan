@@ -79,7 +79,7 @@ class MainActivity : AppCompatActivity() {
                 showAlertDialog = false
             }
 
-            var pingServer by rememberSaveable { mutableIntStateOf(1) }
+            var pingServer by rememberSaveable { mutableIntStateOf(0) }
             var areThereRooms by rememberSaveable { mutableStateOf(false) }
             val effectKey by rememberSaveable { mutableStateOf(true) }
             LaunchedEffect(effectKey) {
@@ -93,9 +93,11 @@ class MainActivity : AppCompatActivity() {
                                 pingServer = 1
                             }
                         }
-                        delay(4250L)
+
+                        delay(19000L)
+                        pingServer = 2
                     }
-                    delay(4250L)
+                    delay(4750L)
                 }
             }
 

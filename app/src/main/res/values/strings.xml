@@ -163,10 +163,10 @@
     <string name="join_diff_custom_header">Another Courier!</string>
     <string name="join_diff_custom_body">There is someone waiting for you, but they are with different usage of custom deck. Join them, if you want.</string>
     <string name="no_stats_here">No stats here: the game\'s for fun, not for numbers!</string>
-    <string name="pvp_piece">If you wanna find someone, press \"Join pool!!!\".\n
+    <string name="pvp_piece">If you want to find anyone, press \"Join pool!!!\".\n
         Room number is from 10 to 22229.\n
         When finding room, it looks at whether \"Use custom deck\" is checked.\n
-        Actions timeout is 38 seconds, then the room is destroyed.\n
+        Actions timeout is 38 seconds, then the room is destroyed. (Sometimes first connection to server be longer.)\n
         Also, there can be only two-three games at the same time. If server does not respond, it means there are too many games already.</string>
 
     <string name="discard">Discard!</string>
@@ -177,6 +177,6 @@
 
     <string name="someone_is_in_the_room_alone">Someone is in the room alone!</string>
     <string name="it_is_either_empty_or_busy">Pool is either empty or busy.</string>
-    <string name="no_server_ping">No server ping. Server is sad :(</string>
+    <string name="no_server_ping">No server ping. Touch to connect to server.</string>
 
 </resources>
