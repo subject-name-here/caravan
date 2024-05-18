@@ -12,7 +12,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -29,6 +32,10 @@ import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.save.Save
 import com.unicorns.invisible.caravan.save.loadSave
 import com.unicorns.invisible.caravan.save.save
+import com.unicorns.invisible.caravan.utils.sendRequest
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
+import org.chromium.net.CronetEngine
 
 
 @Suppress("MoveLambdaOutsideParentheses")
@@ -44,6 +51,11 @@ class MainActivity : AppCompatActivity() {
         save = loadSave(this) ?: run {
             save(this, Save())
             loadSave(this)!!
+        }
+
+        if (cronetEngine == null) {
+            val myBuilder = CronetEngine.Builder(this)
+            cronetEngine = myBuilder.build()
         }
 
         setContent {
@@ -65,6 +77,26 @@ class MainActivity : AppCompatActivity() {
             }
             fun hideAlertDialog() {
                 showAlertDialog = false
+            }
+
+            var pingServer by rememberSaveable { mutableIntStateOf(1) }
+            var areThereRooms by rememberSaveable { mutableStateOf(false) }
+            val effectKey by rememberSaveable { mutableStateOf(true) }
+            LaunchedEffect(effectKey) {
+                while (isActive) {
+                    if (pingServer != 0) {
+                        pingServer = 2
+                        sendRequest("http://crvnserver.onrender.com/crvn/is_there_a_room/") {
+                            val res = it.getString("body").toIntOrNull()
+                            areThereRooms = res != null && res != 0
+                            if (pingServer == 2) {
+                                pingServer = 1
+                            }
+                        }
+                        delay(4250L)
+                    }
+                    delay(4250L)
+                }
             }
 
             if (showAlertDialog) {
@@ -125,6 +157,37 @@ class MainActivity : AppCompatActivity() {
                         { showRules = true }
                     )
                 }
+            }
+
+            key (pingServer) {
+                Text(
+                    text = when (pingServer) {
+                        1 -> {
+                            if (areThereRooms)
+                                stringResource(R.string.someone_is_in_the_room_alone)
+                            else
+                                stringResource(R.string.it_is_either_empty_or_busy)
+                        }
+                        0 -> {
+                            stringResource(R.string.no_server_ping)
+                        }
+                        else -> {
+                            stringResource(R.string.wait)
+                        }
+                    },
+                    style = TextStyle(
+                        color = Color(getColor(if (pingServer == 1 && areThereRooms) R.color.red else R.color.colorPrimaryDark)),
+                        background = Color(getColor(R.color.colorAccent)),
+                        fontSize = 12.sp
+                    ),
+                    modifier = Modifier.clickable {
+                        pingServer = if (pingServer == 0) {
+                            2
+                        } else {
+                            0
+                        }
+                    }
+                )
             }
         }
     }

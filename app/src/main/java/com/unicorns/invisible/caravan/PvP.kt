@@ -1,6 +1,5 @@
 package com.unicorns.invisible.caravan
 
-import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -12,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
@@ -91,7 +91,7 @@ fun Boolean.toPythonBool(): String {
 }
 
 
-fun isRoomNumberCorrect(roomNumber: String): Boolean {
+fun isRoomNumberIncorrect(roomNumber: String): Boolean {
     return roomNumber.toIntOrNull() !in (10..22229)
 }
 
@@ -103,11 +103,6 @@ fun ShowPvP(
     showAlertDialog: (String, String) -> Unit,
     goBack: () -> Unit
 ) {
-    if (cronetEngine == null) {
-        val myBuilder = CronetEngine.Builder(activity)
-        cronetEngine = myBuilder.build()
-    }
-
     var roomNumber by rememberSaveable { mutableStateOf("") }
     var checkedCustomDeck by rememberSaveable { mutableStateOf(false) }
     var checkedPrivate by rememberSaveable { mutableStateOf(false) }
@@ -165,7 +160,6 @@ fun ShowPvP(
         }
 
         if (!isCreator) {
-            Log.i("first deck:", response[0].toString())
             checkedCustomDeck = response[0] > (1UL shl 54)
         }
 
@@ -174,17 +168,100 @@ fun ShowPvP(
         }
     }
 
-    var isFreeRoomRequested = false
-    fun updateAvailableRoom(isCustom: Boolean) {
-        if (isFreeRoomRequested) {
+    fun createRoom() {
+        if (isRoomCreated != 0 || isRoomNumberIncorrect(roomNumber)) {
+            showIncorrectRoomNumber()
             return
         }
-        isFreeRoomRequested = true
+        isRoomCreated = roomNumber.toIntOrNull() ?: return
+        val deckCodes = customDeckToInts(
+            if (checkedCustomDeck) activity.save!!.getCustomDeckCopy() else CustomDeck(
+                selectedDeck()
+            )
+        )
+        sendRequest(
+            "http://crvnserver.onrender.com/crvn/create?is_custom=${checkedCustomDeck.toPythonBool()}" +
+                    "&room=${isRoomCreated}" +
+                    "&is_private=${checkedPrivate.toPythonBool()}" +
+                    "&deck0=${deckCodes[0]}" +
+                    "&deck1=${deckCodes[1]}" +
+                    "&deck2=${deckCodes[2]}" +
+                    "&deck3=${deckCodes[3]}" +
+                    "&deck4=${deckCodes[4]}" +
+                    "&deck5=${deckCodes[5]}"
+        ) { result ->
+            val response = try {
+                json.decodeFromString<List<ULong>>(
+                    result.getString("body")
+                )
+            } catch (e: Exception) {
+                showFailure()
+                return@sendRequest
+            }
+            isCreator = true
+            processResponse(response)
+        }
+    }
+
+    fun joinRoom() {
+        if (isRoomCreated != 0 || isRoomNumberIncorrect(roomNumber)) {
+            showIncorrectRoomNumber()
+            return
+        }
+        isRoomCreated = roomNumber.toIntOrNull() ?: return
+        val deckCodes = customDeckToInts(activity.save!!.getCustomDeckCopy())
+        sendRequest(
+            "http://crvnserver.onrender.com/crvn/join?room=$isRoomCreated" +
+                    "&back=${selectedDeck().ordinal}" +
+                    "&deck0=${deckCodes[0]}" +
+                    "&deck1=${deckCodes[1]}" +
+                    "&deck2=${deckCodes[2]}" +
+                    "&deck3=${deckCodes[3]}" +
+                    "&deck4=${deckCodes[4]}" +
+                    "&deck5=${deckCodes[5]}"
+        ) { result ->
+            val response = try {
+                json.decodeFromString<List<ULong>>(
+                    result.getString("body")
+                )
+            } catch (e: Exception) {
+                showFailure()
+                return@sendRequest
+            }
+            isCreator = false
+            processResponse(response)
+        }
+    }
+
+    fun updateAvailableRoom(isCustom: Boolean) {
+        if (isRoomCreated != 0) {
+            return
+        }
+        isRoomCreated = 1
         val link = "http://crvnserver.onrender.com/crvn/get_free_room?is_custom=${isCustom.toPythonBool()}"
+        val link2 = "http://crvnserver.onrender.com/crvn/get_free_room?is_custom=${(!isCustom).toPythonBool()}"
         sendRequest(link) { result ->
             val res = result.getString("body").toIntOrNull()
-            roomNumber = res?.toString() ?: ""
-            isFreeRoomRequested = false
+            if (res == null) {
+                sendRequest(link2) { result2 ->
+                    val res2 = result2.getString("body").toIntOrNull()
+                    isRoomCreated = 0
+                    if (res2 != null) {
+                        showAlertDialog(
+                            activity.getString(R.string.join_diff_custom_header),
+                            activity.getString(R.string.join_diff_custom_body)
+                        )
+                        roomNumber = res2.toString()
+                    } else {
+                        roomNumber = (10..22229).random().toString()
+                        createRoom()
+                    }
+                }
+            } else {
+                isRoomCreated = 0
+                roomNumber = res.toString()
+                joinRoom()
+            }
         }
     }
 
@@ -222,51 +299,16 @@ fun ShowPvP(
             Spacer(modifier = Modifier.height(16.dp))
             Row(modifier = Modifier.height(100.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
                 Text(
-                    text = when (isRoomCreated) {
-                        0 -> stringResource(R.string.create_room)
-                        2 -> stringResource(R.string.failure)
-                        4 -> stringResource(R.string.incorrect_room_number)
-                        else -> stringResource(R.string.your_room_is, isRoomCreated)
-                    },
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center,
-                    style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 16.sp),
+                    text = stringResource(R.string.find),
                     modifier = Modifier
-                        .fillMaxWidth(0.4f)
                         .clickable {
-                            if (isRoomCreated != 0 || isRoomNumberCorrect(roomNumber)) {
-                                showIncorrectRoomNumber()
-                                return@clickable
-                            }
-                            isRoomCreated = roomNumber.toIntOrNull() ?: return@clickable
-                            val deckCodes = customDeckToInts(
-                                if (checkedCustomDeck) activity.save!!.getCustomDeckCopy() else CustomDeck(
-                                    selectedDeck()
-                                )
-                            )
-                            sendRequest(
-                                "http://crvnserver.onrender.com/crvn/create?is_custom=${checkedCustomDeck.toPythonBool()}" +
-                                        "&room=${isRoomCreated}" +
-                                        "&is_private=${checkedPrivate.toPythonBool()}" +
-                                        "&deck0=${deckCodes[0]}" +
-                                        "&deck1=${deckCodes[1]}" +
-                                        "&deck2=${deckCodes[2]}" +
-                                        "&deck3=${deckCodes[3]}" +
-                                        "&deck4=${deckCodes[4]}" +
-                                        "&deck5=${deckCodes[5]}"
-                            ) { result ->
-                                val response = try {
-                                    json.decodeFromString<List<ULong>>(
-                                        result.getString("body")
-                                    )
-                                } catch (e: Exception) {
-                                    showFailure()
-                                    return@sendRequest
-                                }
-                                isCreator = true
-                                processResponse(response)
-                            }
+                            updateAvailableRoom(checkedCustomDeck)
                         }
+                        .fillMaxWidth(0.5f)
+                        .padding(horizontal = 16.dp),
+                    textAlign = TextAlign.Center,
+                    fontWeight = FontWeight.ExtraBold,
+                    style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 18.sp)
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Column {
@@ -302,15 +344,23 @@ fun ShowPvP(
                 }
             }
             Spacer(modifier = Modifier.height(16.dp))
-            Row(modifier = Modifier.height(100.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
+            Row(modifier = Modifier.height(128.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
                 Text(
-                    text = stringResource(R.string.find),
-                    modifier = Modifier.clickable {
-                        updateAvailableRoom(checkedCustomDeck)
+                    text = when (isRoomCreated) {
+                        0 -> stringResource(R.string.create_room)
+                        1 -> stringResource(R.string.pool)
+                        2 -> stringResource(R.string.failure)
+                        4 -> stringResource(R.string.incorrect_room_number)
+                        else -> stringResource(R.string.your_room_is, isRoomCreated)
                     },
+                    fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,
-                    fontWeight = FontWeight.SemiBold,
-                    style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 14.sp)
+                    style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 16.sp),
+                    modifier = Modifier
+                        .fillMaxWidth(0.5f)
+                        .clickable {
+                            createRoom()
+                        }
                 )
                 Spacer(modifier = Modifier.width(12.dp))
                 TextField(
@@ -322,41 +372,14 @@ fun ShowPvP(
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     label = { Text(text = stringResource(R.string.room_number), style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 16.sp)) },
                 )
-                Spacer(modifier = Modifier.width(12.dp))
                 Text(
                     text = stringResource(R.string.join),
-                    modifier = Modifier.clickable {
-                        if (isRoomCreated != 0 || isRoomNumberCorrect(roomNumber)) {
-                            showIncorrectRoomNumber()
-                            return@clickable
-                        }
-                        isRoomCreated = roomNumber.toIntOrNull() ?: return@clickable
-                        val deckCodes = customDeckToInts(activity.save!!.getCustomDeckCopy())
-                        sendRequest(
-                            "http://crvnserver.onrender.com/crvn/join?room=$isRoomCreated" +
-                                    "&back=${selectedDeck().ordinal}" +
-                                    "&deck0=${deckCodes[0]}" +
-                                    "&deck1=${deckCodes[1]}" +
-                                    "&deck2=${deckCodes[2]}" +
-                                    "&deck3=${deckCodes[3]}" +
-                                    "&deck4=${deckCodes[4]}" +
-                                    "&deck5=${deckCodes[5]}"
-                        ) { result ->
-                            val response = try {
-                                json.decodeFromString<List<ULong>>(
-                                    result.getString("body")
-                                )
-                            } catch (e: Exception) {
-                                showFailure()
-                                return@sendRequest
-                            }
-                            isCreator = false
-                            processResponse(response)
-                        }
-                    },
                     textAlign = TextAlign.Center,
                     fontWeight = FontWeight.Bold,
-                    style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 16.sp)
+                    style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 16.sp),
+                    modifier = Modifier.fillMaxSize().wrapContentSize().clickable {
+                        joinRoom()
+                    },
                 )
             }
         }

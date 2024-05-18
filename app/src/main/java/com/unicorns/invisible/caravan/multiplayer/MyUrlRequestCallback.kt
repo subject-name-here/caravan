@@ -50,7 +50,7 @@ abstract class MyUrlRequestCallback (var delegate: OnFinishRequest<JSONObject>) 
         //Properly format the response String
         responseBodyString = responseBodyString.trim { it <= ' ' }
             .replace("(\r\n|\n\r|\r|\n|\r0|\n0)".toRegex(), "")
-        if (responseBodyString.endsWith("0")) {
+        if (responseBodyString.endsWith("0") && responseBodyString[0] !in ('0'..'9')) {
             responseBodyString = responseBodyString.substring(0, responseBodyString.length - 1)
         }
         if (responseBodyString.startsWith('[')) {

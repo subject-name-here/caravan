@@ -29,7 +29,7 @@
     <string name="sierra_madre_deck_name">Sierra Madre deck</string>
 
     <string name="menu_pve">Quick game</string>
-    <string name="menu_pvp">Multiplayer</string>
+    <string name="menu_pvp">Multiplayer 1.1</string>
     <string name="menu_tutorial">Tutorial</string>
     <string name="menu_rules">Rules</string>
     <string name="menu_deck">Deck Settings</string>
@@ -156,16 +156,27 @@
     <string name="incorrect_room_number">Incorrect room number!</string>
     <string name="your_room_is">Your Room is %1$s. Awaiting the Opponent.....</string>
     <string name="private_room">Private room</string>
-    <string name="find">Find!!!</string>
+    <string name="find">Join pool!!!</string>
+    <string name="pool">Requesting pool…</string>
     <string name="join">Join!!!</string>
-    <string name="room_number">Room Number:</string>
+    <string name="room_number">Room</string>
+    <string name="join_diff_custom_header">Another Courier!</string>
+    <string name="join_diff_custom_body">There is someone waiting for you, but they are with different usage of custom deck. Join them, if you want.</string>
     <string name="no_stats_here">No stats here: the game\'s for fun, not for numbers!</string>
-    <string name="pvp_piece">Room number is from 10 to 22229.\nWhen finding room, it looks at whether \"Use custom deck\" is checked.\nActions timeout is 38 seconds, then the room is destroyed.</string>
+    <string name="pvp_piece">If you wanna find someone, press \"Join pool!!!\".\n
+        Room number is from 10 to 22229.\n
+        When finding room, it looks at whether \"Use custom deck\" is checked.\n
+        Actions timeout is 38 seconds, then the room is destroyed.\n
+        Also, there can be only two-three games at the same time. If server does not respond, it means there are too many games already.</string>
 
     <string name="discard">Discard!</string>
     <string name="wait">Wait…</string>
     <string name="init_stage">Init stage!</string>
     <string name="can_t_act">Can\'t act!</string>
     <string name="your_turn">Your turn!</string>
+
+    <string name="someone_is_in_the_room_alone">Someone is in the room alone!</string>
+    <string name="it_is_either_empty_or_busy">Pool is either empty or busy.</string>
+    <string name="no_server_ping">No server ping. Server is sad :(</string>
 
 </resources>
