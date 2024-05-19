@@ -1,5 +1,6 @@
 package com.unicorns.invisible.caravan
 
+import android.content.pm.PackageManager
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
@@ -10,6 +11,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -26,6 +29,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.unicorns.invisible.caravan.model.CardBack
@@ -33,10 +39,12 @@ import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.save.Save
 import com.unicorns.invisible.caravan.save.loadSave
 import com.unicorns.invisible.caravan.save.save
+import com.unicorns.invisible.caravan.utils.scrollbar
 import com.unicorns.invisible.caravan.utils.sendRequest
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import org.chromium.net.CronetEngine
+
 
 
 @Suppress("MoveLambdaOutsideParentheses")
@@ -68,6 +76,9 @@ class MainActivity : AppCompatActivity() {
             var showGameStats by rememberSaveable { mutableStateOf(false) }
             var showTutorial by rememberSaveable { mutableStateOf(false) }
             var showRules by rememberSaveable { mutableStateOf(false) }
+
+            var showSettings by rememberSaveable { mutableStateOf(false) }
+
             var selectedDeck by rememberSaveable { mutableStateOf(save?.selectedDeck ?: CardBack.STANDARD) }
 
             var showAlertDialog by remember { mutableStateOf(false) }
@@ -160,6 +171,9 @@ class MainActivity : AppCompatActivity() {
                         ) { showPvP = false }
                     }
                 }
+                showSettings -> {
+                    ShowSettings(activity = this, { pingServer }, { pingServer = it }) { showSettings = false }
+                }
                 else -> {
                     MainMenu(
                         { deckSelection = true },
@@ -167,7 +181,8 @@ class MainActivity : AppCompatActivity() {
                         { showGameStats = true },
                         { showPvP = true },
                         { showTutorial = true },
-                        { showRules = true }
+                        { showRules = true },
+                        { showSettings = true }
                     )
                 }
             }
@@ -176,32 +191,36 @@ class MainActivity : AppCompatActivity() {
                 Text(
                     text = when (pingServer) {
                         1 -> {
-                            if (areThereRooms)
+                            if (areThereRooms) {
                                 stringResource(R.string.someone_is_in_the_room_alone)
-                            else
+                            } else if (showGameStats || showPvP) {
+                                ""
+                            } else {
                                 stringResource(R.string.it_is_either_empty_or_busy)
+                            }
                         }
                         0 -> {
-                            stringResource(R.string.no_server_ping)
+                            if (showGameStats || showPvP) {
+                                ""
+                            } else {
+                                stringResource(R.string.no_server_ping)
+                            }
                         }
                         else -> {
-                            stringResource(R.string.wait)
+                            if (showGameStats || showPvP) {
+                                ""
+                            } else {
+                                stringResource(R.string.pinging)
+                            }
                         }
                     },
                     style = TextStyle(
                         color = Color(getColor(if (pingServer == 1 && areThereRooms) R.color.red else R.color.colorPrimaryDark)),
                         background = Color(getColor(R.color.colorAccent)),
-                        fontSize = 12.sp
+                        fontSize = 14.sp
                     ),
                     modifier = Modifier
-                        .clickable {
-                            pingServer = if (pingServer == 0) {
-                                2
-                            } else {
-                                0
-                            }
-                        }
-                        .fillMaxWidth(0.5f)
+                        .fillMaxWidth(0.66f)
                 )
             }
         }
@@ -215,59 +234,84 @@ class MainActivity : AppCompatActivity() {
         showPvP: () -> Unit,
         showTutorial: () -> Unit,
         showRules: () -> Unit,
+        showSettings: () -> Unit,
     ) {
-        Column(
+        LazyColumn(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxSize().scrollbar(rememberLazyListState(), horizontal = false)
         ) {
-            Text(
-                text = getString(R.string.menu_pve),
-                modifier = Modifier.clickable {
-                    showPvE()
-                },
-                style = TextStyle(color = Color(getColor(R.color.colorPrimaryDark)), fontSize = 20.sp)
-            )
-            Spacer(modifier = Modifier.height(20.dp))
-            Text(
-                text = getString(R.string.menu_pvp),
-                modifier = Modifier.clickable {
-                    showPvP()
-                },
-                style = TextStyle(color = Color(getColor(R.color.colorPrimaryDark)), fontSize = 20.sp)
-            )
-            Spacer(modifier = Modifier.height(20.dp))
-            Text(
-                text = getString(R.string.menu_tutorial),
-                modifier = Modifier.clickable {
-                    showTutorial()
-                },
-                style = TextStyle(color = Color(getColor(R.color.colorPrimaryDark)), fontSize = 20.sp)
-            )
-            Spacer(modifier = Modifier.height(20.dp))
-            Text(
-                text = getString(R.string.menu_rules),
-                modifier = Modifier.clickable {
-                    showRules()
-                },
-                style = TextStyle(color = Color(getColor(R.color.colorPrimaryDark)), fontSize = 20.sp)
-            )
-            Spacer(modifier = Modifier.height(20.dp))
-            Text(
-                text = getString(R.string.menu_deck),
-                modifier = Modifier.clickable {
-                    showDeckSelection()
-                },
-                style = TextStyle(color = Color(getColor(R.color.colorPrimaryDark)), fontSize = 20.sp)
-            )
-            Spacer(modifier = Modifier.height(20.dp))
-            Text(
-                text = getString(R.string.menu_about),
-                modifier = Modifier.clickable {
-                    showAbout()
-                },
-                style = TextStyle(color = Color(getColor(R.color.colorPrimaryDark)), fontSize = 20.sp)
-            )
+            item {
+                Spacer(Modifier.height(64.dp))
+                Text(
+                    text = getString(R.string.app_name) +
+                            "\n(${packageManager.getPackageInfo(
+                                "com.unicorns.invisible.caravan",
+                                PackageManager.MATCH_ALL
+                            ).versionName})",
+                    fontWeight = FontWeight.ExtraBold,
+                    fontStyle = FontStyle.Italic,
+                    textAlign = TextAlign.Center,
+                    style = TextStyle(color = Color(getColor(R.color.colorPrimaryDark)), fontSize = 32.sp)
+                )
+                Spacer(Modifier.height(64.dp))
+                Text(
+                    text = getString(R.string.menu_pve),
+                    modifier = Modifier.clickable {
+                        showPvE()
+                    },
+                    style = TextStyle(color = Color(getColor(R.color.colorPrimaryDark)), fontSize = 20.sp)
+                )
+                Spacer(modifier = Modifier.height(20.dp))
+                Text(
+                    text = getString(R.string.menu_pvp),
+                    modifier = Modifier.clickable {
+                        showPvP()
+                    },
+                    style = TextStyle(color = Color(getColor(R.color.colorPrimaryDark)), fontSize = 20.sp)
+                )
+                Spacer(modifier = Modifier.height(20.dp))
+                Text(
+                    text = getString(R.string.menu_tutorial),
+                    modifier = Modifier.clickable {
+                        showTutorial()
+                    },
+                    style = TextStyle(color = Color(getColor(R.color.colorPrimaryDark)), fontSize = 20.sp)
+                )
+                Spacer(modifier = Modifier.height(20.dp))
+                Text(
+                    text = getString(R.string.menu_deck),
+                    modifier = Modifier.clickable {
+                        showDeckSelection()
+                    },
+                    style = TextStyle(color = Color(getColor(R.color.colorPrimaryDark)), fontSize = 20.sp)
+                )
+                Spacer(modifier = Modifier.height(20.dp))
+                Text(
+                    text = getString(R.string.menu_rules),
+                    modifier = Modifier.clickable {
+                        showRules()
+                    },
+                    style = TextStyle(color = Color(getColor(R.color.colorPrimaryDark)), fontSize = 20.sp)
+                )
+                Spacer(modifier = Modifier.height(20.dp))
+                Text(
+                    text = getString(R.string.menu_settings),
+                    modifier = Modifier.clickable {
+                        showSettings()
+                    },
+                    style = TextStyle(color = Color(getColor(R.color.colorPrimaryDark)), fontSize = 20.sp)
+                )
+                Spacer(modifier = Modifier.height(20.dp))
+                Text(
+                    text = getString(R.string.menu_about),
+                    modifier = Modifier.clickable {
+                        showAbout()
+                    },
+                    style = TextStyle(color = Color(getColor(R.color.colorPrimaryDark)), fontSize = 20.sp)
+                )
+                Spacer(Modifier.height(64.dp))
+            }
         }
     }
 

@@ -29,11 +29,12 @@
     <string name="sierra_madre_deck_name">Sierra Madre deck</string>
 
     <string name="menu_pve">Quick game</string>
-    <string name="menu_pvp">Multiplayer 1.1</string>
+    <string name="menu_pvp">Multiplayer</string>
     <string name="menu_tutorial">Tutorial</string>
     <string name="menu_rules">Rules</string>
     <string name="menu_deck">Deck Settings</string>
     <string name="menu_about">About</string>
+    <string name="menu_settings">Settings</string>
 
     <string name="menu_back">Back to menu</string>
 
@@ -164,8 +165,12 @@
     <string name="join_diff_custom_header">Another Courier!</string>
     <string name="join_diff_custom_body">There is someone waiting for you, but they are with different usage of custom deck. To join them, press \"Join Room\".</string>
     <string name="no_stats_here">No stats here: the game\'s for fun, not for numbers!</string>
-    <string name="pvp_piece">If you want to find anyone, press \"Join pool!!!\".\n
+    <string name="pvp_piece">If you\'re here because of notification, just press \"Join pool!!!\".\n
+        If not, well, here is manual:\n
+        To create room, enter room number (the one that is not in use) and press \"Create Room\".\n
         Room number is from 10 to 22229.\n
+        If someone gave you a room number, enter it and press \"Join Room\".\n
+        \n
         When finding room, it looks at whether \"Use custom deck\" is checked.\n
         Actions timeout is 38 seconds, then the room is destroyed. (Sometimes first connection to server be longer.)\n
         Also, there can be only two-three games at the same time. If server does not respond, it means there are too many games already.</string>
@@ -176,8 +181,11 @@
     <string name="can_t_act">Can\'t act!</string>
     <string name="your_turn">Your turn!</string>
 
-    <string name="someone_is_in_the_room_alone">Someone is in the room alone!</string>
-    <string name="it_is_either_empty_or_busy">Pool is either empty or busy.</string>
-    <string name="no_server_ping">No server ping. Touch to connect to server, so you can receive multiplayer notification.</string>
+    <string name="someone_is_in_the_room_alone">GO TO MULTIPLAYER, JOIN THE POOL!!!</string>
+    <string name="it_is_either_empty_or_busy">All rooms are either empty or occupied.</string>
+    <string name="no_server_ping">No server ping. Go to Settings to receive a multiplayer notification if there is a Room that you can join.</string>
+    <string name="pinging">Pinging…</string>
+
+    <string name="get_notifications_about_multiplayer">"Get notifications about multiplayer: "</string>
 
 </resources>

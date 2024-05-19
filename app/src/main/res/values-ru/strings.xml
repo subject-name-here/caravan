@@ -30,11 +30,12 @@
     <string name="sierra_madre_deck_name">колода казино Сьерра-Мадре</string>
 
     <string name="menu_pve">Быстрая игра</string>
-    <string name="menu_pvp">Играть с человеком 1.1</string>
+    <string name="menu_pvp">Играть с человеком</string>
     <string name="menu_tutorial">Обучение</string>
     <string name="menu_rules">Правила</string>
     <string name="menu_deck">Настройка колоды</string>
     <string name="menu_about">О приложении</string>
+    <string name="menu_settings">Настройки</string>
 
     <string name="menu_back">Назад</string>
 
@@ -167,11 +168,15 @@
     <string name="join_diff_custom_header">Еще курьер?!</string>
     <string name="join_diff_custom_body">Кое-кто ждет вас с другими настройками колоды. Чтобы войти в его номер, нажмите \"Войти в номер\".</string>
     <string name="no_stats_here">Никакой статистики: игра для веселья, а не для циферок!</string>
-    <string name="pvp_piece">Чтобы найти кого-то, нажмите \"В очередь!!!\".\n
-        Номер - от 10 до 22229.\n
+    <string name="pvp_piece">Если вы здесь из-за уведомления, нажмите \"В Очередь!!!\".\n
+        Если нет, то вот инструкция:\n
+        Чтобы создать Номер, введите в поле число и нажмите \"Создать Номер\".\n
+        Число - от 10 до 22229.\n
+        Если вам дали номер, введите его в поле и нажмите \"Войти в Номер\".\n
+        \n
         При поиске номера приложение смотрит на галочку у пункта \"Использовать сборную колоду\".\n
         Время на совершение действия - 38 секунд, по их истечении комната уничтожается. (Иногда первое подключение к серверу может быть дольше.)\n
-        Также: в одно и то же время может проходить две-три игры. Если сервер долго не отвечает, значит, все игры заняты.</string>
+        Также: в одно и то же время может проходить две-три игры. Если сервер долго не отвечает, значит, все слоты заняты.</string>
 
     <string name="discard">Распустить!</string>
     <string name="wait">Ждите…</string>
@@ -179,7 +184,11 @@
     <string name="can_t_act">Нельзя ходить!</string>
     <string name="your_turn">Твой черёд!</string>
 
-    <string name="someone_is_in_the_room_alone">Кто-то в комнате одинок!</string>
+    <string name="someone_is_in_the_room_alone">А НУ БЫСТРО В МУЛЬТИПЛЕЕР В ОЧЕРЕДЬ, КТО-ТО ЖДЕТ ВАС!</string>
     <string name="it_is_either_empty_or_busy">Комнаты либо пусты, либо заняты.</string>
-    <string name="no_server_ping">Сервер не пингуется. Нажмите для подключения к серверу, чтобы получать уведомления о мультиплеере.</string>
+    <string name="no_server_ping">Сервер не пингуется. Чтобы получать уведомления из мультиплеера об ождиающей вас игре, идите в Настройки.</string>
+    <string name="pinging">Идет запрос…</string>
+
+    <string name="get_notifications_about_multiplayer">"Получать уведомления о мультиплеере: "</string>
+
 </resources>
