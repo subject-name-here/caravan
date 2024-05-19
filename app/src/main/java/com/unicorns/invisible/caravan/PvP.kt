@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
@@ -104,7 +103,7 @@ fun ShowPvP(
     goBack: () -> Unit
 ) {
     var roomNumber by rememberSaveable { mutableStateOf("") }
-    var checkedCustomDeck by rememberSaveable { mutableStateOf(false) }
+    var checkedCustomDeck by rememberSaveable { mutableStateOf(true) }
     var checkedPrivate by rememberSaveable { mutableStateOf(false) }
     var isRoomCreated by rememberSaveable { mutableIntStateOf(0) }
     var isCreator by rememberSaveable { mutableStateOf(false) }
@@ -345,26 +344,8 @@ fun ShowPvP(
             }
             Spacer(modifier = Modifier.height(16.dp))
             Row(modifier = Modifier.height(128.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
-                Text(
-                    text = when (isRoomCreated) {
-                        0 -> stringResource(R.string.create_room)
-                        1 -> stringResource(R.string.pool)
-                        2 -> stringResource(R.string.failure)
-                        4 -> stringResource(R.string.incorrect_room_number)
-                        else -> stringResource(R.string.your_room_is, isRoomCreated)
-                    },
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center,
-                    style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 16.sp),
-                    modifier = Modifier
-                        .fillMaxWidth(0.5f)
-                        .clickable {
-                            createRoom()
-                        }
-                )
-                Spacer(modifier = Modifier.width(12.dp))
                 TextField(
-                    modifier = Modifier.fillMaxWidth(0.5f),
+                    modifier = Modifier.fillMaxWidth(0.25f),
                     singleLine = true,
                     enabled = isRoomCreated == 0,
                     value = roomNumber,
@@ -372,15 +353,37 @@ fun ShowPvP(
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     label = { Text(text = stringResource(R.string.room_number), style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 16.sp)) },
                 )
-                Text(
-                    text = stringResource(R.string.join),
-                    textAlign = TextAlign.Center,
-                    fontWeight = FontWeight.Bold,
-                    style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 16.sp),
-                    modifier = Modifier.fillMaxSize().wrapContentSize().clickable {
-                        joinRoom()
-                    },
-                )
+                Spacer(modifier = Modifier.width(16.dp))
+                Column(verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.Start) {
+                    Text(
+                        text = when (isRoomCreated) {
+                            0 -> stringResource(R.string.create_room)
+                            1 -> stringResource(R.string.pool)
+                            2 -> stringResource(R.string.failure)
+                            4 -> stringResource(R.string.incorrect_room_number)
+                            else -> stringResource(R.string.your_room_is, isRoomCreated)
+                        },
+                        fontWeight = FontWeight.Bold,
+                        style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 14.sp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable {
+                                createRoom()
+                            }
+                    )
+                    Spacer(Modifier.height(16.dp))
+                    Text(
+                        text = stringResource(R.string.join),
+                        fontWeight = FontWeight.Bold,
+                        style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 14.sp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable {
+                                joinRoom()
+                            },
+                    )
+                }
+
             }
         }
         Spacer(modifier = Modifier.height(28.dp))

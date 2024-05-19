@@ -94,8 +94,9 @@ class MainActivity : AppCompatActivity() {
                             }
                         }
 
-                        delay(19000L)
+                        delay(4750L)
                         pingServer = 2
+                        delay(19000L)
                     }
                     delay(4750L)
                 }

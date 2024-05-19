@@ -151,17 +151,17 @@
     <string name="tutorial_53">That\'s it. I am not going to tell all my tricks, you should figure the game out yourself.</string>
     <string name="tutorial_56">See ya round.</string>
 
-    <string name="create_room">Create Room</string>
+    <string name="create_room">Create Room (you go first)</string>
     <string name="failure">Failure!</string>
     <string name="incorrect_room_number">Incorrect room number!</string>
     <string name="your_room_is">Your Room is %1$s. Awaiting the Opponent.....</string>
     <string name="private_room">Private room</string>
     <string name="find">Join pool!!!</string>
     <string name="pool">Requesting pool…</string>
-    <string name="join">Join!!!</string>
+    <string name="join">Join Room (you go second)</string>
     <string name="room_number">Room</string>
     <string name="join_diff_custom_header">Another Courier!</string>
-    <string name="join_diff_custom_body">There is someone waiting for you, but they are with different usage of custom deck. Join them, if you want.</string>
+    <string name="join_diff_custom_body">There is someone waiting for you, but they are with different usage of custom deck. To join them, press \"Join Room\".</string>
     <string name="no_stats_here">No stats here: the game\'s for fun, not for numbers!</string>
     <string name="pvp_piece">If you want to find anyone, press \"Join pool!!!\".\n
         Room number is from 10 to 22229.\n
@@ -177,6 +177,6 @@
 
     <string name="someone_is_in_the_room_alone">Someone is in the room alone!</string>
     <string name="it_is_either_empty_or_busy">Pool is either empty or busy.</string>
-    <string name="no_server_ping">No server ping. Touch to connect to server.</string>
+    <string name="no_server_ping">No server ping. Touch to connect to server, so you can receive multiplayer notification.</string>
 
 </resources>
