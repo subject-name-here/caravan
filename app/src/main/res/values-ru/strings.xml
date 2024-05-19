@@ -72,6 +72,7 @@
     <string name="discard_card">СБРОСИТЬ КАРТУ</string>
     <string name="drop_caravan">СБРОСИТЬ КАРАВАН №%1$s</string>
     <string name="back_to_menu">Назад</string>
+    <string name="back_to_main_menu">В главное меню</string>
 
     <string name="about_1">Караван - карточная игра из компьютерной игры \"Fallout: New Vegas\", созданной Obsidian и Bethesda.</string>
     <string name="about_2">Этот порт создан subject_name_here (это такой ник, это не баг!), который никак не связан с создателями оригинала.</string>

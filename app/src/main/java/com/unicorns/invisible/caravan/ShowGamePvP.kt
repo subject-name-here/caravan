@@ -100,7 +100,14 @@ fun afterPlayerMove(
 
 
 @Composable
-fun ShowGamePvP(activity: MainActivity, game: Game, isCreator: Boolean, roomNumber: Int, showAlert: (String, String) -> Unit, goBack: () -> Unit) {
+fun ShowGamePvP(
+    activity: MainActivity,
+    game: Game,
+    isCreator: Boolean,
+    roomNumber: Int,
+    showAlert: (String, String) -> Unit,
+    goBack: () -> Unit
+) {
     var selectedCard by remember { mutableStateOf<Int?>(null) }
     val selectedCardColor = Color(activity.getColor(R.color.colorAccent))
 

@@ -312,6 +312,7 @@ fun StartGame(
             showAlertDialog(activity.getString(R.string.result), activity.getString(R.string.you_lose))
         }
     }
+    activity.goBack = goBack
     ShowGame(activity, game) { goBack() }
 }
 

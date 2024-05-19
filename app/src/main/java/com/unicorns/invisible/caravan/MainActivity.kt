@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text
@@ -42,6 +43,8 @@ import org.chromium.net.CronetEngine
 class MainActivity : AppCompatActivity() {
     var save: Save? = null
 
+    var goBack: (() -> Unit)? = null
+
     fun checkIfCustomDeckCanBeUsedInGame(playerCResources: CResources): Boolean {
         return playerCResources.deckSize >= MIN_DECK_SIZE && playerCResources.numOfNumbers >= MIN_NUM_OF_NUMBERS
     }
@@ -70,6 +73,7 @@ class MainActivity : AppCompatActivity() {
             var showAlertDialog by remember { mutableStateOf(false) }
             var alertDialogHeader by remember { mutableStateOf("") }
             var alertDialogMessage by remember { mutableStateOf("") }
+
             fun showAlertDialog(header: String, message: String) {
                 showAlertDialog = true
                 alertDialogHeader = header
@@ -106,6 +110,12 @@ class MainActivity : AppCompatActivity() {
                 AlertDialog(
                     onDismissRequest = { hideAlertDialog() },
                     confirmButton = { Text(text = "OK", modifier = Modifier.clickable { hideAlertDialog() }) },
+                    dismissButton = { if (goBack != null) {
+                        Text(
+                            text = stringResource(R.string.back_to_menu),
+                            modifier = Modifier.clickable { hideAlertDialog(); goBack?.invoke(); goBack = null }
+                        )
+                    } },
                     title = { Text(text = alertDialogHeader) },
                     text = { Text(text = alertDialogMessage) },
                 )
@@ -183,13 +193,15 @@ class MainActivity : AppCompatActivity() {
                         background = Color(getColor(R.color.colorAccent)),
                         fontSize = 12.sp
                     ),
-                    modifier = Modifier.clickable {
-                        pingServer = if (pingServer == 0) {
-                            2
-                        } else {
-                            0
+                    modifier = Modifier
+                        .clickable {
+                            pingServer = if (pingServer == 0) {
+                                2
+                            } else {
+                                0
+                            }
                         }
-                    }
+                        .fillMaxWidth(0.5f)
                 )
             }
         }

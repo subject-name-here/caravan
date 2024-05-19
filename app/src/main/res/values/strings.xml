@@ -71,6 +71,7 @@
     <string name="discard_card">DISCARD CARD</string>
     <string name="drop_caravan">DROP CARAVAN #%1$s</string>
     <string name="back_to_menu">Back to Menu</string>
+    <string name="back_to_main_menu">Back to Main Menu</string>
 
     <string name="about_1">Caravan is the card game from video game \"Fallout: New Vegas\", created by Obsidian and Bethesda.</string>
     <string name="about_2">This port is created by subject_name_here (it\'s a username, not a bug!), who is in no way affiliated with the creators of the original game.</string>

@@ -446,6 +446,7 @@ fun StartPvP(
             showAlertDialog(activity.getString(R.string.result), activity.getString(R.string.you_lose))
         }
     }
+    activity.goBack = goBack
 
     var pvpUpdater by rememberSaveable { mutableStateOf(false) }
 
