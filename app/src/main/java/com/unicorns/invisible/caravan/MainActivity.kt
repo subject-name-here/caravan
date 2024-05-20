@@ -6,7 +6,6 @@ import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -109,11 +108,11 @@ class MainActivity : AppCompatActivity() {
                             }
                         }
 
-                        delay(4750L)
+                        delay(9500L)
                         pingServer = 2
-                        delay(19000L)
+                        delay(9500L)
                     }
-                    delay(4750L)
+                    delay(9500L)
                 }
             }
 
@@ -191,7 +190,7 @@ class MainActivity : AppCompatActivity() {
                 Text(
                     text = when (pingServer) {
                         1 -> {
-                            if (areThereRooms) {
+                            if (areThereRooms && !showPvP) {
                                 stringResource(R.string.someone_is_in_the_room_alone)
                             } else if (showGameStats || showPvP) {
                                 ""
@@ -200,14 +199,14 @@ class MainActivity : AppCompatActivity() {
                             }
                         }
                         0 -> {
-                            if (showGameStats || showPvP) {
+                            if (showGameStats || showPvP || deckSelection) {
                                 ""
                             } else {
                                 stringResource(R.string.no_server_ping)
                             }
                         }
                         else -> {
-                            if (showGameStats || showPvP) {
+                            if (showGameStats || showPvP || deckSelection) {
                                 ""
                             } else {
                                 stringResource(R.string.pinging)
@@ -236,10 +235,12 @@ class MainActivity : AppCompatActivity() {
         showRules: () -> Unit,
         showSettings: () -> Unit,
     ) {
+        val state = rememberLazyListState()
         LazyColumn(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
-            modifier = Modifier.fillMaxSize().scrollbar(rememberLazyListState(), horizontal = false)
+            modifier = Modifier.fillMaxSize().scrollbar(state, horizontal = false),
+            state = state
         ) {
             item {
                 Spacer(Modifier.height(64.dp))

@@ -11,6 +11,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
@@ -45,6 +47,7 @@ import com.unicorns.invisible.caravan.model.primitives.Suit
 import com.unicorns.invisible.caravan.multiplayer.decodeMove
 import com.unicorns.invisible.caravan.save.json
 import com.unicorns.invisible.caravan.utils.CheckboxCustom
+import com.unicorns.invisible.caravan.utils.scrollbar
 import com.unicorns.invisible.caravan.utils.sendRequest
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -285,11 +288,13 @@ fun ShowPvP(
         return
     }
 
-    Column(
-        Modifier.fillMaxSize(),
+    LazyColumn(
+        Modifier
+            .fillMaxSize()
+            .scrollbar(rememberLazyListState(), horizontal = false),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
-    ) {
+    ) { item {
         Column(
             Modifier.fillMaxWidth(),
             verticalArrangement = Arrangement.Center,
@@ -413,7 +418,7 @@ fun ShowPvP(
                 goBack()
             }
         )
-    }
+    } }
 }
 
 @Composable

@@ -22,6 +22,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
@@ -42,6 +43,7 @@ import com.unicorns.invisible.caravan.save.Save
 import com.unicorns.invisible.caravan.save.save
 import com.unicorns.invisible.caravan.utils.CheckboxCustom
 import com.unicorns.invisible.caravan.utils.scrollbar
+import java.util.Locale
 
 
 @Composable
@@ -120,125 +122,184 @@ fun ShowPvE(
         return
     }
 
-    val state = rememberLazyListState()
-    LazyColumn(
-        Modifier
-            .fillMaxSize()
-            .scrollbar(state, horizontal = false),
+    Column(
+        Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        item {
-            Column(
-                Modifier
-                    .fillMaxHeight(0.5f)
-                    .fillMaxWidth(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(
-                    text = stringResource(R.string.pve_select_enemy),
-                    style = TextStyle(color = Color(activity.getColor(R.color.colorPrimaryDark)), fontSize = 22.sp)
-                )
+        val state = rememberLazyListState()
+        LazyColumn(
+            Modifier
+                .fillMaxWidth()
+                .fillMaxHeight(0.4f)
+                .scrollbar(
+                    state,
+                    horizontal = false,
+                    trackColor = colorResource(id = R.color.colorPrimaryDark)
+                ),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally,
+            state = state
+        ) { item {
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                text = stringResource(R.string.pve_select_enemy),
+                style = TextStyle(color = Color(activity.getColor(R.color.colorPrimaryDark)), fontSize = 22.sp)
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                text = stringResource(R.string.pve_enemy_easy),
+                style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 16.sp),
+                modifier = Modifier.clickable {
+                    showGameEasy = true
+                }
+            )
+            Spacer(modifier = Modifier.height(10.dp))
+            Text(
+                text = stringResource(R.string.pve_enemy_medium),
+                style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 16.sp),
+                modifier = Modifier.clickable {
+                    showGameMedium = true
+                }
+            )
+            Spacer(modifier = Modifier.height(10.dp))
+            Text(
+                text = stringResource(R.string.pve_enemy_queen),
+                style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 16.sp),
+                modifier = Modifier.clickable {
+                    showGameQueen = true
+                }
+            )
+            Spacer(modifier = Modifier.height(10.dp))
+            Text(
+                text = stringResource(R.string.pve_enemy_38),
+                style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 16.sp),
+                modifier = Modifier.clickable {
+                    showGame38 = true
+                }
+            )
+            Spacer(modifier = Modifier.height(10.dp))
+            Text(
+                text = stringResource(R.string.pve_enemy_cheater),
+                style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 16.sp),
+                modifier = Modifier.clickable {
+                    showGameCheater = true
+                }
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+        } }
+        HorizontalDivider()
+
+        Row(modifier = Modifier
+            .height(56.dp)
+            .padding(8.dp), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(modifier = Modifier.fillMaxWidth(0.7f), text = stringResource(R.string.pve_use_custom_deck))
+            CheckboxCustom(
+                activity,
+                { checkedCustomDeck },
+                {
+                    checkedCustomDeck = !checkedCustomDeck
+                    activity.save?.let {
+                        it.useCustomDeck = checkedCustomDeck
+                        save(activity, it)
+                    }
+                },
+                { true }
+            )
+        }
+
+        HorizontalDivider()
+        val started = activity.save?.gamesStarted ?: 0
+        val finished = activity.save?.gamesFinished ?: 0
+        val won = activity.save?.wins ?: 0
+        val loss = finished - won
+        val state2 = rememberLazyListState()
+        LazyColumn(
+            Modifier
+                .fillMaxHeight(0.75f)
+                .fillMaxWidth()
+                .scrollbar(
+                    state2,
+                    horizontal = false,
+                    trackColor = colorResource(id = R.color.colorPrimaryDark)
+                ),
+            state = state2,
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            item {
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
-                    text = stringResource(R.string.pve_enemy_easy),
-                    style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 16.sp),
-                    modifier = Modifier.clickable {
-                        showGameEasy = true
-                    }
-                )
-                Spacer(modifier = Modifier.height(10.dp))
-                Text(
-                    text = stringResource(R.string.pve_enemy_medium),
-                    style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 16.sp),
-                    modifier = Modifier.clickable {
-                        showGameMedium = true
-                    }
-                )
-                Spacer(modifier = Modifier.height(10.dp))
-                Text(
-                    text = stringResource(R.string.pve_enemy_queen),
-                    style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 16.sp),
-                    modifier = Modifier.clickable {
-                        showGameQueen = true
-                    }
-                )
-                Spacer(modifier = Modifier.height(10.dp))
-                Text(
-                    text = stringResource(R.string.pve_enemy_38),
-                    style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 16.sp),
-                    modifier = Modifier.clickable {
-                        showGame38 = true
-                    }
-                )
-                Spacer(modifier = Modifier.height(10.dp))
-                Text(
-                    text = stringResource(R.string.pve_enemy_cheater),
-                    style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 16.sp),
-                    modifier = Modifier.clickable {
-                        showGameCheater = true
-                    }
-                )
-            }
-            Spacer(modifier = Modifier.height(16.dp))
-            HorizontalDivider()
-
-            Row(modifier = Modifier
-                .fillMaxHeight(0.1f)
-                .padding(8.dp), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(modifier = Modifier.fillMaxWidth(0.7f), text = stringResource(R.string.pve_use_custom_deck))
-                CheckboxCustom(
-                    activity,
-                    { checkedCustomDeck },
-                    {
-                        checkedCustomDeck = !checkedCustomDeck
-                        activity.save?.let {
-                            it.useCustomDeck = checkedCustomDeck
-                            save(activity, it)
-                        }
-                    },
-                    { true }
-                )
-            }
-
-            HorizontalDivider()
-            Spacer(modifier = Modifier.height(16.dp))
-            Column(Modifier.fillMaxSize(0.9f), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(
                     text = stringResource(R.string.pve_stats),
-                    style = TextStyle(color = Color(activity.getColor(R.color.colorPrimaryDark)), fontSize = 24.sp)
+                    style = TextStyle(color = Color(activity.getColor(R.color.colorPrimaryDark)), fontSize = 20.sp)
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
                     text = stringResource(
                         R.string.pve_games_started,
-                        activity.save?.gamesStarted ?: 0
+                        started
                     ),
-                    style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 20.sp)
+                    style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 14.sp)
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
                     text = stringResource(
                         R.string.pve_games_finished,
-                        activity.save?.gamesFinished ?: 0
+                        finished
                     ),
-                    style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 20.sp)
+                    style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 14.sp)
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    text = stringResource(R.string.pve_games_won, activity.save?.wins ?: 0),
-                    style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 20.sp)
+                    text = stringResource(R.string.pve_games_won, won),
+                    style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 14.sp)
                 )
+                Spacer(modifier = Modifier.height(16.dp))
+                Text(
+                    text = stringResource(R.string.pve_percentiles),
+                    style = TextStyle(color = Color(activity.getColor(R.color.colorPrimaryDark)), fontSize = 20.sp)
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                Text(
+                    text = stringResource(
+                        R.string.pve_w_to_l,
+                        if (loss == 0) "-" else String.format(Locale.UK, "%.3f", won.toDouble() / loss)
+                    ),
+                    style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 14.sp)
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = stringResource(
+                        R.string.pve_w_to_finished,
+                        if (finished == 0) "-" else String.format(Locale.UK, "%.2f", (won.toDouble() / finished) * 100)
+                    ),
+                    style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 14.sp)
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = stringResource(
+                        R.string.pve_w_to_started,
+                        if (started == 0) "-" else String.format(Locale.UK, "%.2f", won.toDouble() / started * 100.0)
+                    ),
+                    style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 14.sp)
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = stringResource(
+                        R.string.pve_finished_to_started,
+                        if (started == 0) "-" else String.format(Locale.UK, "%.1f", finished.toDouble() / started * 100.0)
+                    ),
+                    style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 14.sp)
+                )
+                Spacer(modifier = Modifier.height(16.dp))
             }
-            Spacer(modifier = Modifier.height(16.dp))
-            Text(
-                text = stringResource(R.string.menu_back),
-                style = TextStyle(color = Color(activity.getColor(R.color.colorPrimaryDark)), fontSize = 24.sp),
-                modifier = Modifier.clickable { goBack() }
-            )
         }
+        Text(
+            text = stringResource(R.string.menu_back),
+            style = TextStyle(color = Color(activity.getColor(R.color.colorPrimaryDark)), fontSize = 24.sp),
+            modifier = Modifier.clickable { goBack() }
+        )
     }
 }
 

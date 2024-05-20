@@ -57,6 +57,11 @@
     <string name="pve_games_started">Games started: %1$s</string>
     <string name="pve_games_finished">Games finished: %1$s</string>
     <string name="pve_games_won">Games won: %1$s</string>
+    <string name="pve_percentiles">Rates</string>
+    <string name="pve_w_to_l">Success coefficient (W/L): %1$s</string>
+    <string name="pve_w_to_finished">Win rate (W/Finished): %1$s \%%</string>
+    <string name="pve_w_to_started">Win-No-Quit rate (W/Started): %1$s \%%</string>
+    <string name="pve_finished_to_started">No-Quit rate (Finished/Started): %1$s \%%</string>
     <string name="custom_deck_is_too_small">Custom deck is too small!</string>
     <string name="custom_deck_is_too_small_message">Deck has less than 30 cards or less than 15 numbered cards!</string>
     <string name="you_win">You win!</string>

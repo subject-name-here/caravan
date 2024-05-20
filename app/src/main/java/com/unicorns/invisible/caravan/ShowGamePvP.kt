@@ -3,20 +3,24 @@ package com.unicorns.invisible.caravan
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -24,6 +28,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.enemy.EnemyPlayer
@@ -35,6 +40,7 @@ import com.unicorns.invisible.caravan.utils.sendRequest
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
 
@@ -45,6 +51,7 @@ fun afterPlayerMove(
     isUtil: Boolean = false,
     move: MoveResponse,
     updateView: () -> Unit,
+    afterEnemyMove: (Boolean) -> Unit,
     corrupt: (String) -> Unit,
 ) {
     game.isPlayerTurn = false
@@ -93,6 +100,7 @@ fun afterPlayerMove(
                 game.isPlayerTurn = true
                 game.checkOnGameOver()
                 updateView()
+                afterEnemyMove(!game.isOver())
             }
         }
     }
@@ -115,6 +123,15 @@ fun ShowGamePvP(
 
     var caravansKey by remember { mutableStateOf(true) }
     var enemyHandKey by remember { mutableStateOf(true) }
+
+    var timeOnTimer by rememberSaveable { mutableIntStateOf(0) }
+
+    LaunchedEffect(key1 = timeOnTimer) {
+        while (isActive && timeOnTimer > 0) {
+            timeOnTimer--
+            delay(1000L)
+        }
+    }
 
     game.enemyCResources.onRemoveFromHand = { enemyHandKey = !enemyHandKey }
 
@@ -157,7 +174,7 @@ fun ShowGamePvP(
         afterPlayerMove(game, roomNumber, isCreator = isCreator, isUtil = false, MoveResponse(
             moveCode = 2,
             handCardNumber = selectedCardNN,
-        ), { updateCaravans(); updateEnemyHand() }, ::corruptGame)
+        ), { updateCaravans(); updateEnemyHand() }, { if (it) { timeOnTimer = 38 } }, ::corruptGame)
     }
     fun dropCaravan() {
         if (game.isExchangingCards) return
@@ -169,7 +186,7 @@ fun ShowGamePvP(
         afterPlayerMove(game, roomNumber, isCreator = isCreator, isUtil = false, MoveResponse(
             moveCode = 1,
             caravanCode = selectedCaravanNN,
-        ), { updateCaravans(); updateEnemyHand() }, ::corruptGame)
+        ), { updateCaravans(); updateEnemyHand() }, { if (it) { timeOnTimer = 38 } }, ::corruptGame)
     }
 
     fun addCardToCaravan(caravan: Caravan, caravanIndex: Int, position: Int, isEnemy: Boolean = false) {
@@ -182,14 +199,14 @@ fun ShowGamePvP(
                     moveCode = 3,
                     handCardNumber = cardIndex,
                     caravanCode = caravanIndex
-                ), { updateCaravans(); updateEnemyHand() }, ::corruptGame)
+                ), { updateCaravans(); updateEnemyHand() }, { if (it) { timeOnTimer = 38 } }, ::corruptGame)
             } else {
                 afterPlayerMove(game, roomNumber, isCreator = isCreator, isUtil = false, MoveResponse(
                     moveCode = 4,
                     handCardNumber = cardIndex,
                     cardInCaravanNumber = cardInCaravan,
                     caravanCode = if (isEnemy) (-3 + caravanIndex) else caravanIndex
-                ), { updateCaravans(); updateEnemyHand() }, ::corruptGame)
+                ), { updateCaravans(); updateEnemyHand() }, { if (it) { timeOnTimer = 38 } }, ::corruptGame)
             }
         }
 
@@ -393,6 +410,17 @@ fun ShowGamePvP(
                     )
                 }
             }
+        }
+    }
+
+    key (timeOnTimer) {
+        Box(modifier = Modifier.fillMaxSize()) {
+            Text(
+                text = timeOnTimer.toString(),
+                modifier = Modifier.padding(8.dp).align(Alignment.BottomEnd),
+                textAlign = TextAlign.Right,
+                style = TextStyle(color = Color.Red, background = Color(activity.getColor(R.color.colorAccent)), fontSize = 18.sp)
+            )
         }
     }
 }
