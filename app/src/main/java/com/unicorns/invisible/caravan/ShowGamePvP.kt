@@ -308,6 +308,7 @@ fun ShowGamePvP(
                     Caravans(
                         activity,
                         { selectedCard },
+                        { selectedCard?.let { game.playerCResources.hand[it] } },
                         { selectedCaravan },
                         {
                             selectedCaravan = it
@@ -359,6 +360,7 @@ fun ShowGamePvP(
                     Caravans(
                         activity,
                         { selectedCard },
+                        { selectedCard?.let { game.playerCResources.hand[it] } },
                         { selectedCaravan },
                         {
                             selectedCaravan = it

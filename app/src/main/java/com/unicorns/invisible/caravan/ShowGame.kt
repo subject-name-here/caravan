@@ -202,6 +202,7 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
                     Caravans(
                         activity,
                         { selectedCard },
+                        { selectedCard?.let { game.playerCResources.hand[it] } },
                         { selectedCaravan },
                         {
                             selectedCaravan = it
@@ -253,6 +254,7 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
                     Caravans(
                         activity,
                         { selectedCard },
+                        { selectedCard?.let { game.playerCResources.hand[it] } },
                         { selectedCaravan },
                         {
                             selectedCaravan = it
@@ -360,6 +362,7 @@ fun CaravanOnField(
     isInitStage: Boolean,
     isEnemy: Boolean,
     state: LazyListState,
+    canPutSelectedCardOnTop: () -> Int,
     selectCaravan: () -> Unit = {},
     addSelectedCardOnPosition: (Int) -> Unit,
 ) {
@@ -485,15 +488,41 @@ fun CaravanOnField(
             }
             if (!caravan.isFull() && (!isInitStage || caravan.cards.isEmpty())) {
                 item {
-                    Box(modifier = Modifier
-                        .fillParentMaxWidth()
-                        .height(20.dp)
-                        .background(Color(activity.getColor(R.color.colorPrimary)))
-                        .border(4.dp, Color(activity.getColor(R.color.colorAccent)))
-                        .clickable {
-                            addSelectedCardOnPosition(caravan.cards.size)
+                    when (canPutSelectedCardOnTop()) {
+                        1 -> {
+                            Box(modifier = Modifier
+                                .fillParentMaxWidth()
+                                .height(20.dp)
+                                .background(Color.Green)
+                                .border(4.dp, Color.Cyan)
+                                .clickable {
+                                    addSelectedCardOnPosition(caravan.cards.size)
+                                }
+                            ) {}
                         }
-                    ) {}
+                        -1 -> {
+                            Box(modifier = Modifier
+                                .fillParentMaxWidth()
+                                .height(20.dp)
+                                .background(Color.Black)
+                                .border(4.dp, Color.Red)
+                                .clickable {
+                                    addSelectedCardOnPosition(caravan.cards.size)
+                                }
+                            ) {}
+                        }
+                        else -> {
+                            Box(modifier = Modifier
+                                .fillParentMaxWidth()
+                                .height(20.dp)
+                                .background(Color(activity.getColor(R.color.colorPrimary)))
+                                .border(4.dp, Color(activity.getColor(R.color.colorAccent)))
+                                .clickable {
+                                    addSelectedCardOnPosition(caravan.cards.size)
+                                }
+                            ) {}
+                        }
+                    }
                 }
             }
         }
@@ -525,7 +554,8 @@ fun ShowDeck(cResources: CResources, activity: MainActivity, isToBottom: Boolean
 @Composable
 fun Caravans(
     activity: MainActivity,
-    getSelectedCard: () -> Int?,
+    getSelectedCardInt: () -> Int?,
+    getSelectedCard: () -> Card?,
     getSelectedCaravan: () -> Int,
     setSelectedCaravan: (Int) -> Unit,
     isMaxHeight: Boolean = false,
@@ -560,7 +590,8 @@ fun Caravans(
                     getEnemyCaravan(num),
                     { getPlayerCaravan(num).getValue() },
                     isInitStage = getIsInitStage(),
-                    isEnemy = true, enemyLazyListState
+                    isEnemy = true, enemyLazyListState,
+                    { -1 }
                 ) {
                     addCardToEnemyCaravan(num, it)
                 }
@@ -572,6 +603,16 @@ fun Caravans(
                     isInitStage = getIsInitStage(),
                     false,
                     playerLazyListState,
+                    {
+                        val selectedCard = getSelectedCard()
+                        if (selectedCard == null) {
+                            0
+                        } else if (getPlayerCaravan(num).canPutCardOnTop(selectedCard)) {
+                            1
+                        } else {
+                            -1
+                        }
+                    },
                     {
                         setSelectedCaravan(
                             if (getSelectedCaravan() == num || getPlayerCaravan(num).getValue() == 0) {
@@ -610,7 +651,7 @@ fun Caravans(
                 !isPlayersTurn() -> stringResource(R.string.wait)
                 getIsInitStage() -> stringResource(R.string.init_stage)
                 !canDiscard() -> stringResource(R.string.can_t_act)
-                getSelectedCard() != null -> {
+                getSelectedCardInt() != null -> {
                     stringResource(R.string.discard_card)
                 }
                 getSelectedCaravan() in (0..2) -> {
@@ -626,7 +667,7 @@ fun Caravans(
                     .fillMaxWidth()
                     .clickable {
                         if (!canDiscard()) return@clickable
-                        val selectedCard = getSelectedCard()
+                        val selectedCard = getSelectedCardInt()
                         if (selectedCard != null) {
                             dropCardFromHand()
                         } else if (getSelectedCaravan() in (0..2)) {
