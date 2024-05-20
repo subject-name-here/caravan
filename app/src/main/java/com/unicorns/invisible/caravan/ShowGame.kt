@@ -33,6 +33,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.layout
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
@@ -493,8 +494,8 @@ fun CaravanOnField(
                             Box(modifier = Modifier
                                 .fillParentMaxWidth()
                                 .height(20.dp)
-                                .background(Color.Green)
-                                .border(4.dp, Color.Cyan)
+                                .background(colorResource(id = R.color.green))
+                                .border(4.dp, colorResource(id = R.color.dark_green))
                                 .clickable {
                                     addSelectedCardOnPosition(caravan.cards.size)
                                 }
@@ -504,8 +505,8 @@ fun CaravanOnField(
                             Box(modifier = Modifier
                                 .fillParentMaxWidth()
                                 .height(20.dp)
-                                .background(Color.Black)
-                                .border(4.dp, Color.Red)
+                                .background(colorResource(id = R.color.red))
+                                .border(4.dp, colorResource(id = R.color.dark_red))
                                 .clickable {
                                     addSelectedCardOnPosition(caravan.cards.size)
                                 }

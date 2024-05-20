@@ -24,6 +24,7 @@ data class MoveResponse(
     var newCardInHandRank: Int = 0,
     var newCardInHandSuit: Int = 0,
     var newCardInHandBack: Int = 0,
+    var symbolNumber: Int = 0
 )
 
 fun decodeMove(s: String): MoveResponse {
@@ -38,5 +39,6 @@ fun decodeMove(s: String): MoveResponse {
         newCardInHandBack = fields.getInt("new_card_back_in_hand_code"),
         newCardInHandSuit = fields.getInt("new_card_suit_in_hand_code"),
         newCardInHandRank = fields.getInt("new_card_rank_in_hand_code"),
+        symbolNumber = fields.optInt("symbol", 0),
     )
 }

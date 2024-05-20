@@ -25,8 +25,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -50,6 +53,8 @@ fun afterPlayerMove(
     isCreator: Boolean,
     isUtil: Boolean = false,
     move: MoveResponse,
+    chosenSymbol: Int,
+    setEnemySymbol: (Int) -> Unit,
     updateView: () -> Unit,
     afterEnemyMove: (Boolean) -> Unit,
     corrupt: (String) -> Unit,
@@ -73,6 +78,7 @@ fun afterPlayerMove(
             "http://crvnserver.onrender.com/crvn/move?room=$roomNumber" +
                     "&is_creators_move=${isCreator.toPythonBool()}" +
                     "&is_util=${isUtil.toPythonBool()}" +
+                    "&symbol=$chosenSymbol" +
                     "&move_code=${move.moveCode}" +
                     "&caravan_code=${move.caravanCode}" +
                     "&hand_card_number=${move.handCardNumber}" +
@@ -85,7 +91,9 @@ fun afterPlayerMove(
                 return@sendRequest
             }
             try {
-                (game.enemy as EnemyPlayer).latestMoveResponse = decodeMove(result.getString("body"))
+                val enemyMove = decodeMove(result.getString("body"))
+                (game.enemy as EnemyPlayer).latestMoveResponse = enemyMove
+                setEnemySymbol(enemyMove.symbolNumber)
             } catch (e: Exception) {
                 corrupt(result.toString())
                 return@sendRequest
@@ -125,8 +133,13 @@ fun ShowGamePvP(
     var enemyHandKey by remember { mutableStateOf(true) }
 
     var timeOnTimer by rememberSaveable { mutableIntStateOf(0) }
+    var timeOnTimerTrigger by rememberSaveable { mutableStateOf(false) }
 
-    LaunchedEffect(key1 = timeOnTimer) {
+    var chosenSymbol by rememberSaveable { mutableIntStateOf(0) }
+    var enemyChosenSymbol by rememberSaveable { mutableIntStateOf(0) }
+
+    LaunchedEffect(key1 = timeOnTimerTrigger) {
+        timeOnTimer = 38
         while (isActive && timeOnTimer > 0) {
             timeOnTimer--
             delay(1000L)
@@ -165,6 +178,7 @@ fun ShowGamePvP(
     fun resetSelected() {
         selectedCaravan = -1
         selectedCard = null
+        timeOnTimer = 0
     }
     fun dropCardFromHand() {
         if (game.isExchangingCards) return
@@ -174,7 +188,12 @@ fun ShowGamePvP(
         afterPlayerMove(game, roomNumber, isCreator = isCreator, isUtil = false, MoveResponse(
             moveCode = 2,
             handCardNumber = selectedCardNN,
-        ), { updateCaravans(); updateEnemyHand() }, { if (it) { timeOnTimer = 38 } }, ::corruptGame)
+        ), chosenSymbol,
+            { enemyChosenSymbol = it },
+            { updateCaravans(); updateEnemyHand() },
+            { if (it) { timeOnTimerTrigger = !timeOnTimerTrigger } },
+            ::corruptGame
+        )
     }
     fun dropCaravan() {
         if (game.isExchangingCards) return
@@ -186,7 +205,12 @@ fun ShowGamePvP(
         afterPlayerMove(game, roomNumber, isCreator = isCreator, isUtil = false, MoveResponse(
             moveCode = 1,
             caravanCode = selectedCaravanNN,
-        ), { updateCaravans(); updateEnemyHand() }, { if (it) { timeOnTimer = 38 } }, ::corruptGame)
+        ), chosenSymbol,
+            { enemyChosenSymbol = it },
+            { updateCaravans(); updateEnemyHand() },
+            { if (it) { timeOnTimerTrigger = !timeOnTimerTrigger } },
+            ::corruptGame
+        )
     }
 
     fun addCardToCaravan(caravan: Caravan, caravanIndex: Int, position: Int, isEnemy: Boolean = false) {
@@ -199,14 +223,24 @@ fun ShowGamePvP(
                     moveCode = 3,
                     handCardNumber = cardIndex,
                     caravanCode = caravanIndex
-                ), { updateCaravans(); updateEnemyHand() }, { if (it) { timeOnTimer = 38 } }, ::corruptGame)
+                ), chosenSymbol,
+                    { enemyChosenSymbol = it },
+                    { updateCaravans(); updateEnemyHand() },
+                    { if (it) { timeOnTimerTrigger = !timeOnTimerTrigger } },
+                    ::corruptGame
+                )
             } else {
                 afterPlayerMove(game, roomNumber, isCreator = isCreator, isUtil = false, MoveResponse(
                     moveCode = 4,
                     handCardNumber = cardIndex,
                     cardInCaravanNumber = cardInCaravan,
                     caravanCode = if (isEnemy) (-3 + caravanIndex) else caravanIndex
-                ), { updateCaravans(); updateEnemyHand() }, { if (it) { timeOnTimer = 38 } }, ::corruptGame)
+                ), chosenSymbol,
+                    { enemyChosenSymbol = it },
+                    { updateCaravans(); updateEnemyHand() },
+                    { if (it) { timeOnTimerTrigger = !timeOnTimerTrigger } },
+                    ::corruptGame
+                )
             }
         }
 
@@ -248,6 +282,18 @@ fun ShowGamePvP(
         return !(game.isOver() || !game.isPlayerTurn || game.isInitStage())
     }
 
+    val symbols = listOf(
+        "\uD83D\uDC4B", // HI!
+        "\uD83E\uDD1D", // Handshake
+        "\uD83D\uDE0A", // Happy face
+        "\uD83D\uDE15", // Errmmm...
+        "\uD83E\uDD21", // Clown!
+        "\uD83D\uDE0E", // deal with it.
+        "\uD83E\uDD2F", // mind-blowing move
+        "\uD83D\uDC80", // death
+        "\uD83D\uDE08", // Devil happy
+        "\uD83D\uDC7F", // Devil angry
+    )
     BoxWithConstraints(
         modifier = Modifier
             .fillMaxSize()
@@ -273,7 +319,16 @@ fun ShowGamePvP(
                                 RowOfEnemyCards(game.enemyCResources.hand.take(4))
                                 RowOfEnemyCards(game.enemyCResources.hand.takeLast((handSize - 4).coerceAtLeast(0)))
                             }
-                            ShowDeck(game.enemyCResources, activity, isKnown = false)
+
+                            Box(Modifier.fillMaxSize()) {
+                                ShowDeck(game.enemyCResources, activity, isKnown = false)
+                                Text(text = symbols[enemyChosenSymbol.coerceIn(0, symbols.size - 1)], style = TextStyle(
+                                    fontSize = 24.sp,
+                                    fontFamily = FontFamily(Font(R.font.symbola)),
+                                    color = colorResource(id = R.color.colorPrimary),
+                                    background = colorResource(id = R.color.colorAccent)
+                                ), modifier = Modifier.align(Alignment.BottomEnd))
+                            }
                         }
                     }
                     Row(verticalAlignment = Alignment.Bottom, modifier = Modifier
@@ -290,7 +345,17 @@ fun ShowGamePvP(
                             }
                             RowOfCards(cards = cards, 4, selectedCard, selectedCardColor, ::onCardClicked)
                         }
-                        ShowDeck(game.playerCResources, activity, isToBottom = true)
+                        Box {
+                            ShowDeck(game.playerCResources, activity, isToBottom = true)
+                            Text(text = symbols[chosenSymbol.coerceIn(0, symbols.size - 1)], style = TextStyle(
+                                fontSize = 24.sp,
+                                fontFamily = FontFamily(Font(R.font.symbola)),
+                                color = colorResource(id = R.color.colorPrimary),
+                                background = colorResource(id = R.color.colorAccent)
+                            ), modifier = Modifier.clickable {
+                                chosenSymbol = (chosenSymbol + 1) % symbols.size
+                            })
+                        }
                     }
                     Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxSize()) {
                         Text(
@@ -353,7 +418,15 @@ fun ShowGamePvP(
                             RowOfEnemyCards(game.enemyCResources.hand.take(4))
                             RowOfEnemyCards(game.enemyCResources.hand.takeLast((handSize - 4).coerceAtLeast(0)))
                         }
-                        ShowDeck(game.enemyCResources, activity, isKnown = false)
+                        Box {
+                            ShowDeck(game.enemyCResources, activity, isKnown = false)
+                            Text(text = symbols[enemyChosenSymbol.coerceIn(0, symbols.size - 1)], style = TextStyle(
+                                fontSize = 24.sp,
+                                fontFamily = FontFamily(Font(R.font.symbola)),
+                                color = colorResource(id = R.color.colorPrimary),
+                                background = colorResource(id = R.color.colorAccent)
+                            ), modifier = Modifier.align(Alignment.BottomEnd))
+                        }
                     }
                 }
                 key(caravansKey) {
@@ -398,7 +471,17 @@ fun ShowGamePvP(
                         }
                         RowOfCards(cards = cards, 4, selectedCard, selectedCardColor, ::onCardClicked)
                     }
-                    ShowDeck(game.playerCResources, activity, isToBottom = true)
+                    Box {
+                        ShowDeck(game.playerCResources, activity, isToBottom = true)
+                        Text(text = symbols[chosenSymbol.coerceIn(0, symbols.size - 1)], style = TextStyle(
+                            fontSize = 24.sp,
+                            fontFamily = FontFamily(Font(R.font.symbola)),
+                            color = colorResource(id = R.color.colorPrimary),
+                            background = colorResource(id = R.color.colorAccent)
+                        ), modifier = Modifier.clickable {
+                            chosenSymbol = (chosenSymbol + 1) % symbols.size
+                        })
+                    }
                 }
                 Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxSize()) {
                     Text(
@@ -419,7 +502,9 @@ fun ShowGamePvP(
         Box(modifier = Modifier.fillMaxSize()) {
             Text(
                 text = timeOnTimer.toString(),
-                modifier = Modifier.padding(8.dp).align(Alignment.BottomEnd),
+                modifier = Modifier
+                    .padding(8.dp)
+                    .align(Alignment.BottomEnd),
                 textAlign = TextAlign.Right,
                 style = TextStyle(color = Color.Red, background = Color(activity.getColor(R.color.colorAccent)), fontSize = 18.sp)
             )
