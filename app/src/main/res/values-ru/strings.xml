@@ -59,10 +59,10 @@
     <string name="pve_games_finished">Игр завершено: %1$s</string>
     <string name="pve_games_won">Побед: %1$s</string>
     <string name="pve_percentiles">Rates</string>
-    <string name="pve_w_to_l">Коэффициент успехов (W/L): %1$s</string>
-    <string name="pve_w_to_finished">Процент побед (W/Finished): %1$s \%%</string>
-    <string name="pve_w_to_started">Процент побед (W/Started): %1$s \%%</string>
-    <string name="pve_finished_to_started">Процент завершенных игр (Finished/Started): %1$s \%%</string>
+    <string name="pve_w_to_l">Коэффициент успеха (W/L): %1$s</string>
+    <string name="pve_w_to_finished">Процент побед к завершенным (W/Finished): %1$s \%%</string>
+    <string name="pve_w_to_started">Процент побед к начатым (W/Started): %1$s \%%</string>
+    <string name="pve_finished_to_started">Процент завершенных (Finished/Started): %1$s \%%</string>
     <string name="custom_deck_is_too_small">Сборная колода слишком мала!</string>
     <string name="custom_deck_is_too_small_message">В колоде меньше 30 карт или меньше 15 младших карт!</string>
     <string name="you_win">Победа!</string>

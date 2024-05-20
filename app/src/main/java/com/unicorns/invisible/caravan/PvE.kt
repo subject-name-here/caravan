@@ -25,6 +25,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.unicorns.invisible.caravan.model.CardBack
@@ -223,13 +224,12 @@ fun ShowPvE(
                     state2,
                     horizontal = false,
                     trackColor = colorResource(id = R.color.colorPrimaryDark)
-                ),
+                ).padding(16.dp),
             state = state2,
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             item {
-                Spacer(modifier = Modifier.height(16.dp))
                 Text(
                     text = stringResource(R.string.pve_stats),
                     style = TextStyle(color = Color(activity.getColor(R.color.colorPrimaryDark)), fontSize = 20.sp)
@@ -240,6 +240,7 @@ fun ShowPvE(
                         R.string.pve_games_started,
                         started
                     ),
+                    textAlign = TextAlign.Center,
                     style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 14.sp)
                 )
                 Spacer(modifier = Modifier.height(8.dp))
@@ -248,16 +249,19 @@ fun ShowPvE(
                         R.string.pve_games_finished,
                         finished
                     ),
+                    textAlign = TextAlign.Center,
                     style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 14.sp)
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
                     text = stringResource(R.string.pve_games_won, won),
+                    textAlign = TextAlign.Center,
                     style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 14.sp)
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
                     text = stringResource(R.string.pve_percentiles),
+                    textAlign = TextAlign.Center,
                     style = TextStyle(color = Color(activity.getColor(R.color.colorPrimaryDark)), fontSize = 20.sp)
                 )
                 Spacer(modifier = Modifier.height(16.dp))
@@ -266,6 +270,7 @@ fun ShowPvE(
                         R.string.pve_w_to_l,
                         if (loss == 0) "-" else String.format(Locale.UK, "%.3f", won.toDouble() / loss)
                     ),
+                    textAlign = TextAlign.Center,
                     style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 14.sp)
                 )
                 Spacer(modifier = Modifier.height(8.dp))
@@ -274,6 +279,7 @@ fun ShowPvE(
                         R.string.pve_w_to_finished,
                         if (finished == 0) "-" else String.format(Locale.UK, "%.2f", (won.toDouble() / finished) * 100)
                     ),
+                    textAlign = TextAlign.Center,
                     style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 14.sp)
                 )
                 Spacer(modifier = Modifier.height(8.dp))
@@ -282,6 +288,7 @@ fun ShowPvE(
                         R.string.pve_w_to_started,
                         if (started == 0) "-" else String.format(Locale.UK, "%.2f", won.toDouble() / started * 100.0)
                     ),
+                    textAlign = TextAlign.Center,
                     style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 14.sp)
                 )
                 Spacer(modifier = Modifier.height(8.dp))
@@ -290,9 +297,9 @@ fun ShowPvE(
                         R.string.pve_finished_to_started,
                         if (started == 0) "-" else String.format(Locale.UK, "%.1f", finished.toDouble() / started * 100.0)
                     ),
+                    textAlign = TextAlign.Center,
                     style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 14.sp)
                 )
-                Spacer(modifier = Modifier.height(16.dp))
             }
         }
         Text(
