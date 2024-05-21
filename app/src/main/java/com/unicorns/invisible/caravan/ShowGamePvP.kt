@@ -51,17 +51,15 @@ fun afterPlayerMove(
     game: Game,
     roomNumber: Int,
     isCreator: Boolean,
-    isUtil: Boolean = false,
     move: MoveResponse,
     chosenSymbol: Int,
-    setEnemySymbol: (Int) -> Unit,
     updateView: () -> Unit,
-    afterEnemyMove: (Boolean) -> Unit,
     corrupt: (String) -> Unit,
+    startPinging: () -> Unit,
 ) {
     game.isPlayerTurn = false
     CoroutineScope(Dispatchers.Default).launch {
-        delay(350L)
+        delay(380L)
         val isNewCardAdded = game.playerCResources.deckSize > 0 && game.playerCResources.hand.size < 5
         game.processFieldAndHand(game.playerCResources, updateView)
         if (isNewCardAdded) {
@@ -75,9 +73,8 @@ fun afterPlayerMove(
         game.checkOnGameOver()
 
         sendRequest(
-            "http://crvnserver.onrender.com/crvn/move?room=$roomNumber" +
+            "$crvnUrl/crvn/move?room=$roomNumber" +
                     "&is_creators_move=${isCreator.toPythonBool()}" +
-                    "&is_util=${isUtil.toPythonBool()}" +
                     "&symbol=$chosenSymbol" +
                     "&move_code=${move.moveCode}" +
                     "&caravan_code=${move.caravanCode}" +
@@ -87,29 +84,54 @@ fun afterPlayerMove(
                     "&new_card_rank_in_hand_code=${move.newCardInHandRank}" +
                     "&new_card_suit_in_hand_code=${move.newCardInHandSuit}"
         ) { result ->
-            if (game.isOver()) {
-                return@sendRequest
-            }
-            try {
-                val enemyMove = decodeMove(result.getString("body"))
-                (game.enemy as EnemyPlayer).latestMoveResponse = enemyMove
-                setEnemySymbol(enemyMove.symbolNumber)
-            } catch (e: Exception) {
+            if (result.toString().contains("oom")) {
                 corrupt(result.toString())
                 return@sendRequest
             }
-
-            CoroutineScope(Dispatchers.Default).launch {
-                game.enemy.makeMove(game)
-                delay(350L)
-                updateView()
-                game.processFieldAndHand(game.enemyCResources, updateView)
-
-                game.isPlayerTurn = true
-                game.checkOnGameOver()
-                updateView()
-                afterEnemyMove(!game.isOver())
+            if (game.isOver()) {
+                return@sendRequest
             }
+            startPinging()
+        }
+    }
+}
+
+
+fun pingForMove(
+    game: Game, room: Int, isCreator: Boolean,
+    setEnemySymbol: (Int) -> Unit,
+    corrupt: (String) -> Unit,
+    updateView: () -> Unit,
+    afterEnemyMove: (Boolean) -> Unit
+) {
+    sendRequest("$crvnUrl/crvn/get_move?room=$room&is_creators_move=${isCreator.toPythonBool()}") { result ->
+        if (result.getString("body") == "-1") {
+            CoroutineScope(Dispatchers.Unconfined).launch {
+                delay(760L)
+                pingForMove(game, room, isCreator, setEnemySymbol, corrupt, updateView, afterEnemyMove)
+            }
+            return@sendRequest
+        }
+
+        try {
+            val enemyMove = decodeMove(result.getString("body"))
+            (game.enemy as EnemyPlayer).latestMoveResponse = enemyMove
+            setEnemySymbol(enemyMove.symbolNumber)
+        } catch (e: Exception) {
+            corrupt(result.toString())
+            return@sendRequest
+        }
+
+        CoroutineScope(Dispatchers.Default).launch {
+            game.enemy.makeMove(game)
+            delay(350L)
+            updateView()
+            game.processFieldAndHand(game.enemyCResources, updateView)
+
+            game.isPlayerTurn = true
+            game.checkOnGameOver()
+            updateView()
+            afterEnemyMove(!game.isOver())
         }
     }
 }
@@ -122,7 +144,8 @@ fun ShowGamePvP(
     isCreator: Boolean,
     roomNumber: Int,
     showAlert: (String, String) -> Unit,
-    goBack: () -> Unit
+    goBack: () -> Unit,
+    pvpUpdater: Int,
 ) {
     var selectedCard by remember { mutableStateOf<Int?>(null) }
     val selectedCardColor = Color(activity.getColor(R.color.colorAccent))
@@ -132,17 +155,46 @@ fun ShowGamePvP(
     var caravansKey by remember { mutableStateOf(true) }
     var enemyHandKey by remember { mutableStateOf(true) }
 
-    var timeOnTimer by rememberSaveable { mutableIntStateOf(0) }
-    var timeOnTimerTrigger by rememberSaveable { mutableStateOf(false) }
-
     var chosenSymbol by rememberSaveable { mutableIntStateOf(0) }
     var enemyChosenSymbol by rememberSaveable { mutableIntStateOf(0) }
 
+    var timeOnTimer by rememberSaveable { mutableIntStateOf(0) }
+    var timeOnTimerTrigger by rememberSaveable { mutableStateOf(false) }
+
     LaunchedEffect(key1 = timeOnTimerTrigger) {
-        timeOnTimer = 38
-        while (isActive && timeOnTimer > 0) {
-            timeOnTimer--
-            delay(1000L)
+        if (game.isPlayerTurn) {
+            timeOnTimer = 38
+            while (isActive && timeOnTimer > 0) {
+                timeOnTimer--
+                delay(1000L)
+            }
+        } else {
+            timeOnTimer = -1
+        }
+    }
+
+    fun corruptGame(message: String) {
+        game.isCorrupted = true
+        showAlert("Corrupted!", message)
+    }
+    fun updateCaravans() {
+        caravansKey = !caravansKey
+    }
+    fun updateEnemyHand() {
+        enemyHandKey = !enemyHandKey
+    }
+
+    var pingingKey by rememberSaveable { mutableStateOf(false) }
+    LaunchedEffect(key1 = pingingKey, key2 = pvpUpdater) {
+        if (pvpUpdater == 2 && !game.isPlayerTurn && !game.isOver() && !game.isCorrupted && isActive) {
+            delay(760L)
+            pingForMove(
+                game, roomNumber, isCreator,
+                { enemyChosenSymbol = it },
+                ::corruptGame,
+                { updateCaravans(); updateEnemyHand() },
+                { if (it) { timeOnTimerTrigger = !timeOnTimerTrigger } }
+            )
         }
     }
 
@@ -156,12 +208,6 @@ fun ShowGamePvP(
         selectedCaravan = -1
     }
 
-    fun corruptGame(message: String) {
-        game.isCorrupted = true
-        showAlert("Corrupted!", message)
-        goBack()
-    }
-
     val state1Enemy = rememberLazyListState()
     val state1Player = rememberLazyListState()
     val state2Enemy = rememberLazyListState()
@@ -169,12 +215,6 @@ fun ShowGamePvP(
     val state3Enemy = rememberLazyListState()
     val state3Player = rememberLazyListState()
 
-    fun updateCaravans() {
-        caravansKey = !caravansKey
-    }
-    fun updateEnemyHand() {
-        enemyHandKey = !enemyHandKey
-    }
     fun resetSelected() {
         selectedCaravan = -1
         selectedCard = null
@@ -185,14 +225,13 @@ fun ShowGamePvP(
         val selectedCardNN = selectedCard ?: return
         game.playerCResources.removeFromHand(selectedCardNN)
         resetSelected()
-        afterPlayerMove(game, roomNumber, isCreator = isCreator, isUtil = false, MoveResponse(
+        afterPlayerMove(game, roomNumber, isCreator = isCreator, MoveResponse(
             moveCode = 2,
             handCardNumber = selectedCardNN,
         ), chosenSymbol,
-            { enemyChosenSymbol = it },
             { updateCaravans(); updateEnemyHand() },
-            { if (it) { timeOnTimerTrigger = !timeOnTimerTrigger } },
-            ::corruptGame
+            ::corruptGame,
+            { pingingKey = !pingingKey }
         )
     }
     fun dropCaravan() {
@@ -202,14 +241,13 @@ fun ShowGamePvP(
         game.playerCaravans[selectedCaravanNN].dropCaravan()
         updateCaravans()
         resetSelected()
-        afterPlayerMove(game, roomNumber, isCreator = isCreator, isUtil = false, MoveResponse(
+        afterPlayerMove(game, roomNumber, isCreator = isCreator, MoveResponse(
             moveCode = 1,
             caravanCode = selectedCaravanNN,
         ), chosenSymbol,
-            { enemyChosenSymbol = it },
             { updateCaravans(); updateEnemyHand() },
-            { if (it) { timeOnTimerTrigger = !timeOnTimerTrigger } },
-            ::corruptGame
+            ::corruptGame,
+            { pingingKey = !pingingKey }
         )
     }
 
@@ -219,27 +257,25 @@ fun ShowGamePvP(
             resetSelected()
             updateCaravans()
             if (cardInCaravan == null) {
-                afterPlayerMove(game, roomNumber, isCreator = isCreator, isUtil = false, MoveResponse(
+                afterPlayerMove(game, roomNumber, isCreator = isCreator, MoveResponse(
                     moveCode = 3,
                     handCardNumber = cardIndex,
                     caravanCode = caravanIndex
                 ), chosenSymbol,
-                    { enemyChosenSymbol = it },
                     { updateCaravans(); updateEnemyHand() },
-                    { if (it) { timeOnTimerTrigger = !timeOnTimerTrigger } },
-                    ::corruptGame
+                    ::corruptGame,
+                    { pingingKey = !pingingKey }
                 )
             } else {
-                afterPlayerMove(game, roomNumber, isCreator = isCreator, isUtil = false, MoveResponse(
+                afterPlayerMove(game, roomNumber, isCreator = isCreator, MoveResponse(
                     moveCode = 4,
                     handCardNumber = cardIndex,
                     cardInCaravanNumber = cardInCaravan,
                     caravanCode = if (isEnemy) (-3 + caravanIndex) else caravanIndex
                 ), chosenSymbol,
-                    { enemyChosenSymbol = it },
                     { updateCaravans(); updateEnemyHand() },
-                    { if (it) { timeOnTimerTrigger = !timeOnTimerTrigger } },
-                    ::corruptGame
+                    ::corruptGame,
+                    { pingingKey = !pingingKey }
                 )
             }
         }

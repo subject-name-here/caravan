@@ -170,6 +170,25 @@ fun ShowPvP(
         }
     }
 
+    fun checkRoomForJoiner() {
+        sendRequest("$crvnUrl/crvn/check_room_for_joiner?room=${isRoomCreated}") { result ->
+            if (result.getString("body") == "-1") {
+                CoroutineScope(Dispatchers.Unconfined).launch {
+                    delay(760L)
+                    checkRoomForJoiner()
+                }
+                return@sendRequest
+            }
+            val response = try {
+                json.decodeFromString<List<ULong>>(result.getString("body"))
+            } catch (e: Exception) {
+                showFailure()
+                return@sendRequest
+            }
+            processResponse(response)
+        }
+    }
+
     fun createRoom() {
         if (isRoomCreated != 0 || isRoomNumberIncorrect(roomNumber)) {
             showIncorrectRoomNumber()
@@ -182,9 +201,10 @@ fun ShowPvP(
             )
         )
         sendRequest(
-            "http://crvnserver.onrender.com/crvn/create?is_custom=${checkedCustomDeck.toPythonBool()}" +
+            "$crvnUrl/crvn/create?is_custom=${checkedCustomDeck.toPythonBool()}" +
                     "&room=${isRoomCreated}" +
                     "&is_private=${checkedPrivate.toPythonBool()}" +
+                    "&cid=${activity.id}" +
                     "&deck0=${deckCodes[0]}" +
                     "&deck1=${deckCodes[1]}" +
                     "&deck2=${deckCodes[2]}" +
@@ -192,16 +212,13 @@ fun ShowPvP(
                     "&deck4=${deckCodes[4]}" +
                     "&deck5=${deckCodes[5]}"
         ) { result ->
-            val response = try {
-                json.decodeFromString<List<ULong>>(
-                    result.getString("body")
-                )
-            } catch (e: Exception) {
+            val response = result.toString()
+            if (response.contains("exists")) {
                 showFailure()
                 return@sendRequest
             }
             isCreator = true
-            processResponse(response)
+            checkRoomForJoiner()
         }
     }
 
@@ -213,7 +230,8 @@ fun ShowPvP(
         isRoomCreated = roomNumber.toIntOrNull() ?: return
         val deckCodes = customDeckToInts(activity.save!!.getCustomDeckCopy())
         sendRequest(
-            "http://crvnserver.onrender.com/crvn/join?room=$isRoomCreated" +
+            "$crvnUrl/crvn/join?room=$isRoomCreated" +
+                    "&jid=${activity.id}" +
                     "&back=${selectedDeck().ordinal}" +
                     "&deck0=${deckCodes[0]}" +
                     "&deck1=${deckCodes[1]}" +
@@ -240,8 +258,8 @@ fun ShowPvP(
             return
         }
         isRoomCreated = 1
-        val link = "http://crvnserver.onrender.com/crvn/get_free_room?is_custom=${isCustom.toPythonBool()}"
-        val link2 = "http://crvnserver.onrender.com/crvn/get_free_room?is_custom=${(!isCustom).toPythonBool()}"
+        val link = "$crvnUrl/crvn/get_free_room?is_custom=${isCustom.toPythonBool()}"
+        val link2 = "$crvnUrl/crvn/get_free_room?is_custom=${(!isCustom).toPythonBool()}"
         sendRequest(link) { result ->
             val res = result.getString("body").toIntOrNull()
             if (res == null) {
@@ -288,10 +306,12 @@ fun ShowPvP(
         return
     }
 
+    val state = rememberLazyListState()
     LazyColumn(
-        Modifier
+        state = state,
+        modifier = Modifier
             .fillMaxSize()
-            .scrollbar(rememberLazyListState(), horizontal = false),
+            .scrollbar(state, horizontal = false),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) { item {
@@ -372,9 +392,7 @@ fun ShowPvP(
                         style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 14.sp),
                         modifier = Modifier
                             .fillMaxWidth()
-                            .clickable {
-                                createRoom()
-                            }
+                            .clickable { createRoom() }
                     )
                     Spacer(Modifier.height(16.dp))
                     Text(
@@ -383,9 +401,7 @@ fun ShowPvP(
                         style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 14.sp),
                         modifier = Modifier
                             .fillMaxWidth()
-                            .clickable {
-                                joinRoom()
-                            },
+                            .clickable { joinRoom() },
                     )
                 }
 
@@ -418,6 +434,7 @@ fun ShowPvP(
                 goBack()
             }
         )
+        Spacer(modifier = Modifier.height(32.dp))
     } }
 }
 
@@ -453,51 +470,72 @@ fun StartPvP(
     }
     activity.goBack = goBack
 
-    var pvpUpdater by rememberSaveable { mutableStateOf(false) }
+    var pvpUpdater by rememberSaveable { mutableIntStateOf(0) }
 
-    fun sendHandCard() {
-        val card = game.playerCResources.addToHandR() ?: return
-        val link = "http://crvnserver.onrender.com/crvn/move?room=$roomNumber" +
-                "&is_creators_move=${isCreator.toPythonBool()}" +
-                "&is_util=False" +
-                "&move_code=0" +
-                "&new_card_back_in_hand_code=${card.back.ordinal}" +
-                "&new_card_rank_in_hand_code=${card.rank.ordinal}" +
-                "&new_card_suit_in_hand_code=${card.suit.ordinal}"
+    fun pingForMove(sendHandCard: () -> Unit) {
+        val link = "$crvnUrl/crvn/get_move?room=$roomNumber" +
+                "&is_creators_move=${isCreator.toPythonBool()}"
         sendRequest(link) { result ->
-            val move = try {
-                decodeMove(result.getString("body"))
-            } catch (e: Exception) {
-                goBack()
+            val body = result.getString("body")
+            if (body.contains("Timeout!")) {
+                showAlertDialog("Failed to start the game!", body)
                 return@sendRequest
             }
 
-            if (game.enemyCResources.hand.size < 8) {
+            val move = try {
+                decodeMove(body)
+            } catch (e: Exception) {
+                CoroutineScope(Dispatchers.Unconfined).launch {
+                    delay(760L)
+                    pingForMove(sendHandCard)
+                }
+                return@sendRequest
+            }
+
+            if (move.newCardInHandBack in CardBack.entries.indices) {
                 val cardReceived = Card(
                     Rank.entries[move.newCardInHandRank],
                     Suit.entries[move.newCardInHandSuit],
                     CardBack.entries[move.newCardInHandBack],
                 )
                 game.enemyCResources.addCardToHandPvP(cardReceived)
-            }
-            if (game.playerCResources.hand.size < 8) {
-                pvpUpdater = !pvpUpdater
-                sendHandCard()
-                return@sendRequest
-            }
-            game.isExchangingCards = false
-            game.isPlayerTurn = isCreator
-            if (!game.isPlayerTurn) {
+
+                if (game.playerCResources.hand.size < 8) {
+                    sendHandCard()
+                    pvpUpdater = 1 - pvpUpdater
+                    return@sendRequest
+                }
+                game.isExchangingCards = false
+                game.isPlayerTurn = isCreator
+                pvpUpdater = 2
+            } else {
                 (game.enemy as EnemyPlayer).latestMoveResponse = move
+                game.isExchangingCards = false
+                game.isPlayerTurn = isCreator
+                pvpUpdater = 2
+
                 CoroutineScope(Dispatchers.Default).launch {
                     game.enemy.makeMove(game)
-                    game.processFieldAndHand(game.enemyCResources) {}
+                    game.processFieldAndHand(game.enemyCResources, {})
 
                     game.isPlayerTurn = true
                     game.checkOnGameOver()
+                    pvpUpdater = 2
                 }
             }
-            pvpUpdater = !pvpUpdater
+        }
+    }
+
+    fun sendHandCard() {
+        val card = game.playerCResources.addToHandR() ?: return
+        val link = "$crvnUrl/crvn/move?room=$roomNumber" +
+                "&is_creators_move=${isCreator.toPythonBool()}" +
+                "&move_code=0" +
+                "&new_card_back_in_hand_code=${card.back.ordinal}" +
+                "&new_card_rank_in_hand_code=${card.rank.ordinal}" +
+                "&new_card_suit_in_hand_code=${card.suit.ordinal}"
+        sendRequest(link) { _ ->
+            pingForMove(::sendHandCard)
         }
     }
 
@@ -505,34 +543,19 @@ fun StartPvP(
         game.enemyCResources.hand.isEmpty() && game.playerCResources.hand.isEmpty() &&
         game.enemyCResources.deckSize != 0 && game.playerCResources.deckSize != 0
     ) {
-        if (!isCreator) {
-            sendRequest("http://crvnserver.onrender.com/crvn/move?room=$roomNumber" +
-                    "&is_creators_move=False&is_util=True") { result ->
-                val move = try {
-                    decodeMove(result.getString("body"))
-                } catch (e: Exception) {
-                    goBack()
-                    return@sendRequest
-                }
-                val card = Card(
-                    Rank.entries[move.newCardInHandRank],
-                    Suit.entries[move.newCardInHandSuit],
-                    CardBack.entries[move.newCardInHandBack],
-                )
-                game.enemyCResources.addCardToHandPvP(card)
-                pvpUpdater = !pvpUpdater
-                sendHandCard()
-            }
-        } else {
+        if (isCreator) {
             sendHandCard()
+        } else {
+            pingForMove(::sendHandCard)
         }
     }
 
     if (game.isCorrupted) {
         goBack()
+        return
     }
 
     key(pvpUpdater) {
-        ShowGamePvP(activity, game, isCreator, roomNumber, showAlertDialog) { goBack() }
+        ShowGamePvP(activity, game, isCreator, roomNumber, showAlertDialog, { goBack() }, pvpUpdater)
     }
 }

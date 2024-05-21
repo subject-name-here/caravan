@@ -178,8 +178,7 @@
         If someone gave you a room number, enter it and press \"Join Room\".\n
         \n
         When finding room, it looks at whether \"Use custom deck\" is checked.\n
-        Actions timeout is 38 seconds, then the room is destroyed. (Sometimes first connection to server be longer.)\n
-        Also, there can be only two-three games at the same time. If server does not respond, it means there are too many games already.</string>
+        Actions timeout is 38 seconds, then the room is destroyed. (Sometimes first connection to server be longer.)</string>
 
     <string name="discard">Discard!</string>
     <string name="wait">Wait…</string>

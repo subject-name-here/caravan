@@ -49,7 +49,12 @@ import com.unicorns.invisible.caravan.utils.sendRequest
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import org.chromium.net.CronetEngine
+import java.util.UUID
 
+
+// TODO
+// const val crvnUrl = "http://crvnserver.onrender.com"
+const val crvnUrl = "http://192.168.1.191:8000"
 
 
 @Suppress("MoveLambdaOutsideParentheses")
@@ -58,12 +63,15 @@ class MainActivity : AppCompatActivity() {
 
     var goBack: (() -> Unit)? = null
 
+    var id = ""
+
     fun checkIfCustomDeckCanBeUsedInGame(playerCResources: CResources): Boolean {
         return playerCResources.deckSize >= MIN_DECK_SIZE && playerCResources.numOfNumbers >= MIN_NUM_OF_NUMBERS
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        id = UUID.randomUUID().toString()
         save = loadSave(this) ?: run {
             save(this, Save())
             loadSave(this)!!
@@ -106,7 +114,7 @@ class MainActivity : AppCompatActivity() {
                 while (isActive) {
                     if (pingServer != 0) {
                         pingServer = 2
-                        sendRequest("http://crvnserver.onrender.com/crvn/is_there_a_room/") {
+                        sendRequest("$crvnUrl/crvn/is_there_a_room/") {
                             val res = it.getString("body").toIntOrNull()
                             areThereRooms = res != null && res != 0
                             if (pingServer == 2) {
@@ -192,42 +200,42 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
-            key (pingServer) {
-                Text(
-                    text = when (pingServer) {
-                        1 -> {
-                            if (areThereRooms && !showPvP) {
-                                stringResource(R.string.someone_is_in_the_room_alone)
-                            } else if (showGameStats || showPvP) {
-                                ""
-                            } else {
-                                stringResource(R.string.it_is_either_empty_or_busy)
-                            }
-                        }
-                        0 -> {
-                            if (showGameStats || showPvP || deckSelection) {
-                                ""
-                            } else {
-                                stringResource(R.string.no_server_ping)
-                            }
-                        }
-                        else -> {
-                            if (showGameStats || showPvP || deckSelection) {
-                                ""
-                            } else {
-                                stringResource(R.string.pinging)
-                            }
-                        }
-                    },
-                    style = TextStyle(
-                        color = Color(getColor(if (pingServer == 1 && areThereRooms) R.color.red else R.color.colorPrimaryDark)),
-                        background = Color(getColor(R.color.colorAccent)),
-                        fontSize = 14.sp
-                    ),
-                    modifier = Modifier
-                        .fillMaxWidth(0.66f)
-                )
-            }
+//            key (pingServer) {
+//                Text(
+//                    text = when (pingServer) {
+//                        1 -> {
+//                            if (areThereRooms && !showPvP) {
+//                                stringResource(R.string.someone_is_in_the_room_alone)
+//                            } else if (showGameStats || showPvP) {
+//                                ""
+//                            } else {
+//                                stringResource(R.string.it_is_either_empty_or_busy)
+//                            }
+//                        }
+//                        0 -> {
+//                            if (showGameStats || showPvP || deckSelection) {
+//                                ""
+//                            } else {
+//                                stringResource(R.string.no_server_ping)
+//                            }
+//                        }
+//                        else -> {
+//                            if (showGameStats || showPvP || deckSelection) {
+//                                ""
+//                            } else {
+//                                stringResource(R.string.pinging)
+//                            }
+//                        }
+//                    },
+//                    style = TextStyle(
+//                        color = Color(getColor(if (pingServer == 1 && areThereRooms) R.color.red else R.color.colorPrimaryDark)),
+//                        background = Color(getColor(R.color.colorAccent)),
+//                        fontSize = 14.sp
+//                    ),
+//                    modifier = Modifier
+//                        .fillMaxWidth(0.66f)
+//                )
+//            }
         }
     }
 

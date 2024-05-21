@@ -47,7 +47,7 @@ fun ShowSettings(
         Row(horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
             Text(
                 modifier = Modifier.fillMaxWidth(0.66f),
-                text = stringResource(R.string.get_notifications_about_multiplayer),
+                text = "???",
                 style = TextStyle(color = Color(activity.getColor(R.color.colorPrimaryDark)), fontSize = 20.sp, textAlign = TextAlign.Center)
             )
             Spacer(modifier = Modifier.width(16.dp))
