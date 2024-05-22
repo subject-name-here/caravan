@@ -5,12 +5,12 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.KeyboardOptions
@@ -55,7 +55,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.serialization.encodeToString
 import org.chromium.net.CronetEngine
-import java.util.UUID
 
 
 var cronetEngine: CronetEngine? = null
@@ -320,97 +319,79 @@ fun ShowPvP(
     ) { item {
         Column(
             Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.height(16.dp))
-            Row(modifier = Modifier.height(100.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
+            Text(
+                text = stringResource(R.string.find),
+                modifier = Modifier
+                    .clickable {
+                        updateAvailableRoom(checkedCustomDeck)
+                    }
+                    .fillMaxWidth().wrapContentHeight()
+                    .padding(horizontal = 8.dp, vertical = 16.dp),
+                textAlign = TextAlign.Center,
+                fontWeight = FontWeight.ExtraBold,
+                style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 18.sp)
+            )
+            Row(modifier = Modifier.height(96.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
                 Text(
-                    text = stringResource(R.string.find),
-                    modifier = Modifier
-                        .clickable {
-                            updateAvailableRoom(checkedCustomDeck)
-                        }
-                        .fillMaxWidth(0.5f)
-                        .padding(horizontal = 16.dp),
+                    text = when (isRoomCreated) {
+                        0 -> stringResource(R.string.create_room)
+                        1 -> stringResource(R.string.pool)
+                        2 -> stringResource(R.string.failure)
+                        4 -> stringResource(R.string.incorrect_room_number)
+                        else -> stringResource(R.string.your_room_is, isRoomCreated)
+                    },
+                    fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,
-                    fontWeight = FontWeight.ExtraBold,
-                    style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 18.sp)
+                    style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 14.sp),
+                    modifier = Modifier
+                        .fillMaxWidth(0.33f).padding(horizontal = 8.dp)
+                        .clickable { createRoom() }
                 )
-                Spacer(modifier = Modifier.width(8.dp))
-                Column {
-                    Row(modifier = Modifier
-                        .fillMaxHeight(0.5f)
-                        .fillMaxWidth()
-                        .padding(8.dp),
-                        horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(modifier = Modifier.fillMaxWidth(0.7f), text = stringResource(R.string.pve_use_custom_deck))
-                        CheckboxCustom(
-                            activity,
-                            { checkedCustomDeck },
-                            {
-                                checkedCustomDeck = !checkedCustomDeck
-                            },
-                            { isRoomCreated == 0 }
-                        )
-                    }
-                    Row(modifier = Modifier
-                        .fillMaxSize()
-                        .padding(8.dp),
-                        horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(modifier = Modifier.fillMaxWidth(0.7f), text = stringResource(R.string.private_room))
-                        CheckboxCustom(
-                            activity,
-                            { checkedPrivate },
-                            { checkedPrivate = !checkedPrivate },
-                            { isRoomCreated == 0 }
-                        )
-                    }
-                }
-            }
-            Spacer(modifier = Modifier.height(16.dp))
-            Row(modifier = Modifier.height(128.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
                 TextField(
-                    modifier = Modifier.fillMaxWidth(0.25f),
+                    modifier = Modifier.fillMaxWidth(0.5f),
                     singleLine = true,
                     enabled = isRoomCreated == 0,
                     value = roomNumber,
                     onValueChange = { roomNumber = it },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    label = { Text(text = stringResource(R.string.room_number), style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 16.sp)) },
+                    textStyle = TextStyle(fontSize = 12.sp, color = Color(activity.getColor(R.color.colorPrimary))),
+                    label = { Text(text = stringResource(R.string.room_number), style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 11.sp)) },
                 )
-                Spacer(modifier = Modifier.width(16.dp))
-                Column(verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.Start) {
-                    Text(
-                        text = when (isRoomCreated) {
-                            0 -> stringResource(R.string.create_room)
-                            1 -> stringResource(R.string.pool)
-                            2 -> stringResource(R.string.failure)
-                            4 -> stringResource(R.string.incorrect_room_number)
-                            else -> stringResource(R.string.your_room_is, isRoomCreated)
-                        },
-                        fontWeight = FontWeight.Bold,
-                        style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 14.sp),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable { createRoom() }
-                    )
-                    Spacer(Modifier.height(16.dp))
-                    Text(
-                        text = stringResource(R.string.join),
-                        fontWeight = FontWeight.Bold,
-                        style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 14.sp),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable { joinRoom() },
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    text = stringResource(R.string.join),
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 14.sp),
+                    modifier = Modifier
+                        .fillMaxWidth().padding(horizontal = 8.dp)
+                        .clickable { joinRoom() },
+                )
+            }
+            Column(Modifier.padding(horizontal = 8.dp).wrapContentHeight()) {
+                Row(modifier = Modifier.fillMaxWidth().height(48.dp), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
+                    Text(modifier = Modifier.fillMaxWidth(0.7f), text = stringResource(R.string.pve_use_custom_deck))
+                    CheckboxCustom(
+                        activity,
+                        { checkedCustomDeck },
+                        { checkedCustomDeck = !checkedCustomDeck },
+                        { isRoomCreated == 0 }
                     )
                 }
-
+                Row(modifier = Modifier.fillMaxWidth().height(48.dp), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
+                    Text(modifier = Modifier.fillMaxWidth(0.7f), text = stringResource(R.string.private_room))
+                    CheckboxCustom(
+                        activity,
+                        { checkedPrivate },
+                        { checkedPrivate = !checkedPrivate },
+                        { isRoomCreated == 0 }
+                    )
+                }
             }
         }
-        Spacer(modifier = Modifier.height(28.dp))
+        Spacer(modifier = Modifier.height(16.dp))
         HorizontalDivider()
         Spacer(modifier = Modifier.height(16.dp))
         Column(Modifier.fillMaxSize(0.75f), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
@@ -520,7 +501,7 @@ fun StartPvP(
 
                 CoroutineScope(Dispatchers.Default).launch {
                     game.enemy.makeMove(game)
-                    game.processFieldAndHand(game.enemyCResources, {})
+                    game.processFieldAndHand(game.enemyCResources) {}
 
                     game.isPlayerTurn = true
                     game.checkOnGameOver()

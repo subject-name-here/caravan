@@ -319,13 +319,12 @@ fun ShowGamePvP(
         return !(game.isOver() || !game.isPlayerTurn || game.isInitStage())
     }
 
-    // TODO
     val symbols = listOf(
         "\uD83D\uDC4B", // HI!
-        "\uD83E\uDD1D", // Handshake
+        "\uD83D\uDC4F", // Good move
         "\uD83D\uDE0A", // Happy face
         "\uD83D\uDE15", // Errmmm...
-        "\uD83E\uDD21", // Clown!
+        "\uD83D\uDE28", // Devastated
         "\uD83D\uDE0E", // deal with it.
         "\uD83E\uDD2F", // mind-blowing move
         "\uD83D\uDC80", // death

@@ -170,7 +170,7 @@
     <string name="room_number">Room</string>
     <string name="no_stats_here">No stats here: the game\'s for fun, not for numbers!</string>
     <string name="pvp_piece">
-        Just press \"Join pool!!!\", if you:\n
+        Just press \"Join any Room!!!\", if you:\n
         - want to find anyone.\n
         - saw notification from bot on Discord.\n
         If not, well, here is manual:\n
