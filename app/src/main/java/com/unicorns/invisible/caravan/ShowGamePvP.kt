@@ -24,8 +24,9 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.draw.paint
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
@@ -39,6 +40,10 @@ import com.unicorns.invisible.caravan.model.primitives.Caravan
 import com.unicorns.invisible.caravan.model.primitives.Rank
 import com.unicorns.invisible.caravan.multiplayer.MoveResponse
 import com.unicorns.invisible.caravan.multiplayer.decodeMove
+import com.unicorns.invisible.caravan.utils.getAccentColor
+import com.unicorns.invisible.caravan.utils.getGameBackgroundColor
+import com.unicorns.invisible.caravan.utils.getGameTextColor
+import com.unicorns.invisible.caravan.utils.getTextBackgroundColor
 import com.unicorns.invisible.caravan.utils.sendRequest
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -148,7 +153,7 @@ fun ShowGamePvP(
     pvpUpdater: Int,
 ) {
     var selectedCard by remember { mutableStateOf<Int?>(null) }
-    val selectedCardColor = Color(activity.getColor(R.color.colorAccent))
+    val selectedCardColor = getAccentColor(activity)
 
     var selectedCaravan by remember { mutableIntStateOf(-1) }
 
@@ -334,7 +339,11 @@ fun ShowGamePvP(
     BoxWithConstraints(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(activity.getColor(R.color.colorPrimaryDark)))
+            .background(getGameBackgroundColor(activity))
+            .paint(
+                painterResource(id = R.drawable.game_back),
+                contentScale = ContentScale.Crop
+            )
     ) {
         if (maxWidth > maxHeight) {
             Row(Modifier.fillMaxSize()) {
@@ -362,8 +371,8 @@ fun ShowGamePvP(
                                 Text(text = symbols[enemyChosenSymbol.coerceIn(0, symbols.size - 1)], style = TextStyle(
                                     fontSize = 24.sp,
                                     fontFamily = FontFamily(Font(R.font.symbola)),
-                                    color = colorResource(id = R.color.colorPrimary),
-                                    background = colorResource(id = R.color.colorAccent)
+                                    color = getGameTextColor(activity),
+                                    background = getTextBackgroundColor(activity)
                                 ), modifier = Modifier.align(Alignment.BottomEnd))
                             }
                         }
@@ -387,8 +396,8 @@ fun ShowGamePvP(
                             Text(text = symbols[chosenSymbol.coerceIn(0, symbols.size - 1)], style = TextStyle(
                                 fontSize = 24.sp,
                                 fontFamily = FontFamily(Font(R.font.symbola)),
-                                color = colorResource(id = R.color.colorPrimary),
-                                background = colorResource(id = R.color.colorAccent)
+                                color = getGameTextColor(activity),
+                                background = getTextBackgroundColor(activity)
                             ), modifier = Modifier.clickable {
                                 chosenSymbol = (chosenSymbol + 1) % symbols.size
                             })
@@ -402,7 +411,7 @@ fun ShowGamePvP(
                                     goBack()
                                 }
                                 .fillMaxWidth(),
-                            style = TextStyle(color = Color(activity.getColor(R.color.colorAccent)), fontSize = 16.sp, textAlign = TextAlign.Center),
+                            style = TextStyle(color = getGameTextColor(activity), fontSize = 16.sp, textAlign = TextAlign.Center),
                         )
                     }
                 }
@@ -460,8 +469,8 @@ fun ShowGamePvP(
                             Text(text = symbols[enemyChosenSymbol.coerceIn(0, symbols.size - 1)], style = TextStyle(
                                 fontSize = 24.sp,
                                 fontFamily = FontFamily(Font(R.font.symbola)),
-                                color = colorResource(id = R.color.colorPrimary),
-                                background = colorResource(id = R.color.colorAccent)
+                                color = getGameTextColor(activity),
+                                background = getTextBackgroundColor(activity)
                             ), modifier = Modifier.align(Alignment.BottomEnd))
                         }
                     }
@@ -513,8 +522,8 @@ fun ShowGamePvP(
                         Text(text = symbols[chosenSymbol.coerceIn(0, symbols.size - 1)], style = TextStyle(
                             fontSize = 24.sp,
                             fontFamily = FontFamily(Font(R.font.symbola)),
-                            color = colorResource(id = R.color.colorPrimary),
-                            background = colorResource(id = R.color.colorAccent)
+                            color = getGameTextColor(activity),
+                            background = getTextBackgroundColor(activity)
                         ), modifier = Modifier.clickable {
                             chosenSymbol = (chosenSymbol + 1) % symbols.size
                         })
@@ -528,7 +537,7 @@ fun ShowGamePvP(
                                 goBack()
                             }
                             .fillMaxWidth(),
-                        style = TextStyle(color = Color(activity.getColor(R.color.colorAccent)), fontSize = 16.sp, textAlign = TextAlign.Center),
+                        style = TextStyle(color = getGameTextColor(activity), fontSize = 16.sp, textAlign = TextAlign.Center),
                     )
                 }
             }
@@ -543,7 +552,7 @@ fun ShowGamePvP(
                     .padding(8.dp)
                     .align(Alignment.BottomEnd),
                 textAlign = TextAlign.Right,
-                style = TextStyle(color = Color.Red, background = Color(activity.getColor(R.color.colorAccent)), fontSize = 18.sp)
+                style = TextStyle(color = getGameTextColor(activity), background = getGameBackgroundColor(activity), fontSize = 18.sp)
             )
         }
     }

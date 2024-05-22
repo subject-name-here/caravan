@@ -28,7 +28,7 @@
     <string name="gomorrah_deck_name">Gomorrah deck</string>
     <string name="sierra_madre_deck_name">Sierra Madre deck</string>
 
-    <string name="menu_pve">Quick game</string>
+    <string name="menu_pve">Single player</string>
     <string name="menu_pvp">Multiplayer</string>
     <string name="menu_tutorial">Tutorial</string>
     <string name="menu_rules">Rules</string>

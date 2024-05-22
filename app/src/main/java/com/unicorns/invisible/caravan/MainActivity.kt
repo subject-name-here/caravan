@@ -4,11 +4,19 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.ClickableText
@@ -24,13 +32,16 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
@@ -42,6 +53,12 @@ import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.save.Save
 import com.unicorns.invisible.caravan.save.loadSave
 import com.unicorns.invisible.caravan.save.save
+import com.unicorns.invisible.caravan.utils.getBackgroundColor
+import com.unicorns.invisible.caravan.utils.getDividerColor
+import com.unicorns.invisible.caravan.utils.getKnobColor
+import com.unicorns.invisible.caravan.utils.getTextBackgroundColor
+import com.unicorns.invisible.caravan.utils.getTextColor
+import com.unicorns.invisible.caravan.utils.getTrackColor
 import com.unicorns.invisible.caravan.utils.scrollbar
 import com.unicorns.invisible.caravan.utils.sendRequest
 import kotlinx.coroutines.delay
@@ -61,6 +78,8 @@ class MainActivity : AppCompatActivity() {
 
     var id = ""
 
+    var styleId = 1
+
     fun checkIfCustomDeckCanBeUsedInGame(playerCResources: CResources): Boolean {
         return playerCResources.deckSize >= MIN_DECK_SIZE && playerCResources.numOfNumbers >= MIN_NUM_OF_NUMBERS
     }
@@ -72,6 +91,7 @@ class MainActivity : AppCompatActivity() {
             save(this, Save())
             loadSave(this)!!
         }
+        styleId = save?.styleId ?: 1
 
         if (cronetEngine == null) {
             val myBuilder = CronetEngine.Builder(this)
@@ -86,7 +106,7 @@ class MainActivity : AppCompatActivity() {
             var showTutorial by rememberSaveable { mutableStateOf(false) }
             var showRules by rememberSaveable { mutableStateOf(false) }
 
-            var showSettings by rememberSaveable { mutableStateOf(false) }
+            var showSettings by rememberSaveable { mutableIntStateOf(0) }
 
             var selectedDeck by rememberSaveable { mutableStateOf(save?.selectedDeck ?: CardBack.STANDARD) }
 
@@ -180,8 +200,15 @@ class MainActivity : AppCompatActivity() {
                         ) { showPvP = false }
                     }
                 }
-                showSettings -> {
-                    ShowSettings(activity = this) { showSettings = false }
+                showSettings > 0 -> {
+                    ShowSettings(activity = this, { styleId }, {
+                        styleId = 1 - styleId
+                        showSettings = 3 - showSettings
+                        save?.let {
+                            it.styleId = styleId
+                            save(this, it)
+                        }
+                    }) { showSettings = 0 }
                 }
                 else -> {
                     MainMenu(
@@ -191,7 +218,7 @@ class MainActivity : AppCompatActivity() {
                         { showPvP = true },
                         { showTutorial = true },
                         { showRules = true },
-                        { showSettings = true }
+                        { showSettings = 1 }
                     )
                 }
             }
@@ -208,100 +235,243 @@ class MainActivity : AppCompatActivity() {
         showRules: () -> Unit,
         showSettings: () -> Unit,
     ) {
-        val state = rememberLazyListState()
-        LazyColumn(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
-            modifier = Modifier.fillMaxSize().scrollbar(state, horizontal = false),
-            state = state
+        Spacer(Modifier.height(32.dp))
+        Column(
+            Modifier
+                .fillMaxSize()
+                .background(getBackgroundColor(this))
         ) {
-            item {
-                Spacer(Modifier.height(64.dp))
-                Text(
-                    text = getString(R.string.app_name) +
-                            "\n(${packageManager.getPackageInfo(
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .height(32.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceAround
+            ) {
+                Row(
+                    Modifier
+                        .fillMaxWidth(0.66f)
+                        .fillMaxHeight()
+                        .padding(start = 12.dp)
+                        .drawBehind {
+                            drawPath(
+                                Path().apply {
+                                    moveTo(0f, size.height)
+                                    lineTo(0f, size.height / 4)
+                                    lineTo(size.width, size.height / 4)
+                                    lineTo(size.width, size.height)
+                                },
+                                color = getDividerColor(this@MainActivity),
+                                style = Stroke(width = 8f),
+                            )
+                        }) {
+                    Text(
+                        modifier = Modifier
+                            .wrapContentWidth()
+                            .align(Alignment.Top)
+                            .padding(start = 12.dp, top = 0.dp, end = 12.dp)
+                            .background(getBackgroundColor(this@MainActivity))
+                            .padding(start = 4.dp, top = 0.dp, end = 4.dp),
+                        text = getString(R.string.app_name),
+                        fontWeight = FontWeight.ExtraBold,
+                        fontFamily = FontFamily(Font(R.font.monofont)),
+                        textAlign = TextAlign.Start,
+                        style = TextStyle(color = getTextColor(this@MainActivity), fontSize = 28.sp)
+                    )
+
+                    Text(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .align(Alignment.Bottom)
+                            .padding(end = 12.dp),
+                        text = "VERSION #${
+                            packageManager.getPackageInfo(
                                 "com.unicorns.invisible.caravan",
                                 PackageManager.MATCH_ALL
-                            ).versionName})",
-                    fontWeight = FontWeight.ExtraBold,
-                    fontStyle = FontStyle.Italic,
-                    textAlign = TextAlign.Center,
-                    style = TextStyle(color = Color(getColor(R.color.colorPrimaryDark)), fontSize = 32.sp)
-                )
-                Spacer(Modifier.height(64.dp))
-                Text(
-                    text = getString(R.string.menu_pve),
-                    modifier = Modifier.clickable {
-                        showPvE()
-                    },
-                    style = TextStyle(color = Color(getColor(R.color.colorPrimaryDark)), fontSize = 20.sp)
-                )
-                Spacer(modifier = Modifier.height(20.dp))
-                Text(
-                    text = getString(R.string.menu_pvp),
-                    modifier = Modifier.clickable {
-                        showPvP()
-                    },
-                    style = TextStyle(color = Color(getColor(R.color.colorPrimaryDark)), fontSize = 20.sp)
-                )
-                Spacer(modifier = Modifier.height(20.dp))
-                Text(
-                    text = getString(R.string.menu_tutorial),
-                    modifier = Modifier.clickable {
-                        showTutorial()
-                    },
-                    style = TextStyle(color = Color(getColor(R.color.colorPrimaryDark)), fontSize = 20.sp)
-                )
-                Spacer(modifier = Modifier.height(20.dp))
-                Text(
-                    text = getString(R.string.menu_deck),
-                    modifier = Modifier.clickable {
-                        showDeckSelection()
-                    },
-                    style = TextStyle(color = Color(getColor(R.color.colorPrimaryDark)), fontSize = 20.sp)
-                )
-                Spacer(modifier = Modifier.height(20.dp))
-                Text(
-                    text = getString(R.string.menu_rules),
-                    modifier = Modifier.clickable {
-                        showRules()
-                    },
-                    style = TextStyle(color = Color(getColor(R.color.colorPrimaryDark)), fontSize = 20.sp)
-                )
-                Spacer(modifier = Modifier.height(20.dp))
+                            ).versionName
+                        }",
+                        fontWeight = FontWeight.Bold,
+                        fontFamily = FontFamily(Font(R.font.monofont)),
+                        textAlign = TextAlign.End,
+                        style = TextStyle(
+                            color = getTextColor(this@MainActivity),
+                            background = getBackgroundColor(this@MainActivity),
+                            fontSize = 14.sp
+                        )
+                    )
+                }
+
+                Row(
+                    Modifier
+                        .fillMaxSize()
+                        .padding(start = 12.dp, end = 12.dp)
+                        .drawBehind {
+                            drawPath(
+                                Path().apply {
+                                    moveTo(0f, size.height / 4)
+                                    lineTo(size.width, size.height / 4)
+                                    lineTo(size.width, size.height)
+                                },
+                                color = getDividerColor(this@MainActivity),
+                                style = Stroke(width = 8f),
+                            )
+                        },
+                ) {
+                    val discord = buildAnnotatedString {
+                        pushStringAnnotation(tag = "discord", annotation = "https://discord.gg/xSTJpjvzJV")
+                        withStyle(style = SpanStyle(
+                            color = getTextColor(this@MainActivity),
+                            background = getBackgroundColor(this@MainActivity),
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Bold,
+                            fontFamily = FontFamily(Font(R.font.monofont)),
+                            textDecoration = TextDecoration.Underline
+                        )) {
+                            append(stringResource(R.string.menu_discord))
+                        }
+                        pop()
+                    }
+                    val uriHandler = LocalUriHandler.current
+                    Box(Modifier.fillMaxSize()) {
+                        ClickableText(
+                            modifier = Modifier
+                                .align(Alignment.BottomEnd)
+                                .padding(end = 12.dp),
+                            text = discord,
+                            style = TextStyle(
+                                textAlign = TextAlign.Center,
+                                fontFamily = FontFamily(Font(R.font.monofont)),
+                            ),
+                        ) { offset ->
+                            discord.getStringAnnotations(tag = "discord", start = offset, end = offset).firstOrNull()?.let {
+                                uriHandler.openUri(it.item)
+                            }
+                        }
+                    }
+                }
+            }
+
+
+
+            val state = rememberLazyListState()
+            LazyColumn(
+                horizontalAlignment = Alignment.Start,
+                verticalArrangement = Arrangement.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight(0.8f)
+                    .scrollbar(state, knobColor = getKnobColor(this@MainActivity), trackColor = getTrackColor(this@MainActivity), horizontal = false)
+                    .padding(start = 16.dp),
+                state = state
+            ) {
+                item {
+                    Spacer(Modifier.height(64.dp))
+                    Text(
+                        text = getString(R.string.menu_pve),
+                        modifier = Modifier
+                            .clickable {
+                                showPvE()
+                            }
+                            .background(getTextBackgroundColor(this@MainActivity))
+                            .padding(8.dp),
+                        style = TextStyle(
+                            color = getTextColor(this@MainActivity),
+                            fontSize = 20.sp,
+                            fontFamily = FontFamily(Font(R.font.monofont)),
+                        )
+                    )
+                    Spacer(modifier = Modifier.height(20.dp))
+                    Text(
+                        text = getString(R.string.menu_pvp),
+                        modifier = Modifier
+                            .clickable {
+                                showPvP()
+                            }
+                            .background(getTextBackgroundColor(this@MainActivity))
+                            .padding(8.dp),
+                        style = TextStyle(
+                            color = getTextColor(this@MainActivity),
+                            fontSize = 20.sp,
+                            fontFamily = FontFamily(Font(R.font.monofont)),
+                        )
+                    )
+                    Spacer(modifier = Modifier.height(20.dp))
+                    Text(
+                        text = getString(R.string.menu_tutorial),
+                        modifier = Modifier
+                            .clickable {
+                                showTutorial()
+                            }
+                            .background(getTextBackgroundColor(this@MainActivity))
+                            .padding(8.dp),
+                        style = TextStyle(
+                            color = getTextColor(this@MainActivity),
+                            fontSize = 20.sp,
+                            fontFamily = FontFamily(Font(R.font.monofont)),
+                        )
+                    )
+                    Spacer(modifier = Modifier.height(20.dp))
+                    Text(
+                        text = getString(R.string.menu_rules),
+                        modifier = Modifier
+                            .clickable {
+                                showRules()
+                            }
+                            .background(getTextBackgroundColor(this@MainActivity))
+                            .padding(8.dp),
+                        style = TextStyle(
+                            color = getTextColor(this@MainActivity),
+                            fontSize = 20.sp,
+                            fontFamily = FontFamily(Font(R.font.monofont)),
+                        )
+                    )
+                    Spacer(modifier = Modifier.height(20.dp))
+                    Text(
+                        text = getString(R.string.menu_deck),
+                        modifier = Modifier
+                            .clickable {
+                                showDeckSelection()
+                            }
+                            .background(getTextBackgroundColor(this@MainActivity))
+                            .padding(8.dp),
+                        style = TextStyle(
+                            color = getTextColor(this@MainActivity),
+                            fontSize = 20.sp,
+                            fontFamily = FontFamily(Font(R.font.monofont)),
+                        )
+                    )
+                    Spacer(modifier = Modifier.height(32.dp))
+                }
+            }
+
+            Row(
+                Modifier.fillMaxSize(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceAround
+            ) {
                 Text(
                     text = getString(R.string.menu_settings),
                     modifier = Modifier.clickable {
                         showSettings()
-                    },
-                    style = TextStyle(color = Color(getColor(R.color.colorPrimaryDark)), fontSize = 20.sp)
+                    }.background(getTextBackgroundColor(this@MainActivity)).padding(8.dp),
+                    style = TextStyle(
+                        color = getTextColor(this@MainActivity),
+                        fontSize = 24.sp,
+                        fontFamily = FontFamily(Font(R.font.monofont)),
+                    )
                 )
-                Spacer(modifier = Modifier.height(20.dp))
+
                 Text(
                     text = getString(R.string.menu_about),
                     modifier = Modifier.clickable {
                         showAbout()
-                    },
-                    style = TextStyle(color = Color(getColor(R.color.colorPrimaryDark)), fontSize = 20.sp)
+                    }.background(getTextBackgroundColor(this@MainActivity)).padding(8.dp),
+                    style = TextStyle(
+                        color = getTextColor(this@MainActivity),
+                        fontSize = 24.sp,
+                        fontFamily = FontFamily(Font(R.font.monofont)),
+                    )
                 )
-                Spacer(modifier = Modifier.height(32.dp))
-
-                val discord = buildAnnotatedString {
-                    pushStringAnnotation(tag = "discord", annotation = "https://discord.gg/xSTJpjvzJV")
-                    withStyle(style = SpanStyle(color = Color(getColor(R.color.colorPrimaryDark)), textDecoration = TextDecoration.Underline)) {
-                        append(stringResource(R.string.menu_discord))
-                    }
-                    pop()
-                }
-                val uriHandler = LocalUriHandler.current
-                ClickableText(text = discord,
-                    style = TextStyle(color = Color(getColor(R.color.colorPrimaryDark)), fontSize = 20.sp),
-                ) { offset ->
-                    discord.getStringAnnotations(tag = "discord", start = offset, end = offset).firstOrNull()?.let {
-                        uriHandler.openUri(it.item)
-                    }
-                }
-                Spacer(Modifier.height(64.dp))
             }
         }
     }

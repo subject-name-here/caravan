@@ -29,7 +29,7 @@
     <string name="gomorrah_deck_name">колода казино Гоморра</string>
     <string name="sierra_madre_deck_name">колода казино Сьерра-Мадре</string>
 
-    <string name="menu_pve">Быстрая игра</string>
+    <string name="menu_pve">Играть с ИИ</string>
     <string name="menu_pvp">Играть с человеком</string>
     <string name="menu_tutorial">Обучение</string>
     <string name="menu_rules">Правила</string>

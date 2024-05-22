@@ -1,5 +1,6 @@
 package com.unicorns.invisible.caravan
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -21,15 +22,23 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.save.save
+import com.unicorns.invisible.caravan.utils.getAccentColor
+import com.unicorns.invisible.caravan.utils.getBackgroundColor
+import com.unicorns.invisible.caravan.utils.getDividerColor
+import com.unicorns.invisible.caravan.utils.getKnobColor
+import com.unicorns.invisible.caravan.utils.getTextBackgroundColor
+import com.unicorns.invisible.caravan.utils.getTextColor
+import com.unicorns.invisible.caravan.utils.getTrackColor
 import com.unicorns.invisible.caravan.utils.scrollbar
 
 
@@ -51,7 +60,7 @@ fun DeckSelection(
                     }
                     .border(
                         width = (if (getSelectedBack() == cardBack) 4 else 0).dp,
-                        color = Color(activity.getColor(R.color.colorAccent))
+                        color = getAccentColor(activity)
                     )
             }
         }
@@ -69,8 +78,8 @@ fun DeckSelection(
     val state = rememberLazyListState()
     LazyColumn(
         modifier = Modifier
-            .scrollbar(state, horizontal = false)
-            .fillMaxSize(),
+            .scrollbar(state, knobColor = getKnobColor(activity), trackColor = getTrackColor(activity), horizontal = false)
+            .fillMaxSize().background(getBackgroundColor(activity)),
         state = state,
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
@@ -79,7 +88,8 @@ fun DeckSelection(
             Spacer(modifier = Modifier.height(12.dp))
             Text(
                 text = stringResource(R.string.deck_select),
-                style = TextStyle(color = Color(activity.getColor(R.color.colorPrimaryDark)), fontSize = 24.sp)
+                fontFamily = FontFamily(Font(R.font.monofont)),
+                style = TextStyle(color = getTextColor(activity), fontSize = 24.sp)
             )
             Spacer(modifier = Modifier.height(12.dp))
             Row {
@@ -125,37 +135,41 @@ fun DeckSelection(
 
             Text(
                 text = stringResource(R.string.deck_select_about),
-                Modifier.padding(12.dp),
+                fontFamily = FontFamily(Font(R.font.monofont)),
+                modifier = Modifier.padding(12.dp),
                 textAlign = TextAlign.Center,
-                style = TextStyle(color = Color(activity.getColor(R.color.colorPrimaryDark)), fontSize = 16.sp)
+                style = TextStyle(color = getTextColor(activity), fontSize = 16.sp)
             )
 
-            HorizontalDivider()
+            HorizontalDivider(color = getDividerColor(activity))
             Spacer(modifier = Modifier.height(20.dp))
             Text(
                 text = stringResource(R.string.deck_custom),
                 modifier = Modifier.clickable {
                     setCustomDeck = true
-                },
-                style = TextStyle(color = Color(activity.getColor(R.color.colorPrimaryDark)), fontSize = 20.sp)
+                }.background(getTextBackgroundColor(activity)).padding(8.dp),
+                fontFamily = FontFamily(Font(R.font.monofont)),
+                style = TextStyle(color = getTextColor(activity), fontSize = 20.sp)
             )
             Spacer(modifier = Modifier.height(12.dp))
 
             Text(
                 text = stringResource(R.string.deck_custom_about),
                 Modifier.padding(12.dp),
+                fontFamily = FontFamily(Font(R.font.monofont)),
                 textAlign = TextAlign.Center,
-                style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 14.sp)
+                style = TextStyle(color = getTextColor(activity), fontSize = 14.sp)
             )
             Spacer(modifier = Modifier.height(20.dp))
-            HorizontalDivider()
+            HorizontalDivider(color = getDividerColor(activity))
             Spacer(modifier = Modifier.height(32.dp))
             Text(
                 text = stringResource(R.string.menu_back),
                 modifier = Modifier.clickable {
                     goBack()
-                },
-                style = TextStyle(color = Color(activity.getColor(R.color.colorPrimaryDark)), fontSize = 24.sp)
+                }.background(getTextBackgroundColor(activity)).padding(8.dp),
+                fontFamily = FontFamily(Font(R.font.monofont)),
+                style = TextStyle(color = getTextColor(activity), fontSize = 24.sp)
             )
             Spacer(modifier = Modifier.height(32.dp))
         }

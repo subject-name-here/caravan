@@ -1,5 +1,6 @@
 package com.unicorns.invisible.caravan
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -21,10 +22,10 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -44,6 +45,12 @@ import com.unicorns.invisible.caravan.model.primitives.CustomDeck
 import com.unicorns.invisible.caravan.save.Save
 import com.unicorns.invisible.caravan.save.save
 import com.unicorns.invisible.caravan.utils.CheckboxCustom
+import com.unicorns.invisible.caravan.utils.getBackgroundColor
+import com.unicorns.invisible.caravan.utils.getDividerColor
+import com.unicorns.invisible.caravan.utils.getKnobColor
+import com.unicorns.invisible.caravan.utils.getTextBackgroundColor
+import com.unicorns.invisible.caravan.utils.getTextColor
+import com.unicorns.invisible.caravan.utils.getTrackColor
 import com.unicorns.invisible.caravan.utils.scrollbar
 import java.util.Locale
 
@@ -137,7 +144,7 @@ fun ShowPvE(
     }
 
     Column(
-        Modifier.fillMaxSize(),
+        Modifier.fillMaxSize().background(getBackgroundColor(activity)),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -148,8 +155,8 @@ fun ShowPvE(
                 .fillMaxHeight(0.4f)
                 .scrollbar(
                     state,
+                    knobColor = getKnobColor(activity), trackColor = getTrackColor(activity),
                     horizontal = false,
-                    trackColor = colorResource(id = R.color.colorPrimaryDark)
                 ),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -158,65 +165,79 @@ fun ShowPvE(
             Spacer(modifier = Modifier.height(16.dp))
             Text(
                 text = stringResource(R.string.pve_select_enemy),
-                style = TextStyle(color = Color(activity.getColor(R.color.colorPrimaryDark)), fontSize = 22.sp)
+                fontFamily = FontFamily(Font(R.font.monofont)),
+                style = TextStyle(color = getTextColor(activity), fontSize = 22.sp)
             )
             Spacer(modifier = Modifier.height(16.dp))
             Text(
                 text = stringResource(R.string.pve_enemy_easy),
-                style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 16.sp),
+                fontFamily = FontFamily(Font(R.font.monofont)),
+                style = TextStyle(color = getTextColor(activity), fontSize = 16.sp),
                 modifier = Modifier.clickable {
                     showGameEasy = true
-                }
+                }.background(getTextBackgroundColor(activity)).padding(4.dp)
             )
             Spacer(modifier = Modifier.height(10.dp))
             Text(
                 text = stringResource(R.string.pve_enemy_medium),
-                style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 16.sp),
+                fontFamily = FontFamily(Font(R.font.monofont)),
+                style = TextStyle(color = getTextColor(activity), fontSize = 16.sp),
                 modifier = Modifier.clickable {
                     showGameMedium = true
-                }
+                }.background(getTextBackgroundColor(activity)).padding(4.dp)
             )
             Spacer(modifier = Modifier.height(10.dp))
             Text(
                 text = stringResource(R.string.pve_enemy_queen),
-                style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 16.sp),
+                fontFamily = FontFamily(Font(R.font.monofont)),
+                style = TextStyle(color = getTextColor(activity), fontSize = 16.sp),
                 modifier = Modifier.clickable {
                     showGameQueen = true
-                }
+                }.background(getTextBackgroundColor(activity)).padding(4.dp)
             )
             Spacer(modifier = Modifier.height(10.dp))
             Text(
                 text = stringResource(R.string.johnson_nash),
-                style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 16.sp),
+                fontFamily = FontFamily(Font(R.font.monofont)),
+                style = TextStyle(color = getTextColor(activity), fontSize = 16.sp),
                 modifier = Modifier.clickable {
                     showGameNash = true
-                }
+                }.background(getTextBackgroundColor(activity)).padding(4.dp)
             )
             Spacer(modifier = Modifier.height(10.dp))
             Text(
                 text = stringResource(R.string.pve_enemy_38),
-                style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 16.sp),
+                fontFamily = FontFamily(Font(R.font.monofont)),
+                style = TextStyle(color = getTextColor(activity), fontSize = 16.sp),
                 modifier = Modifier.clickable {
                     showGame38 = true
-                }
+                }.background(getTextBackgroundColor(activity)).padding(4.dp)
             )
             Spacer(modifier = Modifier.height(10.dp))
             Text(
                 text = stringResource(R.string.pve_enemy_cheater),
-                style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 16.sp),
+                fontFamily = FontFamily(Font(R.font.monofont)),
+                style = TextStyle(color = getTextColor(activity), fontSize = 16.sp),
                 modifier = Modifier.clickable {
                     showGameCheater = true
-                }
+                }.background(getTextBackgroundColor(activity)).padding(4.dp)
             )
             Spacer(modifier = Modifier.height(16.dp))
         } }
-        HorizontalDivider()
+        HorizontalDivider(color = getDividerColor(activity))
 
         Row(modifier = Modifier
             .height(56.dp)
             .padding(8.dp), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(modifier = Modifier.fillMaxWidth(0.7f), text = stringResource(R.string.pve_use_custom_deck))
+            Text(
+                modifier = Modifier.fillMaxWidth(0.7f),
+                text = stringResource(R.string.pve_use_custom_deck),
+                fontFamily = FontFamily(Font(R.font.monofont)),
+                style = TextStyle(
+                    color = getTextColor(activity), fontSize = 12.sp
+                )
+            )
             CheckboxCustom(
                 activity,
                 { checkedCustomDeck },
@@ -231,7 +252,7 @@ fun ShowPvE(
             )
         }
 
-        HorizontalDivider()
+        HorizontalDivider(color = getDividerColor(activity))
         val started = activity.save?.gamesStarted ?: 0
         val finished = activity.save?.gamesFinished ?: 0
         val won = activity.save?.wins ?: 0
@@ -241,12 +262,12 @@ fun ShowPvE(
             Modifier
                 .fillMaxHeight(0.75f)
                 .fillMaxWidth()
+                .padding(16.dp)
                 .scrollbar(
                     state2,
+                    knobColor = getKnobColor(activity), trackColor = getTrackColor(activity),
                     horizontal = false,
-                    trackColor = colorResource(id = R.color.colorPrimaryDark)
-                )
-                .padding(16.dp),
+                ),
             state = state2,
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
@@ -254,7 +275,8 @@ fun ShowPvE(
             item {
                 Text(
                     text = stringResource(R.string.pve_stats),
-                    style = TextStyle(color = Color(activity.getColor(R.color.colorPrimaryDark)), fontSize = 20.sp)
+                    fontFamily = FontFamily(Font(R.font.monofont)),
+                    style = TextStyle(color = getTextColor(activity), fontSize = 20.sp)
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
@@ -262,8 +284,9 @@ fun ShowPvE(
                         R.string.pve_games_started,
                         started
                     ),
+                    fontFamily = FontFamily(Font(R.font.monofont)),
                     textAlign = TextAlign.Center,
-                    style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 14.sp)
+                    style = TextStyle(color = getTextColor(activity), fontSize = 14.sp)
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
@@ -271,20 +294,23 @@ fun ShowPvE(
                         R.string.pve_games_finished,
                         finished
                     ),
+                    fontFamily = FontFamily(Font(R.font.monofont)),
                     textAlign = TextAlign.Center,
-                    style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 14.sp)
+                    style = TextStyle(color = getTextColor(activity), fontSize = 14.sp)
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
                     text = stringResource(R.string.pve_games_won, won),
                     textAlign = TextAlign.Center,
-                    style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 14.sp)
+                    fontFamily = FontFamily(Font(R.font.monofont)),
+                    style = TextStyle(color = getTextColor(activity), fontSize = 14.sp)
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
                     text = stringResource(R.string.pve_percentiles),
                     textAlign = TextAlign.Center,
-                    style = TextStyle(color = Color(activity.getColor(R.color.colorPrimaryDark)), fontSize = 20.sp)
+                    fontFamily = FontFamily(Font(R.font.monofont)),
+                    style = TextStyle(color = getTextColor(activity), fontSize = 20.sp)
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
@@ -292,8 +318,9 @@ fun ShowPvE(
                         R.string.pve_w_to_l,
                         if (loss == 0) "-" else String.format(Locale.UK, "%.3f", won.toDouble() / loss)
                     ),
+                    fontFamily = FontFamily(Font(R.font.monofont)),
                     textAlign = TextAlign.Center,
-                    style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 14.sp)
+                    style = TextStyle(color = getTextColor(activity), fontSize = 14.sp)
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
@@ -301,8 +328,9 @@ fun ShowPvE(
                         R.string.pve_w_to_finished,
                         if (finished == 0) "-" else String.format(Locale.UK, "%.2f", (won.toDouble() / finished) * 100)
                     ),
+                    fontFamily = FontFamily(Font(R.font.monofont)),
                     textAlign = TextAlign.Center,
-                    style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 14.sp)
+                    style = TextStyle(color = getTextColor(activity), fontSize = 14.sp)
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
@@ -311,7 +339,8 @@ fun ShowPvE(
                         if (started == 0) "-" else String.format(Locale.UK, "%.2f", won.toDouble() / started * 100.0)
                     ),
                     textAlign = TextAlign.Center,
-                    style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 14.sp)
+                    fontFamily = FontFamily(Font(R.font.monofont)),
+                    style = TextStyle(color = getTextColor(activity), fontSize = 14.sp)
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
@@ -320,14 +349,16 @@ fun ShowPvE(
                         if (started == 0) "-" else String.format(Locale.UK, "%.1f", finished.toDouble() / started * 100.0)
                     ),
                     textAlign = TextAlign.Center,
-                    style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 14.sp)
+                    fontFamily = FontFamily(Font(R.font.monofont)),
+                    style = TextStyle(color = getTextColor(activity), fontSize = 14.sp)
                 )
             }
         }
         Text(
             text = stringResource(R.string.menu_back),
-            style = TextStyle(color = Color(activity.getColor(R.color.colorPrimaryDark)), fontSize = 24.sp),
-            modifier = Modifier.clickable { goBack() }
+            fontFamily = FontFamily(Font(R.font.monofont)),
+            style = TextStyle(color = getTextColor(activity), fontSize = 24.sp),
+            modifier = Modifier.clickable { goBack() }.background(getTextBackgroundColor(activity)).padding(8.dp)
         )
     }
 }
@@ -370,7 +401,7 @@ fun StartGame(
             activity.save?.let { save ->
                 if (!isCustom) {
                     enemy.getRewardDeck()?.let { deck ->
-                        val cardBacks = deck.toList().map { it.back }
+                        val cardBacks = deck.toList().map { card -> card.back }
                         if (cardBacks.size == 1) {
                             val cardBack = cardBacks[0]
                             if (save.availableDecks[cardBack] != true) {

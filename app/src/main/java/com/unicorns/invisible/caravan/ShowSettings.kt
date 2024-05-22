@@ -1,5 +1,6 @@
 package com.unicorns.invisible.caravan
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -15,7 +16,7 @@ import androidx.compose.material3.SwitchColors
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -24,40 +25,50 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.unicorns.invisible.caravan.utils.getBackgroundColor
+import com.unicorns.invisible.caravan.utils.getTextBackgroundColor
+import com.unicorns.invisible.caravan.utils.getTextColor
 
 
 @Composable
 fun ShowSettings(
     activity: MainActivity,
+    getStyle: () -> Int,
+    toggleStyle: () -> Unit,
     goBack: () -> Unit
 ) {
-    var isPinging by rememberSaveable { mutableStateOf(false) }
+    var styleInt by rememberSaveable { mutableIntStateOf(getStyle()) }
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
         modifier = Modifier
             .fillMaxSize()
+            .background(getBackgroundColor(activity))
             .padding(horizontal = 16.dp)
     ) {
         Row(horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
             Text(
                 modifier = Modifier.fillMaxWidth(0.66f),
                 text = "???",
-                style = TextStyle(color = Color(activity.getColor(R.color.colorPrimaryDark)), fontSize = 20.sp, textAlign = TextAlign.Center)
+                fontFamily = FontFamily(Font(R.font.monofont)),
+                style = TextStyle(color = getTextColor(activity), fontSize = 20.sp, textAlign = TextAlign.Center)
             )
             Spacer(modifier = Modifier.width(16.dp))
-            Switch(checked = isPinging, onCheckedChange = {
-                isPinging = it
+            Switch(checked = styleInt == 0, onCheckedChange = {
+                styleInt = 1 - styleInt
+                toggleStyle()
             }, colors = SwitchColors(
-                checkedThumbColor = colorResource(R.color.colorPrimaryDark),
+                checkedThumbColor = colorResource(R.color.colorAccent),
                 checkedTrackColor = colorResource(R.color.colorPrimary),
                 checkedBorderColor = Color.Transparent,
                 checkedIconColor = Color.Transparent,
-                uncheckedThumbColor = colorResource(R.color.colorPrimary),
-                uncheckedTrackColor = colorResource(R.color.colorAccent),
+                uncheckedThumbColor = colorResource(R.color.colorText),
+                uncheckedTrackColor = colorResource(R.color.colorLightBack),
                 uncheckedBorderColor = Color.Transparent,
                 uncheckedIconColor = Color.Transparent,
                 disabledCheckedThumbColor = colorResource(R.color.red),
@@ -77,8 +88,9 @@ fun ShowSettings(
             text = stringResource(R.string.menu_back),
             modifier = Modifier.clickable {
                 goBack()
-            },
-            style = TextStyle(color = Color(activity.getColor(R.color.colorPrimaryDark)), fontSize = 24.sp)
+            }.background(getTextBackgroundColor(activity)).padding(8.dp),
+            fontFamily = FontFamily(Font(R.font.monofont)),
+            style = TextStyle(color = getTextColor(activity), fontSize = 24.sp)
         )
     }
 }

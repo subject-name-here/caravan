@@ -16,7 +16,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.unicorns.invisible.caravan.MainActivity
-import com.unicorns.invisible.caravan.R
 
 @Composable
 fun Modifier.scrollbar(
@@ -26,11 +25,11 @@ fun Modifier.scrollbar(
     thickness: Dp = 4.dp,
     knobCornerRadius: Dp = 4.dp,
     trackCornerRadius: Dp = 2.dp,
-    knobColor: Color = Color.Black,
-    trackColor: Color = Color.White,
+    knobColor: Color,
+    trackColor: Color,
     padding: Dp = 0.dp,
     visibleAlpha: Float = 1f,
-    hiddenAlpha: Float = 0.25f,
+    hiddenAlpha: Float = 0.75f,
     fadeInAnimationDurationMs: Int = 150,
     fadeOutAnimationDurationMs: Int = 500,
     fadeOutAnimationDelayMs: Int = 1000,
@@ -74,6 +73,10 @@ fun Modifier.scrollbar(
 
                 val firstItemSize = firstVisibleItem.size
                 val estimatedFullListSize = firstItemSize * state.layoutInfo.totalItemsCount
+
+                if (viewportSize > estimatedFullListSize) {
+                    return@drawWithContent
+                }
 
                 val viewportOffsetInFullListSpace =
                     state.firstVisibleItemIndex * firstItemSize + state.firstVisibleItemScrollOffset
@@ -144,8 +147,8 @@ fun Modifier.caravanScrollbar(
     thickness: Dp = 4.dp,
     knobCornerRadius: Dp = 4.dp,
     trackCornerRadius: Dp = 2.dp,
-    knobColor: Color = Color.Black,
-    trackColor: Color = Color.White,
+    knobColor: Color,
+    trackColor: Color,
     padding: Dp = 0.dp,
     visibleAlpha: Float = 1f,
     hiddenAlpha: Float = 0.4f,
@@ -244,15 +247,15 @@ fun Modifier.caravanScrollbar(
 @Composable
 fun CheckboxCustom(activity: MainActivity, checked: () -> Boolean, onCheckedChange: (Boolean) -> Unit, enabled: () -> Boolean) {
     Checkbox(checked = checked(), onCheckedChange = onCheckedChange, colors = CheckboxColors(
-        checkedCheckmarkColor = Color(activity.getColor(R.color.colorPrimaryDark)),
+        checkedCheckmarkColor = getTextColor(activity),
         uncheckedCheckmarkColor = Color.Transparent,
-        checkedBoxColor = Color(activity.getColor(R.color.colorPrimary)),
+        checkedBoxColor = getTextBackgroundColor(activity),
         uncheckedBoxColor = Color.Transparent,
         disabledCheckedBoxColor = Color.Red,
         disabledUncheckedBoxColor = Color.Red,
         disabledIndeterminateBoxColor = Color.Red,
-        checkedBorderColor = Color(activity.getColor(R.color.colorPrimaryDark)),
-        uncheckedBorderColor = Color(activity.getColor(R.color.colorPrimaryDark)),
+        checkedBorderColor = getCheckBoxBorderColor(activity),
+        uncheckedBorderColor = getCheckBoxBorderColor(activity),
         disabledBorderColor = Color.Red,
         disabledUncheckedBorderColor = Color.Red,
         disabledIndeterminateBorderColor = Color.Red,

@@ -31,11 +31,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.paint
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -48,12 +52,20 @@ import com.unicorns.invisible.caravan.model.primitives.Caravan
 import com.unicorns.invisible.caravan.model.primitives.Card
 import com.unicorns.invisible.caravan.model.primitives.Rank
 import com.unicorns.invisible.caravan.utils.caravanScrollbar
+import com.unicorns.invisible.caravan.utils.getAccentColor
+import com.unicorns.invisible.caravan.utils.getDividerColor
+import com.unicorns.invisible.caravan.utils.getGameBackgroundColor
+import com.unicorns.invisible.caravan.utils.getGameTextBackgroundColor
+import com.unicorns.invisible.caravan.utils.getGameTextColor
+import com.unicorns.invisible.caravan.utils.getKnobColor
+import com.unicorns.invisible.caravan.utils.getTextBackgroundColor
+import com.unicorns.invisible.caravan.utils.getTrackColor
 
 
 @Composable
 fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
     var selectedCard by remember { mutableStateOf<Int?>(null) }
-    val selectedCardColor = Color(activity.getColor(R.color.colorAccent))
+    val selectedCardColor = getAccentColor(activity)
 
     var selectedCaravan by remember { mutableIntStateOf(-1) }
 
@@ -146,7 +158,11 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
     BoxWithConstraints(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(activity.getColor(R.color.colorPrimaryDark)))
+            .background(getGameBackgroundColor(activity))
+            .paint(
+                painterResource(id = R.drawable.game_back),
+                contentScale = ContentScale.Crop
+            )
     ) {
         if (maxWidth > maxHeight) {
             Row(Modifier.fillMaxSize()) {
@@ -194,8 +210,10 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
                                 .clickable {
                                     goBack()
                                 }
-                                .fillMaxWidth(),
-                            style = TextStyle(color = Color(activity.getColor(R.color.colorAccent)), fontSize = 16.sp, textAlign = TextAlign.Center),
+                                .fillMaxWidth()
+                                .background(getGameTextBackgroundColor(activity))
+                                .padding(8.dp),
+                            style = TextStyle(color = getGameTextColor(activity), fontSize = 16.sp, fontWeight = FontWeight.ExtraBold, textAlign = TextAlign.Center),
                         )
                     }
                 }
@@ -298,12 +316,15 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
                 Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxSize()) {
                     Text(
                         text = stringResource(R.string.back_to_menu),
+                        fontWeight = FontWeight.ExtraBold,
                         modifier = Modifier
                             .clickable {
                                 goBack()
                             }
-                            .fillMaxWidth(),
-                        style = TextStyle(color = Color(activity.getColor(R.color.colorAccent)), fontSize = 16.sp, textAlign = TextAlign.Center),
+                            .fillMaxWidth()
+                            .background(getGameTextBackgroundColor(activity))
+                            .padding(8.dp),
+                        style = TextStyle(color = getGameTextColor(activity), fontSize = 16.sp, textAlign = TextAlign.Center),
                     )
                 }
             }
@@ -375,7 +396,11 @@ fun CaravanOnField(
             modifier = Modifier
                 .fillMaxHeight(0.4f)
                 .fillMaxWidth()
-                .caravanScrollbar(state)
+                .caravanScrollbar(
+                    state,
+                    knobColor = getKnobColor(activity),
+                    trackColor = getTrackColor(activity)
+                )
         ) {
             itemsIndexed(caravan.cards.reversed()) { index, it ->
                 Box(modifier = Modifier
@@ -422,7 +447,7 @@ fun CaravanOnField(
             else if (caravan.getValue() in (21..26) && (getOpposingCaravanValue() !in (21..26) || caravan.getValue() > getOpposingCaravanValue()))
                 Color.Green
             else
-                Color(activity.getColor(R.color.colorAccent)),
+                getGameTextColor(activity),
             modifier = Modifier
                 .fillMaxWidth()
         )
@@ -435,17 +460,20 @@ fun CaravanOnField(
                 else if (caravan.getValue() in (21..26) && (getOpposingCaravanValue() !in (21..26) || caravan.getValue() > getOpposingCaravanValue()))
                     Color.Green
                 else
-                    Color(activity.getColor(R.color.colorAccent)),
+                    getGameTextColor(activity),
                 modifier = Modifier.fillMaxWidth()
             )
             Text(text = stringResource(R.string.discard),
                 textAlign = TextAlign.Center,
-                color = Color(activity.getColor(R.color.colorAccent)),
+                color = getGameTextColor(activity),
+                fontWeight = FontWeight.ExtraBold,
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable {
                         selectCaravan()
                     }
+                    .background(getGameTextBackgroundColor(activity))
+                    .padding(4.dp)
             )
         }
         LazyColumn(
@@ -455,7 +483,12 @@ fun CaravanOnField(
             modifier = Modifier
                 .fillMaxHeight()
                 .fillMaxWidth()
-                .caravanScrollbar(state, hasNewCardPlaceholder = true)
+                .caravanScrollbar(
+                    state,
+                    knobColor = getKnobColor(activity),
+                    trackColor = getTrackColor(activity),
+                    hasNewCardPlaceholder = true
+                )
         ) {
             itemsIndexed(caravan.cards) { index, it ->
                 Box(modifier = Modifier
@@ -516,8 +549,8 @@ fun CaravanOnField(
                             Box(modifier = Modifier
                                 .fillParentMaxWidth()
                                 .height(20.dp)
-                                .background(Color(activity.getColor(R.color.colorPrimary)))
-                                .border(4.dp, Color(activity.getColor(R.color.colorAccent)))
+                                .background(getTextBackgroundColor(activity))
+                                .border(4.dp, getGameTextColor(activity))
                                 .clickable {
                                     addSelectedCardOnPosition(caravan.cards.size)
                                 }
@@ -541,7 +574,7 @@ fun ShowDeck(cResources: CResources, activity: MainActivity, isToBottom: Boolean
         Text(
             text = cResources.deckSize.toString(),
             modifier = Modifier.fillMaxWidth(),
-            style = TextStyle(color = Color(activity.getColor(R.color.colorAccent)), fontSize = 16.sp, textAlign = TextAlign.Center)
+            style = TextStyle(color = getGameTextColor(activity), fontSize = 16.sp, textAlign = TextAlign.Center)
         )
         val link = "file:///android_asset/caravan_cards_back/${if (isKnown) cResources.getDeckBack()?.getCardBackAsset() else null}"
         AsyncImage(
@@ -596,7 +629,7 @@ fun Caravans(
                 ) {
                     addCardToEnemyCaravan(num, it)
                 }
-                HorizontalDivider()
+                HorizontalDivider(color = getDividerColor(activity))
                 CaravanOnField(
                     activity,
                     getPlayerCaravan(num),
@@ -660,11 +693,8 @@ fun Caravans(
                 }
                 else -> stringResource(R.string.your_turn)
             }
-            Text(
-                text = text,
-                textAlign = TextAlign.Center,
-                color = Color(activity.getColor(R.color.colorAccent)),
-                modifier = Modifier
+            val modifier = if (getSelectedCardInt() != null || getSelectedCaravan() in (0..2)) {
+                Modifier
                     .fillMaxWidth()
                     .clickable {
                         if (!canDiscard()) return@clickable
@@ -675,6 +705,19 @@ fun Caravans(
                             dropSelectedCaravan()
                         }
                     }
+                    .background(getGameTextBackgroundColor(activity))
+                    .padding(6.dp)
+            } else {
+                Modifier
+                    .fillMaxWidth()
+                    .padding(6.dp)
+            }
+            Text(
+                text = text,
+                textAlign = TextAlign.Center,
+                color = getGameTextColor(activity),
+                fontWeight = FontWeight.ExtraBold,
+                modifier = modifier
             )
         }
     }

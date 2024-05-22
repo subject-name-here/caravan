@@ -19,6 +19,10 @@ class Save {
     @EncodeDefault
     var selectedDeck: CardBack = CardBack.STANDARD
 
+
+    @EncodeDefault
+    var styleId: Int = 1
+
     @EncodeDefault
     val customDeck: CustomDeck = CustomDeck()
     var useCustomDeck: Boolean = false

@@ -7,8 +7,14 @@
     <color name="green">#FF00FF00</color>
     <color name="dark_green">#FF009900</color>
 
-    <color name="colorPrimary">#995533</color>
-    <color name="colorPrimaryDark">#552222</color>
+    <color name="colorPrimary">#AA6644</color>
+    <color name="colorPrimaryHalfTransparent">#44AA6644</color>
+    <color name="colorPrimaryDark">#441111</color>
     <color name="colorAccent">#DDCC66</color>
+
+    <color name="colorBack">#001601</color>
+    <color name="colorLightBack">#023202</color>
+    <color name="colorLightBackHalfTransparent">#44023202</color>
+    <color name="colorText">#01C802</color>
 
 </resources>

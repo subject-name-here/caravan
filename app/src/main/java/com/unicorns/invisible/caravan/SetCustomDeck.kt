@@ -1,5 +1,6 @@
 package com.unicorns.invisible.caravan
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -26,6 +27,8 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -35,6 +38,12 @@ import com.unicorns.invisible.caravan.model.getCardName
 import com.unicorns.invisible.caravan.model.primitives.Card
 import com.unicorns.invisible.caravan.model.primitives.CustomDeck
 import com.unicorns.invisible.caravan.save.save
+import com.unicorns.invisible.caravan.utils.getAccentColor
+import com.unicorns.invisible.caravan.utils.getBackgroundColor
+import com.unicorns.invisible.caravan.utils.getKnobColor
+import com.unicorns.invisible.caravan.utils.getTextBackgroundColor
+import com.unicorns.invisible.caravan.utils.getTextColor
+import com.unicorns.invisible.caravan.utils.getTrackColor
 import com.unicorns.invisible.caravan.utils.scrollbar
 
 
@@ -64,7 +73,8 @@ fun SetCustomDeck(
         } ?: false
     }
 
-    Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Top) {
+    Column(Modifier.fillMaxSize().background(getBackgroundColor(activity)),
+        horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Top) {
         var updater by remember { mutableStateOf(false) }
         key(updater) {
             ShowCharacteristics(activity)
@@ -76,7 +86,7 @@ fun SetCustomDeck(
                     Modifier
                         .padding(4.dp)
                         .weight(1f)
-                        .scrollbar(state, horizontal = true), state = state) lambda@ {
+                        .scrollbar(state, knobColor = getKnobColor(activity), trackColor = getTrackColor(activity), horizontal = true), state = state) lambda@ {
                     if (activity.save?.availableDecks?.get(back) != true) {
                         return@lambda
                     }
@@ -100,7 +110,7 @@ fun SetCustomDeck(
                                     }
                                     .border(
                                         width = (if (isSelected) 4 else 0).dp,
-                                        color = Color(activity.getColor(R.color.colorAccent))
+                                        color = getAccentColor(activity)
                                     )
                                     .padding(4.dp)
                                     .alpha(if (isSelected) 1f else 0.5f)
@@ -120,6 +130,7 @@ fun SetCustomDeck(
         }
         Text(
             text = stringResource(id = R.string.menu_back),
+            fontFamily = FontFamily(Font(R.font.monofont)),
             modifier = Modifier
                 .clickable {
                     activity.save?.let {
@@ -128,9 +139,9 @@ fun SetCustomDeck(
                     goBack()
                 }
                 .fillMaxHeight()
-                .wrapContentHeight(),
+                .wrapContentHeight().background(getTextBackgroundColor(activity)).padding(8.dp),
             textAlign = TextAlign.Center,
-            style = TextStyle(color = Color(activity.getColor(R.color.colorPrimaryDark)), fontSize = 24.sp)
+            style = TextStyle(color = getTextColor(activity), fontSize = 24.sp)
         )
     }
 }
@@ -140,17 +151,19 @@ fun ShowCharacteristics(activity: MainActivity) {
     Row(Modifier.padding(8.dp), verticalAlignment = Alignment.CenterVertically) {
         val deckSize = activity.save?.customDeck?.size ?: -1
         val deckSizeMin = MainActivity.MIN_DECK_SIZE
-        val color1 = if (deckSize < deckSizeMin) Color.Red else Color(activity.getColor(R.color.colorPrimaryDark))
+        val color1 = if (deckSize < deckSizeMin) Color.Red else getTextColor(activity)
         Text(text = stringResource(R.string.custom_deck_size, deckSize, deckSizeMin),
             Modifier.fillMaxWidth(0.5f),
             textAlign = TextAlign.Center,
+            fontFamily = FontFamily(Font(R.font.monofont)),
             style = TextStyle(color = color1, fontSize = 12.sp))
 
         val nonFaces = activity.save?.customDeck?.count { !it.isFace() } ?: -1
         val nonFacesMin = MainActivity.MIN_NUM_OF_NUMBERS
-        val color2 = if (nonFaces < nonFacesMin) Color.Red else Color(activity.getColor(R.color.colorPrimaryDark))
+        val color2 = if (nonFaces < nonFacesMin) Color.Red else getTextColor(activity)
         Text(text = stringResource(R.string.custom_deck_non_faces, nonFaces, nonFacesMin),
             Modifier.fillMaxWidth(),
+            fontFamily = FontFamily(Font(R.font.monofont)),
             textAlign = TextAlign.Center,
             style = TextStyle(color = color2, fontSize = 12.sp))
     }
