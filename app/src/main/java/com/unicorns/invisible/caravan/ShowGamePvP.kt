@@ -341,7 +341,7 @@ fun ShowGamePvP(
             .fillMaxSize()
             .background(getGameBackgroundColor(activity))
             .paint(
-                painterResource(id = R.drawable.game_back),
+                painterResource(id = R.drawable.game_back2),
                 contentScale = ContentScale.Crop
             )
     ) {

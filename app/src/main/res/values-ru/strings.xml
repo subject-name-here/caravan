@@ -82,7 +82,7 @@
     <string name="back_to_main_menu">В главное меню</string>
 
     <string name="about_1">Караван - карточная игра из компьютерной игры \"Fallout: New Vegas\", созданной Obsidian и Bethesda.</string>
-    <string name="about_2">Этот порт создан subject_name_here (это такой ник, это не баг!), который никак не связан с создателями оригинала.</string>
+    <string name="about_2">Этот порт создан subject_name_here (это такой ник, это не баг!), который никак не связан с создателями оригинала. Также спасибо Kat за помощь с дизайном.</string>
     <string name="about_3_1">"Если у вас есть идеи или вы хотите сообщить, что что-то не работает (например, есть ошибки в переводе), свяжитесь со мной по e-mail: "</string>
     <string name="about_3_2">. Можно также оставить отзыв в Play Store.</string>
     <string name="about_4_1">"Правила Каравана и обучение во многом опираются на "</string>

@@ -82,7 +82,7 @@
     <string name="back_to_main_menu">Back to Main Menu</string>
 
     <string name="about_1">Caravan is the card game from video game \"Fallout: New Vegas\", created by Obsidian and Bethesda.</string>
-    <string name="about_2">This port is created by subject_name_here (it\'s a username, not a bug!), who is in no way affiliated with the creators of the original game.</string>
+    <string name="about_2">This port is created by subject_name_here (it\'s a username, not a bug!), who is in no way affiliated with the creators of the original game. Additional thanks for help with design go to Kat.</string>
     <string name="about_3_1">"If you want to request some features or report bugs, contact me at "</string>
     <string name="about_3_2">. You can also leave a review in Play Store.</string>
     <string name="about_4_1">"The Caravan rules and tutorial are heavily based on "</string>
