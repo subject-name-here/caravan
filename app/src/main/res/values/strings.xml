@@ -51,6 +51,7 @@
     <string name="pve_enemy_easy">Ultra-Luxe visitor</string>
     <string name="pve_enemy_medium">Thug from Gomorrah</string>
     <string name="pve_enemy_queen">Swank from Tops</string>
+    <string name="johnson_nash">Johnson Nash</string>
     <string name="pve_enemy_38">Securitron P373</string>
     <string name="pve_enemy_cheater">Courier Six</string>
     <string name="pve_use_custom_deck">Use Custom Deck</string>
@@ -70,7 +71,7 @@
     <string name="you_lose">You lose!</string>
     <string name="you_have_unlocked_deck">\nYou have unlocked the %1$s!</string>
     <string name="you_must_unlock_deck">\nTo have a chance of winning cards from the %1$s, you must defeat the enemy w/o custom deck!</string>
-    <string name="your_prize_cards_from">\nYour reward - cards from %1$s:\n</string>
+    <string name="your_prize_cards_from">\nYour reward:\n</string>
 
     <string name="new_card">New: %1$s.\n</string>
     <string name="old_card">Old: %1$s.\n</string>

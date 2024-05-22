@@ -33,6 +33,7 @@ import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.GameSaver
 import com.unicorns.invisible.caravan.model.enemy.Enemy
 import com.unicorns.invisible.caravan.model.enemy.Enemy38
+import com.unicorns.invisible.caravan.model.enemy.EnemyAnnoying
 import com.unicorns.invisible.caravan.model.enemy.EnemyCheater
 import com.unicorns.invisible.caravan.model.enemy.EnemyEasy
 import com.unicorns.invisible.caravan.model.enemy.EnemyMedium
@@ -59,6 +60,7 @@ fun ShowPvE(
     var showGame38 by rememberSaveable { mutableStateOf(false) }
     var showGameCheater by rememberSaveable { mutableStateOf(false) }
     var showGameQueen by rememberSaveable { mutableStateOf(false) }
+    var showGameNash by rememberSaveable { mutableStateOf(false) }
 
     var checkedCustomDeck by rememberSaveable { mutableStateOf(activity.save?.useCustomDeck ?: false) }
     fun getPlayerDeck(): CResources {
@@ -121,6 +123,17 @@ fun ShowPvE(
             showGameQueen = false
         }
         return
+    } else if (showGameNash) {
+        StartGame(
+            activity = activity,
+            playerCResources = getPlayerDeck(),
+            isCustom = checkedCustomDeck,
+            enemy = EnemyAnnoying,
+            showAlertDialog = showAlertDialog
+        ) {
+            showGameNash = false
+        }
+        return
     }
 
     Column(
@@ -169,6 +182,14 @@ fun ShowPvE(
                 style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 16.sp),
                 modifier = Modifier.clickable {
                     showGameQueen = true
+                }
+            )
+            Spacer(modifier = Modifier.height(10.dp))
+            Text(
+                text = stringResource(R.string.johnson_nash),
+                style = TextStyle(color = Color(activity.getColor(R.color.colorPrimary)), fontSize = 16.sp),
+                modifier = Modifier.clickable {
+                    showGameNash = true
                 }
             )
             Spacer(modifier = Modifier.height(10.dp))
@@ -224,7 +245,8 @@ fun ShowPvE(
                     state2,
                     horizontal = false,
                     trackColor = colorResource(id = R.color.colorPrimaryDark)
-                ).padding(16.dp),
+                )
+                .padding(16.dp),
             state = state2,
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
@@ -347,23 +369,23 @@ fun StartGame(
             var message = activity.getString(R.string.you_win)
             activity.save?.let { save ->
                 if (!isCustom) {
-                    enemy.getRewardDeck()?.let { cardBack ->
-                        if (save.availableDecks[cardBack] != true) {
-                            save.availableDecks[cardBack] = true
-                            message += activity.getString(
-                                R.string.you_have_unlocked_deck,
-                                activity.getString(cardBack.getDeckName())
-                            )
+                    enemy.getRewardDeck()?.let { deck ->
+                        val cardBacks = deck.toList().map { it.back }
+                        if (cardBacks.size == 1) {
+                            val cardBack = cardBacks[0]
+                            if (save.availableDecks[cardBack] != true) {
+                                save.availableDecks[cardBack] = true
+                                message += activity.getString(
+                                    R.string.you_have_unlocked_deck,
+                                    activity.getString(cardBack.getDeckName())
+                                )
+                            }
                         }
-                        message += winCard(activity, save, cardBack, 4)
+                        message += winCard(activity, save, deck, 4)
                     }
                 } else {
-                    enemy.getRewardDeck()?.let { cardBack ->
-                        message += if (save.availableDecks[cardBack] == true) {
-                            winCard(activity, save, cardBack, (1..2).random())
-                        } else {
-                            activity.getString(R.string.you_must_unlock_deck, cardBack.name)
-                        }
+                    enemy.getRewardDeck()?.let { deck ->
+                        message += winCard(activity, save, deck, (1..2).random())
                     }
                 }
                 save.gamesFinished++
@@ -384,11 +406,10 @@ fun StartGame(
     ShowGame(activity, game) { goBack() }
 }
 
-fun winCard(activity: MainActivity, save: Save, cardBack: CardBack, numberOfCards: Int): String {
+fun winCard(activity: MainActivity, save: Save, deck: CustomDeck, numberOfCards: Int): String {
     fun checkCard(card: Card) = save.availableCards.none { aCard -> aCard.rank == card.rank && aCard.suit == card.suit && aCard.back == card.back }
-    val deck = CustomDeck(cardBack)
     val reward = deck.takeRandom(numberOfCards)
-    var result = activity.getString(R.string.your_prize_cards_from, activity.getString(cardBack.getDeckName()))
+    var result = activity.getString(R.string.your_prize_cards_from)
     reward.forEach { card ->
         val cardName = "${activity.getString(card.rank.nameId)} ${activity.getString(card.suit.nameId)}"
         result += if (checkCard(card)) {

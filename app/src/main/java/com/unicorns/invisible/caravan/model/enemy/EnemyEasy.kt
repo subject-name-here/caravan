@@ -3,6 +3,7 @@ package com.unicorns.invisible.caravan.model.enemy
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.primitives.CResources
+import com.unicorns.invisible.caravan.model.primitives.CustomDeck
 import com.unicorns.invisible.caravan.model.primitives.Rank
 import kotlinx.serialization.Serializable
 
@@ -10,7 +11,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data object EnemyEasy : Enemy() {
     override fun createDeck(): CResources = CResources(CardBack.ULTRA_LUXE)
-    override fun getRewardDeck(): CardBack = CardBack.ULTRA_LUXE
+    override fun getRewardDeck() = CustomDeck(CardBack.ULTRA_LUXE)
 
     override suspend fun makeMove(game: Game) {
         val hand = game.enemyCResources.hand

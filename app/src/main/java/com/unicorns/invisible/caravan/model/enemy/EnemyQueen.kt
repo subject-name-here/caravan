@@ -23,7 +23,7 @@ data object EnemyQueen : Enemy() {
             }
         }
     })
-    override fun getRewardDeck(): CardBack = CardBack.TOPS
+    override fun getRewardDeck() = CustomDeck(CardBack.TOPS)
 
     override suspend fun makeMove(game: Game) {
         val hand = game.enemyCResources.hand

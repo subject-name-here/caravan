@@ -21,7 +21,7 @@ data object EnemyCheater : Enemy() {
             }
         }
     })
-    override fun getRewardDeck(): CardBack = CardBack.SIERRA_MADRE
+    override fun getRewardDeck() = CustomDeck(CardBack.SIERRA_MADRE)
 
     override suspend fun makeMove(game: Game) {
         val hand = game.enemyCResources.hand

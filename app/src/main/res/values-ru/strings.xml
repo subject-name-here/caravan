@@ -51,6 +51,7 @@
     <string name="pve_enemy_easy">Посетитель Ультра-Люкс</string>
     <string name="pve_enemy_medium">Громила из Гоморры</string>
     <string name="pve_enemy_queen">Франт из Топс</string>
+    <string name="johnson_nash">Джонсон Нэш</string>
     <string name="pve_enemy_38">Секьюритрон P373</string>
     <string name="pve_enemy_cheater">Курьер Шесть</string>
     <string name="pve_use_custom_deck">Использовать сборную колоду</string>
@@ -70,7 +71,7 @@
     <string name="you_lose">Поражение!</string>
     <string name="you_have_unlocked_deck">\nРазблокирована %1$s!</string>
     <string name="you_must_unlock_deck">\nВам недоступны карты из ###%1$s###! Нужно сначала победить этого соперника без сборной колоды!</string>
-    <string name="your_prize_cards_from">\nВаш приз - карты из ###%1$s###:\n</string>
+    <string name="your_prize_cards_from">\nВаш приз:\n</string>
 
     <string name="new_card">Новая: %1$s.\n</string>
     <string name="old_card">Старая: %1$s.\n</string>

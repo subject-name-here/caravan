@@ -4,6 +4,7 @@ import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.Card
+import com.unicorns.invisible.caravan.model.primitives.CustomDeck
 import com.unicorns.invisible.caravan.model.primitives.Rank
 import kotlinx.serialization.Serializable
 
@@ -11,7 +12,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data object EnemyMedium : Enemy() {
     override fun createDeck(): CResources = CResources(CardBack.GOMORRAH)
-    override fun getRewardDeck(): CardBack = CardBack.GOMORRAH
+    override fun getRewardDeck() = CustomDeck(CardBack.GOMORRAH)
 
     override suspend fun makeMove(game: Game) {
         val overWeightCaravans = game.enemyCaravans.filter { it.getValue() > 26 }

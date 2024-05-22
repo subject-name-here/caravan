@@ -50,7 +50,6 @@ import org.chromium.net.CronetEngine
 import java.util.UUID
 
 
-// TODO
 // const val crvnUrl = "http://crvnserver.onrender.com"
 const val crvnUrl = "http://192.168.1.191:8000"
 
