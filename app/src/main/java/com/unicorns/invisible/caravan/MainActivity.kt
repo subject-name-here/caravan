@@ -8,7 +8,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -18,7 +17,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -185,7 +183,7 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
                 showSettings -> {
-                    ShowSettings(activity = this, { pingServer }, { pingServer = it }) { showSettings = false }
+                    ShowSettings(activity = this) { showSettings = false }
                 }
                 else -> {
                     MainMenu(
@@ -199,43 +197,6 @@ class MainActivity : AppCompatActivity() {
                     )
                 }
             }
-
-//            key (pingServer) {
-//                Text(
-//                    text = when (pingServer) {
-//                        1 -> {
-//                            if (areThereRooms && !showPvP) {
-//                                stringResource(R.string.someone_is_in_the_room_alone)
-//                            } else if (showGameStats || showPvP) {
-//                                ""
-//                            } else {
-//                                stringResource(R.string.it_is_either_empty_or_busy)
-//                            }
-//                        }
-//                        0 -> {
-//                            if (showGameStats || showPvP || deckSelection) {
-//                                ""
-//                            } else {
-//                                stringResource(R.string.no_server_ping)
-//                            }
-//                        }
-//                        else -> {
-//                            if (showGameStats || showPvP || deckSelection) {
-//                                ""
-//                            } else {
-//                                stringResource(R.string.pinging)
-//                            }
-//                        }
-//                    },
-//                    style = TextStyle(
-//                        color = Color(getColor(if (pingServer == 1 && areThereRooms) R.color.red else R.color.colorPrimaryDark)),
-//                        background = Color(getColor(R.color.colorAccent)),
-//                        fontSize = 14.sp
-//                    ),
-//                    modifier = Modifier
-//                        .fillMaxWidth(0.66f)
-//                )
-//            }
         }
     }
 
@@ -328,7 +289,7 @@ class MainActivity : AppCompatActivity() {
                 Spacer(modifier = Modifier.height(32.dp))
 
                 val discord = buildAnnotatedString {
-                    pushStringAnnotation(tag = "discord", annotation = "https://discord.gg/utCrjvDk")
+                    pushStringAnnotation(tag = "discord", annotation = "https://discord.gg/xSTJpjvzJV")
                     withStyle(style = SpanStyle(color = Color(getColor(R.color.colorPrimaryDark)), textDecoration = TextDecoration.Underline)) {
                         append(stringResource(R.string.menu_discord))
                     }

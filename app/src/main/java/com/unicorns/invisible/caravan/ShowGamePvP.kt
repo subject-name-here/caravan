@@ -154,6 +154,7 @@ fun ShowGamePvP(
 
     var caravansKey by remember { mutableStateOf(true) }
     var enemyHandKey by remember { mutableStateOf(true) }
+    game.enemyCResources.onRemoveFromHand = { enemyHandKey = !enemyHandKey }
 
     var chosenSymbol by rememberSaveable { mutableIntStateOf(0) }
     var enemyChosenSymbol by rememberSaveable { mutableIntStateOf(0) }
@@ -175,7 +176,9 @@ fun ShowGamePvP(
 
     fun corruptGame(message: String) {
         game.isCorrupted = true
-        showAlert("Corrupted!", message)
+        if (currentGameId == game.id) {
+            showAlert("Corrupted!", message)
+        }
     }
     fun updateCaravans() {
         caravansKey = !caravansKey
@@ -197,8 +200,6 @@ fun ShowGamePvP(
             )
         }
     }
-
-    game.enemyCResources.onRemoveFromHand = { enemyHandKey = !enemyHandKey }
 
     fun onCardClicked(index: Int) {
         if (game.isOver()) {
@@ -318,6 +319,7 @@ fun ShowGamePvP(
         return !(game.isOver() || !game.isPlayerTurn || game.isInitStage())
     }
 
+    // TODO
     val symbols = listOf(
         "\uD83D\uDC4B", // HI!
         "\uD83E\uDD1D", // Handshake

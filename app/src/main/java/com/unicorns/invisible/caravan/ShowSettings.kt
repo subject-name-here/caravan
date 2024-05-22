@@ -32,11 +32,9 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun ShowSettings(
     activity: MainActivity,
-    getPinging: () -> Int,
-    setPinging: (Int) -> Unit,
     goBack: () -> Unit
 ) {
-    var isPinging by rememberSaveable { mutableStateOf(getPinging() != 0) }
+    var isPinging by rememberSaveable { mutableStateOf(false) }
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
@@ -53,7 +51,6 @@ fun ShowSettings(
             Spacer(modifier = Modifier.width(16.dp))
             Switch(checked = isPinging, onCheckedChange = {
                 isPinging = it
-                setPinging(if (it) 2 else 0)
             }, colors = SwitchColors(
                 checkedThumbColor = colorResource(R.color.colorPrimaryDark),
                 checkedTrackColor = colorResource(R.color.colorPrimary),

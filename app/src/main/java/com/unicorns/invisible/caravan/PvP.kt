@@ -55,9 +55,11 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.serialization.encodeToString
 import org.chromium.net.CronetEngine
+import java.util.UUID
 
 
 var cronetEngine: CronetEngine? = null
+var currentGameId = ""
 
 
 fun customDeckToInts(customDeck: CustomDeck): List<ULong> {
@@ -94,7 +96,7 @@ fun Boolean.toPythonBool(): String {
 
 
 fun isRoomNumberIncorrect(roomNumber: String): Boolean {
-    return roomNumber.toIntOrNull() !in (10..22229)
+    return roomNumber.toIntOrNull() !in (25000..30000)
 }
 
 
@@ -118,7 +120,8 @@ fun ShowPvP(
         mutableStateOf(CustomDeck())
     }
 
-    fun showFailure() {
+    fun showFailure(s: String) {
+        showAlertDialog("Failure!", s)
         isRoomCreated = 2
         CoroutineScope(Dispatchers.Unconfined).launch {
             delay(3800L)
@@ -135,7 +138,7 @@ fun ShowPvP(
 
     fun processResponse(response: List<ULong>) {
         if (response.size != CardBack.entries.size) {
-            showFailure()
+            showFailure("Response has wrong size!")
             return
         }
 
@@ -182,7 +185,7 @@ fun ShowPvP(
             val response = try {
                 json.decodeFromString<List<ULong>>(result.getString("body"))
             } catch (e: Exception) {
-                showFailure()
+                showFailure(result.getString("body"))
                 return@sendRequest
             }
             processResponse(response)
@@ -190,7 +193,10 @@ fun ShowPvP(
     }
 
     fun createRoom() {
-        if (isRoomCreated != 0 || isRoomNumberIncorrect(roomNumber)) {
+        if (isRoomCreated != 0) {
+            return
+        }
+        if (isRoomNumberIncorrect(roomNumber)) {
             showIncorrectRoomNumber()
             return
         }
@@ -214,7 +220,7 @@ fun ShowPvP(
         ) { result ->
             val response = result.toString()
             if (response.contains("exists")) {
-                showFailure()
+                showFailure("Room exists already!!!")
                 return@sendRequest
             }
             isCreator = true
@@ -223,7 +229,10 @@ fun ShowPvP(
     }
 
     fun joinRoom() {
-        if (isRoomCreated != 0 || isRoomNumberIncorrect(roomNumber)) {
+        if (isRoomCreated != 0) {
+            return
+        }
+        if (isRoomNumberIncorrect(roomNumber)) {
             showIncorrectRoomNumber()
             return
         }
@@ -241,11 +250,9 @@ fun ShowPvP(
                     "&deck5=${deckCodes[5]}"
         ) { result ->
             val response = try {
-                json.decodeFromString<List<ULong>>(
-                    result.getString("body")
-                )
+                json.decodeFromString<List<ULong>>(result.getString("body"))
             } catch (e: Exception) {
-                showFailure()
+                showFailure(result.getString("body"))
                 return@sendRequest
             }
             isCreator = false
@@ -267,14 +274,10 @@ fun ShowPvP(
                     val res2 = result2.getString("body").toIntOrNull()
                     isRoomCreated = 0
                     if (res2 != null) {
-                        showAlertDialog(
-                            activity.getString(R.string.join_diff_custom_header),
-                            activity.getString(R.string.join_diff_custom_body)
-                        )
                         roomNumber = res2.toString()
+                        joinRoom()
                     } else {
-                        roomNumber = (10..22229).random().toString()
-                        createRoom()
+                        showFailure("No room to join! Create your own room!")
                     }
                 }
             } else {
@@ -457,6 +460,7 @@ fun StartPvP(
                 it.isPlayerTurn = false
                 it.isExchangingCards = true
                 it.initDeck(playerCResources, maxNumOfFaces = 4, initHand = false)
+                currentGameId = it.id
             }
         )
     }
@@ -550,7 +554,7 @@ fun StartPvP(
         }
     }
 
-    if (game.isCorrupted) {
+    if (game.isCorrupted && game.id == currentGameId) {
         goBack()
         return
     }

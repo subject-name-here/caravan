@@ -164,32 +164,34 @@
     <string name="incorrect_room_number">Incorrect room number!</string>
     <string name="your_room_is">Your Room is %1$s. Awaiting the Opponent.....</string>
     <string name="private_room">Private room</string>
-    <string name="find">Join pool!!!</string>
-    <string name="pool">Requesting pool…</string>
+    <string name="find">Join any Room!!!</string>
+    <string name="pool">Requesting room…</string>
     <string name="join">Join Room (you go second)</string>
     <string name="room_number">Room</string>
-    <string name="join_diff_custom_header">Another Courier!</string>
-    <string name="join_diff_custom_body">There is someone waiting for you, but they are with different usage of custom deck. To join them, press \"Join Room\".</string>
     <string name="no_stats_here">No stats here: the game\'s for fun, not for numbers!</string>
-    <string name="pvp_piece">If you\'re here because of notification or simply to find an opponent, just press \"Join pool!!!\".\n
+    <string name="pvp_piece">
+        Just press \"Join pool!!!\", if you:\n
+        - want to find anyone.\n
+        - saw notification from bot on Discord.\n
         If not, well, here is manual:\n
-        To create room, enter room number (the one that is not in use) and press \"Create Room\".\n
-        Room number is from 10 to 22229.\n
-        If someone gave you a room number, enter it and press \"Join Room\".\n
+        To create room:\n
+        - enter room number (if one number fails, try another),\n
+        - select room privacy setting, \n
+        - whether you want to play with custom deck or not, \n
+        - press \"Create Room\".\n
+        Room number is - NEW!!! - from 25000 to 30000. OLD NUMBERS WON\'T WORK!!!\n
         \n
-        When finding room, it looks at whether \"Use custom deck\" is checked.\n
-        Actions timeout is 38 seconds, then the room is destroyed. (Sometimes first connection to server be longer.)</string>
+        If someone gave you a room number, enter it and press \"Join Room\". No checkboxes are necessary.\n
+        \n
+        Sometimes first connection to server might take a long time, like, ~2 minutes.
+        Action timeout (move, room waiting) is ~38 seconds, then the room is destroyed.
+    </string>
 
     <string name="discard">Discard!</string>
     <string name="wait">Wait…</string>
     <string name="init_stage">Init stage!</string>
     <string name="can_t_act">Can\'t act!</string>
     <string name="your_turn">Your turn!</string>
-
-    <string name="someone_is_in_the_room_alone">GO TO MULTIPLAYER, JOIN THE POOL!!!</string>
-    <string name="it_is_either_empty_or_busy">All rooms are either empty or occupied.</string>
-    <string name="no_server_ping">No server ping. Go to Settings to receive a multiplayer notification if there is a Room that you can join.</string>
-    <string name="pinging">Pinging…</string>
 
     <string name="get_notifications_about_multiplayer">"Get notifications about multiplayer: "</string>
 

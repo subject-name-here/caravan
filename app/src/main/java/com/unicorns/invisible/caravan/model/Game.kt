@@ -14,6 +14,7 @@ import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import kotlinx.serialization.encodeToString
+import java.util.UUID
 
 
 @Serializable
@@ -27,6 +28,8 @@ class Game(
     val enemyCResources = enemy.createDeck()
 
     var isPlayerTurn = true
+
+    var id = UUID.randomUUID().toString()
 
     @Transient
     var onWin: () -> Unit = {}
