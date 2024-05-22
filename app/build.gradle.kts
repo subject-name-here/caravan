@@ -14,8 +14,8 @@ android {
         applicationId = "com.unicorns.invisible.caravan"
         minSdk = 23
         targetSdk = 34
-        versionCode = 15
-        versionName = "0.99.15"
+        versionCode = 16
+        versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -46,7 +46,6 @@ android {
 }
 
 dependencies {
-
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
@@ -71,5 +70,4 @@ dependencies {
     implementation(libs.firebase.analytics)
 
     implementation(libs.cronet)
-
 }

@@ -95,7 +95,7 @@ fun Boolean.toPythonBool(): String {
 
 
 fun isRoomNumberIncorrect(roomNumber: String): Boolean {
-    return roomNumber.toIntOrNull() !in (25000..30000)
+    return roomNumber.toIntOrNull() !in (10..22229)
 }
 
 
