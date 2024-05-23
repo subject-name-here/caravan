@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -22,6 +23,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
@@ -52,16 +55,15 @@ fun DeckSelection(
     fun getModifier(cardBack: CardBack): Modifier {
         activity.save?.let { save ->
             if (save.availableDecks[cardBack] == true) {
-                return Modifier
-                    .clickable {
-                        setSelectedBack(cardBack)
-                        save.selectedDeck = cardBack
-                        save(activity, save)
-                    }
-                    .border(
-                        width = (if (getSelectedBack() == cardBack) 4 else 0).dp,
-                        color = getAccentColor(activity)
-                    )
+                return if (getSelectedBack() == cardBack) {
+                    Modifier.border(width = 4.dp, color = getAccentColor(activity))
+                } else {
+                    Modifier
+                }.clickable {
+                    setSelectedBack(cardBack)
+                    save.selectedDeck = cardBack
+                    save(activity, save)
+                }
             }
         }
         return Modifier.alpha(0.5f)
@@ -96,19 +98,19 @@ fun DeckSelection(
                 AsyncImage(
                     model = "file:///android_asset/caravan_cards_back/FNV_Caravan_card_back_-_standard.webp",
                     contentDescription = "",
-                    modifier = getModifier(CardBack.STANDARD)
+                    modifier = getModifier(CardBack.STANDARD).clip(RoundedCornerShape(6f))
                 )
                 Spacer(modifier = Modifier.width(12.dp))
                 AsyncImage(
                     model = "file:///android_asset/caravan_cards_back/FNV_Caravan_card_back_-_Tops.webp",
                     contentDescription = "",
-                    modifier = getModifier(CardBack.TOPS)
+                    modifier = getModifier(CardBack.TOPS).clip(RoundedCornerShape(6f))
                 )
                 Spacer(modifier = Modifier.width(12.dp))
                 AsyncImage(
                     model = "file:///android_asset/caravan_cards_back/FNV_Caravan_card_back_-_Lucky_38.webp",
                     contentDescription = "",
-                    modifier = getModifier(CardBack.LUCKY_38)
+                    modifier = getModifier(CardBack.LUCKY_38).clip(RoundedCornerShape(6f))
                 )
             }
             Spacer(modifier = Modifier.height(12.dp))
@@ -116,19 +118,19 @@ fun DeckSelection(
                 AsyncImage(
                     model = "file:///android_asset/caravan_cards_back/FNV_Caravan_card_back_-_Ultra-Luxe.webp",
                     contentDescription = "",
-                    modifier = getModifier(CardBack.ULTRA_LUXE)
+                    modifier = getModifier(CardBack.ULTRA_LUXE).clip(RoundedCornerShape(6f))
                 )
                 Spacer(modifier = Modifier.width(12.dp))
                 AsyncImage(
                     model = "file:///android_asset/caravan_cards_back/FNV_Caravan_card_back_-_Gomorrah.webp",
                     contentDescription = "",
-                    modifier = getModifier(CardBack.GOMORRAH)
+                    modifier = getModifier(CardBack.GOMORRAH).clip(RoundedCornerShape(6f))
                 )
                 Spacer(modifier = Modifier.width(12.dp))
                 AsyncImage(
                     model = "file:///android_asset/caravan_cards_back/FNV_Caravan_card_back_-_Sierra_Madre.webp",
                     contentDescription = "",
-                    modifier = getModifier(CardBack.SIERRA_MADRE)
+                    modifier = getModifier(CardBack.SIERRA_MADRE).clip(RoundedCornerShape(6f))
                 )
             }
             Spacer(modifier = Modifier.height(24.dp))

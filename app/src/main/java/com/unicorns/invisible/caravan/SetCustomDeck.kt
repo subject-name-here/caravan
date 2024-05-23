@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -24,6 +25,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -114,6 +116,8 @@ fun SetCustomDeck(
                                     )
                                     .padding(4.dp)
                                     .alpha(if (isSelected) 1f else 0.5f)
+                                    .background(if (isSelected) getAccentColor(activity) else Color.Transparent)
+                                    .clip(RoundedCornerShape(6f))
                             )
                         } else {
                             AsyncImage(
@@ -122,6 +126,7 @@ fun SetCustomDeck(
                                 Modifier
                                     .padding(4.dp)
                                     .alpha(0.33f)
+                                    .clip(RoundedCornerShape(6f))
                             )
                         }
                     }

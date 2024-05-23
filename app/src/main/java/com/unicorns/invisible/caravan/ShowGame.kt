@@ -20,6 +20,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -31,6 +32,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.paint
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -352,7 +354,7 @@ fun ColumnScope.RowOfCards(cards: List<Card>, offset: Int = 0, selectedCard: Int
                 Modifier.border(
                     width = 4.dp,
                     color = selectedCardColor
-                )
+                ).background(selectedCardColor)
             } else {
                 Modifier
             }
@@ -365,6 +367,7 @@ fun ColumnScope.RowOfCards(cards: List<Card>, offset: Int = 0, selectedCard: Int
                 model = "file:///android_asset/caravan_cards/${getCardName(it)}",
                 contentDescription = "",
                 modifier
+                    .clip(RoundedCornerShape(6f))
             )
         }
     }
@@ -377,6 +380,7 @@ fun ColumnScope.RowOfEnemyCards(cards: List<Card>) {
             AsyncImage(
                 model = "file:///android_asset/caravan_cards_back/${it.back.getCardBackAsset()}",
                 contentDescription = "",
+                modifier = Modifier.clip(RoundedCornerShape(6f))
             )
         }
     }
@@ -434,13 +438,13 @@ fun CaravanOnField(
                         contentDescription = "",
                         modifier = Modifier.clickable {
                             addSelectedCardOnPosition(caravan.cards.lastIndex - index)
-                        }
+                        }.clip(RoundedCornerShape(6f))
                     )
                     it.modifiersCopy().forEachIndexed { index, card ->
                         AsyncImage(
                             model = "file:///android_asset/caravan_cards/${getCardName(card)}",
                             contentDescription = "",
-                            modifier = Modifier.offset(x = -(10.dp) * (index + 1))
+                            modifier = Modifier.offset(x = -(10.dp) * (index + 1)).clip(RoundedCornerShape(6f))
                         )
                     }
                 }
@@ -520,13 +524,13 @@ fun CaravanOnField(
                         contentDescription = "",
                         modifier = Modifier.clickable {
                             addSelectedCardOnPosition(index)
-                        }
+                        }.clip(RoundedCornerShape(6f))
                     )
                     it.modifiersCopy().forEachIndexed { index, card ->
                         AsyncImage(
                             model = "file:///android_asset/caravan_cards/${getCardName(card)}",
                             contentDescription = "",
-                            modifier = Modifier.offset(x = (10.dp) * (index + 1))
+                            modifier = Modifier.offset(x = (10.dp) * (index + 1)).clip(RoundedCornerShape(6f))
                         )
                     }
                 }
@@ -593,7 +597,7 @@ fun ShowDeck(cResources: CResources, activity: MainActivity, isToBottom: Boolean
         AsyncImage(
             model = link,
             contentDescription = "",
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(if (!isToBottom) 12f else 6f)),
         )
     }
 }
