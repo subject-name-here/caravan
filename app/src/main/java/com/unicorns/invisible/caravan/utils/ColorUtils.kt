@@ -46,6 +46,14 @@ fun getGameTextColor(activity: MainActivity): Color {
     return if (activity.styleId == 0) Color(activity.getColor(R.color.colorAccent)) else Color(activity.getColor(R.color.colorText))
 }
 
+fun getGameTextGrayColor(activity: MainActivity): Color {
+    return if (activity.styleId == 0) Color(activity.getColor(R.color.colorAccentGrey)) else Color(activity.getColor(R.color.colorTextGrey))
+}
+
+fun getGameTextDarkColor(activity: MainActivity): Color {
+    return if (activity.styleId == 0) Color(activity.getColor(R.color.colorAccentDark)) else Color(activity.getColor(R.color.colorTextDark))
+}
+
 fun getGameTextBackgroundColor(activity: MainActivity): Color {
     return if (activity.styleId == 0) Color(activity.getColor(R.color.colorPrimaryHalfTransparent)) else Color(activity.getColor(R.color.colorLightBackHalfTransparent))
 }

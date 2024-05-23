@@ -401,9 +401,9 @@ fun StartGame(
             activity.save?.let { save ->
                 if (!isCustom) {
                     enemy.getRewardDeck()?.let { deck ->
-                        val cardBacks = deck.toList().map { card -> card.back }
+                        val cardBacks = deck.toList().map { card -> card.back }.toSet()
                         if (cardBacks.size == 1) {
-                            val cardBack = cardBacks[0]
+                            val cardBack = cardBacks.iterator().next()
                             if (save.availableDecks[cardBack] != true) {
                                 save.availableDecks[cardBack] = true
                                 message += activity.getString(
@@ -442,13 +442,13 @@ fun winCard(activity: MainActivity, save: Save, deck: CustomDeck, numberOfCards:
     val reward = deck.takeRandom(numberOfCards)
     var result = activity.getString(R.string.your_prize_cards_from)
     reward.forEach { card ->
-        val cardName = "${activity.getString(card.rank.nameId)} ${activity.getString(card.suit.nameId)}"
+        val cardName = "${activity.getString(card.rank.nameId)} ${activity.getString(card.suit.nameId)}, ${activity.getString(card.back.getDeckName())}"
         result += if (checkCard(card)) {
             save.availableCards.add(card)
             activity.getString(R.string.new_card, cardName)
         } else {
             activity.getString(R.string.old_card, cardName)
-        }
+        } + ""
     }
     return result
 }

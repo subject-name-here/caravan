@@ -39,6 +39,8 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -57,6 +59,8 @@ import com.unicorns.invisible.caravan.utils.getDividerColor
 import com.unicorns.invisible.caravan.utils.getGameBackgroundColor
 import com.unicorns.invisible.caravan.utils.getGameTextBackgroundColor
 import com.unicorns.invisible.caravan.utils.getGameTextColor
+import com.unicorns.invisible.caravan.utils.getGameTextDarkColor
+import com.unicorns.invisible.caravan.utils.getGameTextGrayColor
 import com.unicorns.invisible.caravan.utils.getKnobColor
 import com.unicorns.invisible.caravan.utils.getTextBackgroundColor
 import com.unicorns.invisible.caravan.utils.getTrackColor
@@ -206,6 +210,7 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
                     Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxSize()) {
                         Text(
                             text = stringResource(R.string.back_to_menu),
+                            fontFamily = FontFamily(Font(R.font.monofont)),
                             modifier = Modifier
                                 .clickable {
                                     goBack()
@@ -317,6 +322,7 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
                     Text(
                         text = stringResource(R.string.back_to_menu),
                         fontWeight = FontWeight.ExtraBold,
+                        fontFamily = FontFamily(Font(R.font.monofont)),
                         modifier = Modifier
                             .clickable {
                                 goBack()
@@ -442,12 +448,14 @@ fun CaravanOnField(
         }
         Text(text = caravan.getValue().toString(),
             textAlign = TextAlign.Center,
+            fontFamily = FontFamily(Font(R.font.monofont)),
+            fontWeight = FontWeight.ExtraBold,
             color = if (caravan.getValue() > 26)
                 Color.Red
             else if (caravan.getValue() in (21..26) && (getOpposingCaravanValue() !in (21..26) || caravan.getValue() > getOpposingCaravanValue()))
                 Color.Green
             else
-                getGameTextColor(activity),
+                getGameTextGrayColor(activity),
             modifier = Modifier
                 .fillMaxWidth()
         )
@@ -455,18 +463,21 @@ fun CaravanOnField(
         Column {
             Text(text = caravan.getValue().toString(),
                 textAlign = TextAlign.Center,
+                fontFamily = FontFamily(Font(R.font.monofont)),
+                fontWeight = FontWeight.ExtraBold,
                 color = if (caravan.getValue() > 26)
                     Color.Red
                 else if (caravan.getValue() in (21..26) && (getOpposingCaravanValue() !in (21..26) || caravan.getValue() > getOpposingCaravanValue()))
                     Color.Green
                 else
-                    getGameTextColor(activity),
+                    getGameTextGrayColor(activity),
                 modifier = Modifier.fillMaxWidth()
             )
             Text(text = stringResource(R.string.discard),
                 textAlign = TextAlign.Center,
                 color = getGameTextColor(activity),
                 fontWeight = FontWeight.ExtraBold,
+                fontFamily = FontFamily(Font(R.font.monofont)),
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable {
@@ -574,6 +585,8 @@ fun ShowDeck(cResources: CResources, activity: MainActivity, isToBottom: Boolean
         Text(
             text = cResources.deckSize.toString(),
             modifier = Modifier.fillMaxWidth(),
+            fontFamily = FontFamily(Font(R.font.monofont)),
+            fontWeight = FontWeight.ExtraBold,
             style = TextStyle(color = getGameTextColor(activity), fontSize = 16.sp, textAlign = TextAlign.Center)
         )
         val link = "file:///android_asset/caravan_cards_back/${if (isKnown) cResources.getDeckBack()?.getCardBackAsset() else null}"
@@ -693,7 +706,7 @@ fun Caravans(
                 }
                 else -> stringResource(R.string.your_turn)
             }
-            val modifier = if (getSelectedCardInt() != null || getSelectedCaravan() in (0..2)) {
+            val modifier = if (canDiscard() && (getSelectedCardInt() != null || getSelectedCaravan() in (0..2))) {
                 Modifier
                     .fillMaxWidth()
                     .clickable {
@@ -710,13 +723,14 @@ fun Caravans(
             } else {
                 Modifier
                     .fillMaxWidth()
-                    .padding(6.dp)
+                    .padding(6.dp).padding(bottom = 24.dp)
             }
             Text(
                 text = text,
                 textAlign = TextAlign.Center,
-                color = getGameTextColor(activity),
+                color = getGameTextDarkColor(activity),
                 fontWeight = FontWeight.ExtraBold,
+                fontFamily = FontFamily(Font(R.font.monofont)),
                 modifier = modifier
             )
         }

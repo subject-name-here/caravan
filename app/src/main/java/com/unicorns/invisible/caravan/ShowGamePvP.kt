@@ -406,6 +406,7 @@ fun ShowGamePvP(
                     Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxSize()) {
                         Text(
                             text = stringResource(R.string.back_to_menu),
+                            fontFamily = FontFamily(Font(R.font.monofont)),
                             modifier = Modifier
                                 .clickable {
                                     goBack()
@@ -532,6 +533,7 @@ fun ShowGamePvP(
                 Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxSize()) {
                     Text(
                         text = stringResource(R.string.back_to_menu),
+                        fontFamily = FontFamily(Font(R.font.monofont)),
                         modifier = Modifier
                             .clickable {
                                 goBack()
@@ -552,6 +554,7 @@ fun ShowGamePvP(
                     .padding(8.dp)
                     .align(Alignment.BottomEnd),
                 textAlign = TextAlign.Right,
+                fontFamily = FontFamily(Font(R.font.monofont)),
                 style = TextStyle(color = getGameTextColor(activity), background = getGameBackgroundColor(activity), fontSize = 18.sp)
             )
         }
