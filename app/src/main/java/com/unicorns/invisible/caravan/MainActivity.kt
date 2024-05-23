@@ -2,6 +2,7 @@ package com.unicorns.invisible.caravan
 
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.background
@@ -94,8 +95,12 @@ class MainActivity : AppCompatActivity() {
         styleId = save?.styleId ?: 1
 
         if (cronetEngine == null) {
-            val myBuilder = CronetEngine.Builder(this)
-            cronetEngine = myBuilder.build()
+            try {
+                val myBuilder = CronetEngine.Builder(this)
+                cronetEngine = myBuilder.build()
+            } catch (e: Exception) {
+                Toast.makeText(this, "Failed to init CronetEngine. Multiplayer is unavailable.", Toast.LENGTH_LONG).show()
+            }
         }
 
         setContent {
