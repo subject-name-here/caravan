@@ -53,12 +53,12 @@ data object EnemyBest : Enemy() {
             when (it.value.rank) {
                 Rank.JACK -> 30
                 Rank.KING, Rank.TEN, Rank.NINE, Rank.SEVEN, Rank.SIX -> 20
-                Rank.QUEEN, Rank.ACE -> 4
+                Rank.QUEEN -> 0
                 else -> it.value.rank.value
             }
         }.forEach { (cardIndex, card) ->
             if (card.rank == Rank.JACK) {
-                val caravan = game.playerCaravans.filter { it.getValue() in (16..26) }.maxByOrNull { it.getValue() }
+                val caravan = game.playerCaravans.filter { it.getValue() in (1..26) }.maxByOrNull { it.getValue() }
                 val cardToJack = caravan?.cards?.maxBy { it.getValue() }
                 if (cardToJack != null && cardToJack.canAddModifier(card)) {
                     cardToJack.addModifier(game.enemyCResources.removeFromHand(cardIndex))
@@ -79,7 +79,7 @@ data object EnemyBest : Enemy() {
                     .flatMap { c -> c.cards.map { it to c } }
                     .sortedByDescending { it.first.getValue() }
                     .forEach {
-                        if (it.second.getValue() + it.first.getValue() in (13..26)) {
+                        if (it.second.getValue() + it.first.getValue() in (12..26)) {
                             if (it.first.canAddModifier(card)) {
                                 it.first.addModifier(game.enemyCResources.removeFromHand(cardIndex))
                                 return
@@ -142,15 +142,6 @@ data object EnemyBest : Enemy() {
                             }
                         }
                     }
-                }
-            }
-
-            if (card.rank == Rank.JACK && overWeightCaravans.isNotEmpty()) {
-                val enemyCaravan = overWeightCaravans.random()
-                val cardToDelete = enemyCaravan.cards.maxBy { it.getValue() }
-                if (cardToDelete.canAddModifier(card)) {
-                    cardToDelete.addModifier(game.enemyCResources.removeFromHand(cardIndex))
-                    return
                 }
             }
         }

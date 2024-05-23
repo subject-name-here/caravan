@@ -31,21 +31,23 @@ data object EnemyBestest : Enemy() {
         hand.withIndex().shuffled().sortedByDescending {
             if (playersReadyCaravans.isNotEmpty()) {
                 when (it.value.rank) {
+                    Rank.JOKER -> 38
                     Rank.JACK, Rank.KING -> 30
                     Rank.TEN, Rank.NINE, Rank.SEVEN, Rank.SIX -> 20
-                    Rank.QUEEN, Rank.ACE -> 4
+                    Rank.QUEEN -> 4
                     else -> it.value.rank.value
                 }
             } else {
                 when (it.value.rank) {
-                    Rank.JACK, Rank.KING, Rank.TEN, Rank.NINE, Rank.SEVEN, Rank.SIX -> 20
+                    Rank.TEN, Rank.NINE, Rank.SEVEN, Rank.SIX -> 20
                     Rank.QUEEN, Rank.ACE -> 4
+                    Rank.JACK, Rank.KING, Rank.JOKER -> 2
                     else -> it.value.rank.value
                 }
             }
         }.forEach { (cardIndex, card) ->
             if (card.rank == Rank.JACK) {
-                val caravan = game.playerCaravans.filter { it.getValue() in (16..26) }.maxByOrNull { it.getValue() }
+                val caravan = game.playerCaravans.filter { it.getValue() in (10..26) }.maxByOrNull { it.getValue() }
                 val cardToJack = caravan?.cards?.maxBy { it.getValue() }
                 if (cardToJack != null && cardToJack.canAddModifier(card)) {
                     cardToJack.addModifier(game.enemyCResources.removeFromHand(cardIndex))
@@ -114,7 +116,7 @@ data object EnemyBestest : Enemy() {
             if (card.rank == Rank.JOKER) {
                 val cards = (game.playerCaravans + game.enemyCaravans).flatMap { it.cards }
                 val gameCopyString = json.encodeToString(game)
-                cards.forEach { potentialCardToJoker ->
+                val cardToJoker = cards.maxByOrNull { potentialCardToJoker ->
                     val gameCopy = json.decodeFromString<Game>(gameCopyString)
                     val cardInCopy = (gameCopy.playerCaravans + gameCopy.enemyCaravans).flatMap { it.cards }.find {
                         potentialCardToJoker.card.rank == it.card.rank && potentialCardToJoker.card.suit == it.card.suit
@@ -122,13 +124,12 @@ data object EnemyBestest : Enemy() {
                     if (cardInCopy?.canAddModifier(card) == true) {
                         val overWeightCaravansCopy = gameCopy.enemyCaravans.filter { it.getValue() > 26 }
                         val playersReadyCaravansCopy = gameCopy.playerCaravans.filter { it.getValue() in (21..26) }
-                        if (overWeightCaravansCopy.size < overWeightCaravans.size || playersReadyCaravansCopy.size < playersReadyCaravans.size) {
-                            if (potentialCardToJoker.canAddModifier(card)) {
-                                potentialCardToJoker.addModifier(game.enemyCResources.removeFromHand(cardIndex))
-                                return
-                            }
-                        }
+                        return@maxByOrNull overWeightCaravans.size - overWeightCaravansCopy.size + (playersReadyCaravans.size - playersReadyCaravansCopy.size)
                     }
+                    return@maxByOrNull 0
+                }
+                if (cardToJoker != null) {
+                    cardToJoker.addModifier(game.enemyCResources.removeFromHand(cardIndex))
                 }
             }
 
@@ -147,11 +148,11 @@ data object EnemyBestest : Enemy() {
             return
         }
 
-        game.enemyCResources.removeFromHand(hand.withIndex().minByOrNull {
+        game.enemyCResources.removeFromHand(hand.withIndex().minBy {
             when (it.value.rank) {
                 Rank.QUEEN -> 0
                 else -> it.value.rank.value
             }
-        }!!.index)
+        }.index)
     }
 }
