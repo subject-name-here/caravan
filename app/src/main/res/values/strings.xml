@@ -52,8 +52,10 @@
     <string name="pve_enemy_medium">Thug from Gomorrah</string>
     <string name="pve_enemy_queen">Swank from Tops</string>
     <string name="johnson_nash">Johnson Nash</string>
+    <string name="no_bark">No-bark Noonan</string>
     <string name="pve_enemy_38">Securitron P373</string>
     <string name="pve_enemy_cheater">Courier Six</string>
+    <string name="pve_enemy_best">Ulysses</string>
     <string name="pve_use_custom_deck">Use Custom Deck</string>
     <string name="pve_stats">Stats</string>
     <string name="pve_games_started">Games started: %1$s</string>
@@ -68,6 +70,7 @@
     <string name="custom_deck_is_too_small_message">Deck has less than 30 cards or less than 15 numbered cards!</string>
     <string name="you_win">You win!</string>
     <string name="result">Result</string>
+    <string name="result_ulysses">You\'ve got lucky this time, Courier.</string>
     <string name="you_lose">You lose!</string>
     <string name="you_have_unlocked_deck">\nYou have unlocked the %1$s!</string>
     <string name="you_must_unlock_deck">\nTo have a chance of winning cards from the %1$s, you must defeat the enemy w/o custom deck!</string>
@@ -194,6 +197,6 @@
     <string name="can_t_act">Can\'t act!</string>
     <string name="your_turn">Your turn!</string>
 
-    <string name="get_notifications_about_multiplayer">"Get notifications about multiplayer: "</string>
+    <string name="close">Close</string>
 
 </resources>

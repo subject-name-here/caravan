@@ -149,7 +149,7 @@ class MainActivity : AppCompatActivity() {
             if (showAlertDialog) {
                 AlertDialog(
                     onDismissRequest = { hideAlertDialog() },
-                    confirmButton = { Text(text = "OK", modifier = Modifier.clickable { hideAlertDialog() }) },
+                    confirmButton = { Text(text = stringResource(R.string.close), modifier = Modifier.clickable { hideAlertDialog() }) },
                     dismissButton = { if (goBack != null) {
                         Text(
                             text = stringResource(R.string.back_to_menu),
@@ -360,7 +360,12 @@ class MainActivity : AppCompatActivity() {
                 modifier = Modifier
                     .fillMaxWidth()
                     .fillMaxHeight(0.8f)
-                    .scrollbar(state, knobColor = getKnobColor(this@MainActivity), trackColor = getTrackColor(this@MainActivity), horizontal = false)
+                    .scrollbar(
+                        state,
+                        knobColor = getKnobColor(this@MainActivity),
+                        trackColor = getTrackColor(this@MainActivity),
+                        horizontal = false
+                    )
                     .padding(start = 16.dp),
                 state = state
             ) {
@@ -451,9 +456,12 @@ class MainActivity : AppCompatActivity() {
             ) {
                 Text(
                     text = getString(R.string.menu_settings),
-                    modifier = Modifier.clickable {
-                        showSettings()
-                    }.background(getTextBackgroundColor(this@MainActivity)).padding(8.dp),
+                    modifier = Modifier
+                        .clickable {
+                            showSettings()
+                        }
+                        .background(getTextBackgroundColor(this@MainActivity))
+                        .padding(8.dp),
                     style = TextStyle(
                         color = getTextColor(this@MainActivity),
                         fontSize = 24.sp,
@@ -463,9 +471,12 @@ class MainActivity : AppCompatActivity() {
 
                 Text(
                     text = getString(R.string.menu_about),
-                    modifier = Modifier.clickable {
-                        showAbout()
-                    }.background(getTextBackgroundColor(this@MainActivity)).padding(8.dp),
+                    modifier = Modifier
+                        .clickable {
+                            showAbout()
+                        }
+                        .background(getTextBackgroundColor(this@MainActivity))
+                        .padding(8.dp),
                     style = TextStyle(
                         color = getTextColor(this@MainActivity),
                         fontSize = 24.sp,

@@ -52,8 +52,10 @@
     <string name="pve_enemy_medium">Громила из Гоморры</string>
     <string name="pve_enemy_queen">Франт из Топс</string>
     <string name="johnson_nash">Джонсон Нэш</string>
+    <string name="no_bark">Нелай Нунан</string>
     <string name="pve_enemy_38">Секьюритрон P373</string>
     <string name="pve_enemy_cheater">Курьер Шесть</string>
+    <string name="pve_enemy_best">Улисс</string>
     <string name="pve_use_custom_deck">Использовать сборную колоду</string>
     <string name="pve_stats">Статистика</string>
     <string name="pve_games_started">Игр начато: %1$s</string>
@@ -68,6 +70,7 @@
     <string name="custom_deck_is_too_small_message">В колоде меньше 30 карт или меньше 15 младших карт!</string>
     <string name="you_win">Победа!</string>
     <string name="result">Результат</string>
+    <string name="result_ulysses">В этот раз тебе повезло, Курьер.</string>
     <string name="you_lose">Поражение!</string>
     <string name="you_have_unlocked_deck">\nРазблокирована %1$s!</string>
     <string name="you_must_unlock_deck">\nВам недоступны карты из ###%1$s###! Нужно сначала победить этого соперника без сборной колоды!</string>
@@ -196,6 +199,6 @@
     <string name="can_t_act">Нельзя ходить!</string>
     <string name="your_turn">Твой черёд!</string>
 
-    <string name="get_notifications_about_multiplayer">"Получать уведомления о мультиплеере: "</string>
+    <string name="close">Закрыть</string>
 
 </resources>

@@ -35,6 +35,8 @@ import com.unicorns.invisible.caravan.model.GameSaver
 import com.unicorns.invisible.caravan.model.enemy.Enemy
 import com.unicorns.invisible.caravan.model.enemy.Enemy38
 import com.unicorns.invisible.caravan.model.enemy.EnemyAnnoying
+import com.unicorns.invisible.caravan.model.enemy.EnemyBest
+import com.unicorns.invisible.caravan.model.enemy.EnemyBestest
 import com.unicorns.invisible.caravan.model.enemy.EnemyCheater
 import com.unicorns.invisible.caravan.model.enemy.EnemyEasy
 import com.unicorns.invisible.caravan.model.enemy.EnemyMedium
@@ -68,6 +70,8 @@ fun ShowPvE(
     var showGameCheater by rememberSaveable { mutableStateOf(false) }
     var showGameQueen by rememberSaveable { mutableStateOf(false) }
     var showGameNash by rememberSaveable { mutableStateOf(false) }
+    var showGameBest by rememberSaveable { mutableStateOf(false) }
+    var showGameUlysses by rememberSaveable { mutableStateOf(false) }
 
     var checkedCustomDeck by rememberSaveable { mutableStateOf(activity.save?.useCustomDeck ?: false) }
     fun getPlayerDeck(): CResources {
@@ -141,6 +145,28 @@ fun ShowPvE(
             showGameNash = false
         }
         return
+    } else if (showGameBest) {
+        StartGame(
+            activity = activity,
+            playerCResources = getPlayerDeck(),
+            isCustom = checkedCustomDeck,
+            enemy = EnemyBest,
+            showAlertDialog = showAlertDialog
+        ) {
+            showGameBest = false
+        }
+        return
+    } else if (showGameUlysses) {
+        StartGame(
+            activity = activity,
+            playerCResources = getPlayerDeck(),
+            isCustom = checkedCustomDeck,
+            enemy = EnemyBestest,
+            showAlertDialog = showAlertDialog
+        ) {
+            showGameUlysses = false
+        }
+        return
     }
 
     Column(
@@ -206,6 +232,15 @@ fun ShowPvE(
             )
             Spacer(modifier = Modifier.height(10.dp))
             Text(
+                text = stringResource(R.string.no_bark),
+                fontFamily = FontFamily(Font(R.font.monofont)),
+                style = TextStyle(color = getTextColor(activity), fontSize = 16.sp),
+                modifier = Modifier.clickable {
+                    showGameBest = true
+                }.background(getTextBackgroundColor(activity)).padding(4.dp)
+            )
+            Spacer(modifier = Modifier.height(10.dp))
+            Text(
                 text = stringResource(R.string.pve_enemy_38),
                 fontFamily = FontFamily(Font(R.font.monofont)),
                 style = TextStyle(color = getTextColor(activity), fontSize = 16.sp),
@@ -220,6 +255,19 @@ fun ShowPvE(
                 style = TextStyle(color = getTextColor(activity), fontSize = 16.sp),
                 modifier = Modifier.clickable {
                     showGameCheater = true
+                }.background(getTextBackgroundColor(activity)).padding(4.dp)
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                text = stringResource(R.string.pve_enemy_best),
+                fontFamily = FontFamily(Font(R.font.monofont)),
+                style = TextStyle(color = getTextColor(activity), fontSize = 16.sp),
+                modifier = Modifier.clickable {
+                    if (checkedCustomDeck) {
+                        showAlertDialog("It's an honest fight.", "You cannot use custom deck against this enemy.")
+                    } else {
+                        showGameUlysses = true
+                    }
                 }.background(getTextBackgroundColor(activity)).padding(4.dp)
             )
             Spacer(modifier = Modifier.height(16.dp))
@@ -423,7 +471,11 @@ fun StartGame(
                 save.wins++
                 save(activity, save)
             }
-            showAlertDialog(activity.getString(R.string.result), message)
+            if (game.enemy is EnemyBestest) {
+                showAlertDialog(activity.getString(R.string.result_ulysses), message)
+            } else {
+                showAlertDialog(activity.getString(R.string.result), message)
+            }
         }
         it.onLose = {
             activity.save?.let { save ->
@@ -434,7 +486,14 @@ fun StartGame(
         }
     }
     activity.goBack = goBack
-    ShowGame(activity, game) { goBack() }
+    ShowGame(activity, game) {
+        if (game.isOver()) {
+            goBack()
+            activity.goBack = null
+            return@ShowGame
+        }
+        showAlertDialog("Are you sure you want to quit?", "")
+    }
 }
 
 fun winCard(activity: MainActivity, save: Save, deck: CustomDeck, numberOfCards: Int): String {

@@ -580,10 +580,19 @@ fun StartPvP(
 
     if (game.isCorrupted && game.id == currentGameId) {
         goBack()
+        activity.goBack = null
         return
     }
 
     key(pvpUpdater) {
-        ShowGamePvP(activity, game, isCreator, roomNumber, showAlertDialog, { goBack() }, pvpUpdater)
+        ShowGamePvP(activity, game, isCreator, roomNumber, showAlertDialog,
+            lambda@ {
+                if (game.isOver()) {
+                    goBack()
+                    activity.goBack = null
+                    return@lambda
+                }
+                showAlertDialog("Are you sure you want to quit?", "")
+            }, pvpUpdater)
     }
 }
