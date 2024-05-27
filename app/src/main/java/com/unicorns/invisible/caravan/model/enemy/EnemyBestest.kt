@@ -130,6 +130,7 @@ data object EnemyBestest : Enemy() {
                 }
                 if (cardToJoker != null) {
                     cardToJoker.addModifier(game.enemyCResources.removeFromHand(cardIndex))
+                    return
                 }
             }
 

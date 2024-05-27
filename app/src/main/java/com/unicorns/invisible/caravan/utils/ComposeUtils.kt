@@ -151,7 +151,7 @@ fun Modifier.caravanScrollbar(
     trackColor: Color,
     padding: Dp = 0.dp,
     visibleAlpha: Float = 1f,
-    hiddenAlpha: Float = 0.4f,
+    hiddenAlpha: Float = 0.75f,
     fadeInAnimationDurationMs: Int = 150,
     fadeOutAnimationDurationMs: Int = 500,
     fadeOutAnimationDelayMs: Int = 1000,

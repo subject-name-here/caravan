@@ -14,7 +14,7 @@ import kotlinx.serialization.Serializable
 data object EnemyAnnoying : Enemy() {
     override fun createDeck(): CResources = CResources(getRewardDeck())
     override fun getRewardDeck(): CustomDeck = CustomDeck().apply {
-        listOf(CardBack.TOPS, CardBack.GOMORRAH, CardBack.ULTRA_LUXE, CardBack.STANDARD, CardBack.LUCKY_38).forEach { back ->
+        listOf(CardBack.TOPS, CardBack.GOMORRAH, CardBack.ULTRA_LUXE, CardBack.LUCKY_38).forEach { back ->
             Suit.entries.forEach { suit ->
                 add(Card(Rank.SIX, suit, back))
                 add(Card(Rank.JACK, suit, back))
