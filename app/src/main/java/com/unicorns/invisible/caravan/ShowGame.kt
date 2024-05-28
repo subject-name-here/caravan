@@ -33,15 +33,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.paint
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shadow
-import androidx.compose.ui.graphics.StrokeJoin
-import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
@@ -483,7 +477,7 @@ fun CaravanOnField(
                 modifier = Modifier.fillMaxWidth(),
                 fontSize = 16.sp,
             )
-            Text(text = stringResource(R.string.discard),
+            Text(text = if (isInitStage || caravan.getValue() == 0) "" else stringResource(R.string.discard),
                 textAlign = TextAlign.Center,
                 color = getGameTextColor(activity),
                 fontWeight = FontWeight.ExtraBold,
@@ -493,7 +487,7 @@ fun CaravanOnField(
                     .clickable {
                         selectCaravan()
                     }
-                    .background(getGameTextBackgroundColor(activity))
+                    .background(if (isInitStage || caravan.getValue() == 0) Color.Transparent else getGameTextBackgroundColor(activity))
                     .padding(4.dp)
             )
         }

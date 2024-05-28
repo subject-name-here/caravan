@@ -98,7 +98,7 @@ fun ShowAbout(activity: MainActivity, goBack: () -> Unit) {
             fontFamily = FontFamily(Font(R.font.monofont)),
             modifier = Modifier.clickable {
                 goBack()
-            }.background(getTextBackgroundColor(activity)),
+            }.background(getTextBackgroundColor(activity)).padding(8.dp),
             style = TextStyle(color = getTextColor(activity), fontSize = 24.sp)
         )
     }

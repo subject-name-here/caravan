@@ -33,14 +33,14 @@ import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.GameSaver
 import com.unicorns.invisible.caravan.model.enemy.Enemy
-import com.unicorns.invisible.caravan.model.enemy.EnemySecuritron38
-import com.unicorns.invisible.caravan.model.enemy.EnemyNash
-import com.unicorns.invisible.caravan.model.enemy.EnemyNoBark
 import com.unicorns.invisible.caravan.model.enemy.EnemyBestest
-import com.unicorns.invisible.caravan.model.enemy.EnemySix
 import com.unicorns.invisible.caravan.model.enemy.EnemyEasy
 import com.unicorns.invisible.caravan.model.enemy.EnemyHard
 import com.unicorns.invisible.caravan.model.enemy.EnemyMedium
+import com.unicorns.invisible.caravan.model.enemy.EnemyNash
+import com.unicorns.invisible.caravan.model.enemy.EnemyNoBark
+import com.unicorns.invisible.caravan.model.enemy.EnemySecuritron38
+import com.unicorns.invisible.caravan.model.enemy.EnemySix
 import com.unicorns.invisible.caravan.model.enemy.EnemySwank
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.Card
@@ -218,7 +218,9 @@ fun ShowPvE(
                 text = stringResource(R.string.pve_enemy_hard),
                 fontFamily = FontFamily(Font(R.font.monofont)),
                 style = TextStyle(color = getTextColor(activity), fontSize = 16.sp),
-
+                modifier = Modifier.clickable {
+                    showGameHard = true
+                }.background(getTextBackgroundColor(activity)).padding(4.dp)
             )
             Spacer(modifier = Modifier.height(10.dp))
             Text(
@@ -242,7 +244,13 @@ fun ShowPvE(
                     }
                 }.background(getTextBackgroundColor(activity)).padding(4.dp)
             )
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                text = stringResource(R.string.pve_select_enemy_2),
+                fontFamily = FontFamily(Font(R.font.monofont)),
+                style = TextStyle(color = getTextColor(activity), fontSize = 22.sp)
+            )
+            Spacer(modifier = Modifier.height(16.dp))
             Text(
                 text = stringResource(R.string.pve_enemy_queen),
                 fontFamily = FontFamily(Font(R.font.monofont)),
@@ -300,7 +308,7 @@ fun ShowPvE(
                 text = stringResource(R.string.pve_use_custom_deck),
                 fontFamily = FontFamily(Font(R.font.monofont)),
                 style = TextStyle(
-                    color = getTextColor(activity), fontSize = 12.sp
+                    color = getTextColor(activity), fontSize = 14.sp
                 )
             )
             CheckboxCustom(

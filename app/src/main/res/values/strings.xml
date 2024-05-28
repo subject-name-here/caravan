@@ -48,6 +48,7 @@
     <string name="custom_deck_non_faces">Number of non-face cards: %1$s\n(must be at least %2$s)</string>
 
     <string name="pve_select_enemy">Select the Opponent</string>
+    <string name="pve_select_enemy_2">Cheesy Ones</string>
     <string name="pve_enemy_easy">Ultra-Luxe visitor</string>
     <string name="pve_enemy_medium">Thug from Gomorrah</string>
     <string name="pve_enemy_hard">The Tops Promoter</string>

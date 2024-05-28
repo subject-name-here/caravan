@@ -48,6 +48,7 @@
     <string name="custom_deck_non_faces">Количество младших карт: %1$s\n(нужно хотя бы %2$s)</string>
 
     <string name="pve_select_enemy">Выбор соперника</string>
+    <string name="pve_select_enemy_2">Нечестные игроки</string>
     <string name="pve_enemy_easy">Посетитель Ультра-Люкс</string>
     <string name="pve_enemy_medium">Громила из Гоморры</string>
     <string name="pve_enemy_hard">Промоутер Топс</string>
