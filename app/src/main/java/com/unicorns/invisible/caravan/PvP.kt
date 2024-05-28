@@ -585,8 +585,7 @@ fun StartPvP(
     }
 
     key(pvpUpdater) {
-        ShowGamePvP(activity, game, isCreator, roomNumber, showAlertDialog
-        ) lambda@{
+        ShowGamePvP(activity, game, isCreator, roomNumber, showAlertDialog) lambda@{
             if (game.isOver()) {
                 goBack()
                 activity.goBack = null
