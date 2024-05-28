@@ -9,6 +9,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -323,15 +324,20 @@ class MainActivity : AppCompatActivity() {
                         },
                 ) {
                     val discord = buildAnnotatedString {
-                        pushStringAnnotation(tag = "discord", annotation = "https://discord.gg/xSTJpjvzJV")
-                        withStyle(style = SpanStyle(
-                            color = getTextColor(this@MainActivity),
-                            background = getBackgroundColor(this@MainActivity),
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight.Bold,
-                            fontFamily = FontFamily(Font(R.font.monofont)),
-                            textDecoration = TextDecoration.Underline
-                        )) {
+                        pushStringAnnotation(
+                            tag = "discord",
+                            annotation = "https://discord.gg/xSTJpjvzJV"
+                        )
+                        withStyle(
+                            style = SpanStyle(
+                                color = getTextColor(this@MainActivity),
+                                background = getBackgroundColor(this@MainActivity),
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.Bold,
+                                fontFamily = FontFamily(Font(R.font.monofont)),
+                                textDecoration = TextDecoration.Underline
+                            )
+                        ) {
                             append(stringResource(R.string.menu_discord))
                         }
                         pop()
@@ -348,14 +354,17 @@ class MainActivity : AppCompatActivity() {
                                 fontFamily = FontFamily(Font(R.font.monofont)),
                             ),
                         ) { offset ->
-                            discord.getStringAnnotations(tag = "discord", start = offset, end = offset).firstOrNull()?.let {
+                            discord.getStringAnnotations(
+                                tag = "discord",
+                                start = offset,
+                                end = offset
+                            ).firstOrNull()?.let {
                                 uriHandler.openUri(it.item)
                             }
                         }
                     }
                 }
             }
-
 
 
             val state = rememberLazyListState()
@@ -454,40 +463,89 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
-            Row(
-                Modifier.fillMaxSize(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceAround
-            ) {
-                Text(
-                    text = getString(R.string.menu_settings),
-                    modifier = Modifier
-                        .clickable {
-                            showSettings()
-                        }
-                        .background(getTextBackgroundColor(this@MainActivity))
-                        .padding(8.dp),
-                    style = TextStyle(
-                        color = getTextColor(this@MainActivity),
-                        fontSize = 24.sp,
-                        fontFamily = FontFamily(Font(R.font.monofont)),
-                    )
-                )
+            BoxWithConstraints(Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .height(48.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceAround
+                ) {
+                    Row(
+                        Modifier
+                            .fillMaxWidth(0.66f)
+                            .fillMaxHeight()
+                            .padding(start = 12.dp)
+                            .drawBehind {
+                                drawPath(
+                                    Path().apply {
+                                        moveTo(0f, 0f)
+                                        lineTo(0f, size.height * 3 / 4)
+                                        lineTo(size.width, size.height * 3 / 4)
+                                        lineTo(size.width, 0f)
+                                    },
+                                    color = getDividerColor(this@MainActivity),
+                                    style = Stroke(width = 8f),
+                                )
+                            }.align(Alignment.CenterVertically)
+                    ) {
 
-                Text(
-                    text = getString(R.string.menu_about),
-                    modifier = Modifier
-                        .clickable {
-                            showAbout()
+                        BoxWithConstraints(Modifier.fillMaxSize()) {
+                            Text(
+                                text = getString(R.string.menu_settings),
+                                modifier = Modifier
+                                    .padding(end = 8.dp)
+                                    .align(Alignment.TopEnd)
+                                    .clickable {
+                                        showSettings()
+                                    }
+                                    .background(getTextBackgroundColor(this@MainActivity))
+                                    .padding(4.dp),
+                                style = TextStyle(
+                                    color = getTextColor(this@MainActivity),
+                                    fontSize = 18.sp,
+                                    fontFamily = FontFamily(Font(R.font.monofont)),
+                                )
+                            )
                         }
-                        .background(getTextBackgroundColor(this@MainActivity))
-                        .padding(8.dp),
-                    style = TextStyle(
-                        color = getTextColor(this@MainActivity),
-                        fontSize = 24.sp,
-                        fontFamily = FontFamily(Font(R.font.monofont)),
-                    )
-                )
+                    }
+
+                    Row(
+                        Modifier
+                            .fillMaxSize()
+                            .padding(start = 12.dp, end = 12.dp)
+                            .drawBehind {
+                                drawPath(
+                                    Path().apply {
+                                        moveTo(0f, size.height * 3 / 4)
+                                        lineTo(size.width, size.height * 3 / 4)
+                                        lineTo(size.width, 0f)
+                                    },
+                                    color = getDividerColor(this@MainActivity),
+                                    style = Stroke(width = 8f),
+                                )
+                            },
+                    ) {
+                        BoxWithConstraints(Modifier.fillMaxSize()) {
+                            Text(
+                                text = getString(R.string.menu_about),
+                                modifier = Modifier
+                                    .align(Alignment.TopEnd)
+                                    .clickable {
+                                        showAbout()
+                                    }
+                                    .padding(end = 8.dp)
+                                    .background(getTextBackgroundColor(this@MainActivity))
+                                    .padding(4.dp),
+                                style = TextStyle(
+                                    color = getTextColor(this@MainActivity),
+                                    fontSize = 18.sp,
+                                    fontFamily = FontFamily(Font(R.font.monofont)),
+                                )
+                            )
+                        }
+                    }
+                }
             }
         }
     }

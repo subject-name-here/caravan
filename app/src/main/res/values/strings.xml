@@ -50,12 +50,16 @@
     <string name="pve_select_enemy">Select the Opponent</string>
     <string name="pve_enemy_easy">Ultra-Luxe visitor</string>
     <string name="pve_enemy_medium">Thug from Gomorrah</string>
+    <string name="pve_enemy_hard">The Tops Promoter</string>
+    <string name="pve_enemy_better">Victor</string>
+    <string name="pve_enemy_best">Ulysses</string>
+
     <string name="pve_enemy_queen">Swank from Tops</string>
     <string name="johnson_nash">Johnson Nash</string>
     <string name="no_bark">No-bark Noonan</string>
     <string name="pve_enemy_38">Securitron P373</string>
     <string name="pve_enemy_cheater">Courier Six</string>
-    <string name="pve_enemy_best">Ulysses</string>
+
     <string name="pve_use_custom_deck">Use Custom Deck</string>
     <string name="pve_stats">Stats</string>
     <string name="pve_games_started">Games started: %1$s</string>

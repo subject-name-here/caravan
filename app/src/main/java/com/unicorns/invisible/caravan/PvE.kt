@@ -33,14 +33,15 @@ import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.GameSaver
 import com.unicorns.invisible.caravan.model.enemy.Enemy
-import com.unicorns.invisible.caravan.model.enemy.Enemy38
-import com.unicorns.invisible.caravan.model.enemy.EnemyAnnoying
-import com.unicorns.invisible.caravan.model.enemy.EnemyBest
+import com.unicorns.invisible.caravan.model.enemy.EnemySecuritron38
+import com.unicorns.invisible.caravan.model.enemy.EnemyNash
+import com.unicorns.invisible.caravan.model.enemy.EnemyNoBark
 import com.unicorns.invisible.caravan.model.enemy.EnemyBestest
-import com.unicorns.invisible.caravan.model.enemy.EnemyCheater
+import com.unicorns.invisible.caravan.model.enemy.EnemySix
 import com.unicorns.invisible.caravan.model.enemy.EnemyEasy
+import com.unicorns.invisible.caravan.model.enemy.EnemyHard
 import com.unicorns.invisible.caravan.model.enemy.EnemyMedium
-import com.unicorns.invisible.caravan.model.enemy.EnemyQueen
+import com.unicorns.invisible.caravan.model.enemy.EnemySwank
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.Card
 import com.unicorns.invisible.caravan.model.primitives.CustomDeck
@@ -66,12 +67,13 @@ fun ShowPvE(
 ) {
     var showGameEasy by rememberSaveable { mutableStateOf(false) }
     var showGameMedium by rememberSaveable { mutableStateOf(false) }
+    var showGameHard by rememberSaveable { mutableStateOf(false) }
+
     var showGame38 by rememberSaveable { mutableStateOf(false) }
     var showGameCheater by rememberSaveable { mutableStateOf(false) }
     var showGameQueen by rememberSaveable { mutableStateOf(false) }
     var showGameNash by rememberSaveable { mutableStateOf(false) }
     var showGameBest by rememberSaveable { mutableStateOf(false) }
-    var showGameUlysses by rememberSaveable { mutableStateOf(false) }
 
     var checkedCustomDeck by rememberSaveable { mutableStateOf(activity.save?.useCustomDeck ?: false) }
     fun getPlayerDeck(): CResources {
@@ -105,19 +107,18 @@ fun ShowPvE(
             activity = activity,
             playerCResources = getPlayerDeck(),
             isCustom = checkedCustomDeck,
-            enemy = Enemy38,
+            enemy = EnemySecuritron38,
             showAlertDialog = showAlertDialog
         ) {
             showGame38 = false
         }
         return
-    }
-    else if (showGameCheater) {
+    } else if (showGameCheater) {
         StartGame(
             activity = activity,
             playerCResources = getPlayerDeck(),
             isCustom = checkedCustomDeck,
-            enemy = EnemyCheater,
+            enemy = EnemySix,
             showAlertDialog = showAlertDialog
         ) {
             showGameCheater = false
@@ -128,7 +129,7 @@ fun ShowPvE(
             activity = activity,
             playerCResources = getPlayerDeck(),
             isCustom = checkedCustomDeck,
-            enemy = EnemyQueen,
+            enemy = EnemySwank,
             showAlertDialog = showAlertDialog
         ) {
             showGameQueen = false
@@ -139,7 +140,7 @@ fun ShowPvE(
             activity = activity,
             playerCResources = getPlayerDeck(),
             isCustom = checkedCustomDeck,
-            enemy = EnemyAnnoying,
+            enemy = EnemyNash,
             showAlertDialog = showAlertDialog
         ) {
             showGameNash = false
@@ -150,21 +151,21 @@ fun ShowPvE(
             activity = activity,
             playerCResources = getPlayerDeck(),
             isCustom = checkedCustomDeck,
-            enemy = EnemyBest,
+            enemy = EnemyNoBark,
             showAlertDialog = showAlertDialog
         ) {
             showGameBest = false
         }
         return
-    } else if (showGameUlysses) {
+    } else if (showGameHard) {
         StartGame(
             activity = activity,
             playerCResources = getPlayerDeck(),
             isCustom = checkedCustomDeck,
-            enemy = EnemyBestest,
+            enemy = EnemyHard,
             showAlertDialog = showAlertDialog
         ) {
-            showGameUlysses = false
+            showGameHard = false
         }
         return
     }
@@ -214,11 +215,49 @@ fun ShowPvE(
             )
             Spacer(modifier = Modifier.height(10.dp))
             Text(
+                text = stringResource(R.string.pve_enemy_hard),
+                fontFamily = FontFamily(Font(R.font.monofont)),
+                style = TextStyle(color = getTextColor(activity), fontSize = 16.sp),
+
+            )
+            Spacer(modifier = Modifier.height(10.dp))
+            Text(
+                text = stringResource(R.string.pve_enemy_better),
+                fontFamily = FontFamily(Font(R.font.monofont)),
+                style = TextStyle(color = getTextColor(activity), fontSize = 16.sp),
+                modifier = Modifier.clickable {
+                    showAlertDialog("New enemy", "[CLOSED]")
+                }.background(getTextBackgroundColor(activity)).padding(4.dp)
+            )
+            Spacer(modifier = Modifier.height(10.dp))
+            Text(
+                text = stringResource(R.string.pve_enemy_best),
+                fontFamily = FontFamily(Font(R.font.monofont)),
+                style = TextStyle(color = getTextColor(activity), fontSize = 16.sp),
+                modifier = Modifier.clickable {
+                    if (checkedCustomDeck) {
+                        showAlertDialog("It's an honest fight.", "You cannot use custom deck against this enemy.")
+                    } else {
+                        showAlertDialog("New enemy", "[CLOSED]")
+                    }
+                }.background(getTextBackgroundColor(activity)).padding(4.dp)
+            )
+            Spacer(modifier = Modifier.height(24.dp))
+            Text(
                 text = stringResource(R.string.pve_enemy_queen),
                 fontFamily = FontFamily(Font(R.font.monofont)),
                 style = TextStyle(color = getTextColor(activity), fontSize = 16.sp),
                 modifier = Modifier.clickable {
                     showGameQueen = true
+                }.background(getTextBackgroundColor(activity)).padding(4.dp)
+            )
+            Spacer(modifier = Modifier.height(10.dp))
+            Text(
+                text = stringResource(R.string.pve_enemy_38),
+                fontFamily = FontFamily(Font(R.font.monofont)),
+                style = TextStyle(color = getTextColor(activity), fontSize = 16.sp),
+                modifier = Modifier.clickable {
+                    showGame38 = true
                 }.background(getTextBackgroundColor(activity)).padding(4.dp)
             )
             Spacer(modifier = Modifier.height(10.dp))
@@ -241,33 +280,11 @@ fun ShowPvE(
             )
             Spacer(modifier = Modifier.height(10.dp))
             Text(
-                text = stringResource(R.string.pve_enemy_38),
-                fontFamily = FontFamily(Font(R.font.monofont)),
-                style = TextStyle(color = getTextColor(activity), fontSize = 16.sp),
-                modifier = Modifier.clickable {
-                    showGame38 = true
-                }.background(getTextBackgroundColor(activity)).padding(4.dp)
-            )
-            Spacer(modifier = Modifier.height(10.dp))
-            Text(
                 text = stringResource(R.string.pve_enemy_cheater),
                 fontFamily = FontFamily(Font(R.font.monofont)),
                 style = TextStyle(color = getTextColor(activity), fontSize = 16.sp),
                 modifier = Modifier.clickable {
                     showGameCheater = true
-                }.background(getTextBackgroundColor(activity)).padding(4.dp)
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-            Text(
-                text = stringResource(R.string.pve_enemy_best),
-                fontFamily = FontFamily(Font(R.font.monofont)),
-                style = TextStyle(color = getTextColor(activity), fontSize = 16.sp),
-                modifier = Modifier.clickable {
-                    if (checkedCustomDeck) {
-                        showAlertDialog("It's an honest fight.", "You cannot use custom deck against this enemy.")
-                    } else {
-                        showGameUlysses = true
-                    }
                 }.background(getTextBackgroundColor(activity)).padding(4.dp)
             )
             Spacer(modifier = Modifier.height(16.dp))

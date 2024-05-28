@@ -150,7 +150,6 @@ fun ShowGamePvP(
     roomNumber: Int,
     showAlert: (String, String) -> Unit,
     goBack: () -> Unit,
-    pvpUpdater: Int,
 ) {
     var selectedCard by remember { mutableStateOf<Int?>(null) }
     val selectedCardColor = getAccentColor(activity)
@@ -192,20 +191,6 @@ fun ShowGamePvP(
         enemyHandKey = !enemyHandKey
     }
 
-    var pingingKey by rememberSaveable { mutableStateOf(false) }
-    LaunchedEffect(key1 = pingingKey, key2 = pvpUpdater) {
-        if (pvpUpdater == 2 && !game.isPlayerTurn && !game.isOver() && !game.isCorrupted && isActive) {
-            delay(760L)
-            pingForMove(
-                game, roomNumber, isCreator,
-                { enemyChosenSymbol = it },
-                ::corruptGame,
-                { updateCaravans(); updateEnemyHand() },
-                { if (it) { timeOnTimerTrigger = !timeOnTimerTrigger } }
-            )
-        }
-    }
-
     fun onCardClicked(index: Int) {
         if (game.isOver()) {
             return
@@ -237,7 +222,15 @@ fun ShowGamePvP(
         ), chosenSymbol,
             { updateCaravans(); updateEnemyHand() },
             ::corruptGame,
-            { pingingKey = !pingingKey }
+            {
+                pingForMove(
+                    game, roomNumber, isCreator,
+                    { enemyChosenSymbol = it },
+                    ::corruptGame,
+                    { updateCaravans(); updateEnemyHand() },
+                    { if (it) { timeOnTimerTrigger = !timeOnTimerTrigger } }
+                )
+            }
         )
     }
     fun dropCaravan() {
@@ -253,7 +246,15 @@ fun ShowGamePvP(
         ), chosenSymbol,
             { updateCaravans(); updateEnemyHand() },
             ::corruptGame,
-            { pingingKey = !pingingKey }
+            {
+                pingForMove(
+                    game, roomNumber, isCreator,
+                    { enemyChosenSymbol = it },
+                    ::corruptGame,
+                    { updateCaravans(); updateEnemyHand() },
+                    { if (it) { timeOnTimerTrigger = !timeOnTimerTrigger } }
+                )
+            }
         )
     }
 
@@ -270,7 +271,15 @@ fun ShowGamePvP(
                 ), chosenSymbol,
                     { updateCaravans(); updateEnemyHand() },
                     ::corruptGame,
-                    { pingingKey = !pingingKey }
+                    {
+                        pingForMove(
+                            game, roomNumber, isCreator,
+                            { enemyChosenSymbol = it },
+                            ::corruptGame,
+                            { updateCaravans(); updateEnemyHand() },
+                            { if (it) { timeOnTimerTrigger = !timeOnTimerTrigger } }
+                        )
+                    }
                 )
             } else {
                 afterPlayerMove(game, roomNumber, isCreator = isCreator, MoveResponse(
@@ -281,7 +290,15 @@ fun ShowGamePvP(
                 ), chosenSymbol,
                     { updateCaravans(); updateEnemyHand() },
                     ::corruptGame,
-                    { pingingKey = !pingingKey }
+                    {
+                        pingForMove(
+                            game, roomNumber, isCreator,
+                            { enemyChosenSymbol = it },
+                            ::corruptGame,
+                            { updateCaravans(); updateEnemyHand() },
+                            { if (it) { timeOnTimerTrigger = !timeOnTimerTrigger } }
+                        )
+                    }
                 )
             }
         }
@@ -341,7 +358,7 @@ fun ShowGamePvP(
             .fillMaxSize()
             .background(getGameBackgroundColor(activity))
             .paint(
-                painterResource(id = R.drawable.game_back2),
+                painterResource(id = R.drawable.game_back3),
                 contentScale = ContentScale.Crop
             )
     ) {

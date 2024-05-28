@@ -50,12 +50,16 @@
     <string name="pve_select_enemy">Выбор соперника</string>
     <string name="pve_enemy_easy">Посетитель Ультра-Люкс</string>
     <string name="pve_enemy_medium">Громила из Гоморры</string>
+    <string name="pve_enemy_hard">Промоутер Топс</string>
+    <string name="pve_enemy_better">Виктор</string>
+    <string name="pve_enemy_best">Улисс</string>
+
     <string name="pve_enemy_queen">Франт из Топс</string>
     <string name="johnson_nash">Джонсон Нэш</string>
     <string name="no_bark">Нелай Нунан</string>
     <string name="pve_enemy_38">Секьюритрон P373</string>
     <string name="pve_enemy_cheater">Курьер Шесть</string>
-    <string name="pve_enemy_best">Улисс</string>
+
     <string name="pve_use_custom_deck">Использовать сборную колоду</string>
     <string name="pve_stats">Статистика</string>
     <string name="pve_games_started">Игр начато: %1$s</string>

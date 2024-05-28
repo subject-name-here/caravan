@@ -26,6 +26,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.unicorns.invisible.caravan.utils.getBackgroundColor
+import com.unicorns.invisible.caravan.utils.getTextBackgroundColor
 import com.unicorns.invisible.caravan.utils.getTextColor
 
 
@@ -97,7 +98,7 @@ fun ShowAbout(activity: MainActivity, goBack: () -> Unit) {
             fontFamily = FontFamily(Font(R.font.monofont)),
             modifier = Modifier.clickable {
                 goBack()
-            },
+            }.background(getTextBackgroundColor(activity)),
             style = TextStyle(color = getTextColor(activity), fontSize = 24.sp)
         )
     }

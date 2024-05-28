@@ -35,6 +35,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.paint
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shadow
+import androidx.compose.ui.graphics.StrokeJoin
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.res.colorResource
@@ -61,8 +64,6 @@ import com.unicorns.invisible.caravan.utils.getDividerColor
 import com.unicorns.invisible.caravan.utils.getGameBackgroundColor
 import com.unicorns.invisible.caravan.utils.getGameTextBackgroundColor
 import com.unicorns.invisible.caravan.utils.getGameTextColor
-import com.unicorns.invisible.caravan.utils.getGameTextDarkColor
-import com.unicorns.invisible.caravan.utils.getGameTextGrayColor
 import com.unicorns.invisible.caravan.utils.getKnobColor
 import com.unicorns.invisible.caravan.utils.getTextBackgroundColor
 import com.unicorns.invisible.caravan.utils.getTrackColor
@@ -165,10 +166,10 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
         modifier = Modifier
             .fillMaxSize()
             .background(getGameBackgroundColor(activity))
-            .paint(
-                painterResource(id = R.drawable.game_back2),
-                contentScale = ContentScale.Crop
-            )
+//            .paint(
+//                painterResource(id = R.drawable.game_back3),
+//                contentScale = ContentScale.Crop
+//            )
     ) {
         if (maxWidth > maxHeight) {
             Row(Modifier.fillMaxSize()) {
@@ -351,10 +352,12 @@ fun ColumnScope.RowOfCards(cards: List<Card>, offset: Int = 0, selectedCard: Int
     ) {
         cards.forEachIndexed { index, it ->
             val modifier = if (index == (selectedCard ?: -1) - offset) {
-                Modifier.border(
-                    width = 4.dp,
-                    color = selectedCardColor
-                ).background(selectedCardColor)
+                Modifier
+                    .border(
+                        width = 4.dp,
+                        color = selectedCardColor
+                    )
+                    .background(selectedCardColor)
             } else {
                 Modifier
             }
@@ -398,6 +401,12 @@ fun CaravanOnField(
     selectCaravan: () -> Unit = {},
     addSelectedCardOnPosition: (Int) -> Unit,
 ) {
+    val (textColor, text) = if (caravan.getValue() > 26)
+        Color.Red to caravan.getValue().toString() + " ☓"
+    else if (caravan.getValue() in (21..26) && (getOpposingCaravanValue() !in (21..26) || caravan.getValue() > getOpposingCaravanValue()))
+        Color.Green to caravan.getValue().toString() + " ✔"
+    else
+        getAccentColor(activity) to caravan.getValue().toString()
     if (isEnemy) {
         LazyColumn(
             state = state,
@@ -436,46 +445,43 @@ fun CaravanOnField(
                     AsyncImage(
                         model = "file:///android_asset/caravan_cards/${getCardName(it.card)}",
                         contentDescription = "",
-                        modifier = Modifier.clickable {
-                            addSelectedCardOnPosition(caravan.cards.lastIndex - index)
-                        }.clip(RoundedCornerShape(6f))
+                        modifier = Modifier
+                            .clickable {
+                                addSelectedCardOnPosition(caravan.cards.lastIndex - index)
+                            }
+                            .clip(RoundedCornerShape(6f))
                     )
                     it.modifiersCopy().forEachIndexed { index, card ->
                         AsyncImage(
                             model = "file:///android_asset/caravan_cards/${getCardName(card)}",
                             contentDescription = "",
-                            modifier = Modifier.offset(x = -(10.dp) * (index + 1)).clip(RoundedCornerShape(6f))
+                            modifier = Modifier
+                                .offset(x = -(10.dp) * (index + 1))
+                                .clip(RoundedCornerShape(6f))
                         )
                     }
                 }
             }
         }
-        Text(text = caravan.getValue().toString(),
+        Text(
+            text = text,
             textAlign = TextAlign.Center,
-            fontFamily = FontFamily(Font(R.font.monofont)),
+            color = textColor,
             fontWeight = FontWeight.ExtraBold,
-            color = if (caravan.getValue() > 26)
-                Color.Red
-            else if (caravan.getValue() in (21..26) && (getOpposingCaravanValue() !in (21..26) || caravan.getValue() > getOpposingCaravanValue()))
-                Color.Green
-            else
-                getGameTextGrayColor(activity),
-            modifier = Modifier
-                .fillMaxWidth()
+            fontFamily = FontFamily(Font(R.font.monofont)),
+            modifier = Modifier.fillMaxWidth(),
+            fontSize = 16.sp,
         )
     } else {
         Column {
-            Text(text = caravan.getValue().toString(),
+            Text(
+                text = text,
                 textAlign = TextAlign.Center,
-                fontFamily = FontFamily(Font(R.font.monofont)),
+                color = textColor,
                 fontWeight = FontWeight.ExtraBold,
-                color = if (caravan.getValue() > 26)
-                    Color.Red
-                else if (caravan.getValue() in (21..26) && (getOpposingCaravanValue() !in (21..26) || caravan.getValue() > getOpposingCaravanValue()))
-                    Color.Green
-                else
-                    getGameTextGrayColor(activity),
-                modifier = Modifier.fillMaxWidth()
+                fontFamily = FontFamily(Font(R.font.monofont)),
+                modifier = Modifier.fillMaxWidth(),
+                fontSize = 16.sp,
             )
             Text(text = stringResource(R.string.discard),
                 textAlign = TextAlign.Center,
@@ -522,15 +528,19 @@ fun CaravanOnField(
                     AsyncImage(
                         model = "file:///android_asset/caravan_cards/${getCardName(it.card)}",
                         contentDescription = "",
-                        modifier = Modifier.clickable {
-                            addSelectedCardOnPosition(index)
-                        }.clip(RoundedCornerShape(6f))
+                        modifier = Modifier
+                            .clickable {
+                                addSelectedCardOnPosition(index)
+                            }
+                            .clip(RoundedCornerShape(6f))
                     )
                     it.modifiersCopy().forEachIndexed { index, card ->
                         AsyncImage(
                             model = "file:///android_asset/caravan_cards/${getCardName(card)}",
                             contentDescription = "",
-                            modifier = Modifier.offset(x = (10.dp) * (index + 1)).clip(RoundedCornerShape(6f))
+                            modifier = Modifier
+                                .offset(x = (10.dp) * (index + 1))
+                                .clip(RoundedCornerShape(6f))
                         )
                     }
                 }
@@ -588,16 +598,20 @@ fun ShowDeck(cResources: CResources, activity: MainActivity, isToBottom: Boolean
     ) {
         Text(
             text = cResources.deckSize.toString(),
-            modifier = Modifier.fillMaxWidth(),
-            fontFamily = FontFamily(Font(R.font.monofont)),
+            textAlign = TextAlign.Center,
+            color = getAccentColor(activity),
             fontWeight = FontWeight.ExtraBold,
-            style = TextStyle(color = getGameTextColor(activity), fontSize = 16.sp, textAlign = TextAlign.Center)
+            fontFamily = FontFamily(Font(R.font.monofont)),
+            modifier = Modifier.fillMaxWidth(),
+            fontSize = 16.sp,
         )
         val link = "file:///android_asset/caravan_cards_back/${if (isKnown) cResources.getDeckBack()?.getCardBackAsset() else null}"
         AsyncImage(
             model = link,
             contentDescription = "",
-            modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(if (!isToBottom) 12f else 6f)),
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(if (!isToBottom) 12f else 6f)),
         )
     }
 }
@@ -727,15 +741,17 @@ fun Caravans(
             } else {
                 Modifier
                     .fillMaxWidth()
-                    .padding(6.dp).padding(bottom = 24.dp)
+                    .padding(6.dp)
+                    .padding(bottom = 24.dp)
             }
             Text(
                 text = text,
                 textAlign = TextAlign.Center,
-                color = getGameTextDarkColor(activity),
+                color = getAccentColor(activity),
                 fontWeight = FontWeight.ExtraBold,
                 fontFamily = FontFamily(Font(R.font.monofont)),
-                modifier = modifier
+                modifier = modifier,
+                fontSize = 16.sp,
             )
         }
     }
