@@ -41,6 +41,6 @@ fun decodeMove(s: String): MoveResponse {
         newCardInHandSuit = fields.getInt("new_card_suit_in_hand_code"),
         newCardInHandRank = fields.getInt("new_card_rank_in_hand_code"),
         symbolNumber = fields.optInt("symbol", 0),
-        isNewCardAlt = fields.optBoolean("is_alt", false),
+        isNewCardAlt = fields.optString("is_alt", "False") == "True",
     )
 }
