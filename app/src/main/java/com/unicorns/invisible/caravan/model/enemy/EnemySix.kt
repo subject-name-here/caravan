@@ -89,7 +89,7 @@ data object EnemySix : Enemy() {
                 game.playerCaravans.forEach { playerCaravan ->
                     if (playerCaravan.getValue() in (13..26)) {
                         val cardToKing = playerCaravan.cards
-                            .filter { it.getValue() + playerCaravan.getValue() > 26 }
+                            .filter { it.getValue() + playerCaravan.getValue() > 26 && playerCaravan.getValue() - it.getValue() < 21 }
                             .minByOrNull { it.getValue() }
                         if (cardToKing != null && cardToKing.canAddModifier(card)) {
                             cardToKing.addModifier(game.enemyCResources.removeFromHand(cardIndex))

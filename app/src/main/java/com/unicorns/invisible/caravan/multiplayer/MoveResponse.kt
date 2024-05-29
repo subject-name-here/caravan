@@ -1,6 +1,5 @@
 package com.unicorns.invisible.caravan.multiplayer
 
-import android.util.Log
 import kotlinx.serialization.Serializable
 import org.json.JSONObject
 

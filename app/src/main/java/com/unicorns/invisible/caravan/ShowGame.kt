@@ -185,7 +185,7 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
                                 RowOfEnemyCards(game.enemyCResources.hand.take(4))
                                 RowOfEnemyCards(game.enemyCResources.hand.takeLast((handSize - 4).coerceAtLeast(0)))
                             }
-                            ShowDeck(game.enemyCResources, activity, isAlt = game.enemy.isAlt())
+                            ShowDeck(game.enemyCResources, activity)
                         }
                     }
                     Row(verticalAlignment = Alignment.Bottom, modifier = Modifier
@@ -268,7 +268,7 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
                             RowOfEnemyCards(game.enemyCResources.hand.take(4))
                             RowOfEnemyCards(game.enemyCResources.hand.takeLast((handSize - 4).coerceAtLeast(0)))
                         }
-                        ShowDeck(game.enemyCResources, activity, isAlt = game.enemy.isAlt())
+                        ShowDeck(game.enemyCResources, activity)
                     }
                 }
                 key(caravansKey) {

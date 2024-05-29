@@ -2,7 +2,6 @@ package com.unicorns.invisible.caravan.model
 
 import com.unicorns.invisible.caravan.MainActivity
 import com.unicorns.invisible.caravan.R
-import com.unicorns.invisible.caravan.save.Save
 
 enum class CardBack {
     STANDARD,
