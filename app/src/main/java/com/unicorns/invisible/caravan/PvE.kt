@@ -45,6 +45,7 @@ import com.unicorns.invisible.caravan.model.enemy.EnemySwank
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.Card
 import com.unicorns.invisible.caravan.model.primitives.CustomDeck
+import com.unicorns.invisible.caravan.model.primitives.Rank
 import com.unicorns.invisible.caravan.save.Save
 import com.unicorns.invisible.caravan.save.save
 import com.unicorns.invisible.caravan.utils.CheckboxCustom
@@ -534,19 +535,25 @@ fun winCard(activity: MainActivity, save: Save, back: CardBack, numberOfCards: I
     val reward = deck.takeRandom(if (isCustom) numberOfCards else 7).sortedByDescending { if (checkCard(it)) 1 else 0 }.take(numberOfCards)
     var result = activity.getString(R.string.your_prize_cards_from)
     reward.forEach { card ->
-        val cardName = "${activity.getString(card.rank.nameId)} ${activity.getString(card.suit.nameId)}, ${
-            if (card.back == CardBack.STANDARD && isAlt) {
-                activity.getString(card.back.getSierraMadreDeckName())
-            } else {
-                activity.getString(card.back.getDeckName())
-            }
-        }"
+        val deckName = if (card.back == CardBack.STANDARD && isAlt) {
+            activity.getString(card.back.getSierraMadreDeckName())
+        } else {
+            activity.getString(card.back.getDeckName())
+        }
+        val cardName = if (card.rank == Rank.JOKER) {
+            "${activity.getString(card.rank.nameId)} ${card.suit.ordinal + 1}, $deckName"
+        } else {
+            "${activity.getString(card.rank.nameId)} ${activity.getString(card.suit.nameId)}, $deckName"
+        }
         result += if (checkCard(card)) {
-            if (isAlt && card.back != CardBack.STANDARD) {
+            if (isAlt) {
                 save.availableCardsAlt.add(card)
-                activity.getString(R.string.new_card_alt, cardName)
             } else {
                 save.availableCards.add(card)
+            }
+            if (isAlt && card.back != CardBack.STANDARD) {
+                activity.getString(R.string.new_card_alt, cardName)
+            } else {
                 activity.getString(R.string.new_card, cardName)
             }
         } else {

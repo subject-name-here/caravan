@@ -43,9 +43,9 @@
     <string name="menu_back">Back to menu</string>
 
     <string name="deck_select">Select the Deck</string>
-    <string name="deck_select_about">Win new decks by defeating enemies! (ALT deck is opened by fighting cheesy opponents.)</string>
+    <string name="deck_select_about">Win new decks by defeating enemies! (ALT deck is opened by fighting cheesy opponents.)\nSwitch between ALT and STD card backs in \"Set Custom Deck\" menu.</string>
     <string name="deck_custom">Set Custom Deck</string>
-    <string name="deck_custom_about">Win cards for custom deck by fighting opponents:\n1 ALT card when using custom deck,\n3 cards when playing balanced game.\nThe chance of winning _new_ card, however, is not 100%.</string>
+    <string name="deck_custom_about">Win cards for custom deck by fighting opponents:\n1 ALT card when playing against cheesy enemies,\n3 cards when playing against usual opponents.\nThe chance of winning _new_ card, however, is not 100%; custom deck gives lower chance.</string>
 
     <string name="custom_deck_size">Deck size: %1$s\n(must be at least %2$s)</string>
     <string name="custom_deck_non_faces">Number of non-face cards: %1$s\n(must be at least %2$s)</string>

@@ -16,7 +16,7 @@ enum class Rank(val value: Int, val nameId: Int) {
     JACK(11, R.string.jack_name),
     QUEEN(12, R.string.queen_name),
     KING(13, R.string.king_name),
-    JOKER(14, R.string.ace_name);
+    JOKER(14, R.string.joker_name);
 
     fun isFace(): Boolean {
         return this.value > 10

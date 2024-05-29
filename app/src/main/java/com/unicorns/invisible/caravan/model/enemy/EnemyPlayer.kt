@@ -90,6 +90,7 @@ class EnemyPlayer(
                 Rank.entries[move.newCardInHandRank],
                 Suit.entries[move.newCardInHandSuit],
                 CardBack.entries[move.newCardInHandBack],
+                isAlt = move.isNewCardAlt
             ))
         }
     }
