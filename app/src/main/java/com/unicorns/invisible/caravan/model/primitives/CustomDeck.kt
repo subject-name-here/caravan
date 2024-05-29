@@ -8,14 +8,14 @@ import kotlinx.serialization.Serializable
 class CustomDeck() {
     private val cards = ArrayList<Card>()
 
-    constructor(back: CardBack) : this() {
+    constructor(back: CardBack, isAlt: Boolean) : this() {
         Rank.entries.forEach { rank ->
             if (rank == Rank.JOKER) {
-                cards.add(Card(rank, Suit.HEARTS, back))
-                cards.add(Card(rank, Suit.CLUBS, back))
+                cards.add(Card(rank, Suit.HEARTS, back, isAlt))
+                cards.add(Card(rank, Suit.CLUBS, back, isAlt))
             } else {
                 Suit.entries.forEach { suit ->
-                    cards.add(Card(rank, suit, back))
+                    cards.add(Card(rank, suit, back, isAlt))
                 }
             }
         }
@@ -36,7 +36,7 @@ class CustomDeck() {
     fun removeAll(elements: Collection<Card>) = elements.forEach { remove(it) }
 
     operator fun contains(card: Card): Boolean {
-        return cards.any { it.suit == card.suit && it.back == card.back && it.rank == card.rank }
+        return cards.any { it.suit == card.suit && it.back == card.back && it.rank == card.rank && it.isAlt == card.isAlt }
     }
 
     fun toList() = cards.toList()

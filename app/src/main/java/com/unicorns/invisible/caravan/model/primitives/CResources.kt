@@ -7,7 +7,7 @@ import kotlinx.serialization.Transient
 
 @Serializable
 class CResources(private val deck: CustomDeck) {
-    constructor(back: CardBack) : this(CustomDeck(back))
+    constructor(back: CardBack, isAlt: Boolean) : this(CustomDeck(back, isAlt))
 
     private val handMutable: MutableList<Card> = mutableListOf()
     val hand

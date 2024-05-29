@@ -15,9 +15,9 @@ data object EnemyNash : Enemy() {
     override fun createDeck(): CResources = CResources(CustomDeck().apply {
         listOf(CardBack.TOPS, CardBack.GOMORRAH, CardBack.ULTRA_LUXE, CardBack.LUCKY_38).forEach { back ->
             Suit.entries.forEach { suit ->
-                add(Card(Rank.SIX, suit, back))
-                add(Card(Rank.JACK, suit, back))
-                add(Card(Rank.KING, suit, back))
+                add(Card(Rank.SIX, suit, back, true))
+                add(Card(Rank.JACK, suit, back, true))
+                add(Card(Rank.KING, suit, back, true))
             }
         }
     })

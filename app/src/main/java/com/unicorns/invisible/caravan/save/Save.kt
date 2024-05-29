@@ -12,7 +12,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 class Save {
     @EncodeDefault
-    var selectedDeck: CardBack = CardBack.STANDARD
+    var selectedDeck: Pair<CardBack, Boolean> = CardBack.STANDARD to false
 
     @EncodeDefault
     val availableDecks = CardBack.entries.associateWith { false }.toMutableMap().apply {
@@ -20,32 +20,26 @@ class Save {
     }
 
     @EncodeDefault
-    val altDecks = CardBack.entries.associateWith { AltDeckStatus.CLOSED }.toMutableMap().apply {
-        this[CardBack.STANDARD] = AltDeckStatus.NOT_CHOSEN
+    val availableDecksAlt = CardBack.entries.associateWith { false }.toMutableMap().apply {
+        this[CardBack.STANDARD] = true
     }
-
+    @EncodeDefault
+    val altDecksChosen = CardBack.entries.associateWith { false }.toMutableMap()
 
     @EncodeDefault
     var styleId: Int = 1
 
     @EncodeDefault
     val customDeck: CustomDeck = CustomDeck()
-    val customDeckAlt: CustomDeck = CustomDeck()
     var useCustomDeck: Boolean = false
 
     @EncodeDefault
-    val availableCards: MutableSet<Card> = HashSet(CustomDeck(CardBack.STANDARD).toList())
-    val availableCardsAlt: MutableSet<Card> = HashSet()
+    val availableCards: MutableSet<Card> = HashSet(CustomDeck(CardBack.STANDARD, false).toList())
 
     fun getCustomDeckCopy(): CustomDeck {
         val deck = CustomDeck()
         customDeck.toList().forEach {
-            if (altDecks[it.back] != AltDeckStatus.CHOSEN) {
-                deck.add(it)
-            }
-        }
-        customDeckAlt.toList().forEach {
-            if (altDecks[it.back] == AltDeckStatus.CHOSEN) {
+            if (it.isAlt == altDecksChosen[it.back]) {
                 deck.add(it)
             }
         }
@@ -58,10 +52,4 @@ class Save {
     var gamesFinished = 0
     @EncodeDefault
     var wins = 0
-
-    enum class AltDeckStatus {
-        CLOSED,
-        NOT_CHOSEN,
-        CHOSEN
-    }
 }

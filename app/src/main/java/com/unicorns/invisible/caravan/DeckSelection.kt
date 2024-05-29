@@ -4,9 +4,12 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -33,7 +36,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.unicorns.invisible.caravan.model.CardBack
-import com.unicorns.invisible.caravan.save.Save
 import com.unicorns.invisible.caravan.save.save
 import com.unicorns.invisible.caravan.utils.getAccentColor
 import com.unicorns.invisible.caravan.utils.getBackgroundColor
@@ -48,20 +50,22 @@ import com.unicorns.invisible.caravan.utils.scrollbar
 @Composable
 fun DeckSelection(
     activity: MainActivity,
-    getSelectedBack: () -> CardBack,
-    setSelectedBack: (CardBack) -> Unit,
+    getSelectedBack: () -> Pair<CardBack, Boolean>,
+    setSelectedBack: (CardBack, Boolean) -> Unit,
     goBack: () -> Unit,
 ) {
-    fun getModifier(cardBack: CardBack): Modifier {
+    fun getModifier(cardBack: CardBack, isAlt: Boolean): Modifier {
         activity.save?.let { save ->
-            if (save.availableDecks[cardBack] == true) {
-                return if (getSelectedBack() == cardBack) {
+            val checker = if (isAlt) save.availableDecksAlt else save.availableDecks
+            if (checker[cardBack] == true) {
+                val (backSelected, isAltSelected) = getSelectedBack()
+                return if (backSelected == cardBack && isAltSelected == isAlt) {
                     Modifier.border(width = 4.dp, color = getAccentColor(activity))
                 } else {
                     Modifier
                 }.clickable {
-                    setSelectedBack(cardBack)
-                    save.selectedDeck = cardBack
+                    setSelectedBack(cardBack, isAlt)
+                    save.selectedDeck = cardBack to isAlt
                     save(activity, save)
                 }
             }
@@ -77,127 +81,159 @@ fun DeckSelection(
         return
     }
 
-    val state = rememberLazyListState()
-    LazyColumn(
-        modifier = Modifier
-            .scrollbar(state, knobColor = getKnobColor(activity), trackColor = getTrackColor(activity), horizontal = false)
-            .fillMaxSize().background(getBackgroundColor(activity)),
-        state = state,
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
-    ) {
-        item {
-            Spacer(modifier = Modifier.height(12.dp))
-            Text(
-                text = stringResource(R.string.deck_select),
-                fontFamily = FontFamily(Font(R.font.monofont)),
-                style = TextStyle(color = getTextColor(activity), fontSize = 24.sp)
-            )
-            Spacer(modifier = Modifier.height(12.dp))
-            Row {
-                AsyncImage(
-                    model = "file:///android_asset/caravan_cards_back/" +
-                            if (activity.save?.altDecks?.get(CardBack.STANDARD) != Save.AltDeckStatus.CHOSEN)
-                                CardBack.STANDARD.getCardBackAsset()
-                            else
-                                CardBack.STANDARD.getCardBackAltAsset(),
-                    contentDescription = "",
-                    modifier = getModifier(CardBack.STANDARD).clip(RoundedCornerShape(6f))
+    Column(Modifier.fillMaxSize().background(getBackgroundColor(activity))) {
+
+        val state = rememberLazyListState()
+        LazyColumn(
+            modifier = Modifier
+                .scrollbar(state, knobColor = getKnobColor(activity), trackColor = getTrackColor(activity), horizontal = false)
+                .fillMaxWidth().fillMaxHeight(0.5f),
+            state = state,
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center,
+        ) {
+            item {
+                Spacer(modifier = Modifier.height(12.dp))
+                Text(
+                    text = stringResource(R.string.deck_select),
+                    fontFamily = FontFamily(Font(R.font.monofont)),
+                    style = TextStyle(color = getTextColor(activity), fontSize = 24.sp)
                 )
-                Spacer(modifier = Modifier.width(12.dp))
-                AsyncImage(
-                    model = "file:///android_asset/caravan_cards_back/" +
-                            if (activity.save?.altDecks?.get(CardBack.TOPS) != Save.AltDeckStatus.CHOSEN)
-                                CardBack.TOPS.getCardBackAsset()
-                            else
-                                CardBack.TOPS.getCardBackAltAsset(),
-                    contentDescription = "",
-                    modifier = getModifier(CardBack.TOPS).clip(RoundedCornerShape(6f))
-                )
-                Spacer(modifier = Modifier.width(12.dp))
-                AsyncImage(
-                    model = "file:///android_asset/caravan_cards_back/" +
-                            if (activity.save?.altDecks?.get(CardBack.LUCKY_38) != Save.AltDeckStatus.CHOSEN)
-                                CardBack.LUCKY_38.getCardBackAsset()
-                            else
-                                CardBack.LUCKY_38.getCardBackAltAsset(),
-                    contentDescription = "",
-                    modifier = getModifier(CardBack.LUCKY_38).clip(RoundedCornerShape(6f))
-                )
+                Spacer(modifier = Modifier.height(12.dp))
+                Row {
+                    AsyncImage(
+                        model = "file:///android_asset/caravan_cards_back/" + CardBack.STANDARD.getCardBackAsset(),
+                        contentDescription = "",
+                        modifier = getModifier(CardBack.STANDARD, false).clip(RoundedCornerShape(6f))
+                    )
+                    Spacer(modifier = Modifier.width(12.dp))
+                    AsyncImage(
+                        model = "file:///android_asset/caravan_cards_back/" + CardBack.TOPS.getCardBackAsset(),
+                        contentDescription = "",
+                        modifier = getModifier(CardBack.TOPS, false).clip(RoundedCornerShape(6f))
+                    )
+                    Spacer(modifier = Modifier.width(12.dp))
+                    AsyncImage(
+                        model = "file:///android_asset/caravan_cards_back/" + CardBack.LUCKY_38.getCardBackAsset(),
+                        contentDescription = "",
+                        modifier = getModifier(CardBack.LUCKY_38, false).clip(RoundedCornerShape(6f))
+                    )
+                }
+                Spacer(modifier = Modifier.height(12.dp))
+                Row {
+                    AsyncImage(
+                        model = "file:///android_asset/caravan_cards_back/" + CardBack.ULTRA_LUXE.getCardBackAsset(),
+                        contentDescription = "",
+                        modifier = getModifier(CardBack.ULTRA_LUXE, false).clip(RoundedCornerShape(6f))
+                    )
+                    Spacer(modifier = Modifier.width(12.dp))
+                    AsyncImage(
+                        model = "file:///android_asset/caravan_cards_back/" + CardBack.GOMORRAH.getCardBackAsset(),
+                        contentDescription = "",
+                        modifier = getModifier(CardBack.GOMORRAH, false).clip(RoundedCornerShape(6f))
+                    )
+                    Spacer(modifier = Modifier.width(12.dp))
+                    AsyncImage(
+                        model = "file:///android_asset/caravan_cards_back/" + CardBack.VAULT_21.getCardBackAsset(),
+                        contentDescription = "",
+                        modifier = getModifier(CardBack.VAULT_21, false).clip(RoundedCornerShape(6f))
+                    )
+                }
+                Spacer(modifier = Modifier.height(12.dp))
+                Row {
+                    AsyncImage(
+                        model = "file:///android_asset/caravan_cards_back/" + CardBack.ULTRA_LUXE.getCardBackAltAsset(),
+                        contentDescription = "",
+                        modifier = getModifier(CardBack.ULTRA_LUXE, true).clip(RoundedCornerShape(6f))
+                    )
+                    Spacer(modifier = Modifier.width(12.dp))
+                    AsyncImage(
+                        model = "file:///android_asset/caravan_cards_back/" + CardBack.GOMORRAH.getCardBackAltAsset(),
+                        contentDescription = "",
+                        modifier = getModifier(CardBack.GOMORRAH, true).clip(RoundedCornerShape(6f))
+                    )
+                    Spacer(modifier = Modifier.width(12.dp))
+                    AsyncImage(
+                        model = "file:///android_asset/caravan_cards_back/" + CardBack.VAULT_21.getCardBackAltAsset(),
+                        contentDescription = "",
+                        modifier = getModifier(CardBack.VAULT_21, true).clip(RoundedCornerShape(6f))
+                    )
+                }
+                Spacer(modifier = Modifier.height(12.dp))
+                Row {
+                    AsyncImage(
+                        model = "file:///android_asset/caravan_cards_back/" + CardBack.STANDARD.getCardBackAltAsset(),
+                        contentDescription = "",
+                        modifier = getModifier(CardBack.STANDARD, true).clip(RoundedCornerShape(6f))
+                    )
+                    Spacer(modifier = Modifier.width(12.dp))
+                    AsyncImage(
+                        model = "file:///android_asset/caravan_cards_back/" + CardBack.TOPS.getCardBackAltAsset(),
+                        contentDescription = "",
+                        modifier = getModifier(CardBack.TOPS, true).clip(RoundedCornerShape(6f))
+                    )
+                    Spacer(modifier = Modifier.width(12.dp))
+                    AsyncImage(
+                        model = "file:///android_asset/caravan_cards_back/" + CardBack.LUCKY_38.getCardBackAltAsset(),
+                        contentDescription = "",
+                        modifier = getModifier(CardBack.LUCKY_38, true).clip(RoundedCornerShape(6f))
+                    )
+                }
+                Spacer(modifier = Modifier.height(24.dp))
+
             }
-            Spacer(modifier = Modifier.height(12.dp))
-            Row {
-                AsyncImage(
-                    model = "file:///android_asset/caravan_cards_back/" +
-                            if (activity.save?.altDecks?.get(CardBack.ULTRA_LUXE) != Save.AltDeckStatus.CHOSEN)
-                                CardBack.ULTRA_LUXE.getCardBackAsset()
-                            else
-                                CardBack.ULTRA_LUXE.getCardBackAltAsset(),
-                    contentDescription = "",
-                    modifier = getModifier(CardBack.ULTRA_LUXE).clip(RoundedCornerShape(6f))
+        }
+
+        val state2 = rememberLazyListState()
+        LazyColumn(
+            modifier = Modifier
+                .scrollbar(state2, knobColor = getKnobColor(activity), trackColor = getTrackColor(activity), horizontal = false)
+                .fillMaxSize(),
+            state = state2,
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center,
+        ) {
+            item {
+                Text(
+                    text = stringResource(R.string.deck_select_about),
+                    fontFamily = FontFamily(Font(R.font.monofont)),
+                    modifier = Modifier.padding(12.dp),
+                    textAlign = TextAlign.Center,
+                    style = TextStyle(color = getTextColor(activity), fontSize = 16.sp)
                 )
-                Spacer(modifier = Modifier.width(12.dp))
-                AsyncImage(
-                    model = "file:///android_asset/caravan_cards_back/" +
-                            if (activity.save?.altDecks?.get(CardBack.GOMORRAH) != Save.AltDeckStatus.CHOSEN)
-                                CardBack.GOMORRAH.getCardBackAsset()
-                            else
-                                CardBack.GOMORRAH.getCardBackAltAsset(),
-                    contentDescription = "",
-                    modifier = getModifier(CardBack.GOMORRAH).clip(RoundedCornerShape(6f))
+
+                HorizontalDivider(color = getDividerColor(activity))
+                Spacer(modifier = Modifier.height(20.dp))
+                Text(
+                    text = stringResource(R.string.deck_custom),
+                    modifier = Modifier.clickable {
+                        setCustomDeck = true
+                    }.background(getTextBackgroundColor(activity)).padding(8.dp),
+                    fontFamily = FontFamily(Font(R.font.monofont)),
+                    style = TextStyle(color = getTextColor(activity), fontSize = 20.sp)
                 )
-                Spacer(modifier = Modifier.width(12.dp))
-                AsyncImage(
-                    model = "file:///android_asset/caravan_cards_back/" +
-                            if (activity.save?.altDecks?.get(CardBack.VAULT_21) != Save.AltDeckStatus.CHOSEN)
-                                CardBack.VAULT_21.getCardBackAsset()
-                            else
-                                CardBack.VAULT_21.getCardBackAltAsset(),
-                    contentDescription = "",
-                    modifier = getModifier(CardBack.VAULT_21).clip(RoundedCornerShape(6f))
+                Spacer(modifier = Modifier.height(12.dp))
+
+                Text(
+                    text = stringResource(R.string.deck_custom_about),
+                    Modifier.padding(12.dp),
+                    fontFamily = FontFamily(Font(R.font.monofont)),
+                    textAlign = TextAlign.Center,
+                    style = TextStyle(color = getTextColor(activity), fontSize = 14.sp)
                 )
+                Spacer(modifier = Modifier.height(20.dp))
+                HorizontalDivider(color = getDividerColor(activity))
+                Spacer(modifier = Modifier.height(32.dp))
+                Text(
+                    text = stringResource(R.string.menu_back),
+                    modifier = Modifier.clickable {
+                        goBack()
+                    }.background(getTextBackgroundColor(activity)).padding(8.dp),
+                    fontFamily = FontFamily(Font(R.font.monofont)),
+                    style = TextStyle(color = getTextColor(activity), fontSize = 24.sp)
+                )
+                Spacer(modifier = Modifier.height(32.dp))
             }
-            Spacer(modifier = Modifier.height(24.dp))
-
-            Text(
-                text = stringResource(R.string.deck_select_about),
-                fontFamily = FontFamily(Font(R.font.monofont)),
-                modifier = Modifier.padding(12.dp),
-                textAlign = TextAlign.Center,
-                style = TextStyle(color = getTextColor(activity), fontSize = 16.sp)
-            )
-
-            HorizontalDivider(color = getDividerColor(activity))
-            Spacer(modifier = Modifier.height(20.dp))
-            Text(
-                text = stringResource(R.string.deck_custom),
-                modifier = Modifier.clickable {
-                    setCustomDeck = true
-                }.background(getTextBackgroundColor(activity)).padding(8.dp),
-                fontFamily = FontFamily(Font(R.font.monofont)),
-                style = TextStyle(color = getTextColor(activity), fontSize = 20.sp)
-            )
-            Spacer(modifier = Modifier.height(12.dp))
-
-            Text(
-                text = stringResource(R.string.deck_custom_about),
-                Modifier.padding(12.dp),
-                fontFamily = FontFamily(Font(R.font.monofont)),
-                textAlign = TextAlign.Center,
-                style = TextStyle(color = getTextColor(activity), fontSize = 14.sp)
-            )
-            Spacer(modifier = Modifier.height(20.dp))
-            HorizontalDivider(color = getDividerColor(activity))
-            Spacer(modifier = Modifier.height(32.dp))
-            Text(
-                text = stringResource(R.string.menu_back),
-                modifier = Modifier.clickable {
-                    goBack()
-                }.background(getTextBackgroundColor(activity)).padding(8.dp),
-                fontFamily = FontFamily(Font(R.font.monofont)),
-                style = TextStyle(color = getTextColor(activity), fontSize = 24.sp)
-            )
-            Spacer(modifier = Modifier.height(32.dp))
         }
     }
 }

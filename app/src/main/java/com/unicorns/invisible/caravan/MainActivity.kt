@@ -114,7 +114,7 @@ class MainActivity : AppCompatActivity() {
 
             var showSettings by rememberSaveable { mutableIntStateOf(0) }
 
-            var selectedDeck by rememberSaveable { mutableStateOf(save?.selectedDeck ?: CardBack.STANDARD) }
+            var selectedDeck by rememberSaveable { mutableStateOf(save?.selectedDeck ?: (CardBack.STANDARD to false)) }
 
             var showAlertDialog by remember { mutableStateOf(false) }
             var alertDialogHeader by remember { mutableStateOf("") }
@@ -178,7 +178,7 @@ class MainActivity : AppCompatActivity() {
                     DeckSelection(
                         this,
                         { selectedDeck },
-                        { selectedDeck = it }
+                        { back, isAlt -> selectedDeck = back to isAlt }
                     ) { deckSelection = false }
                 }
                 showAbout -> {

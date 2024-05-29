@@ -9,7 +9,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data object EnemyBetter : Enemy() {
-    override fun createDeck(): CResources = CResources(CardBack.LUCKY_38)
+    override fun createDeck(): CResources = CResources(CardBack.LUCKY_38, false)
     override fun getRewardBack() = CardBack.LUCKY_38
 
     override suspend fun makeMove(game: Game) {

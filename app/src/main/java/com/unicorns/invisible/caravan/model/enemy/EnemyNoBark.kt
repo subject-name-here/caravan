@@ -14,10 +14,10 @@ import kotlinx.serialization.encodeToString
 
 @Serializable
 data object EnemyNoBark : Enemy() {
-    override fun createDeck(): CResources = CResources(CustomDeck(CardBack.STANDARD).apply {
+    override fun createDeck(): CResources = CResources(CustomDeck(CardBack.STANDARD, true).apply {
         listOf(CardBack.TOPS, CardBack.ULTRA_LUXE, CardBack.GOMORRAH, CardBack.STANDARD).forEach { back ->
             Suit.entries.forEach { suit ->
-                add(Card(Rank.JACK, suit, back))
+                add(Card(Rank.JACK, suit, back, true))
             }
         }
     })

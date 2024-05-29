@@ -13,7 +13,7 @@ enum class CardBack {
     VAULT_21;
 
     fun getCardBackAssetSplit(activity: MainActivity): String {
-        return if (activity.save!!.altDecks[this] == Save.AltDeckStatus.CHOSEN) {
+        return if (activity.save!!.altDecksChosen[this] == true) {
             getCardBackAltAsset()
         } else {
             getCardBackAsset()

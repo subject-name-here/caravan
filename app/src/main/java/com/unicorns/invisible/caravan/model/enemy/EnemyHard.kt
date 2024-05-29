@@ -12,7 +12,7 @@ import kotlinx.serialization.encodeToString
 
 @Serializable
 data object EnemyHard : Enemy() {
-    override fun createDeck(): CResources = CResources(CardBack.TOPS)
+    override fun createDeck(): CResources = CResources(CardBack.TOPS, false)
     override fun getRewardBack() = CardBack.TOPS
 
     override suspend fun makeMove(game: Game) {

@@ -15,9 +15,9 @@ data object EnemySix : Enemy() {
     override fun createDeck(): CResources = CResources(CustomDeck().apply {
         CardBack.entries.forEach { back ->
             Suit.entries.forEach { suit ->
-                add(Card(Rank.SIX, suit, back))
-                add(Card(Rank.TEN, suit, back))
-                add(Card(Rank.KING, suit, back))
+                add(Card(Rank.SIX, suit, back, true))
+                add(Card(Rank.TEN, suit, back, true))
+                add(Card(Rank.KING, suit, back, true))
             }
         }
     })
@@ -90,7 +90,7 @@ data object EnemySix : Enemy() {
                     if (playerCaravan.getValue() in (13..26)) {
                         val cardToKing = playerCaravan.cards
                             .filter { it.getValue() + playerCaravan.getValue() > 26 }
-                            .maxByOrNull { it.getValue() }
+                            .minByOrNull { it.getValue() }
                         if (cardToKing != null && cardToKing.canAddModifier(card)) {
                             cardToKing.addModifier(game.enemyCResources.removeFromHand(cardIndex))
                             return

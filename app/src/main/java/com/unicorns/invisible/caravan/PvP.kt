@@ -48,7 +48,6 @@ import com.unicorns.invisible.caravan.model.primitives.CustomDeck
 import com.unicorns.invisible.caravan.model.primitives.Rank
 import com.unicorns.invisible.caravan.model.primitives.Suit
 import com.unicorns.invisible.caravan.multiplayer.decodeMove
-import com.unicorns.invisible.caravan.save.Save
 import com.unicorns.invisible.caravan.save.json
 import com.unicorns.invisible.caravan.save.save
 import com.unicorns.invisible.caravan.utils.CheckboxCustom
@@ -86,11 +85,11 @@ fun customDeckToInts(customDeck: CustomDeck): List<ULong> {
         }
         Rank.entries.forEach { rank ->
             if (rank == Rank.JOKER) {
-                updateCode(Card(rank, Suit.HEARTS, cardBack))
-                updateCode(Card(rank, Suit.CLUBS, cardBack))
+                updateCode(Card(rank, Suit.HEARTS, cardBack, false))
+                updateCode(Card(rank, Suit.CLUBS, cardBack, false))
             } else {
                 Suit.entries.forEach { suit ->
-                    updateCode(Card(rank, suit, cardBack))
+                    updateCode(Card(rank, suit, cardBack, false))
                 }
             }
         }
@@ -113,7 +112,7 @@ fun isRoomNumberIncorrect(roomNumber: String): Boolean {
 @Composable
 fun ShowPvP(
     activity: MainActivity,
-    selectedDeck: () -> CardBack,
+    selectedDeck: () -> Pair<CardBack, Boolean>,
     showAlertDialog: (String, String) -> Unit,
     goBack: () -> Unit
 ) {
@@ -164,11 +163,11 @@ fun ShowPvP(
             var cnt = 0
             Rank.entries.forEach { rank ->
                 if (rank == Rank.JOKER) {
-                    processCard(index, cnt++, Card(rank, Suit.HEARTS, cardBack))
-                    processCard(index, cnt++, Card(rank, Suit.CLUBS, cardBack))
+                    processCard(index, cnt++, Card(rank, Suit.HEARTS, cardBack, false))
+                    processCard(index, cnt++, Card(rank, Suit.CLUBS, cardBack, false))
                 } else {
                     Suit.entries.forEach { suit ->
-                        processCard(index, cnt++, Card(rank, suit, cardBack))
+                        processCard(index, cnt++, Card(rank, suit, cardBack, false))
                     }
                 }
             }
@@ -211,9 +210,10 @@ fun ShowPvP(
             return
         }
         isRoomCreated = roomNumber.toIntOrNull() ?: return
+        val deckPair = selectedDeck()
         val deckCodes = customDeckToInts(
             if (checkedCustomDeck) activity.save!!.getCustomDeckCopy() else CustomDeck(
-                selectedDeck()
+                deckPair.first, deckPair.second
             )
         )
         sendRequest(
@@ -251,7 +251,7 @@ fun ShowPvP(
         sendRequest(
             "$crvnUrl/crvn/join?room=$isRoomCreated" +
                     "&jid=${activity.id}" +
-                    "&back=${selectedDeck().ordinal}" +
+                    "&back=${selectedDeck().first.ordinal}" +
                     "&deck0=${deckCodes[0]}" +
                     "&deck1=${deckCodes[1]}" +
                     "&deck2=${deckCodes[2]}" +
@@ -301,7 +301,10 @@ fun ShowPvP(
     if (enemyDeck.size >= MainActivity.MIN_DECK_SIZE) {
         StartPvP(
             activity = activity,
-            playerCResources = if (checkedCustomDeck) CResources(activity.save!!.getCustomDeckCopy()) else CResources(selectedDeck()),
+            playerCResources = if (checkedCustomDeck)
+                CResources(activity.save!!.getCustomDeckCopy())
+            else
+                CResources(selectedDeck().first, selectedDeck().second),
             enemyStartDeck = run {
                 val deck = CustomDeck()
                 repeat(enemyDeck.size) {
@@ -567,7 +570,7 @@ fun StartPvP(
                 "&new_card_back_in_hand_code=${card.back.ordinal}" +
                 "&new_card_rank_in_hand_code=${card.rank.ordinal}" +
                 "&new_card_suit_in_hand_code=${card.suit.ordinal}" +
-                "&is_alt=${(activity.save?.altDecks?.get(card.back) == Save.AltDeckStatus.CHOSEN).toPythonBool()}"
+                "&is_alt=${(activity.save?.altDecksChosen?.get(card.back) == true).toPythonBool()}"
         sendRequest(link) { _ ->
             pingForMove(::sendHandCard)
         }

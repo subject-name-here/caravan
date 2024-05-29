@@ -37,7 +37,6 @@ import com.unicorns.invisible.caravan.model.primitives.Caravan
 import com.unicorns.invisible.caravan.model.primitives.Rank
 import com.unicorns.invisible.caravan.multiplayer.MoveResponse
 import com.unicorns.invisible.caravan.multiplayer.decodeMove
-import com.unicorns.invisible.caravan.save.Save
 import com.unicorns.invisible.caravan.utils.getAccentColor
 import com.unicorns.invisible.caravan.utils.getGameBackgroundColor
 import com.unicorns.invisible.caravan.utils.getGameTextColor
@@ -51,7 +50,6 @@ import kotlinx.coroutines.launch
 
 
 fun afterPlayerMove(
-    activity: MainActivity,
     game: Game,
     roomNumber: Int,
     isCreator: Boolean,
@@ -71,7 +69,7 @@ fun afterPlayerMove(
             move.newCardInHandBack = newCard.back.ordinal
             move.newCardInHandSuit = newCard.suit.ordinal
             move.newCardInHandRank = newCard.rank.ordinal
-            move.isNewCardAlt = activity.save?.altDecks?.get(newCard.back) == Save.AltDeckStatus.CHOSEN
+            move.isNewCardAlt = newCard.isAlt
         } else {
             move.newCardInHandBack = -1
         }
@@ -216,7 +214,7 @@ fun ShowGamePvP(
         val selectedCardNN = selectedCard ?: return
         game.playerCResources.removeFromHand(selectedCardNN)
         resetSelected()
-        afterPlayerMove(activity, game, roomNumber, isCreator = isCreator, MoveResponse(
+        afterPlayerMove(game, roomNumber, isCreator = isCreator, MoveResponse(
             moveCode = 2,
             handCardNumber = selectedCardNN,
         ), chosenSymbol,
@@ -240,7 +238,7 @@ fun ShowGamePvP(
         game.playerCaravans[selectedCaravanNN].dropCaravan()
         updateCaravans()
         resetSelected()
-        afterPlayerMove(activity, game, roomNumber, isCreator = isCreator, MoveResponse(
+        afterPlayerMove(game, roomNumber, isCreator = isCreator, MoveResponse(
             moveCode = 1,
             caravanCode = selectedCaravanNN,
         ), chosenSymbol,
@@ -264,7 +262,7 @@ fun ShowGamePvP(
             resetSelected()
             updateCaravans()
             if (cardInCaravan == null) {
-                afterPlayerMove(activity, game, roomNumber, isCreator = isCreator, MoveResponse(
+                afterPlayerMove(game, roomNumber, isCreator = isCreator, MoveResponse(
                     moveCode = 3,
                     handCardNumber = cardIndex,
                     caravanCode = caravanIndex
@@ -282,7 +280,7 @@ fun ShowGamePvP(
                     }
                 )
             } else {
-                afterPlayerMove(activity, game, roomNumber, isCreator = isCreator, MoveResponse(
+                afterPlayerMove(game, roomNumber, isCreator = isCreator, MoveResponse(
                     moveCode = 4,
                     handCardNumber = cardIndex,
                     cardInCaravanNumber = cardInCaravan,

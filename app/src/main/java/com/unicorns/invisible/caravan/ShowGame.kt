@@ -182,8 +182,8 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
                         key(enemyHandKey) {
                             val handSize = game.enemyCResources.hand.size
                             Column(Modifier.fillMaxWidth(0.8f), horizontalAlignment = Alignment.CenterHorizontally) {
-                                RowOfEnemyCards(game.enemyCResources.hand.take(4).map { it.isAlt = game.enemy.isAlt(); it })
-                                RowOfEnemyCards(game.enemyCResources.hand.takeLast((handSize - 4).coerceAtLeast(0)).map { it.isAlt = game.enemy.isAlt(); it })
+                                RowOfEnemyCards(game.enemyCResources.hand.take(4))
+                                RowOfEnemyCards(game.enemyCResources.hand.takeLast((handSize - 4).coerceAtLeast(0)))
                             }
                             ShowDeck(game.enemyCResources, activity, isAlt = game.enemy.isAlt())
                         }
@@ -265,8 +265,8 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
                     val handSize = game.enemyCResources.hand.size
                     key(enemyHandKey) {
                         Column(Modifier.fillMaxWidth(0.8f), horizontalAlignment = Alignment.CenterHorizontally) {
-                            RowOfEnemyCards(game.enemyCResources.hand.take(4).map { it.isAlt = game.enemy.isAlt(); it })
-                            RowOfEnemyCards(game.enemyCResources.hand.takeLast((handSize - 4).coerceAtLeast(0)).map { it.isAlt = game.enemy.isAlt(); it })
+                            RowOfEnemyCards(game.enemyCResources.hand.take(4))
+                            RowOfEnemyCards(game.enemyCResources.hand.takeLast((handSize - 4).coerceAtLeast(0)))
                         }
                         ShowDeck(game.enemyCResources, activity, isAlt = game.enemy.isAlt())
                     }
@@ -376,7 +376,7 @@ fun ColumnScope.RowOfEnemyCards(cards: List<Card>) {
         cards.forEach {
             AsyncImage(
                 model = "file:///android_asset/caravan_cards_back/${
-                    if (it.isAlt == true) it.back.getCardBackAltAsset() else it.back.getCardBackAsset()
+                    if (it.isAlt) it.back.getCardBackAltAsset() else it.back.getCardBackAsset()
                 }",
                 contentDescription = "",
                 modifier = Modifier.clip(RoundedCornerShape(6f))

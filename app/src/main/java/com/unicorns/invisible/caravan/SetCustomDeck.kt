@@ -42,7 +42,6 @@ import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.getCardName
 import com.unicorns.invisible.caravan.model.primitives.Card
 import com.unicorns.invisible.caravan.model.primitives.CustomDeck
-import com.unicorns.invisible.caravan.save.Save
 import com.unicorns.invisible.caravan.save.save
 import com.unicorns.invisible.caravan.utils.CheckboxCustom
 import com.unicorns.invisible.caravan.utils.getAccentColor
@@ -59,49 +58,26 @@ fun SetCustomDeck(
     activity: MainActivity,
     goBack: () -> Unit,
 ) {
-    fun isInCustomDeck(card: Card, isAlt: Boolean): Boolean {
-        return if (!isAlt) {
-            activity.save?.customDeck?.let { deck ->
-                card in deck
-            } ?: false
-        } else {
-            activity.save?.customDeckAlt?.let { deck ->
-                card in deck
-            } ?: false
-        }
+    fun isInCustomDeck(card: Card): Boolean {
+        return activity.save?.customDeck?.let { deck ->
+            card in deck
+        } ?: false
     }
-    fun toggleToCustomDeck(card: Card, isAlt: Boolean) {
-        if (!isAlt) {
-            activity.save?.customDeck?.let { deck ->
-                if (card in deck) {
-                    deck.remove(card)
-                } else {
-                    deck.add(card)
-                }
-
-            }
-        } else {
-            activity.save?.customDeckAlt?.let { deck ->
-                if (card in deck) {
-                    deck.remove(card)
-                } else {
-                    deck.add(card)
-                }
+    fun toggleToCustomDeck(card: Card) {
+        activity.save?.customDeck?.let { deck ->
+            if (card in deck) {
+                deck.remove(card)
+            } else {
+                deck.add(card)
             }
         }
         save(activity, activity.save!!)
 
     }
-    fun isAvailable(card: Card, isAlt: Boolean): Boolean {
-        return if (!isAlt) {
-            activity.save?.availableCards?.let { cards ->
-                cards.any { it.rank == card.rank && it.suit == card.suit && it.back == card.back }
-            } ?: false
-        } else {
-            activity.save?.availableCardsAlt?.let { cards ->
-                cards.any { it.rank == card.rank && it.suit == card.suit && it.back == card.back }
-            } ?: false
-        }
+    fun isAvailable(card: Card): Boolean {
+        return activity.save?.availableCards?.let { cards ->
+            cards.any { it.rank == card.rank && it.suit == card.suit && it.back == card.back && it.isAlt == card.isAlt }
+        } ?: false
     }
 
     Column(Modifier.fillMaxSize().background(getBackgroundColor(activity)),
@@ -128,12 +104,12 @@ fun SetCustomDeck(
             item {
                 CardBack.entries.forEach { back ->
                     var rowTabShow by remember { mutableStateOf(false) }
-                    var check by rememberSaveable { mutableStateOf(activity.save?.altDecks?.get(back)) }
+                    var check by rememberSaveable { mutableStateOf(activity.save?.altDecksChosen?.get(back) ?: false) }
                     Row(Modifier.padding(4.dp), horizontalArrangement = Arrangement.Start) {
                         Column(Modifier.padding(horizontal = 8.dp).fillMaxWidth(0.33f)) {
                             Text(
                                 text = stringResource(
-                                    if (back == CardBack.STANDARD && check == Save.AltDeckStatus.CHOSEN)
+                                    if (back == CardBack.STANDARD && check)
                                         back.getSierraMadreDeckName()
                                     else
                                         back.getDeckName()
@@ -143,7 +119,7 @@ fun SetCustomDeck(
                                 style = TextStyle(color = getTextColor(activity), fontSize = 12.sp)
                             )
                             AsyncImage(
-                                model = "file:///android_asset/caravan_cards_back/${if (check == Save.AltDeckStatus.CHOSEN) back.getCardBackAltAsset() else back.getCardBackAsset()}",
+                                model = "file:///android_asset/caravan_cards_back/${if (check) back.getCardBackAltAsset() else back.getCardBackAsset()}",
                                 contentDescription = "",
                                 modifier = Modifier.align(Alignment.CenterHorizontally)
                                     .clip(RoundedCornerShape(6f))
@@ -167,26 +143,14 @@ fun SetCustomDeck(
                             )
                             CheckboxCustom(
                                 activity,
-                                { check == Save.AltDeckStatus.CHOSEN },
+                                { check },
                                 {
-                                    when (check) {
-                                        Save.AltDeckStatus.CLOSED -> {}
-                                        Save.AltDeckStatus.NOT_CHOSEN -> {
-                                            activity.save!!.altDecks[back] = Save.AltDeckStatus.CHOSEN
-                                            save(activity, activity.save!!)
-                                            check = Save.AltDeckStatus.CHOSEN
-                                            updater = !updater
-                                        }
-                                        Save.AltDeckStatus.CHOSEN -> {
-                                            activity.save!!.altDecks[back] = Save.AltDeckStatus.NOT_CHOSEN
-                                            save(activity, activity.save!!)
-                                            check = Save.AltDeckStatus.NOT_CHOSEN
-                                            updater = !updater
-                                        }
-                                        null -> {}
-                                    }
+                                    activity.save!!.altDecksChosen[back] = !check
+                                    save(activity, activity.save!!)
+                                    check = !check
+                                    updater = !updater
                                 }
-                            ) { check in listOf(Save.AltDeckStatus.NOT_CHOSEN, Save.AltDeckStatus.CHOSEN) }
+                            ) { activity.save!!.availableDecksAlt[back] == true }
                         }
                     }
                     if (rowTabShow) {
@@ -196,7 +160,7 @@ fun SetCustomDeck(
                                 Modifier
                                     .weight(1f)
                                     .scrollbar(state, knobColor = getKnobColor(activity), trackColor = getTrackColor(activity), horizontal = true), state = state) lambda@ {
-                                items(CustomDeck(back).toList().sortedWith { o1, o2 ->
+                                items(CustomDeck(back, check).toList().sortedWith { o1, o2 ->
                                     if (o1.rank != o2.rank) {
                                         o2.rank.value - o1.rank.value
                                     } else {
@@ -204,15 +168,15 @@ fun SetCustomDeck(
                                     }
                                 }) { card ->
                                     var isSelected by remember { mutableStateOf(
-                                        isInCustomDeck(card, activity.save?.altDecks?.get(back) == Save.AltDeckStatus.CHOSEN)
+                                        isInCustomDeck(card)
                                     ) }
-                                    if (isAvailable(card, check == Save.AltDeckStatus.CHOSEN)) {
+                                    if (isAvailable(card)) {
                                         AsyncImage(
                                             model = "file:///android_asset/caravan_cards/${getCardName(card)}",
                                             contentDescription = "",
                                             Modifier
                                                 .clickable {
-                                                    toggleToCustomDeck(card, activity.save?.altDecks?.get(back) == Save.AltDeckStatus.CHOSEN)
+                                                    toggleToCustomDeck(card)
                                                     isSelected = !isSelected
                                                     updater = !updater
                                                 }
@@ -263,13 +227,7 @@ fun SetCustomDeck(
 @Composable
 fun ShowCharacteristics(activity: MainActivity) {
     Row(Modifier.padding(8.dp), verticalAlignment = Alignment.CenterVertically) {
-        val deck = CardBack.entries.map { back ->
-            if (activity.save?.altDecks?.get(back) == Save.AltDeckStatus.CHOSEN) {
-                activity.save!!.customDeckAlt.toList().filter { it.back == back }
-            } else {
-                activity.save!!.customDeck.toList().filter { it.back == back }
-            }
-        }.flatten()
+        val deck = activity.save?.getCustomDeckCopy() ?: CustomDeck()
         val deckSizeMin = MainActivity.MIN_DECK_SIZE
         val color1 = if (deck.size < deckSizeMin) Color.Red else getTextColor(activity)
         Text(text = stringResource(R.string.custom_deck_size, deck.size, deckSizeMin),

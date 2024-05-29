@@ -62,7 +62,7 @@ import java.util.Locale
 @Composable
 fun ShowPvE(
     activity: MainActivity,
-    selectedDeck: () -> CardBack,
+    selectedDeck: () -> Pair<CardBack, Boolean>,
     showAlertDialog: (String, String) -> Unit,
     goBack: () -> Unit
 ) {
@@ -78,7 +78,7 @@ fun ShowPvE(
 
     var checkedCustomDeck by rememberSaveable { mutableStateOf(activity.save?.useCustomDeck ?: false) }
     fun getPlayerDeck(): CResources {
-        return if (checkedCustomDeck) CResources(activity.save?.getCustomDeckCopy()!!) else CResources(selectedDeck())
+        return if (checkedCustomDeck) CResources(activity.save?.getCustomDeckCopy()!!) else CResources(selectedDeck().first, selectedDeck().second)
     }
 
     if (showGameEasy) {
@@ -484,8 +484,8 @@ fun StartGame(
                         }
                         message += winCard(activity, save, back, 3, isAlt = false, isCustom)
                     } else {
-                        if (save.altDecks[back] == Save.AltDeckStatus.CLOSED) {
-                            save.altDecks[back] = Save.AltDeckStatus.NOT_CHOSEN
+                        if (save.availableDecksAlt[back] != true) {
+                            save.availableDecksAlt[back] = true
                             message += activity.getString(
                                 R.string.you_have_unlocked_deck_alt,
                                 activity.getString(back.getDeckName())
@@ -525,13 +525,9 @@ fun StartGame(
 
 fun winCard(activity: MainActivity, save: Save, back: CardBack, numberOfCards: Int, isAlt: Boolean, isCustom: Boolean): String {
     fun checkCard(card: Card): Boolean {
-        return if (isAlt) {
-            save.availableCardsAlt.none { aCard -> aCard.rank == card.rank && aCard.suit == card.suit && aCard.back == card.back }
-        } else {
-            save.availableCards.none { aCard -> aCard.rank == card.rank && aCard.suit == card.suit && aCard.back == card.back }
-        }
+        return save.availableCards.none { aCard -> aCard.rank == card.rank && aCard.suit == card.suit && aCard.back == card.back && aCard.isAlt == card.isAlt }
     }
-    val deck = CustomDeck(back)
+    val deck = CustomDeck(back, isAlt)
     val reward = deck.takeRandom(if (isCustom) numberOfCards else 7).sortedByDescending { if (checkCard(it)) 1 else 0 }.take(numberOfCards)
     var result = activity.getString(R.string.your_prize_cards_from)
     reward.forEach { card ->
@@ -546,11 +542,7 @@ fun winCard(activity: MainActivity, save: Save, back: CardBack, numberOfCards: I
             "${activity.getString(card.rank.nameId)} ${activity.getString(card.suit.nameId)}, $deckName"
         }
         result += if (checkCard(card)) {
-            if (isAlt) {
-                save.availableCardsAlt.add(card)
-            } else {
-                save.availableCards.add(card)
-            }
+            save.availableCards.add(card)
             if (isAlt && card.back != CardBack.STANDARD) {
                 activity.getString(R.string.new_card_alt, cardName)
             } else {

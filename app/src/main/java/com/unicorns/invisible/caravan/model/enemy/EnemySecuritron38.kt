@@ -12,7 +12,7 @@ import kotlinx.serialization.encodeToString
 
 @Serializable
 data object EnemySecuritron38 : Enemy() {
-    override fun createDeck(): CResources = CResources(CustomDeck(CardBack.LUCKY_38).apply {
+    override fun createDeck(): CResources = CResources(CustomDeck(CardBack.LUCKY_38, true).apply {
         removeAll(toList().filter { it.rank.value < 5 && it.rank.value != Rank.QUEEN.value })
     })
     override fun getRewardBack() = CardBack.LUCKY_38

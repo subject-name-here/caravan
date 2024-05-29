@@ -15,11 +15,11 @@ data object EnemySwank : Enemy() {
     override fun createDeck(): CResources = CResources(CustomDeck().apply {
         listOf(CardBack.TOPS, CardBack.GOMORRAH, CardBack.ULTRA_LUXE).forEach { back ->
             Suit.entries.forEach { suit ->
-                add(Card(Rank.SEVEN, suit, back))
-                add(Card(Rank.NINE, suit, back))
-                add(Card(Rank.TEN, suit, back))
-                add(Card(Rank.JACK, suit, back))
-                add(Card(Rank.QUEEN, suit, back))
+                add(Card(Rank.SEVEN, suit, back, true))
+                add(Card(Rank.NINE, suit, back, true))
+                add(Card(Rank.TEN, suit, back, true))
+                add(Card(Rank.JACK, suit, back, true))
+                add(Card(Rank.QUEEN, suit, back, true))
             }
         }
     })
