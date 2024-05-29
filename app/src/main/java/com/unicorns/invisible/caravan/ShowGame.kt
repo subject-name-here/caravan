@@ -585,7 +585,7 @@ fun CaravanOnField(
 }
 
 @Composable
-fun ShowDeck(cResources: CResources, activity: MainActivity, isAlt: Boolean = false, isToBottom: Boolean = false, isKnown: Boolean = true) {
+fun ShowDeck(cResources: CResources, activity: MainActivity, isToBottom: Boolean = false, isKnown: Boolean = true) {
     Column(
         modifier = Modifier
             .fillMaxHeight()
@@ -604,15 +604,13 @@ fun ShowDeck(cResources: CResources, activity: MainActivity, isAlt: Boolean = fa
         val link = "file:///android_asset/caravan_cards_back/${
             if (!isKnown) {
                 null
-            } else if (!isToBottom) {
-                val back = cResources.getDeckBack()
+            } else {
+                val (back, isAlt) = cResources.getDeckBack() ?: (null to false)
                 if (!isAlt) {
                     back?.getCardBackAsset()
                 } else {
                     back?.getCardBackAltAsset()
                 }
-            } else {
-                cResources.getDeckBack()?.getCardBackAssetSplit(activity)
             }
         }"
         AsyncImage(

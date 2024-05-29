@@ -1,0 +1,1592 @@
+diff --git a/app/src/main/java/com/unicorns/invisible/caravan/DeckSelection.kt b/app/src/main/java/com/unicorns/invisible/caravan/DeckSelection.kt
+index ce0d298..a88bdc0 100644
+--- a/app/src/main/java/com/unicorns/invisible/caravan/DeckSelection.kt
++++ b/app/src/main/java/com/unicorns/invisible/caravan/DeckSelection.kt
+@@ -4,9 +4,12 @@ import androidx.compose.foundation.background
+ import androidx.compose.foundation.border
+ import androidx.compose.foundation.clickable
+ import androidx.compose.foundation.layout.Arrangement
++import androidx.compose.foundation.layout.Column
+ import androidx.compose.foundation.layout.Row
+ import androidx.compose.foundation.layout.Spacer
++import androidx.compose.foundation.layout.fillMaxHeight
+ import androidx.compose.foundation.layout.fillMaxSize
++import androidx.compose.foundation.layout.fillMaxWidth
+ import androidx.compose.foundation.layout.height
+ import androidx.compose.foundation.layout.padding
+ import androidx.compose.foundation.layout.width
+@@ -47,20 +50,22 @@ import com.unicorns.invisible.caravan.utils.scrollbar
+ @Composable
+ fun DeckSelection(
+     activity: MainActivity,
+-    getSelectedBack: () -> CardBack,
+-    setSelectedBack: (CardBack) -> Unit,
++    getSelectedBack: () -> Pair<CardBack, Boolean>,
++    setSelectedBack: (CardBack, Boolean) -> Unit,
+     goBack: () -> Unit,
+ ) {
+-    fun getModifier(cardBack: CardBack): Modifier {
++    fun getModifier(cardBack: CardBack, isAlt: Boolean): Modifier {
+         activity.save?.let { save ->
+-            if (save.availableDecks[cardBack] == true) {
+-                return if (getSelectedBack() == cardBack) {
++            val checker = if (isAlt) save.availableDecksAlt else save.availableDecks
++            if (checker[cardBack] == true) {
++                val (backSelected, isAltSelected) = getSelectedBack()
++                return if (backSelected == cardBack && isAltSelected == isAlt) {
+                     Modifier.border(width = 4.dp, color = getAccentColor(activity))
+                 } else {
+                     Modifier
+                 }.clickable {
+-                    setSelectedBack(cardBack)
+-                    save.selectedDeck = cardBack
++                    setSelectedBack(cardBack, isAlt)
++                    save.selectedDeck = cardBack to isAlt
+                     save(activity, save)
+                 }
+             }
+@@ -76,103 +81,159 @@ fun DeckSelection(
+         return
+     }
+ 
+-    val state = rememberLazyListState()
+-    LazyColumn(
+-        modifier = Modifier
+-            .scrollbar(state, knobColor = getKnobColor(activity), trackColor = getTrackColor(activity), horizontal = false)
+-            .fillMaxSize().background(getBackgroundColor(activity)),
+-        state = state,
+-        horizontalAlignment = Alignment.CenterHorizontally,
+-        verticalArrangement = Arrangement.Center,
+-    ) {
+-        item {
+-            Spacer(modifier = Modifier.height(12.dp))
+-            Text(
+-                text = stringResource(R.string.deck_select),
+-                fontFamily = FontFamily(Font(R.font.monofont)),
+-                style = TextStyle(color = getTextColor(activity), fontSize = 24.sp)
+-            )
+-            Spacer(modifier = Modifier.height(12.dp))
+-            Row {
+-                AsyncImage(
+-                    model = "file:///android_asset/caravan_cards_back/FNV_Caravan_card_back_-_standard.webp",
+-                    contentDescription = "",
+-                    modifier = getModifier(CardBack.STANDARD).clip(RoundedCornerShape(6f))
+-                )
+-                Spacer(modifier = Modifier.width(12.dp))
+-                AsyncImage(
+-                    model = "file:///android_asset/caravan_cards_back/FNV_Caravan_card_back_-_Tops.webp",
+-                    contentDescription = "",
+-                    modifier = getModifier(CardBack.TOPS).clip(RoundedCornerShape(6f))
+-                )
+-                Spacer(modifier = Modifier.width(12.dp))
+-                AsyncImage(
+-                    model = "file:///android_asset/caravan_cards_back/FNV_Caravan_card_back_-_Lucky_38.webp",
+-                    contentDescription = "",
+-                    modifier = getModifier(CardBack.LUCKY_38).clip(RoundedCornerShape(6f))
++    Column(Modifier.fillMaxSize().background(getBackgroundColor(activity))) {
++
++        val state = rememberLazyListState()
++        LazyColumn(
++            modifier = Modifier
++                .scrollbar(state, knobColor = getKnobColor(activity), trackColor = getTrackColor(activity), horizontal = false)
++                .fillMaxWidth().fillMaxHeight(0.5f),
++            state = state,
++            horizontalAlignment = Alignment.CenterHorizontally,
++            verticalArrangement = Arrangement.Center,
++        ) {
++            item {
++                Spacer(modifier = Modifier.height(12.dp))
++                Text(
++                    text = stringResource(R.string.deck_select),
++                    fontFamily = FontFamily(Font(R.font.monofont)),
++                    style = TextStyle(color = getTextColor(activity), fontSize = 24.sp)
+                 )
++                Spacer(modifier = Modifier.height(12.dp))
++                Row {
++                    AsyncImage(
++                        model = "file:///android_asset/caravan_cards_back/" + CardBack.STANDARD.getCardBackAsset(),
++                        contentDescription = "",
++                        modifier = getModifier(CardBack.STANDARD, false).clip(RoundedCornerShape(6f))
++                    )
++                    Spacer(modifier = Modifier.width(12.dp))
++                    AsyncImage(
++                        model = "file:///android_asset/caravan_cards_back/" + CardBack.TOPS.getCardBackAsset(),
++                        contentDescription = "",
++                        modifier = getModifier(CardBack.TOPS, false).clip(RoundedCornerShape(6f))
++                    )
++                    Spacer(modifier = Modifier.width(12.dp))
++                    AsyncImage(
++                        model = "file:///android_asset/caravan_cards_back/" + CardBack.LUCKY_38.getCardBackAsset(),
++                        contentDescription = "",
++                        modifier = getModifier(CardBack.LUCKY_38, false).clip(RoundedCornerShape(6f))
++                    )
++                }
++                Spacer(modifier = Modifier.height(12.dp))
++                Row {
++                    AsyncImage(
++                        model = "file:///android_asset/caravan_cards_back/" + CardBack.ULTRA_LUXE.getCardBackAsset(),
++                        contentDescription = "",
++                        modifier = getModifier(CardBack.ULTRA_LUXE, false).clip(RoundedCornerShape(6f))
++                    )
++                    Spacer(modifier = Modifier.width(12.dp))
++                    AsyncImage(
++                        model = "file:///android_asset/caravan_cards_back/" + CardBack.GOMORRAH.getCardBackAsset(),
++                        contentDescription = "",
++                        modifier = getModifier(CardBack.GOMORRAH, false).clip(RoundedCornerShape(6f))
++                    )
++                    Spacer(modifier = Modifier.width(12.dp))
++                    AsyncImage(
++                        model = "file:///android_asset/caravan_cards_back/" + CardBack.VAULT_21.getCardBackAsset(),
++                        contentDescription = "",
++                        modifier = getModifier(CardBack.VAULT_21, false).clip(RoundedCornerShape(6f))
++                    )
++                }
++                Spacer(modifier = Modifier.height(12.dp))
++                Row {
++                    AsyncImage(
++                        model = "file:///android_asset/caravan_cards_back/" + CardBack.ULTRA_LUXE.getCardBackAltAsset(),
++                        contentDescription = "",
++                        modifier = getModifier(CardBack.ULTRA_LUXE, true).clip(RoundedCornerShape(6f))
++                    )
++                    Spacer(modifier = Modifier.width(12.dp))
++                    AsyncImage(
++                        model = "file:///android_asset/caravan_cards_back/" + CardBack.GOMORRAH.getCardBackAltAsset(),
++                        contentDescription = "",
++                        modifier = getModifier(CardBack.GOMORRAH, true).clip(RoundedCornerShape(6f))
++                    )
++                    Spacer(modifier = Modifier.width(12.dp))
++                    AsyncImage(
++                        model = "file:///android_asset/caravan_cards_back/" + CardBack.VAULT_21.getCardBackAltAsset(),
++                        contentDescription = "",
++                        modifier = getModifier(CardBack.VAULT_21, true).clip(RoundedCornerShape(6f))
++                    )
++                }
++                Spacer(modifier = Modifier.height(12.dp))
++                Row {
++                    AsyncImage(
++                        model = "file:///android_asset/caravan_cards_back/" + CardBack.STANDARD.getCardBackAltAsset(),
++                        contentDescription = "",
++                        modifier = getModifier(CardBack.STANDARD, true).clip(RoundedCornerShape(6f))
++                    )
++                    Spacer(modifier = Modifier.width(12.dp))
++                    AsyncImage(
++                        model = "file:///android_asset/caravan_cards_back/" + CardBack.TOPS.getCardBackAltAsset(),
++                        contentDescription = "",
++                        modifier = getModifier(CardBack.TOPS, true).clip(RoundedCornerShape(6f))
++                    )
++                    Spacer(modifier = Modifier.width(12.dp))
++                    AsyncImage(
++                        model = "file:///android_asset/caravan_cards_back/" + CardBack.LUCKY_38.getCardBackAltAsset(),
++                        contentDescription = "",
++                        modifier = getModifier(CardBack.LUCKY_38, true).clip(RoundedCornerShape(6f))
++                    )
++                }
++                Spacer(modifier = Modifier.height(24.dp))
++
+             }
+-            Spacer(modifier = Modifier.height(12.dp))
+-            Row {
+-                AsyncImage(
+-                    model = "file:///android_asset/caravan_cards_back/FNV_Caravan_card_back_-_Ultra-Luxe.webp",
+-                    contentDescription = "",
+-                    modifier = getModifier(CardBack.ULTRA_LUXE).clip(RoundedCornerShape(6f))
++        }
++
++        val state2 = rememberLazyListState()
++        LazyColumn(
++            modifier = Modifier
++                .scrollbar(state2, knobColor = getKnobColor(activity), trackColor = getTrackColor(activity), horizontal = false)
++                .fillMaxSize(),
++            state = state2,
++            horizontalAlignment = Alignment.CenterHorizontally,
++            verticalArrangement = Arrangement.Center,
++        ) {
++            item {
++                Text(
++                    text = stringResource(R.string.deck_select_about),
++                    fontFamily = FontFamily(Font(R.font.monofont)),
++                    modifier = Modifier.padding(12.dp),
++                    textAlign = TextAlign.Center,
++                    style = TextStyle(color = getTextColor(activity), fontSize = 16.sp)
++                )
++
++                HorizontalDivider(color = getDividerColor(activity))
++                Spacer(modifier = Modifier.height(20.dp))
++                Text(
++                    text = stringResource(R.string.deck_custom),
++                    modifier = Modifier.clickable {
++                        setCustomDeck = true
++                    }.background(getTextBackgroundColor(activity)).padding(8.dp),
++                    fontFamily = FontFamily(Font(R.font.monofont)),
++                    style = TextStyle(color = getTextColor(activity), fontSize = 20.sp)
+                 )
+-                Spacer(modifier = Modifier.width(12.dp))
+-                AsyncImage(
+-                    model = "file:///android_asset/caravan_cards_back/FNV_Caravan_card_back_-_Gomorrah.webp",
+-                    contentDescription = "",
+-                    modifier = getModifier(CardBack.GOMORRAH).clip(RoundedCornerShape(6f))
++                Spacer(modifier = Modifier.height(12.dp))
++
++                Text(
++                    text = stringResource(R.string.deck_custom_about),
++                    Modifier.padding(12.dp),
++                    fontFamily = FontFamily(Font(R.font.monofont)),
++                    textAlign = TextAlign.Center,
++                    style = TextStyle(color = getTextColor(activity), fontSize = 14.sp)
+                 )
+-                Spacer(modifier = Modifier.width(12.dp))
+-                AsyncImage(
+-                    model = "file:///android_asset/caravan_cards_back/FNV_Caravan_card_back_-_Sierra_Madre.webp",
+-                    contentDescription = "",
+-                    modifier = getModifier(CardBack.SIERRA_MADRE).clip(RoundedCornerShape(6f))
++                Spacer(modifier = Modifier.height(20.dp))
++                HorizontalDivider(color = getDividerColor(activity))
++                Spacer(modifier = Modifier.height(32.dp))
++                Text(
++                    text = stringResource(R.string.menu_back),
++                    modifier = Modifier.clickable {
++                        goBack()
++                    }.background(getTextBackgroundColor(activity)).padding(8.dp),
++                    fontFamily = FontFamily(Font(R.font.monofont)),
++                    style = TextStyle(color = getTextColor(activity), fontSize = 24.sp)
+                 )
++                Spacer(modifier = Modifier.height(32.dp))
+             }
+-            Spacer(modifier = Modifier.height(24.dp))
+-
+-            Text(
+-                text = stringResource(R.string.deck_select_about),
+-                fontFamily = FontFamily(Font(R.font.monofont)),
+-                modifier = Modifier.padding(12.dp),
+-                textAlign = TextAlign.Center,
+-                style = TextStyle(color = getTextColor(activity), fontSize = 16.sp)
+-            )
+-
+-            HorizontalDivider(color = getDividerColor(activity))
+-            Spacer(modifier = Modifier.height(20.dp))
+-            Text(
+-                text = stringResource(R.string.deck_custom),
+-                modifier = Modifier.clickable {
+-                    setCustomDeck = true
+-                }.background(getTextBackgroundColor(activity)).padding(8.dp),
+-                fontFamily = FontFamily(Font(R.font.monofont)),
+-                style = TextStyle(color = getTextColor(activity), fontSize = 20.sp)
+-            )
+-            Spacer(modifier = Modifier.height(12.dp))
+-
+-            Text(
+-                text = stringResource(R.string.deck_custom_about),
+-                Modifier.padding(12.dp),
+-                fontFamily = FontFamily(Font(R.font.monofont)),
+-                textAlign = TextAlign.Center,
+-                style = TextStyle(color = getTextColor(activity), fontSize = 14.sp)
+-            )
+-            Spacer(modifier = Modifier.height(20.dp))
+-            HorizontalDivider(color = getDividerColor(activity))
+-            Spacer(modifier = Modifier.height(32.dp))
+-            Text(
+-                text = stringResource(R.string.menu_back),
+-                modifier = Modifier.clickable {
+-                    goBack()
+-                }.background(getTextBackgroundColor(activity)).padding(8.dp),
+-                fontFamily = FontFamily(Font(R.font.monofont)),
+-                style = TextStyle(color = getTextColor(activity), fontSize = 24.sp)
+-            )
+-            Spacer(modifier = Modifier.height(32.dp))
+         }
+     }
+ }
+\ No newline at end of file
+diff --git a/app/src/main/java/com/unicorns/invisible/caravan/MainActivity.kt b/app/src/main/java/com/unicorns/invisible/caravan/MainActivity.kt
+index 32c2b78..f1afe8f 100644
+--- a/app/src/main/java/com/unicorns/invisible/caravan/MainActivity.kt
++++ b/app/src/main/java/com/unicorns/invisible/caravan/MainActivity.kt
+@@ -114,7 +114,7 @@ class MainActivity : AppCompatActivity() {
+ 
+             var showSettings by rememberSaveable { mutableIntStateOf(0) }
+ 
+-            var selectedDeck by rememberSaveable { mutableStateOf(save?.selectedDeck ?: CardBack.STANDARD) }
++            var selectedDeck by rememberSaveable { mutableStateOf(save?.selectedDeck ?: (CardBack.STANDARD to false)) }
+ 
+             var showAlertDialog by remember { mutableStateOf(false) }
+             var alertDialogHeader by remember { mutableStateOf("") }
+@@ -178,7 +178,7 @@ class MainActivity : AppCompatActivity() {
+                     DeckSelection(
+                         this,
+                         { selectedDeck },
+-                        { selectedDeck = it }
++                        { back, isAlt -> selectedDeck = back to isAlt }
+                     ) { deckSelection = false }
+                 }
+                 showAbout -> {
+diff --git a/app/src/main/java/com/unicorns/invisible/caravan/PvE.kt b/app/src/main/java/com/unicorns/invisible/caravan/PvE.kt
+index 30bf462..93708e2 100644
+--- a/app/src/main/java/com/unicorns/invisible/caravan/PvE.kt
++++ b/app/src/main/java/com/unicorns/invisible/caravan/PvE.kt
+@@ -45,6 +45,7 @@ import com.unicorns.invisible.caravan.model.enemy.EnemySwank
+ import com.unicorns.invisible.caravan.model.primitives.CResources
+ import com.unicorns.invisible.caravan.model.primitives.Card
+ import com.unicorns.invisible.caravan.model.primitives.CustomDeck
++import com.unicorns.invisible.caravan.model.primitives.Rank
+ import com.unicorns.invisible.caravan.save.Save
+ import com.unicorns.invisible.caravan.save.save
+ import com.unicorns.invisible.caravan.utils.CheckboxCustom
+@@ -61,7 +62,7 @@ import java.util.Locale
+ @Composable
+ fun ShowPvE(
+     activity: MainActivity,
+-    selectedDeck: () -> CardBack,
++    selectedDeck: () -> Pair<CardBack, Boolean>,
+     showAlertDialog: (String, String) -> Unit,
+     goBack: () -> Unit
+ ) {
+@@ -77,7 +78,7 @@ fun ShowPvE(
+ 
+     var checkedCustomDeck by rememberSaveable { mutableStateOf(activity.save?.useCustomDeck ?: false) }
+     fun getPlayerDeck(): CResources {
+-        return if (checkedCustomDeck) CResources(activity.save?.getCustomDeckCopy()!!) else CResources(selectedDeck())
++        return if (checkedCustomDeck) CResources(activity.save?.getCustomDeckCopy()!!) else CResources(selectedDeck().first, selectedDeck().second)
+     }
+ 
+     if (showGameEasy) {
+@@ -472,24 +473,25 @@ fun StartGame(
+         it.onWin = {
+             var message = activity.getString(R.string.you_win)
+             activity.save?.let { save ->
+-                if (!isCustom) {
+-                    enemy.getRewardDeck()?.let { deck ->
+-                        val cardBacks = deck.toList().map { card -> card.back }.toSet()
+-                        if (cardBacks.size == 1) {
+-                            val cardBack = cardBacks.iterator().next()
+-                            if (save.availableDecks[cardBack] != true) {
+-                                save.availableDecks[cardBack] = true
+-                                message += activity.getString(
+-                                    R.string.you_have_unlocked_deck,
+-                                    activity.getString(cardBack.getDeckName())
+-                                )
+-                            }
++                enemy.getRewardBack()?.let { back ->
++                    if (!enemy.isAlt()) {
++                        if (save.availableDecks[back] != true) {
++                            save.availableDecks[back] = true
++                            message += activity.getString(
++                                R.string.you_have_unlocked_deck,
++                                activity.getString(back.getDeckName())
++                            )
+                         }
+-                        message += winCard(activity, save, deck, 4)
+-                    }
+-                } else {
+-                    enemy.getRewardDeck()?.let { deck ->
+-                        message += winCard(activity, save, deck, (1..2).random())
++                        message += winCard(activity, save, back, 3, isAlt = false, isCustom)
++                    } else {
++                        if (save.availableDecksAlt[back] != true) {
++                            save.availableDecksAlt[back] = true
++                            message += activity.getString(
++                                R.string.you_have_unlocked_deck_alt,
++                                activity.getString(back.getDeckName())
++                            )
++                        }
++                        message += winCard(activity, save, back, 1, isAlt = true, isCustom)
+                     }
+                 }
+                 save.gamesFinished++
+@@ -521,18 +523,38 @@ fun StartGame(
+     }
+ }
+ 
+-fun winCard(activity: MainActivity, save: Save, deck: CustomDeck, numberOfCards: Int): String {
+-    fun checkCard(card: Card) = save.availableCards.none { aCard -> aCard.rank == card.rank && aCard.suit == card.suit && aCard.back == card.back }
+-    val reward = deck.takeRandom(numberOfCards)
++fun winCard(activity: MainActivity, save: Save, back: CardBack, numberOfCards: Int, isAlt: Boolean, isCustom: Boolean): String {
++    fun checkCard(card: Card): Boolean {
++        return save.availableCards.none { aCard -> aCard.rank == card.rank && aCard.suit == card.suit && aCard.back == card.back && aCard.isAlt == card.isAlt }
++    }
++    val deck = CustomDeck(back, isAlt)
++    val reward = deck.takeRandom(if (isCustom) numberOfCards else 7).sortedByDescending { if (checkCard(it)) 1 else 0 }.take(numberOfCards)
+     var result = activity.getString(R.string.your_prize_cards_from)
+     reward.forEach { card ->
+-        val cardName = "${activity.getString(card.rank.nameId)} ${activity.getString(card.suit.nameId)}, ${activity.getString(card.back.getDeckName())}"
++        val deckName = if (card.back == CardBack.STANDARD && isAlt) {
++            activity.getString(card.back.getSierraMadreDeckName())
++        } else {
++            activity.getString(card.back.getDeckName())
++        }
++        val cardName = if (card.rank == Rank.JOKER) {
++            "${activity.getString(card.rank.nameId)} ${card.suit.ordinal + 1}, $deckName"
++        } else {
++            "${activity.getString(card.rank.nameId)} ${activity.getString(card.suit.nameId)}, $deckName"
++        }
+         result += if (checkCard(card)) {
+             save.availableCards.add(card)
+-            activity.getString(R.string.new_card, cardName)
++            if (isAlt && card.back != CardBack.STANDARD) {
++                activity.getString(R.string.new_card_alt, cardName)
++            } else {
++                activity.getString(R.string.new_card, cardName)
++            }
+         } else {
+-            activity.getString(R.string.old_card, cardName)
+-        } + ""
++            if (isAlt && card.back != CardBack.STANDARD) {
++                activity.getString(R.string.old_card_alt, cardName)
++            } else {
++                activity.getString(R.string.old_card, cardName)
++            }
++        }
+     }
+     return result
+ }
+\ No newline at end of file
+diff --git a/app/src/main/java/com/unicorns/invisible/caravan/PvP.kt b/app/src/main/java/com/unicorns/invisible/caravan/PvP.kt
+index 960b17d..f469a5a 100644
+--- a/app/src/main/java/com/unicorns/invisible/caravan/PvP.kt
++++ b/app/src/main/java/com/unicorns/invisible/caravan/PvP.kt
+@@ -49,6 +49,7 @@ import com.unicorns.invisible.caravan.model.primitives.Rank
+ import com.unicorns.invisible.caravan.model.primitives.Suit
+ import com.unicorns.invisible.caravan.multiplayer.decodeMove
+ import com.unicorns.invisible.caravan.save.json
++import com.unicorns.invisible.caravan.save.save
+ import com.unicorns.invisible.caravan.utils.CheckboxCustom
+ import com.unicorns.invisible.caravan.utils.getBackgroundColor
+ import com.unicorns.invisible.caravan.utils.getDividerColor
+@@ -84,11 +85,11 @@ fun customDeckToInts(customDeck: CustomDeck): List<ULong> {
+         }
+         Rank.entries.forEach { rank ->
+             if (rank == Rank.JOKER) {
+-                updateCode(Card(rank, Suit.HEARTS, cardBack))
+-                updateCode(Card(rank, Suit.CLUBS, cardBack))
++                updateCode(Card(rank, Suit.HEARTS, cardBack, false))
++                updateCode(Card(rank, Suit.CLUBS, cardBack, false))
+             } else {
+                 Suit.entries.forEach { suit ->
+-                    updateCode(Card(rank, suit, cardBack))
++                    updateCode(Card(rank, suit, cardBack, false))
+                 }
+             }
+         }
+@@ -111,7 +112,7 @@ fun isRoomNumberIncorrect(roomNumber: String): Boolean {
+ @Composable
+ fun ShowPvP(
+     activity: MainActivity,
+-    selectedDeck: () -> CardBack,
++    selectedDeck: () -> Pair<CardBack, Boolean>,
+     showAlertDialog: (String, String) -> Unit,
+     goBack: () -> Unit
+ ) {
+@@ -162,11 +163,11 @@ fun ShowPvP(
+             var cnt = 0
+             Rank.entries.forEach { rank ->
+                 if (rank == Rank.JOKER) {
+-                    processCard(index, cnt++, Card(rank, Suit.HEARTS, cardBack))
+-                    processCard(index, cnt++, Card(rank, Suit.CLUBS, cardBack))
++                    processCard(index, cnt++, Card(rank, Suit.HEARTS, cardBack, false))
++                    processCard(index, cnt++, Card(rank, Suit.CLUBS, cardBack, false))
+                 } else {
+                     Suit.entries.forEach { suit ->
+-                        processCard(index, cnt++, Card(rank, suit, cardBack))
++                        processCard(index, cnt++, Card(rank, suit, cardBack, false))
+                     }
+                 }
+             }
+@@ -209,9 +210,10 @@ fun ShowPvP(
+             return
+         }
+         isRoomCreated = roomNumber.toIntOrNull() ?: return
++        val deckPair = selectedDeck()
+         val deckCodes = customDeckToInts(
+             if (checkedCustomDeck) activity.save!!.getCustomDeckCopy() else CustomDeck(
+-                selectedDeck()
++                deckPair.first, deckPair.second
+             )
+         )
+         sendRequest(
+@@ -249,7 +251,7 @@ fun ShowPvP(
+         sendRequest(
+             "$crvnUrl/crvn/join?room=$isRoomCreated" +
+                     "&jid=${activity.id}" +
+-                    "&back=${selectedDeck().ordinal}" +
++                    "&back=${selectedDeck().first.ordinal}" +
+                     "&deck0=${deckCodes[0]}" +
+                     "&deck1=${deckCodes[1]}" +
+                     "&deck2=${deckCodes[2]}" +
+@@ -299,7 +301,10 @@ fun ShowPvP(
+     if (enemyDeck.size >= MainActivity.MIN_DECK_SIZE) {
+         StartPvP(
+             activity = activity,
+-            playerCResources = if (checkedCustomDeck) CResources(activity.save!!.getCustomDeckCopy()) else CResources(selectedDeck()),
++            playerCResources = if (checkedCustomDeck)
++                CResources(activity.save!!.getCustomDeckCopy())
++            else
++                CResources(selectedDeck().first, selectedDeck().second),
+             enemyStartDeck = run {
+                 val deck = CustomDeck()
+                 repeat(enemyDeck.size) {
+@@ -490,7 +495,9 @@ fun StartPvP(
+     }
+     game.also {
+         it.onWin = {
+-            showAlertDialog(activity.getString(R.string.result), activity.getString(R.string.you_win))
++            showAlertDialog(activity.getString(R.string.result), activity.getString(R.string.you_win) +
++                    winCard(activity, activity.save!!, CardBack.STANDARD, 1, isAlt = true, isCustom = false))
++            save(activity, activity.save!!)
+         }
+         it.onLose = {
+             showAlertDialog(activity.getString(R.string.result), activity.getString(R.string.you_lose))
+@@ -525,6 +532,7 @@ fun StartPvP(
+                     Rank.entries[move.newCardInHandRank],
+                     Suit.entries[move.newCardInHandSuit],
+                     CardBack.entries[move.newCardInHandBack],
++                    isAlt = move.isNewCardAlt
+                 )
+                 game.enemyCResources.addCardToHandPvP(cardReceived)
+ 
+@@ -561,7 +569,8 @@ fun StartPvP(
+                 "&move_code=0" +
+                 "&new_card_back_in_hand_code=${card.back.ordinal}" +
+                 "&new_card_rank_in_hand_code=${card.rank.ordinal}" +
+-                "&new_card_suit_in_hand_code=${card.suit.ordinal}"
++                "&new_card_suit_in_hand_code=${card.suit.ordinal}" +
++                "&is_alt=${(activity.save?.altDecksChosen?.get(card.back) == true).toPythonBool()}"
+         sendRequest(link) { _ ->
+             pingForMove(::sendHandCard)
+         }
+diff --git a/app/src/main/java/com/unicorns/invisible/caravan/SetCustomDeck.kt b/app/src/main/java/com/unicorns/invisible/caravan/SetCustomDeck.kt
+index aaf013c..a4dd2f3 100644
+--- a/app/src/main/java/com/unicorns/invisible/caravan/SetCustomDeck.kt
++++ b/app/src/main/java/com/unicorns/invisible/caravan/SetCustomDeck.kt
+@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
+ import androidx.compose.foundation.layout.fillMaxWidth
+ import androidx.compose.foundation.layout.padding
+ import androidx.compose.foundation.layout.wrapContentHeight
++import androidx.compose.foundation.lazy.LazyColumn
+ import androidx.compose.foundation.lazy.LazyRow
+ import androidx.compose.foundation.lazy.items
+ import androidx.compose.foundation.lazy.rememberLazyListState
+@@ -21,12 +22,14 @@ import androidx.compose.runtime.getValue
+ import androidx.compose.runtime.key
+ import androidx.compose.runtime.mutableStateOf
+ import androidx.compose.runtime.remember
++import androidx.compose.runtime.saveable.rememberSaveable
+ import androidx.compose.runtime.setValue
+ import androidx.compose.ui.Alignment
+ import androidx.compose.ui.Modifier
+ import androidx.compose.ui.draw.alpha
+ import androidx.compose.ui.draw.clip
+ import androidx.compose.ui.graphics.Color
++import androidx.compose.ui.layout.ContentScale
+ import androidx.compose.ui.res.stringResource
+ import androidx.compose.ui.text.TextStyle
+ import androidx.compose.ui.text.font.Font
+@@ -40,6 +43,7 @@ import com.unicorns.invisible.caravan.model.getCardName
+ import com.unicorns.invisible.caravan.model.primitives.Card
+ import com.unicorns.invisible.caravan.model.primitives.CustomDeck
+ import com.unicorns.invisible.caravan.save.save
++import com.unicorns.invisible.caravan.utils.CheckboxCustom
+ import com.unicorns.invisible.caravan.utils.getAccentColor
+ import com.unicorns.invisible.caravan.utils.getBackgroundColor
+ import com.unicorns.invisible.caravan.utils.getKnobColor
+@@ -66,12 +70,13 @@ fun SetCustomDeck(
+             } else {
+                 deck.add(card)
+             }
+-            save(activity, activity.save!!)
+         }
++        save(activity, activity.save!!)
++
+     }
+     fun isAvailable(card: Card): Boolean {
+         return activity.save?.availableCards?.let { cards ->
+-            cards.any { it.rank == card.rank && it.suit == card.suit && it.back == card.back }
++            cards.any { it.rank == card.rank && it.suit == card.suit && it.back == card.back && it.isAlt == card.isAlt }
+         } ?: false
+     }
+ 
+@@ -81,53 +86,121 @@ fun SetCustomDeck(
+         key(updater) {
+             ShowCharacteristics(activity)
+         }
+-        Column(Modifier.fillMaxHeight(0.9f)) {
+-            CardBack.entries.forEach { back ->
+-                val state = rememberLazyListState()
+-                LazyRow(
+-                    Modifier
+-                        .padding(4.dp)
+-                        .weight(1f)
+-                        .scrollbar(state, knobColor = getKnobColor(activity), trackColor = getTrackColor(activity), horizontal = true), state = state) lambda@ {
+-                    if (activity.save?.availableDecks?.get(back) != true) {
+-                        return@lambda
+-                    }
+-                    items(CustomDeck(back).toList().sortedWith { o1, o2 ->
+-                        if (o1.rank != o2.rank) {
+-                            o2.rank.value - o1.rank.value
+-                        } else {
+-                            o1.suit.ordinal - o2.suit.ordinal
+-                        }
+-                    }) { card ->
+-                        var isSelected by remember { mutableStateOf(isInCustomDeck(card)) }
+-                        if (isAvailable(card)) {
+-                            AsyncImage(
+-                                model = "file:///android_asset/caravan_cards/${getCardName(card)}",
+-                                contentDescription = "",
+-                                Modifier
+-                                    .clickable {
+-                                        toggleToCustomDeck(card)
+-                                        isSelected = !isSelected
+-                                        updater = !updater
+-                                    }
+-                                    .border(
+-                                        width = (if (isSelected) 4 else 0).dp,
+-                                        color = getAccentColor(activity)
+-                                    )
+-                                    .padding(4.dp)
+-                                    .alpha(if (isSelected) 1f else 0.5f)
+-                                    .background(if (isSelected) getAccentColor(activity) else Color.Transparent)
+-                                    .clip(RoundedCornerShape(6f))
++
++        Text(
++            text = "Tap card back to open cards",
++            fontFamily = FontFamily(Font(R.font.monofont)),
++            modifier = Modifier.fillMaxWidth().wrapContentHeight().padding(8.dp),
++            textAlign = TextAlign.Center,
++            style = TextStyle(color = getTextColor(activity), fontSize = 24.sp)
++        )
++
++        val mainState = rememberLazyListState()
++        LazyColumn(
++            Modifier.fillMaxHeight(0.9f).fillMaxWidth()
++            .scrollbar(mainState, horizontal = false, knobColor = getKnobColor(activity), trackColor = getTrackColor(activity)),
++            mainState
++        ) {
++            item {
++                CardBack.entries.forEach { back ->
++                    var rowTabShow by remember { mutableStateOf(false) }
++                    var check by rememberSaveable { mutableStateOf(activity.save?.altDecksChosen?.get(back) ?: false) }
++                    Row(Modifier.padding(4.dp), horizontalArrangement = Arrangement.Start) {
++                        Column(Modifier.padding(horizontal = 8.dp).fillMaxWidth(0.33f)) {
++                            Text(
++                                text = stringResource(
++                                    if (back == CardBack.STANDARD && check)
++                                        back.getSierraMadreDeckName()
++                                    else
++                                        back.getDeckName()
++                                ),
++                                modifier = Modifier.align(Alignment.CenterHorizontally),
++                                fontFamily = FontFamily(Font(R.font.monofont)),
++                                style = TextStyle(color = getTextColor(activity), fontSize = 12.sp)
+                             )
+-                        } else {
+                             AsyncImage(
+-                                model = "file:///android_asset/caravan_cards_back/${card.back.getCardBackAsset()}",
++                                model = "file:///android_asset/caravan_cards_back/${if (check) back.getCardBackAltAsset() else back.getCardBackAsset()}",
+                                 contentDescription = "",
+-                                Modifier
+-                                    .padding(4.dp)
+-                                    .alpha(0.33f)
++                                modifier = Modifier.align(Alignment.CenterHorizontally)
+                                     .clip(RoundedCornerShape(6f))
++                                    .clickable { rowTabShow = !rowTabShow },
++                                contentScale = ContentScale.Fit
++                            )
++                        }
++                        Text(
++                            text = "Get cards from:\n" + back.getOwners().joinToString("\n") { activity.getString(it) },
++                            modifier = Modifier.fillMaxWidth(0.66f).align(Alignment.CenterVertically),
++                            fontFamily = FontFamily(Font(R.font.monofont)),
++                            style = TextStyle(color = getTextColor(activity), fontSize = 12.sp)
++                        )
++                        Column(Modifier.fillMaxSize().padding(vertical = 8.dp), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
++                            Text(
++                                text = "ALT!",
++                                modifier = Modifier.fillMaxWidth().wrapContentHeight(),
++                                fontFamily = FontFamily(Font(R.font.monofont)),
++                                textAlign = TextAlign.Center,
++                                style = TextStyle(color = getTextColor(activity), fontSize = 12.sp)
+                             )
++                            CheckboxCustom(
++                                activity,
++                                { check },
++                                {
++                                    activity.save!!.altDecksChosen[back] = !check
++                                    save(activity, activity.save!!)
++                                    check = !check
++                                    updater = !updater
++                                }
++                            ) { activity.save!!.availableDecksAlt[back] == true }
++                        }
++                    }
++                    if (rowTabShow) {
++                        val state = rememberLazyListState()
++                        key (check) {
++                            LazyRow(
++                                Modifier
++                                    .weight(1f)
++                                    .scrollbar(state, knobColor = getKnobColor(activity), trackColor = getTrackColor(activity), horizontal = true), state = state) lambda@ {
++                                items(CustomDeck(back, check).toList().sortedWith { o1, o2 ->
++                                    if (o1.rank != o2.rank) {
++                                        o2.rank.value - o1.rank.value
++                                    } else {
++                                        o1.suit.ordinal - o2.suit.ordinal
++                                    }
++                                }) { card ->
++                                    var isSelected by remember { mutableStateOf(
++                                        isInCustomDeck(card)
++                                    ) }
++                                    if (isAvailable(card)) {
++                                        AsyncImage(
++                                            model = "file:///android_asset/caravan_cards/${getCardName(card)}",
++                                            contentDescription = "",
++                                            Modifier
++                                                .clickable {
++                                                    toggleToCustomDeck(card)
++                                                    isSelected = !isSelected
++                                                    updater = !updater
++                                                }
++                                                .border(
++                                                    width = (if (isSelected) 4 else 0).dp,
++                                                    color = getAccentColor(activity)
++                                                )
++                                                .padding(4.dp)
++                                                .alpha(if (isSelected) 1f else 0.5f)
++                                                .background(if (isSelected) getAccentColor(activity) else Color.Transparent)
++                                                .clip(RoundedCornerShape(6f))
++                                        )
++                                    } else {
++                                        AsyncImage(
++                                            model = "file:///android_asset/caravan_cards_back/${card.back.getCardBackAssetSplit(activity)}",
++                                            contentDescription = "",
++                                            Modifier
++                                                .padding(4.dp)
++                                                .alpha(0.33f)
++                                                .clip(RoundedCornerShape(6f))
++                                        )
++                                    }
++                                }
++                            }
+                         }
+                     }
+                 }
+@@ -154,16 +227,16 @@ fun SetCustomDeck(
+ @Composable
+ fun ShowCharacteristics(activity: MainActivity) {
+     Row(Modifier.padding(8.dp), verticalAlignment = Alignment.CenterVertically) {
+-        val deckSize = activity.save?.customDeck?.size ?: -1
++        val deck = activity.save?.getCustomDeckCopy() ?: CustomDeck()
+         val deckSizeMin = MainActivity.MIN_DECK_SIZE
+-        val color1 = if (deckSize < deckSizeMin) Color.Red else getTextColor(activity)
+-        Text(text = stringResource(R.string.custom_deck_size, deckSize, deckSizeMin),
++        val color1 = if (deck.size < deckSizeMin) Color.Red else getTextColor(activity)
++        Text(text = stringResource(R.string.custom_deck_size, deck.size, deckSizeMin),
+             Modifier.fillMaxWidth(0.5f),
+             textAlign = TextAlign.Center,
+             fontFamily = FontFamily(Font(R.font.monofont)),
+             style = TextStyle(color = color1, fontSize = 12.sp))
+ 
+-        val nonFaces = activity.save?.customDeck?.count { !it.isFace() } ?: -1
++        val nonFaces = deck.count { !it.isFace() }
+         val nonFacesMin = MainActivity.MIN_NUM_OF_NUMBERS
+         val color2 = if (nonFaces < nonFacesMin) Color.Red else getTextColor(activity)
+         Text(text = stringResource(R.string.custom_deck_non_faces, nonFaces, nonFacesMin),
+diff --git a/app/src/main/java/com/unicorns/invisible/caravan/ShowGame.kt b/app/src/main/java/com/unicorns/invisible/caravan/ShowGame.kt
+index 67a6892..4bcbd9b 100644
+--- a/app/src/main/java/com/unicorns/invisible/caravan/ShowGame.kt
++++ b/app/src/main/java/com/unicorns/invisible/caravan/ShowGame.kt
+@@ -185,7 +185,7 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
+                                 RowOfEnemyCards(game.enemyCResources.hand.take(4))
+                                 RowOfEnemyCards(game.enemyCResources.hand.takeLast((handSize - 4).coerceAtLeast(0)))
+                             }
+-                            ShowDeck(game.enemyCResources, activity)
++                            ShowDeck(game.enemyCResources, activity, isAlt = game.enemy.isAlt())
+                         }
+                     }
+                     Row(verticalAlignment = Alignment.Bottom, modifier = Modifier
+@@ -268,7 +268,7 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
+                             RowOfEnemyCards(game.enemyCResources.hand.take(4))
+                             RowOfEnemyCards(game.enemyCResources.hand.takeLast((handSize - 4).coerceAtLeast(0)))
+                         }
+-                        ShowDeck(game.enemyCResources, activity)
++                        ShowDeck(game.enemyCResources, activity, isAlt = game.enemy.isAlt())
+                     }
+                 }
+                 key(caravansKey) {
+@@ -375,7 +375,9 @@ fun ColumnScope.RowOfEnemyCards(cards: List<Card>) {
+     Row(Modifier.weight(1f), horizontalArrangement = Arrangement.Center) {
+         cards.forEach {
+             AsyncImage(
+-                model = "file:///android_asset/caravan_cards_back/${it.back.getCardBackAsset()}",
++                model = "file:///android_asset/caravan_cards_back/${
++                    if (it.isAlt) it.back.getCardBackAltAsset() else it.back.getCardBackAsset()
++                }",
+                 contentDescription = "",
+                 modifier = Modifier.clip(RoundedCornerShape(6f))
+             )
+@@ -583,7 +585,7 @@ fun CaravanOnField(
+ }
+ 
+ @Composable
+-fun ShowDeck(cResources: CResources, activity: MainActivity, isToBottom: Boolean = false, isKnown: Boolean = true) {
++fun ShowDeck(cResources: CResources, activity: MainActivity, isAlt: Boolean = false, isToBottom: Boolean = false, isKnown: Boolean = true) {
+     Column(
+         modifier = Modifier
+             .fillMaxHeight()
+@@ -599,7 +601,20 @@ fun ShowDeck(cResources: CResources, activity: MainActivity, isToBottom: Boolean
+             modifier = Modifier.fillMaxWidth(),
+             fontSize = 16.sp,
+         )
+-        val link = "file:///android_asset/caravan_cards_back/${if (isKnown) cResources.getDeckBack()?.getCardBackAsset() else null}"
++        val link = "file:///android_asset/caravan_cards_back/${
++            if (!isKnown) {
++                null
++            } else if (!isToBottom) {
++                val back = cResources.getDeckBack()
++                if (!isAlt) {
++                    back?.getCardBackAsset()
++                } else {
++                    back?.getCardBackAltAsset()
++                }
++            } else {
++                cResources.getDeckBack()?.getCardBackAssetSplit(activity)
++            }
++        }"
+         AsyncImage(
+             model = link,
+             contentDescription = "",
+diff --git a/app/src/main/java/com/unicorns/invisible/caravan/ShowGamePvP.kt b/app/src/main/java/com/unicorns/invisible/caravan/ShowGamePvP.kt
+index efcd703..476342a 100644
+--- a/app/src/main/java/com/unicorns/invisible/caravan/ShowGamePvP.kt
++++ b/app/src/main/java/com/unicorns/invisible/caravan/ShowGamePvP.kt
+@@ -69,6 +69,7 @@ fun afterPlayerMove(
+             move.newCardInHandBack = newCard.back.ordinal
+             move.newCardInHandSuit = newCard.suit.ordinal
+             move.newCardInHandRank = newCard.rank.ordinal
++            move.isNewCardAlt = newCard.isAlt
+         } else {
+             move.newCardInHandBack = -1
+         }
+@@ -84,7 +85,8 @@ fun afterPlayerMove(
+                     "&card_in_caravan_number=${move.cardInCaravanNumber}" +
+                     "&new_card_back_in_hand_code=${move.newCardInHandBack}" +
+                     "&new_card_rank_in_hand_code=${move.newCardInHandRank}" +
+-                    "&new_card_suit_in_hand_code=${move.newCardInHandSuit}"
++                    "&new_card_suit_in_hand_code=${move.newCardInHandSuit}" +
++                    "&is_alt=${move.isNewCardAlt.toPythonBool()}"
+         ) { result ->
+             if (result.toString().contains("oom")) {
+                 corrupt(result.toString())
+diff --git a/app/src/main/java/com/unicorns/invisible/caravan/model/CardBack.kt b/app/src/main/java/com/unicorns/invisible/caravan/model/CardBack.kt
+index 336b0bd..87a856c 100644
+--- a/app/src/main/java/com/unicorns/invisible/caravan/model/CardBack.kt
++++ b/app/src/main/java/com/unicorns/invisible/caravan/model/CardBack.kt
+@@ -1,6 +1,8 @@
+ package com.unicorns.invisible.caravan.model
+ 
++import com.unicorns.invisible.caravan.MainActivity
+ import com.unicorns.invisible.caravan.R
++import com.unicorns.invisible.caravan.save.Save
+ 
+ enum class CardBack {
+     STANDARD,
+@@ -8,7 +10,15 @@ enum class CardBack {
+     ULTRA_LUXE,
+     GOMORRAH,
+     LUCKY_38,
+-    SIERRA_MADRE;
++    VAULT_21;
++
++    fun getCardBackAssetSplit(activity: MainActivity): String {
++        return if (activity.save!!.altDecksChosen[this] == true) {
++            getCardBackAltAsset()
++        } else {
++            getCardBackAsset()
++        }
++    }
+ 
+     fun getCardBackAsset(): String {
+         return when (this) {
+@@ -17,7 +27,18 @@ enum class CardBack {
+             ULTRA_LUXE -> "FNV_Caravan_card_back_-_Ultra-Luxe.webp"
+             GOMORRAH -> "FNV_Caravan_card_back_-_Gomorrah.webp"
+             LUCKY_38 -> "FNV_Caravan_card_back_-_Lucky_38.webp"
+-            SIERRA_MADRE -> "FNV_Caravan_card_back_-_Sierra_Madre.webp"
++            VAULT_21 -> "standard_alt.webp"
++        }
++    }
++
++    fun getCardBackAltAsset(): String {
++        return when (this) {
++            STANDARD -> "FNV_Caravan_card_back_-_Sierra_Madre.webp"
++            TOPS -> "tops_alt.webp"
++            ULTRA_LUXE -> "ultra_luxe_alt.webp"
++            GOMORRAH -> "gomorrah_alt.webp"
++            LUCKY_38 -> "lucky_38_alt.webp"
++            VAULT_21 -> "sm_alt.webp"
+         }
+     }
+ 
+@@ -27,6 +48,16 @@ enum class CardBack {
+         ULTRA_LUXE -> R.string.ultra_luxe_deck_name
+         GOMORRAH -> R.string.gomorrah_deck_name
+         LUCKY_38 -> R.string.lucky_38_deck_name
+-        SIERRA_MADRE -> R.string.sierra_madre_deck_name
++        VAULT_21 -> R.string.vault_21_deck_name
++    }
++    fun getSierraMadreDeckName(): Int = R.string.standard_deck_alt_name
++
++    fun getOwners(): List<Int> = when (this) {
++        STANDARD -> listOf(R.string.standard_deck_owners)
++        TOPS -> listOf(R.string.pve_enemy_hard, R.string.pve_enemy_queen)
++        ULTRA_LUXE -> listOf(R.string.pve_enemy_easy, R.string.johnson_nash)
++        GOMORRAH -> listOf(R.string.pve_enemy_medium, R.string.no_bark)
++        LUCKY_38 -> listOf(R.string.pve_enemy_better, R.string.pve_enemy_38)
++        VAULT_21 -> listOf(R.string.pve_enemy_best, R.string.pve_enemy_cheater)
+     }
+ }
+\ No newline at end of file
+diff --git a/app/src/main/java/com/unicorns/invisible/caravan/model/CardFront.kt b/app/src/main/java/com/unicorns/invisible/caravan/model/CardFront.kt
+index dbc564a..d9dafd0 100644
+--- a/app/src/main/java/com/unicorns/invisible/caravan/model/CardFront.kt
++++ b/app/src/main/java/com/unicorns/invisible/caravan/model/CardFront.kt
+@@ -7,8 +7,8 @@ import com.unicorns.invisible.caravan.model.primitives.Suit
+ 
+ fun getCardName(card: Card): String {
+     return when (card.back) {
++        CardBack.STANDARD, CardBack.VAULT_21 -> getStandardName(card)
+         CardBack.GOMORRAH -> getGomorrahName(card)
+-        CardBack.STANDARD, CardBack.SIERRA_MADRE -> getStandardName(card)
+         CardBack.TOPS -> getTopsName(card)
+         CardBack.ULTRA_LUXE -> getUltraLuxeName(card)
+         CardBack.LUCKY_38 -> getLucky38Name(card)
+diff --git a/app/src/main/java/com/unicorns/invisible/caravan/model/enemy/Enemy.kt b/app/src/main/java/com/unicorns/invisible/caravan/model/enemy/Enemy.kt
+index 13edbf7..6769056 100644
+--- a/app/src/main/java/com/unicorns/invisible/caravan/model/enemy/Enemy.kt
++++ b/app/src/main/java/com/unicorns/invisible/caravan/model/enemy/Enemy.kt
+@@ -1,5 +1,6 @@
+ package com.unicorns.invisible.caravan.model.enemy
+ 
++import com.unicorns.invisible.caravan.model.CardBack
+ import com.unicorns.invisible.caravan.model.Game
+ import com.unicorns.invisible.caravan.model.primitives.CResources
+ import com.unicorns.invisible.caravan.model.primitives.CustomDeck
+@@ -10,5 +11,6 @@ import kotlinx.serialization.Serializable
+ sealed class Enemy {
+     abstract suspend fun makeMove(game: Game)
+     abstract fun createDeck(): CResources
+-    open fun getRewardDeck(): CustomDeck? = null
++    open fun getRewardBack(): CardBack? = null
++    open fun isAlt() = false
+ }
+\ No newline at end of file
+diff --git a/app/src/main/java/com/unicorns/invisible/caravan/model/enemy/EnemyBestest.kt b/app/src/main/java/com/unicorns/invisible/caravan/model/enemy/EnemyBestest.kt
+index ae24521..39121df 100644
+--- a/app/src/main/java/com/unicorns/invisible/caravan/model/enemy/EnemyBestest.kt
++++ b/app/src/main/java/com/unicorns/invisible/caravan/model/enemy/EnemyBestest.kt
+@@ -3,14 +3,13 @@ package com.unicorns.invisible.caravan.model.enemy
+ import com.unicorns.invisible.caravan.model.CardBack
+ import com.unicorns.invisible.caravan.model.Game
+ import com.unicorns.invisible.caravan.model.primitives.CResources
+-import com.unicorns.invisible.caravan.model.primitives.CustomDeck
+ import kotlinx.serialization.Serializable
+ 
+ 
+ @Serializable
+ data object EnemyBestest : Enemy() {
+-    override fun createDeck(): CResources = CResources(CardBack.SIERRA_MADRE)
+-    override fun getRewardDeck() = CustomDeck(CardBack.SIERRA_MADRE)
++    override fun createDeck(): CResources = CResources(CardBack.VAULT_21, false)
++    override fun getRewardBack() = CardBack.VAULT_21
+ 
+     override suspend fun makeMove(game: Game) {
+         // TODO
+diff --git a/app/src/main/java/com/unicorns/invisible/caravan/model/enemy/EnemyBetter.kt b/app/src/main/java/com/unicorns/invisible/caravan/model/enemy/EnemyBetter.kt
+index be967de..90291e9 100644
+--- a/app/src/main/java/com/unicorns/invisible/caravan/model/enemy/EnemyBetter.kt
++++ b/app/src/main/java/com/unicorns/invisible/caravan/model/enemy/EnemyBetter.kt
+@@ -9,8 +9,8 @@ import kotlinx.serialization.Serializable
+ 
+ @Serializable
+ data object EnemyBetter : Enemy() {
+-    override fun createDeck(): CResources = CResources(CardBack.LUCKY_38)
+-    override fun getRewardDeck() = CustomDeck(CardBack.LUCKY_38)
++    override fun createDeck(): CResources = CResources(CardBack.LUCKY_38, false)
++    override fun getRewardBack() = CardBack.LUCKY_38
+ 
+     override suspend fun makeMove(game: Game) {
+         // TODO
+diff --git a/app/src/main/java/com/unicorns/invisible/caravan/model/enemy/EnemyEasy.kt b/app/src/main/java/com/unicorns/invisible/caravan/model/enemy/EnemyEasy.kt
+index 7a4a1e0..947a880 100644
+--- a/app/src/main/java/com/unicorns/invisible/caravan/model/enemy/EnemyEasy.kt
++++ b/app/src/main/java/com/unicorns/invisible/caravan/model/enemy/EnemyEasy.kt
+@@ -10,8 +10,8 @@ import kotlinx.serialization.Serializable
+ 
+ @Serializable
+ data object EnemyEasy : Enemy() {
+-    override fun createDeck(): CResources = CResources(CardBack.ULTRA_LUXE)
+-    override fun getRewardDeck() = CustomDeck(CardBack.ULTRA_LUXE)
++    override fun createDeck(): CResources = CResources(CardBack.ULTRA_LUXE, false)
++    override fun getRewardBack() = CardBack.ULTRA_LUXE
+ 
+     override suspend fun makeMove(game: Game) {
+         val hand = game.enemyCResources.hand
+diff --git a/app/src/main/java/com/unicorns/invisible/caravan/model/enemy/EnemyHard.kt b/app/src/main/java/com/unicorns/invisible/caravan/model/enemy/EnemyHard.kt
+index cc2e2e6..e724b44 100644
+--- a/app/src/main/java/com/unicorns/invisible/caravan/model/enemy/EnemyHard.kt
++++ b/app/src/main/java/com/unicorns/invisible/caravan/model/enemy/EnemyHard.kt
+@@ -3,7 +3,7 @@ package com.unicorns.invisible.caravan.model.enemy
+ import com.unicorns.invisible.caravan.model.CardBack
+ import com.unicorns.invisible.caravan.model.Game
+ import com.unicorns.invisible.caravan.model.primitives.CResources
+-import com.unicorns.invisible.caravan.model.primitives.CustomDeck
++import com.unicorns.invisible.caravan.model.primitives.CardWithModifier
+ import com.unicorns.invisible.caravan.model.primitives.Rank
+ import com.unicorns.invisible.caravan.save.json
+ import kotlinx.serialization.Serializable
+@@ -12,8 +12,8 @@ import kotlinx.serialization.encodeToString
+ 
+ @Serializable
+ data object EnemyHard : Enemy() {
+-    override fun createDeck(): CResources = CResources(CardBack.TOPS)
+-    override fun getRewardDeck() = CustomDeck(CardBack.TOPS)
++    override fun createDeck(): CResources = CResources(CardBack.TOPS, false)
++    override fun getRewardBack() = CardBack.TOPS
+ 
+     override suspend fun makeMove(game: Game) {
+         val overWeightCaravans = game.enemyCaravans.filter { it.getValue() > 26 }
+@@ -115,7 +115,8 @@ data object EnemyHard : Enemy() {
+             if (card.rank == Rank.JOKER) {
+                 val cards = (game.playerCaravans + game.enemyCaravans).flatMap { it.cards }
+                 val gameCopyString = json.encodeToString(game)
+-                val cardToJoker = cards.maxByOrNull { potentialCardToJoker ->
++
++                fun joke(potentialCardToJoker: CardWithModifier): Int {
+                     val gameCopy = json.decodeFromString<Game>(gameCopyString)
+                     val cardInCopy = (gameCopy.playerCaravans + gameCopy.enemyCaravans).flatMap { it.cards }.find {
+                         potentialCardToJoker.card.rank == it.card.rank && potentialCardToJoker.card.suit == it.card.suit
+@@ -123,11 +124,15 @@ data object EnemyHard : Enemy() {
+                     if (cardInCopy?.canAddModifier(card) == true) {
+                         val overWeightCaravansCopy = gameCopy.enemyCaravans.filter { it.getValue() > 26 }
+                         val playersReadyCaravansCopy = gameCopy.playerCaravans.filter { it.getValue() in (21..26) }
+-                        return@maxByOrNull overWeightCaravans.size - overWeightCaravansCopy.size + (playersReadyCaravans.size - playersReadyCaravansCopy.size)
++                        return overWeightCaravans.size - overWeightCaravansCopy.size + (playersReadyCaravans.size - playersReadyCaravansCopy.size)
+                     }
+-                    return@maxByOrNull 0
++                    return 0
++                }
++
++                val cardToJoker = cards.maxByOrNull { potentialCardToJoker ->
++                    joke(potentialCardToJoker)
+                 }
+-                if (cardToJoker != null) {
++                if (cardToJoker != null && joke(cardToJoker) > 0) {
+                     cardToJoker.addModifier(game.enemyCResources.removeFromHand(cardIndex))
+                     return
+                 }
+diff --git a/app/src/main/java/com/unicorns/invisible/caravan/model/enemy/EnemyMedium.kt b/app/src/main/java/com/unicorns/invisible/caravan/model/enemy/EnemyMedium.kt
+index a843283..87dd348 100644
+--- a/app/src/main/java/com/unicorns/invisible/caravan/model/enemy/EnemyMedium.kt
++++ b/app/src/main/java/com/unicorns/invisible/caravan/model/enemy/EnemyMedium.kt
+@@ -11,8 +11,8 @@ import kotlinx.serialization.Serializable
+ 
+ @Serializable
+ data object EnemyMedium : Enemy() {
+-    override fun createDeck(): CResources = CResources(CardBack.GOMORRAH)
+-    override fun getRewardDeck() = CustomDeck(CardBack.GOMORRAH)
++    override fun createDeck(): CResources = CResources(CardBack.GOMORRAH, false)
++    override fun getRewardBack() = CardBack.GOMORRAH
+ 
+     override suspend fun makeMove(game: Game) {
+         val overWeightCaravans = game.enemyCaravans.filter { it.getValue() > 26 }
+diff --git a/app/src/main/java/com/unicorns/invisible/caravan/model/enemy/EnemyNash.kt b/app/src/main/java/com/unicorns/invisible/caravan/model/enemy/EnemyNash.kt
+index 99042e7..e4803f6 100644
+--- a/app/src/main/java/com/unicorns/invisible/caravan/model/enemy/EnemyNash.kt
++++ b/app/src/main/java/com/unicorns/invisible/caravan/model/enemy/EnemyNash.kt
+@@ -15,13 +15,16 @@ data object EnemyNash : Enemy() {
+     override fun createDeck(): CResources = CResources(CustomDeck().apply {
+         listOf(CardBack.TOPS, CardBack.GOMORRAH, CardBack.ULTRA_LUXE, CardBack.LUCKY_38).forEach { back ->
+             Suit.entries.forEach { suit ->
+-                add(Card(Rank.SIX, suit, back))
+-                add(Card(Rank.JACK, suit, back))
+-                add(Card(Rank.KING, suit, back))
++                add(Card(Rank.SIX, suit, back, true))
++                add(Card(Rank.JACK, suit, back, true))
++                add(Card(Rank.KING, suit, back, true))
+             }
+         }
+     })
+-    override fun getRewardDeck(): CustomDeck = CustomDeck(CardBack.ULTRA_LUXE)
++    override fun getRewardBack() = CardBack.ULTRA_LUXE
++    override fun isAlt(): Boolean {
++        return true
++    }
+ 
+     override suspend fun makeMove(game: Game) {
+         val hand = game.enemyCResources.hand
+diff --git a/app/src/main/java/com/unicorns/invisible/caravan/model/enemy/EnemyNoBark.kt b/app/src/main/java/com/unicorns/invisible/caravan/model/enemy/EnemyNoBark.kt
+index 72306be..255e723 100644
+--- a/app/src/main/java/com/unicorns/invisible/caravan/model/enemy/EnemyNoBark.kt
++++ b/app/src/main/java/com/unicorns/invisible/caravan/model/enemy/EnemyNoBark.kt
+@@ -14,14 +14,17 @@ import kotlinx.serialization.encodeToString
+ 
+ @Serializable
+ data object EnemyNoBark : Enemy() {
+-    override fun createDeck(): CResources = CResources(CustomDeck(CardBack.STANDARD).apply {
++    override fun createDeck(): CResources = CResources(CustomDeck(CardBack.STANDARD, true).apply {
+         listOf(CardBack.TOPS, CardBack.ULTRA_LUXE, CardBack.GOMORRAH, CardBack.STANDARD).forEach { back ->
+             Suit.entries.forEach { suit ->
+-                add(Card(Rank.JACK, suit, back))
++                add(Card(Rank.JACK, suit, back, true))
+             }
+         }
+     })
+-    override fun getRewardDeck() = CustomDeck(CardBack.GOMORRAH)
++    override fun getRewardBack() = CardBack.GOMORRAH
++    override fun isAlt(): Boolean {
++        return true
++    }
+ 
+     override suspend fun makeMove(game: Game) {
+         val overWeightCaravans = game.enemyCaravans.filter { it.getValue() > 26 }
+diff --git a/app/src/main/java/com/unicorns/invisible/caravan/model/enemy/EnemyPlayer.kt b/app/src/main/java/com/unicorns/invisible/caravan/model/enemy/EnemyPlayer.kt
+index 030d9e7..ededc74 100644
+--- a/app/src/main/java/com/unicorns/invisible/caravan/model/enemy/EnemyPlayer.kt
++++ b/app/src/main/java/com/unicorns/invisible/caravan/model/enemy/EnemyPlayer.kt
+@@ -16,7 +16,8 @@ class EnemyPlayer(
+     private val startDeck: CustomDeck,
+ ) : Enemy() {
+     override fun createDeck(): CResources = CResources(startDeck)
+-    override fun getRewardDeck() = null
++    override fun getRewardBack() = CardBack.STANDARD
++    override fun isAlt() = true
+ 
+     var latestMoveResponse: MoveResponse? = null
+ 
+@@ -89,6 +90,7 @@ class EnemyPlayer(
+                 Rank.entries[move.newCardInHandRank],
+                 Suit.entries[move.newCardInHandSuit],
+                 CardBack.entries[move.newCardInHandBack],
++                isAlt = move.isNewCardAlt
+             ))
+         }
+     }
+diff --git a/app/src/main/java/com/unicorns/invisible/caravan/model/enemy/EnemySecuritron38.kt b/app/src/main/java/com/unicorns/invisible/caravan/model/enemy/EnemySecuritron38.kt
+index fc026f7..0c9ab58 100644
+--- a/app/src/main/java/com/unicorns/invisible/caravan/model/enemy/EnemySecuritron38.kt
++++ b/app/src/main/java/com/unicorns/invisible/caravan/model/enemy/EnemySecuritron38.kt
+@@ -12,10 +12,13 @@ import kotlinx.serialization.encodeToString
+ 
+ @Serializable
+ data object EnemySecuritron38 : Enemy() {
+-    override fun createDeck(): CResources = CResources(CustomDeck(CardBack.LUCKY_38).apply {
++    override fun createDeck(): CResources = CResources(CustomDeck(CardBack.LUCKY_38, true).apply {
+         removeAll(toList().filter { it.rank.value < 5 && it.rank.value != Rank.QUEEN.value })
+     })
+-    override fun getRewardDeck() = CustomDeck(CardBack.LUCKY_38)
++    override fun getRewardBack() = CardBack.LUCKY_38
++    override fun isAlt(): Boolean {
++        return true
++    }
+ 
+     override suspend fun makeMove(game: Game) {
+         val overWeightCaravans = game.enemyCaravans.filter { it.getValue() > 26 }
+diff --git a/app/src/main/java/com/unicorns/invisible/caravan/model/enemy/EnemySix.kt b/app/src/main/java/com/unicorns/invisible/caravan/model/enemy/EnemySix.kt
+index e2e80ef..17350f7 100644
+--- a/app/src/main/java/com/unicorns/invisible/caravan/model/enemy/EnemySix.kt
++++ b/app/src/main/java/com/unicorns/invisible/caravan/model/enemy/EnemySix.kt
+@@ -15,13 +15,16 @@ data object EnemySix : Enemy() {
+     override fun createDeck(): CResources = CResources(CustomDeck().apply {
+         CardBack.entries.forEach { back ->
+             Suit.entries.forEach { suit ->
+-                add(Card(Rank.SIX, suit, back))
+-                add(Card(Rank.TEN, suit, back))
+-                add(Card(Rank.KING, suit, back))
++                add(Card(Rank.SIX, suit, back, true))
++                add(Card(Rank.TEN, suit, back, true))
++                add(Card(Rank.KING, suit, back, true))
+             }
+         }
+     })
+-    override fun getRewardDeck() = CustomDeck(CardBack.SIERRA_MADRE)
++    override fun getRewardBack() = CardBack.VAULT_21
++    override fun isAlt(): Boolean {
++        return true
++    }
+ 
+     override suspend fun makeMove(game: Game) {
+         val hand = game.enemyCResources.hand
+@@ -87,7 +90,7 @@ data object EnemySix : Enemy() {
+                     if (playerCaravan.getValue() in (13..26)) {
+                         val cardToKing = playerCaravan.cards
+                             .filter { it.getValue() + playerCaravan.getValue() > 26 }
+-                            .maxByOrNull { it.getValue() }
++                            .minByOrNull { it.getValue() }
+                         if (cardToKing != null && cardToKing.canAddModifier(card)) {
+                             cardToKing.addModifier(game.enemyCResources.removeFromHand(cardIndex))
+                             return
+diff --git a/app/src/main/java/com/unicorns/invisible/caravan/model/enemy/EnemySwank.kt b/app/src/main/java/com/unicorns/invisible/caravan/model/enemy/EnemySwank.kt
+index c456d6e..db9de25 100644
+--- a/app/src/main/java/com/unicorns/invisible/caravan/model/enemy/EnemySwank.kt
++++ b/app/src/main/java/com/unicorns/invisible/caravan/model/enemy/EnemySwank.kt
+@@ -15,15 +15,18 @@ data object EnemySwank : Enemy() {
+     override fun createDeck(): CResources = CResources(CustomDeck().apply {
+         listOf(CardBack.TOPS, CardBack.GOMORRAH, CardBack.ULTRA_LUXE).forEach { back ->
+             Suit.entries.forEach { suit ->
+-                add(Card(Rank.SEVEN, suit, back))
+-                add(Card(Rank.NINE, suit, back))
+-                add(Card(Rank.TEN, suit, back))
+-                add(Card(Rank.JACK, suit, back))
+-                add(Card(Rank.QUEEN, suit, back))
++                add(Card(Rank.SEVEN, suit, back, true))
++                add(Card(Rank.NINE, suit, back, true))
++                add(Card(Rank.TEN, suit, back, true))
++                add(Card(Rank.JACK, suit, back, true))
++                add(Card(Rank.QUEEN, suit, back, true))
+             }
+         }
+     })
+-    override fun getRewardDeck() = CustomDeck(CardBack.TOPS)
++    override fun getRewardBack() = CardBack.TOPS
++    override fun isAlt(): Boolean {
++        return true
++    }
+ 
+     override suspend fun makeMove(game: Game) {
+         val hand = game.enemyCResources.hand
+diff --git a/app/src/main/java/com/unicorns/invisible/caravan/model/enemy/EnemyTutorial.kt b/app/src/main/java/com/unicorns/invisible/caravan/model/enemy/EnemyTutorial.kt
+index a0ebe12..d84d38c 100644
+--- a/app/src/main/java/com/unicorns/invisible/caravan/model/enemy/EnemyTutorial.kt
++++ b/app/src/main/java/com/unicorns/invisible/caravan/model/enemy/EnemyTutorial.kt
+@@ -8,8 +8,8 @@ import kotlinx.serialization.Serializable
+ 
+ @Serializable
+ data object EnemyTutorial : Enemy() {
+-    override fun createDeck(): CResources = CResources(CardBack.STANDARD)
+-    override fun getRewardDeck() = null
++    override fun createDeck(): CResources = CResources(CardBack.STANDARD, false)
++    override fun getRewardBack() = null
+ 
+     override suspend fun makeMove(game: Game) {
+         val hand = game.enemyCResources.hand
+diff --git a/app/src/main/java/com/unicorns/invisible/caravan/model/enemy/strategy/Strategy.kt b/app/src/main/java/com/unicorns/invisible/caravan/model/enemy/strategy/Strategy.kt
+new file mode 100644
+index 0000000..3bd4aa6
+--- /dev/null
++++ b/app/src/main/java/com/unicorns/invisible/caravan/model/enemy/strategy/Strategy.kt
+@@ -0,0 +1,8 @@
++package com.unicorns.invisible.caravan.model.enemy.strategy
++
++import com.unicorns.invisible.caravan.model.Game
++
++
++interface Strategy {
++    fun move(game: Game)
++}
+\ No newline at end of file
+diff --git a/app/src/main/java/com/unicorns/invisible/caravan/model/enemy/strategy/StrategyAggressive.kt b/app/src/main/java/com/unicorns/invisible/caravan/model/enemy/strategy/StrategyAggressive.kt
+new file mode 100644
+index 0000000..7aeee65
+--- /dev/null
++++ b/app/src/main/java/com/unicorns/invisible/caravan/model/enemy/strategy/StrategyAggressive.kt
+@@ -0,0 +1,9 @@
++package com.unicorns.invisible.caravan.model.enemy.strategy
++
++import com.unicorns.invisible.caravan.model.Game
++
++class StrategyAggressive : Strategy {
++    override fun move(game: Game) {
++
++    }
++}
+\ No newline at end of file
+diff --git a/app/src/main/java/com/unicorns/invisible/caravan/model/enemy/strategy/StrategyKeeper.kt b/app/src/main/java/com/unicorns/invisible/caravan/model/enemy/strategy/StrategyKeeper.kt
+new file mode 100644
+index 0000000..01121d8
+--- /dev/null
++++ b/app/src/main/java/com/unicorns/invisible/caravan/model/enemy/strategy/StrategyKeeper.kt
+@@ -0,0 +1,9 @@
++package com.unicorns.invisible.caravan.model.enemy.strategy
++
++import com.unicorns.invisible.caravan.model.Game
++
++class StrategyKeeper : Strategy {
++    override fun move(game: Game) {
++
++    }
++}
+\ No newline at end of file
+diff --git a/app/src/main/java/com/unicorns/invisible/caravan/model/enemy/strategy/StrategyRush.kt b/app/src/main/java/com/unicorns/invisible/caravan/model/enemy/strategy/StrategyRush.kt
+new file mode 100644
+index 0000000..bc64e31
+--- /dev/null
++++ b/app/src/main/java/com/unicorns/invisible/caravan/model/enemy/strategy/StrategyRush.kt
+@@ -0,0 +1,9 @@
++package com.unicorns.invisible.caravan.model.enemy.strategy
++
++import com.unicorns.invisible.caravan.model.Game
++
++class StrategyRush : Strategy {
++    override fun move(game: Game) {
++
++    }
++}
+\ No newline at end of file
+diff --git a/app/src/main/java/com/unicorns/invisible/caravan/model/enemy/strategy/StrategyTime.kt b/app/src/main/java/com/unicorns/invisible/caravan/model/enemy/strategy/StrategyTime.kt
+new file mode 100644
+index 0000000..31e2962
+--- /dev/null
++++ b/app/src/main/java/com/unicorns/invisible/caravan/model/enemy/strategy/StrategyTime.kt
+@@ -0,0 +1,9 @@
++package com.unicorns.invisible.caravan.model.enemy.strategy
++
++import com.unicorns.invisible.caravan.model.Game
++
++class StrategyTime : Strategy {
++    override fun move(game: Game) {
++
++    }
++}
+\ No newline at end of file
+diff --git a/app/src/main/java/com/unicorns/invisible/caravan/model/primitives/CResources.kt b/app/src/main/java/com/unicorns/invisible/caravan/model/primitives/CResources.kt
+index 8b79c9f..a71ef34 100644
+--- a/app/src/main/java/com/unicorns/invisible/caravan/model/primitives/CResources.kt
++++ b/app/src/main/java/com/unicorns/invisible/caravan/model/primitives/CResources.kt
+@@ -7,7 +7,7 @@ import kotlinx.serialization.Transient
+ 
+ @Serializable
+ class CResources(private val deck: CustomDeck) {
+-    constructor(back: CardBack) : this(CustomDeck(back))
++    constructor(back: CardBack, isAlt: Boolean) : this(CustomDeck(back, isAlt))
+ 
+     private val handMutable: MutableList<Card> = mutableListOf()
+     val hand
+diff --git a/app/src/main/java/com/unicorns/invisible/caravan/model/primitives/Card.kt b/app/src/main/java/com/unicorns/invisible/caravan/model/primitives/Card.kt
+index 8414055..d126856 100644
+--- a/app/src/main/java/com/unicorns/invisible/caravan/model/primitives/Card.kt
++++ b/app/src/main/java/com/unicorns/invisible/caravan/model/primitives/Card.kt
+@@ -5,6 +5,6 @@ import kotlinx.serialization.Serializable
+ 
+ 
+ @Serializable
+-class Card(val rank: Rank, val suit: Suit, val back: CardBack) {
++class Card(val rank: Rank, val suit: Suit, val back: CardBack, val isAlt: Boolean = false) {
+     fun isFace() = rank.isFace()
+ }
+\ No newline at end of file
+diff --git a/app/src/main/java/com/unicorns/invisible/caravan/model/primitives/CustomDeck.kt b/app/src/main/java/com/unicorns/invisible/caravan/model/primitives/CustomDeck.kt
+index 8fb8269..db01351 100644
+--- a/app/src/main/java/com/unicorns/invisible/caravan/model/primitives/CustomDeck.kt
++++ b/app/src/main/java/com/unicorns/invisible/caravan/model/primitives/CustomDeck.kt
+@@ -8,14 +8,14 @@ import kotlinx.serialization.Serializable
+ class CustomDeck() {
+     private val cards = ArrayList<Card>()
+ 
+-    constructor(back: CardBack) : this() {
++    constructor(back: CardBack, isAlt: Boolean) : this() {
+         Rank.entries.forEach { rank ->
+             if (rank == Rank.JOKER) {
+-                cards.add(Card(rank, Suit.HEARTS, back))
+-                cards.add(Card(rank, Suit.CLUBS, back))
++                cards.add(Card(rank, Suit.HEARTS, back, isAlt))
++                cards.add(Card(rank, Suit.CLUBS, back, isAlt))
+             } else {
+                 Suit.entries.forEach { suit ->
+-                    cards.add(Card(rank, suit, back))
++                    cards.add(Card(rank, suit, back, isAlt))
+                 }
+             }
+         }
+@@ -36,7 +36,7 @@ class CustomDeck() {
+     fun removeAll(elements: Collection<Card>) = elements.forEach { remove(it) }
+ 
+     operator fun contains(card: Card): Boolean {
+-        return cards.any { it.suit == card.suit && it.back == card.back && it.rank == card.rank }
++        return cards.any { it.suit == card.suit && it.back == card.back && it.rank == card.rank && it.isAlt == card.isAlt }
+     }
+ 
+     fun toList() = cards.toList()
+diff --git a/app/src/main/java/com/unicorns/invisible/caravan/model/primitives/Rank.kt b/app/src/main/java/com/unicorns/invisible/caravan/model/primitives/Rank.kt
+index a98aff4..5595b52 100644
+--- a/app/src/main/java/com/unicorns/invisible/caravan/model/primitives/Rank.kt
++++ b/app/src/main/java/com/unicorns/invisible/caravan/model/primitives/Rank.kt
+@@ -16,7 +16,7 @@ enum class Rank(val value: Int, val nameId: Int) {
+     JACK(11, R.string.jack_name),
+     QUEEN(12, R.string.queen_name),
+     KING(13, R.string.king_name),
+-    JOKER(14, R.string.ace_name);
++    JOKER(14, R.string.joker_name);
+ 
+     fun isFace(): Boolean {
+         return this.value > 10
+diff --git a/app/src/main/java/com/unicorns/invisible/caravan/multiplayer/MoveResponse.kt b/app/src/main/java/com/unicorns/invisible/caravan/multiplayer/MoveResponse.kt
+index 8706720..fd8cf4c 100644
+--- a/app/src/main/java/com/unicorns/invisible/caravan/multiplayer/MoveResponse.kt
++++ b/app/src/main/java/com/unicorns/invisible/caravan/multiplayer/MoveResponse.kt
+@@ -1,5 +1,6 @@
+ package com.unicorns.invisible.caravan.multiplayer
+ 
++import android.util.Log
+ import kotlinx.serialization.Serializable
+ import org.json.JSONObject
+ 
+@@ -24,7 +25,8 @@ data class MoveResponse(
+     var newCardInHandRank: Int = 0,
+     var newCardInHandSuit: Int = 0,
+     var newCardInHandBack: Int = 0,
+-    var symbolNumber: Int = 0
++    var symbolNumber: Int = 0,
++    var isNewCardAlt: Boolean = false,
+ )
+ 
+ fun decodeMove(s: String): MoveResponse {
+@@ -40,5 +42,6 @@ fun decodeMove(s: String): MoveResponse {
+         newCardInHandSuit = fields.getInt("new_card_suit_in_hand_code"),
+         newCardInHandRank = fields.getInt("new_card_rank_in_hand_code"),
+         symbolNumber = fields.optInt("symbol", 0),
++        isNewCardAlt = fields.optBoolean("is_alt", false),
+     )
+-}
+\ No newline at end of file
++}
+diff --git a/app/src/main/java/com/unicorns/invisible/caravan/save/Save.kt b/app/src/main/java/com/unicorns/invisible/caravan/save/Save.kt
+index 4ffe6de..33351a7 100644
+--- a/app/src/main/java/com/unicorns/invisible/caravan/save/Save.kt
++++ b/app/src/main/java/com/unicorns/invisible/caravan/save/Save.kt
+@@ -11,14 +11,20 @@ import kotlinx.serialization.Serializable
+ @OptIn(ExperimentalSerializationApi::class)
+ @Serializable
+ class Save {
++    @EncodeDefault
++    var selectedDeck: Pair<CardBack, Boolean> = CardBack.STANDARD to false
++
+     @EncodeDefault
+     val availableDecks = CardBack.entries.associateWith { false }.toMutableMap().apply {
+         this[CardBack.STANDARD] = true
+     }
+ 
+     @EncodeDefault
+-    var selectedDeck: CardBack = CardBack.STANDARD
+-
++    val availableDecksAlt = CardBack.entries.associateWith { false }.toMutableMap().apply {
++        this[CardBack.STANDARD] = true
++    }
++    @EncodeDefault
++    val altDecksChosen = CardBack.entries.associateWith { false }.toMutableMap()
+ 
+     @EncodeDefault
+     var styleId: Int = 1
+@@ -28,12 +34,14 @@ class Save {
+     var useCustomDeck: Boolean = false
+ 
+     @EncodeDefault
+-    val availableCards: MutableSet<Card> = HashSet(CustomDeck(CardBack.STANDARD).toList())
++    val availableCards: MutableSet<Card> = HashSet(CustomDeck(CardBack.STANDARD, false).toList())
+ 
+     fun getCustomDeckCopy(): CustomDeck {
+         val deck = CustomDeck()
+-        repeat(customDeck.size) {
+-            deck.add(customDeck[it])
++        customDeck.toList().forEach {
++            if (it.isAlt == altDecksChosen[it.back]) {
++                deck.add(it)
++            }
+         }
+         return deck
+     }
+diff --git a/app/src/main/res/values-ru/strings.xml b/app/src/main/res/values-ru/strings.xml
+index 0be38eb..f73ff5a 100644
+--- a/app/src/main/res/values-ru/strings.xml
++++ b/app/src/main/res/values-ru/strings.xml
+@@ -23,11 +23,14 @@
+     <string name="spades_name">Пик</string>
+ 
+     <string name="standard_deck_name">стандартная колода</string>
++    <string name="standard_deck_alt_name">колода казино Сьерра-Мадре</string>
+     <string name="tops_deck_name">колода казино Топс</string>
+     <string name="lucky_38_deck_name">колода казино Лаки 38</string>
+     <string name="ultra_luxe_deck_name">колода казино Ультра-Люкс</string>
+     <string name="gomorrah_deck_name">колода казино Гоморра</string>
+-    <string name="sierra_madre_deck_name">колода казино Сьерра-Мадре</string>
++    <string name="vault_21_deck_name">колода Убежища 21</string>
++
++    <string name="standard_deck_owners">другие люди</string>
+ 
+     <string name="menu_pve">Играть с ИИ</string>
+     <string name="menu_pvp">Играть с человеком</string>
+@@ -40,9 +43,10 @@
+     <string name="menu_back">Назад</string>
+ 
+     <string name="deck_select">Выбор колоды</string>
+-    <string name="deck_select_about">Получайте новые рубашки, играя без использования сборной колоды.</string>
++    <string name="deck_select_about">Получайте новые рубашки, играя против ИИ! (ALT рубашка открывается при сражении с нечестными игроками.)</string>
+     <string name="deck_custom">Настроить сборную колоду</string>
+-    <string name="deck_custom_about">Выигрывайте карты для сборной колоды, сражаясь в быстрой игре:\n1 или 2 карты при использовании сборной колоды,\n4 карты без неё.\nШанс получения _новой_ карты, правда, не 100%.</string>
++    <string name="deck_custom_about">Выигрывайте карты для сборной колоды, сражаясь в быстрой игре:\n1 ALT карта при игре с нечестными игроками,\n3 карты против обычных соперников.\nШанс получения _новой_ карты, правда, не 100%; для сборной колоды шанс меньше.</string>
++
+ 
+     <string name="custom_deck_size">Размер колоды: %1$s\n(нужно хотя бы %2$s)</string>
+     <string name="custom_deck_non_faces">Количество младших карт: %1$s\n(нужно хотя бы %2$s)</string>
+@@ -78,12 +82,16 @@
+     <string name="result_ulysses">В этот раз тебе повезло, Курьер.</string>
+     <string name="you_lose">Поражение!</string>
+     <string name="you_have_unlocked_deck">\nРазблокирована %1$s!</string>
++    <string name="you_have_unlocked_deck_alt">\nРазблокирована ALT %1$s!</string>
+     <string name="you_must_unlock_deck">\nВам недоступны карты из ###%1$s###! Нужно сначала победить этого соперника без сборной колоды!</string>
+     <string name="your_prize_cards_from">\nВаш приз:\n</string>
+ 
+     <string name="new_card">Новая: %1$s.\n</string>
+     <string name="old_card">Старая: %1$s.\n</string>
+ 
++    <string name="new_card_alt">Новая: %1$s (ALT).\n</string>
++    <string name="old_card_alt">Старая: %1$s (ALT).\n</string>
++
+     <string name="discard_card">СБРОСИТЬ КАРТУ</string>
+     <string name="drop_caravan">СБРОСИТЬ КАРАВАН №%1$s</string>
+     <string name="back_to_menu">Назад</string>
+diff --git a/app/src/main/res/values/strings.xml b/app/src/main/res/values/strings.xml
+index 0e8a51d..129edf1 100644
+--- a/app/src/main/res/values/strings.xml
++++ b/app/src/main/res/values/strings.xml
+@@ -22,11 +22,14 @@
+     <string name="spades_name">of Spades</string>
+ 
+     <string name="standard_deck_name">standard deck</string>
++    <string name="standard_deck_alt_name">Sierra Madre deck</string>
+     <string name="tops_deck_name">Tops deck</string>
+     <string name="lucky_38_deck_name">Lucky 38 deck</string>
+     <string name="ultra_luxe_deck_name">Ultra-Luxe deck</string>
+     <string name="gomorrah_deck_name">Gomorrah deck</string>
+-    <string name="sierra_madre_deck_name">Sierra Madre deck</string>
++    <string name="vault_21_deck_name">Vault 21 deck</string>
++
++    <string name="standard_deck_owners">other players</string>
+ 
+     <string name="menu_pve">Single player</string>
+     <string name="menu_pvp">Multiplayer</string>
+@@ -40,9 +43,9 @@
+     <string name="menu_back">Back to menu</string>
+ 
+     <string name="deck_select">Select the Deck</string>
+-    <string name="deck_select_about">Win new decks by defeating enemies in a balanced game (w/o using custom deck).</string>
++    <string name="deck_select_about">Win new decks by defeating enemies! (ALT deck is opened by fighting cheesy opponents.)</string>
+     <string name="deck_custom">Set Custom Deck</string>
+-    <string name="deck_custom_about">Win cards for custom deck by fighting opponents:\n1 or 2 cards when using custom deck,\n4 cards when playing balanced game.\nThe chance of winning _new_ card, however, is not 100%.</string>
++    <string name="deck_custom_about">Win cards for custom deck by fighting opponents:\n1 ALT card when playing against cheesy enemies,\n3 cards when playing against usual opponents.\nThe chance of winning _new_ card, however, is not 100%; custom deck gives lower chance.</string>
+ 
+     <string name="custom_deck_size">Deck size: %1$s\n(must be at least %2$s)</string>
+     <string name="custom_deck_non_faces">Number of non-face cards: %1$s\n(must be at least %2$s)</string>
+@@ -78,12 +81,16 @@
+     <string name="result_ulysses">You\'ve got lucky this time, Courier.</string>
+     <string name="you_lose">You lose!</string>
+     <string name="you_have_unlocked_deck">\nYou have unlocked the %1$s!</string>
++    <string name="you_have_unlocked_deck_alt">\nYou have unlocked the ALT of %1$s!</string>
+     <string name="you_must_unlock_deck">\nTo have a chance of winning cards from the %1$s, you must defeat the enemy w/o custom deck!</string>
+     <string name="your_prize_cards_from">\nYour reward:\n</string>
+ 
+     <string name="new_card">New: %1$s.\n</string>
+     <string name="old_card">Old: %1$s.\n</string>
+ 
++    <string name="new_card_alt">New: %1$s (ALT).\n</string>
++    <string name="old_card_alt">Old: %1$s (ALT).\n</string>
++
+     <string name="discard_card">DISCARD CARD</string>
+     <string name="drop_caravan">DROP CARAVAN #%1$s</string>
+     <string name="back_to_menu">Back to Menu</string>

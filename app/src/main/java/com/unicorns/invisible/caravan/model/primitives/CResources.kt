@@ -46,7 +46,7 @@ class CResources(private val deck: CustomDeck) {
         return handMutable.removeAt(index)
     }
 
-    fun getDeckBack() = deck.firstOrNull()?.back
+    fun getDeckBack() = deck.firstOrNull()?.run { this.back to this.isAlt }
     fun shuffleDeck() = deck.shuffle()
 
     val deckSize: Int
