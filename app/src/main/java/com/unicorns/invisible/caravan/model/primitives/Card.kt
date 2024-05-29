@@ -5,6 +5,6 @@ import kotlinx.serialization.Serializable
 
 
 @Serializable
-class Card(val rank: Rank, val suit: Suit, val back: CardBack, val isAlt: Boolean? = null) {
+class Card(val rank: Rank, val suit: Suit, val back: CardBack, var isAlt: Boolean? = null) {
     fun isFace() = rank.isFace()
 }

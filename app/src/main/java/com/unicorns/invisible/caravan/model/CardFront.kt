@@ -7,8 +7,8 @@ import com.unicorns.invisible.caravan.model.primitives.Suit
 
 fun getCardName(card: Card): String {
     return when (card.back) {
+        CardBack.STANDARD, CardBack.VAULT_21 -> getStandardName(card)
         CardBack.GOMORRAH -> getGomorrahName(card)
-        CardBack.STANDARD, CardBack.SIERRA_MADRE -> getStandardName(card)
         CardBack.TOPS -> getTopsName(card)
         CardBack.ULTRA_LUXE -> getUltraLuxeName(card)
         CardBack.LUCKY_38 -> getLucky38Name(card)

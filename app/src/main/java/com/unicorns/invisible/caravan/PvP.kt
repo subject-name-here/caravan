@@ -50,6 +50,7 @@ import com.unicorns.invisible.caravan.model.primitives.Suit
 import com.unicorns.invisible.caravan.multiplayer.decodeMove
 import com.unicorns.invisible.caravan.save.Save
 import com.unicorns.invisible.caravan.save.json
+import com.unicorns.invisible.caravan.save.save
 import com.unicorns.invisible.caravan.utils.CheckboxCustom
 import com.unicorns.invisible.caravan.utils.getBackgroundColor
 import com.unicorns.invisible.caravan.utils.getDividerColor
@@ -491,7 +492,9 @@ fun StartPvP(
     }
     game.also {
         it.onWin = {
-            showAlertDialog(activity.getString(R.string.result), activity.getString(R.string.you_win))
+            showAlertDialog(activity.getString(R.string.result), activity.getString(R.string.you_win) +
+                    winCard(activity, activity.save!!, CardBack.STANDARD, 1, isAlt = true, isCustom = false))
+            save(activity, activity.save!!)
         }
         it.onLose = {
             showAlertDialog(activity.getString(R.string.result), activity.getString(R.string.you_lose))
@@ -564,7 +567,7 @@ fun StartPvP(
                 "&new_card_back_in_hand_code=${card.back.ordinal}" +
                 "&new_card_rank_in_hand_code=${card.rank.ordinal}" +
                 "&new_card_suit_in_hand_code=${card.suit.ordinal}" +
-                "&isAlt=${(activity.save?.altDecks?.get(card.back) == Save.AltDeckStatus.CHOSEN).toPythonBool()}"
+                "&is_alt=${(activity.save?.altDecks?.get(card.back) == Save.AltDeckStatus.CHOSEN).toPythonBool()}"
         sendRequest(link) { _ ->
             pingForMove(::sendHandCard)
         }

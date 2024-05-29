@@ -88,7 +88,7 @@ fun afterPlayerMove(
                     "&new_card_back_in_hand_code=${move.newCardInHandBack}" +
                     "&new_card_rank_in_hand_code=${move.newCardInHandRank}" +
                     "&new_card_suit_in_hand_code=${move.newCardInHandSuit}" +
-                    "&isAlt=${move.isNewCardAlt.toPythonBool()}"
+                    "&is_alt=${move.isNewCardAlt.toPythonBool()}"
         ) { result ->
             if (result.toString().contains("oom")) {
                 corrupt(result.toString())

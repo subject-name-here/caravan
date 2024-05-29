@@ -534,9 +534,15 @@ fun winCard(activity: MainActivity, save: Save, back: CardBack, numberOfCards: I
     val reward = deck.takeRandom(if (isCustom) numberOfCards else 7).sortedByDescending { if (checkCard(it)) 1 else 0 }.take(numberOfCards)
     var result = activity.getString(R.string.your_prize_cards_from)
     reward.forEach { card ->
-        val cardName = "${activity.getString(card.rank.nameId)} ${activity.getString(card.suit.nameId)}, ${activity.getString(card.back.getDeckName())}"
+        val cardName = "${activity.getString(card.rank.nameId)} ${activity.getString(card.suit.nameId)}, ${
+            if (card.back == CardBack.STANDARD && isAlt) {
+                activity.getString(card.back.getSierraMadreDeckName())
+            } else {
+                activity.getString(card.back.getDeckName())
+            }
+        }"
         result += if (checkCard(card)) {
-            if (isAlt) {
+            if (isAlt && card.back != CardBack.STANDARD) {
                 save.availableCardsAlt.add(card)
                 activity.getString(R.string.new_card_alt, cardName)
             } else {
@@ -544,7 +550,7 @@ fun winCard(activity: MainActivity, save: Save, back: CardBack, numberOfCards: I
                 activity.getString(R.string.new_card, cardName)
             }
         } else {
-            if (isAlt) {
+            if (isAlt && card.back != CardBack.STANDARD) {
                 activity.getString(R.string.old_card_alt, cardName)
             } else {
                 activity.getString(R.string.old_card, cardName)

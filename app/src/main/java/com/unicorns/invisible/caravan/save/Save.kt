@@ -35,12 +35,19 @@ class Save {
 
     @EncodeDefault
     val availableCards: MutableSet<Card> = HashSet(CustomDeck(CardBack.STANDARD).toList())
-    val availableCardsAlt: MutableSet<Card> = HashSet(CustomDeck(CardBack.STANDARD).toList())
+    val availableCardsAlt: MutableSet<Card> = HashSet()
 
     fun getCustomDeckCopy(): CustomDeck {
         val deck = CustomDeck()
-        repeat(customDeck.size) {
-            deck.add(customDeck[it])
+        customDeck.toList().forEach {
+            if (altDecks[it.back] != AltDeckStatus.CHOSEN) {
+                deck.add(it)
+            }
+        }
+        customDeckAlt.toList().forEach {
+            if (altDecks[it.back] == AltDeckStatus.CHOSEN) {
+                deck.add(it)
+            }
         }
         return deck
     }

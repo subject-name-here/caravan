@@ -149,12 +149,12 @@ fun DeckSelection(
                 Spacer(modifier = Modifier.width(12.dp))
                 AsyncImage(
                     model = "file:///android_asset/caravan_cards_back/" +
-                            if (activity.save?.altDecks?.get(CardBack.SIERRA_MADRE) != Save.AltDeckStatus.CHOSEN)
-                                CardBack.SIERRA_MADRE.getCardBackAsset()
+                            if (activity.save?.altDecks?.get(CardBack.VAULT_21) != Save.AltDeckStatus.CHOSEN)
+                                CardBack.VAULT_21.getCardBackAsset()
                             else
-                                CardBack.SIERRA_MADRE.getCardBackAltAsset(),
+                                CardBack.VAULT_21.getCardBackAltAsset(),
                     contentDescription = "",
-                    modifier = getModifier(CardBack.SIERRA_MADRE).clip(RoundedCornerShape(6f))
+                    modifier = getModifier(CardBack.VAULT_21).clip(RoundedCornerShape(6f))
                 )
             }
             Spacer(modifier = Modifier.height(24.dp))

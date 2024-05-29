@@ -22,13 +22,14 @@
     <string name="spades_name">of Spades</string>
 
     <string name="standard_deck_name">standard deck</string>
+    <string name="standard_deck_alt_name">Sierra Madre deck</string>
     <string name="tops_deck_name">Tops deck</string>
     <string name="lucky_38_deck_name">Lucky 38 deck</string>
     <string name="ultra_luxe_deck_name">Ultra-Luxe deck</string>
     <string name="gomorrah_deck_name">Gomorrah deck</string>
-    <string name="sierra_madre_deck_name">Sierra Madre deck</string>
+    <string name="vault_21_deck_name">Vault 21 deck</string>
 
-    <string name="standard_deck_owners">none</string>
+    <string name="standard_deck_owners">other players</string>
 
     <string name="menu_pve">Single player</string>
     <string name="menu_pvp">Multiplayer</string>

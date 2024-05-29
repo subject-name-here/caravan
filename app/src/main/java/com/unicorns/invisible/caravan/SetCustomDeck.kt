@@ -132,7 +132,12 @@ fun SetCustomDeck(
                     Row(Modifier.padding(4.dp), horizontalArrangement = Arrangement.Start) {
                         Column(Modifier.padding(horizontal = 8.dp).fillMaxWidth(0.33f)) {
                             Text(
-                                text = stringResource(back.getDeckName()),
+                                text = stringResource(
+                                    if (back == CardBack.STANDARD && check == Save.AltDeckStatus.CHOSEN)
+                                        back.getSierraMadreDeckName()
+                                    else
+                                        back.getDeckName()
+                                ),
                                 modifier = Modifier.align(Alignment.CenterHorizontally),
                                 fontFamily = FontFamily(Font(R.font.monofont)),
                                 style = TextStyle(color = getTextColor(activity), fontSize = 12.sp)

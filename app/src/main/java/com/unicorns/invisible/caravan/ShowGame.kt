@@ -182,10 +182,10 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
                         key(enemyHandKey) {
                             val handSize = game.enemyCResources.hand.size
                             Column(Modifier.fillMaxWidth(0.8f), horizontalAlignment = Alignment.CenterHorizontally) {
-                                RowOfEnemyCards(game.enemyCResources.hand.take(4))
-                                RowOfEnemyCards(game.enemyCResources.hand.takeLast((handSize - 4).coerceAtLeast(0)))
+                                RowOfEnemyCards(game.enemyCResources.hand.take(4).map { it.isAlt = game.enemy.isAlt(); it })
+                                RowOfEnemyCards(game.enemyCResources.hand.takeLast((handSize - 4).coerceAtLeast(0)).map { it.isAlt = game.enemy.isAlt(); it })
                             }
-                            ShowDeck(game.enemyCResources, activity)
+                            ShowDeck(game.enemyCResources, activity, isAlt = game.enemy.isAlt())
                         }
                     }
                     Row(verticalAlignment = Alignment.Bottom, modifier = Modifier
@@ -265,10 +265,10 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
                     val handSize = game.enemyCResources.hand.size
                     key(enemyHandKey) {
                         Column(Modifier.fillMaxWidth(0.8f), horizontalAlignment = Alignment.CenterHorizontally) {
-                            RowOfEnemyCards(game.enemyCResources.hand.take(4))
-                            RowOfEnemyCards(game.enemyCResources.hand.takeLast((handSize - 4).coerceAtLeast(0)))
+                            RowOfEnemyCards(game.enemyCResources.hand.take(4).map { it.isAlt = game.enemy.isAlt(); it })
+                            RowOfEnemyCards(game.enemyCResources.hand.takeLast((handSize - 4).coerceAtLeast(0)).map { it.isAlt = game.enemy.isAlt(); it })
                         }
-                        ShowDeck(game.enemyCResources, activity)
+                        ShowDeck(game.enemyCResources, activity, isAlt = game.enemy.isAlt())
                     }
                 }
                 key(caravansKey) {
@@ -371,12 +371,12 @@ fun ColumnScope.RowOfCards(cards: List<Card>, offset: Int = 0, selectedCard: Int
 }
 
 @Composable
-fun ColumnScope.RowOfEnemyCards(cards: List<Card>, alts: List<Boolean> = listOf()) {
+fun ColumnScope.RowOfEnemyCards(cards: List<Card>) {
     Row(Modifier.weight(1f), horizontalArrangement = Arrangement.Center) {
-        cards.forEachIndexed { index, it ->
+        cards.forEach {
             AsyncImage(
                 model = "file:///android_asset/caravan_cards_back/${
-                    if (alts.getOrNull(index) == true) it.back.getCardBackAltAsset() else it.back.getCardBackAsset()
+                    if (it.isAlt == true) it.back.getCardBackAltAsset() else it.back.getCardBackAsset()
                 }",
                 contentDescription = "",
                 modifier = Modifier.clip(RoundedCornerShape(6f))
@@ -585,7 +585,7 @@ fun CaravanOnField(
 }
 
 @Composable
-fun ShowDeck(cResources: CResources, activity: MainActivity, isToBottom: Boolean = false, isKnown: Boolean = true) {
+fun ShowDeck(cResources: CResources, activity: MainActivity, isAlt: Boolean = false, isToBottom: Boolean = false, isKnown: Boolean = true) {
     Column(
         modifier = Modifier
             .fillMaxHeight()
@@ -601,7 +601,20 @@ fun ShowDeck(cResources: CResources, activity: MainActivity, isToBottom: Boolean
             modifier = Modifier.fillMaxWidth(),
             fontSize = 16.sp,
         )
-        val link = "file:///android_asset/caravan_cards_back/${if (isKnown) cResources.getDeckBack()?.getCardBackAssetSplit(activity) else null}"
+        val link = "file:///android_asset/caravan_cards_back/${
+            if (!isKnown) {
+                null
+            } else if (!isToBottom) {
+                val back = cResources.getDeckBack()
+                if (!isAlt) {
+                    back?.getCardBackAsset()
+                } else {
+                    back?.getCardBackAltAsset()
+                }
+            } else {
+                cResources.getDeckBack()?.getCardBackAssetSplit(activity)
+            }
+        }"
         AsyncImage(
             model = link,
             contentDescription = "",

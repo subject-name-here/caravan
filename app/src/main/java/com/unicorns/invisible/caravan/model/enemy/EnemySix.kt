@@ -21,7 +21,7 @@ data object EnemySix : Enemy() {
             }
         }
     })
-    override fun getRewardBack() = CardBack.SIERRA_MADRE
+    override fun getRewardBack() = CardBack.VAULT_21
     override fun isAlt(): Boolean {
         return true
     }
