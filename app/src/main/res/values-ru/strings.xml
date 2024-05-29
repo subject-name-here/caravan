@@ -29,6 +29,8 @@
     <string name="gomorrah_deck_name">колода казино Гоморра</string>
     <string name="sierra_madre_deck_name">колода казино Сьерра-Мадре</string>
 
+    <string name="standard_deck_owners">никто</string>
+
     <string name="menu_pve">Играть с ИИ</string>
     <string name="menu_pvp">Играть с человеком</string>
     <string name="menu_tutorial">Обучение</string>
@@ -40,9 +42,10 @@
     <string name="menu_back">Назад</string>
 
     <string name="deck_select">Выбор колоды</string>
-    <string name="deck_select_about">Получайте новые рубашки, играя без использования сборной колоды.</string>
+    <string name="deck_select_about">Получайте новые рубашки, играя против ИИ! (ALT рубашка открывается при сражении с нечестными игроками.)</string>
     <string name="deck_custom">Настроить сборную колоду</string>
-    <string name="deck_custom_about">Выигрывайте карты для сборной колоды, сражаясь в быстрой игре:\n1 или 2 карты при использовании сборной колоды,\n4 карты без неё.\nШанс получения _новой_ карты, правда, не 100%.</string>
+    <string name="deck_custom_about">Выигрывайте карты для сборной колоды, сражаясь в быстрой игре:\n1 ALT карта при использовании сборной колоды,\n3 карты без неё.\nШанс получения _новой_ карты, правда, не 100%.</string>
+
 
     <string name="custom_deck_size">Размер колоды: %1$s\n(нужно хотя бы %2$s)</string>
     <string name="custom_deck_non_faces">Количество младших карт: %1$s\n(нужно хотя бы %2$s)</string>
@@ -78,11 +81,15 @@
     <string name="result_ulysses">В этот раз тебе повезло, Курьер.</string>
     <string name="you_lose">Поражение!</string>
     <string name="you_have_unlocked_deck">\nРазблокирована %1$s!</string>
+    <string name="you_have_unlocked_deck_alt">\nРазблокирована ALT %1$s!</string>
     <string name="you_must_unlock_deck">\nВам недоступны карты из ###%1$s###! Нужно сначала победить этого соперника без сборной колоды!</string>
     <string name="your_prize_cards_from">\nВаш приз:\n</string>
 
     <string name="new_card">Новая: %1$s.\n</string>
     <string name="old_card">Старая: %1$s.\n</string>
+
+    <string name="new_card_alt">Новая: %1$s (ALT).\n</string>
+    <string name="old_card_alt">Старая: %1$s (ALT).\n</string>
 
     <string name="discard_card">СБРОСИТЬ КАРТУ</string>
     <string name="drop_caravan">СБРОСИТЬ КАРАВАН №%1$s</string>

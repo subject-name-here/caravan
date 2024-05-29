@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.unicorns.invisible.caravan.model.CardBack
+import com.unicorns.invisible.caravan.save.Save
 import com.unicorns.invisible.caravan.save.save
 import com.unicorns.invisible.caravan.utils.getAccentColor
 import com.unicorns.invisible.caravan.utils.getBackgroundColor
@@ -95,19 +96,31 @@ fun DeckSelection(
             Spacer(modifier = Modifier.height(12.dp))
             Row {
                 AsyncImage(
-                    model = "file:///android_asset/caravan_cards_back/FNV_Caravan_card_back_-_standard.webp",
+                    model = "file:///android_asset/caravan_cards_back/" +
+                            if (activity.save?.altDecks?.get(CardBack.STANDARD) != Save.AltDeckStatus.CHOSEN)
+                                CardBack.STANDARD.getCardBackAsset()
+                            else
+                                CardBack.STANDARD.getCardBackAltAsset(),
                     contentDescription = "",
                     modifier = getModifier(CardBack.STANDARD).clip(RoundedCornerShape(6f))
                 )
                 Spacer(modifier = Modifier.width(12.dp))
                 AsyncImage(
-                    model = "file:///android_asset/caravan_cards_back/FNV_Caravan_card_back_-_Tops.webp",
+                    model = "file:///android_asset/caravan_cards_back/" +
+                            if (activity.save?.altDecks?.get(CardBack.TOPS) != Save.AltDeckStatus.CHOSEN)
+                                CardBack.TOPS.getCardBackAsset()
+                            else
+                                CardBack.TOPS.getCardBackAltAsset(),
                     contentDescription = "",
                     modifier = getModifier(CardBack.TOPS).clip(RoundedCornerShape(6f))
                 )
                 Spacer(modifier = Modifier.width(12.dp))
                 AsyncImage(
-                    model = "file:///android_asset/caravan_cards_back/FNV_Caravan_card_back_-_Lucky_38.webp",
+                    model = "file:///android_asset/caravan_cards_back/" +
+                            if (activity.save?.altDecks?.get(CardBack.LUCKY_38) != Save.AltDeckStatus.CHOSEN)
+                                CardBack.LUCKY_38.getCardBackAsset()
+                            else
+                                CardBack.LUCKY_38.getCardBackAltAsset(),
                     contentDescription = "",
                     modifier = getModifier(CardBack.LUCKY_38).clip(RoundedCornerShape(6f))
                 )
@@ -115,19 +128,31 @@ fun DeckSelection(
             Spacer(modifier = Modifier.height(12.dp))
             Row {
                 AsyncImage(
-                    model = "file:///android_asset/caravan_cards_back/FNV_Caravan_card_back_-_Ultra-Luxe.webp",
+                    model = "file:///android_asset/caravan_cards_back/" +
+                            if (activity.save?.altDecks?.get(CardBack.ULTRA_LUXE) != Save.AltDeckStatus.CHOSEN)
+                                CardBack.ULTRA_LUXE.getCardBackAsset()
+                            else
+                                CardBack.ULTRA_LUXE.getCardBackAltAsset(),
                     contentDescription = "",
                     modifier = getModifier(CardBack.ULTRA_LUXE).clip(RoundedCornerShape(6f))
                 )
                 Spacer(modifier = Modifier.width(12.dp))
                 AsyncImage(
-                    model = "file:///android_asset/caravan_cards_back/FNV_Caravan_card_back_-_Gomorrah.webp",
+                    model = "file:///android_asset/caravan_cards_back/" +
+                            if (activity.save?.altDecks?.get(CardBack.GOMORRAH) != Save.AltDeckStatus.CHOSEN)
+                                CardBack.GOMORRAH.getCardBackAsset()
+                            else
+                                CardBack.GOMORRAH.getCardBackAltAsset(),
                     contentDescription = "",
                     modifier = getModifier(CardBack.GOMORRAH).clip(RoundedCornerShape(6f))
                 )
                 Spacer(modifier = Modifier.width(12.dp))
                 AsyncImage(
-                    model = "file:///android_asset/caravan_cards_back/FNV_Caravan_card_back_-_Sierra_Madre.webp",
+                    model = "file:///android_asset/caravan_cards_back/" +
+                            if (activity.save?.altDecks?.get(CardBack.SIERRA_MADRE) != Save.AltDeckStatus.CHOSEN)
+                                CardBack.SIERRA_MADRE.getCardBackAsset()
+                            else
+                                CardBack.SIERRA_MADRE.getCardBackAltAsset(),
                     contentDescription = "",
                     modifier = getModifier(CardBack.SIERRA_MADRE).clip(RoundedCornerShape(6f))
                 )

@@ -28,6 +28,8 @@
     <string name="gomorrah_deck_name">Gomorrah deck</string>
     <string name="sierra_madre_deck_name">Sierra Madre deck</string>
 
+    <string name="standard_deck_owners">none</string>
+
     <string name="menu_pve">Single player</string>
     <string name="menu_pvp">Multiplayer</string>
     <string name="menu_tutorial">Tutorial</string>
@@ -40,9 +42,9 @@
     <string name="menu_back">Back to menu</string>
 
     <string name="deck_select">Select the Deck</string>
-    <string name="deck_select_about">Win new decks by defeating enemies in a balanced game (w/o using custom deck).</string>
+    <string name="deck_select_about">Win new decks by defeating enemies! (ALT deck is opened by fighting cheesy opponents.)</string>
     <string name="deck_custom">Set Custom Deck</string>
-    <string name="deck_custom_about">Win cards for custom deck by fighting opponents:\n1 or 2 cards when using custom deck,\n4 cards when playing balanced game.\nThe chance of winning _new_ card, however, is not 100%.</string>
+    <string name="deck_custom_about">Win cards for custom deck by fighting opponents:\n1 ALT card when using custom deck,\n3 cards when playing balanced game.\nThe chance of winning _new_ card, however, is not 100%.</string>
 
     <string name="custom_deck_size">Deck size: %1$s\n(must be at least %2$s)</string>
     <string name="custom_deck_non_faces">Number of non-face cards: %1$s\n(must be at least %2$s)</string>
@@ -78,11 +80,15 @@
     <string name="result_ulysses">You\'ve got lucky this time, Courier.</string>
     <string name="you_lose">You lose!</string>
     <string name="you_have_unlocked_deck">\nYou have unlocked the %1$s!</string>
+    <string name="you_have_unlocked_deck_alt">\nYou have unlocked the ALT of %1$s!</string>
     <string name="you_must_unlock_deck">\nTo have a chance of winning cards from the %1$s, you must defeat the enemy w/o custom deck!</string>
     <string name="your_prize_cards_from">\nYour reward:\n</string>
 
     <string name="new_card">New: %1$s.\n</string>
     <string name="old_card">Old: %1$s.\n</string>
+
+    <string name="new_card_alt">New: %1$s (ALT).\n</string>
+    <string name="old_card_alt">Old: %1$s (ALT).\n</string>
 
     <string name="discard_card">DISCARD CARD</string>
     <string name="drop_caravan">DROP CARAVAN #%1$s</string>

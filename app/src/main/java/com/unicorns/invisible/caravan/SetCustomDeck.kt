@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -21,12 +22,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
@@ -39,7 +42,9 @@ import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.getCardName
 import com.unicorns.invisible.caravan.model.primitives.Card
 import com.unicorns.invisible.caravan.model.primitives.CustomDeck
+import com.unicorns.invisible.caravan.save.Save
 import com.unicorns.invisible.caravan.save.save
+import com.unicorns.invisible.caravan.utils.CheckboxCustom
 import com.unicorns.invisible.caravan.utils.getAccentColor
 import com.unicorns.invisible.caravan.utils.getBackgroundColor
 import com.unicorns.invisible.caravan.utils.getKnobColor
@@ -54,25 +59,49 @@ fun SetCustomDeck(
     activity: MainActivity,
     goBack: () -> Unit,
 ) {
-    fun isInCustomDeck(card: Card): Boolean {
-        return activity.save?.customDeck?.let { deck ->
-            card in deck
-        } ?: false
-    }
-    fun toggleToCustomDeck(card: Card) {
-        activity.save?.customDeck?.let { deck ->
-            if (card in deck) {
-                deck.remove(card)
-            } else {
-                deck.add(card)
-            }
-            save(activity, activity.save!!)
+    fun isInCustomDeck(card: Card, isAlt: Boolean): Boolean {
+        return if (!isAlt) {
+            activity.save?.customDeck?.let { deck ->
+                card in deck
+            } ?: false
+        } else {
+            activity.save?.customDeckAlt?.let { deck ->
+                card in deck
+            } ?: false
         }
     }
-    fun isAvailable(card: Card): Boolean {
-        return activity.save?.availableCards?.let { cards ->
-            cards.any { it.rank == card.rank && it.suit == card.suit && it.back == card.back }
-        } ?: false
+    fun toggleToCustomDeck(card: Card, isAlt: Boolean) {
+        if (!isAlt) {
+            activity.save?.customDeck?.let { deck ->
+                if (card in deck) {
+                    deck.remove(card)
+                } else {
+                    deck.add(card)
+                }
+
+            }
+        } else {
+            activity.save?.customDeckAlt?.let { deck ->
+                if (card in deck) {
+                    deck.remove(card)
+                } else {
+                    deck.add(card)
+                }
+            }
+        }
+        save(activity, activity.save!!)
+
+    }
+    fun isAvailable(card: Card, isAlt: Boolean): Boolean {
+        return if (!isAlt) {
+            activity.save?.availableCards?.let { cards ->
+                cards.any { it.rank == card.rank && it.suit == card.suit && it.back == card.back }
+            } ?: false
+        } else {
+            activity.save?.availableCardsAlt?.let { cards ->
+                cards.any { it.rank == card.rank && it.suit == card.suit && it.back == card.back }
+            } ?: false
+        }
     }
 
     Column(Modifier.fillMaxSize().background(getBackgroundColor(activity)),
@@ -81,53 +110,128 @@ fun SetCustomDeck(
         key(updater) {
             ShowCharacteristics(activity)
         }
-        Column(Modifier.fillMaxHeight(0.9f)) {
-            CardBack.entries.forEach { back ->
-                val state = rememberLazyListState()
-                LazyRow(
-                    Modifier
-                        .padding(4.dp)
-                        .weight(1f)
-                        .scrollbar(state, knobColor = getKnobColor(activity), trackColor = getTrackColor(activity), horizontal = true), state = state) lambda@ {
-                    if (activity.save?.availableDecks?.get(back) != true) {
-                        return@lambda
-                    }
-                    items(CustomDeck(back).toList().sortedWith { o1, o2 ->
-                        if (o1.rank != o2.rank) {
-                            o2.rank.value - o1.rank.value
-                        } else {
-                            o1.suit.ordinal - o2.suit.ordinal
+
+        Text(
+            text = "Tap card back to open cards",
+            fontFamily = FontFamily(Font(R.font.monofont)),
+            modifier = Modifier.fillMaxWidth().wrapContentHeight().padding(8.dp),
+            textAlign = TextAlign.Center,
+            style = TextStyle(color = getTextColor(activity), fontSize = 24.sp)
+        )
+
+        val mainState = rememberLazyListState()
+        LazyColumn(
+            Modifier.fillMaxHeight(0.9f).fillMaxWidth()
+            .scrollbar(mainState, horizontal = false, knobColor = getKnobColor(activity), trackColor = getTrackColor(activity)),
+            mainState
+        ) {
+            item {
+                CardBack.entries.forEach { back ->
+                    var rowTabShow by remember { mutableStateOf(false) }
+                    var check by rememberSaveable { mutableStateOf(activity.save?.altDecks?.get(back)) }
+                    Row(Modifier.padding(4.dp), horizontalArrangement = Arrangement.Start) {
+                        Column(Modifier.padding(horizontal = 8.dp).fillMaxWidth(0.33f)) {
+                            Text(
+                                text = stringResource(back.getDeckName()),
+                                modifier = Modifier.align(Alignment.CenterHorizontally),
+                                fontFamily = FontFamily(Font(R.font.monofont)),
+                                style = TextStyle(color = getTextColor(activity), fontSize = 12.sp)
+                            )
+                            AsyncImage(
+                                model = "file:///android_asset/caravan_cards_back/${if (check == Save.AltDeckStatus.CHOSEN) back.getCardBackAltAsset() else back.getCardBackAsset()}",
+                                contentDescription = "",
+                                modifier = Modifier.align(Alignment.CenterHorizontally)
+                                    .clip(RoundedCornerShape(6f))
+                                    .clickable { rowTabShow = !rowTabShow },
+                                contentScale = ContentScale.Fit
+                            )
                         }
-                    }) { card ->
-                        var isSelected by remember { mutableStateOf(isInCustomDeck(card)) }
-                        if (isAvailable(card)) {
-                            AsyncImage(
-                                model = "file:///android_asset/caravan_cards/${getCardName(card)}",
-                                contentDescription = "",
-                                Modifier
-                                    .clickable {
-                                        toggleToCustomDeck(card)
-                                        isSelected = !isSelected
-                                        updater = !updater
+                        Text(
+                            text = "Get cards from:\n" + back.getOwners().joinToString("\n") { activity.getString(it) },
+                            modifier = Modifier.fillMaxWidth(0.66f).align(Alignment.CenterVertically),
+                            fontFamily = FontFamily(Font(R.font.monofont)),
+                            style = TextStyle(color = getTextColor(activity), fontSize = 12.sp)
+                        )
+                        Column(Modifier.fillMaxSize().padding(vertical = 8.dp), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
+                            Text(
+                                text = "ALT!",
+                                modifier = Modifier.fillMaxWidth().wrapContentHeight(),
+                                fontFamily = FontFamily(Font(R.font.monofont)),
+                                textAlign = TextAlign.Center,
+                                style = TextStyle(color = getTextColor(activity), fontSize = 12.sp)
+                            )
+                            CheckboxCustom(
+                                activity,
+                                { check == Save.AltDeckStatus.CHOSEN },
+                                {
+                                    when (check) {
+                                        Save.AltDeckStatus.CLOSED -> {}
+                                        Save.AltDeckStatus.NOT_CHOSEN -> {
+                                            activity.save!!.altDecks[back] = Save.AltDeckStatus.CHOSEN
+                                            save(activity, activity.save!!)
+                                            check = Save.AltDeckStatus.CHOSEN
+                                            updater = !updater
+                                        }
+                                        Save.AltDeckStatus.CHOSEN -> {
+                                            activity.save!!.altDecks[back] = Save.AltDeckStatus.NOT_CHOSEN
+                                            save(activity, activity.save!!)
+                                            check = Save.AltDeckStatus.NOT_CHOSEN
+                                            updater = !updater
+                                        }
+                                        null -> {}
                                     }
-                                    .border(
-                                        width = (if (isSelected) 4 else 0).dp,
-                                        color = getAccentColor(activity)
-                                    )
-                                    .padding(4.dp)
-                                    .alpha(if (isSelected) 1f else 0.5f)
-                                    .background(if (isSelected) getAccentColor(activity) else Color.Transparent)
-                                    .clip(RoundedCornerShape(6f))
-                            )
-                        } else {
-                            AsyncImage(
-                                model = "file:///android_asset/caravan_cards_back/${card.back.getCardBackAsset()}",
-                                contentDescription = "",
+                                }
+                            ) { check in listOf(Save.AltDeckStatus.NOT_CHOSEN, Save.AltDeckStatus.CHOSEN) }
+                        }
+                    }
+                    if (rowTabShow) {
+                        val state = rememberLazyListState()
+                        key (check) {
+                            LazyRow(
                                 Modifier
-                                    .padding(4.dp)
-                                    .alpha(0.33f)
-                                    .clip(RoundedCornerShape(6f))
-                            )
+                                    .weight(1f)
+                                    .scrollbar(state, knobColor = getKnobColor(activity), trackColor = getTrackColor(activity), horizontal = true), state = state) lambda@ {
+                                items(CustomDeck(back).toList().sortedWith { o1, o2 ->
+                                    if (o1.rank != o2.rank) {
+                                        o2.rank.value - o1.rank.value
+                                    } else {
+                                        o1.suit.ordinal - o2.suit.ordinal
+                                    }
+                                }) { card ->
+                                    var isSelected by remember { mutableStateOf(
+                                        isInCustomDeck(card, activity.save?.altDecks?.get(back) == Save.AltDeckStatus.CHOSEN)
+                                    ) }
+                                    if (isAvailable(card, check == Save.AltDeckStatus.CHOSEN)) {
+                                        AsyncImage(
+                                            model = "file:///android_asset/caravan_cards/${getCardName(card)}",
+                                            contentDescription = "",
+                                            Modifier
+                                                .clickable {
+                                                    toggleToCustomDeck(card, activity.save?.altDecks?.get(back) == Save.AltDeckStatus.CHOSEN)
+                                                    isSelected = !isSelected
+                                                    updater = !updater
+                                                }
+                                                .border(
+                                                    width = (if (isSelected) 4 else 0).dp,
+                                                    color = getAccentColor(activity)
+                                                )
+                                                .padding(4.dp)
+                                                .alpha(if (isSelected) 1f else 0.5f)
+                                                .background(if (isSelected) getAccentColor(activity) else Color.Transparent)
+                                                .clip(RoundedCornerShape(6f))
+                                        )
+                                    } else {
+                                        AsyncImage(
+                                            model = "file:///android_asset/caravan_cards_back/${card.back.getCardBackAssetSplit(activity)}",
+                                            contentDescription = "",
+                                            Modifier
+                                                .padding(4.dp)
+                                                .alpha(0.33f)
+                                                .clip(RoundedCornerShape(6f))
+                                        )
+                                    }
+                                }
+                            }
                         }
                     }
                 }
@@ -154,16 +258,22 @@ fun SetCustomDeck(
 @Composable
 fun ShowCharacteristics(activity: MainActivity) {
     Row(Modifier.padding(8.dp), verticalAlignment = Alignment.CenterVertically) {
-        val deckSize = activity.save?.customDeck?.size ?: -1
+        val deck = CardBack.entries.map { back ->
+            if (activity.save?.altDecks?.get(back) == Save.AltDeckStatus.CHOSEN) {
+                activity.save!!.customDeckAlt.toList().filter { it.back == back }
+            } else {
+                activity.save!!.customDeck.toList().filter { it.back == back }
+            }
+        }.flatten()
         val deckSizeMin = MainActivity.MIN_DECK_SIZE
-        val color1 = if (deckSize < deckSizeMin) Color.Red else getTextColor(activity)
-        Text(text = stringResource(R.string.custom_deck_size, deckSize, deckSizeMin),
+        val color1 = if (deck.size < deckSizeMin) Color.Red else getTextColor(activity)
+        Text(text = stringResource(R.string.custom_deck_size, deck.size, deckSizeMin),
             Modifier.fillMaxWidth(0.5f),
             textAlign = TextAlign.Center,
             fontFamily = FontFamily(Font(R.font.monofont)),
             style = TextStyle(color = color1, fontSize = 12.sp))
 
-        val nonFaces = activity.save?.customDeck?.count { !it.isFace() } ?: -1
+        val nonFaces = deck.count { !it.isFace() }
         val nonFacesMin = MainActivity.MIN_NUM_OF_NUMBERS
         val color2 = if (nonFaces < nonFacesMin) Color.Red else getTextColor(activity)
         Text(text = stringResource(R.string.custom_deck_non_faces, nonFaces, nonFacesMin),

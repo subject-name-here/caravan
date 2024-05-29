@@ -21,7 +21,10 @@ data object EnemyNoBark : Enemy() {
             }
         }
     })
-    override fun getRewardDeck() = CustomDeck(CardBack.GOMORRAH)
+    override fun getRewardBack() = CardBack.GOMORRAH
+    override fun isAlt(): Boolean {
+        return true
+    }
 
     override suspend fun makeMove(game: Game) {
         val overWeightCaravans = game.enemyCaravans.filter { it.getValue() > 26 }

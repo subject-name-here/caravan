@@ -48,6 +48,7 @@ import com.unicorns.invisible.caravan.model.primitives.CustomDeck
 import com.unicorns.invisible.caravan.model.primitives.Rank
 import com.unicorns.invisible.caravan.model.primitives.Suit
 import com.unicorns.invisible.caravan.multiplayer.decodeMove
+import com.unicorns.invisible.caravan.save.Save
 import com.unicorns.invisible.caravan.save.json
 import com.unicorns.invisible.caravan.utils.CheckboxCustom
 import com.unicorns.invisible.caravan.utils.getBackgroundColor
@@ -525,6 +526,7 @@ fun StartPvP(
                     Rank.entries[move.newCardInHandRank],
                     Suit.entries[move.newCardInHandSuit],
                     CardBack.entries[move.newCardInHandBack],
+                    isAlt = move.isNewCardAlt
                 )
                 game.enemyCResources.addCardToHandPvP(cardReceived)
 
@@ -561,7 +563,8 @@ fun StartPvP(
                 "&move_code=0" +
                 "&new_card_back_in_hand_code=${card.back.ordinal}" +
                 "&new_card_rank_in_hand_code=${card.rank.ordinal}" +
-                "&new_card_suit_in_hand_code=${card.suit.ordinal}"
+                "&new_card_suit_in_hand_code=${card.suit.ordinal}" +
+                "&isAlt=${(activity.save?.altDecks?.get(card.back) == Save.AltDeckStatus.CHOSEN).toPythonBool()}"
         sendRequest(link) { _ ->
             pingForMove(::sendHandCard)
         }

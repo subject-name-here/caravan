@@ -1,6 +1,8 @@
 package com.unicorns.invisible.caravan.model
 
+import com.unicorns.invisible.caravan.MainActivity
 import com.unicorns.invisible.caravan.R
+import com.unicorns.invisible.caravan.save.Save
 
 enum class CardBack {
     STANDARD,
@@ -9,6 +11,14 @@ enum class CardBack {
     GOMORRAH,
     LUCKY_38,
     SIERRA_MADRE;
+
+    fun getCardBackAssetSplit(activity: MainActivity): String {
+        return if (activity.save!!.altDecks[this] == Save.AltDeckStatus.CHOSEN) {
+            getCardBackAltAsset()
+        } else {
+            getCardBackAsset()
+        }
+    }
 
     fun getCardBackAsset(): String {
         return when (this) {
@@ -21,6 +31,17 @@ enum class CardBack {
         }
     }
 
+    fun getCardBackAltAsset(): String {
+        return when (this) {
+            STANDARD -> "standard_alt.webp"
+            TOPS -> "tops_alt.webp"
+            ULTRA_LUXE -> "ultra_luxe_alt.webp"
+            GOMORRAH -> "gomorrah_alt.webp"
+            LUCKY_38 -> "lucky_38_alt.webp"
+            SIERRA_MADRE -> "sm_alt.webp"
+        }
+    }
+
     fun getDeckName(): Int = when (this) {
         STANDARD -> R.string.standard_deck_name
         TOPS -> R.string.tops_deck_name
@@ -28,5 +49,14 @@ enum class CardBack {
         GOMORRAH -> R.string.gomorrah_deck_name
         LUCKY_38 -> R.string.lucky_38_deck_name
         SIERRA_MADRE -> R.string.sierra_madre_deck_name
+    }
+
+    fun getOwners(): List<Int> = when (this) {
+        STANDARD -> listOf(R.string.standard_deck_owners)
+        TOPS -> listOf(R.string.pve_enemy_hard, R.string.pve_enemy_queen)
+        ULTRA_LUXE -> listOf(R.string.pve_enemy_easy, R.string.johnson_nash)
+        GOMORRAH -> listOf(R.string.pve_enemy_medium, R.string.no_bark)
+        LUCKY_38 -> listOf(R.string.pve_enemy_better, R.string.pve_enemy_38)
+        SIERRA_MADRE -> listOf(R.string.pve_enemy_best, R.string.pve_enemy_cheater)
     }
 }

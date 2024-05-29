@@ -10,7 +10,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data object EnemyBestest : Enemy() {
     override fun createDeck(): CResources = CResources(CardBack.SIERRA_MADRE)
-    override fun getRewardDeck() = CustomDeck(CardBack.SIERRA_MADRE)
+    override fun getRewardBack() = CardBack.SIERRA_MADRE
 
     override suspend fun makeMove(game: Game) {
         // TODO

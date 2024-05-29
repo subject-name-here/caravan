@@ -12,12 +12,17 @@ import kotlinx.serialization.Serializable
 @Serializable
 class Save {
     @EncodeDefault
+    var selectedDeck: CardBack = CardBack.STANDARD
+
+    @EncodeDefault
     val availableDecks = CardBack.entries.associateWith { false }.toMutableMap().apply {
         this[CardBack.STANDARD] = true
     }
 
     @EncodeDefault
-    var selectedDeck: CardBack = CardBack.STANDARD
+    val altDecks = CardBack.entries.associateWith { AltDeckStatus.CLOSED }.toMutableMap().apply {
+        this[CardBack.STANDARD] = AltDeckStatus.NOT_CHOSEN
+    }
 
 
     @EncodeDefault
@@ -25,10 +30,12 @@ class Save {
 
     @EncodeDefault
     val customDeck: CustomDeck = CustomDeck()
+    val customDeckAlt: CustomDeck = CustomDeck()
     var useCustomDeck: Boolean = false
 
     @EncodeDefault
     val availableCards: MutableSet<Card> = HashSet(CustomDeck(CardBack.STANDARD).toList())
+    val availableCardsAlt: MutableSet<Card> = HashSet(CustomDeck(CardBack.STANDARD).toList())
 
     fun getCustomDeckCopy(): CustomDeck {
         val deck = CustomDeck()
@@ -44,4 +51,10 @@ class Save {
     var gamesFinished = 0
     @EncodeDefault
     var wins = 0
+
+    enum class AltDeckStatus {
+        CLOSED,
+        NOT_CHOSEN,
+        CHOSEN
+    }
 }

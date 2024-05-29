@@ -16,7 +16,7 @@ class EnemyPlayer(
     private val startDeck: CustomDeck,
 ) : Enemy() {
     override fun createDeck(): CResources = CResources(startDeck)
-    override fun getRewardDeck() = null
+    override fun getRewardBack() = null
 
     var latestMoveResponse: MoveResponse? = null
 

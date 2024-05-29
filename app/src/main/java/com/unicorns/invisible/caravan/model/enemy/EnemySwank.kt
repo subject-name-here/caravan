@@ -23,7 +23,10 @@ data object EnemySwank : Enemy() {
             }
         }
     })
-    override fun getRewardDeck() = CustomDeck(CardBack.TOPS)
+    override fun getRewardBack() = CardBack.TOPS
+    override fun isAlt(): Boolean {
+        return true
+    }
 
     override suspend fun makeMove(game: Game) {
         val hand = game.enemyCResources.hand

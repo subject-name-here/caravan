@@ -15,7 +15,10 @@ data object EnemySecuritron38 : Enemy() {
     override fun createDeck(): CResources = CResources(CustomDeck(CardBack.LUCKY_38).apply {
         removeAll(toList().filter { it.rank.value < 5 && it.rank.value != Rank.QUEEN.value })
     })
-    override fun getRewardDeck() = CustomDeck(CardBack.LUCKY_38)
+    override fun getRewardBack() = CardBack.LUCKY_38
+    override fun isAlt(): Boolean {
+        return true
+    }
 
     override suspend fun makeMove(game: Game) {
         val overWeightCaravans = game.enemyCaravans.filter { it.getValue() > 26 }

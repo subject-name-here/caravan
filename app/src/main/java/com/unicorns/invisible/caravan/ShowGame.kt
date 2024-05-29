@@ -371,11 +371,13 @@ fun ColumnScope.RowOfCards(cards: List<Card>, offset: Int = 0, selectedCard: Int
 }
 
 @Composable
-fun ColumnScope.RowOfEnemyCards(cards: List<Card>) {
+fun ColumnScope.RowOfEnemyCards(cards: List<Card>, alts: List<Boolean> = listOf()) {
     Row(Modifier.weight(1f), horizontalArrangement = Arrangement.Center) {
-        cards.forEach {
+        cards.forEachIndexed { index, it ->
             AsyncImage(
-                model = "file:///android_asset/caravan_cards_back/${it.back.getCardBackAsset()}",
+                model = "file:///android_asset/caravan_cards_back/${
+                    if (alts.getOrNull(index) == true) it.back.getCardBackAltAsset() else it.back.getCardBackAsset()
+                }",
                 contentDescription = "",
                 modifier = Modifier.clip(RoundedCornerShape(6f))
             )
@@ -599,7 +601,7 @@ fun ShowDeck(cResources: CResources, activity: MainActivity, isToBottom: Boolean
             modifier = Modifier.fillMaxWidth(),
             fontSize = 16.sp,
         )
-        val link = "file:///android_asset/caravan_cards_back/${if (isKnown) cResources.getDeckBack()?.getCardBackAsset() else null}"
+        val link = "file:///android_asset/caravan_cards_back/${if (isKnown) cResources.getDeckBack()?.getCardBackAssetSplit(activity) else null}"
         AsyncImage(
             model = link,
             contentDescription = "",

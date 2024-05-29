@@ -21,7 +21,10 @@ data object EnemySix : Enemy() {
             }
         }
     })
-    override fun getRewardDeck() = CustomDeck(CardBack.SIERRA_MADRE)
+    override fun getRewardBack() = CardBack.SIERRA_MADRE
+    override fun isAlt(): Boolean {
+        return true
+    }
 
     override suspend fun makeMove(game: Game) {
         val hand = game.enemyCResources.hand

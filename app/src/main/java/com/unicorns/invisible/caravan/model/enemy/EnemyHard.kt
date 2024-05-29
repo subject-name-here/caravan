@@ -13,7 +13,7 @@ import kotlinx.serialization.encodeToString
 @Serializable
 data object EnemyHard : Enemy() {
     override fun createDeck(): CResources = CResources(CardBack.TOPS)
-    override fun getRewardDeck() = CustomDeck(CardBack.TOPS)
+    override fun getRewardBack() = CardBack.TOPS
 
     override suspend fun makeMove(game: Game) {
         val overWeightCaravans = game.enemyCaravans.filter { it.getValue() > 26 }

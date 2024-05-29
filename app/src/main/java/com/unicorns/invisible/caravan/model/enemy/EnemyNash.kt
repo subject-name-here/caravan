@@ -21,7 +21,10 @@ data object EnemyNash : Enemy() {
             }
         }
     })
-    override fun getRewardDeck(): CustomDeck = CustomDeck(CardBack.ULTRA_LUXE)
+    override fun getRewardBack() = CardBack.ULTRA_LUXE
+    override fun isAlt(): Boolean {
+        return true
+    }
 
     override suspend fun makeMove(game: Game) {
         val hand = game.enemyCResources.hand
