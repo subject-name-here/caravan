@@ -1,7 +1,18 @@
 package com.unicorns.invisible.caravan.model
 
+import androidx.compose.ui.graphics.BlendMode
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.ColorMatrix
+import androidx.compose.ui.graphics.asAndroidColorFilter
+import androidx.compose.ui.graphics.asComposeColorFilter
+import androidx.core.graphics.BlendModeColorFilterCompat
+import androidx.core.graphics.BlendModeCompat
 import com.unicorns.invisible.caravan.MainActivity
 import com.unicorns.invisible.caravan.R
+import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.json.JsonNames
 
 enum class CardBack {
     STANDARD,
@@ -9,6 +20,9 @@ enum class CardBack {
     ULTRA_LUXE,
     GOMORRAH,
     LUCKY_38,
+
+    @OptIn(ExperimentalSerializationApi::class)
+    @JsonNames("SIERRA_MADRE", "VAULT_21")
     VAULT_21;
 
     fun getCardBackAssetSplit(activity: MainActivity): String {
@@ -58,5 +72,49 @@ enum class CardBack {
         GOMORRAH -> listOf(R.string.pve_enemy_medium, R.string.no_bark)
         LUCKY_38 -> listOf(R.string.pve_enemy_better, R.string.pve_enemy_38)
         VAULT_21 -> listOf(R.string.pve_enemy_best, R.string.pve_enemy_cheater)
+    }
+
+    fun getFilter(isAlt: Boolean): ColorFilter {
+        if (!isAlt) {
+            return ColorFilter.colorMatrix(ColorMatrix())
+        }
+        return when (this) {
+            STANDARD, LUCKY_38, VAULT_21 -> ColorFilter.colorMatrix(ColorMatrix())
+            TOPS -> ColorFilter.tint(Color(228, 112, 96, 255), BlendMode.Modulate)
+            ULTRA_LUXE -> ColorFilter.colorMatrix(ColorMatrix().apply { setToSaturation(0f); timesAssign(ColorMatrix(
+                floatArrayOf(
+                    -1f, 0f, 0f, 0f, 255f,
+                    0f, -1f, 0f, 0f, 255f,
+                    0f, 0f, -1f, 0f, 255f,
+                    0f, 0f, 0f, 1f, 0f
+                )
+            )) })
+            GOMORRAH -> ColorFilter.colorMatrix(ColorMatrix().apply {
+                timesAssign(ColorMatrix(
+                    floatArrayOf(
+                        0f, 1f, 0f, 0f, 0f,
+                        0.5f, 0.5f, 0f, 0f, 0f,
+                        1f, 0f, 0f, 0f, 0f,
+                        0f, 0f, 0f, 1f, 0f
+                    )
+                ))
+                timesAssign(ColorMatrix(
+                    floatArrayOf(
+                        -1f, 0f, 0f, 0f, 255f,
+                        0f, -1f, 0f, 0f, 255f,
+                        0f, 0f, -1f, 0f, 255f,
+                        0f, 0f, 0f, 1f, 0f
+                    )
+                ))
+                timesAssign(ColorMatrix(
+                    floatArrayOf(
+                        2f, 0f, 0f, 0f, 0f,
+                        0f, 2f, 0f, 0f, 0f,
+                        0f, 0f, 2f, 0f, 0f,
+                        0f, 0f, 0f, 1f, 0f
+                    )
+                ))
+            })
+        }
     }
 }

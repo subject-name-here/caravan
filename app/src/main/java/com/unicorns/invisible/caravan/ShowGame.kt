@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -361,7 +362,7 @@ fun ColumnScope.RowOfCards(cards: List<Card>, offset: Int = 0, selectedCard: Int
                 .padding(4.dp)
                 .weight(1f, fill = false)
             AsyncImage(
-                model = "file:///android_asset/caravan_cards/${getCardName(it)}",
+                model = "file:///android_asset/caravan_cards/${getCardName(it, it.isAlt)}",
                 contentDescription = "",
                 modifier
                     .clip(RoundedCornerShape(6f))
@@ -439,7 +440,7 @@ fun CaravanOnField(
                     .zIndex((caravan.cards.size - index).toFloat())
                 ) {
                     AsyncImage(
-                        model = "file:///android_asset/caravan_cards/${getCardName(it.card)}",
+                        model = "file:///android_asset/caravan_cards/${getCardName(it.card, it.card.isAlt)}",
                         contentDescription = "",
                         modifier = Modifier
                             .clickable {
@@ -449,7 +450,7 @@ fun CaravanOnField(
                     )
                     it.modifiersCopy().forEachIndexed { index, card ->
                         AsyncImage(
-                            model = "file:///android_asset/caravan_cards/${getCardName(card)}",
+                            model = "file:///android_asset/caravan_cards/${getCardName(card, card.isAlt)}",
                             contentDescription = "",
                             modifier = Modifier
                                 .offset(x = -(10.dp) * (index + 1))
@@ -522,7 +523,7 @@ fun CaravanOnField(
                         }
                     }) {
                     AsyncImage(
-                        model = "file:///android_asset/caravan_cards/${getCardName(it.card)}",
+                        model = "file:///android_asset/caravan_cards/${getCardName(it.card, it.card.isAlt)}",
                         contentDescription = "",
                         modifier = Modifier
                             .clickable {
@@ -532,7 +533,7 @@ fun CaravanOnField(
                     )
                     it.modifiersCopy().forEachIndexed { index, card ->
                         AsyncImage(
-                            model = "file:///android_asset/caravan_cards/${getCardName(card)}",
+                            model = "file:///android_asset/caravan_cards/${getCardName(card, card.isAlt)}",
                             contentDescription = "",
                             modifier = Modifier
                                 .offset(x = (10.dp) * (index + 1))

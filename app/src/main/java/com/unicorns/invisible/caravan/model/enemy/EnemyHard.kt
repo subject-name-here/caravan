@@ -6,6 +6,8 @@ import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.CardWithModifier
 import com.unicorns.invisible.caravan.model.primitives.Rank
 import com.unicorns.invisible.caravan.save.json
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 
@@ -122,6 +124,8 @@ data object EnemyHard : Enemy() {
                         potentialCardToJoker.card.rank == it.card.rank && potentialCardToJoker.card.suit == it.card.suit
                     }
                     if (cardInCopy?.canAddModifier(card) == true) {
+                        cardInCopy.addModifier(card)
+                        gameCopy.processJoker()
                         val overWeightCaravansCopy = gameCopy.enemyCaravans.filter { it.getValue() > 26 }
                         val playersReadyCaravansCopy = gameCopy.playerCaravans.filter { it.getValue() in (21..26) }
                         return overWeightCaravans.size - overWeightCaravansCopy.size + (playersReadyCaravans.size - playersReadyCaravansCopy.size)

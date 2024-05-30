@@ -1,5 +1,6 @@
 package com.unicorns.invisible.caravan
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -10,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -38,6 +40,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import coil.compose.rememberAsyncImagePainter
+import coil.decode.SvgDecoder
+import coil.request.ImageRequest
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.getCardName
 import com.unicorns.invisible.caravan.model.primitives.Card
@@ -50,6 +55,7 @@ import com.unicorns.invisible.caravan.utils.getKnobColor
 import com.unicorns.invisible.caravan.utils.getTextBackgroundColor
 import com.unicorns.invisible.caravan.utils.getTextColor
 import com.unicorns.invisible.caravan.utils.getTrackColor
+import com.unicorns.invisible.caravan.utils.pxToDp
 import com.unicorns.invisible.caravan.utils.scrollbar
 
 
@@ -150,7 +156,7 @@ fun SetCustomDeck(
                                     check = !check
                                     updater = !updater
                                 }
-                            ) { activity.save!!.availableDecksAlt[back] == true }
+                            ) { /*activity.save!!.availableDecksAlt[back] == */true }
                         }
                     }
                     if (rowTabShow) {
@@ -170,9 +176,15 @@ fun SetCustomDeck(
                                     var isSelected by remember { mutableStateOf(
                                         isInCustomDeck(card)
                                     ) }
-                                    if (isAvailable(card)) {
-                                        AsyncImage(
-                                            model = "file:///android_asset/caravan_cards/${getCardName(card)}",
+                                    val painter = rememberAsyncImagePainter(
+                                        ImageRequest.Builder(activity)
+                                            .data("file:///android_asset/caravan_cards/${getCardName(card, check)}")
+                                            .decoderFactory(SvgDecoder.Factory())
+                                            .build()
+                                    )
+                                    if (/*isAvailable(card)*/ true) {
+                                        Image(
+                                            painter = painter,
                                             contentDescription = "",
                                             Modifier
                                                 .clickable {
@@ -180,6 +192,7 @@ fun SetCustomDeck(
                                                     isSelected = !isSelected
                                                     updater = !updater
                                                 }
+                                                .size(183.pxToDp(), 256.pxToDp())
                                                 .border(
                                                     width = (if (isSelected) 4 else 0).dp,
                                                     color = getAccentColor(activity)
@@ -187,13 +200,21 @@ fun SetCustomDeck(
                                                 .padding(4.dp)
                                                 .alpha(if (isSelected) 1f else 0.5f)
                                                 .background(if (isSelected) getAccentColor(activity) else Color.Transparent)
-                                                .clip(RoundedCornerShape(6f))
+                                                .clip(RoundedCornerShape(12f)),
+                                            colorFilter = card.back.getFilter(check)
                                         )
                                     } else {
-                                        AsyncImage(
-                                            model = "file:///android_asset/caravan_cards_back/${card.back.getCardBackAssetSplit(activity)}",
+                                        val painter2 = rememberAsyncImagePainter(
+                                            ImageRequest.Builder(activity)
+                                                .data("file:///android_asset/caravan_cards_back/${card.back.getCardBackAssetSplit(activity)}")
+                                                .decoderFactory(SvgDecoder.Factory())
+                                                .build()
+                                        )
+                                        Image(
+                                            painter = painter2,
                                             contentDescription = "",
                                             Modifier
+                                                .size(183.pxToDp(), 256.pxToDp())
                                                 .padding(4.dp)
                                                 .alpha(0.33f)
                                                 .clip(RoundedCornerShape(6f))

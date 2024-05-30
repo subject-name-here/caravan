@@ -92,6 +92,8 @@ data object EnemySecuritron38 : Enemy() {
                         potentialCardToJoker.card.rank == it.card.rank && potentialCardToJoker.card.suit == it.card.suit
                     }
                     if (cardInCopy?.canAddModifier(card) == true) {
+                        cardInCopy.addModifier(card)
+                        gameCopy.processJoker()
                         val overWeightCaravansCopy = gameCopy.enemyCaravans.filter { it.getValue() > 26 }
                         val playersReadyCaravansCopy = gameCopy.playerCaravans.filter { it.getValue() in (21..26) }
                         if (overWeightCaravansCopy.size < overWeightCaravans.size || playersReadyCaravansCopy.size < playersReadyCaravans.size) {

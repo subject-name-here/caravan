@@ -156,7 +156,7 @@ class Game(
         return false
     }
 
-    private fun processJoker() {
+    fun processJoker() {
         (playerCaravans + enemyCaravans).forEach { caravan ->
             caravan.cards.filter {
                 it.hasActiveJoker

@@ -5,13 +5,14 @@ import com.unicorns.invisible.caravan.model.primitives.Rank
 import com.unicorns.invisible.caravan.model.primitives.Suit
 
 
-fun getCardName(card: Card): String {
+fun getCardName(card: Card, isAlt: Boolean): String {
     return when (card.back) {
-        CardBack.STANDARD, CardBack.VAULT_21 -> getStandardName(card)
+        CardBack.STANDARD -> getStandardName(card)
+        CardBack.VAULT_21 -> if (isAlt) getVault21AltName(card) else getVault21Name(card)
         CardBack.GOMORRAH -> getGomorrahName(card)
         CardBack.TOPS -> getTopsName(card)
         CardBack.ULTRA_LUXE -> getUltraLuxeName(card)
-        CardBack.LUCKY_38 -> getLucky38Name(card)
+        CardBack.LUCKY_38 -> if (isAlt) getLucky38AltName(card) else getLucky38Name(card)
     }
 }
 
@@ -179,4 +180,55 @@ private fun getLucky38Name(card: Card): String {
         Rank.ACE to Suit.SPADES -> "FNV_Ace_of_Spades_-_Lucky_38.webp"
         else -> getStandardName(card)
     }
+}
+
+private fun getLucky38AltName(card: Card): String {
+    if (card.rank == Rank.JOKER) {
+        return if (card.suit == Suit.HEARTS) {
+            "lucky38ALT/1J.webp"
+        } else {
+            "lucky38ALT/2J.webp"
+        }
+    }
+
+    val letter = when (card.rank.value) {
+        in (2..9) -> card.rank.value.toString()
+        else -> card.rank.name.first().toString()
+    }
+    val suit = card.suit.name.first()
+    return "lucky38ALT/$letter$suit.svg"
+}
+
+private fun getVault21AltName(card: Card): String {
+    if (card.rank == Rank.JOKER) {
+        return if (card.suit == Suit.HEARTS) {
+            "vault21ALT/1J.png"
+        } else {
+            "vault21ALT/2J.svg"
+        }
+    }
+
+    val letter = when (card.rank.value) {
+        in (2..9) -> card.rank.value.toString()
+        else -> card.rank.name.first().toString()
+    }
+    val suit = card.suit.name.first()
+    return "vault21ALT/$letter$suit.svg"
+}
+
+private fun getVault21Name(card: Card): String {
+    if (card.rank == Rank.JOKER) {
+        return if (card.suit == Suit.HEARTS) {
+            "vault21/1J.svg"
+        } else {
+            "vault21/2J.svg"
+        }
+    }
+
+    val letter = when (card.rank.value) {
+        in (2..9) -> card.rank.value.toString()
+        else -> card.rank.name.first().toString()
+    }
+    val suit = card.suit.name.first()
+    return "vault21/$letter$suit.svg"
 }

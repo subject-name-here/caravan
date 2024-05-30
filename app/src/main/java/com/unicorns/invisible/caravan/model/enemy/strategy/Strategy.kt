@@ -4,5 +4,5 @@ import com.unicorns.invisible.caravan.model.Game
 
 
 interface Strategy {
-    fun move(game: Game)
+    fun move(game: Game): Boolean
 }

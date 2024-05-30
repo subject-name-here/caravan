@@ -13,9 +13,14 @@ import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.unicorns.invisible.caravan.MainActivity
+
+
+@Composable
+fun Int.pxToDp() = with (LocalDensity.current) { this@pxToDp.toDp() }
 
 @Composable
 fun Modifier.scrollbar(

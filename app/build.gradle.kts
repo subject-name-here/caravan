@@ -62,6 +62,7 @@ dependencies {
     implementation(libs.compose.activity)
 
     implementation(libs.coil)
+    implementation(libs.coil.svg)
 
     implementation(libs.serialization)
 
