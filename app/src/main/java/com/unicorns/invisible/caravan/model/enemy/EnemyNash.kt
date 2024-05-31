@@ -28,11 +28,11 @@ data object EnemyNash : Enemy() {
 
     override suspend fun makeMove(game: Game) {
         val hand = game.enemyCResources.hand
-        val overWeightCaravans = game.enemyCaravans.filter { it.getValue() > 26 } +
-                game.enemyCaravans.filter { !it.isEmpty() && it.cards[0].modifiersCopy().size >= 3 }
+        val overWeightCaravans = game.enemyCaravans.filter { it.getValue() > 26 }.toSet() +
+                game.enemyCaravans.filter { !it.isEmpty() && it.cards[0].modifiersCopy().filter { modifier -> modifier.rank != Rank.KING }.size >= 2 }.toSet()
 
         if (game.isInitStage()) {
-            val card = hand.filter { !it.isFace() }.maxBy { it.rank.value }
+            val card = hand.filter { !it.isFace() }.random()
             val caravan = game.enemyCaravans.first { it.cards.isEmpty() }
             caravan.putCardOnTop(game.enemyCResources.removeFromHand(hand.indexOf(card)))
             return
@@ -52,7 +52,7 @@ data object EnemyNash : Enemy() {
         if (six != null) {
             val emptyCaravans = game.enemyCaravans.shuffled().filter { it.isEmpty() }
             if (emptyCaravans.isNotEmpty()) {
-                val caravan = emptyCaravans[0]
+                val caravan = emptyCaravans.random()
                 if (caravan.canPutCardOnTop(six.value)) {
                     caravan.putCardOnTop(game.enemyCResources.removeFromHand(six.index))
                     return
@@ -64,9 +64,9 @@ data object EnemyNash : Enemy() {
         if (king != null) {
             val underWeightCaravans = game.enemyCaravans.shuffled().filter { !it.isEmpty() && it.getValue() < 21 }
             if (underWeightCaravans.isNotEmpty()) {
-                val caravan = underWeightCaravans[0]
-                val card = caravan.cards.getOrNull(0)
-                if (card != null && card.canAddModifier(king.value)) {
+                val caravan = underWeightCaravans.random()
+                val card = caravan.cards[0]
+                if (card.canAddModifier(king.value)) {
                     card.addModifier(game.enemyCResources.removeFromHand(king.index))
                     return
                 }

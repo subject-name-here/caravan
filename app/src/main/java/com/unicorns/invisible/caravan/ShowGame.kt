@@ -364,7 +364,7 @@ fun ColumnScope.RowOfCards(activity: MainActivity, cards: List<Card>, offset: In
                     .clickable {
                         onClick(offset + index)
                     }
-            }.clip(RoundedCornerShape(10f))
+            }.clip(RoundedCornerShape(12f))
 
 
             ShowCard(activity, it, modifier, false)

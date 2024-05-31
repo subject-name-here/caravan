@@ -50,7 +50,9 @@ class StrategyAggressive : Strategy {
                     cardInCopy.addModifier(card)
                     val overWeightCaravansCopy = gameCopy.enemyCaravans.filter { it.getValue() > 26 }
                     val playersReadyCaravansCopy = gameCopy.playerCaravans.filter { it.getValue() in (21..26) }
-                    return overWeightCaravans.size - overWeightCaravansCopy.size + (playersReadyCaravans.size - playersReadyCaravansCopy.size)
+                    if (overWeightCaravansCopy.size < overWeightCaravans.size || playersReadyCaravansCopy.size < playersReadyCaravans.size) {
+                        return 1
+                    }
                 }
                 return 0
             }

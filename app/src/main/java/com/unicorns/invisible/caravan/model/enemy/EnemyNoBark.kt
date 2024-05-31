@@ -15,7 +15,7 @@ import kotlinx.serialization.encodeToString
 @Serializable
 data object EnemyNoBark : Enemy() {
     override fun createDeck(): CResources = CResources(CustomDeck(CardBack.STANDARD, false).apply {
-        listOf(CardBack.TOPS, CardBack.ULTRA_LUXE, CardBack.GOMORRAH, CardBack.LUCKY_38).forEach { back ->
+        listOf(CardBack.GOMORRAH).forEach { back ->
             Suit.entries.forEach { suit ->
                 add(Card(Rank.JACK, suit, back, true))
             }
@@ -57,8 +57,8 @@ data object EnemyNoBark : Enemy() {
             if (card.rank == Rank.KING) {
                 val caravan = game.playerCaravans.filter { it.getValue() in (21..26) }.maxByOrNull { it.getValue() }
                 if (caravan != null) {
-                    val cardToKing = caravan.cards.maxByOrNull { it.getValue() }
-                    if (cardToKing != null && cardToKing.canAddModifier(card)) {
+                    val cardToKing = caravan.cards.filter { it.canAddModifier(card) }.maxByOrNull { it.getValue() }
+                    if (cardToKing != null) {
                         cardToKing.addModifier(game.enemyCResources.removeFromHand(cardIndex))
                         return
                     }
@@ -68,17 +68,15 @@ data object EnemyNoBark : Enemy() {
                     .flatMap { c -> c.cards.map { it to c } }
                     .sortedByDescending { it.first.getValue() }
                     .forEach {
-                        if (it.second.getValue() + it.first.getValue() in (12..26)) {
-                            if (it.first.canAddModifier(card)) {
-                                it.first.addModifier(game.enemyCResources.removeFromHand(cardIndex))
-                                return
-                            }
+                        if (it.second.getValue() + it.first.getValue() in (12..26) && it.first.canAddModifier(card)) {
+                            it.first.addModifier(game.enemyCResources.removeFromHand(cardIndex))
+                            return
                         }
                     }
             }
 
             if (!card.rank.isFace()) {
-                game.enemyCaravans.sortedBy { -it.getValue() }.forEachIndexed { caravanIndex, caravan ->
+                game.enemyCaravans.sortedByDescending { it.getValue() }.forEachIndexed { caravanIndex, caravan ->
                     if (caravan.getValue() + card.rank.value <= 26 && caravan.canPutCardOnTop(card)) {
                         val otherCaravansIndices = game.enemyCaravans.indices.filter { it != caravanIndex }
                         var score = 0
@@ -116,12 +114,14 @@ data object EnemyNoBark : Enemy() {
             if (card.rank == Rank.JOKER) {
                 val cards = (game.playerCaravans + game.enemyCaravans).flatMap { it.cards }
                 val gameCopyString = json.encodeToString(game)
-                cards.forEach { potentialCardToJoker ->
+                cards.sortedByDescending { it.card.rank.value }.forEach { potentialCardToJoker ->
                     val gameCopy = json.decodeFromString<Game>(gameCopyString)
                     val cardInCopy = (gameCopy.playerCaravans + gameCopy.enemyCaravans).flatMap { it.cards }.find {
                         potentialCardToJoker.card.rank == it.card.rank && potentialCardToJoker.card.suit == it.card.suit
                     }
                     if (cardInCopy?.canAddModifier(card) == true) {
+                        cardInCopy.addModifier(card)
+                        gameCopy.processJoker()
                         val overWeightCaravansCopy = gameCopy.enemyCaravans.filter { it.getValue() > 26 }
                         val playersReadyCaravansCopy = gameCopy.playerCaravans.filter { it.getValue() in (21..26) }
                         if (overWeightCaravansCopy.size < overWeightCaravans.size || playersReadyCaravansCopy.size < playersReadyCaravans.size) {
