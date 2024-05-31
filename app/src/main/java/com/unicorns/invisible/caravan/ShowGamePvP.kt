@@ -394,13 +394,13 @@ fun ShowGamePvP(
                     ) {
                         val handSize = game.playerCResources.hand.size
                         Column(Modifier.fillMaxWidth(0.8f)) {
-                            RowOfCards(cards = game.playerCResources.hand.subList(0, minOf(4, handSize)), 0, selectedCard, selectedCardColor, ::onCardClicked)
+                            RowOfCards(activity, cards = game.playerCResources.hand.subList(0, minOf(4, handSize)), 0, selectedCard, selectedCardColor, ::onCardClicked)
                             val cards = if (handSize >= 5) {
                                 game.playerCResources.hand.subList(4, handSize)
                             } else {
                                 emptyList()
                             }
-                            RowOfCards(cards = cards, 4, selectedCard, selectedCardColor, ::onCardClicked)
+                            RowOfCards(activity, cards = cards, 4, selectedCard, selectedCardColor, ::onCardClicked)
                         }
                         Box {
                             ShowDeck(game.playerCResources, activity, isToBottom = true)
@@ -521,13 +521,13 @@ fun ShowGamePvP(
                     .fillMaxHeight(0.8f)
                 ) {
                     Column(Modifier.fillMaxWidth(0.8f)) {
-                        RowOfCards(cards = game.playerCResources.hand.subList(0, minOf(4, game.playerCResources.hand.size)), 0, selectedCard, selectedCardColor, ::onCardClicked)
+                        RowOfCards(activity, cards = game.playerCResources.hand.subList(0, minOf(4, game.playerCResources.hand.size)), 0, selectedCard, selectedCardColor, ::onCardClicked)
                         val cards = if (game.playerCResources.hand.size >= 5) {
                             game.playerCResources.hand.subList(4, game.playerCResources.hand.size)
                         } else {
                             emptyList()
                         }
-                        RowOfCards(cards = cards, 4, selectedCard, selectedCardColor, ::onCardClicked)
+                        RowOfCards(activity, cards = cards, 4, selectedCard, selectedCardColor, ::onCardClicked)
                     }
                     Box {
                         ShowDeck(game.playerCResources, activity, isToBottom = true)

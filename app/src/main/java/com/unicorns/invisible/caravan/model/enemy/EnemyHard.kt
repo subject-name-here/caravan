@@ -118,7 +118,7 @@ data object EnemyHard : Enemy() {
                 val cards = (game.playerCaravans + game.enemyCaravans).flatMap { it.cards }
                 val gameCopyString = json.encodeToString(game)
 
-                fun joke(potentialCardToJoker: CardWithModifier): Int {
+                fun joke(potentialCardToJoker: CardWithModifier): Boolean {
                     val gameCopy = json.decodeFromString<Game>(gameCopyString)
                     val cardInCopy = (gameCopy.playerCaravans + gameCopy.enemyCaravans).flatMap { it.cards }.find {
                         potentialCardToJoker.card.rank == it.card.rank && potentialCardToJoker.card.suit == it.card.suit
@@ -128,15 +128,15 @@ data object EnemyHard : Enemy() {
                         gameCopy.processJoker()
                         val overWeightCaravansCopy = gameCopy.enemyCaravans.filter { it.getValue() > 26 }
                         val playersReadyCaravansCopy = gameCopy.playerCaravans.filter { it.getValue() in (21..26) }
-                        return overWeightCaravans.size - overWeightCaravansCopy.size + (playersReadyCaravans.size - playersReadyCaravansCopy.size)
+                        return overWeightCaravansCopy.size < overWeightCaravans.size || playersReadyCaravansCopy.size < playersReadyCaravans.size
                     }
-                    return 0
+                    return false
                 }
 
-                val cardToJoker = cards.maxByOrNull { potentialCardToJoker ->
+                val cardToJoker = cards.find { potentialCardToJoker ->
                     joke(potentialCardToJoker)
                 }
-                if (cardToJoker != null && joke(cardToJoker) > 0) {
+                if (cardToJoker != null) {
                     cardToJoker.addModifier(game.enemyCResources.removeFromHand(cardIndex))
                     return
                 }

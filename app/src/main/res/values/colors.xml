@@ -15,6 +15,7 @@
     <color name="colorAccentGrey">#D0C288</color>
 
     <color name="colorBack">#001601</color>
+    <color name="colorBackLighter">#004501</color>
     <color name="colorLightBack">#023202</color>
     <color name="colorLightBackHalfTransparent">#66023202</color>
     <color name="colorText">#01C802</color>

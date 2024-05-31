@@ -48,11 +48,11 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import coil.compose.AsyncImage
 import com.unicorns.invisible.caravan.model.Game
-import com.unicorns.invisible.caravan.model.getCardName
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.Caravan
 import com.unicorns.invisible.caravan.model.primitives.Card
 import com.unicorns.invisible.caravan.model.primitives.Rank
+import com.unicorns.invisible.caravan.utils.ShowCard
 import com.unicorns.invisible.caravan.utils.caravanScrollbar
 import com.unicorns.invisible.caravan.utils.getAccentColor
 import com.unicorns.invisible.caravan.utils.getDividerColor
@@ -195,13 +195,13 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
                     ) {
                         val handSize = game.playerCResources.hand.size
                         Column(Modifier.fillMaxWidth(0.8f)) {
-                            RowOfCards(cards = game.playerCResources.hand.subList(0, minOf(4, handSize)), 0, selectedCard, selectedCardColor, ::onCardClicked)
+                            RowOfCards(activity, cards = game.playerCResources.hand.subList(0, minOf(4, handSize)), 0, selectedCard, selectedCardColor, ::onCardClicked)
                             val cards = if (handSize >= 5) {
                                 game.playerCResources.hand.subList(4, handSize)
                             } else {
                                emptyList()
                             }
-                            RowOfCards(cards = cards, 4, selectedCard, selectedCardColor, ::onCardClicked)
+                            RowOfCards(activity, cards = cards, 4, selectedCard, selectedCardColor, ::onCardClicked)
                         }
                         ShowDeck(game.playerCResources, activity, isToBottom = true)
                     }
@@ -306,13 +306,13 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
                     .fillMaxHeight(0.8f)
                 ) {
                     Column(Modifier.fillMaxWidth(0.8f)) {
-                        RowOfCards(cards = game.playerCResources.hand.subList(0, minOf(4, game.playerCResources.hand.size)), 0, selectedCard, selectedCardColor, ::onCardClicked)
+                        RowOfCards(activity, cards = game.playerCResources.hand.subList(0, minOf(4, game.playerCResources.hand.size)), 0, selectedCard, selectedCardColor, ::onCardClicked)
                         val cards = if (game.playerCResources.hand.size >= 5) {
                             game.playerCResources.hand.subList(4, game.playerCResources.hand.size)
                         } else {
                             emptyList()
                         }
-                        RowOfCards(cards = cards, 4, selectedCard, selectedCardColor, ::onCardClicked)
+                        RowOfCards(activity, cards = cards, 4, selectedCard, selectedCardColor, ::onCardClicked)
                     }
                     ShowDeck(game.playerCResources, activity, isToBottom = true)
                 }
@@ -337,7 +337,7 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
 }
 
 @Composable
-fun ColumnScope.RowOfCards(cards: List<Card>, offset: Int = 0, selectedCard: Int?, selectedCardColor: Color, onClick: (Int) -> Unit) {
+fun ColumnScope.RowOfCards(activity: MainActivity, cards: List<Card>, offset: Int = 0, selectedCard: Int?, selectedCardColor: Color, onClick: (Int) -> Unit) {
     Row(
         Modifier
             .weight(1f)
@@ -361,12 +361,7 @@ fun ColumnScope.RowOfCards(cards: List<Card>, offset: Int = 0, selectedCard: Int
                 }
                 .padding(4.dp)
                 .weight(1f, fill = false)
-            AsyncImage(
-                model = "file:///android_asset/caravan_cards/${getCardName(it, it.isAlt)}",
-                contentDescription = "",
-                modifier
-                    .clip(RoundedCornerShape(6f))
-            )
+            ShowCard(activity, it, modifier)
         }
     }
 }
@@ -380,7 +375,6 @@ fun ColumnScope.RowOfEnemyCards(cards: List<Card>) {
                     if (it.isAlt) it.back.getCardBackAltAsset() else it.back.getCardBackAsset()
                 }",
                 contentDescription = "",
-                modifier = Modifier.clip(RoundedCornerShape(6f))
             )
         }
     }
@@ -439,23 +433,12 @@ fun CaravanOnField(
                     }
                     .zIndex((caravan.cards.size - index).toFloat())
                 ) {
-                    AsyncImage(
-                        model = "file:///android_asset/caravan_cards/${getCardName(it.card, it.card.isAlt)}",
-                        contentDescription = "",
-                        modifier = Modifier
-                            .clickable {
-                                addSelectedCardOnPosition(caravan.cards.lastIndex - index)
-                            }
-                            .clip(RoundedCornerShape(6f))
-                    )
+                    ShowCard(activity, it.card, Modifier
+                        .clickable {
+                            addSelectedCardOnPosition(caravan.cards.lastIndex - index)
+                        })
                     it.modifiersCopy().forEachIndexed { index, card ->
-                        AsyncImage(
-                            model = "file:///android_asset/caravan_cards/${getCardName(card, card.isAlt)}",
-                            contentDescription = "",
-                            modifier = Modifier
-                                .offset(x = -(10.dp) * (index + 1))
-                                .clip(RoundedCornerShape(6f))
-                        )
+                        ShowCard(activity, card, Modifier.offset(x = -(10.dp) * (index + 1)))
                     }
                 }
             }
@@ -522,24 +505,14 @@ fun CaravanOnField(
                             placeable.place(offsetWidth, 0)
                         }
                     }) {
-                    AsyncImage(
-                        model = "file:///android_asset/caravan_cards/${getCardName(it.card, it.card.isAlt)}",
-                        contentDescription = "",
-                        modifier = Modifier
+                        ShowCard(activity, it.card, Modifier
                             .clickable {
                                 addSelectedCardOnPosition(index)
-                            }
-                            .clip(RoundedCornerShape(6f))
-                    )
-                    it.modifiersCopy().forEachIndexed { index, card ->
-                        AsyncImage(
-                            model = "file:///android_asset/caravan_cards/${getCardName(card, card.isAlt)}",
-                            contentDescription = "",
-                            modifier = Modifier
-                                .offset(x = (10.dp) * (index + 1))
-                                .clip(RoundedCornerShape(6f))
-                        )
-                    }
+                            })
+                        it.modifiersCopy().forEachIndexed { index, card ->
+                            ShowCard(activity, card, Modifier
+                                .offset(x = (10.dp) * (index + 1)))
+                        }
                 }
             }
             if (!caravan.isFull() && (!isInitStage || caravan.cards.isEmpty())) {
@@ -619,7 +592,6 @@ fun ShowDeck(cResources: CResources, activity: MainActivity, isToBottom: Boolean
             contentDescription = "",
             modifier = Modifier
                 .fillMaxWidth()
-                .clip(RoundedCornerShape(if (!isToBottom) 12f else 6f)),
         )
     }
 }
