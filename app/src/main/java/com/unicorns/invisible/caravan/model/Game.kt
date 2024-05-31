@@ -36,8 +36,8 @@ class Game(
     @Transient
     var onLose: () -> Unit = {}
 
-    private var isGameOver = 0
-        set(value) {
+    var isGameOver = 0
+        private set(value) {
             field = value
             when (value) {
                 -1 -> onLose()
@@ -105,7 +105,7 @@ class Game(
         }
     }
 
-    private fun processJacks() {
+    fun processJacks() {
         (playerCaravans + enemyCaravans).forEach { caravan ->
             caravan.removeAllJackedCards()
         }

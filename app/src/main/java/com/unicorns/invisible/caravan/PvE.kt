@@ -34,6 +34,7 @@ import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.GameSaver
 import com.unicorns.invisible.caravan.model.enemy.Enemy
 import com.unicorns.invisible.caravan.model.enemy.EnemyBestest
+import com.unicorns.invisible.caravan.model.enemy.EnemyBetter
 import com.unicorns.invisible.caravan.model.enemy.EnemyEasy
 import com.unicorns.invisible.caravan.model.enemy.EnemyHard
 import com.unicorns.invisible.caravan.model.enemy.EnemyMedium
@@ -69,6 +70,8 @@ fun ShowPvE(
     var showGameEasy by rememberSaveable { mutableStateOf(false) }
     var showGameMedium by rememberSaveable { mutableStateOf(false) }
     var showGameHard by rememberSaveable { mutableStateOf(false) }
+    var showGameBetter by rememberSaveable { mutableStateOf(false) }
+    var showGameUlysses by rememberSaveable { mutableStateOf(false) }
 
     var showGame38 by rememberSaveable { mutableStateOf(false) }
     var showGameCheater by rememberSaveable { mutableStateOf(false) }
@@ -169,6 +172,28 @@ fun ShowPvE(
             showGameHard = false
         }
         return
+    } else if (showGameBetter) {
+        StartGame(
+            activity = activity,
+            playerCResources = getPlayerDeck(),
+            isCustom = checkedCustomDeck,
+            enemy = EnemyBetter,
+            showAlertDialog = showAlertDialog
+        ) {
+            showGameBetter = false
+        }
+        return
+    } else if (showGameUlysses) {
+        StartGame(
+            activity = activity,
+            playerCResources = getPlayerDeck(),
+            isCustom = checkedCustomDeck,
+            enemy = EnemyBestest,
+            showAlertDialog = showAlertDialog
+        ) {
+            showGameUlysses = false
+        }
+        return
     }
 
     Column(
@@ -229,7 +254,7 @@ fun ShowPvE(
                 fontFamily = FontFamily(Font(R.font.monofont)),
                 style = TextStyle(color = getTextColor(activity), fontSize = 16.sp),
                 modifier = Modifier.clickable {
-                    showAlertDialog("New enemy", "[CLOSED]")
+                    showGameBetter = true
                 }.background(getTextBackgroundColor(activity)).padding(4.dp)
             )
             Spacer(modifier = Modifier.height(10.dp))
@@ -241,7 +266,7 @@ fun ShowPvE(
                     if (checkedCustomDeck) {
                         showAlertDialog("It's an honest fight.", "You cannot use custom deck against this enemy.")
                     } else {
-                        showAlertDialog("New enemy", "[CLOSED]")
+                        showGameUlysses = true
                     }
                 }.background(getTextBackgroundColor(activity)).padding(4.dp)
             )
