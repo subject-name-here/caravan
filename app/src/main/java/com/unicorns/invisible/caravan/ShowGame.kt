@@ -62,6 +62,7 @@ import com.unicorns.invisible.caravan.utils.getGameTextColor
 import com.unicorns.invisible.caravan.utils.getKnobColor
 import com.unicorns.invisible.caravan.utils.getTextBackgroundColor
 import com.unicorns.invisible.caravan.utils.getTrackColor
+import com.unicorns.invisible.caravan.utils.pxToDp
 
 
 @Composable
@@ -342,7 +343,7 @@ fun ColumnScope.RowOfCards(activity: MainActivity, cards: List<Card>, offset: In
         Modifier
             .weight(1f)
             .fillMaxHeight()
-            .fillMaxWidth(),
+            .fillMaxWidth().padding(4.dp),
         horizontalArrangement = Arrangement.Center
     ) {
         cards.forEachIndexed { index, it ->
@@ -352,16 +353,21 @@ fun ColumnScope.RowOfCards(activity: MainActivity, cards: List<Card>, offset: In
                         width = 4.dp,
                         color = selectedCardColor
                     )
-                    .background(selectedCardColor)
+                    .padding(4.dp)
+                    .clickable {
+                        onClick(offset + index)
+                    }
+
             } else {
                 Modifier
-            }
-                .clickable {
-                    onClick(offset + index)
-                }
-                .padding(4.dp)
-                .weight(1f, fill = false)
-            ShowCard(activity, it, modifier)
+                    .padding(4.dp)
+                    .clickable {
+                        onClick(offset + index)
+                    }
+            }.clip(RoundedCornerShape(10f))
+
+
+            ShowCard(activity, it, modifier, false)
         }
     }
 }
@@ -375,6 +381,7 @@ fun ColumnScope.RowOfEnemyCards(cards: List<Card>) {
                     if (it.isAlt) it.back.getCardBackAltAsset() else it.back.getCardBackAsset()
                 }",
                 contentDescription = "",
+                modifier = Modifier.clip(RoundedCornerShape(6f))
             )
         }
     }
@@ -591,6 +598,7 @@ fun ShowDeck(cResources: CResources, activity: MainActivity, isToBottom: Boolean
             model = link,
             contentDescription = "",
             modifier = Modifier
+                .clip(RoundedCornerShape(12f))
                 .fillMaxWidth()
         )
     }

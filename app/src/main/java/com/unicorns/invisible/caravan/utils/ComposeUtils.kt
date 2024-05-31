@@ -38,7 +38,7 @@ import com.unicorns.invisible.caravan.model.primitives.Card
 fun Int.pxToDp() = with (LocalDensity.current) { this@pxToDp.toDp() }
 
 @Composable
-fun ShowCard(activity: MainActivity, card: Card, modifier: Modifier) {
+fun ShowCard(activity: MainActivity, card: Card, modifier: Modifier, toModify: Boolean = true) {
     val cardName = getCardName(card, card.isAlt)
     val cornerSize = if (cardName.endsWith("svg")) 12f else 6f
     val painter = rememberAsyncImagePainter(
@@ -50,7 +50,7 @@ fun ShowCard(activity: MainActivity, card: Card, modifier: Modifier) {
     Image(
         painter = painter,
         contentDescription = "",
-        modifier = modifier.size(183.pxToDp(), 256.pxToDp()).clip(RoundedCornerShape(cornerSize)),
+        modifier = if (toModify) modifier.clip(RoundedCornerShape(cornerSize)).size(183.pxToDp(), 256.pxToDp()) else modifier,
         colorFilter = card.back.getFilter(card.isAlt)
     )
 }

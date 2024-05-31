@@ -160,7 +160,8 @@ fun SetCustomDeck(
                             LazyRow(
                                 Modifier
                                     .weight(1f)
-                                    .scrollbar(state, knobColor = getKnobColor(activity), trackColor = getTrackColor(activity), horizontal = true), state = state) lambda@ {
+                                    .scrollbar(state, knobColor = getKnobColor(activity), trackColor = getTrackColor(activity), horizontal = true)
+                                    .padding(horizontal = 4.dp), state = state) lambda@ {
                                 items(CustomDeck(back, check).toList().sortedWith { o1, o2 ->
                                     if (o1.rank != o2.rank) {
                                         o2.rank.value - o1.rank.value

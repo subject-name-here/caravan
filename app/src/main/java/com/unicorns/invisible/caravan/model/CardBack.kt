@@ -83,9 +83,9 @@ enum class CardBack {
             TOPS -> ColorFilter.colorMatrix(ColorMatrix().apply {
                 timesAssign(ColorMatrix(
                     floatArrayOf(
-                        0.8f, 2f, 0f, 0f, 0f,
-                        0f, 2f, 0f, 0f, 0f,
-                        0f, 2f, 0.1f, 0f, 0f,
+                        0.9f, 2f, 0f, 0f, 0f,
+                        0.3f, 2f, 0f, 0f, 0f,
+                        0.15f, 2f, 0.1f, 0f, 0f,
                         0f, 0f, 0f, 1f, 0f
                     )
                 ))

@@ -37,24 +37,52 @@ data object EnemySix : Enemy() {
             return
         }
 
-        var kings = hand.withIndex().filter { it.value.rank == Rank.KING }
+        fun check(p0: Int, e0: Int): Float {
+            return when {
+                p0 in (21..26) && (p0 > e0 || e0 > 26) -> 2f
+                p0 in (11..26) && (e0 != 26 || e0 == p0) -> 0.5f
+                else -> 0f
+            }
+        }
+
+        fun checkAnyReady(p0: Int, e0: Int): Float {
+            return when {
+                p0 in (21..26) && (p0 > e0 || e0 > 26) -> 2f
+                e0 in (21..26) && (e0 > p0 || p0 > 26) -> 2f
+                else -> 0f
+            }
+        }
+
+        val kings = hand.withIndex().filter { it.value.rank == Rank.KING }
+        if (
+            kings.isNotEmpty() &&
+            game.enemyCaravans.indices.map { checkAnyReady(game.playerCaravans[it].getValue(), game.enemyCaravans[it].getValue()) }.sum() > 4f
+        ) {
+            val (cardIndex, card) = kings.random()
+            game.playerCaravans.forEach { playerCaravan ->
+                if (playerCaravan.getValue() in (21..26)) {
+                    val cardToKing = playerCaravan.cards
+                        .filter { it.getValue() + playerCaravan.getValue() > 26 && it.canAddModifier(card) }
+                        .maxByOrNull { it.getValue() }
+                    if (cardToKing != null) {
+                        cardToKing.addModifier(game.enemyCResources.removeFromHand(cardIndex))
+                        return
+                    }
+                }
+            }
+        }
+
         if (kings.isNotEmpty()) {
             val (cardIndex, card) = kings.random()
-            game.enemyCaravans.forEachIndexed { caravanIndex, enemyCaravan ->
+            game.enemyCaravans.withIndex().shuffled().forEach { (caravanIndex, enemyCaravan) ->
                 if (enemyCaravan.getValue() in listOf(10, 16)) {
                     val ten = enemyCaravan.cards.find { it.card.rank == Rank.TEN && it.getValue() == 10 && it.canAddModifier(card) }
-                    if (ten != null && ten.canAddModifier(card)) {
+                    if (ten != null) {
                         val otherCaravansIndices = game.enemyCaravans.indices.filter { it != caravanIndex }
-                        var score = 0
-                        fun check(p0: Int, e0: Int) {
-                            if (p0 in (21..26) && (p0 > e0 || e0 > 26)) {
-                                score++
-                            }
-                        }
-                        otherCaravansIndices.forEach {
+                        val score = otherCaravansIndices.map {
                             check(game.playerCaravans[it].getValue(), game.enemyCaravans[it].getValue())
-                        }
-                        if (!(score == 2 && enemyCaravan.getValue() == 16)) {
+                        }.sum()
+                        if (!(score > 2.4f && enemyCaravan.getValue() == 16)) {
                             ten.addModifier(game.enemyCResources.removeFromHand(cardIndex))
                             return
                         }
@@ -64,20 +92,14 @@ data object EnemySix : Enemy() {
         }
 
         hand.withIndex().filter { !it.value.isFace() }.forEach { (cardIndex, card) ->
-            game.enemyCaravans.sortedBy { -it.getValue() }.forEachIndexed { caravanIndex, caravan ->
+            game.enemyCaravans.withIndex().sortedByDescending { it.value.getValue() }.forEach { (caravanIndex, caravan) ->
                 if (caravan.size < 2 && caravan.getValue() + card.rank.value <= 26) {
                     if (caravan.canPutCardOnTop(card)) {
                         val otherCaravansIndices = game.enemyCaravans.indices.filter { it != caravanIndex }
-                        var score = 0
-                        fun check(p0: Int, e0: Int) {
-                            if (p0 in (21..26) && (p0 > e0 || e0 > 26)) {
-                                score++
-                            }
-                        }
-                        otherCaravansIndices.forEach {
+                        val score = otherCaravansIndices.map {
                             check(game.playerCaravans[it].getValue(), game.enemyCaravans[it].getValue())
-                        }
-                        if (!(score == 2 && caravan.getValue() + card.rank.value in (21..26))) {
+                        }.sum()
+                        if (!(score > 2.4f && caravan.getValue() + card.rank.value in (21..26))) {
                             caravan.putCardOnTop(game.enemyCResources.removeFromHand(cardIndex))
                             return
                         }
@@ -89,11 +111,15 @@ data object EnemySix : Enemy() {
         if (kings.isNotEmpty()) {
             val (cardIndex, card) = kings.random()
             game.playerCaravans.shuffled().forEach { playerCaravan ->
-                if (playerCaravan.getValue() in (13..26)) {
+                if (playerCaravan.getValue() in (11..26)) {
                     val cardToKing = playerCaravan.cards
-                        .filter { it.getValue() + playerCaravan.getValue() > 26 && playerCaravan.getValue() - it.getValue() < 21 }
+                        .filter {
+                            it.canAddModifier(card) &&
+                                    it.getValue() + playerCaravan.getValue() > 26 &&
+                                    playerCaravan.getValue() - it.getValue() < 21
+                        }
                         .minByOrNull { it.getValue() }
-                    if (cardToKing != null && cardToKing.canAddModifier(card)) {
+                    if (cardToKing != null) {
                         cardToKing.addModifier(game.enemyCResources.removeFromHand(cardIndex))
                         return
                     }
@@ -106,12 +132,11 @@ data object EnemySix : Enemy() {
             return
         }
 
-        val nums = hand.withIndex().filter { !it.value.isFace() }
-        if (nums.isNotEmpty()) {
-            game.enemyCResources.removeFromHand(nums.random().index)
+        val numbers = hand.withIndex().filter { !it.value.isFace() }
+        if (numbers.isNotEmpty()) {
+            game.enemyCResources.removeFromHand(numbers.random().index)
         } else {
             game.enemyCResources.removeFromHand(hand.indices.random())
         }
-
     }
 }
