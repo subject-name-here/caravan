@@ -14,7 +14,7 @@ data object EnemyBetter : Enemy() {
     override fun createDeck(): CResources = CResources(CardBack.LUCKY_38, false)
     override fun getRewardBack() = CardBack.LUCKY_38
 
-    override suspend fun makeMove(game: Game) {
+    override fun makeMove(game: Game) {
         fun check(p0: Int, e0: Int): Float {
             return when {
                 p0 in (21..26) && (p0 > e0 || e0 > 26) -> 2f

@@ -12,7 +12,7 @@ data object EnemyEasy : Enemy() {
     override fun createDeck(): CResources = CResources(CardBack.ULTRA_LUXE, false)
     override fun getRewardBack() = CardBack.ULTRA_LUXE
 
-    override suspend fun makeMove(game: Game) {
+    override fun makeMove(game: Game) {
         val hand = game.enemyCResources.hand
 
         if (game.isInitStage()) {

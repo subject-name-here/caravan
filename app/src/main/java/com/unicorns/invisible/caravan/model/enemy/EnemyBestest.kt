@@ -2,7 +2,9 @@ package com.unicorns.invisible.caravan.model.enemy
 
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
+import com.unicorns.invisible.caravan.model.enemy.strategy.Strategy
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyCareful
+import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyCheckFuture
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyDestructive
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJoker
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyRush
@@ -17,38 +19,36 @@ data object EnemyBestest : Enemy() {
     override fun createDeck(): CResources = CResources(CardBack.VAULT_21, false)
     override fun getRewardBack() = CardBack.VAULT_21
 
-    override suspend fun makeMove(game: Game) {
+    override fun makeMove(game: Game) {
         if (game.isInitStage()) {
             val hand = game.enemyCResources.hand
-            val card = hand.filter { !it.isFace() }.maxBy { it.rank.value }
+            val card = hand.filter { !it.isFace() }.minBy { it.rank.value }
             val caravan = game.enemyCaravans.filter { it.isEmpty() }.random()
             caravan.putCardOnTop(game.enemyCResources.removeFromHand(hand.indexOf(card)))
             return
-        }
-
-        val strategies = mutableListOf(StrategyDestructive, StrategyTime, StrategyRush, StrategyCareful, StrategyJoker)
-        strategies.toList().forEach {
-            val copy = game.copy()
-            it.move(copy)
-            if (copy.isGameOver == -1) {
-                it.move(game)
-                return
-            } else {
-                strategies.remove(it)
-            }
         }
 
         fun check(p0: Int, e0: Int): Float {
             return if (p0 in (21..26) && (p0 > e0 || e0 > 26)) 2f else 0f
         }
         val score = game.playerCaravans.indices.map { check(game.playerCaravans[it].getValue(), game.enemyCaravans[it].getValue()) }
-        if (2f in score) {
-            if (StrategyDestructive in strategies && StrategyDestructive.move(game)) {
+
+        if (2f in score && StrategyCheckFuture.move(game)) {
+            return
+        }
+
+        val strategies = StrategyCheckFuture.strategies.toMutableList()
+        strategies.toList().forEach {
+            val copy = game.copy()
+            it.move(copy)
+            copy.processJacks()
+            copy.processJoker()
+            copy.checkOnGameOver()
+            if (copy.isGameOver == -1) {
+                it.move(game)
                 return
-            }
-        } else {
-            if (StrategyRush in strategies && StrategyRush.move(game)) {
-                return
+            } else if (copy.isGameOver == 1) {
+                strategies.remove(it)
             }
         }
 
@@ -56,6 +56,14 @@ data object EnemyBestest : Enemy() {
             return
         }
 
+        if (2f in score) {
+            if (StrategyDestructive in strategies && StrategyDestructive.move(game)) {
+                return
+            }
+        }
+        if (StrategyRush in strategies && StrategyRush.move(game)) {
+            return
+        }
         if (StrategyCareful in strategies && StrategyCareful.move(game)) {
             return
         }
@@ -63,24 +71,15 @@ data object EnemyBestest : Enemy() {
             return
         }
 
-        when ((0..3).random()) {
+        when ((1..3).random()) {
             1 -> {
                 EnemySecuritron38.makeMove(game)
             }
             2 -> {
-                EnemyBetter.makeMove(game)
-            }
-            3 -> {
-                EnemyNoBark.makeMove(game)
+                EnemyHard.makeMove(game)
             }
             else -> {
-                game.enemyCResources.removeFromHand(game.enemyCResources.hand.withIndex().minByOrNull {
-                    when (it.value.rank) {
-                        Rank.QUEEN -> 0
-                        Rank.JACK, Rank.KING, Rank.JOKER -> 11
-                        else -> it.value.rank.value
-                    }
-                }!!.index)
+                EnemyNoBark.makeMove(game)
             }
         }
     }

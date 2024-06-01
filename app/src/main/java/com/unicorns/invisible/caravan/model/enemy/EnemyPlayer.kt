@@ -21,7 +21,7 @@ class EnemyPlayer(
 
     var latestMoveResponse: MoveResponse? = null
 
-    override suspend fun makeMove(game: Game) {
+    override fun makeMove(game: Game) {
         val move = latestMoveResponse ?: throw Exception()
         when (move.moveCode) {
             1 -> {

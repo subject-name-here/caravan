@@ -19,7 +19,7 @@ data object EnemyHard : Enemy() {
     override fun createDeck(): CResources = CResources(CardBack.TOPS, false)
     override fun getRewardBack() = CardBack.TOPS
 
-    override suspend fun makeMove(game: Game) {
+    override fun makeMove(game: Game) {
         val overWeightCaravans = game.enemyCaravans.filter { it.getValue() > 26 }
         val playersReadyCaravans = game.playerCaravans.filter { it.getValue() in (21..26) }
         val hand = game.enemyCResources.hand

@@ -13,7 +13,7 @@ data object EnemyMedium : Enemy() {
     override fun createDeck(): CResources = CResources(CardBack.GOMORRAH, false)
     override fun getRewardBack() = CardBack.GOMORRAH
 
-    override suspend fun makeMove(game: Game) {
+    override fun makeMove(game: Game) {
         val overWeightCaravans = game.enemyCaravans.filter { it.getValue() > 26 }
         val hand = game.enemyCResources.hand
 

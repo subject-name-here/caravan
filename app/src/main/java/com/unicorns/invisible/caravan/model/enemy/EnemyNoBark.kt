@@ -30,7 +30,7 @@ data object EnemyNoBark : Enemy() {
         return true
     }
 
-    override suspend fun makeMove(game: Game) {
+    override fun makeMove(game: Game) {
         val overWeightCaravans = game.enemyCaravans.filter { it.getValue() > 26 }
         val hand = game.enemyCResources.hand
 

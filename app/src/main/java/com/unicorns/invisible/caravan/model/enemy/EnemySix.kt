@@ -27,7 +27,7 @@ data object EnemySix : Enemy() {
     override fun getRewardBack() = CardBack.VAULT_21
     override fun isAlt() = true
 
-    override suspend fun makeMove(game: Game) {
+    override fun makeMove(game: Game) {
         val hand = game.enemyCResources.hand
         val overWeightCaravans = game.enemyCaravans.filter { it.getValue() > 26 }
         val under26Caravans = game.enemyCaravans.filterIndexed { index, it ->

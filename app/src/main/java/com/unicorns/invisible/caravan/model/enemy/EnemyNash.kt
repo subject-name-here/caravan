@@ -26,7 +26,7 @@ data object EnemyNash : Enemy() {
         return true
     }
 
-    override suspend fun makeMove(game: Game) {
+    override fun makeMove(game: Game) {
         val hand = game.enemyCResources.hand
         val overWeightCaravans = game.enemyCaravans.filter { it.getValue() > 26 }.toSet() +
                 game.enemyCaravans

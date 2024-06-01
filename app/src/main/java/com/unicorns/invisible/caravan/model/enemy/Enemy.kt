@@ -8,7 +8,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 sealed class Enemy {
-    abstract suspend fun makeMove(game: Game)
+    abstract fun makeMove(game: Game)
     abstract fun createDeck(): CResources
     open fun getRewardBack(): CardBack? = null
     open fun isAlt() = false
