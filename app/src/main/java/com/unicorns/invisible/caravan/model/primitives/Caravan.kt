@@ -73,4 +73,11 @@ class Caravan {
     fun putCardOnTop(card: Card) {
         cardsMutable.add(CardWithModifier(card))
     }
+
+    fun copyFrom(caravan: Caravan) {
+        cardsMutable.clear()
+        caravan.cardsMutable.forEach {
+            cardsMutable.add(it.copy())
+        }
+    }
 }

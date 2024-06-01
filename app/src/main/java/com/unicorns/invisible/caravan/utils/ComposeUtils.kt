@@ -3,11 +3,6 @@ package com.unicorns.invisible.caravan.utils
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Checkbox
@@ -15,7 +10,6 @@ import androidx.compose.material3.CheckboxColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.geometry.CornerRadius
@@ -23,7 +17,6 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
@@ -35,14 +28,12 @@ import com.unicorns.invisible.caravan.model.primitives.Card
 
 
 @Composable
-fun Int.pxToDp() = with (LocalDensity.current) { this@pxToDp.toDp() }
-
-@Composable
 fun ShowCard(activity: MainActivity, card: Card, modifier: Modifier, toModify: Boolean = true) {
     val cardName = getCardName(card, card.isAlt)
     val cornerSize = if (cardName.endsWith("svg")) 12f else 6f
     val painter = rememberAsyncImagePainter(
         ImageRequest.Builder(activity)
+            .size(183, 256)
             .data("file:///android_asset/caravan_cards/$cardName")
             .decoderFactory(SvgDecoder.Factory())
             .build()
@@ -50,7 +41,7 @@ fun ShowCard(activity: MainActivity, card: Card, modifier: Modifier, toModify: B
     Image(
         painter = painter,
         contentDescription = "",
-        modifier = if (toModify) modifier.clip(RoundedCornerShape(cornerSize)).size(183.pxToDp(), 256.pxToDp()) else modifier,
+        modifier = if (toModify) modifier.clip(RoundedCornerShape(cornerSize)) else modifier,
         colorFilter = card.back.getFilter(card.isAlt)
     )
 }
@@ -59,6 +50,7 @@ fun ShowCard(activity: MainActivity, card: Card, modifier: Modifier, toModify: B
 fun ShowCardBack(activity: MainActivity, card: Card, modifier: Modifier) {
     val painter2 = rememberAsyncImagePainter(
         ImageRequest.Builder(activity)
+            .size(183, 256)
             .data("file:///android_asset/caravan_cards_back/${card.back.getCardBackAssetSplit(activity)}")
             .decoderFactory(SvgDecoder.Factory())
             .build()
@@ -67,7 +59,6 @@ fun ShowCardBack(activity: MainActivity, card: Card, modifier: Modifier) {
         painter = painter2,
         contentDescription = "",
         modifier
-            .size(183.pxToDp(), 256.pxToDp())
             .clip(RoundedCornerShape(6f)),
         contentScale = ContentScale.Fit
     )

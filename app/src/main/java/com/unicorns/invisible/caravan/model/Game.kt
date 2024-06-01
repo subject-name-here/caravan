@@ -5,6 +5,7 @@ import com.unicorns.invisible.caravan.model.enemy.Enemy
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.Caravan
 import com.unicorns.invisible.caravan.model.primitives.Card
+import com.unicorns.invisible.caravan.model.primitives.CustomDeck
 import com.unicorns.invisible.caravan.model.primitives.Rank
 import com.unicorns.invisible.caravan.save.json
 import kotlinx.coroutines.CoroutineScope
@@ -175,6 +176,22 @@ class Game(
         } else {
             (playerCaravans + enemyCaravans).forEach { caravan ->
                 caravan.jokerRemoveAllRanks(card)
+            }
+        }
+    }
+
+    fun copy(): Game {
+        return Game(
+            CResources(CustomDeck()),
+            enemy
+        ).also {
+            it.playerCResources.copyFrom(this.playerCResources)
+            it.enemyCResources.copyFrom(this.enemyCResources)
+            it.playerCaravans.forEachIndexed { index, caravan ->
+                caravan.copyFrom(this.playerCaravans[index])
+            }
+            it.enemyCaravans.forEachIndexed { index, caravan ->
+                caravan.copyFrom(this.enemyCaravans[index])
             }
         }
     }

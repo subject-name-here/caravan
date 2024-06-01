@@ -2,8 +2,7 @@ package com.unicorns.invisible.caravan.model.enemy
 
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
-import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyAggressive
-import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyKeeper
+import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyDestructive
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyRush
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyTime
 import com.unicorns.invisible.caravan.model.primitives.CResources
@@ -26,20 +25,14 @@ data object EnemyBetter : Enemy() {
             }
         }
         val score = game.playerCaravans.indices.map { check(game.playerCaravans[it].getValue(), game.enemyCaravans[it].getValue()) }
-        if (2f !in score || 0.5f !in score && score.sum() < 3.2f) {
+        if (2f !in score) {
             if (StrategyRush.move(game)) {
                 return
             }
-        } else {
-            if (score.filter { it > 0 }.sum() > 2.4f) {
-                if (StrategyAggressive.move(game)) {
-                    return
-                }
+        } else if (score.filter { it > 0 }.sum() > 2f) {
+            if (StrategyDestructive.move(game)) {
+                return
             }
-        }
-
-        if (StrategyKeeper.move(game)) {
-            return
         }
 
         if (StrategyTime.move(game)) {

@@ -17,8 +17,9 @@ object StrategyTime : Strategy {
             if (card.rank == Rank.QUEEN) {
                 val possibleQueenCaravans = game.enemyCaravans
                     .filter { c ->
-                        c.size >= 2 && c.getValue() < 21 && hand.all { !c.canPutCardOnTop(it) } && c.cards.last()
-                            .canAddModifier(card)
+                        c.size >= 2 &&
+                                hand.all { !c.canPutCardOnTop(it) } &&
+                                c.cards.last().canAddModifier(card)
                     }
                 if (possibleQueenCaravans.isNotEmpty()) {
                     possibleQueenCaravans

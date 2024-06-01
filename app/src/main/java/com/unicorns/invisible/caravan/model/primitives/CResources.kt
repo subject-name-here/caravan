@@ -54,4 +54,13 @@ class CResources(private val deck: CustomDeck) {
 
     val numOfNumbers: Int
         get() = deck.count { !it.isFace() }
+
+    fun copyFrom(resources: CResources) {
+        handMutable.clear()
+        handMutable.addAll(resources.handMutable)
+        deck.clear()
+        resources.deck.toList().forEach {
+            deck.add(it.copy())
+        }
+    }
 }

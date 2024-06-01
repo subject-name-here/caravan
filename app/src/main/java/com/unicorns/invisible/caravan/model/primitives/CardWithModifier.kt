@@ -40,4 +40,12 @@ class CardWithModifier(val card: Card) {
     fun getTopSuit(): Suit {
         return modifiers.findLast { it.rank == Rank.QUEEN }?.suit ?: card.suit
     }
+
+    fun copy(): CardWithModifier {
+        return CardWithModifier(card.copy()).also {
+            this.modifiers.forEach { modifier ->
+                it.addModifier(modifier.copy())
+            }
+        }
+    }
 }

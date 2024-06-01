@@ -15,9 +15,9 @@ data object EnemyNash : Enemy() {
     override fun createDeck(): CResources = CResources(CustomDeck().apply {
         listOf(CardBack.TOPS, CardBack.GOMORRAH, CardBack.ULTRA_LUXE, CardBack.LUCKY_38).forEach { back ->
             Suit.entries.forEach { suit ->
-                add(Card(Rank.SIX, suit, back, true))
+                add(Card(Rank.SIX, suit, back, false))
                 add(Card(Rank.JACK, suit, back, true))
-                add(Card(Rank.KING, suit, back, true))
+                add(Card(Rank.KING, suit, back, false))
             }
         }
     })
@@ -29,7 +29,15 @@ data object EnemyNash : Enemy() {
     override suspend fun makeMove(game: Game) {
         val hand = game.enemyCResources.hand
         val overWeightCaravans = game.enemyCaravans.filter { it.getValue() > 26 }.toSet() +
-                game.enemyCaravans.filter { !it.isEmpty() && it.cards[0].modifiersCopy().filter { modifier -> modifier.rank != Rank.KING }.size >= 2 }.toSet()
+                game.enemyCaravans
+                    .filter {
+                        !it.isEmpty() &&
+                                it.cards[0]
+                                    .modifiersCopy()
+                                    .filter { modifier -> modifier.rank != Rank.KING }
+                                    .size >= 2
+                    }
+                    .toSet()
 
         if (game.isInitStage()) {
             val card = hand.filter { !it.isFace() }.random()
@@ -38,13 +46,15 @@ data object EnemyNash : Enemy() {
             return
         }
 
-        val jack = hand.withIndex().find { it.value.rank == Rank.JACK }
-        if (jack != null) {
-            val caravan = game.playerCaravans.filter { !it.isEmpty() }.maxByOrNull { it.getValue() }
-            val cardToJack = caravan?.cards?.maxBy { it.getValue() }
-            if (cardToJack != null && cardToJack.canAddModifier(jack.value)) {
-                cardToJack.addModifier(game.enemyCResources.removeFromHand(jack.index))
-                return
+        if ((0..2).random() > 0) {
+            val jack = hand.withIndex().find { it.value.rank == Rank.JACK }
+            if (jack != null) {
+                val caravan = game.playerCaravans.filter { !it.isEmpty() }.maxByOrNull { it.getValue() }
+                val cardToJack = caravan?.cards?.maxBy { it.getValue() }
+                if (cardToJack != null && cardToJack.canAddModifier(jack.value)) {
+                    cardToJack.addModifier(game.enemyCResources.removeFromHand(jack.index))
+                    return
+                }
             }
         }
 
@@ -78,6 +88,12 @@ data object EnemyNash : Enemy() {
             return
         }
 
-        game.enemyCResources.removeFromHand(hand.indices.random())
+        game.enemyCResources.removeFromHand(hand.withIndex().sortedBy {
+            when (it.value.rank) {
+                Rank.SIX -> 0
+                Rank.KING -> 2
+                else -> 1
+            }
+        }.first().index)
     }
 }
