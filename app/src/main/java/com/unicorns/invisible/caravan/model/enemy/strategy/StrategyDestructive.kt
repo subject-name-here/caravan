@@ -15,16 +15,6 @@ object StrategyDestructive : Strategy {
             return true
         }
 
-        val jack = hand.withIndex().find { it.value.rank == Rank.JACK }
-        if (jack != null) {
-            val caravan = game.playerCaravans.filter { !it.isEmpty() }.maxByOrNull { it.getValue() }
-            val cardToJack = caravan?.cards?.filter { it.canAddModifier(jack.value) }?.maxBy { it.getValue() }
-            if (cardToJack != null) {
-                cardToJack.addModifier(game.enemyCResources.removeFromHand(jack.index))
-                return true
-            }
-        }
-
         val king = hand.withIndex().find { it.value.rank == Rank.KING }
         if (king != null) {
             val caravan = game.playerCaravans.filter { it.getValue() in (21..26) }.maxByOrNull { it.getValue() }
@@ -34,6 +24,16 @@ object StrategyDestructive : Strategy {
                     cardToKing.addModifier(game.enemyCResources.removeFromHand(king.index))
                     return true
                 }
+            }
+        }
+
+        val jack = hand.withIndex().find { it.value.rank == Rank.JACK }
+        if (jack != null) {
+            val caravan = game.playerCaravans.filter { !it.isEmpty() && it.getValue() <= 26 }.maxByOrNull { it.getValue() }
+            val cardToJack = caravan?.cards?.filter { it.canAddModifier(jack.value) }?.maxBy { it.getValue() }
+            if (cardToJack != null) {
+                cardToJack.addModifier(game.enemyCResources.removeFromHand(jack.index))
+                return true
             }
         }
 

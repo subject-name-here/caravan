@@ -3,12 +3,15 @@ package com.unicorns.invisible.caravan.model.enemy
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyDestructive
+import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJoker
+import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyKingRuiner
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.Card
 import com.unicorns.invisible.caravan.model.primitives.CustomDeck
 import com.unicorns.invisible.caravan.model.primitives.Rank
 import com.unicorns.invisible.caravan.model.primitives.Suit
 import kotlinx.serialization.Serializable
+import kotlin.random.Random
 
 
 @Serializable
@@ -41,45 +44,68 @@ data object EnemySix : Enemy() {
             return
         }
 
-        fun check(p0: Int, e0: Int): Float {
+        fun checkAnyReady(p0: Int, e0: Int): Int {
             return when {
-                p0 in (21..26) && (p0 > e0 || e0 > 26) -> 2f
-                p0 in (11..26) && (e0 != 26 || e0 == p0) -> 0.5f
-                else -> 0f
-            }
-        }
-
-        fun checkAnyReady(p0: Int, e0: Int): Float {
-            return when {
-                p0 in (21..26) && (p0 > e0 || e0 > 26) -> 2f
-                e0 in (21..26) && (e0 > p0 || p0 > 26) -> 2f
-                else -> 0f
-            }
-        }
-
-        if (
-            game.enemyCaravans.indices.map { checkAnyReady(game.playerCaravans[it].getValue(), game.enemyCaravans[it].getValue()) }.sum() > 3.9f
-        ) {
-            if (StrategyDestructive.move(game)) {
-                return
+                p0 in (21..26) && (p0 > e0 || e0 > 26) -> 1
+                e0 in (21..26) && (e0 > p0 || p0 > 26) -> 1
+                else -> 0
             }
         }
 
         val kings = hand.withIndex().filter { it.value.rank == Rank.KING }
         if (kings.isNotEmpty()) {
+            val king = kings.random().value
+            game.enemyCaravans.withIndex().shuffled().forEach { (caravanIndex, enemyCaravan) ->
+                enemyCaravan.cards.forEach { card ->
+                    val futureValue = enemyCaravan.getValue() + card.getValue()
+                    val playerValue = game.playerCaravans[caravanIndex].getValue()
+                    if (
+                        card.canAddModifier(king) &&
+                        checkMoveOnPossibleVictory(game, caravanIndex) &&
+                        futureValue in (21..26) && (futureValue > playerValue || playerValue > 26)
+                    ) {
+                        card.addModifier(king)
+                        return
+                    }
+                }
+            }
+        }
+
+        hand.withIndex().filter { !it.value.isFace() }.forEach { (cardIndex, card) ->
+            game.enemyCaravans.withIndex().sortedByDescending { it.value.getValue() }.forEach { (caravanIndex, caravan) ->
+                val futureValue = caravan.getValue() + card.rank.value
+                val playerValue = game.playerCaravans[caravanIndex].getValue()
+                if (
+                    caravan.canPutCardOnTop(card) &&
+                    checkMoveOnPossibleVictory(game, caravanIndex) &&
+                    futureValue in (21..26) && (futureValue > playerValue || playerValue > 26)
+                ) {
+                    caravan.putCardOnTop(game.enemyCResources.removeFromHand(cardIndex))
+                    return
+                }
+            }
+        }
+
+        if (Random.nextBoolean() && StrategyJoker.move(game)) {
+            return
+        }
+
+        if ((0..2).sumOf {
+            checkAnyReady(game.playerCaravans[it].getValue(), game.enemyCaravans[it].getValue())
+        } >= 2) {
+            if (StrategyKingRuiner.move(game)) {
+                return
+            }
+        }
+
+        if (kings.isNotEmpty()) {
             val (cardIndex, card) = kings.random()
             game.enemyCaravans.withIndex().shuffled().forEach { (caravanIndex, enemyCaravan) ->
                 if (enemyCaravan.getValue() in listOf(10, 16)) {
                     val ten = enemyCaravan.cards.find { it.card.rank == Rank.TEN && it.getValue() == 10 && it.canAddModifier(card) }
-                    if (ten != null) {
-                        val otherCaravansIndices = game.enemyCaravans.indices.filter { it != caravanIndex }
-                        val score = otherCaravansIndices.map {
-                            check(game.playerCaravans[it].getValue(), game.enemyCaravans[it].getValue())
-                        }.sum()
-                        if (!(score > 2.4f && enemyCaravan.getValue() == 16)) {
-                            ten.addModifier(game.enemyCResources.removeFromHand(cardIndex))
-                            return
-                        }
+                    if (ten != null && !(checkMoveOnPossibleDefeat(game, caravanIndex) && enemyCaravan.getValue() == 16)) {
+                        ten.addModifier(game.enemyCResources.removeFromHand(cardIndex))
+                        return
                     }
                 }
             }
@@ -88,11 +114,7 @@ data object EnemySix : Enemy() {
         hand.withIndex().filter { !it.value.isFace() }.forEach { (cardIndex, card) ->
             game.enemyCaravans.withIndex().sortedByDescending { it.value.getValue() }.forEach { (caravanIndex, caravan) ->
                 if (caravan.size < 2 && caravan.getValue() + card.rank.value <= 26 && caravan.canPutCardOnTop(card)) {
-                    val otherCaravansIndices = game.enemyCaravans.indices.filter { it != caravanIndex }
-                    val score = otherCaravansIndices.map {
-                        check(game.playerCaravans[it].getValue(), game.enemyCaravans[it].getValue())
-                    }.sum()
-                    if (!(score > 2.4f && caravan.getValue() + card.rank.value in (21..26))) {
+                    if (!(checkMoveOnPossibleDefeat(game, caravanIndex) && caravan.getValue() + card.rank.value in (21..26))) {
                         caravan.putCardOnTop(game.enemyCResources.removeFromHand(cardIndex))
                         return
                     }
@@ -100,39 +122,22 @@ data object EnemySix : Enemy() {
             }
         }
 
-        if (kings.isNotEmpty()) {
-            val (cardIndex, card) = kings.random()
-            game.playerCaravans.shuffled().forEach { playerCaravan ->
-                if (playerCaravan.getValue() >= 14) {
-                    val cardToKing = playerCaravan.cards
-                        .filter {
-                            it.canAddModifier(card) &&
-                                    (playerCaravan.getValue() + it.getValue() > 26) &&
-                                    (playerCaravan.getValue() - it.getValue() !in (21..26))
-                        }
-                        .randomOrNull()
-                    if (cardToKing != null) {
-                        cardToKing.addModifier(game.enemyCResources.removeFromHand(cardIndex))
-                        return
-                    }
-                }
-            }
+        if (Random.nextBoolean() && StrategyJoker.move(game)) {
+            return
         }
-
+        if (Random.nextBoolean() && StrategyKingRuiner.move(game)) {
+            return
+        }
         if (overWeightCaravans.isNotEmpty()) {
             overWeightCaravans.random().dropCaravan()
             return
         }
         if (under26Caravans.isNotEmpty()) {
-            under26Caravans.random().dropCaravan()
+            under26Caravans.minBy { it.getValue() }.dropCaravan()
             return
         }
 
-        val numbers = hand.withIndex().filter { !it.value.isFace() }
-        if (numbers.isNotEmpty()) {
-            game.enemyCResources.removeFromHand(numbers.random().index)
-        } else {
-            game.enemyCResources.removeFromHand(hand.indices.random())
-        }
+        val handSorted = hand.withIndex().sortedBy { it.value.rank.value }
+        game.enemyCResources.removeFromHand(handSorted.first().index)
     }
 }

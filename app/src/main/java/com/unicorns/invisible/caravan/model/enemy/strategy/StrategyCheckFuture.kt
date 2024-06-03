@@ -1,5 +1,6 @@
 package com.unicorns.invisible.caravan.model.enemy.strategy
 
+import android.os.Build
 import android.util.Log
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
@@ -41,7 +42,7 @@ object StrategyCheckFuture : Strategy {
         StrategyTime,
     )
     override fun move(game: Game): Boolean {
-        val threshold = 0.05f
+        val threshold = 0.06f
         strategies.toList().forEach {
             val copy = game.copy()
             it.move(copy)
@@ -53,7 +54,7 @@ object StrategyCheckFuture : Strategy {
                 Log.i("Ulysses", "I predict victory.")
                 return true
             } else {
-                val res = checkPlayerMoves(game)
+                val res = checkPlayerMoves(copy)
                 if (res > threshold) {
                     it.move(game)
                     Log.i("Ulysses", "I predict victory.")
@@ -70,55 +71,65 @@ object StrategyCheckFuture : Strategy {
         var cnt = 0
         var block = false
         val cards = Rank.entries.map { Card(it, Suit.entries.random(), CardBack.STANDARD, false) }
-        runBlocking {
-            val jobs = cards.map { card ->
-                CoroutineScope(Dispatchers.Unconfined).launch {
-                    if (card.rank == Rank.QUEEN) {
+
+        fun cardJob(card: Card) {
+            if (card.rank == Rank.QUEEN) {
+                cnt++
+                if (checkMyMoves(game.copy())) {
+                    res++
+                }
+            } else if (card.isFace()) {
+                var gameCopy2 = game.copy()
+                (gameCopy2.playerCaravans + gameCopy2.enemyCaravans).flatMap { it.cards }
+                    .shuffled()
+                    .filter { it.canAddModifier(card) }
+                    .forEach { potentialCard ->
                         cnt++
-                        if (checkMyMoves(game.copy())) {
+                        potentialCard.addModifier(card)
+                        gameCopy2.processJacks()
+                        gameCopy2.processJoker()
+                        gameCopy2.checkOnGameOver()
+                        if (gameCopy2.isGameOver == 1) {
+                            block = true
+                            return
+                        }
+                        if (checkMyMoves(gameCopy2)) {
                             res++
                         }
-                    } else if (card.isFace()) {
-                        var gameCopy2 = game.copy()
-                        (gameCopy2.playerCaravans + gameCopy2.enemyCaravans).flatMap { it.cards }
-                            .filter { it.canAddModifier(card) }
-                            .forEach { potentialCard ->
-                                cnt++
-                                potentialCard.addModifier(card)
-                                gameCopy2.processJacks()
-                                gameCopy2.processJoker()
-                                gameCopy2.checkOnGameOver()
-                                if (gameCopy2.isGameOver == 1) {
-                                    block = true
-                                    return@launch
-                                }
-                                if (checkMyMoves(gameCopy2)) {
-                                    res++
-                                }
-                                gameCopy2 = game.copy()
-                            }
-                    } else {
-                        (0..2).forEach { caravanIndex ->
-                            val copy = game.copy()
-                            if (copy.playerCaravans[caravanIndex].canPutCardOnTop(card)) {
-                                copy.playerCaravans[caravanIndex].putCardOnTop(card)
-                                copy.processJacks()
-                                copy.processJoker()
-                                copy.checkOnGameOver()
-                                cnt++
-                                if (copy.isGameOver == 1) {
-                                    block = true
-                                    return@launch
-                                }
-                                if (checkMyMoves(copy)) {
-                                    res++
-                                }
-                            }
+                        gameCopy2 = game.copy()
+                    }
+            } else {
+                (0..2).forEach { caravanIndex ->
+                    val copy = game.copy()
+                    if (copy.playerCaravans[caravanIndex].canPutCardOnTop(card)) {
+                        copy.playerCaravans[caravanIndex].putCardOnTop(card)
+                        copy.processJacks()
+                        copy.processJoker()
+                        copy.checkOnGameOver()
+                        cnt++
+                        if (copy.isGameOver == 1) {
+                            block = true
+                            return
+                        }
+                        if (checkMyMoves(copy)) {
+                            res++
                         }
                     }
                 }
             }
-            jobs.joinAll()
+        }
+
+        runBlocking {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                cards.parallelStream().forEach { cardJob(it) }
+            } else {
+                val jobs = cards.map { card ->
+                    CoroutineScope(Dispatchers.Unconfined).launch {
+                        cardJob(card)
+                    }
+                }
+                jobs.joinAll()
+            }
         }
 
         if (block) {

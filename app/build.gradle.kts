@@ -71,4 +71,5 @@ dependencies {
     implementation(libs.firebase.analytics)
 
     implementation(libs.cronet)
+    implementation(kotlin("script-runtime"))
 }

@@ -18,7 +18,7 @@ object StrategyJoker : Strategy {
             val card = joker.value
             val cards = (game.playerCaravans + game.enemyCaravans)
                 .flatMap { it.cards }
-                .sortedBy { if (it.card.rank == Rank.ACE) 10 else it.card.rank.value }
+                .sortedByDescending { if (it.card.rank == Rank.ACE) 10 else it.card.rank.value }
             val gameCopyString = json.encodeToString(game)
             fun joke(potentialCardToJoker: CardWithModifier): Int {
                 val gameCopy = json.decodeFromString<Game>(gameCopyString)
@@ -28,12 +28,56 @@ object StrategyJoker : Strategy {
                 if (cardInCopy?.canAddModifier(card) == true) {
                     cardInCopy.addModifier(card)
                     gameCopy.processJoker()
+                    var score = -3
+                    game.enemyCaravans.forEachIndexed { index, caravan ->
+                        val copyCaravan = gameCopy.enemyCaravans[index]
+                        if (caravan.getValue() > 26 && caravan.getValue() > copyCaravan.getValue()) {
+                            if (copyCaravan.getValue() <= 26) {
+                                score += if (copyCaravan.getValue() in (21..26)) {
+                                    5
+                                } else {
+                                    2
+                                }
+                            } else {
+                                score++
+                            }
+                        } else if (caravan.getValue() > copyCaravan.getValue()) {
+                            if (caravan.getValue() in (21..26)) {
+                                score -= 5
+                            } else {
+                                score--
+                            }
+                        }
+                    }
+                    game.playerCaravans.forEachIndexed { index, caravan ->
+                        val copyCaravan = gameCopy.playerCaravans[index]
+                        if (caravan.getValue() > 26 && caravan.getValue() > copyCaravan.getValue()) {
+                            if (copyCaravan.getValue() <= 26) {
+                                score -= if (copyCaravan.getValue() in (21..26)) {
+                                    6
+                                } else {
+                                    2
+                                }
+                            } else {
+                                score--
+                            }
+                        } else if (caravan.getValue() > copyCaravan.getValue()) {
+                            if (caravan.getValue() in (21..26)) {
+                                score += if (copyCaravan.getValue() !in (21..26)) {
+                                    5
+                                } else {
+                                    1
+                                }
+                            }
+                        }
+                    }
                     val overWeightCaravansCopy = gameCopy.enemyCaravans.filter { it.getValue() > 26 }
                     val perfectCaravansCopy = gameCopy.enemyCaravans.filter { it.getValue() in (21..26) }
                     val playersReadyCaravansCopy = gameCopy.playerCaravans.filter { it.getValue() in (21..26) }
-                    return (perfectCaravansCopy.size - perfectCaravans.size) * 3 +
+                    val score2 = (perfectCaravansCopy.size - perfectCaravans.size) * 3 +
                             overWeightCaravans.size - overWeightCaravansCopy.size +
                             playersReadyCaravans.size - playersReadyCaravansCopy.size
+                    return if (score2 > 0 && score > 0) score + score2 * 2 else 0
                 }
                 return 0
             }

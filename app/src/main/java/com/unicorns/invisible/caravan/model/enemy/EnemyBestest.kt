@@ -22,7 +22,7 @@ data object EnemyBestest : Enemy() {
     override fun makeMove(game: Game) {
         if (game.isInitStage()) {
             val hand = game.enemyCResources.hand
-            val card = hand.filter { !it.isFace() }.minBy { it.rank.value }
+            val card = hand.filter { !it.isFace() }.maxBy { it.rank.value }
             val caravan = game.enemyCaravans.filter { it.isEmpty() }.random()
             caravan.putCardOnTop(game.enemyCResources.removeFromHand(hand.indexOf(card)))
             return
@@ -32,8 +32,9 @@ data object EnemyBestest : Enemy() {
             return if (p0 in (21..26) && (p0 > e0 || e0 > 26)) 2f else 0f
         }
         val score = game.playerCaravans.indices.map { check(game.playerCaravans[it].getValue(), game.enemyCaravans[it].getValue()) }
+        val antiScore = game.enemyCaravans.indices.map { check(game.enemyCaravans[it].getValue(), game.playerCaravans[it].getValue()) }
 
-        if (2f in score && StrategyCheckFuture.move(game)) {
+        if ((2f in score || 2f in antiScore) && StrategyCheckFuture.move(game)) {
             return
         }
 
@@ -64,10 +65,16 @@ data object EnemyBestest : Enemy() {
         if (StrategyRush in strategies && StrategyRush.move(game)) {
             return
         }
-        if (StrategyCareful in strategies && StrategyCareful.move(game)) {
+        if (game.enemyCResources.deckSize <= game.playerCResources.deckSize) {
+            if (StrategyCareful in strategies && StrategyCareful.move(game)) {
+                return
+            }
+        }
+
+        if (StrategyTime in strategies && StrategyTime.move(game)) {
             return
         }
-        if (StrategyTime in strategies && StrategyTime.move(game)) {
+        if (StrategyCareful in strategies && StrategyCareful.move(game)) {
             return
         }
 
