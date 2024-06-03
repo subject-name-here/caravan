@@ -18,9 +18,7 @@ data object EnemyBetter : Enemy() {
         fun check(p0: Int, e0: Int): Float {
             return when {
                 p0 in (21..26) && (p0 > e0 || e0 > 26) -> 2f
-                p0 in (11..26) && (e0 != 26 || e0 == p0) -> 0.5f
-                e0 in (21..26) && (e0 > p0 || p0 > 26) -> -2f
-                e0 in (11..26) && (p0 != 26 || p0 == e0) -> -0.5f
+                p0 > 11 && (e0 != 26 || e0 == p0) -> 0.5f
                 else -> 0f
             }
         }
@@ -29,7 +27,7 @@ data object EnemyBetter : Enemy() {
             if (StrategyRush.move(game)) {
                 return
             }
-        } else if (score.filter { it > 0 }.sum() > 2f) {
+        } else if (score.sum() > 2f) {
             if (StrategyDestructive.move(game)) {
                 return
             }

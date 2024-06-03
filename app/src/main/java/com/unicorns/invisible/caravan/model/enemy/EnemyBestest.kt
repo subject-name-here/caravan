@@ -28,13 +28,13 @@ data object EnemyBestest : Enemy() {
             return
         }
 
-        fun check(p0: Int, e0: Int): Float {
-            return if (p0 in (21..26) && (p0 > e0 || e0 > 26)) 2f else 0f
+        fun check(p0: Int, e0: Int): Boolean {
+            return p0 in (21..26) && (p0 > e0 || e0 > 26)
         }
         val score = game.playerCaravans.indices.map { check(game.playerCaravans[it].getValue(), game.enemyCaravans[it].getValue()) }
         val antiScore = game.enemyCaravans.indices.map { check(game.enemyCaravans[it].getValue(), game.playerCaravans[it].getValue()) }
 
-        if ((2f in score || 2f in antiScore) && StrategyCheckFuture.move(game)) {
+        if ((score.any() || antiScore.any()) && StrategyCheckFuture.move(game)) {
             return
         }
 
@@ -57,7 +57,7 @@ data object EnemyBestest : Enemy() {
             return
         }
 
-        if (2f in score) {
+        if (score.any()) {
             if (StrategyDestructive in strategies && StrategyDestructive.move(game)) {
                 return
             }
@@ -71,23 +71,6 @@ data object EnemyBestest : Enemy() {
             }
         }
 
-        if (StrategyTime in strategies && StrategyTime.move(game)) {
-            return
-        }
-        if (StrategyCareful in strategies && StrategyCareful.move(game)) {
-            return
-        }
-
-        when ((1..3).random()) {
-            1 -> {
-                EnemySecuritron38.makeMove(game)
-            }
-            2 -> {
-                EnemyHard.makeMove(game)
-            }
-            else -> {
-                EnemyNoBark.makeMove(game)
-            }
-        }
+        EnemyBetter.makeMove(game)
     }
 }

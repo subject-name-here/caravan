@@ -1,6 +1,7 @@
 package com.unicorns.invisible.caravan.model.enemy.strategy
 
 import com.unicorns.invisible.caravan.model.Game
+import com.unicorns.invisible.caravan.model.enemy.EnemyTutorial
 import com.unicorns.invisible.caravan.model.primitives.Rank
 
 object StrategyTime : Strategy {
@@ -23,7 +24,7 @@ object StrategyTime : Strategy {
                     }
                 if (possibleQueenCaravans.isNotEmpty()) {
                     possibleQueenCaravans
-                        .random()
+                        .first()
                         .cards
                         .last()
                         .addModifier(game.enemyCResources.removeFromHand(cardIndex))
@@ -35,8 +36,11 @@ object StrategyTime : Strategy {
                 game.enemyCaravans.sortedBy { it.getValue() }.forEach { caravan ->
                     if (caravan.getValue() + card.rank.value <= 26) {
                         if (caravan.canPutCardOnTop(card)) {
-                            caravan.putCardOnTop(game.enemyCResources.removeFromHand(cardIndex))
-                            return true
+                            val caravanIndex = game.enemyCaravans.indexOf(caravan)
+                            if (!EnemyTutorial.checkMoveOnDefeat(game, caravanIndex) && caravan.getValue() + card.rank.value > game.playerCaravans[caravanIndex].getValue()) {
+                                caravan.putCardOnTop(game.enemyCResources.removeFromHand(cardIndex))
+                                return true
+                            }
                         }
                     }
                 }

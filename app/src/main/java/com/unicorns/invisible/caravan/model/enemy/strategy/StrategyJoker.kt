@@ -28,6 +28,7 @@ object StrategyJoker : Strategy {
                 if (cardInCopy?.canAddModifier(card) == true) {
                     cardInCopy.addModifier(card)
                     gameCopy.processJoker()
+                    gameCopy.checkOnGameOver()
                     var score = -3
                     game.enemyCaravans.forEachIndexed { index, caravan ->
                         val copyCaravan = gameCopy.enemyCaravans[index]
@@ -77,6 +78,13 @@ object StrategyJoker : Strategy {
                     val score2 = (perfectCaravansCopy.size - perfectCaravans.size) * 3 +
                             overWeightCaravans.size - overWeightCaravansCopy.size +
                             playersReadyCaravans.size - playersReadyCaravansCopy.size
+
+                    if (gameCopy.isGameOver == 1) {
+                        return 0
+                    } else if (gameCopy.isGameOver == -1) {
+                        return 1234567
+                    }
+
                     return if (score2 > 0 && score > 0) score + score2 * 2 else 0
                 }
                 return 0

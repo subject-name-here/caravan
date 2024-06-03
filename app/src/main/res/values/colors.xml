@@ -11,6 +11,7 @@
     <color name="colorPrimary">#AA6644</color>
     <color name="colorPrimaryHalfTransparent">#77AA6644</color>
     <color name="colorPrimaryDark">#441111</color>
+    <color name="colorPrimaryDarkLighter">#832121</color>
     <color name="colorAccent">#DDCC66</color>
     <color name="colorAccentGrey">#D0C288</color>
 

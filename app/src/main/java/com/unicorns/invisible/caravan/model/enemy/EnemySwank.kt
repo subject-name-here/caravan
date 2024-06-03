@@ -10,6 +10,7 @@ import com.unicorns.invisible.caravan.model.primitives.CustomDeck
 import com.unicorns.invisible.caravan.model.primitives.Rank
 import com.unicorns.invisible.caravan.model.primitives.Suit
 import kotlinx.serialization.Serializable
+import kotlin.random.Random
 
 
 @Serializable
@@ -81,18 +82,6 @@ data object EnemySwank : Enemy() {
                         .addModifier(game.enemyCResources.removeFromHand(cardIndex))
                     return
                 }
-
-                if ((0..2).random() > 0) {
-                    val top = game.playerCaravans
-                        .filter { !it.isEmpty() && it.cards.last().canAddModifier(card) }
-                        .randomOrNull()
-                        ?.cards
-                        ?.last()
-                    if (top != null) {
-                        top.addModifier(game.enemyCResources.removeFromHand(cardIndex))
-                        return
-                    }
-                }
             }
 
             if (card.rank == Rank.JACK) {
@@ -100,7 +89,7 @@ data object EnemySwank : Enemy() {
                     .filterIndexed { i, caravan ->
                         val e0 = caravan.getValue()
                         val p0 = game.playerCaravans[i].getValue()
-                        !(e0 in (21..26) && (e0 > p0 || p0 > 26))
+                        !(e0 in (21..26) && (e0 >= p0 || p0 > 26))
                     }
                     .flatMap { it.cards }
                     .filter { c -> c.getValue() > c.card.rank.value && c.canAddModifier(card) }
@@ -133,13 +122,15 @@ data object EnemySwank : Enemy() {
                     10 -> listOf(10, 26)
                     else -> listOf()
                 }
-                listOf(7, 9, 10, 16, 17, 19, 26)
-                val caravan = game.enemyCaravans.filter {
-                    it.getValue() + card.rank.value in list
-                }.minByOrNull { it.getValue() + card.rank.value }
+                val caravan = game.enemyCaravans.withIndex().filter {
+                    it.value.getValue() + card.rank.value in list
+                }.minByOrNull { it.value.getValue() + card.rank.value }
                 if (caravan != null) {
-                    if (caravan.canPutCardOnTop(card)) {
-                        caravan.putCardOnTop(game.enemyCResources.removeFromHand(cardIndex))
+                    if (
+                        caravan.value.canPutCardOnTop(card) &&
+                        !(checkMoveOnDefeat(game, caravan.index) && caravan.value.getValue() + card.rank.value in (21..26))
+                    ) {
+                        caravan.value.putCardOnTop(game.enemyCResources.removeFromHand(cardIndex))
                         return
                     }
                 }
@@ -148,12 +139,34 @@ data object EnemySwank : Enemy() {
 
         hand.withIndex().shuffled().forEach { (cardIndex, card) ->
             if (!card.isFace()) {
-                val caravan = game.enemyCaravans.filter {
-                    it.getValue() + card.rank.value in listOf(7, 9, 10, 16, 17, 19, 26)
-                }.maxByOrNull { it.getValue() + card.rank.value }
-                if (caravan != null && caravan.canPutCardOnTop(card)) {
-                    caravan.putCardOnTop(game.enemyCResources.removeFromHand(cardIndex))
-                    return
+                val caravan = game.enemyCaravans.withIndex().filter {
+                    it.value.getValue() + card.rank.value in listOf(7, 9, 10, 16, 17, 19, 26)
+                }.minByOrNull { it.value.getValue() + card.rank.value }
+                if (caravan != null) {
+                    if (
+                        caravan.value.canPutCardOnTop(card) &&
+                        !(checkMoveOnDefeat(game, caravan.index) && caravan.value.getValue() + card.rank.value in (21..26))
+                    ) {
+                        caravan.value.putCardOnTop(game.enemyCResources.removeFromHand(cardIndex))
+                        return
+                    }
+                }
+            }
+        }
+
+
+        hand.withIndex().sortedByDescending { it.value.rank.value }.forEach { (cardIndex, card) ->
+            if (card.rank == Rank.QUEEN) {
+                if (Random.nextBoolean()) {
+                    val top = game.playerCaravans
+                        .filter { it.size > 2 && it.cards.last().canAddModifier(card) }
+                        .randomOrNull()
+                        ?.cards
+                        ?.last()
+                    if (top != null) {
+                        top.addModifier(game.enemyCResources.removeFromHand(cardIndex))
+                        return
+                    }
                 }
             }
         }

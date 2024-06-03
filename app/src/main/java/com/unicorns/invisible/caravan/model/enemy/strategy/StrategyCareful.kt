@@ -1,6 +1,8 @@
 package com.unicorns.invisible.caravan.model.enemy.strategy
 
 import com.unicorns.invisible.caravan.model.Game
+import com.unicorns.invisible.caravan.model.enemy.EnemyHard.checkMoveOnDefeat
+import com.unicorns.invisible.caravan.model.enemy.EnemyTutorial
 import com.unicorns.invisible.caravan.model.primitives.Rank
 
 
@@ -33,7 +35,7 @@ object StrategyCareful : Strategy {
                     }
                 if (possibleQueenCaravans.isNotEmpty()) {
                     possibleQueenCaravans
-                        .random()
+                        .first()
                         .cards
                         .last()
                         .addModifier(game.enemyCResources.removeFromHand(cardIndex))
@@ -42,11 +44,15 @@ object StrategyCareful : Strategy {
             }
 
             if (card.rank == Rank.JACK) {
-                val caravan = game.playerCaravans.filter { !it.isEmpty() }.maxByOrNull { it.getValue() }
-                val cardToJack = caravan?.cards?.maxBy { it.getValue() }
+                val caravan = game.playerCaravans.withIndex().filter { !it.value.isEmpty() }.maxByOrNull { it.value.getValue() }
+                val cardToJack = caravan?.value?.cards?.maxByOrNull { it.getValue() }
                 if (cardToJack != null && cardToJack.canAddModifier(card)) {
-                    cardToJack.addModifier(game.enemyCResources.removeFromHand(cardIndex))
-                    return true
+                    val futureValue = caravan.value.getValue() - cardToJack.getValue()
+                    val enemyValue = game.enemyCaravans[caravan.index].getValue()
+                    if (!(checkMoveOnDefeat(game, caravan.index) && enemyValue in (21..26) && (enemyValue > futureValue || futureValue > 26))) {
+                        cardToJack.addModifier(game.enemyCResources.removeFromHand(cardIndex))
+                        return true
+                    }
                 }
             }
         }
@@ -57,17 +63,7 @@ object StrategyCareful : Strategy {
             if (!card.rank.isFace()) {
                 game.enemyCaravans.sortedBy { it.getValue() }.forEachIndexed { caravanIndex, caravan ->
                     if (caravan.getValue() + card.rank.value <= 26 && caravan.canPutCardOnTop(card)) {
-                        val otherCaravansIndices = game.enemyCaravans.indices.filter { it != caravanIndex }
-                        var score = 0
-                        fun check(p0: Int, e0: Int) {
-                            if (p0 in (21..26) && (p0 > e0 || e0 > 26)) {
-                                score++
-                            }
-                        }
-                        otherCaravansIndices.forEach {
-                            check(game.playerCaravans[it].getValue(), game.enemyCaravans[it].getValue())
-                        }
-                        if (!(score == 2 && caravan.getValue() + card.rank.value in (21..26))) {
+                        if (!(EnemyTutorial.checkMoveOnDefeat(game, caravanIndex) && caravan.getValue() + card.rank.value in (21..26))) {
                             caravan.putCardOnTop(game.enemyCResources.removeFromHand(cardIndex))
                             return true
                         }

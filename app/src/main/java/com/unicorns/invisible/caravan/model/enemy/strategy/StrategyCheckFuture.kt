@@ -12,37 +12,19 @@ import com.unicorns.invisible.caravan.model.primitives.Rank
 import com.unicorns.invisible.caravan.model.primitives.Suit
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
 object StrategyCheckFuture : Strategy {
     val strategies = listOf(
-        object : Strategy {
-            override fun move(game: Game): Boolean {
-                EnemySecuritron38.makeMove(game)
-                return true
-            }
-        },
-        object : Strategy {
-            override fun move(game: Game): Boolean {
-                EnemyHard.makeMove(game)
-                return true
-            }
-        },
-        object : Strategy {
-            override fun move(game: Game): Boolean {
-                EnemyNoBark.makeMove(game)
-                return true
-            }
-        },
         StrategyDestructive,
         StrategyRush,
         StrategyCareful,
         StrategyTime,
     )
     override fun move(game: Game): Boolean {
-        val threshold = 0.06f
         strategies.toList().forEach {
             val copy = game.copy()
             it.move(copy)
@@ -54,10 +36,9 @@ object StrategyCheckFuture : Strategy {
                 Log.i("Ulysses", "I predict victory.")
                 return true
             } else {
-                val res = checkPlayerMoves(copy)
-                if (res > threshold) {
+                if (checkPlayerMoves(copy)) {
                     it.move(game)
-                    Log.i("Ulysses", "I predict victory.")
+                    Log.i("Ulysses", "I predict next move victory.")
                     return true
                 }
             }
@@ -66,35 +47,26 @@ object StrategyCheckFuture : Strategy {
         return false
     }
 
-    private fun checkPlayerMoves(game: Game): Float {
-        var res = 0
-        var cnt = 0
-        var block = false
+    private fun checkPlayerMoves(game: Game): Boolean {
         val cards = Rank.entries.map { Card(it, Suit.entries.random(), CardBack.STANDARD, false) }
 
-        fun cardJob(card: Card) {
+        fun cardJob(card: Card): Boolean {
             if (card.rank == Rank.QUEEN) {
-                cnt++
-                if (checkMyMoves(game.copy())) {
-                    res++
+                if (!checkMyMoves(game.copy())) {
+                    return false
                 }
             } else if (card.isFace()) {
                 var gameCopy2 = game.copy()
-                (gameCopy2.playerCaravans + gameCopy2.enemyCaravans).flatMap { it.cards }
-                    .shuffled()
+                (gameCopy2.enemyCaravans + gameCopy2.playerCaravans).flatMap { it.cards }
+                    .sortedByDescending { it.getValue() }
                     .filter { it.canAddModifier(card) }
                     .forEach { potentialCard ->
-                        cnt++
                         potentialCard.addModifier(card)
                         gameCopy2.processJacks()
                         gameCopy2.processJoker()
                         gameCopy2.checkOnGameOver()
-                        if (gameCopy2.isGameOver == 1) {
-                            block = true
-                            return
-                        }
-                        if (checkMyMoves(gameCopy2)) {
-                            res++
+                        if (gameCopy2.isGameOver == 1 || !checkMyMoves(gameCopy2)) {
+                            return false
                         }
                         gameCopy2 = game.copy()
                     }
@@ -106,39 +78,26 @@ object StrategyCheckFuture : Strategy {
                         copy.processJacks()
                         copy.processJoker()
                         copy.checkOnGameOver()
-                        cnt++
-                        if (copy.isGameOver == 1) {
-                            block = true
-                            return
-                        }
-                        if (checkMyMoves(copy)) {
-                            res++
+                        if (copy.isGameOver == 1 || !checkMyMoves(copy)) {
+                            return false
                         }
                     }
                 }
             }
+            return true
         }
 
-        runBlocking {
+        return runBlocking {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                cards.parallelStream().forEach { cardJob(it) }
+                cards.parallelStream().map { cardJob(it) }.allMatch { it }
             } else {
-                val jobs = cards.map { card ->
-                    CoroutineScope(Dispatchers.Unconfined).launch {
+                cards.map { card ->
+                    CoroutineScope(Dispatchers.Unconfined).async {
                         cardJob(card)
                     }
-                }
-                jobs.joinAll()
+                }.map { it.await() }.all { it }
             }
         }
-
-        if (block) {
-            Log.i("Ulysses", "I predict defeat.")
-            return 0f
-        }
-
-        Log.i("Ulysses", "I predict $res / $cnt.")
-        return res.toFloat() / cnt.toFloat()
     }
 
     private fun checkMyMoves(game: Game): Boolean {

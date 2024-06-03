@@ -18,6 +18,7 @@ import kotlin.math.abs
 @Serializable
 data object EnemyNoBark : Enemy() {
     override fun createDeck(): CResources = CResources(CustomDeck(CardBack.STANDARD, false).apply {
+        toList().filter { it.rank.value < 5 }.forEach { remove(it) }
         listOf(CardBack.GOMORRAH).forEach { back ->
             Suit.entries.forEach { suit ->
                 add(Card(Rank.JACK, suit, back, true))
@@ -26,9 +27,7 @@ data object EnemyNoBark : Enemy() {
         }
     })
     override fun getRewardBack() = CardBack.GOMORRAH
-    override fun isAlt(): Boolean {
-        return true
-    }
+    override fun isAlt() = true
 
     override fun makeMove(game: Game) {
         val overWeightCaravans = game.enemyCaravans.filter { it.getValue() > 26 }
@@ -50,19 +49,27 @@ data object EnemyNoBark : Enemy() {
             }
         }.forEach { (cardIndex, card) ->
             if (card.rank == Rank.JACK) {
-                val caravan = game.playerCaravans.filter { it.getValue() in (10..26) }.randomOrNull()
-                val cardToJack = caravan?.cards?.maxBy { it.getValue() }
-                if (cardToJack != null && cardToJack.canAddModifier(card)) {
+                val caravan = game.playerCaravans.withIndex().filter { it.value.getValue() in (10..26) }.randomOrNull()
+                val cardToJack = caravan?.value?.cards?.maxByOrNull { it.getValue() }
+                if (cardToJack != null && cardToJack.canAddModifier(card) &&
+                    !(checkMoveOnDefeat(game, caravan.index) && caravan.value.getValue() == game.enemyCaravans[caravan.index].getValue() && caravan.value.getValue() in (21..26))
+                ) {
                     cardToJack.addModifier(game.enemyCResources.removeFromHand(cardIndex))
                     return
                 }
             }
             if (card.rank == Rank.KING) {
-                game.enemyCaravans
-                    .flatMap { c -> c.cards.map { it to c } }
-                    .sortedByDescending { (it.second.getValue() + it.first.getValue()) / 2 }
+                game.enemyCaravans.withIndex()
+                    .flatMap { c -> c.value.cards.map { it to c } }
+                    .sortedByDescending { (it.second.value.getValue() + it.first.getValue()) / 2 }
                     .forEach {
-                        if (it.second.getValue() + it.first.getValue() in (12..26) && it.first.canAddModifier(card)) {
+                        if (it.second.value.getValue() + it.first.getValue() in (12..26) && it.first.canAddModifier(card) &&
+                            !(
+                                checkMoveOnDefeat(game, it.second.index) &&
+                                        it.second.value.getValue() == game.playerCaravans[it.second.index].getValue() &&
+                                        it.second.value.getValue() in (21..26)
+                            )
+                        ) {
                             it.first.addModifier(game.enemyCResources.removeFromHand(cardIndex))
                             return
                         }
@@ -72,17 +79,7 @@ data object EnemyNoBark : Enemy() {
             if (!card.rank.isFace()) {
                 game.enemyCaravans.sortedByDescending { it.getValue() }.forEachIndexed { caravanIndex, caravan ->
                     if (caravan.getValue() + card.rank.value <= 26 && caravan.canPutCardOnTop(card)) {
-                        val otherCaravansIndices = game.enemyCaravans.indices.filter { it != caravanIndex }
-                        var score = 0
-                        fun check(p0: Int, e0: Int) {
-                            if (p0 in (21..26) && (p0 > e0 || e0 > 26)) {
-                                score++
-                            }
-                        }
-                        otherCaravansIndices.forEach {
-                            check(game.playerCaravans[it].getValue(), game.enemyCaravans[it].getValue())
-                        }
-                        if (!(score == 2 && caravan.getValue() + card.rank.value in (21..26))) {
+                        if (!(checkMoveOnDefeat(game, caravanIndex) && caravan.getValue() + card.rank.value in (21..26))) {
                             caravan.putCardOnTop(game.enemyCResources.removeFromHand(cardIndex))
                             return
                         }

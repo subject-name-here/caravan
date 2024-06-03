@@ -34,8 +34,7 @@ data object EnemyNash : Enemy() {
                         !it.isEmpty() &&
                                 it.cards[0]
                                     .modifiersCopy()
-                                    .filter { modifier -> modifier.rank != Rank.KING }
-                                    .size >= 2
+                                    .filter { modifier -> modifier.rank != Rank.KING }.size >= 2
                     }
                     .toSet()
 
@@ -49,7 +48,9 @@ data object EnemyNash : Enemy() {
         if ((0..2).random() > 0) {
             val jack = hand.withIndex().find { it.value.rank == Rank.JACK }
             if (jack != null) {
-                val caravan = game.playerCaravans.filter { !it.isEmpty() }.maxByOrNull { it.getValue() }
+                val caravan = game.playerCaravans
+                    .filter { !it.isEmpty() && it.getValue() <= 26 }
+                    .maxByOrNull { it.getValue() }
                 val cardToJack = caravan?.cards?.maxBy { it.getValue() }
                 if (cardToJack != null && cardToJack.canAddModifier(jack.value)) {
                     cardToJack.addModifier(game.enemyCResources.removeFromHand(jack.index))
@@ -60,7 +61,7 @@ data object EnemyNash : Enemy() {
 
         val six = hand.withIndex().find { it.value.rank == Rank.SIX }
         if (six != null) {
-            val emptyCaravans = game.enemyCaravans.shuffled().filter { it.isEmpty() }
+            val emptyCaravans = game.enemyCaravans.filter { it.isEmpty() }
             if (emptyCaravans.isNotEmpty()) {
                 val caravan = emptyCaravans.random()
                 if (caravan.canPutCardOnTop(six.value)) {
@@ -72,11 +73,13 @@ data object EnemyNash : Enemy() {
 
         val king = hand.withIndex().find { it.value.rank == Rank.KING }
         if (king != null) {
-            val underWeightCaravans = game.enemyCaravans.shuffled().filter { !it.isEmpty() && it.getValue() < 21 }
+            val underWeightCaravans = game.enemyCaravans.withIndex()
+                .sortedByDescending { game.playerCaravans[it.index].getValue() }
+                .filter { !it.value.isEmpty() && it.value.getValue() < 21 }
             if (underWeightCaravans.isNotEmpty()) {
                 val caravan = underWeightCaravans.random()
-                val card = caravan.cards[0]
-                if (card.canAddModifier(king.value)) {
+                val card = caravan.value.cards[0]
+                if (card.canAddModifier(king.value) && !(checkMoveOnDefeat(game, caravan.index) && caravan.value.getValue() == 12)) {
                     card.addModifier(game.enemyCResources.removeFromHand(king.index))
                     return
                 }
@@ -88,12 +91,12 @@ data object EnemyNash : Enemy() {
             return
         }
 
-        game.enemyCResources.removeFromHand(hand.withIndex().sortedBy {
+        game.enemyCResources.removeFromHand(hand.withIndex().minByOrNull {
             when (it.value.rank) {
                 Rank.SIX -> 0
                 Rank.KING -> 2
                 else -> 1
             }
-        }.first().index)
+        }!!.index)
     }
 }

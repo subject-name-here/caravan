@@ -287,11 +287,11 @@ fun ShowPvE(
             )
             Spacer(modifier = Modifier.height(10.dp))
             Text(
-                text = stringResource(R.string.pve_enemy_38),
+                text = stringResource(R.string.no_bark),
                 fontFamily = FontFamily(Font(R.font.monofont)),
                 style = TextStyle(color = getTextColor(activity), fontSize = 16.sp),
                 modifier = Modifier.clickable {
-                    showGame38 = true
+                    showGameBest = true
                 }.background(getTextBackgroundColor(activity)).padding(4.dp)
             )
             Spacer(modifier = Modifier.height(10.dp))
@@ -305,11 +305,11 @@ fun ShowPvE(
             )
             Spacer(modifier = Modifier.height(10.dp))
             Text(
-                text = stringResource(R.string.no_bark),
+                text = stringResource(R.string.pve_enemy_38),
                 fontFamily = FontFamily(Font(R.font.monofont)),
                 style = TextStyle(color = getTextColor(activity), fontSize = 16.sp),
                 modifier = Modifier.clickable {
-                    showGameBest = true
+                    showGame38 = true
                 }.background(getTextBackgroundColor(activity)).padding(4.dp)
             )
             Spacer(modifier = Modifier.height(10.dp))
