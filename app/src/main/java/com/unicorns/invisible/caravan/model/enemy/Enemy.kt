@@ -13,7 +13,7 @@ sealed class Enemy {
     open fun getRewardBack(): CardBack? = null
     open fun isAlt() = false
 
-    fun checkMoveOnPossibleDefeat(game: Game, caravanIndex: Int): Boolean {
+    fun checkMoveOnDefeat(game: Game, caravanIndex: Int): Boolean {
         val otherCaravansIndices = game.enemyCaravans.indices.filter { it != caravanIndex }
         var score = 0
         fun check(p0: Int, e0: Int) {
@@ -26,6 +26,19 @@ sealed class Enemy {
         }
         return score == 2
     }
+    fun checkMoveOnProbableDefeat(game: Game, caravanIndex: Int): Boolean {
+        val otherCaravansIndices = game.enemyCaravans.indices.filter { it != caravanIndex }
+        var score = 0
+        fun check(p0: Int, e0: Int) {
+            if (p0 >= 11 && e0 != 26) {
+                score++
+            }
+        }
+        otherCaravansIndices.forEach {
+            check(game.playerCaravans[it].getValue(), game.enemyCaravans[it].getValue())
+        }
+        return score == 1
+    }
     fun checkMoveOnPossibleVictory(game: Game, caravanIndex: Int): Boolean {
         val otherCaravansIndices = game.enemyCaravans.indices.filter { it != caravanIndex }
         var score = 0
@@ -37,6 +50,16 @@ sealed class Enemy {
         otherCaravansIndices.forEach {
             check(game.enemyCaravans[it].getValue(), game.playerCaravans[it].getValue())
         }
-        return score >= 1
+        if (score >= 2) {
+            return true
+        } else if (score == 1) {
+            otherCaravansIndices.forEach {
+                check(game.playerCaravans[it].getValue(), game.enemyCaravans[it].getValue())
+            }
+            if (score == 2) {
+                return true
+            }
+        }
+        return false
     }
 }

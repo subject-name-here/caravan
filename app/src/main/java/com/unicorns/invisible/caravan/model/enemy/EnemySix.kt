@@ -2,7 +2,6 @@ package com.unicorns.invisible.caravan.model.enemy
 
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
-import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyDestructive
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJoker
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyKingRuiner
 import com.unicorns.invisible.caravan.model.primitives.CResources
@@ -103,7 +102,7 @@ data object EnemySix : Enemy() {
             game.enemyCaravans.withIndex().shuffled().forEach { (caravanIndex, enemyCaravan) ->
                 if (enemyCaravan.getValue() in listOf(10, 16)) {
                     val ten = enemyCaravan.cards.find { it.card.rank == Rank.TEN && it.getValue() == 10 && it.canAddModifier(card) }
-                    if (ten != null && !(checkMoveOnPossibleDefeat(game, caravanIndex) && enemyCaravan.getValue() == 16)) {
+                    if (ten != null && !(checkMoveOnProbableDefeat(game, caravanIndex) && enemyCaravan.getValue() == 16)) {
                         ten.addModifier(game.enemyCResources.removeFromHand(cardIndex))
                         return
                     }
@@ -114,7 +113,7 @@ data object EnemySix : Enemy() {
         hand.withIndex().filter { !it.value.isFace() }.forEach { (cardIndex, card) ->
             game.enemyCaravans.withIndex().sortedByDescending { it.value.getValue() }.forEach { (caravanIndex, caravan) ->
                 if (caravan.size < 2 && caravan.getValue() + card.rank.value <= 26 && caravan.canPutCardOnTop(card)) {
-                    if (!(checkMoveOnPossibleDefeat(game, caravanIndex) && caravan.getValue() + card.rank.value in (21..26))) {
+                    if (!(checkMoveOnDefeat(game, caravanIndex) && caravan.getValue() + card.rank.value in (21..26))) {
                         caravan.putCardOnTop(game.enemyCResources.removeFromHand(cardIndex))
                         return
                     }
@@ -128,6 +127,20 @@ data object EnemySix : Enemy() {
         if (Random.nextBoolean() && StrategyKingRuiner.move(game)) {
             return
         }
+
+        if (kings.isNotEmpty()) {
+            val (cardIndex, card) = kings.random()
+            game.enemyCaravans.withIndex().shuffled().forEach { (caravanIndex, enemyCaravan) ->
+                if (enemyCaravan.getValue() in listOf(10, 16)) {
+                    val ten = enemyCaravan.cards.find { it.card.rank == Rank.TEN && it.getValue() == 10 && it.canAddModifier(card) }
+                    if (ten != null && !(checkMoveOnDefeat(game, caravanIndex) && enemyCaravan.getValue() == 16)) {
+                        ten.addModifier(game.enemyCResources.removeFromHand(cardIndex))
+                        return
+                    }
+                }
+            }
+        }
+
         if (overWeightCaravans.isNotEmpty()) {
             overWeightCaravans.random().dropCaravan()
             return
