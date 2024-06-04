@@ -72,8 +72,6 @@ import com.unicorns.invisible.caravan.utils.getTrackColor
 @Composable
 fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
     var selectedCard by remember { mutableStateOf<Int?>(null) }
-    val selectedCardColor = getAccentColor(activity)
-
     var selectedCaravan by remember { mutableIntStateOf(-1) }
 
     var caravansKey by remember { mutableStateOf(true) }
@@ -86,14 +84,6 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
         selectedCard = if (index == selectedCard) null else index
         selectedCaravan = -1
     }
-
-    val state1Enemy = rememberLazyListState()
-    val state1Player = rememberLazyListState()
-    val state2Enemy = rememberLazyListState()
-    val state2Player = rememberLazyListState()
-    val state3Enemy = rememberLazyListState()
-    val state3Player = rememberLazyListState()
-
 
     fun updateCaravans() {
         caravansKey = !caravansKey
@@ -120,7 +110,7 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
         game.afterPlayerMove { updateCaravans(); updateEnemyHand() }
     }
 
-    fun addCardToCaravan(caravan: Caravan, position: Int, isEnemy: Boolean = false) {
+    fun addCardToCaravan(caravan: Caravan, position: Int, isEnemy: Boolean) {
         fun onCaravanCardInserted() {
             game.afterPlayerMove { updateCaravans(); updateEnemyHand() }
             resetSelected()
@@ -148,11 +138,65 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
             }
         }
     }
+
+
+    ShowGameRaw(
+        activity,
+        false,
+        game,
+        goBack,
+        { "" },
+        { "" },
+        {},
+        ::onCardClicked,
+        selectedCard,
+        getSelectedCaravan = { selectedCaravan },
+        setSelectedCaravan = {
+            selectedCaravan = it
+            selectedCard = null
+            caravansKey = !caravansKey
+        },
+        { a1, _, a3, a4 -> addCardToCaravan(a1, a3, a4) },
+        ::dropCardFromHand,
+        ::dropCaravan,
+        enemyHandKey,
+        caravansKey
+    )
+}
+
+@Composable
+fun ShowGameRaw(
+    activity: MainActivity,
+    isPvP: Boolean,
+    game: Game,
+    goBack: () -> Unit,
+    getEnemySymbol: () -> String,
+    getMySymbol: () -> String,
+    setMySymbol: () -> Unit,
+    onCardClicked: (Int) -> Unit,
+    selectedCard: Int?,
+    getSelectedCaravan: () -> Int,
+    setSelectedCaravan: (Int) -> Unit,
+    addCardToCaravan: (Caravan, Int, Int, Boolean) -> Unit,
+    dropCardFromHand: () -> Unit,
+    dropCaravan: () -> Unit,
+    enemyHandKey: Boolean,
+    caravansKey: Boolean
+) {
+    val selectedCardColor = getAccentColor(activity)
+
+    val state1Enemy = rememberLazyListState()
+    val state1Player = rememberLazyListState()
+    val state2Enemy = rememberLazyListState()
+    val state2Player = rememberLazyListState()
+    val state3Enemy = rememberLazyListState()
+    val state3Player = rememberLazyListState()
+
     fun addCardToEnemyCaravan(caravanNum: Int, position: Int) {
-        addCardToCaravan(game.enemyCaravans[caravanNum], position, isEnemy = true)
+        addCardToCaravan(game.enemyCaravans[caravanNum], caravanNum, position, true)
     }
     fun addCardToPlayerCaravan(caravanNum: Int, position: Int) {
-        addCardToCaravan(game.playerCaravans[caravanNum], position, isEnemy = false)
+        addCardToCaravan(game.playerCaravans[caravanNum], caravanNum, position, false)
     }
     fun isInitStage(): Boolean {
         return game.isInitStage()
@@ -161,15 +205,10 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
         return !(game.isOver() || !game.isPlayerTurn || game.isInitStage())
     }
 
-
     BoxWithConstraints(
         modifier = Modifier
             .fillMaxSize()
             .background(getGameBackgroundColor(activity))
-//            .paint(
-//                painterResource(id = R.drawable.game_back3),
-//                contentScale = ContentScale.Crop
-//            )
     ) {
         if (maxWidth > maxHeight) {
             Row(Modifier.fillMaxSize()) {
@@ -191,7 +230,18 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
                                 RowOfEnemyCards(game.enemyCResources.hand.take(4))
                                 RowOfEnemyCards(game.enemyCResources.hand.takeLast((handSize - 4).coerceAtLeast(0)))
                             }
-                            ShowDeck(game.enemyCResources, activity)
+
+                            Box(Modifier.fillMaxSize()) {
+                                ShowDeck(game.enemyCResources, activity)
+                                if (isPvP) {
+                                    Text(text = getEnemySymbol(), style = TextStyle(
+                                        fontSize = 24.sp,
+                                        fontFamily = FontFamily(Font(R.font.symbola)),
+                                        color = getGameTextColor(activity),
+                                        background = getTextBackgroundColor(activity)
+                                    ), modifier = Modifier.align(Alignment.BottomEnd))
+                                }
+                            }
                         }
                     }
                     Row(verticalAlignment = Alignment.Bottom, modifier = Modifier
@@ -200,15 +250,28 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
                     ) {
                         val handSize = game.playerCResources.hand.size
                         Column(Modifier.fillMaxWidth(0.8f)) {
-                            RowOfCards(activity, cards = game.playerCResources.hand.subList(0, minOf(4, handSize)), 0, selectedCard, selectedCardColor, ::onCardClicked)
+                            RowOfCards(activity, cards = game.playerCResources.hand.subList(0, minOf(4, handSize)), 0, selectedCard, selectedCardColor, onCardClicked)
                             val cards = if (handSize >= 5) {
                                 game.playerCResources.hand.subList(4, handSize)
                             } else {
-                               emptyList()
+                                emptyList()
                             }
-                            RowOfCards(activity, cards = cards, 4, selectedCard, selectedCardColor, ::onCardClicked)
+                            RowOfCards(activity, cards = cards, 4, selectedCard, selectedCardColor, onCardClicked)
                         }
-                        ShowDeck(game.playerCResources, activity)
+
+                        Box {
+                            ShowDeck(game.playerCResources, activity)
+                            if (isPvP) {
+                                Text(text = getMySymbol(), style = TextStyle(
+                                    fontSize = 24.sp,
+                                    fontFamily = FontFamily(Font(R.font.symbola)),
+                                    color = getGameTextColor(activity),
+                                    background = getTextBackgroundColor(activity)
+                                ), modifier = Modifier.clickable {
+                                    setMySymbol()
+                                })
+                            }
+                        }
                     }
                     Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxSize()) {
                         Text(
@@ -230,12 +293,8 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
                         activity,
                         { selectedCard },
                         { selectedCard?.let { game.playerCResources.hand[it] } },
-                        { selectedCaravan },
-                        {
-                            selectedCaravan = it
-                            selectedCard = null
-                            caravansKey = !caravansKey
-                        },
+                        getSelectedCaravan,
+                        setSelectedCaravan,
                         isMaxHeight = true,
                         state1Enemy,
                         state1Player,
@@ -245,8 +304,8 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
                         state3Player,
                         ::addCardToPlayerCaravan,
                         ::addCardToEnemyCaravan,
-                        ::dropCardFromHand,
-                        ::dropCaravan,
+                        dropCardFromHand,
+                        dropCaravan,
                         ::isInitStage,
                         { game.isPlayerTurn },
                         ::canDiscard,
@@ -274,7 +333,19 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
                             RowOfEnemyCards(game.enemyCResources.hand.take(4))
                             RowOfEnemyCards(game.enemyCResources.hand.takeLast((handSize - 4).coerceAtLeast(0)))
                         }
-                        ShowDeck(game.enemyCResources, activity)
+                        Box {
+                            ShowDeck(game.playerCResources, activity)
+                            if (isPvP) {
+                                Text(text = getMySymbol(), style = TextStyle(
+                                    fontSize = 24.sp,
+                                    fontFamily = FontFamily(Font(R.font.symbola)),
+                                    color = getGameTextColor(activity),
+                                    background = getTextBackgroundColor(activity)
+                                ), modifier = Modifier.clickable {
+                                    setMySymbol()
+                                })
+                            }
+                        }
                     }
                 }
                 key(caravansKey) {
@@ -282,12 +353,8 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
                         activity,
                         { selectedCard },
                         { selectedCard?.let { game.playerCResources.hand[it] } },
-                        { selectedCaravan },
-                        {
-                            selectedCaravan = it
-                            selectedCard = null
-                            caravansKey = !caravansKey
-                        },
+                        getSelectedCaravan,
+                        setSelectedCaravan,
                         isMaxHeight = false,
                         state1Enemy,
                         state1Player,
@@ -297,8 +364,8 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
                         state3Player,
                         ::addCardToPlayerCaravan,
                         ::addCardToEnemyCaravan,
-                        ::dropCardFromHand,
-                        ::dropCaravan,
+                        dropCardFromHand,
+                        dropCaravan,
                         ::isInitStage,
                         { game.isPlayerTurn },
                         ::canDiscard,
@@ -311,15 +378,27 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
                     .fillMaxHeight(0.8f)
                 ) {
                     Column(Modifier.fillMaxWidth(0.8f)) {
-                        RowOfCards(activity, cards = game.playerCResources.hand.subList(0, minOf(4, game.playerCResources.hand.size)), 0, selectedCard, selectedCardColor, ::onCardClicked)
+                        RowOfCards(activity, cards = game.playerCResources.hand.subList(0, minOf(4, game.playerCResources.hand.size)), 0, selectedCard, selectedCardColor, onCardClicked)
                         val cards = if (game.playerCResources.hand.size >= 5) {
                             game.playerCResources.hand.subList(4, game.playerCResources.hand.size)
                         } else {
                             emptyList()
                         }
-                        RowOfCards(activity, cards = cards, 4, selectedCard, selectedCardColor, ::onCardClicked)
+                        RowOfCards(activity, cards = cards, 4, selectedCard, selectedCardColor, onCardClicked)
                     }
-                    ShowDeck(game.playerCResources, activity)
+                    Box {
+                        ShowDeck(game.playerCResources, activity)
+                        if (isPvP) {
+                            Text(text = getMySymbol(), style = TextStyle(
+                                fontSize = 24.sp,
+                                fontFamily = FontFamily(Font(R.font.symbola)),
+                                color = getGameTextColor(activity),
+                                background = getTextBackgroundColor(activity)
+                            ), modifier = Modifier.clickable {
+                                setMySymbol()
+                            })
+                        }
+                    }
                 }
                 Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxSize()) {
                     Text(
