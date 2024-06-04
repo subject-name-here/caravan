@@ -2,6 +2,7 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="grayHalfTransparent">#CC505050</color>
 
     <color name="red">#FFFF0000</color>
     <color name="dark_red">#FFBB0000</color>
@@ -11,7 +12,7 @@
     <color name="colorPrimary">#AA6644</color>
     <color name="colorPrimaryHalfTransparent">#77AA6644</color>
     <color name="colorPrimaryDark">#441111</color>
-    <color name="colorPrimaryDarkLighter">#832121</color>
+    <color name="colorPrimaryDarkLighter">#552222</color>
     <color name="colorAccent">#DDCC66</color>
     <color name="colorAccentGrey">#D0C288</color>
 

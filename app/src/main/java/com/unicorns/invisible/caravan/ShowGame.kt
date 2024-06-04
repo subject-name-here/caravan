@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -33,15 +34,19 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.paint
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
@@ -58,6 +63,7 @@ import com.unicorns.invisible.caravan.utils.getDividerColor
 import com.unicorns.invisible.caravan.utils.getGameBackgroundColor
 import com.unicorns.invisible.caravan.utils.getGameTextBackgroundColor
 import com.unicorns.invisible.caravan.utils.getGameTextColor
+import com.unicorns.invisible.caravan.utils.getGrayTransparent
 import com.unicorns.invisible.caravan.utils.getKnobColor
 import com.unicorns.invisible.caravan.utils.getTextBackgroundColor
 import com.unicorns.invisible.caravan.utils.getTrackColor
@@ -181,7 +187,7 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
                     ) {
                         key(enemyHandKey) {
                             val handSize = game.enemyCResources.hand.size
-                            Column(Modifier.fillMaxWidth(0.8f), horizontalAlignment = Alignment.CenterHorizontally) {
+                            Column(Modifier.fillMaxWidth(0.8f).padding(bottom = 4.dp), horizontalAlignment = Alignment.CenterHorizontally) {
                                 RowOfEnemyCards(game.enemyCResources.hand.take(4))
                                 RowOfEnemyCards(game.enemyCResources.hand.takeLast((handSize - 4).coerceAtLeast(0)))
                             }
@@ -202,7 +208,7 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
                             }
                             RowOfCards(activity, cards = cards, 4, selectedCard, selectedCardColor, ::onCardClicked)
                         }
-                        ShowDeck(game.playerCResources, activity, isToBottom = true)
+                        ShowDeck(game.playerCResources, activity)
                     }
                     Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxSize()) {
                         Text(
@@ -264,7 +270,7 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
                 ) {
                     val handSize = game.enemyCResources.hand.size
                     key(enemyHandKey) {
-                        Column(Modifier.fillMaxWidth(0.8f), horizontalAlignment = Alignment.CenterHorizontally) {
+                        Column(Modifier.fillMaxWidth(0.8f).padding(bottom = 4.dp), horizontalAlignment = Alignment.CenterHorizontally) {
                             RowOfEnemyCards(game.enemyCResources.hand.take(4))
                             RowOfEnemyCards(game.enemyCResources.hand.takeLast((handSize - 4).coerceAtLeast(0)))
                         }
@@ -313,7 +319,7 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
                         }
                         RowOfCards(activity, cards = cards, 4, selectedCard, selectedCardColor, ::onCardClicked)
                     }
-                    ShowDeck(game.playerCResources, activity, isToBottom = true)
+                    ShowDeck(game.playerCResources, activity)
                 }
                 Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxSize()) {
                     Text(
@@ -341,7 +347,7 @@ fun ColumnScope.RowOfCards(activity: MainActivity, cards: List<Card>, offset: In
         Modifier
             .weight(1f)
             .fillMaxHeight()
-            .fillMaxWidth().padding(4.dp),
+            .fillMaxWidth(),
         horizontalArrangement = Arrangement.Center
     ) {
         cards.forEachIndexed { index, it ->
@@ -389,6 +395,7 @@ fun ColumnScope.RowOfEnemyCards(cards: List<Card>) {
 fun CaravanOnField(
     activity: MainActivity,
     caravan: Caravan,
+    num: Int,
     getOpposingCaravanValue: () -> Int,
     isInitStage: Boolean,
     isEnemy: Boolean,
@@ -397,19 +404,19 @@ fun CaravanOnField(
     selectCaravan: () -> Unit = {},
     addSelectedCardOnPosition: (Int) -> Unit,
 ) {
-    val (textColor, text) = if (caravan.getValue() > 26)
-        Color.Red to caravan.getValue().toString() + " ☓"
+    val (textColor, text, isColored) = if (caravan.getValue() > 26)
+        Triple(Color.Red, caravan.getValue().toString(), true)
     else if (caravan.getValue() in (21..26) && (getOpposingCaravanValue() !in (21..26) || caravan.getValue() > getOpposingCaravanValue()))
-        Color.Green to caravan.getValue().toString() + " ✔"
+        Triple(Color.Green, caravan.getValue().toString(), true)
     else
-        getAccentColor(activity) to caravan.getValue().toString()
+        Triple(getAccentColor(activity), caravan.getValue().toString(), false)
     if (isEnemy) {
         LazyColumn(
             state = state,
             verticalArrangement = Arrangement.Bottom,
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
-                .fillMaxHeight(0.4f)
+                .fillMaxHeight(0.36f)
                 .fillMaxWidth()
                 .caravanScrollbar(
                     state,
@@ -448,26 +455,10 @@ fun CaravanOnField(
                 }
             }
         }
-        Text(
-            text = text,
-            textAlign = TextAlign.Center,
-            color = textColor,
-            fontWeight = FontWeight.ExtraBold,
-            fontFamily = FontFamily(Font(R.font.monofont)),
-            modifier = Modifier.fillMaxWidth(),
-            fontSize = 16.sp,
-        )
+        Score(activity, num, text, textColor, isColored)
     } else {
         Column {
-            Text(
-                text = text,
-                textAlign = TextAlign.Center,
-                color = textColor,
-                fontWeight = FontWeight.ExtraBold,
-                fontFamily = FontFamily(Font(R.font.monofont)),
-                modifier = Modifier.fillMaxWidth(),
-                fontSize = 16.sp,
-            )
+            Score(activity, num, text, textColor, isColored)
             Text(text = if (isInitStage || caravan.getValue() == 0) "" else stringResource(R.string.discard),
                 textAlign = TextAlign.Center,
                 color = getGameTextColor(activity),
@@ -564,12 +555,12 @@ fun CaravanOnField(
 }
 
 @Composable
-fun ShowDeck(cResources: CResources, activity: MainActivity, isToBottom: Boolean = false, isKnown: Boolean = true) {
+fun ShowDeck(cResources: CResources, activity: MainActivity, isKnown: Boolean = true) {
     Column(
         modifier = Modifier
             .fillMaxHeight()
             .padding(end = 4.dp),
-        verticalArrangement = if (isToBottom) Arrangement.Bottom else Arrangement.Top
+        verticalArrangement = Arrangement.Center
     ) {
         Text(
             text = cResources.deckSize.toString(),
@@ -598,6 +589,36 @@ fun ShowDeck(cResources: CResources, activity: MainActivity, isToBottom: Boolean
             modifier = Modifier
                 .clip(RoundedCornerShape(12f))
                 .fillMaxWidth()
+        )
+    }
+}
+
+private val cities = listOf("BONEYARD", "REDDING", "VAULT CITY", "DAYGLOW", "NEW RENO", "THE HUB")
+@Composable
+fun Score(activity: MainActivity, num: Int, score: String, textColor: Color, isCityColored: Boolean = false) {
+    Box(Modifier.fillMaxWidth().background(getGrayTransparent(activity)).padding(4.dp)) {
+        Text(
+            text = cities[num],
+            textAlign = TextAlign.Center,
+            color = if (isCityColored) textColor else Color.Black,
+            fontFamily = FontFamily(Font(R.font.help)),
+            modifier = Modifier.fillMaxWidth(0.8f).align(Alignment.CenterStart),
+            fontSize = 9.sp,
+            maxLines = 1,
+            overflow = TextOverflow.Visible,
+            softWrap = false,
+        )
+        Spacer(Modifier.width(2.dp))
+        Text(
+            text = score,
+            modifier = Modifier.align(Alignment.CenterEnd),
+            textAlign = TextAlign.Center,
+            color = textColor,
+            fontWeight = FontWeight.ExtraBold,
+            fontFamily = FontFamily(Font(R.font.monofont)),
+            maxLines = 1,
+            softWrap = false,
+            fontSize = 14.sp,
         )
     }
 }
@@ -639,6 +660,7 @@ fun Caravans(
                 .padding(6.dp)) {
                 CaravanOnField(activity,
                     getEnemyCaravan(num),
+                    num,
                     { getPlayerCaravan(num).getValue() },
                     isInitStage = getIsInitStage(),
                     isEnemy = true, enemyLazyListState,
@@ -650,6 +672,7 @@ fun Caravans(
                 CaravanOnField(
                     activity,
                     getPlayerCaravan(num),
+                    num + 3,
                     { getEnemyCaravan(num).getValue() },
                     isInitStage = getIsInitStage(),
                     false,
@@ -680,21 +703,31 @@ fun Caravans(
         }
 
         Spacer(modifier = Modifier.weight(0.03f))
-        CaravansColumn(
-            num = 0,
-            enemyLazyListState = state1Enemy,
-            playerLazyListState = state1Player
-        )
-        CaravansColumn(
-            num = 1,
-            enemyLazyListState = state2Enemy,
-            playerLazyListState = state2Player
-        )
-        CaravansColumn(
-            num = 2,
-            enemyLazyListState = state3Enemy,
-            playerLazyListState = state3Player
-        )
+        Column(Modifier.fillMaxHeight()
+            .weight(0.75f)
+            .paint(
+                painterResource(id = R.drawable.game_back3),
+                contentScale = ContentScale.FillBounds
+            )
+        ) {
+            Row {
+                CaravansColumn(
+                    num = 0,
+                    enemyLazyListState = state1Enemy,
+                    playerLazyListState = state1Player
+                )
+                CaravansColumn(
+                    num = 1,
+                    enemyLazyListState = state2Enemy,
+                    playerLazyListState = state2Player
+                )
+                CaravansColumn(
+                    num = 2,
+                    enemyLazyListState = state3Enemy,
+                    playerLazyListState = state3Player
+                )
+            }
+        }
         Column(modifier = Modifier
             .weight(0.22f)
             .fillMaxHeight(), verticalArrangement = Arrangement.Center) {

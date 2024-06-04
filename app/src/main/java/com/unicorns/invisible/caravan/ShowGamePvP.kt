@@ -372,7 +372,7 @@ fun ShowGamePvP(
                     ) {
                         key(enemyHandKey) {
                             val handSize = game.enemyCResources.hand.size
-                            Column(Modifier.fillMaxWidth(0.8f), horizontalAlignment = Alignment.CenterHorizontally) {
+                            Column(Modifier.fillMaxWidth(0.8f).padding(bottom = 4.dp), horizontalAlignment = Alignment.CenterHorizontally) {
                                 RowOfEnemyCards(game.enemyCResources.hand.take(4))
                                 RowOfEnemyCards(game.enemyCResources.hand.takeLast((handSize - 4).coerceAtLeast(0)))
                             }
@@ -403,7 +403,7 @@ fun ShowGamePvP(
                             RowOfCards(activity, cards = cards, 4, selectedCard, selectedCardColor, ::onCardClicked)
                         }
                         Box {
-                            ShowDeck(game.playerCResources, activity, isToBottom = true)
+                            ShowDeck(game.playerCResources, activity)
                             Text(text = symbols[chosenSymbol.coerceIn(0, symbols.size - 1)], style = TextStyle(
                                 fontSize = 24.sp,
                                 fontFamily = FontFamily(Font(R.font.symbola)),
@@ -472,7 +472,7 @@ fun ShowGamePvP(
                 ) {
                     val handSize = game.enemyCResources.hand.size
                     key(enemyHandKey) {
-                        Column(Modifier.fillMaxWidth(0.8f), horizontalAlignment = Alignment.CenterHorizontally) {
+                        Column(Modifier.fillMaxWidth(0.8f).padding(bottom = 4.dp), horizontalAlignment = Alignment.CenterHorizontally) {
                             RowOfEnemyCards(game.enemyCResources.hand.take(4))
                             RowOfEnemyCards(game.enemyCResources.hand.takeLast((handSize - 4).coerceAtLeast(0)))
                         }
@@ -530,7 +530,7 @@ fun ShowGamePvP(
                         RowOfCards(activity, cards = cards, 4, selectedCard, selectedCardColor, ::onCardClicked)
                     }
                     Box {
-                        ShowDeck(game.playerCResources, activity, isToBottom = true)
+                        ShowDeck(game.playerCResources, activity)
                         Text(text = symbols[chosenSymbol.coerceIn(0, symbols.size - 1)], style = TextStyle(
                             fontSize = 24.sp,
                             fontFamily = FontFamily(Font(R.font.symbola)),

@@ -49,3 +49,7 @@ fun getGameTextColor(activity: MainActivity): Color {
 fun getGameTextBackgroundColor(activity: MainActivity): Color {
     return if (activity.styleId == 0) Color(activity.getColor(R.color.colorPrimaryHalfTransparent)) else Color(activity.getColor(R.color.colorLightBackHalfTransparent))
 }
+
+fun getGrayTransparent(activity: MainActivity): Color {
+    return Color(activity.getColor(R.color.grayHalfTransparent))
+}
