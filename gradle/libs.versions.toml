@@ -1,13 +1,14 @@
 [versions]
 agp = "8.4.1"
-firebaseBom = "33.0.0"
+firebaseBom = "33.1.0"
 crashlytics = "3.0.1"
-kotlin = "1.9.22"
+kotlin = "1.9.24"
 coreKtx = "1.13.1"
 junit = "4.13.2"
 junitVersion = "1.1.5"
 espressoCore = "3.5.1"
 appcompat = "1.7.0"
+foundation = "1.7.0-beta02"
 material = "1.12.0"
 activity = "1.9.0"
 coil = "2.6.0"
@@ -28,6 +29,7 @@ compose-material3 = { group = "androidx.compose.material3", name = "material3" }
 compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
 compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 compose-activity = { group = "androidx.activity", name = "activity-compose", version.ref = "activity" }
+compose-foundation = { group = "androidx.compose.foundation", name = "foundation", version = "1.7.0-beta02" }
 coil = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
 coil-svg = { group = "io.coil-kt", name = "coil-svg", version.ref = "coil" }
 

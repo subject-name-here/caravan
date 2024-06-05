@@ -17,6 +17,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
@@ -28,9 +29,12 @@ import com.unicorns.invisible.caravan.model.primitives.Card
 
 
 @Composable
+fun Int.pxToDp() = with(LocalDensity.current) { this@pxToDp.toDp() }
+
+
+@Composable
 fun ShowCard(activity: MainActivity, card: Card, modifier: Modifier, toModify: Boolean = true) {
     val cardName = getCardName(card, card.isAlt)
-    val cornerSize = if (cardName.endsWith("svg")) 12f else 6f
     val painter = rememberAsyncImagePainter(
         ImageRequest.Builder(activity)
             .size(183, 256)

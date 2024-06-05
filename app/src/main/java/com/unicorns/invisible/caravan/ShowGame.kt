@@ -1,5 +1,8 @@
 package com.unicorns.invisible.caravan
 
+import androidx.collection.mutableObjectListOf
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.TweenSpec
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -28,6 +31,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableIntStateOf
@@ -38,6 +42,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.paint
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.layout
@@ -53,13 +58,14 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
-import coil.compose.AsyncImage
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.Caravan
 import com.unicorns.invisible.caravan.model.primitives.Card
 import com.unicorns.invisible.caravan.model.primitives.Rank
+import com.unicorns.invisible.caravan.model.primitives.Suit
 import com.unicorns.invisible.caravan.utils.ShowCard
+import com.unicorns.invisible.caravan.utils.ShowCardBack
 import com.unicorns.invisible.caravan.utils.caravanScrollbar
 import com.unicorns.invisible.caravan.utils.getAccentColor
 import com.unicorns.invisible.caravan.utils.getBackgroundColor
@@ -69,7 +75,10 @@ import com.unicorns.invisible.caravan.utils.getGameTextColor
 import com.unicorns.invisible.caravan.utils.getGrayTransparent
 import com.unicorns.invisible.caravan.utils.getKnobColor
 import com.unicorns.invisible.caravan.utils.getTextBackgroundColor
+import com.unicorns.invisible.caravan.utils.getTextColor
 import com.unicorns.invisible.caravan.utils.getTrackColor
+import com.unicorns.invisible.caravan.utils.pxToDp
+import kotlin.math.min
 
 
 @Composable
@@ -102,7 +111,7 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
         val selectedCardNN = selectedCard ?: return
         game.playerCResources.removeFromHand(selectedCardNN)
         resetSelected()
-        game.afterPlayerMove { updateCaravans(); updateEnemyHand() }
+        game.afterPlayerMove { updateEnemyHand(); updateCaravans() }
     }
     fun dropCaravan() {
         val selectedCaravanNN = selectedCaravan
@@ -110,12 +119,12 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
         game.playerCaravans[selectedCaravanNN].dropCaravan()
         updateCaravans()
         resetSelected()
-        game.afterPlayerMove { updateCaravans(); updateEnemyHand() }
+        game.afterPlayerMove { updateEnemyHand(); updateCaravans() }
     }
 
     fun addCardToCaravan(caravan: Caravan, position: Int, isEnemy: Boolean) {
         fun onCaravanCardInserted() {
-            game.afterPlayerMove { updateCaravans(); updateEnemyHand() }
+            game.afterPlayerMove { updateEnemyHand(); updateCaravans() }
             resetSelected()
             updateCaravans()
         }
@@ -222,7 +231,7 @@ fun ShowGameRaw(
                         }
                         .fillMaxWidth()
                         .padding(8.dp),
-                    style = TextStyle(color = getGameTextColor(activity), fontSize = 16.sp, textAlign = TextAlign.Center),
+                    style = TextStyle(color = getTextColor(activity), fontSize = 16.sp, textAlign = TextAlign.Center),
                 )
             }
         }) { innerPadding ->
@@ -237,9 +246,7 @@ fun ShowGameRaw(
                             horizontalAlignment = Alignment.CenterHorizontally,
                             modifier = Modifier.fillMaxWidth(0.5f)
                         ) {
-                            key(enemyHandKey) {
-                                EnemySide(activity, isPvP, getEnemySymbol, game, fillHeight = 0.45f)
-                            }
+                            EnemySide(activity, isPvP, getEnemySymbol, game, fillHeight = 0.45f, enemyHandKey)
                             PlayerSide(activity, isPvP, game, selectedCard, onCardClicked, getMySymbol, setMySymbol)
                         }
                         key(caravansKey) {
@@ -274,9 +281,7 @@ fun ShowGameRaw(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         modifier = Modifier.fillMaxSize()
                     ) {
-                        key(enemyHandKey) {
-                            EnemySide(activity, isPvP, getEnemySymbol, game, fillHeight = 0.15f)
-                        }
+                        EnemySide(activity, isPvP, getEnemySymbol, game, fillHeight = 0.15f, enemyHandKey)
                         key(caravansKey) {
                             Caravans(
                                 activity,
@@ -317,29 +322,26 @@ fun EnemySide(
     getEnemySymbol: () -> String,
     game: Game,
     fillHeight: Float,
+    enemyHandKey: Boolean
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .fillMaxHeight(fillHeight),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Center
+            .fillMaxHeight(fillHeight)
+            .padding(vertical = 4.dp),
     ) {
-        val handSize = game.enemyCResources.hand.size
-        Column(Modifier.fillMaxWidth(0.8f).padding(bottom = 4.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-            RowOfEnemyCards(game.enemyCResources.hand.take(4))
-            RowOfEnemyCards(game.enemyCResources.hand.takeLast((handSize - 4).coerceAtLeast(0)))
-        }
-
-        Box(Modifier.fillMaxSize()) {
-            ShowDeck(game.enemyCResources, activity)
-            if (isPvP) {
-                Text(text = getEnemySymbol(), style = TextStyle(
-                    fontSize = 24.sp,
-                    fontFamily = FontFamily(Font(R.font.symbola)),
-                    color = getGameTextColor(activity),
-                    background = getTextBackgroundColor(activity)
-                ), modifier = Modifier.align(Alignment.BottomEnd))
+        RowOfEnemyCards(activity, game.enemyCResources.hand)
+        key(enemyHandKey) {
+            Box(Modifier.fillMaxSize()) {
+                ShowDeck(game.enemyCResources, activity)
+                if (isPvP) {
+                    Text(text = getEnemySymbol(), style = TextStyle(
+                        fontSize = 24.sp,
+                        fontFamily = FontFamily(Font(R.font.symbola)),
+                        color = getGameTextColor(activity),
+                        background = getTextBackgroundColor(activity)
+                    ), modifier = Modifier.align(Alignment.BottomEnd))
+                }
             }
         }
     }
@@ -413,22 +415,61 @@ fun ColumnScope.RowOfCards(activity: MainActivity, cards: List<Card>, offset: In
                     }
             }.clip(RoundedCornerShape(12f))
 
-
             ShowCard(activity, it, modifier, false)
         }
     }
 }
 
 @Composable
-fun ColumnScope.RowOfEnemyCards(cards: List<Card>) {
-    Row(Modifier.weight(1f), horizontalArrangement = Arrangement.Center) {
-        cards.forEach {
-            AsyncImage(
-                model = "file:///android_asset/caravan_cards_back/${
-                    if (it.isAlt) it.back.getCardBackAltAsset() else it.back.getCardBackAsset()
-                }",
-                contentDescription = "",
-                modifier = Modifier.clip(RoundedCornerShape(6f))
+fun RowOfEnemyCards(activity: MainActivity, cards: List<Card>) {
+    BoxWithConstraints(
+        Modifier.fillMaxWidth(0.8f).fillMaxHeight(),
+        Alignment.TopStart
+    ) {
+        val cardHeight = maxHeight / 2
+        val cardWidth = maxWidth / 2
+        val scaleH = cardHeight / 256.pxToDp()
+        val scaleW = cardWidth / 183.pxToDp()
+        val scale = min(scaleW, scaleH)
+
+        val memCards = remember { mutableObjectListOf<Card>().apply { addAll(cards) } }
+
+        var recomposeToggleState by remember { mutableStateOf(false) }
+        LaunchedEffect(recomposeToggleState) { }
+        memCards.forEachIndexed { index, it ->
+            val maxVerticalOffset = if (index < 5) 2f else 1f
+            val itemVerticalOffset = remember { Animatable(-maxVerticalOffset) }
+            if (it !in cards) {
+                LaunchedEffect(Unit) {
+                    itemVerticalOffset.animateTo(maxVerticalOffset, TweenSpec(190))
+                    itemVerticalOffset.animateTo(-10f, TweenSpec(0))
+                    memCards.remove(it)
+                    memCards.addAll((cards.toSet() - memCards.asMutableList().toSet()).toList())
+                    recomposeToggleState = !recomposeToggleState
+                }
+            } else {
+                LaunchedEffect(Unit) {
+                    itemVerticalOffset.animateTo(0f, TweenSpec(190))
+                }
+            }
+            ShowCardBack(
+                activity,
+                it,
+                Modifier
+                    .scale(scale)
+                    .layout { measurable, constraints ->
+                        val cardsSize = if (itemVerticalOffset.isRunning) memCards.size - 1 else memCards.size
+                        val rowWidth = if (memCards.size <= 5) memCards.size else (if (index < 5) 5 else (memCards.size - 5))
+                        val placeable = measurable.measure(constraints)
+                        val scaledWidth = placeable.width
+                        val scaledHeight = placeable.height
+                        val handVerticalAlignment = if (cardsSize > 5) 0 else scaledHeight / 2
+                        val offsetWidth = (index % 5) * scaledWidth + maxWidth.toPx() / 2 - (rowWidth / 2f) * scaledWidth
+                        val offsetHeight = scaledHeight * (index / 5) + handVerticalAlignment + scaledHeight * itemVerticalOffset.value
+                        layout(constraints.maxWidth, 0) {
+                            placeable.place(offsetWidth.toInt(), offsetHeight.toInt())
+                        }
+                    }
             )
         }
     }
@@ -617,25 +658,12 @@ fun ShowDeck(cResources: CResources, activity: MainActivity, isKnown: Boolean = 
             modifier = Modifier.fillMaxWidth(),
             fontSize = 16.sp,
         )
-        val link = "file:///android_asset/caravan_cards_back/${
-            if (!isKnown) {
-                null
-            } else {
-                val (back, isAlt) = cResources.getDeckBack() ?: (null to false)
-                if (!isAlt) {
-                    back?.getCardBackAsset()
-                } else {
-                    back?.getCardBackAltAsset()
-                }
+        if (isKnown) {
+            val (back, isAlt) = cResources.getDeckBack() ?: (null to false)
+            if (back != null) {
+                ShowCardBack(activity, Card(Rank.ACE, Suit.HEARTS, back, isAlt), Modifier.fillMaxWidth())
             }
-        }"
-        AsyncImage(
-            model = link,
-            contentDescription = "",
-            modifier = Modifier
-                .clip(RoundedCornerShape(12f))
-                .fillMaxWidth()
-        )
+        }
     }
 }
 

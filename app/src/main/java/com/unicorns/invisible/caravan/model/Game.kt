@@ -82,29 +82,28 @@ class Game(
             if (cResources.hand.size < 5) {
                 cResources.addToHand()
             }
+            delay(380L)
             updateView()
-            delay(700L)
         }
     }
 
     fun afterPlayerMove(updateView: () -> Unit) {
         isPlayerTurn = false
         CoroutineScope(Dispatchers.Default).launch {
-            delay(700L)
             processFieldAndHand(playerCResources, updateView)
             if (checkOnGameOver()) {
                 return@launch
             }
 
+            delay(380L)
             enemy.makeMove(this@Game)
             updateView()
-
-            delay(700L)
             processFieldAndHand(enemyCResources, updateView)
 
             isPlayerTurn = true
             checkOnGameOver()
             updateView()
+            delay(380L)
         }
     }
 

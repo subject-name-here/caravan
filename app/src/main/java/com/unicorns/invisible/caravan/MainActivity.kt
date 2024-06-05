@@ -6,6 +6,7 @@ import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -23,6 +24,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.AlertDialogDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -36,6 +38,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
@@ -50,11 +53,13 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.DialogProperties
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.save.Save
 import com.unicorns.invisible.caravan.save.loadSave
 import com.unicorns.invisible.caravan.save.save
+import com.unicorns.invisible.caravan.utils.getAccentColor
 import com.unicorns.invisible.caravan.utils.getBackgroundColor
 import com.unicorns.invisible.caravan.utils.getDividerColor
 import com.unicorns.invisible.caravan.utils.getKnobColor
@@ -153,17 +158,22 @@ class MainActivity : AppCompatActivity() {
             }
 
             if (showAlertDialog) {
+                // TODO: sound
                 AlertDialog(
+                    modifier = Modifier.border(width = 4.dp, color = getAccentColor(this)),
                     onDismissRequest = { hideAlertDialog() },
-                    confirmButton = { Text(text = stringResource(R.string.close), modifier = Modifier.clickable { hideAlertDialog() }) },
+                    confirmButton = { Text(text = stringResource(R.string.close), color = getAccentColor(this), modifier = Modifier.clickable { hideAlertDialog() }) },
                     dismissButton = { if (goBack != null) {
                         Text(
-                            text = stringResource(R.string.back_to_menu),
+                            text = stringResource(R.string.back_to_menu), color = getAccentColor(this),
                             modifier = Modifier.clickable { hideAlertDialog(); goBack?.invoke(); goBack = null }
                         )
                     } },
-                    title = { Text(text = alertDialogHeader) },
+                    title = { Text(text = alertDialogHeader, color = getTextColor(this)) },
                     text = { Text(text = alertDialogMessage) },
+                    containerColor = getTextBackgroundColor(this),
+                    textContentColor = getTextColor(this),
+                    shape = RectangleShape,
                 )
             }
 
