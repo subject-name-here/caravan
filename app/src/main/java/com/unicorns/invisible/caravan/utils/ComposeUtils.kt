@@ -41,7 +41,7 @@ fun ShowCard(activity: MainActivity, card: Card, modifier: Modifier, toModify: B
     Image(
         painter = painter,
         contentDescription = "",
-        modifier = if (toModify) modifier.clip(RoundedCornerShape(cornerSize)) else modifier,
+        modifier = if (toModify) modifier.clip(RoundedCornerShape(5)) else modifier,
         colorFilter = card.back.getFilter(card.isAlt)
     )
 }

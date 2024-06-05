@@ -27,7 +27,7 @@ import com.unicorns.invisible.caravan.model.primitives.Caravan
 import com.unicorns.invisible.caravan.model.primitives.Rank
 import com.unicorns.invisible.caravan.multiplayer.MoveResponse
 import com.unicorns.invisible.caravan.multiplayer.decodeMove
-import com.unicorns.invisible.caravan.utils.getGameBackgroundColor
+import com.unicorns.invisible.caravan.utils.getBackgroundColor
 import com.unicorns.invisible.caravan.utils.getGameTextColor
 import com.unicorns.invisible.caravan.utils.sendRequest
 import kotlinx.coroutines.CoroutineScope
@@ -352,7 +352,7 @@ fun ShowGamePvP(
                     .align(Alignment.BottomEnd),
                 textAlign = TextAlign.Right,
                 fontFamily = FontFamily(Font(R.font.monofont)),
-                style = TextStyle(color = getGameTextColor(activity), background = getGameBackgroundColor(activity), fontSize = 18.sp)
+                style = TextStyle(color = getGameTextColor(activity), background = getBackgroundColor(activity), fontSize = 18.sp)
             )
         }
     }

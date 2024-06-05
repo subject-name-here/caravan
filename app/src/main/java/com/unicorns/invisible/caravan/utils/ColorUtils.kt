@@ -37,11 +37,6 @@ fun getAccentColor(activity: MainActivity): Color {
     return if (activity.styleId == 0) Color(activity.getColor(R.color.colorAccent)) else Color(activity.getColor(R.color.colorText))
 }
 
-
-fun getGameBackgroundColor(activity: MainActivity): Color {
-    return if (activity.styleId == 0) Color(activity.getColor(R.color.colorPrimaryDarkLighter)) else Color(activity.getColor(R.color.colorBackLighter))
-}
-
 fun getGameTextColor(activity: MainActivity): Color {
     return if (activity.styleId == 0) Color(activity.getColor(R.color.colorAccent)) else Color(activity.getColor(R.color.colorText))
 }
