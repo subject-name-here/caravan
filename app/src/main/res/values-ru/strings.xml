@@ -214,4 +214,14 @@
 
     <string name="close">Закрыть</string>
 
+    <string name="ulysses_victory">Удача была на моей стороне.</string>
+    <string name="check_back_to_menu">Вы уверены, что хотите выйти?</string>
+    <string name="check_back_to_menu_ulysses">Убегаешь от своих ошибок?</string>
+
+    <string name="ulysses_predict">Я предвижу твое поражение на слеудющем ходу.</string>
+    <string name="tap_card_back_to_open_cards">Нажмите на рубашку, чтобы открыть выбор карт.</string>
+    <string name="get_cards_from">Карты выпадают из:\n</string>
+    <string name="ulysses_fair_fight_header">Это честная битва.</string>
+    <string name="ulysses_fair_fight_body">Вы не можете использовать сборную колоду против этого врага.</string>
+
 </resources>

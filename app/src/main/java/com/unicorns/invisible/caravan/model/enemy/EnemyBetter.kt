@@ -1,5 +1,6 @@
 package com.unicorns.invisible.caravan.model.enemy
 
+import com.unicorns.invisible.caravan.R
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyDestructive
@@ -15,6 +16,15 @@ data object EnemyBetter : Enemy() {
     override fun getRewardBack() = CardBack.LUCKY_38
 
     override fun makeMove(game: Game) {
+        val hand = game.enemyCResources.hand
+
+        if (game.isInitStage()) {
+            val card = hand.filter { !it.isFace() }.maxBy { it.rank.value }
+            val caravan = game.enemyCaravans.filter { it.isEmpty() }.random()
+            caravan.putCardOnTop(game.enemyCResources.removeFromHand(hand.indexOf(card)))
+            return
+        }
+
         fun check(p0: Int, e0: Int): Float {
             return when {
                 p0 in (21..26) && (p0 > e0 || e0 > 26) -> 2f

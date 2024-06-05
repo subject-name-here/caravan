@@ -197,7 +197,9 @@ fun ShowPvE(
     }
 
     Column(
-        Modifier.fillMaxSize().background(getBackgroundColor(activity)),
+        Modifier
+            .fillMaxSize()
+            .background(getBackgroundColor(activity)),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -226,49 +228,67 @@ fun ShowPvE(
                 text = stringResource(R.string.pve_enemy_easy),
                 fontFamily = FontFamily(Font(R.font.monofont)),
                 style = TextStyle(color = getTextColor(activity), fontSize = 16.sp),
-                modifier = Modifier.clickable {
-                    showGameEasy = true
-                }.background(getTextBackgroundColor(activity)).padding(4.dp)
+                modifier = Modifier
+                    .clickable {
+                        showGameEasy = true
+                    }
+                    .background(getTextBackgroundColor(activity))
+                    .padding(4.dp)
             )
             Spacer(modifier = Modifier.height(10.dp))
             Text(
                 text = stringResource(R.string.pve_enemy_medium),
                 fontFamily = FontFamily(Font(R.font.monofont)),
                 style = TextStyle(color = getTextColor(activity), fontSize = 16.sp),
-                modifier = Modifier.clickable {
-                    showGameMedium = true
-                }.background(getTextBackgroundColor(activity)).padding(4.dp)
+                modifier = Modifier
+                    .clickable {
+                        showGameMedium = true
+                    }
+                    .background(getTextBackgroundColor(activity))
+                    .padding(4.dp)
             )
             Spacer(modifier = Modifier.height(10.dp))
             Text(
                 text = stringResource(R.string.pve_enemy_hard),
                 fontFamily = FontFamily(Font(R.font.monofont)),
                 style = TextStyle(color = getTextColor(activity), fontSize = 16.sp),
-                modifier = Modifier.clickable {
-                    showGameHard = true
-                }.background(getTextBackgroundColor(activity)).padding(4.dp)
+                modifier = Modifier
+                    .clickable {
+                        showGameHard = true
+                    }
+                    .background(getTextBackgroundColor(activity))
+                    .padding(4.dp)
             )
             Spacer(modifier = Modifier.height(10.dp))
             Text(
                 text = stringResource(R.string.pve_enemy_better),
                 fontFamily = FontFamily(Font(R.font.monofont)),
                 style = TextStyle(color = getTextColor(activity), fontSize = 16.sp),
-                modifier = Modifier.clickable {
-                    showGameBetter = true
-                }.background(getTextBackgroundColor(activity)).padding(4.dp)
+                modifier = Modifier
+                    .clickable {
+                        showGameBetter = true
+                    }
+                    .background(getTextBackgroundColor(activity))
+                    .padding(4.dp)
             )
             Spacer(modifier = Modifier.height(10.dp))
             Text(
                 text = stringResource(R.string.pve_enemy_best),
                 fontFamily = FontFamily(Font(R.font.monofont)),
                 style = TextStyle(color = getTextColor(activity), fontSize = 16.sp),
-                modifier = Modifier.clickable {
-                    if (checkedCustomDeck) {
-                        showAlertDialog("It's an honest fight.", "You cannot use custom deck against this enemy.")
-                    } else {
-                        showGameUlysses = true
+                modifier = Modifier
+                    .clickable {
+                        if (checkedCustomDeck) {
+                            showAlertDialog(
+                                activity.getString(R.string.ulysses_fair_fight_header),
+                                activity.getString(R.string.ulysses_fair_fight_body)
+                            )
+                        } else {
+                            showGameUlysses = true
+                        }
                     }
-                }.background(getTextBackgroundColor(activity)).padding(4.dp)
+                    .background(getTextBackgroundColor(activity))
+                    .padding(4.dp)
             )
             Spacer(modifier = Modifier.height(16.dp))
             Text(
@@ -281,45 +301,60 @@ fun ShowPvE(
                 text = stringResource(R.string.pve_enemy_queen),
                 fontFamily = FontFamily(Font(R.font.monofont)),
                 style = TextStyle(color = getTextColor(activity), fontSize = 16.sp),
-                modifier = Modifier.clickable {
-                    showGameQueen = true
-                }.background(getTextBackgroundColor(activity)).padding(4.dp)
+                modifier = Modifier
+                    .clickable {
+                        showGameQueen = true
+                    }
+                    .background(getTextBackgroundColor(activity))
+                    .padding(4.dp)
             )
             Spacer(modifier = Modifier.height(10.dp))
             Text(
                 text = stringResource(R.string.no_bark),
                 fontFamily = FontFamily(Font(R.font.monofont)),
                 style = TextStyle(color = getTextColor(activity), fontSize = 16.sp),
-                modifier = Modifier.clickable {
-                    showGameBest = true
-                }.background(getTextBackgroundColor(activity)).padding(4.dp)
+                modifier = Modifier
+                    .clickable {
+                        showGameBest = true
+                    }
+                    .background(getTextBackgroundColor(activity))
+                    .padding(4.dp)
             )
             Spacer(modifier = Modifier.height(10.dp))
             Text(
                 text = stringResource(R.string.johnson_nash),
                 fontFamily = FontFamily(Font(R.font.monofont)),
                 style = TextStyle(color = getTextColor(activity), fontSize = 16.sp),
-                modifier = Modifier.clickable {
-                    showGameNash = true
-                }.background(getTextBackgroundColor(activity)).padding(4.dp)
+                modifier = Modifier
+                    .clickable {
+                        showGameNash = true
+                    }
+                    .background(getTextBackgroundColor(activity))
+                    .padding(4.dp)
             )
             Spacer(modifier = Modifier.height(10.dp))
             Text(
                 text = stringResource(R.string.pve_enemy_38),
                 fontFamily = FontFamily(Font(R.font.monofont)),
                 style = TextStyle(color = getTextColor(activity), fontSize = 16.sp),
-                modifier = Modifier.clickable {
-                    showGame38 = true
-                }.background(getTextBackgroundColor(activity)).padding(4.dp)
+                modifier = Modifier
+                    .clickable {
+                        showGame38 = true
+                    }
+                    .background(getTextBackgroundColor(activity))
+                    .padding(4.dp)
             )
             Spacer(modifier = Modifier.height(10.dp))
             Text(
                 text = stringResource(R.string.pve_enemy_cheater),
                 fontFamily = FontFamily(Font(R.font.monofont)),
                 style = TextStyle(color = getTextColor(activity), fontSize = 16.sp),
-                modifier = Modifier.clickable {
-                    showGameCheater = true
-                }.background(getTextBackgroundColor(activity)).padding(4.dp)
+                modifier = Modifier
+                    .clickable {
+                        showGameCheater = true
+                    }
+                    .background(getTextBackgroundColor(activity))
+                    .padding(4.dp)
             )
             Spacer(modifier = Modifier.height(16.dp))
         } }
@@ -457,7 +492,10 @@ fun ShowPvE(
             text = stringResource(R.string.menu_back),
             fontFamily = FontFamily(Font(R.font.monofont)),
             style = TextStyle(color = getTextColor(activity), fontSize = 24.sp),
-            modifier = Modifier.clickable { goBack() }.background(getTextBackgroundColor(activity)).padding(8.dp)
+            modifier = Modifier
+                .clickable { goBack() }
+                .background(getTextBackgroundColor(activity))
+                .padding(8.dp)
         )
     }
 }
@@ -534,8 +572,13 @@ fun StartGame(
                 save.gamesFinished++
                 save(activity, save)
             }
-            showAlertDialog(activity.getString(R.string.result), activity.getString(R.string.you_lose))
+            if (game.enemy is EnemyBestest) {
+                showAlertDialog(activity.getString(R.string.ulysses_victory), activity.getString(R.string.you_lose))
+            } else {
+                showAlertDialog(activity.getString(R.string.result), activity.getString(R.string.you_lose))
+            }
         }
+        it.saySomething = { id1, id2 -> showAlertDialog(activity.getString(id1), activity.getString(id2)) }
     }
     activity.goBack = goBack
     ShowGame(activity, game) {
@@ -544,7 +587,12 @@ fun StartGame(
             activity.goBack = null
             return@ShowGame
         }
-        showAlertDialog("Are you sure you want to quit?", "")
+
+        if (game.enemy is EnemyBestest) {
+            showAlertDialog(activity.getString(R.string.check_back_to_menu_ulysses), "")
+        } else {
+            showAlertDialog(activity.getString(R.string.check_back_to_menu), "")
+        }
     }
 }
 

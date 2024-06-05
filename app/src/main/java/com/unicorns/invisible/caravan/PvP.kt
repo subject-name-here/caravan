@@ -600,7 +600,7 @@ fun StartPvP(
                 activity.goBack = null
                 return@lambda
             }
-            showAlertDialog("Are you sure you want to quit?", "")
+            showAlertDialog(activity.getString(R.string.check_back_to_menu), "")
         }
     }
 }

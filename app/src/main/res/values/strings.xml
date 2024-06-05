@@ -211,4 +211,13 @@
 
     <string name="close">Close</string>
 
+    <string name="ulysses_predict">I predict your defeat next move.</string>
+    <string name="ulysses_victory">The luck was on my side.</string>
+    <string name="check_back_to_menu">Are you sure you want to quit?</string>
+    <string name="check_back_to_menu_ulysses">Running away from your mistakes?</string>
+    <string name="tap_card_back_to_open_cards">Tap card back to open cards</string>
+    <string name="get_cards_from">Get cards from:\n</string>
+    <string name="ulysses_fair_fight_header">It\'s an honest fight.</string>
+    <string name="ulysses_fair_fight_body">You cannot use custom deck against this enemy.</string>
+
 </resources>

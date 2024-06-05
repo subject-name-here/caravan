@@ -36,6 +36,8 @@ class Game(
     var onWin: () -> Unit = {}
     @Transient
     var onLose: () -> Unit = {}
+    @Transient
+    var saySomething: (Int, Int) -> Unit = { _, _ -> }
 
     var isGameOver = 0
         private set(value) {

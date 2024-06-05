@@ -79,7 +79,10 @@ fun SetCustomDeck(
         } ?: false
     }
 
-    Column(Modifier.fillMaxSize().background(getBackgroundColor(activity)),
+    Column(
+        Modifier
+            .fillMaxSize()
+            .background(getBackgroundColor(activity)),
         horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Top) {
         var updater by remember { mutableStateOf(false) }
         key(updater) {
@@ -87,17 +90,27 @@ fun SetCustomDeck(
         }
 
         Text(
-            text = "Tap card back to open cards",
+            text = stringResource(R.string.tap_card_back_to_open_cards),
             fontFamily = FontFamily(Font(R.font.monofont)),
-            modifier = Modifier.fillMaxWidth().wrapContentHeight().padding(8.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight()
+                .padding(8.dp),
             textAlign = TextAlign.Center,
             style = TextStyle(color = getTextColor(activity), fontSize = 24.sp)
         )
 
         val mainState = rememberLazyListState()
         LazyColumn(
-            Modifier.fillMaxHeight(0.9f).fillMaxWidth()
-            .scrollbar(mainState, horizontal = false, knobColor = getKnobColor(activity), trackColor = getTrackColor(activity)),
+            Modifier
+                .fillMaxHeight(0.9f)
+                .fillMaxWidth()
+                .scrollbar(
+                    mainState,
+                    horizontal = false,
+                    knobColor = getKnobColor(activity),
+                    trackColor = getTrackColor(activity)
+                ),
             mainState
         ) {
             item {
@@ -105,7 +118,10 @@ fun SetCustomDeck(
                     var rowTabShow by remember { mutableStateOf(false) }
                     var check by rememberSaveable { mutableStateOf(activity.save?.altDecksChosen?.get(back) ?: false) }
                     Row(Modifier.padding(4.dp), horizontalArrangement = Arrangement.Start) {
-                        Column(Modifier.padding(horizontal = 8.dp).fillMaxWidth(0.33f)) {
+                        Column(
+                            Modifier
+                                .padding(horizontal = 8.dp)
+                                .fillMaxWidth(0.33f)) {
                             Text(
                                 text = stringResource(
                                     if (back == CardBack.STANDARD && check)
@@ -120,20 +136,28 @@ fun SetCustomDeck(
                             ShowCardBack(
                                 activity,
                                 Card(Rank.ACE, Suit.CLUBS, back, check),
-                                Modifier.align(Alignment.CenterHorizontally)
+                                Modifier
+                                    .align(Alignment.CenterHorizontally)
                                     .clickable { rowTabShow = !rowTabShow },
                             )
                         }
                         Text(
-                            text = "Get cards from:\n" + back.getOwners().joinToString("\n") { activity.getString(it) },
-                            modifier = Modifier.fillMaxWidth(0.66f).align(Alignment.CenterVertically),
+                            text = stringResource(R.string.get_cards_from) + back.getOwners().joinToString("\n") { activity.getString(it) },
+                            modifier = Modifier
+                                .fillMaxWidth(0.66f)
+                                .align(Alignment.CenterVertically),
                             fontFamily = FontFamily(Font(R.font.monofont)),
                             style = TextStyle(color = getTextColor(activity), fontSize = 12.sp)
                         )
-                        Column(Modifier.fillMaxSize().padding(vertical = 8.dp), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
+                        Column(
+                            Modifier
+                                .fillMaxSize()
+                                .padding(vertical = 8.dp), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
                             Text(
                                 text = "ALT!",
-                                modifier = Modifier.fillMaxWidth().wrapContentHeight(),
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .wrapContentHeight(),
                                 fontFamily = FontFamily(Font(R.font.monofont)),
                                 textAlign = TextAlign.Center,
                                 style = TextStyle(color = getTextColor(activity), fontSize = 12.sp)
@@ -156,7 +180,12 @@ fun SetCustomDeck(
                             LazyRow(
                                 Modifier
                                     .weight(1f)
-                                    .scrollbar(state, knobColor = getKnobColor(activity), trackColor = getTrackColor(activity), horizontal = true)
+                                    .scrollbar(
+                                        state,
+                                        knobColor = getKnobColor(activity),
+                                        trackColor = getTrackColor(activity),
+                                        horizontal = true
+                                    )
                                     .padding(horizontal = 4.dp), state = state) lambda@ {
                                 items(CustomDeck(back, check).toList().sortedWith { o1, o2 ->
                                     if (o1.rank != o2.rank) {
@@ -206,7 +235,9 @@ fun SetCustomDeck(
                     goBack()
                 }
                 .fillMaxHeight()
-                .wrapContentHeight().background(getTextBackgroundColor(activity)).padding(8.dp),
+                .wrapContentHeight()
+                .background(getTextBackgroundColor(activity))
+                .padding(8.dp),
             textAlign = TextAlign.Center,
             style = TextStyle(color = getTextColor(activity), fontSize = 24.sp)
         )

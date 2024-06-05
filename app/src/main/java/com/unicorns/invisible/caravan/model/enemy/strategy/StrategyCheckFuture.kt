@@ -2,6 +2,7 @@ package com.unicorns.invisible.caravan.model.enemy.strategy
 
 import android.os.Build
 import android.util.Log
+import com.unicorns.invisible.caravan.R
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.enemy.EnemyHard
@@ -33,12 +34,11 @@ object StrategyCheckFuture : Strategy {
             copy.checkOnGameOver()
             if (copy.isGameOver == -1) {
                 it.move(game)
-                Log.i("Ulysses", "I predict victory.")
                 return true
             } else {
                 if (checkPlayerMoves(copy)) {
                     it.move(game)
-                    Log.i("Ulysses", "I predict next move victory.")
+                    game.saySomething(R.string.pve_enemy_best, R.string.ulysses_predict)
                     return true
                 }
             }
