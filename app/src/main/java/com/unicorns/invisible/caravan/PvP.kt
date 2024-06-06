@@ -1,5 +1,6 @@
 package com.unicorns.invisible.caravan
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -24,6 +25,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -505,7 +507,16 @@ fun StartPvP(
     }
     activity.goBack = goBack
 
-    var pvpUpdater by rememberSaveable { mutableIntStateOf(0) }
+    var enemyHandKey by remember { mutableStateOf(true) }
+    fun updateEnemyHand() {
+        Log.i("update", "enemy hand key")
+        enemyHandKey = !enemyHandKey
+    }
+    var caravansKey by remember { mutableStateOf(true) }
+    fun updateCaravans() {
+        caravansKey = !caravansKey
+    }
+
 
     fun pingForMove(sendHandCard: () -> Unit) {
         val link = "$crvnUrl/crvn/get_move?room=$roomNumber" +
@@ -535,28 +546,28 @@ fun StartPvP(
                     isAlt = move.isNewCardAlt
                 )
                 game.enemyCResources.addCardToHandPvP(cardReceived)
+                updateEnemyHand()
 
                 if (game.playerCResources.hand.size < 8) {
                     sendHandCard()
-                    pvpUpdater = 1 - pvpUpdater
                     return@sendRequest
                 }
                 game.isExchangingCards = false
                 game.isPlayerTurn = isCreator
-                pvpUpdater = 2
             } else {
                 (game.enemy as EnemyPlayer).latestMoveResponse = move
                 game.isExchangingCards = false
                 game.isPlayerTurn = isCreator
-                pvpUpdater = 2
 
                 CoroutineScope(Dispatchers.Default).launch {
                     game.enemy.makeMove(game)
+                    updateEnemyHand()
                     game.processFieldAndHand(game.enemyCResources) {}
+
+                    updateCaravans()
 
                     game.isPlayerTurn = true
                     game.checkOnGameOver()
-                    pvpUpdater = 2
                 }
             }
         }
@@ -593,14 +604,12 @@ fun StartPvP(
         return
     }
 
-    key(pvpUpdater) {
-        ShowGamePvP(activity, game, isCreator, roomNumber, showAlertDialog) lambda@{
-            if (game.isOver()) {
-                goBack()
-                activity.goBack = null
-                return@lambda
-            }
-            showAlertDialog(activity.getString(R.string.check_back_to_menu), "")
+    ShowGamePvP(activity, game, isCreator, roomNumber, showAlertDialog, enemyHandKey, ::updateEnemyHand, caravansKey, ::updateCaravans) lambda@{
+        if (game.isOver()) {
+            goBack()
+            activity.goBack = null
+            return@lambda
         }
+        showAlertDialog(activity.getString(R.string.check_back_to_menu), "")
     }
 }

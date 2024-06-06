@@ -25,14 +25,6 @@ enum class CardBack {
     @JsonNames("SIERRA_MADRE", "VAULT_21")
     VAULT_21;
 
-    fun getCardBackAssetSplit(activity: MainActivity): String {
-        return if (activity.save!!.altDecksChosen[this] == true) {
-            getCardBackAltAsset()
-        } else {
-            getCardBackAsset()
-        }
-    }
-
     fun getCardBackAsset(): String {
         return when (this) {
             STANDARD -> "FNV_Caravan_card_back_-_standard.webp"

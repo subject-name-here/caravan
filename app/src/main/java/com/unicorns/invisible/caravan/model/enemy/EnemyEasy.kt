@@ -61,6 +61,6 @@ data object EnemyEasy : Enemy() {
             }
         }
 
-        game.enemyCResources.removeFromHand(hand.indices.random())
+        game.enemyCResources.dropCardFromHand(hand.indices.random())
     }
 }

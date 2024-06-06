@@ -36,7 +36,7 @@ class EnemyPlayer(
                     game.isCorrupted = true
                     return
                 }
-                game.enemyCResources.removeFromHand(move.handCardNumber)
+                game.enemyCResources.dropCardFromHand(move.handCardNumber)
             }
             3 -> {
                 if (move.handCardNumber !in game.enemyCResources.hand.indices || move.caravanCode !in game.enemyCaravans.indices) {

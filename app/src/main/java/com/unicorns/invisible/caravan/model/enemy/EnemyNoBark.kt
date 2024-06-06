@@ -114,7 +114,7 @@ data object EnemyNoBark : Enemy() {
             return
         }
 
-        game.enemyCResources.removeFromHand(hand.withIndex().minByOrNull {
+        game.enemyCResources.dropCardFromHand(hand.withIndex().minByOrNull {
             when (it.value.rank) {
                 Rank.QUEEN -> 0
                 else -> it.value.rank.value

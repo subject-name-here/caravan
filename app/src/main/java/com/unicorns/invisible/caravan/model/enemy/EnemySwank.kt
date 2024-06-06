@@ -176,6 +176,6 @@ data object EnemySwank : Enemy() {
             return
         }
 
-        game.enemyCResources.removeFromHand(hand.indices.random())
+        game.enemyCResources.dropCardFromHand(hand.indices.random())
     }
 }

@@ -91,7 +91,7 @@ data object EnemyNash : Enemy() {
             return
         }
 
-        game.enemyCResources.removeFromHand(hand.withIndex().minByOrNull {
+        game.enemyCResources.dropCardFromHand(hand.withIndex().minByOrNull {
             when (it.value.rank) {
                 Rank.SIX -> 0
                 Rank.KING -> 2

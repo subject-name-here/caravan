@@ -99,6 +99,6 @@ data object EnemySecuritron38 : Enemy() {
             return
         }
 
-        game.enemyCResources.removeFromHand(hand.indices.random())
+        game.enemyCResources.dropCardFromHand(hand.indices.random())
     }
 }

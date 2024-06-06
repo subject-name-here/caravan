@@ -55,7 +55,7 @@ fun ShowCardBack(activity: MainActivity, card: Card, modifier: Modifier) {
     val painter2 = rememberAsyncImagePainter(
         ImageRequest.Builder(activity)
             .size(183, 256)
-            .data("file:///android_asset/caravan_cards_back/${card.back.getCardBackAssetSplit(activity)}")
+            .data("file:///android_asset/caravan_cards_back/${if (card.isAlt) card.back.getCardBackAltAsset() else card.back.getCardBackAsset()}")
             .decoderFactory(SvgDecoder.Factory())
             .build()
     )
@@ -189,111 +189,6 @@ fun Modifier.scrollbar(
         }
     }
 }
-
-@Composable
-fun Modifier.caravanScrollbar(
-    state: LazyListState,
-    hasNewCardPlaceholder: Boolean = false,
-    alignEnd: Boolean = true,
-    thickness: Dp = 4.dp,
-    knobCornerRadius: Dp = 4.dp,
-    trackCornerRadius: Dp = 2.dp,
-    knobColor: Color,
-    trackColor: Color,
-    padding: Dp = 0.dp,
-    visibleAlpha: Float = 1f,
-    hiddenAlpha: Float = 0.9f,
-    fadeInAnimationDurationMs: Int = 150,
-    fadeOutAnimationDurationMs: Int = 500,
-    fadeOutAnimationDelayMs: Int = 1000,
-): Modifier {
-    val targetAlpha =
-        if (state.isScrollInProgress) {
-            visibleAlpha
-        } else {
-            hiddenAlpha
-        }
-    val animationDurationMs =
-        if (state.isScrollInProgress) {
-            fadeInAnimationDurationMs
-        } else {
-            fadeOutAnimationDurationMs
-        }
-    val animationDelayMs =
-        if (state.isScrollInProgress) {
-            0
-        } else {
-            fadeOutAnimationDelayMs
-        }
-
-    val alpha by
-    animateFloatAsState(
-        targetValue = targetAlpha,
-        animationSpec = tween(delayMillis = animationDelayMs, durationMillis = animationDurationMs)
-    )
-
-    return drawWithContent {
-        drawContent()
-
-        if (state.layoutInfo.totalItemsCount <= 1) {
-            return@drawWithContent
-        }
-
-        if (state.isScrollInProgress || alpha > 0f) {
-            val viewportSize = size.height - padding.toPx() * 2
-
-            var totalSize = if (hasNewCardPlaceholder) 20.dp.toPx().toInt() else 0
-            val totalCards = state.layoutInfo.totalItemsCount - (if (hasNewCardPlaceholder) 1 else 0)
-
-            val cardSize = state.layoutInfo.visibleItemsInfo.maxOf { it.size }
-            totalSize += cardSize + cardSize / 3 * (totalCards - 1)
-
-            val viewportOffsetInFullListSpace =
-                state.firstVisibleItemIndex * state.layoutInfo.visibleItemsInfo.first().size +
-                        state.firstVisibleItemScrollOffset
-
-            // Where we should render the knob in our composable.
-            val knobPosition = (viewportSize / totalSize) * viewportOffsetInFullListSpace + padding.toPx()
-            // How large should the knob be.
-            val knobSize = viewportSize * viewportSize / totalSize
-
-            if (viewportSize > totalSize) {
-                return@drawWithContent
-            }
-
-            // Draw the track
-            drawRoundRect(
-                color = trackColor,
-                topLeft =
-                when {
-                    // When the scrollbar is vertical and aligned to the end:
-                    alignEnd -> Offset(size.width - thickness.toPx(), padding.toPx())
-                    // When the scrollbar is vertical and aligned to the start:
-                    else -> Offset(0f, padding.toPx())
-                },
-                size = Size(thickness.toPx(), size.height - padding.toPx() * 2),
-                alpha = alpha,
-                cornerRadius = CornerRadius(x = trackCornerRadius.toPx(), y = trackCornerRadius.toPx()),
-            )
-
-            // Draw the knob
-            drawRoundRect(
-                color = knobColor,
-                topLeft =
-                when {
-                    // When the scrollbar is vertical and aligned to the end:
-                    alignEnd -> Offset(size.width - thickness.toPx(), knobPosition)
-                    // When the scrollbar is vertical and aligned to the start:
-                    else -> Offset(0f, knobPosition)
-                },
-                size = Size(thickness.toPx(), knobSize),
-                alpha = alpha,
-                cornerRadius = CornerRadius(x = knobCornerRadius.toPx(), y = knobCornerRadius.toPx()),
-            )
-        }
-    }
-}
-
 
 @Composable
 fun CheckboxCustom(activity: MainActivity, checked: () -> Boolean, onCheckedChange: (Boolean) -> Unit, enabled: () -> Boolean) {

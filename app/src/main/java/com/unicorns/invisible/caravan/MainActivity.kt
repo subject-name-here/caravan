@@ -1,6 +1,7 @@
 package com.unicorns.invisible.caravan
 
 import android.content.pm.PackageManager
+import android.media.MediaPlayer
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.compose.setContent
@@ -122,6 +123,7 @@ class MainActivity : AppCompatActivity() {
             var selectedDeck by rememberSaveable { mutableStateOf(save?.selectedDeck ?: (CardBack.STANDARD to false)) }
 
             var showAlertDialog by remember { mutableStateOf(false) }
+            var showAlertDialog2 by remember { mutableStateOf(false) }
             var alertDialogHeader by remember { mutableStateOf("") }
             var alertDialogMessage by remember { mutableStateOf("") }
 
@@ -132,49 +134,39 @@ class MainActivity : AppCompatActivity() {
             }
             fun hideAlertDialog() {
                 showAlertDialog = false
-            }
-
-            var pingServer by rememberSaveable { mutableIntStateOf(0) }
-            var areThereRooms by rememberSaveable { mutableStateOf(false) }
-            val effectKey by rememberSaveable { mutableStateOf(true) }
-            LaunchedEffect(effectKey) {
-                while (isActive) {
-                    if (pingServer != 0) {
-                        pingServer = 2
-                        sendRequest("$crvnUrl/crvn/is_there_a_room/") {
-                            val res = it.getString("body").toIntOrNull()
-                            areThereRooms = res != null && res != 0
-                            if (pingServer == 2) {
-                                pingServer = 1
-                            }
-                        }
-
-                        delay(9500L)
-                        pingServer = 2
-                        delay(9500L)
-                    }
-                    delay(9500L)
-                }
+                showAlertDialog2 = false
             }
 
             if (showAlertDialog) {
-                // TODO: sound
-                AlertDialog(
-                    modifier = Modifier.border(width = 4.dp, color = getAccentColor(this)),
-                    onDismissRequest = { hideAlertDialog() },
-                    confirmButton = { Text(text = stringResource(R.string.close), color = getAccentColor(this), modifier = Modifier.clickable { hideAlertDialog() }) },
-                    dismissButton = { if (goBack != null) {
-                        Text(
-                            text = stringResource(R.string.back_to_menu), color = getAccentColor(this),
-                            modifier = Modifier.clickable { hideAlertDialog(); goBack?.invoke(); goBack = null }
-                        )
-                    } },
-                    title = { Text(text = alertDialogHeader, color = getTextColor(this)) },
-                    text = { Text(text = alertDialogMessage) },
-                    containerColor = getTextBackgroundColor(this),
-                    textContentColor = getTextColor(this),
-                    shape = RectangleShape,
-                )
+                LaunchedEffect(Unit) {
+                    delay(50L)
+                    MediaPlayer
+                        .create(this@MainActivity, R.raw.notification)
+                        .apply {
+                            setVolume(save?.volume ?: 1f, save?.volume ?: 1f)
+                            setOnPreparedListener { showAlertDialog2 = true }
+                        }
+                        .start()
+                }
+
+                if (showAlertDialog2) {
+                    AlertDialog(
+                        modifier = Modifier.border(width = 4.dp, color = getAccentColor(this)),
+                        onDismissRequest = { hideAlertDialog() },
+                        confirmButton = { Text(text = stringResource(R.string.close), color = getAccentColor(this), modifier = Modifier.clickable { hideAlertDialog() }) },
+                        dismissButton = { if (goBack != null) {
+                            Text(
+                                text = stringResource(R.string.back_to_menu), color = getAccentColor(this),
+                                modifier = Modifier.clickable { hideAlertDialog(); goBack?.invoke(); goBack = null }
+                            )
+                        } },
+                        title = { Text(text = alertDialogHeader, color = getTextColor(this)) },
+                        text = { Text(text = alertDialogMessage) },
+                        containerColor = getTextBackgroundColor(this),
+                        textContentColor = getTextColor(this),
+                        shape = RectangleShape,
+                    )
+                }
             }
 
             when {
@@ -224,6 +216,8 @@ class MainActivity : AppCompatActivity() {
                             it.styleId = styleId
                             save(this, it)
                         }
+                    }, { save?.volume ?: 1f }, {
+                        save!!.volume = it
                     }) { showSettings = 0 }
                 }
                 else -> {

@@ -1,5 +1,6 @@
 package com.unicorns.invisible.caravan
 
+import android.util.Log
 import androidx.collection.mutableObjectListOf
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.TweenSpec
@@ -10,7 +11,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
@@ -57,16 +57,15 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.zIndex
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.Caravan
 import com.unicorns.invisible.caravan.model.primitives.Card
+import com.unicorns.invisible.caravan.model.primitives.CardWithModifier
 import com.unicorns.invisible.caravan.model.primitives.Rank
 import com.unicorns.invisible.caravan.model.primitives.Suit
 import com.unicorns.invisible.caravan.utils.ShowCard
 import com.unicorns.invisible.caravan.utils.ShowCardBack
-import com.unicorns.invisible.caravan.utils.caravanScrollbar
 import com.unicorns.invisible.caravan.utils.getAccentColor
 import com.unicorns.invisible.caravan.utils.getBackgroundColor
 import com.unicorns.invisible.caravan.utils.getDividerColor
@@ -77,7 +76,11 @@ import com.unicorns.invisible.caravan.utils.getKnobColor
 import com.unicorns.invisible.caravan.utils.getTextBackgroundColor
 import com.unicorns.invisible.caravan.utils.getTextColor
 import com.unicorns.invisible.caravan.utils.getTrackColor
+import com.unicorns.invisible.caravan.utils.playCardFlipSound
 import com.unicorns.invisible.caravan.utils.pxToDp
+import com.unicorns.invisible.caravan.utils.scrollbar
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
 import kotlin.math.min
 
 
@@ -87,7 +90,9 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
     var selectedCaravan by remember { mutableIntStateOf(-1) }
 
     var caravansKey by remember { mutableStateOf(true) }
-    var enemyHandKey by remember { mutableStateOf(true) }
+    var enemyHandKey by remember { mutableIntStateOf(0) }
+
+    game.enemyCResources.onDropCardFromHand = { enemyHandKey = -1 }
 
     fun onCardClicked(index: Int) {
         if (game.isOver()) {
@@ -101,7 +106,11 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
         caravansKey = !caravansKey
     }
     fun updateEnemyHand() {
-        enemyHandKey = !enemyHandKey
+        enemyHandKey = when (enemyHandKey) {
+            -2 -> 0
+            -1 -> -2
+            else -> (1 - enemyHandKey).coerceIn(0, 1)
+        }
     }
     fun resetSelected() {
         selectedCaravan = -1
@@ -136,6 +145,7 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
                 in 1..10 -> {
                     if (position == caravan.cards.size && !isEnemy) {
                         if (caravan.canPutCardOnTop(card)) {
+                            playCardFlipSound(activity)
                             caravan.putCardOnTop(game.playerCResources.removeFromHand(cardIndex))
                             onCaravanCardInserted()
                         }
@@ -143,6 +153,7 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
                 }
                 Rank.JACK.value, Rank.QUEEN.value, Rank.KING.value, Rank.JOKER.value -> {
                     if (position in caravan.cards.indices && caravan.cards[position].canAddModifier(card)) {
+                        playCardFlipSound(activity)
                         caravan.cards[position].addModifier(game.playerCResources.removeFromHand(cardIndex))
                         onCaravanCardInserted()
                     }
@@ -170,8 +181,7 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
         { a1, _, a3, a4 -> addCardToCaravan(a1, a3, a4) },
         ::dropCardFromHand,
         ::dropCaravan,
-        enemyHandKey,
-        caravansKey
+        enemyHandKey
     )
 }
 
@@ -191,8 +201,7 @@ fun ShowGameRaw(
     addCardToCaravan: (Caravan, Int, Int, Boolean) -> Unit,
     dropCardFromHand: () -> Unit,
     dropCaravan: () -> Unit,
-    enemyHandKey: Boolean,
-    caravansKey: Boolean
+    enemyHandKey: Int
 ) {
     val state1Enemy = rememberLazyListState()
     val state1Player = rememberLazyListState()
@@ -200,12 +209,31 @@ fun ShowGameRaw(
     val state2Player = rememberLazyListState()
     val state3Enemy = rememberLazyListState()
     val state3Player = rememberLazyListState()
+    fun stateToSizeOfItem(state: LazyListState): Int {
+        return state.layoutInfo.visibleItemsInfo[0].size
+    }
 
     fun addCardToEnemyCaravan(caravanNum: Int, position: Int) {
         addCardToCaravan(game.enemyCaravans[caravanNum], caravanNum, position, true)
+        MainScope().launch {
+            val caravan = game.enemyCaravans[caravanNum]
+            when (caravanNum) {
+                0 -> state1Enemy.scrollToItem(0, (stateToSizeOfItem(state1Enemy).toFloat() * position / caravan.size).toInt())
+                1 -> state2Enemy.scrollToItem(0, (stateToSizeOfItem(state2Enemy).toFloat() * position / caravan.size).toInt())
+                2 -> state3Enemy.scrollToItem(0, (stateToSizeOfItem(state3Enemy).toFloat() * position / caravan.size).toInt())
+            }
+        }
     }
     fun addCardToPlayerCaravan(caravanNum: Int, position: Int) {
         addCardToCaravan(game.playerCaravans[caravanNum], caravanNum, position, false)
+        MainScope().launch {
+            val caravan = game.playerCaravans[caravanNum]
+            when (caravanNum) {
+                0 -> state1Player.scrollToItem(0, (stateToSizeOfItem(state1Player).toFloat() * position / caravan.size).toInt())
+                1 -> state2Player.scrollToItem(0, (stateToSizeOfItem(state2Player).toFloat() * position / caravan.size).toInt())
+                2 -> state3Player.scrollToItem(0, (stateToSizeOfItem(state3Player).toFloat() * position / caravan.size).toInt())
+            }
+        }
     }
     fun isInitStage(): Boolean {
         return game.isInitStage()
@@ -239,6 +267,7 @@ fun ShowGameRaw(
                 painterResource(id = R.drawable.game_back3),
                 contentScale = ContentScale.FillBounds
             )) {
+                var wasCardDropped by remember { mutableStateOf(false) }
                 if (maxWidth > maxHeight) {
                     Row(Modifier.fillMaxSize()) {
                         Column(
@@ -247,33 +276,35 @@ fun ShowGameRaw(
                             modifier = Modifier.fillMaxWidth(0.5f)
                         ) {
                             EnemySide(activity, isPvP, getEnemySymbol, game, fillHeight = 0.45f, enemyHandKey)
-                            PlayerSide(activity, isPvP, game, selectedCard, onCardClicked, getMySymbol, setMySymbol)
+                            PlayerSide(activity, isPvP, game, {
+                                val res = wasCardDropped
+                                wasCardDropped = false
+                                res
+                            }, selectedCard, onCardClicked, getMySymbol, setMySymbol)
                         }
-                        key(caravansKey) {
-                            Caravans(
-                                activity,
-                                { selectedCard },
-                                { selectedCard?.let { game.playerCResources.hand[it] } },
-                                getSelectedCaravan,
-                                setSelectedCaravan,
-                                isMaxHeight = true,
-                                state1Enemy,
-                                state1Player,
-                                state2Enemy,
-                                state2Player,
-                                state3Enemy,
-                                state3Player,
-                                ::addCardToPlayerCaravan,
-                                ::addCardToEnemyCaravan,
-                                dropCardFromHand,
-                                dropCaravan,
-                                ::isInitStage,
-                                { game.isPlayerTurn },
-                                ::canDiscard,
-                                { num -> game.playerCaravans[num] },
-                                { num -> game.enemyCaravans[num] },
-                            )
-                        }
+                        Caravans(
+                            activity,
+                            { selectedCard },
+                            { selectedCard?.let { game.playerCResources.hand[it] } },
+                            getSelectedCaravan,
+                            setSelectedCaravan,
+                            isMaxHeight = false,
+                            state1Enemy,
+                            state1Player,
+                            state2Enemy,
+                            state2Player,
+                            state3Enemy,
+                            state3Player,
+                            ::addCardToPlayerCaravan,
+                            ::addCardToEnemyCaravan,
+                            { wasCardDropped = true; dropCardFromHand() },
+                            dropCaravan,
+                            ::isInitStage,
+                            { game.isPlayerTurn },
+                            ::canDiscard,
+                            { num -> game.playerCaravans[num] },
+                            { num -> game.enemyCaravans[num] },
+                        )
                     }
                 } else {
                     Column(
@@ -282,32 +313,34 @@ fun ShowGameRaw(
                         modifier = Modifier.fillMaxSize()
                     ) {
                         EnemySide(activity, isPvP, getEnemySymbol, game, fillHeight = 0.15f, enemyHandKey)
-                        key(caravansKey) {
-                            Caravans(
-                                activity,
-                                { selectedCard },
-                                { selectedCard?.let { game.playerCResources.hand[it] } },
-                                getSelectedCaravan,
-                                setSelectedCaravan,
-                                isMaxHeight = false,
-                                state1Enemy,
-                                state1Player,
-                                state2Enemy,
-                                state2Player,
-                                state3Enemy,
-                                state3Player,
-                                ::addCardToPlayerCaravan,
-                                ::addCardToEnemyCaravan,
-                                dropCardFromHand,
-                                dropCaravan,
-                                ::isInitStage,
-                                { game.isPlayerTurn },
-                                ::canDiscard,
-                                { num -> game.playerCaravans[num] },
-                                { num -> game.enemyCaravans[num] },
-                            )
-                        }
-                        PlayerSide(activity, isPvP, game, selectedCard, onCardClicked, getMySymbol, setMySymbol)
+                        Caravans(
+                            activity,
+                            { selectedCard },
+                            { selectedCard?.let { game.playerCResources.hand[it] } },
+                            getSelectedCaravan,
+                            setSelectedCaravan,
+                            isMaxHeight = false,
+                            state1Enemy,
+                            state1Player,
+                            state2Enemy,
+                            state2Player,
+                            state3Enemy,
+                            state3Player,
+                            ::addCardToPlayerCaravan,
+                            ::addCardToEnemyCaravan,
+                            { wasCardDropped = true; dropCardFromHand() },
+                            dropCaravan,
+                            ::isInitStage,
+                            { game.isPlayerTurn },
+                            ::canDiscard,
+                            { num -> game.playerCaravans[num] },
+                            { num -> game.enemyCaravans[num] },
+                        )
+                        PlayerSide(activity, isPvP, game, {
+                            val res = wasCardDropped
+                            wasCardDropped = false
+                            res
+                        }, selectedCard, onCardClicked, getMySymbol, setMySymbol)
                     }
                 }
             }
@@ -322,7 +355,7 @@ fun EnemySide(
     getEnemySymbol: () -> String,
     game: Game,
     fillHeight: Float,
-    enemyHandKey: Boolean
+    enemyHandKey: Int
 ) {
     Row(
         modifier = Modifier
@@ -330,7 +363,7 @@ fun EnemySide(
             .fillMaxHeight(fillHeight)
             .padding(vertical = 4.dp),
     ) {
-        RowOfEnemyCards(activity, game.enemyCResources.hand)
+        RowOfEnemyCards(activity, game.enemyCResources.hand, enemyHandKey < 0)
         key(enemyHandKey) {
             Box(Modifier.fillMaxSize()) {
                 ShowDeck(game.enemyCResources, activity)
@@ -352,6 +385,7 @@ fun PlayerSide(
     activity: MainActivity,
     isPvP: Boolean,
     game: Game,
+    wasCardDropped: () -> Boolean,
     selectedCard: Int?,
     onCardClicked: (Int) -> Unit,
     getMySymbol: () -> String, setMySymbol: () -> Unit
@@ -359,17 +393,7 @@ fun PlayerSide(
     val selectedCardColor = getAccentColor(activity)
     Row(verticalAlignment = Alignment.Bottom, modifier = Modifier.fillMaxSize()
     ) {
-        val handSize = game.playerCResources.hand.size
-        Column(Modifier.fillMaxWidth(0.8f)) {
-            RowOfCards(activity, cards = game.playerCResources.hand.subList(0, minOf(4, handSize)), 0, selectedCard, selectedCardColor, onCardClicked)
-            val cards = if (handSize >= 5) {
-                game.playerCResources.hand.subList(4, handSize)
-            } else {
-                emptyList()
-            }
-            RowOfCards(activity, cards = cards, 4, selectedCard, selectedCardColor, onCardClicked)
-        }
-
+        PlayerCards(activity, game.playerCResources.hand, wasCardDropped(), selectedCard, selectedCardColor, onCardClicked)
         Box {
             ShowDeck(game.playerCResources, activity)
             if (isPvP) {
@@ -387,47 +411,13 @@ fun PlayerSide(
 }
 
 @Composable
-fun ColumnScope.RowOfCards(activity: MainActivity, cards: List<Card>, offset: Int = 0, selectedCard: Int?, selectedCardColor: Color, onClick: (Int) -> Unit) {
-    Row(
-        Modifier
-            .weight(1f)
-            .fillMaxHeight()
-            .fillMaxWidth(),
-        horizontalArrangement = Arrangement.Center
-    ) {
-        cards.forEachIndexed { index, it ->
-            val modifier = if (index == (selectedCard ?: -1) - offset) {
-                Modifier
-                    .border(
-                        width = 4.dp,
-                        color = selectedCardColor
-                    )
-                    .padding(4.dp)
-                    .clickable {
-                        onClick(offset + index)
-                    }
-
-            } else {
-                Modifier
-                    .padding(4.dp)
-                    .clickable {
-                        onClick(offset + index)
-                    }
-            }.clip(RoundedCornerShape(12f))
-
-            ShowCard(activity, it, modifier, false)
-        }
-    }
-}
-
-@Composable
-fun RowOfEnemyCards(activity: MainActivity, cards: List<Card>) {
+fun PlayerCards(activity: MainActivity, cards: List<Card>, wasCardDropped: Boolean, selectedCard: Int?, selectedCardColor: Color, onClick: (Int) -> Unit) {
     BoxWithConstraints(
         Modifier.fillMaxWidth(0.8f).fillMaxHeight(),
         Alignment.TopStart
     ) {
-        val cardHeight = maxHeight / 2
-        val cardWidth = maxWidth / 2
+        val cardHeight = (maxHeight - 16.dp) / 2
+        val cardWidth = (maxWidth - 40.dp) / 5
         val scaleH = cardHeight / 256.pxToDp()
         val scaleW = cardWidth / 183.pxToDp()
         val scale = min(scaleW, scaleH)
@@ -436,12 +426,91 @@ fun RowOfEnemyCards(activity: MainActivity, cards: List<Card>) {
 
         var recomposeToggleState by remember { mutableStateOf(false) }
         LaunchedEffect(recomposeToggleState) { }
+
+        if (cards.size > memCards.size) {
+            memCards.addAll((cards.toSet() - memCards.asMutableList().toSet()).toList())
+            recomposeToggleState = !recomposeToggleState
+        }
+        memCards.forEachIndexed { index, it ->
+            val maxVerticalOffset = if (index < 5) 2f else 1f
+            val itemVerticalOffset = remember { Animatable(maxVerticalOffset) }
+            if (it !in cards) {
+                LaunchedEffect(Unit) {
+                    playCardFlipSound(activity)
+                    itemVerticalOffset.animateTo(if (wasCardDropped) maxVerticalOffset else -maxVerticalOffset, TweenSpec(190))
+                    itemVerticalOffset.animateTo(10f, TweenSpec(0))
+                    memCards.remove(it)
+                    memCards.addAll((cards.toSet() - memCards.asMutableList().toSet()).toList())
+                    recomposeToggleState = !recomposeToggleState
+                }
+            } else {
+                LaunchedEffect(Unit) {
+                    playCardFlipSound(activity)
+                    itemVerticalOffset.animateTo(0f, TweenSpec(190))
+                }
+            }
+
+            ShowCard(
+                activity,
+                it,
+                Modifier
+                    .scale(scale)
+                    .layout { measurable, constraints ->
+                        val cardsSize = if (itemVerticalOffset.isRunning) memCards.size - 1 else memCards.size
+                        val rowWidth = if (memCards.size <= 5) memCards.size else (if (index < 5) 5 else (memCards.size - 5))
+                        val placeable = measurable.measure(constraints)
+                        val scaledWidth = placeable.width
+                        val scaledHeight = placeable.height
+                        val handVerticalAlignment = if (cardsSize > 5) 0 else scaledHeight / 2
+                        val offsetWidth = (index % 5) * scaledWidth + maxWidth.toPx() / 2 - (rowWidth / 2f) * scaledWidth
+                        val offsetHeight = scaledHeight * (index / 5) + handVerticalAlignment + scaledHeight * itemVerticalOffset.value
+                        layout(constraints.maxWidth, 0) {
+                            placeable.place(offsetWidth.toInt(), offsetHeight.toInt())
+                        }
+                    }
+                    .clickable {
+                        onClick(index)
+                    }
+                    .border(
+                        width = if (index == (selectedCard ?: -1)) 4.dp else (-1).dp,
+                        color = selectedCardColor
+                    )
+                    .padding(4.dp)
+                    .clip(RoundedCornerShape(12f)),
+                toModify = false
+            )
+        }
+    }
+}
+
+@Composable
+fun RowOfEnemyCards(activity: MainActivity, cards: List<Card>, wasCardDropped: Boolean = false) {
+    BoxWithConstraints(
+        Modifier.fillMaxWidth(0.8f).fillMaxHeight(),
+        Alignment.TopStart
+    ) {
+        val cardHeight = maxHeight / 2
+        val cardWidth = maxWidth / 5
+        val scaleH = cardHeight / 256.pxToDp()
+        val scaleW = cardWidth / 183.pxToDp()
+        val scale = min(scaleW, scaleH)
+
+        val memCards = remember { mutableObjectListOf<Card>().apply { addAll(cards) } }
+
+        var recomposeToggleState by remember { mutableStateOf(false) }
+        LaunchedEffect(recomposeToggleState) { }
+
+        if (cards.size > memCards.size) {
+            memCards.addAll((cards.toSet() - memCards.asMutableList().toSet()).toList())
+            recomposeToggleState = !recomposeToggleState
+        }
         memCards.forEachIndexed { index, it ->
             val maxVerticalOffset = if (index < 5) 2f else 1f
             val itemVerticalOffset = remember { Animatable(-maxVerticalOffset) }
             if (it !in cards) {
                 LaunchedEffect(Unit) {
-                    itemVerticalOffset.animateTo(maxVerticalOffset, TweenSpec(190))
+                    playCardFlipSound(activity)
+                    itemVerticalOffset.animateTo(if (wasCardDropped) -maxVerticalOffset else maxVerticalOffset, TweenSpec(190))
                     itemVerticalOffset.animateTo(-10f, TweenSpec(0))
                     memCards.remove(it)
                     memCards.addAll((cards.toSet() - memCards.asMutableList().toSet()).toList())
@@ -449,6 +518,7 @@ fun RowOfEnemyCards(activity: MainActivity, cards: List<Card>) {
                 }
             } else {
                 LaunchedEffect(Unit) {
+                    playCardFlipSound(activity)
                     itemVerticalOffset.animateTo(0f, TweenSpec(190))
                 }
             }
@@ -475,164 +545,203 @@ fun RowOfEnemyCards(activity: MainActivity, cards: List<Card>) {
     }
 }
 
-@Composable
-fun RowScope.EnemyCaravanOnField(
-    activity: MainActivity,
-    caravan: Caravan,
-    state: LazyListState,
-    addSelectedCardOnPosition: (Int) -> Unit,
-) {
-    LazyColumn(
-        state = state,
-        verticalArrangement = Arrangement.Bottom,
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier
-            .fillMaxHeight()
-            .weight(0.25f)
-            .caravanScrollbar(
-                state,
-                knobColor = getKnobColor(activity),
-                trackColor = getTrackColor(activity)
-            )
-    ) {
-        itemsIndexed(caravan.cards.reversed()) { index, it ->
-            Box(modifier = Modifier
-                .layout { measurable, constraints ->
-                    val placeable = measurable.measure(constraints)
-                    val height = if (index != 0) {
-                        placeable.height / 3
-                    } else {
-                        placeable.height
-                    }
-                    val offsetWidth = constraints.maxWidth / 2 - placeable.width / 2
-                    val offsetHeight = if (index != 0) {
-                        -2 * placeable.height / 3
-                    } else {
-                        0
-                    }
-                    layout(constraints.maxWidth, height) {
-                        placeable.place(offsetWidth, offsetHeight)
-                    }
-                }
-                .zIndex((caravan.cards.size - index).toFloat())
-            ) {
-                ShowCard(activity, it.card, Modifier
-                    .clickable {
-                        addSelectedCardOnPosition(caravan.cards.lastIndex - index)
-                    })
-                it.modifiersCopy().forEachIndexed { index, card ->
-                    ShowCard(activity, card, Modifier.offset(x = -(10.dp) * (index + 1)))
-                }
-            }
-        }
-    }
-}
-
 
 @Composable
-fun RowScope.PlayerCaravanOnField(
+fun RowScope.CaravanOnField(
     activity: MainActivity,
+    isPlayerTurn: Boolean,
     caravan: Caravan,
+    isEnemy: Boolean,
     isInitStage: Boolean,
     state: LazyListState,
     canPutSelectedCardOnTop: () -> Int,
     selectCaravan: () -> Unit = {},
     addSelectedCardOnPosition: (Int) -> Unit,
 ) {
+    val memCaravan = remember { mutableObjectListOf<CardWithModifier>().apply { addAll(caravan.cards) } }
+    fun updateMem() {
+        memCaravan.addAll((caravan.cards - memCaravan.asMutableList().toSet()).toList())
+    }
+
+    var recomposeToggleState by remember { mutableStateOf(false) }
+    LaunchedEffect(recomposeToggleState) { }
+
+    if (caravan.size > memCaravan.size) {
+        updateMem()
+        recomposeToggleState = !recomposeToggleState
+    }
+
     Column(Modifier
         .fillMaxHeight()
         .weight(0.25f)
     ) {
-        Text(text = if (isInitStage || caravan.getValue() == 0) "" else stringResource(R.string.discard),
-            textAlign = TextAlign.Center,
-            color = getGameTextColor(activity),
-            fontWeight = FontWeight.ExtraBold,
-            fontFamily = FontFamily(Font(R.font.monofont)),
-            modifier = Modifier
-                .fillMaxWidth()
-                .clickable {
-                    selectCaravan()
-                }
-                .padding(2.dp)
-                .background(
-                    if (isInitStage || caravan.getValue() == 0) Color.Transparent else getGameTextBackgroundColor(
-                        activity
+        if (!isEnemy) {
+            Text(text = if (isInitStage || caravan.getValue() == 0) "" else stringResource(R.string.discard),
+                textAlign = TextAlign.Center,
+                color = getGameTextColor(activity),
+                fontWeight = FontWeight.ExtraBold,
+                fontFamily = FontFamily(Font(R.font.monofont)),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable {
+                        selectCaravan()
+                    }
+                    .padding(2.dp)
+                    .background(
+                        if (isInitStage || caravan.getValue() == 0) Color.Transparent else getGameTextBackgroundColor(
+                            activity
+                        )
                     )
-                )
-                .padding(2.dp)
-        )
+                    .padding(2.dp)
+            )
+        }
 
         LazyColumn(
             state = state,
-            verticalArrangement = Arrangement.Top,
+            verticalArrangement = if (isEnemy) Arrangement.Bottom else Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
                 .fillMaxHeight()
-                .caravanScrollbar(
+                .scrollbar(
                     state,
+                    horizontal = false,
                     knobColor = getKnobColor(activity),
                     trackColor = getTrackColor(activity),
-                    hasNewCardPlaceholder = true
                 )
         ) {
-            itemsIndexed(caravan.cards) { index, it ->
-                Box(modifier = Modifier
-                    .layout { measurable, constraints ->
-                        val placeable = measurable.measure(constraints)
-                        val height = if (index != caravan.cards.lastIndex) {
-                            placeable.height / 3
+            item {
+                Box(Modifier.wrapContentHeight(unbounded = true)) {
+                    memCaravan.forEachIndexed { index, it ->
+                        val itemVerticalOffset = remember { Animatable(if (isPlayerTurn) 12f else -12f) }
+                        val itemHorizontalOffset = remember { Animatable(0f) }
+                        var memIndex by remember { mutableIntStateOf(index) }
+
+                        if (it !in caravan.cards) {
+                            LaunchedEffect(Unit) {
+                                playCardFlipSound(activity)
+                                itemHorizontalOffset.animateTo(4f, TweenSpec(380, 190))
+                                memCaravan.remove(it)
+                                updateMem()
+                                itemHorizontalOffset.animateTo(0f, TweenSpec(0, 0))
+                                recomposeToggleState = !recomposeToggleState
+                            }
+                        } else if (memIndex != index) {
+                            LaunchedEffect(Unit) {
+                                playCardFlipSound(activity)
+                                itemVerticalOffset.animateTo((memIndex - index) / 3f, TweenSpec(190, 190))
+                                memIndex = index
+                                recomposeToggleState = !recomposeToggleState
+                            }
                         } else {
-                            placeable.height
+                            LaunchedEffect(Unit) {
+                                playCardFlipSound(activity)
+                                itemVerticalOffset.animateTo(0f, TweenSpec(380, 190))
+                                recomposeToggleState = !recomposeToggleState
+                            }
                         }
-                        val offsetWidth = constraints.maxWidth / 2 - placeable.width / 2
-                        layout(constraints.maxWidth, height) {
-                            placeable.place(offsetWidth, 0)
-                        }
-                    }) {
-                    ShowCard(activity, it.card, Modifier
-                        .clickable {
-                            addSelectedCardOnPosition(index)
-                        })
-                    it.modifiersCopy().forEachIndexed { index, card ->
-                        ShowCard(
-                            activity, card, Modifier
-                                .offset(x = (10.dp) * (index + 1))
-                        )
-                    }
-                }
-            }
-            if (!caravan.isFull() && (!isInitStage || caravan.cards.isEmpty())) {
-                item {
-                    when (canPutSelectedCardOnTop()) {
-                        1 -> {
-                            Box(modifier = Modifier
-                                .fillParentMaxWidth()
-                                .height(20.dp)
-                                .padding(horizontal = 4.dp)
-                                .background(colorResource(id = R.color.green))
-                                .border(4.dp, colorResource(id = R.color.dark_green))
-                                .clickable {
-                                    addSelectedCardOnPosition(caravan.cards.size)
+
+                        val itemIndex = if (isEnemy) (caravan.cards.size - memIndex) else memIndex
+                        val modifier = Modifier
+                            .layout { measurable, constraints ->
+                                val placeable = measurable.measure(constraints)
+                                val offsetWidth = constraints.maxWidth / 2 - placeable.width / 2
+                                val antiOffsetHeight = placeable.height / 3 * itemIndex + (itemVerticalOffset.value * placeable.height).toInt()
+                                layout(constraints.maxWidth, placeable.height / 3 * (caravan.size + 3)) {
+                                    placeable.place(
+                                        offsetWidth + (itemHorizontalOffset.value * placeable.width).toInt(),
+                                        antiOffsetHeight
+                                    )
                                 }
-                            ) {}
+                            }
+
+                        Box(modifier = modifier) {
+                            ShowCard(activity, it.card, Modifier.clickable { addSelectedCardOnPosition(index) })
                         }
-                        -1 -> {
-                            Box(modifier = Modifier
-                                .fillParentMaxWidth()
-                                .height(20.dp)
-                                .padding(horizontal = 4.dp)
-                                .background(colorResource(id = R.color.red))
-                                .border(4.dp, colorResource(id = R.color.dark_red))
-                            ) {}
+
+                        val memModifiers = remember { mutableObjectListOf<Card>().apply { addAll(it.modifiersCopy()) } }
+                        fun updateModifiers() {
+                            memModifiers.addAll((it.modifiersCopy() - memModifiers.asMutableList().toSet()).toList())
                         }
-                        else -> {
+                        if (it.modifiersCopy().size > memModifiers.size) {
+                            updateModifiers()
+                            recomposeToggleState = !recomposeToggleState
+                        }
+                        memModifiers.forEachIndexed { modifierIndex, card ->
+                            val maxOffset = if (isEnemy) -12f else 12f
+                            val modifierVerticalOffset = remember { Animatable(if (isPlayerTurn) 12f else -12f) }
+                            if (card !in it.modifiersCopy()) {
+                                LaunchedEffect(Unit) {
+                                    playCardFlipSound(activity)
+                                    modifierVerticalOffset.animateTo(maxOffset, TweenSpec(380, 190))
+                                    memModifiers.remove(card)
+                                    updateModifiers()
+                                    recomposeToggleState = !recomposeToggleState
+                                }
+                            } else if (it !in caravan.cards) {
+                                LaunchedEffect(Unit) {
+                                    playCardFlipSound(activity)
+                                    modifierVerticalOffset.animateTo(maxOffset, TweenSpec(380, 190))
+                                    recomposeToggleState = !recomposeToggleState
+                                }
+                            } else {
+                                LaunchedEffect(Unit) {
+                                    playCardFlipSound(activity)
+                                    modifierVerticalOffset.animateTo(0f, TweenSpec(380, 190))
+                                    recomposeToggleState = !recomposeToggleState
+                                }
+                            }
                             Box(modifier = Modifier
-                                .fillParentMaxWidth()
-                                .height(20.dp)
-                                .padding(horizontal = 4.dp)
-                                .background(getTextBackgroundColor(activity))
-                                .border(4.dp, getGameTextColor(activity))
-                            ) {}
+                                .layout { measurable, constraints ->
+                                    val placeable = measurable.measure(constraints)
+                                    val offsetWidth = constraints.maxWidth / 2 - placeable.width / 2
+                                    layout(constraints.maxWidth, 0) {
+                                        placeable.place(
+                                            ((10.dp) * (modifierIndex + 1)).toPx().toInt() + offsetWidth + (itemHorizontalOffset.value * placeable.width).toInt(),
+                                            placeable.height / 3 * itemIndex + (modifierVerticalOffset.value * placeable.height).toInt()
+                                        )
+                                    }
+                                }) {
+                                ShowCard(activity, card, Modifier)
+                            }
+                        }
+                    }
+                    if (!isEnemy) {
+                        if (!caravan.isFull() && (!isInitStage || caravan.cards.isEmpty())) {
+                            when (canPutSelectedCardOnTop()) {
+                                1 -> {
+                                    Box(modifier = Modifier
+                                        .fillParentMaxWidth()
+                                        .height(20.dp)
+                                        .align(Alignment.BottomCenter)
+                                        .padding(horizontal = 4.dp)
+                                        .background(colorResource(id = R.color.green))
+                                        .border(4.dp, colorResource(id = R.color.dark_green))
+                                        .clickable {
+                                            addSelectedCardOnPosition(caravan.size)
+                                        }
+                                    ) {}
+                                }
+                                -1 -> {
+                                    Box(modifier = Modifier
+                                        .fillParentMaxWidth()
+                                        .height(20.dp)
+                                        .align(Alignment.BottomCenter)
+                                        .padding(horizontal = 4.dp)
+                                        .background(colorResource(id = R.color.red))
+                                        .border(4.dp, colorResource(id = R.color.dark_red))
+                                    ) {}
+                                }
+                                else -> {
+                                    Box(modifier = Modifier
+                                        .fillParentMaxWidth()
+                                        .height(20.dp)
+                                        .align(Alignment.BottomCenter)
+                                        .padding(horizontal = 4.dp)
+                                        .background(getTextBackgroundColor(activity))
+                                        .border(4.dp, getGameTextColor(activity))
+                                    ) {}
+                                }
+                            }
                         }
                     }
                 }
@@ -725,7 +834,7 @@ fun Caravans(
     isPlayersTurn: () -> Boolean,
     canDiscard: () -> Boolean,
     getPlayerCaravan: (Int) -> Caravan,
-    getEnemyCaravan: (Int) -> Caravan,
+    getEnemyCaravan: (Int) -> Caravan
 ) {
     val enemyCaravanFillHeight = if (isMaxHeight) 0.36f else 0.425f
     Column(
@@ -737,10 +846,15 @@ fun Caravans(
         val playerStates = listOf(state1Player, state2Player, state3Player)
         Row(Modifier.fillMaxWidth().fillMaxHeight(enemyCaravanFillHeight)) {
             repeat(3) {
-                EnemyCaravanOnField(
+                CaravanOnField(
                     activity,
+                    isPlayersTurn(),
                     getEnemyCaravan(it),
-                    enemyStates[it]
+                    isEnemy = true,
+                    isInitStage = getIsInitStage(),
+                    enemyStates[it],
+                    { -1 },
+                    {}
                 ) { card ->
                     addCardToEnemyCaravan(it, card)
                 }
@@ -818,9 +932,11 @@ fun Caravans(
 
         Row(Modifier.fillMaxWidth().fillMaxHeight()) {
             repeat(3) {
-                PlayerCaravanOnField(
+                CaravanOnField(
                     activity,
+                    isPlayersTurn(),
                     getPlayerCaravan(it),
+                    isEnemy = false,
                     isInitStage = getIsInitStage(),
                     playerStates[it],
                     {

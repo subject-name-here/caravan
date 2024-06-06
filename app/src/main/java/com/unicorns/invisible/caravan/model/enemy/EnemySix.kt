@@ -151,6 +151,6 @@ data object EnemySix : Enemy() {
         }
 
         val handSorted = hand.withIndex().sortedBy { it.value.rank.value }
-        game.enemyCResources.removeFromHand(handSorted.first().index)
+        game.enemyCResources.dropCardFromHand(handSorted.first().index)
     }
 }

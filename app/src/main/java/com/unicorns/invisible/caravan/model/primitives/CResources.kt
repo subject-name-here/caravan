@@ -46,6 +46,14 @@ class CResources(private val deck: CustomDeck) {
         return handMutable.removeAt(index)
     }
 
+    @Transient
+    var onDropCardFromHand: () -> Unit = {}
+    fun dropCardFromHand(index: Int) {
+        onRemoveFromHand()
+        onDropCardFromHand()
+        handMutable.removeAt(index)
+    }
+
     fun getDeckBack() = deck.firstOrNull()?.run { this.back to this.isAlt }
     fun shuffleDeck() = deck.shuffle()
 

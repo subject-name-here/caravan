@@ -136,14 +136,15 @@ fun ShowGamePvP(
     isCreator: Boolean,
     roomNumber: Int,
     showAlert: (String, String) -> Unit,
+    enemyHandKey: Boolean,
+    updateEnemyHand: () -> Unit,
+    caravansKey: Boolean,
+    updateCaravans: () -> Unit,
     goBack: () -> Unit,
 ) {
     var selectedCard by remember { mutableStateOf<Int?>(null) }
 
     var selectedCaravan by remember { mutableIntStateOf(-1) }
-
-    var caravansKey by remember { mutableStateOf(true) }
-    var enemyHandKey by remember { mutableStateOf(true) }
 
     var chosenSymbol by rememberSaveable { mutableIntStateOf(0) }
     var enemyChosenSymbol by rememberSaveable { mutableIntStateOf(0) }
@@ -176,12 +177,6 @@ fun ShowGamePvP(
         if (currentGameId == game.id) {
             showAlert("Corrupted!", message)
         }
-    }
-    fun updateCaravans() {
-        caravansKey = !caravansKey
-    }
-    fun updateEnemyHand() {
-        enemyHandKey = !enemyHandKey
     }
 
     fun resetSelected() {
@@ -334,13 +329,12 @@ fun ShowGamePvP(
         setSelectedCaravan = {
             selectedCaravan = it
             selectedCard = null
-            caravansKey = !caravansKey
+            updateCaravans()
         },
         ::addCardToCaravan,
         ::dropCardFromHand,
         ::dropCaravan,
-        enemyHandKey,
-        caravansKey
+        if (enemyHandKey) 0 else 1,
     )
 
     key (timeOnTimer) {

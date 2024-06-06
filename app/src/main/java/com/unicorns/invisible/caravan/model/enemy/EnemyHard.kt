@@ -137,7 +137,7 @@ data object EnemyHard : Enemy() {
             return
         }
 
-        game.enemyCResources.removeFromHand(hand.withIndex().minBy {
+        game.enemyCResources.dropCardFromHand(hand.withIndex().minBy {
             when (it.value.rank) {
                 Rank.QUEEN -> 0
                 else -> it.value.rank.value

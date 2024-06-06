@@ -83,9 +83,9 @@ data object EnemyMedium : Enemy() {
 
         val uselessPredicate = { it: Card -> it.rank == Rank.QUEEN || it.rank == Rank.JOKER }
         if (hand.any(uselessPredicate)) {
-            game.enemyCResources.removeFromHand(hand.indexOfFirst(uselessPredicate))
+            game.enemyCResources.dropCardFromHand(hand.indexOfFirst(uselessPredicate))
         } else {
-            game.enemyCResources.removeFromHand(hand.indices.random())
+            game.enemyCResources.dropCardFromHand(hand.indices.random())
         }
     }
 }

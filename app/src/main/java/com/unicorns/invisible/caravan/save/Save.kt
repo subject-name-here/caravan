@@ -52,4 +52,7 @@ class Save {
     var gamesFinished = 0
     @EncodeDefault
     var wins = 0
+
+    @EncodeDefault
+    var volume = 1f
 }
