@@ -80,6 +80,7 @@ import com.unicorns.invisible.caravan.utils.scrollbar
 import com.unicorns.invisible.caravan.utils.startAmbient
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
+import kotlin.math.max
 import kotlin.math.min
 
 
@@ -629,12 +630,20 @@ fun RowScope.CaravanOnField(
                         val modifier = Modifier
                             .layout { measurable, constraints ->
                                 val placeable = measurable.measure(constraints)
+                                val layoutFullHeight = if (isEnemy) {
+                                    max(
+                                        placeable.height / 3 * (iteratedCollection.size + 2),
+                                        state.layoutInfo.viewportSize.height - 1
+                                    )
+                                } else {
+                                    placeable.height / 3 * (iteratedCollection.size + 3)
+                                }
                                 val offsetWidth = constraints.maxWidth / 2 - placeable.width / 2
                                 val antiOffsetHeight = if (isEnemy)
-                                        (state.layoutInfo.viewportSize.height - placeable.height / 3 * index - placeable.height)
+                                        (layoutFullHeight - placeable.height / 3 * index - placeable.height)
                                 else
                                     (placeable.height / 3 * index)
-                                layout(constraints.maxWidth, placeable.height / 3 * (iteratedCollection.size + 3)) {
+                                layout(constraints.maxWidth, layoutFullHeight) {
                                     placeable.place(
                                         offsetWidth +
                                                 (if (isMovingOut) (itemHorizontalOffsetMovingOut.value * placeable.width).toInt() else 0),
@@ -673,12 +682,17 @@ fun RowScope.CaravanOnField(
                             Box(modifier = Modifier
                                 .layout { measurable, constraints ->
                                     val placeable = measurable.measure(constraints)
+                                    val layoutFullHeight = max(placeable.height / 3 * (iteratedCollection.size + if (isEnemy) 2 else 3), state.layoutInfo.viewportSize.height)
                                     val offsetWidth = constraints.maxWidth / 2 - placeable.width / 2
+                                    val offsetHeight = if (isEnemy)
+                                        (layoutFullHeight - placeable.height / 3 * index - placeable.height)
+                                    else
+                                        (placeable.height / 3 * index)
                                     layout(constraints.maxWidth, 0) {
                                         placeable.place(
                                             ((if (isEnemy) (-10).dp else 10.dp) * (modifierIndex + 1)).toPx().toInt() + offsetWidth +
                                                     if (isMovingOut) (itemHorizontalOffsetMovingOut.value * placeable.width).toInt() else 0,
-                                            placeable.height / 3 * index +
+                                            offsetHeight +
                                                     if (isMovingInModifier) (modifierVerticalOffsetMovingIn.value * placeable.height).toInt() else 0
                                         )
                                     }

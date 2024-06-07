@@ -64,15 +64,21 @@ fun ShowSettings(
         val mainState = rememberLazyListState()
         LazyColumn(
             Modifier
-                .fillMaxHeight(0.9f).fillMaxWidth()
-                .scrollbar(mainState, horizontal = false, knobColor = getKnobColor(activity), trackColor = getTrackColor(activity)),
+                .fillMaxHeight(0.9f)
+                .fillMaxWidth()
+                .scrollbar(
+                    mainState,
+                    horizontal = false,
+                    knobColor = getKnobColor(activity),
+                    trackColor = getTrackColor(activity)
+                ),
             mainState
         ) {
             item {
                 Row(horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
                     Text(
                         modifier = Modifier.fillMaxWidth(0.66f),
-                        text = "Shtyle",
+                        text = stringResource(R.string.interface_type),
                         fontFamily = FontFamily(Font(R.font.monofont)),
                         style = TextStyle(color = getTextColor(activity), fontSize = 20.sp, textAlign = TextAlign.Center)
                     )
@@ -104,7 +110,7 @@ fun ShowSettings(
                 Row(horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
                     Text(
                         modifier = Modifier.fillMaxWidth(0.66f),
-                        text = "Intro",
+                        text = stringResource(R.string.intro_music),
                         fontFamily = FontFamily(Font(R.font.monofont)),
                         style = TextStyle(color = getTextColor(activity), fontSize = 20.sp, textAlign = TextAlign.Center)
                     )
@@ -136,9 +142,12 @@ fun ShowSettings(
 
         Text(
             text = stringResource(R.string.menu_back),
-            modifier = Modifier.clickable {
-                goBack()
-            }.background(getTextBackgroundColor(activity)).padding(8.dp),
+            modifier = Modifier
+                .clickable {
+                    goBack()
+                }
+                .background(getTextBackgroundColor(activity))
+                .padding(8.dp),
             fontFamily = FontFamily(Font(R.font.monofont)),
             style = TextStyle(color = getTextColor(activity), fontSize = 24.sp)
         )

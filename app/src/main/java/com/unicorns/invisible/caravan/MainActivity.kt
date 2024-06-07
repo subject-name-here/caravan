@@ -49,7 +49,9 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextLinkStyles
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.Font
@@ -57,6 +59,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.withLink
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -453,7 +456,7 @@ class MainActivity : AppCompatActivity() {
                                 { showPvP = true },
                                 { showTutorial = true },
                                 { showRules = true },
-                                { playNotificationSound(this@MainActivity) { showSettings = 1 } }
+                                { showSettings = 1 }
                             )
                         }
                     }
@@ -555,44 +558,35 @@ class MainActivity : AppCompatActivity() {
                         },
                 ) {
                     val discord = buildAnnotatedString {
-                        pushStringAnnotation(
-                            tag = "discord",
-                            annotation = "https://discord.gg/xSTJpjvzJV"
-                        )
-                        withStyle(
-                            style = SpanStyle(
-                                color = getTextColor(this@MainActivity),
-                                background = getBackgroundColor(this@MainActivity),
-                                fontSize = 18.sp,
-                                fontWeight = FontWeight.Bold,
-                                fontFamily = FontFamily(Font(R.font.monofont)),
-                                textDecoration = TextDecoration.Underline
-                            )
+                        withLink(
+                            link = LinkAnnotation.Url(
+                                url = "https://discord.gg/xSTJpjvzJV",
+                                styles = TextLinkStyles(
+                                    style = SpanStyle(
+                                        color = getTextColor(this@MainActivity),
+                                        background = getBackgroundColor(this@MainActivity),
+                                        fontSize = 18.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        fontFamily = FontFamily(Font(R.font.monofont)),
+                                        textDecoration = TextDecoration.Underline
+                                    )
+                                )
+                            ),
                         ) {
                             append(stringResource(R.string.menu_discord))
                         }
-                        pop()
                     }
-                    val uriHandler = LocalUriHandler.current
                     Box(Modifier.fillMaxSize()) {
-                        ClickableText(
+                        Text(
+                            text = discord,
                             modifier = Modifier
                                 .align(Alignment.BottomEnd)
                                 .padding(end = 12.dp),
-                            text = discord,
                             style = TextStyle(
                                 textAlign = TextAlign.Center,
                                 fontFamily = FontFamily(Font(R.font.monofont)),
-                            ),
-                        ) { offset ->
-                            discord.getStringAnnotations(
-                                tag = "discord",
-                                start = offset,
-                                end = offset
-                            ).firstOrNull()?.let {
-                                uriHandler.openUri(it.item)
-                            }
-                        }
+                            )
+                        )
                     }
                 }
             }

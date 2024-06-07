@@ -225,4 +225,7 @@
     <string name="ambient">AMBient</string>
     <string name="sfx">SFX</string>
 
+    <string name="interface_type">Pip-Boy</string>
+    <string name="intro_music">Same Radio Intro</string>
+
 </resources>
