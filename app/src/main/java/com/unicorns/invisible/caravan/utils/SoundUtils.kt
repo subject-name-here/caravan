@@ -12,7 +12,7 @@ import kotlinx.coroutines.launch
 
 
 fun playCardFlipSound(activity: MainActivity) {
-    val vol = activity.save?.volume ?: 1f
+    val vol = activity.save?.soundVolume ?: 1f
     MediaPlayer
         .create(activity, getRandomCardFlipSound())
         .apply {
@@ -20,8 +20,6 @@ fun playCardFlipSound(activity: MainActivity) {
         }
         .start()
 }
-
-
 fun getRandomCardFlipSound(): Int {
     return listOf(
         R.raw.fol_gmble_cardflip_01,
@@ -37,15 +35,9 @@ fun getRandomCardFlipSound(): Int {
     ).random()
 }
 
-private var currentPlayer: MediaPlayer? = null
-fun stopMusic() {
-    currentPlayer?.stop()
-    currentPlayer?.release()
-    currentPlayer = null
-}
 fun playLoseSound(activity: MainActivity) {
-    val vol = activity.save?.volume ?: 1f
-    currentPlayer = MediaPlayer
+    val vol = activity.save?.soundVolume ?: 1f
+    MediaPlayer
         .create(activity, listOf(R.raw.lose1, R.raw.lose3, R.raw.any).random())
         .apply {
             setVolume(vol, vol)
@@ -53,16 +45,36 @@ fun playLoseSound(activity: MainActivity) {
         }
 }
 fun playWinSound(activity: MainActivity) {
-    val vol = activity.save?.volume ?: 1f
-    currentPlayer = MediaPlayer
+    val vol = activity.save?.soundVolume ?: 1f
+    MediaPlayer
         .create(activity, listOf(R.raw.win1, R.raw.win2, R.raw.any).random())
         .apply {
             setVolume(vol, vol)
             start()
         }
 }
+
+fun playNotificationSound(activity: MainActivity, onPrepared: () -> Unit) {
+    MediaPlayer
+        .create(activity, R.raw.notification)
+        .apply {
+            setVolume(activity.save?.soundVolume ?: 1f, activity.save?.soundVolume ?: 1f)
+            setOnPreparedListener { onPrepared() }
+            setOnCompletionListener {
+                release()
+            }
+        }
+        .start()
+}
+
+var currentPlayer: MediaPlayer? = null
+fun stopMusic() {
+    currentPlayer?.stop()
+    currentPlayer?.release()
+    currentPlayer = null
+}
 fun startAmbient(activity: MainActivity) {
-    val vol = (activity.save?.volume ?: 1f) / 2
+    val vol = (activity.save?.ambientVolume ?: 1f) / 2
     currentPlayer = MediaPlayer
         .create(activity, listOf(
             R.raw.ambient1,
@@ -135,7 +147,7 @@ fun startRadio(activity: MainActivity) {
 
 var radioPlayer: MediaPlayer? = null
 private fun playSongFromRadio(activity: MainActivity, songName: String) {
-    val vol = activity.save?.volume ?: 1f
+    val vol = activity.save?.radioVolume ?: 1f
     radioPlayer = MediaPlayer()
         .apply {
             val afd = activity.assets.openFd("radio/$songName")

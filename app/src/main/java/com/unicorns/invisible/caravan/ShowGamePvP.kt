@@ -138,7 +138,6 @@ fun ShowGamePvP(
     showAlert: (String, String) -> Unit,
     enemyHandKey: Boolean,
     updateEnemyHand: () -> Unit,
-    caravansKey: Boolean,
     updateCaravans: () -> Unit,
     goBack: () -> Unit,
 ) {

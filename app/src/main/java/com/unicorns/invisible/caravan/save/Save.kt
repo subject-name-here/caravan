@@ -54,5 +54,7 @@ class Save {
     var wins = 0
 
     @EncodeDefault
-    var volume = 1f
+    var radioVolume = 1f
+    var soundVolume = 1f
+    var ambientVolume = 1f
 }

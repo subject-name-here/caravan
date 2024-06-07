@@ -1,7 +1,6 @@
 package com.unicorns.invisible.caravan
 
 import android.content.pm.PackageManager
-import android.media.MediaPlayer
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.compose.setContent
@@ -26,13 +25,16 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.AlertDialogDefaults
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Slider
+import androidx.compose.material3.SliderColors
+import androidx.compose.material3.SliderState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -41,6 +43,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.drawscope.Stroke
@@ -57,12 +60,12 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.DialogProperties
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.save.Save
 import com.unicorns.invisible.caravan.save.loadSave
 import com.unicorns.invisible.caravan.save.save
+import com.unicorns.invisible.caravan.utils.currentPlayer
 import com.unicorns.invisible.caravan.utils.getAccentColor
 import com.unicorns.invisible.caravan.utils.getBackgroundColor
 import com.unicorns.invisible.caravan.utils.getDividerColor
@@ -72,12 +75,12 @@ import com.unicorns.invisible.caravan.utils.getTextColor
 import com.unicorns.invisible.caravan.utils.getTrackColor
 import com.unicorns.invisible.caravan.utils.nextSong
 import com.unicorns.invisible.caravan.utils.pause
+import com.unicorns.invisible.caravan.utils.playNotificationSound
+import com.unicorns.invisible.caravan.utils.radioPlayer
 import com.unicorns.invisible.caravan.utils.resume
 import com.unicorns.invisible.caravan.utils.scrollbar
-import com.unicorns.invisible.caravan.utils.sendRequest
 import com.unicorns.invisible.caravan.utils.startRadio
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.isActive
 import org.chromium.net.CronetEngine
 import java.util.UUID
 
@@ -97,6 +100,16 @@ class MainActivity : AppCompatActivity() {
 
     fun checkIfCustomDeckCanBeUsedInGame(playerCResources: CResources): Boolean {
         return playerCResources.deckSize >= MIN_DECK_SIZE && playerCResources.numOfNumbers >= MIN_NUM_OF_NUMBERS
+    }
+
+    override fun onPause() {
+        super.onPause()
+        radioPlayer?.pause()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        radioPlayer?.start()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -130,6 +143,9 @@ class MainActivity : AppCompatActivity() {
             var showSettings by rememberSaveable { mutableIntStateOf(0) }
             var styleIdForTop by rememberSaveable { mutableIntStateOf(styleId) }
 
+            var showSoundSettings by remember { mutableStateOf(false) }
+            var showSoundSettings2 by remember { mutableStateOf(false) }
+
             var selectedDeck by rememberSaveable { mutableStateOf(save?.selectedDeck ?: (CardBack.STANDARD to false)) }
 
             var showAlertDialog by remember { mutableStateOf(false) }
@@ -150,13 +166,7 @@ class MainActivity : AppCompatActivity() {
             if (showAlertDialog) {
                 LaunchedEffect(Unit) {
                     delay(50L)
-                    MediaPlayer
-                        .create(this@MainActivity, R.raw.notification)
-                        .apply {
-                            setVolume(save?.volume ?: 1f, save?.volume ?: 1f)
-                            setOnPreparedListener { showAlertDialog2 = true }
-                        }
-                        .start()
+                    playNotificationSound(this@MainActivity) { showAlertDialog2 = true }
                 }
 
                 if (showAlertDialog2) {
@@ -179,12 +189,143 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
+            fun hideSoundSettings() {
+                showSoundSettings2 = false
+                showSoundSettings = false
+            }
+            if (showSoundSettings) {
+                LaunchedEffect(Unit) {
+                    delay(50L)
+                    playNotificationSound(this@MainActivity) { showSoundSettings2 = true }
+                }
+
+                if (showSoundSettings2) {
+                    AlertDialog(
+                        modifier = Modifier.border(width = 4.dp, color = getAccentColor(this)),
+                        onDismissRequest = {
+                            save(this, this.save!!)
+                            hideSoundSettings()
+                        },
+                        confirmButton = {
+                            Text(text = stringResource(R.string.save), color = getAccentColor(this), modifier = Modifier.clickable {
+                                save(this, this.save!!); hideSoundSettings()
+                            })
+                        },
+                        title = { Text(text = stringResource(R.string.sound), color = getTextColor(this)) },
+                        text = {
+                            var radioVolume by remember { mutableFloatStateOf(save?.radioVolume ?: 1f) }
+                            var soundVolume by remember { mutableFloatStateOf(save?.soundVolume ?: 1f) }
+                            var ambientVolume by remember { mutableFloatStateOf(save?.ambientVolume ?: 1f) }
+                            Column {
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    Text(
+                                        text = "RADio",
+                                        modifier = Modifier.clickable {
+                                            nextSong(this@MainActivity)
+                                        }.fillMaxWidth(0.33f),
+                                        fontFamily = FontFamily(Font(R.font.monofont)),
+                                        style = TextStyle(
+                                            color = getTextColor(this@MainActivity),
+                                            fontSize = 16.sp,
+                                            textAlign = TextAlign.Center,
+                                            fontWeight = FontWeight.ExtraBold
+                                        )
+                                    )
+
+                                    Slider(radioVolume, onValueChange = {
+                                        radioVolume = it; save?.radioVolume = it
+                                        radioPlayer?.setVolume(it, it)
+                                    }, colors = SliderColors(
+                                        thumbColor = getAccentColor(this@MainActivity),
+                                        activeTrackColor = getAccentColor(this@MainActivity),
+                                        activeTickColor = getAccentColor(this@MainActivity),
+                                        inactiveTickColor = getAccentColor(this@MainActivity),
+                                        inactiveTrackColor = getAccentColor(this@MainActivity),
+                                        disabledThumbColor = Color.Gray,
+                                        disabledActiveTrackColor = Color.Gray,
+                                        disabledActiveTickColor = Color.Gray,
+                                        disabledInactiveTickColor = Color.Gray,
+                                        disabledInactiveTrackColor = Color.Gray,
+                                    ))
+                                }
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    Text(
+                                        text = "AMBient",
+                                        modifier = Modifier.clickable {
+                                            nextSong(this@MainActivity)
+                                        }.fillMaxWidth(0.33f),
+                                        fontFamily = FontFamily(Font(R.font.monofont)),
+                                        style = TextStyle(
+                                            color = getTextColor(this@MainActivity),
+                                            fontSize = 16.sp,
+                                            textAlign = TextAlign.Center,
+                                            fontWeight = FontWeight.ExtraBold
+                                        )
+                                    )
+
+                                    Slider(ambientVolume, onValueChange = {
+                                        ambientVolume = it; save?.ambientVolume = it
+                                        currentPlayer?.setVolume(it / 2, it / 2)
+                                    }, colors = SliderColors(
+                                        thumbColor = getAccentColor(this@MainActivity),
+                                        activeTrackColor = getAccentColor(this@MainActivity),
+                                        activeTickColor = getAccentColor(this@MainActivity),
+                                        inactiveTickColor = getAccentColor(this@MainActivity),
+                                        inactiveTrackColor = getAccentColor(this@MainActivity),
+                                        disabledThumbColor = Color.Gray,
+                                        disabledActiveTrackColor = Color.Gray,
+                                        disabledActiveTickColor = Color.Gray,
+                                        disabledInactiveTickColor = Color.Gray,
+                                        disabledInactiveTrackColor = Color.Gray,
+                                    ))
+                                }
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    Text(
+                                        text = "SFX",
+                                        modifier = Modifier.clickable {
+                                            nextSong(this@MainActivity)
+                                        }.fillMaxWidth(0.33f),
+                                        fontFamily = FontFamily(Font(R.font.monofont)),
+                                        style = TextStyle(
+                                            color = getTextColor(this@MainActivity),
+                                            fontSize = 16.sp,
+                                            textAlign = TextAlign.Center,
+                                            fontWeight = FontWeight.ExtraBold
+                                        )
+                                    )
+
+                                    Slider(soundVolume, onValueChange = {
+                                        soundVolume = it; save?.soundVolume = it
+                                    }, colors = SliderColors(
+                                        thumbColor = getAccentColor(this@MainActivity),
+                                        activeTrackColor = getAccentColor(this@MainActivity),
+                                        activeTickColor = getAccentColor(this@MainActivity),
+                                        inactiveTickColor = getAccentColor(this@MainActivity),
+                                        inactiveTrackColor = getAccentColor(this@MainActivity),
+                                        disabledThumbColor = Color.Gray,
+                                        disabledActiveTrackColor = Color.Gray,
+                                        disabledActiveTickColor = Color.Gray,
+                                        disabledInactiveTickColor = Color.Gray,
+                                        disabledInactiveTrackColor = Color.Gray,
+                                    ), onValueChangeFinished = { playNotificationSound(this@MainActivity) {} })
+                                }
+                            }
+                        },
+                        containerColor = getTextBackgroundColor(this),
+                        textContentColor = getTextColor(this),
+                        shape = RectangleShape,
+                    )
+                }
+            }
+
             Scaffold(
                 topBar = {
                     var isPaused by remember { mutableStateOf(false) }
                     key(styleIdForTop) {
                         Row(
-                            Modifier.fillMaxWidth().wrapContentHeight()
+                            Modifier
+                                .fillMaxWidth()
+                                .wrapContentHeight()
                                 .background(getTextBackgroundColor(this))
                                 .padding(vertical = 4.dp),
                             horizontalArrangement = Arrangement.SpaceAround
@@ -214,13 +355,27 @@ class MainActivity : AppCompatActivity() {
                                         isPaused = true
                                     }
                                 },
+                                fontWeight = FontWeight.ExtraBold,
                                 fontFamily = FontFamily(Font(R.font.monofont)),
                                 style = TextStyle(
                                     color = getTextColor(this@MainActivity),
                                     fontSize = 14.sp,
                                     textAlign = TextAlign.Center,
-                                    fontWeight = FontWeight.ExtraBold
                                 )
+                            )
+
+                            Text(
+                                text = "!!!",
+                                modifier = Modifier.clickable {
+                                    showSoundSettings = true
+                                },
+                                fontFamily = FontFamily(Font(R.font.monofont)),
+                                style = TextStyle(
+                                    color = getTextColor(this@MainActivity),
+                                    fontSize = 14.sp,
+                                    textAlign = TextAlign.Center,
+                                ),
+                                fontWeight = FontWeight.ExtraBold
                             )
                         }
                     }
@@ -275,8 +430,6 @@ class MainActivity : AppCompatActivity() {
                                     it.styleId = styleId
                                     save(this@MainActivity, it)
                                 }
-                            }, { save?.volume ?: 1f }, {
-                                save!!.volume = it
                             }) { showSettings = 0 }
                         }
                         else -> {
@@ -552,7 +705,8 @@ class MainActivity : AppCompatActivity() {
                                     color = getDividerColor(this@MainActivity),
                                     style = Stroke(width = 8f),
                                 )
-                            }.align(Alignment.CenterVertically)
+                            }
+                            .align(Alignment.CenterVertically)
                     ) {
 
                         BoxWithConstraints(Modifier.fillMaxSize()) {

@@ -224,4 +224,7 @@
     <string name="ulysses_fair_fight_header">Это честная битва.</string>
     <string name="ulysses_fair_fight_body">Вы не можете использовать сборную колоду против этого врага.</string>
 
+    <string name="sound">Звук!</string>
+    <string name="save">Сохранить</string>
+
 </resources>

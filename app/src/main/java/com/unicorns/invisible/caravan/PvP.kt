@@ -609,7 +609,7 @@ fun StartPvP(
         return
     }
 
-    ShowGamePvP(activity, game, isCreator, roomNumber, showAlertDialog, enemyHandKey, ::updateEnemyHand, caravansKey, ::updateCaravans) lambda@{
+    ShowGamePvP(activity, game, isCreator, roomNumber, showAlertDialog, enemyHandKey, ::updateEnemyHand, ::updateCaravans) lambda@{
         if (game.isOver()) {
             goBack()
             activity.goBack = null

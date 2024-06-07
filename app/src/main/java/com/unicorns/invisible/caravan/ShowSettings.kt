@@ -45,8 +45,6 @@ fun ShowSettings(
     activity: MainActivity,
     getStyle: () -> Int,
     toggleStyle: () -> Unit,
-    getVolume: () -> Float,
-    setVolume: (Float) -> Unit,
     goBack: () -> Unit
 ) {
     var styleInt by rememberSaveable { mutableIntStateOf(getStyle()) }
