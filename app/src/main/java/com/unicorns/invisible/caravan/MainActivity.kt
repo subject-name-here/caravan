@@ -438,6 +438,11 @@ class MainActivity : AppCompatActivity() {
                                     it.styleId = styleId
                                     save(this@MainActivity, it)
                                 }
+                            }, { save?.useCaravanIntro ?: true }, {
+                                save?.let {
+                                    it.useCaravanIntro = !it.useCaravanIntro
+                                    save(this@MainActivity, it)
+                                }
                             }) { showSettings = 0 }
                         }
                         else -> {

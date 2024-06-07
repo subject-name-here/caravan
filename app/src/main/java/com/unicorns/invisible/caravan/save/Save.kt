@@ -55,6 +55,10 @@ class Save {
 
     @EncodeDefault
     var radioVolume = 1f
+    @EncodeDefault
     var soundVolume = 1f
+    @EncodeDefault
     var ambientVolume = 1f
+
+    var useCaravanIntro = true
 }

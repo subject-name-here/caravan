@@ -85,8 +85,7 @@ fun startAmbient(activity: MainActivity) {
             R.raw.ambient6,
             R.raw.ambient7,
             R.raw.ambient8
-        ).random())
-        .apply {
+        ).random()).apply {
             setVolume(vol, vol)
             setOnCompletionListener {
                 release()
@@ -142,7 +141,11 @@ private val songList = ("MUS_Aint_That_A_Kick_In_the_Head.amr\n" +
 private var pointer = songList.indices.random()
 private var usedIndices = mutableListOf<Int>()
 fun startRadio(activity: MainActivity) {
-    playSongFromRadio(activity, "MUS_caravan_whiplash.amr")
+    if (activity.save?.useCaravanIntro != false) {
+        playSongFromRadio(activity, "MUS_caravan_whiplash.amr")
+    } else {
+        nextSong(activity)
+    }
 }
 
 var radioPlayer: MediaPlayer? = null

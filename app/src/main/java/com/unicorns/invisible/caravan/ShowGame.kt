@@ -34,6 +34,7 @@ import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -131,8 +132,8 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
 
     fun addCardToCaravan(caravan: Caravan, position: Int, isEnemy: Boolean) {
         fun onCaravanCardInserted() {
-            game.afterPlayerMove { updateEnemyHand(); updateCaravans() }
             resetSelected()
+            game.afterPlayerMove { updateEnemyHand(); updateCaravans() }
             updateCaravans()
         }
 
@@ -288,7 +289,7 @@ fun ShowGameRaw(
                             { selectedCard?.let { game.playerCResources.hand[it] } },
                             getSelectedCaravan,
                             setSelectedCaravan,
-                            isMaxHeight = false,
+                            isMaxHeight = true,
                             state1Enemy,
                             state1Player,
                             state2Enemy,
@@ -412,6 +413,24 @@ fun PlayerSide(
 
 @Composable
 fun PlayerCards(activity: MainActivity, cards: List<Card>, wasCardDropped: Boolean, selectedCard: Int?, selectedCardColor: Color, onClick: (Int) -> Unit) {
+    Hand(activity, false, cards, wasCardDropped, selectedCard, selectedCardColor, onClick)
+}
+
+@Composable
+fun RowOfEnemyCards(activity: MainActivity, cards: List<Card>, wasCardDropped: Boolean = false) {
+    Hand(activity, true, cards, wasCardDropped, -1, Color.Transparent, {})
+}
+
+
+@Composable
+fun Hand(
+    activity: MainActivity,
+    isEnemy: Boolean,
+    cards: List<Card>,
+    wasCardDropped: Boolean,
+    selectedCard: Int?, selectedCardColor: Color, onClick: (Int) -> Unit
+) {
+    val enemyMult = if (isEnemy) -1f else 1f
     BoxWithConstraints(
         Modifier.fillMaxWidth(0.8f).fillMaxHeight(),
         Alignment.TopStart
@@ -422,127 +441,98 @@ fun PlayerCards(activity: MainActivity, cards: List<Card>, wasCardDropped: Boole
         val scaleW = cardWidth / 183.pxToDp()
         val scale = min(scaleW, scaleH)
 
-        val memCards = remember { mutableObjectListOf<Card>().apply { addAll(cards) } }
+        val memCards = remember { mutableObjectListOf<Card>() }
 
-        var recomposeToggleState by remember { mutableStateOf(false) }
-        LaunchedEffect(recomposeToggleState) { }
+        val itemVerticalOffsetMovingIn = remember { Animatable(2.5f * enemyMult) }
+        val itemVerticalOffsetMovingOut = remember { Animatable(0f) }
 
-        if (cards.size > memCards.size) {
-            memCards.addAll((cards.toSet() - memCards.asMutableList().toSet()).toList())
-            recomposeToggleState = !recomposeToggleState
-        }
-        memCards.forEachIndexed { index, it ->
-            val maxVerticalOffset = if (index < 5) 2f else 1f
-            val itemVerticalOffset = remember { Animatable(maxVerticalOffset) }
-            if (it !in cards) {
-                LaunchedEffect(Unit) {
-                    playCardFlipSound(activity)
-                    itemVerticalOffset.animateTo(if (wasCardDropped) maxVerticalOffset else -maxVerticalOffset, TweenSpec(190))
-                    itemVerticalOffset.animateTo(10f, TweenSpec(0))
-                    memCards.remove(it)
-                    memCards.addAll((cards.toSet() - memCards.asMutableList().toSet()).toList())
-                    recomposeToggleState = !recomposeToggleState
-                }
-            } else {
-                LaunchedEffect(Unit) {
-                    playCardFlipSound(activity)
-                    itemVerticalOffset.animateTo(0f, TweenSpec(190))
-                }
+        var recomposeKey by remember { mutableStateOf(false) }
+
+        val key = cards.size - memCards.size
+        LaunchedEffect(key) {
+            if (key > 0) {
+                playCardFlipSound(activity)
+                itemVerticalOffsetMovingIn.snapTo(2.5f * enemyMult)
+                itemVerticalOffsetMovingIn.animateTo(0f, TweenSpec(190))
+            } else if (key < 0) {
+                playCardFlipSound(activity)
+                itemVerticalOffsetMovingOut.snapTo(0f)
+                itemVerticalOffsetMovingOut.animateTo((if (wasCardDropped) 2.5f else -2.5f) * enemyMult, TweenSpec(190))
             }
-
-            ShowCard(
-                activity,
-                it,
-                Modifier
-                    .scale(scale)
-                    .layout { measurable, constraints ->
-                        val cardsSize = if (itemVerticalOffset.isRunning) memCards.size - 1 else memCards.size
-                        val rowWidth = if (memCards.size <= 5) memCards.size else (if (index < 5) 5 else (memCards.size - 5))
-                        val placeable = measurable.measure(constraints)
-                        val scaledWidth = placeable.width
-                        val scaledHeight = placeable.height
-                        val handVerticalAlignment = if (cardsSize > 5) 0 else scaledHeight / 2
-                        val offsetWidth = (index % 5) * scaledWidth + maxWidth.toPx() / 2 - (rowWidth / 2f) * scaledWidth
-                        val offsetHeight = scaledHeight * (index / 5) + handVerticalAlignment + scaledHeight * itemVerticalOffset.value
-                        layout(constraints.maxWidth, 0) {
-                            placeable.place(offsetWidth.toInt(), offsetHeight.toInt())
-                        }
-                    }
-                    .clickable {
-                        if (itemVerticalOffset.value == 0f) {
-                            onClick(index)
-                        }
-                    }
-                    .border(
-                        width = if (index == (selectedCard ?: -1)) 4.dp else (-1).dp,
-                        color = selectedCardColor
-                    )
-                    .padding(4.dp)
-                    .clip(RoundedCornerShape(12f)),
-                toModify = false
-            )
+            memCards.clear()
+            memCards.addAll(cards)
+            recomposeKey = !recomposeKey
         }
-    }
-}
 
-@Composable
-fun RowOfEnemyCards(activity: MainActivity, cards: List<Card>, wasCardDropped: Boolean = false) {
-    BoxWithConstraints(
-        Modifier.fillMaxWidth(0.8f).fillMaxHeight(),
-        Alignment.TopStart
-    ) {
-        val cardHeight = maxHeight / 2
-        val cardWidth = maxWidth / 5
-        val scaleH = cardHeight / 256.pxToDp()
-        val scaleW = cardWidth / 183.pxToDp()
-        val scale = min(scaleW, scaleH)
+        LaunchedEffect(recomposeKey) { }
 
-        val memCards = remember { mutableObjectListOf<Card>().apply { addAll(cards) } }
+        val iteratedCollection = (memCards.asMutableList() + cards.toList()).distinct()
+        iteratedCollection.forEach {
+            val index = if (it in memCards) memCards.indexOf(it) else cards.indexOf(it)
+            val isMovingOut = it !in cards
+            val isMovingIn = it !in memCards
 
-        var recomposeToggleState by remember { mutableStateOf(false) }
-        LaunchedEffect(recomposeToggleState) { }
-
-        if (cards.size > memCards.size) {
-            memCards.addAll((cards.toSet() - memCards.asMutableList().toSet()).toList())
-            recomposeToggleState = !recomposeToggleState
-        }
-        memCards.forEachIndexed { index, it ->
-            val maxVerticalOffset = if (index < 5) 2f else 1f
-            val itemVerticalOffset = remember { Animatable(-maxVerticalOffset) }
-            if (it !in cards) {
-                LaunchedEffect(Unit) {
-                    playCardFlipSound(activity)
-                    itemVerticalOffset.animateTo(if (wasCardDropped) -maxVerticalOffset else maxVerticalOffset, TweenSpec(190))
-                    itemVerticalOffset.animateTo(-10f, TweenSpec(0))
-                    memCards.remove(it)
-                    memCards.addAll((cards.toSet() - memCards.asMutableList().toSet()).toList())
-                    recomposeToggleState = !recomposeToggleState
-                }
+            if (isEnemy) {
+                ShowCardBack(
+                    activity,
+                    it,
+                    Modifier
+                        .scale(scale)
+                        .layout { measurable, constraints ->
+                            val cardsSize = iteratedCollection.size
+                            val rowWidth = if (cardsSize <= 5) cardsSize else (if (index < 5) 5 else (cardsSize - 5))
+                            val placeable = measurable.measure(constraints)
+                            val scaledWidth = placeable.width
+                            val scaledHeight = placeable.height
+                            val handVerticalAlignment = if (cardsSize > 5) 0 else scaledHeight / 2
+                            val offsetWidth = (index % 5) * scaledWidth + maxWidth.toPx() / 2 - (rowWidth / 2f) * scaledWidth
+                            val offsetHeight = scaledHeight * (index / 5) + handVerticalAlignment +
+                                    scaledHeight * (
+                                    (if (isMovingIn) itemVerticalOffsetMovingIn.value else 0f) +
+                                            (if (isMovingOut) itemVerticalOffsetMovingOut.value else 0f)
+                                    )
+                            layout(constraints.maxWidth, 0) {
+                                placeable.place(offsetWidth.toInt(), offsetHeight.toInt())
+                            }
+                        }
+                )
             } else {
-                LaunchedEffect(Unit) {
-                    playCardFlipSound(activity)
-                    itemVerticalOffset.animateTo(0f, TweenSpec(190))
-                }
-            }
-            ShowCardBack(
-                activity,
-                it,
-                Modifier
-                    .scale(scale)
-                    .layout { measurable, constraints ->
-                        val cardsSize = if (itemVerticalOffset.isRunning) memCards.size - 1 else memCards.size
-                        val rowWidth = if (memCards.size <= 5) memCards.size else (if (index < 5) 5 else (memCards.size - 5))
-                        val placeable = measurable.measure(constraints)
-                        val scaledWidth = placeable.width
-                        val scaledHeight = placeable.height
-                        val handVerticalAlignment = if (cardsSize > 5) 0 else scaledHeight / 2
-                        val offsetWidth = (index % 5) * scaledWidth + maxWidth.toPx() / 2 - (rowWidth / 2f) * scaledWidth
-                        val offsetHeight = scaledHeight * (index / 5) + handVerticalAlignment + scaledHeight * itemVerticalOffset.value
-                        layout(constraints.maxWidth, 0) {
-                            placeable.place(offsetWidth.toInt(), offsetHeight.toInt())
+                ShowCard(
+                    activity,
+                    it,
+                    Modifier
+                        .scale(scale)
+                        .layout { measurable, constraints ->
+                            val cardsSize = iteratedCollection.size
+                            val rowWidth = if (cardsSize <= 5) cardsSize else (if (index < 5) 5 else (cardsSize - 5))
+                            val placeable = measurable.measure(constraints)
+                            val scaledWidth = placeable.width
+                            val scaledHeight = placeable.height
+                            val handVerticalAlignment = if (cardsSize > 5) 0 else scaledHeight / 2
+                            val offsetWidth = (index % 5) * scaledWidth + maxWidth.toPx() / 2 - (rowWidth / 2f) * scaledWidth
+                            val offsetHeight = scaledHeight * (index / 5) + handVerticalAlignment +
+                                    scaledHeight * (
+                                    (if (isMovingIn) itemVerticalOffsetMovingIn.value else 0f) +
+                                            (if (isMovingOut) itemVerticalOffsetMovingOut.value else 0f)
+                                    )
+                            layout(constraints.maxWidth, 0) {
+                                placeable.place(offsetWidth.toInt(), offsetHeight.toInt())
+                            }
                         }
-                    }
-            )
+                        .clickable {
+                            if (itemVerticalOffsetMovingIn.value == 0f && itemVerticalOffsetMovingIn.value == 0f) {
+                                onClick(index)
+                            }
+                        }
+                        .border(
+                            width = if (index == (selectedCard ?: -1)) 4.dp else (-1).dp,
+                            color = selectedCardColor
+                        )
+                        .padding(4.dp)
+                        .clip(RoundedCornerShape(12f)),
+                    toModify = false
+                )
+            }
         }
     }
 }
@@ -560,17 +550,32 @@ fun RowScope.CaravanOnField(
     selectCaravan: () -> Unit = {},
     addSelectedCardOnPosition: (Int) -> Unit,
 ) {
-    val memCaravan = remember { mutableObjectListOf<CardWithModifier>().apply { addAll(caravan.cards) } }
-    fun updateMem() {
-        memCaravan.addAll((caravan.cards - memCaravan.asMutableList().toSet()).toList())
-    }
+    val enemyMult = if (isEnemy) -1 else 1
 
-    var recomposeToggleState by remember { mutableStateOf(false) }
-    LaunchedEffect(recomposeToggleState) { }
+    val memCaravan = remember { mutableObjectListOf<CardWithModifier>() }
 
-    if (caravan.size > memCaravan.size) {
-        updateMem()
-        recomposeToggleState = !recomposeToggleState
+    val itemVerticalOffsetMovingIn = remember { Animatable(2.5f * enemyMult) }
+    val itemHorizontalOffsetMovingOut = remember { Animatable(0f) }
+
+    var recomposeKey by remember { mutableStateOf(false) }
+
+    val key = caravan.size - memCaravan.size
+    val scope = rememberCoroutineScope()
+    LaunchedEffect(key) {
+        scope.launch {
+            if (key > 0) {
+                playCardFlipSound(activity)
+                itemVerticalOffsetMovingIn.snapTo(2.5f * enemyMult)
+                itemVerticalOffsetMovingIn.animateTo(0f, TweenSpec(190, 380))
+            } else if (key < 0) {
+                playCardFlipSound(activity)
+                itemHorizontalOffsetMovingOut.snapTo(0f)
+                itemHorizontalOffsetMovingOut.animateTo(2f, TweenSpec(190, 380))
+            }
+            memCaravan.clear()
+            memCaravan.addAll(caravan.cards)
+            recomposeKey = !recomposeKey
+        }
     }
 
     Column(Modifier
@@ -597,6 +602,7 @@ fun RowScope.CaravanOnField(
                     .padding(2.dp)
             )
         }
+        LaunchedEffect(recomposeKey) {}
 
         LazyColumn(
             state = state,
@@ -613,99 +619,68 @@ fun RowScope.CaravanOnField(
         ) {
             item {
                 Box(Modifier.wrapContentHeight(unbounded = true)) {
-                    memCaravan.forEachIndexed { index, it ->
-                        val itemVerticalOffset = remember { Animatable(if (isPlayerTurn) 12f else -12f) }
-                        val itemHorizontalOffset = remember { Animatable(0f) }
-                        var memIndex by remember { mutableIntStateOf(index) }
+                    val iteratedCollection = (memCaravan.asMutableList() + caravan.cards).distinct()
+                    iteratedCollection.forEach {
+                        val index = if (it in memCaravan) memCaravan.indexOf(it) else caravan.cards.indexOf(it)
+                        val isMovingOut = it !in caravan.cards
+                        val isMovingIn = it !in memCaravan
 
-                        if (it !in caravan.cards) {
-                            LaunchedEffect(Unit) {
-                                playCardFlipSound(activity)
-                                itemHorizontalOffset.animateTo(4f, TweenSpec(380, 190))
-                                memCaravan.remove(it)
-                                updateMem()
-                                itemHorizontalOffset.animateTo(0f, TweenSpec(0, 0))
-                                recomposeToggleState = !recomposeToggleState
-                            }
-                        } else if (memIndex != index) {
-                            LaunchedEffect(Unit) {
-                                playCardFlipSound(activity)
-                                itemVerticalOffset.animateTo((memIndex - index) / 3f, TweenSpec(190, 190))
-                                memIndex = index
-                                recomposeToggleState = !recomposeToggleState
-                            }
-                        } else {
-                            LaunchedEffect(Unit) {
-                                playCardFlipSound(activity)
-                                itemVerticalOffset.animateTo(0f, TweenSpec(380, 190))
-                                recomposeToggleState = !recomposeToggleState
-                            }
-                        }
-
-                        val itemIndex = if (isEnemy) (caravan.cards.size - memIndex) else memIndex
+                        val itemIndex = if (isEnemy) (caravan.cards.size - index) else index
                         val modifier = Modifier
                             .layout { measurable, constraints ->
                                 val placeable = measurable.measure(constraints)
                                 val offsetWidth = constraints.maxWidth / 2 - placeable.width / 2
-                                val antiOffsetHeight = placeable.height / 3 * itemIndex + (itemVerticalOffset.value * placeable.height).toInt()
-                                layout(constraints.maxWidth, placeable.height / 3 * (caravan.size + 3)) {
+                                val antiOffsetHeight = placeable.height / 3 * itemIndex
+                                layout(constraints.maxWidth, placeable.height / 3 * (iteratedCollection.size + 3)) {
                                     placeable.place(
-                                        offsetWidth + (itemHorizontalOffset.value * placeable.width).toInt(),
-                                        antiOffsetHeight
+                                        offsetWidth +
+                                                (if (isMovingOut) (itemHorizontalOffsetMovingOut.value * placeable.width).toInt() else 0),
+                                        antiOffsetHeight +
+                                                (if (isMovingIn) (itemVerticalOffsetMovingIn.value * placeable.height).toInt() else 0)
                                     )
                                 }
                             }
 
                         Box(modifier = modifier) {
                             ShowCard(activity, it.card, Modifier.clickable {
-                                if (itemVerticalOffset.value == 0f && itemHorizontalOffset.value == 0f) {
+                                if (itemVerticalOffsetMovingIn.value == 0f && itemHorizontalOffsetMovingOut.value == 0f) {
                                     addSelectedCardOnPosition(index)
                                 }
                             })
                         }
 
-                        val memModifiers = remember { mutableObjectListOf<Card>().apply { addAll(it.modifiersCopy()) } }
-                        fun updateModifiers() {
-                            memModifiers.addAll((it.modifiersCopy() - memModifiers.asMutableList().toSet()).toList())
-                        }
-                        if (it.modifiersCopy().size > memModifiers.size) {
-                            updateModifiers()
-                            recomposeToggleState = !recomposeToggleState
-                        }
-                        memModifiers.forEachIndexed { modifierIndex, card ->
-                            val maxOffset = if (isEnemy) -12f else 12f
-                            val modifierVerticalOffset = remember { Animatable(if (isPlayerTurn) 12f else -12f) }
-                            if (card !in it.modifiersCopy()) {
-                                LaunchedEffect(Unit) {
+                        val memModifiers = remember { mutableObjectListOf<Card>() }
+                        val modifierVerticalOffsetMovingIn = remember { Animatable(3f * (if (isPlayerTurn) 1f else -1f)) }
+                        val key2 = it.modifiersCopy().size - memModifiers.size
+                        LaunchedEffect(key2) {
+                            scope.launch {
+                                if (key2 > 0) {
                                     playCardFlipSound(activity)
-                                    memModifiers.remove(card)
-                                    updateModifiers()
-                                    recomposeToggleState = !recomposeToggleState
+                                    modifierVerticalOffsetMovingIn.snapTo(3f * (if (isPlayerTurn) 1f else -1f))
+                                    modifierVerticalOffsetMovingIn.animateTo(0f, TweenSpec(190, 380))
                                 }
-                            } else if (it !in caravan.cards) {
-                                LaunchedEffect(Unit) {
-                                    playCardFlipSound(activity)
-                                    modifierVerticalOffset.animateTo(maxOffset, TweenSpec(380, 190))
-                                    recomposeToggleState = !recomposeToggleState
-                                }
-                            } else {
-                                LaunchedEffect(Unit) {
-                                    playCardFlipSound(activity)
-                                    modifierVerticalOffset.animateTo(0f, TweenSpec(380, 190))
-                                    recomposeToggleState = !recomposeToggleState
-                                }
+                                memModifiers.clear()
+                                memModifiers.addAll(it.modifiersCopy())
+                                recomposeKey = !recomposeKey
                             }
+                        }
+
+                        (memModifiers.asMutableList() + it.modifiersCopy()).distinct().forEachIndexed { modifierIndex, card ->
+                            val isMovingInModifier = card !in memModifiers
                             Box(modifier = Modifier
                                 .layout { measurable, constraints ->
                                     val placeable = measurable.measure(constraints)
                                     val offsetWidth = constraints.maxWidth / 2 - placeable.width / 2
                                     layout(constraints.maxWidth, 0) {
                                         placeable.place(
-                                            ((10.dp) * (modifierIndex + 1)).toPx().toInt() + offsetWidth + (itemHorizontalOffset.value * placeable.width).toInt(),
-                                            placeable.height / 3 * itemIndex + (modifierVerticalOffset.value * placeable.height).toInt()
+                                            ((if (isEnemy) (-10).dp else 10.dp) * (modifierIndex + 1)).toPx().toInt() + offsetWidth +
+                                                    if (isMovingOut) (itemHorizontalOffsetMovingOut.value * placeable.width).toInt() else 0,
+                                            placeable.height / 3 * itemIndex +
+                                                    if (isMovingInModifier) (modifierVerticalOffsetMovingIn.value * placeable.height).toInt() else 0
                                         )
                                     }
-                                }) {
+                                })
+                            {
                                 ShowCard(activity, card, Modifier)
                             }
                         }
