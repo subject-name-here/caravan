@@ -221,5 +221,8 @@
     <string name="ulysses_fair_fight_body">You cannot use custom deck against this enemy.</string>
     <string name="sound">Sound!</string>
     <string name="save">Save</string>
+    <string name="radio">RADio</string>
+    <string name="ambient">AMBient</string>
+    <string name="sfx">SFX</string>
 
 </resources>

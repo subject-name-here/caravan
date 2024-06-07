@@ -105,11 +105,13 @@ class MainActivity : AppCompatActivity() {
     override fun onPause() {
         super.onPause()
         radioPlayer?.pause()
+        currentPlayer?.pause()
     }
 
     override fun onResume() {
         super.onResume()
         radioPlayer?.start()
+        currentPlayer?.start()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -219,10 +221,12 @@ class MainActivity : AppCompatActivity() {
                             Column {
                                 Row(verticalAlignment = Alignment.CenterVertically) {
                                     Text(
-                                        text = "RADio",
-                                        modifier = Modifier.clickable {
-                                            nextSong(this@MainActivity)
-                                        }.fillMaxWidth(0.33f),
+                                        text = stringResource(R.string.radio),
+                                        modifier = Modifier
+                                            .clickable {
+                                                nextSong(this@MainActivity)
+                                            }
+                                            .fillMaxWidth(0.33f),
                                         fontFamily = FontFamily(Font(R.font.monofont)),
                                         style = TextStyle(
                                             color = getTextColor(this@MainActivity),
@@ -250,10 +254,12 @@ class MainActivity : AppCompatActivity() {
                                 }
                                 Row(verticalAlignment = Alignment.CenterVertically) {
                                     Text(
-                                        text = "AMBient",
-                                        modifier = Modifier.clickable {
-                                            nextSong(this@MainActivity)
-                                        }.fillMaxWidth(0.33f),
+                                        text = stringResource(R.string.ambient),
+                                        modifier = Modifier
+                                            .clickable {
+                                                nextSong(this@MainActivity)
+                                            }
+                                            .fillMaxWidth(0.33f),
                                         fontFamily = FontFamily(Font(R.font.monofont)),
                                         style = TextStyle(
                                             color = getTextColor(this@MainActivity),
@@ -281,10 +287,12 @@ class MainActivity : AppCompatActivity() {
                                 }
                                 Row(verticalAlignment = Alignment.CenterVertically) {
                                     Text(
-                                        text = "SFX",
-                                        modifier = Modifier.clickable {
-                                            nextSong(this@MainActivity)
-                                        }.fillMaxWidth(0.33f),
+                                        text = stringResource(R.string.sfx),
+                                        modifier = Modifier
+                                            .clickable {
+                                                nextSong(this@MainActivity)
+                                            }
+                                            .fillMaxWidth(0.33f),
                                         fontFamily = FontFamily(Font(R.font.monofont)),
                                         style = TextStyle(
                                             color = getTextColor(this@MainActivity),
@@ -440,7 +448,7 @@ class MainActivity : AppCompatActivity() {
                                 { showPvP = true },
                                 { showTutorial = true },
                                 { showRules = true },
-                                { showSettings = 1 }
+                                { playNotificationSound(this@MainActivity) { showSettings = 1 } }
                             )
                         }
                     }

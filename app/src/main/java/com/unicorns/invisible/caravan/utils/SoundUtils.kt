@@ -98,20 +98,20 @@ fun startAmbient(activity: MainActivity) {
         }
 }
 
-private val songList = ("MUS-Cobwebs-and-Rainbows.amr\n" +
-        "MUS-EddyArnold-Rca-ItsASin.amr\n" +
-        "MUS-Goin-Under.amr\n" +
-        "MUS-Hallo-Mister-X.amr\n" +
-        "MUS-Happy-Times.amr\n" +
-        "MUS-Heartaches-by-the-Number.amr\n" +
-        "MUS-HomeOnTheWastes.amr\n" +
-        "MUS-I-m-Movin-Out.amr\n" +
-        "MUS-I-m-So-Blue.amr\n" +
-        "MUS_Aint_That_A_Kick_In_the_Head.amr\n" +
+private val songList = ("MUS_Aint_That_A_Kick_In_the_Head.amr\n" +
         "MUS_American_Swing.amr\n" +
         "MUS_Big_Iron.amr\n" +
         "MUS_Blue_Moon.amr\n" +
         "MUS_Blues_For_You.amr\n" +
+        "MUS_Cobwebs_and_Rainbows.amr\n" +
+        "MUS_EddyArnold_Rca_ItsASin.amr\n" +
+        "MUS_Goin_Under.amr\n" +
+        "MUS_Hallo_Mister_X.amr\n" +
+        "MUS_Happy_Times.amr\n" +
+        "MUS_Heartaches_by_the_Number.amr\n" +
+        "MUS_HomeOnTheWastes.amr\n" +
+        "MUS_I_m_Movin_Out.amr\n" +
+        "MUS_I_m_So_Blue.amr\n" +
         "MUS_In_The_Shadow_Of_The_Valley.amr\n" +
         "MUS_Its_A_Sin_To_Tell_A_Lie.amr\n" +
         "MUS_Jazz_Blues_GT.amr\n" +

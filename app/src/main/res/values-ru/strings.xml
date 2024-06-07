@@ -226,5 +226,8 @@
 
     <string name="sound">Звук!</string>
     <string name="save">Сохранить</string>
+    <string name="radio">РАДио</string>
+    <string name="ambient">ФОН</string>
+    <string name="sfx">SFX</string>
 
 </resources>

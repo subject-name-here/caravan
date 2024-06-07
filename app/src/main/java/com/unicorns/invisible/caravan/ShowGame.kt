@@ -1,6 +1,5 @@
 package com.unicorns.invisible.caravan
 
-import android.util.Log
 import androidx.collection.mutableObjectListOf
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.TweenSpec
@@ -18,13 +17,11 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
@@ -472,7 +469,9 @@ fun PlayerCards(activity: MainActivity, cards: List<Card>, wasCardDropped: Boole
                         }
                     }
                     .clickable {
-                        onClick(index)
+                        if (itemVerticalOffset.value == 0f) {
+                            onClick(index)
+                        }
                     }
                     .border(
                         width = if (index == (selectedCard ?: -1)) 4.dp else (-1).dp,
@@ -658,7 +657,11 @@ fun RowScope.CaravanOnField(
                             }
 
                         Box(modifier = modifier) {
-                            ShowCard(activity, it.card, Modifier.clickable { addSelectedCardOnPosition(index) })
+                            ShowCard(activity, it.card, Modifier.clickable {
+                                if (itemVerticalOffset.value == 0f && itemHorizontalOffset.value == 0f) {
+                                    addSelectedCardOnPosition(index)
+                                }
+                            })
                         }
 
                         val memModifiers = remember { mutableObjectListOf<Card>().apply { addAll(it.modifiersCopy()) } }
