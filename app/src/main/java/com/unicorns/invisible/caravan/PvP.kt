@@ -59,8 +59,11 @@ import com.unicorns.invisible.caravan.utils.getKnobColor
 import com.unicorns.invisible.caravan.utils.getTextBackgroundColor
 import com.unicorns.invisible.caravan.utils.getTextColor
 import com.unicorns.invisible.caravan.utils.getTrackColor
+import com.unicorns.invisible.caravan.utils.playLoseSound
+import com.unicorns.invisible.caravan.utils.playWinSound
 import com.unicorns.invisible.caravan.utils.scrollbar
 import com.unicorns.invisible.caravan.utils.sendRequest
+import com.unicorns.invisible.caravan.utils.stopMusic
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -497,15 +500,17 @@ fun StartPvP(
     }
     game.also {
         it.onWin = {
+            playWinSound(activity)
             showAlertDialog(activity.getString(R.string.result), activity.getString(R.string.you_win) +
                     winCard(activity, activity.save!!, CardBack.STANDARD, 1, isAlt = true, isCustom = false))
             save(activity, activity.save!!)
         }
         it.onLose = {
+            playLoseSound(activity)
             showAlertDialog(activity.getString(R.string.result), activity.getString(R.string.you_lose))
         }
     }
-    activity.goBack = goBack
+    activity.goBack = { stopMusic(); goBack() }
 
     var enemyHandKey by remember { mutableStateOf(true) }
     fun updateEnemyHand() {

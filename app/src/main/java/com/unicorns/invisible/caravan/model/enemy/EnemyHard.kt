@@ -58,14 +58,15 @@ data object EnemyHard : Enemy() {
             }
             if (card.rank == Rank.KING) {
                 val caravan = game.playerCaravans.minBy { abs(26 - it.getValue()) }
+                val caravanIndex = game.playerCaravans.indexOf(caravan)
                 val cardToKing = caravan.cards
                     .filter { caravan.getValue() + it.getValue() !in (21..26) }
                     .maxByOrNull { it.getValue() }
 
                 if (cardToKing != null && cardToKing.canAddModifier(card)) {
                     val futureValue = caravan.getValue() + cardToKing.getValue()
-                    val enemyValue = game.enemyCaravans[game.playerCaravans.indexOf(caravan)].getValue()
-                    if (!(checkMoveOnDefeat(game, game.playerCaravans.indexOf(caravan)) && enemyValue in (21..26) && (enemyValue > futureValue || futureValue > 26))) {
+                    val enemyValue = game.enemyCaravans[caravanIndex].getValue()
+                    if (!(checkMoveOnDefeat(game, caravanIndex) && enemyValue in (21..26) && (enemyValue > futureValue || futureValue > 26))) {
                         cardToKing.addModifier(game.enemyCResources.removeFromHand(cardIndex))
                         return
                     }
@@ -78,8 +79,8 @@ data object EnemyHard : Enemy() {
                         if (it.second.getValue() + it.first.getValue() in (13..26)) {
                             if (it.first.canAddModifier(card)) {
                                 val futureValue = it.second.getValue() + it.first.getValue()
-                                val playerValue = game.playerCaravans[game.enemyCaravans.indexOf(caravan)].getValue()
-                                if (!(checkMoveOnDefeat(game, game.playerCaravans.indexOf(caravan)) && futureValue in (21..26) && (futureValue > playerValue || playerValue > 26))) {
+                                val playerValue = caravan.getValue()
+                                if (!(checkMoveOnDefeat(game, caravanIndex) && futureValue in (21..26) && (futureValue > playerValue || playerValue > 26))) {
                                     it.first.addModifier(game.enemyCResources.removeFromHand(cardIndex))
                                     return
                                 }

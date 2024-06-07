@@ -20,16 +20,19 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.AlertDialogDefaults
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -67,8 +70,12 @@ import com.unicorns.invisible.caravan.utils.getKnobColor
 import com.unicorns.invisible.caravan.utils.getTextBackgroundColor
 import com.unicorns.invisible.caravan.utils.getTextColor
 import com.unicorns.invisible.caravan.utils.getTrackColor
+import com.unicorns.invisible.caravan.utils.nextSong
+import com.unicorns.invisible.caravan.utils.pause
+import com.unicorns.invisible.caravan.utils.resume
 import com.unicorns.invisible.caravan.utils.scrollbar
 import com.unicorns.invisible.caravan.utils.sendRequest
+import com.unicorns.invisible.caravan.utils.startRadio
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import org.chromium.net.CronetEngine
@@ -95,11 +102,13 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         id = UUID.randomUUID().toString()
+
         save = loadSave(this) ?: run {
             save(this, Save())
             loadSave(this)!!
         }
         styleId = save?.styleId ?: 1
+        startRadio(this)
 
         if (cronetEngine == null) {
             try {
@@ -119,6 +128,7 @@ class MainActivity : AppCompatActivity() {
             var showRules by rememberSaveable { mutableStateOf(false) }
 
             var showSettings by rememberSaveable { mutableIntStateOf(0) }
+            var styleIdForTop by rememberSaveable { mutableIntStateOf(styleId) }
 
             var selectedDeck by rememberSaveable { mutableStateOf(save?.selectedDeck ?: (CardBack.STANDARD to false)) }
 
@@ -169,67 +179,118 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
-            when {
-                showRules -> {
-                    ShowRules(activity = this) { showRules = false }
-                }
-                showTutorial -> {
-                    Tutorial(activity = this) { showTutorial = false }
-                }
-                deckSelection -> {
-                    DeckSelection(
-                        this,
-                        { selectedDeck },
-                        { back, isAlt -> selectedDeck = back to isAlt }
-                    ) { deckSelection = false }
-                }
-                showAbout -> {
-                    ShowAbout(activity = this) { showAbout = false }
-                }
-                showGameStats -> {
-                    ShowPvE(
-                        activity = this,
-                        selectedDeck = { selectedDeck },
-                        ::showAlertDialog
-                    ) { showGameStats = false }
-                }
-                showPvP -> {
-                    if (!checkIfCustomDeckCanBeUsedInGame(CResources(save!!.getCustomDeckCopy()))) {
-                        showAlertDialog(
-                            stringResource(R.string.custom_deck_is_too_small),
-                            stringResource(R.string.custom_deck_is_too_small_message)
-                        )
-                        showPvP = false
-                    } else {
-                        ShowPvP(
-                            activity = this,
-                            selectedDeck = { selectedDeck },
-                            ::showAlertDialog
-                        ) { showPvP = false }
+            Scaffold(
+                topBar = {
+                    var isPaused by remember { mutableStateOf(false) }
+                    key(styleIdForTop) {
+                        Row(
+                            Modifier.fillMaxWidth().wrapContentHeight()
+                                .background(getTextBackgroundColor(this))
+                                .padding(vertical = 4.dp),
+                            horizontalArrangement = Arrangement.SpaceAround
+                        ) {
+                            Text(
+                                text = ">|",
+                                modifier = Modifier.clickable {
+                                    nextSong(this@MainActivity)
+                                },
+                                fontFamily = FontFamily(Font(R.font.monofont)),
+                                style = TextStyle(
+                                    color = getTextColor(this@MainActivity),
+                                    fontSize = 14.sp,
+                                    textAlign = TextAlign.Center,
+                                    fontWeight = FontWeight.ExtraBold
+                                )
+                            )
+
+                            Text(
+                                text = if (isPaused) "|>" else "||",
+                                modifier = Modifier.clickable {
+                                    if (isPaused) {
+                                        resume()
+                                        isPaused = false
+                                    } else {
+                                        pause()
+                                        isPaused = true
+                                    }
+                                },
+                                fontFamily = FontFamily(Font(R.font.monofont)),
+                                style = TextStyle(
+                                    color = getTextColor(this@MainActivity),
+                                    fontSize = 14.sp,
+                                    textAlign = TextAlign.Center,
+                                    fontWeight = FontWeight.ExtraBold
+                                )
+                            )
+                        }
                     }
                 }
-                showSettings > 0 -> {
-                    ShowSettings(activity = this, { styleId }, {
-                        styleId = 1 - styleId
-                        showSettings = 3 - showSettings
-                        save?.let {
-                            it.styleId = styleId
-                            save(this, it)
+            ) { innerPadding ->
+                Box(Modifier.padding(innerPadding)) {
+                    when {
+                        showRules -> {
+                            ShowRules(activity = this@MainActivity) { showRules = false }
                         }
-                    }, { save?.volume ?: 1f }, {
-                        save!!.volume = it
-                    }) { showSettings = 0 }
-                }
-                else -> {
-                    MainMenu(
-                        { deckSelection = true },
-                        { showAbout = true },
-                        { showGameStats = true },
-                        { showPvP = true },
-                        { showTutorial = true },
-                        { showRules = true },
-                        { showSettings = 1 }
-                    )
+                        showTutorial -> {
+                            Tutorial(activity = this@MainActivity) { showTutorial = false }
+                        }
+                        deckSelection -> {
+                            DeckSelection(
+                                this@MainActivity,
+                                { selectedDeck },
+                                { back, isAlt -> selectedDeck = back to isAlt }
+                            ) { deckSelection = false }
+                        }
+                        showAbout -> {
+                            ShowAbout(activity = this@MainActivity) { showAbout = false }
+                        }
+                        showGameStats -> {
+                            ShowPvE(
+                                activity = this@MainActivity,
+                                selectedDeck = { selectedDeck },
+                                ::showAlertDialog
+                            ) { showGameStats = false }
+                        }
+                        showPvP -> {
+                            if (!checkIfCustomDeckCanBeUsedInGame(CResources(save!!.getCustomDeckCopy()))) {
+                                showAlertDialog(
+                                    stringResource(R.string.custom_deck_is_too_small),
+                                    stringResource(R.string.custom_deck_is_too_small_message)
+                                )
+                                showPvP = false
+                            } else {
+                                ShowPvP(
+                                    activity = this@MainActivity,
+                                    selectedDeck = { selectedDeck },
+                                    ::showAlertDialog
+                                ) { showPvP = false }
+                            }
+                        }
+                        showSettings > 0 -> {
+                            ShowSettings(activity = this@MainActivity, { styleId }, {
+                                styleId = 1 - styleId
+                                showSettings = 3 - showSettings
+                                styleIdForTop = styleId
+                                save?.let {
+                                    it.styleId = styleId
+                                    save(this@MainActivity, it)
+                                }
+                            }, { save?.volume ?: 1f }, {
+                                save!!.volume = it
+                            }) { showSettings = 0 }
+                        }
+                        else -> {
+                            MainMenu(
+                                { deckSelection = true },
+                                { showAbout = true },
+                                { showGameStats = true },
+                                { showPvP = true },
+                                { showTutorial = true },
+                                { showRules = true },
+                                { showSettings = 1 }
+                            )
+                        }
+                    }
                 }
             }
         }

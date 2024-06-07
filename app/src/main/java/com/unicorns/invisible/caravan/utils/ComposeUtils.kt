@@ -62,8 +62,7 @@ fun ShowCardBack(activity: MainActivity, card: Card, modifier: Modifier) {
     Image(
         painter = painter2,
         contentDescription = "",
-        modifier
-            .clip(RoundedCornerShape(6f)),
+        modifier.clip(RoundedCornerShape(5)),
         contentScale = ContentScale.Fit
     )
 }

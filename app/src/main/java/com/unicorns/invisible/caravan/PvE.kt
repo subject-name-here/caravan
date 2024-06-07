@@ -56,7 +56,10 @@ import com.unicorns.invisible.caravan.utils.getKnobColor
 import com.unicorns.invisible.caravan.utils.getTextBackgroundColor
 import com.unicorns.invisible.caravan.utils.getTextColor
 import com.unicorns.invisible.caravan.utils.getTrackColor
+import com.unicorns.invisible.caravan.utils.playLoseSound
+import com.unicorns.invisible.caravan.utils.playWinSound
 import com.unicorns.invisible.caravan.utils.scrollbar
+import com.unicorns.invisible.caravan.utils.stopMusic
 import java.util.Locale
 
 
@@ -534,6 +537,7 @@ fun StartGame(
     }
     game.also {
         it.onWin = {
+            playWinSound(activity)
             var message = activity.getString(R.string.you_win)
             activity.save?.let { save ->
                 enemy.getRewardBack()?.let { back ->
@@ -568,6 +572,7 @@ fun StartGame(
             }
         }
         it.onLose = {
+            playLoseSound(activity)
             activity.save?.let { save ->
                 save.gamesFinished++
                 save(activity, save)
@@ -580,7 +585,7 @@ fun StartGame(
         }
         it.saySomething = { id1, id2 -> showAlertDialog(activity.getString(id1), activity.getString(id2)) }
     }
-    activity.goBack = goBack
+    activity.goBack = { stopMusic(); goBack() }
     ShowGame(activity, game) {
         if (game.isOver()) {
             goBack()

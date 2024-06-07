@@ -79,6 +79,7 @@ import com.unicorns.invisible.caravan.utils.getTrackColor
 import com.unicorns.invisible.caravan.utils.playCardFlipSound
 import com.unicorns.invisible.caravan.utils.pxToDp
 import com.unicorns.invisible.caravan.utils.scrollbar
+import com.unicorns.invisible.caravan.utils.startAmbient
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlin.math.min
@@ -203,6 +204,8 @@ fun ShowGameRaw(
     dropCaravan: () -> Unit,
     enemyHandKey: Int
 ) {
+    LaunchedEffect(Unit) { startAmbient(activity) }
+
     val state1Enemy = rememberLazyListState()
     val state1Player = rememberLazyListState()
     val state2Enemy = rememberLazyListState()
@@ -672,7 +675,6 @@ fun RowScope.CaravanOnField(
                             if (card !in it.modifiersCopy()) {
                                 LaunchedEffect(Unit) {
                                     playCardFlipSound(activity)
-                                    modifierVerticalOffset.animateTo(maxOffset, TweenSpec(380, 190))
                                     memModifiers.remove(card)
                                     updateModifiers()
                                     recomposeToggleState = !recomposeToggleState
