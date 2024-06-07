@@ -575,6 +575,7 @@ fun RowScope.CaravanOnField(
             memCaravan.clear()
             memCaravan.addAll(caravan.cards)
             recomposeKey = !recomposeKey
+            itemHorizontalOffsetMovingOut.snapTo(0f)
         }
     }
 
@@ -606,7 +607,7 @@ fun RowScope.CaravanOnField(
 
         LazyColumn(
             state = state,
-            verticalArrangement = if (isEnemy) Arrangement.Bottom else Arrangement.Top,
+            verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
                 .fillMaxHeight()
@@ -625,12 +626,14 @@ fun RowScope.CaravanOnField(
                         val isMovingOut = it !in caravan.cards
                         val isMovingIn = it !in memCaravan
 
-                        val itemIndex = if (isEnemy) (caravan.cards.size - index) else index
                         val modifier = Modifier
                             .layout { measurable, constraints ->
                                 val placeable = measurable.measure(constraints)
                                 val offsetWidth = constraints.maxWidth / 2 - placeable.width / 2
-                                val antiOffsetHeight = placeable.height / 3 * itemIndex
+                                val antiOffsetHeight = if (isEnemy)
+                                        (state.layoutInfo.viewportSize.height - placeable.height / 3 * index - placeable.height)
+                                else
+                                    (placeable.height / 3 * index)
                                 layout(constraints.maxWidth, placeable.height / 3 * (iteratedCollection.size + 3)) {
                                     placeable.place(
                                         offsetWidth +
@@ -666,7 +669,7 @@ fun RowScope.CaravanOnField(
                         }
 
                         (memModifiers.asMutableList() + it.modifiersCopy()).distinct().forEachIndexed { modifierIndex, card ->
-                            val isMovingInModifier = card !in memModifiers
+                            val isMovingInModifier = card !in memModifiers && !isMovingOut
                             Box(modifier = Modifier
                                 .layout { measurable, constraints ->
                                     val placeable = measurable.measure(constraints)
@@ -675,7 +678,7 @@ fun RowScope.CaravanOnField(
                                         placeable.place(
                                             ((if (isEnemy) (-10).dp else 10.dp) * (modifierIndex + 1)).toPx().toInt() + offsetWidth +
                                                     if (isMovingOut) (itemHorizontalOffsetMovingOut.value * placeable.width).toInt() else 0,
-                                            placeable.height / 3 * itemIndex +
+                                            placeable.height / 3 * index +
                                                     if (isMovingInModifier) (modifierVerticalOffsetMovingIn.value * placeable.height).toInt() else 0
                                         )
                                     }
