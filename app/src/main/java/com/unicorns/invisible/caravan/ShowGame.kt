@@ -79,6 +79,7 @@ import com.unicorns.invisible.caravan.utils.pxToDp
 import com.unicorns.invisible.caravan.utils.scrollbar
 import com.unicorns.invisible.caravan.utils.startAmbient
 import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.math.max
 import kotlin.math.min
@@ -453,16 +454,18 @@ fun Hand(
         LaunchedEffect(key) {
             if (key > 0) {
                 playCardFlipSound(activity)
-                itemVerticalOffsetMovingIn.snapTo(2.5f * enemyMult)
                 itemVerticalOffsetMovingIn.animateTo(0f, TweenSpec(190))
             } else if (key < 0) {
                 playCardFlipSound(activity)
-                itemVerticalOffsetMovingOut.snapTo(0f)
                 itemVerticalOffsetMovingOut.animateTo((if (wasCardDropped) 2.5f else -2.5f) * enemyMult, TweenSpec(190))
             }
             memCards.clear()
             memCards.addAll(cards)
+
             recomposeKey = !recomposeKey
+            delay(95L)
+            itemVerticalOffsetMovingIn.snapTo(2.5f * enemyMult)
+            itemVerticalOffsetMovingOut.snapTo(0f)
         }
 
         LaunchedEffect(recomposeKey) { }
@@ -521,7 +524,7 @@ fun Hand(
                             }
                         }
                         .clickable {
-                            if (itemVerticalOffsetMovingIn.value == 0f && itemVerticalOffsetMovingIn.value == 0f) {
+                            if (!itemVerticalOffsetMovingIn.isRunning && !itemVerticalOffsetMovingIn.isRunning) {
                                 onClick(index)
                             }
                         }
@@ -566,7 +569,7 @@ fun RowScope.CaravanOnField(
         scope.launch {
             if (key > 0) {
                 playCardFlipSound(activity)
-                itemVerticalOffsetMovingIn.snapTo(2.5f * enemyMult)
+
                 itemVerticalOffsetMovingIn.animateTo(0f, TweenSpec(190, 380))
             } else if (key < 0) {
                 playCardFlipSound(activity)
@@ -576,6 +579,8 @@ fun RowScope.CaravanOnField(
             memCaravan.clear()
             memCaravan.addAll(caravan.cards)
             recomposeKey = !recomposeKey
+            delay(95L)
+            itemVerticalOffsetMovingIn.snapTo(2.5f * enemyMult)
             itemHorizontalOffsetMovingOut.snapTo(0f)
         }
     }
@@ -655,7 +660,7 @@ fun RowScope.CaravanOnField(
 
                         Box(modifier = modifier) {
                             ShowCard(activity, it.card, Modifier.clickable {
-                                if (itemVerticalOffsetMovingIn.value == 0f && itemHorizontalOffsetMovingOut.value == 0f) {
+                                if (!itemVerticalOffsetMovingIn.isRunning && !itemHorizontalOffsetMovingOut.isRunning) {
                                     addSelectedCardOnPosition(index)
                                 }
                             })
@@ -668,12 +673,13 @@ fun RowScope.CaravanOnField(
                             scope.launch {
                                 if (key2 > 0) {
                                     playCardFlipSound(activity)
-                                    modifierVerticalOffsetMovingIn.snapTo(3f * (if (isPlayerTurn) 1f else -1f))
                                     modifierVerticalOffsetMovingIn.animateTo(0f, TweenSpec(190, 380))
                                 }
                                 memModifiers.clear()
                                 memModifiers.addAll(it.modifiersCopy())
                                 recomposeKey = !recomposeKey
+                                delay(95L)
+                                modifierVerticalOffsetMovingIn.snapTo(3f * (if (isPlayerTurn) 1f else -1f))
                             }
                         }
 
