@@ -22,7 +22,6 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -604,14 +603,14 @@ fun StartPvP(
     }
 
     if (game.isCorrupted && game.id == currentGameId) {
-        goBack()
+        activity.goBack?.invoke()
         activity.goBack = null
         return
     }
 
     ShowGamePvP(activity, game, isCreator, roomNumber, showAlertDialog, enemyHandKey, ::updateEnemyHand, ::updateCaravans) lambda@{
         if (game.isOver()) {
-            goBack()
+            activity.goBack?.invoke()
             activity.goBack = null
             return@lambda
         }

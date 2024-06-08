@@ -1,6 +1,5 @@
 package com.unicorns.invisible.caravan.model.enemy
 
-import com.unicorns.invisible.caravan.R
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyDestructive

@@ -1,17 +1,9 @@
 package com.unicorns.invisible.caravan.model
 
-import androidx.compose.ui.graphics.BlendMode
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.ColorMatrix
-import androidx.compose.ui.graphics.asAndroidColorFilter
-import androidx.compose.ui.graphics.asComposeColorFilter
-import androidx.core.graphics.BlendModeColorFilterCompat
-import androidx.core.graphics.BlendModeCompat
-import com.unicorns.invisible.caravan.MainActivity
 import com.unicorns.invisible.caravan.R
 import kotlinx.serialization.ExperimentalSerializationApi
-import kotlinx.serialization.SerialName
 import kotlinx.serialization.json.JsonNames
 
 enum class CardBack {

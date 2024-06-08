@@ -2,15 +2,12 @@ package com.unicorns.invisible.caravan.model.enemy
 
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
-import com.unicorns.invisible.caravan.model.enemy.strategy.Strategy
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyCareful
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyCheckFuture
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyDestructive
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJoker
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyRush
-import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyTime
 import com.unicorns.invisible.caravan.model.primitives.CResources
-import com.unicorns.invisible.caravan.model.primitives.Rank
 import kotlinx.serialization.Serializable
 
 

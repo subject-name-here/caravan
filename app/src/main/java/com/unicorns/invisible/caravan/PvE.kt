@@ -588,7 +588,7 @@ fun StartGame(
     activity.goBack = { stopMusic(); goBack() }
     ShowGame(activity, game) {
         if (game.isOver()) {
-            goBack()
+            activity.goBack?.invoke()
             activity.goBack = null
             return@ShowGame
         }

@@ -76,36 +76,42 @@ class Game(
         val caravans = playerCaravans + enemyCaravans
         val cards = caravans.flatMap { it.cards }
         if (cards.any { it.hasJacks() || it.hasActiveJoker } || (cResources.hand.size < 5 && cResources.deckSize > 0)) {
+            delay(1000L)
             processJacks()
             processJoker()
 
             if (cResources.hand.size < 5) {
                 cResources.addToHand()
             }
-            delay(380L)
+            delay(1000L)
             updateView()
+            delay(1000L)
         }
     }
 
     fun afterPlayerMove(updateView: () -> Unit) {
         CoroutineScope(Dispatchers.Default).launch {
-            delay(760L)
+            delay(380L)
             isPlayerTurn = false
             processFieldAndHand(playerCResources, updateView)
+            delay(380L)
             if (checkOnGameOver()) {
                 return@launch
             }
 
-            delay(760L)
+            delay(380L)
             enemy.makeMove(this@Game)
+            delay(1000L)
             updateView()
-            delay(760L)
-            processFieldAndHand(enemyCResources, updateView)
+            delay(1000L)
 
+            processFieldAndHand(enemyCResources, updateView)
+            delay(1000L)
             isPlayerTurn = true
             checkOnGameOver()
+            delay(1000L)
             updateView()
-            delay(190L)
+            delay(1000L)
         }
     }
 

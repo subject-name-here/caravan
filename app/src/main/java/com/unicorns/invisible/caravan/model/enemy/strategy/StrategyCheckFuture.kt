@@ -1,21 +1,15 @@
 package com.unicorns.invisible.caravan.model.enemy.strategy
 
 import android.os.Build
-import android.util.Log
 import com.unicorns.invisible.caravan.R
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
-import com.unicorns.invisible.caravan.model.enemy.EnemyHard
-import com.unicorns.invisible.caravan.model.enemy.EnemyNoBark
-import com.unicorns.invisible.caravan.model.enemy.EnemySecuritron38
 import com.unicorns.invisible.caravan.model.primitives.Card
 import com.unicorns.invisible.caravan.model.primitives.Rank
 import com.unicorns.invisible.caravan.model.primitives.Suit
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
-import kotlinx.coroutines.joinAll
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
 object StrategyCheckFuture : Strategy {

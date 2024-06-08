@@ -85,9 +85,7 @@ fun SetCustomDeck(
             .background(getBackgroundColor(activity)),
         horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Top) {
         var updater by remember { mutableStateOf(false) }
-        key(updater) {
-            ShowCharacteristics(activity)
-        }
+        ShowCharacteristics(activity, updater)
 
         Text(
             text = stringResource(R.string.tap_card_back_to_open_cards),
@@ -245,24 +243,26 @@ fun SetCustomDeck(
 }
 
 @Composable
-fun ShowCharacteristics(activity: MainActivity) {
-    Row(Modifier.padding(8.dp), verticalAlignment = Alignment.CenterVertically) {
-        val deck = activity.save?.getCustomDeckCopy() ?: CustomDeck()
-        val deckSizeMin = MainActivity.MIN_DECK_SIZE
-        val color1 = if (deck.size < deckSizeMin) Color.Red else getTextColor(activity)
-        Text(text = stringResource(R.string.custom_deck_size, deck.size, deckSizeMin),
-            Modifier.fillMaxWidth(0.5f),
-            textAlign = TextAlign.Center,
-            fontFamily = FontFamily(Font(R.font.monofont)),
-            style = TextStyle(color = color1, fontSize = 12.sp))
+fun ShowCharacteristics(activity: MainActivity, updater: Boolean) {
+    key (updater) {
+        Row(Modifier.padding(8.dp).fillMaxWidth().wrapContentHeight(), verticalAlignment = Alignment.CenterVertically) {
+            val deck = activity.save?.getCustomDeckCopy() ?: CustomDeck()
+            val deckSizeMin = MainActivity.MIN_DECK_SIZE
+            val color1 = if (deck.size < deckSizeMin) Color.Red else getTextColor(activity)
+            Text(text = stringResource(R.string.custom_deck_size, deck.size, deckSizeMin),
+                Modifier.fillMaxWidth(0.5f),
+                textAlign = TextAlign.Center,
+                fontFamily = FontFamily(Font(R.font.monofont)),
+                style = TextStyle(color = color1, fontSize = 12.sp))
 
-        val nonFaces = deck.count { !it.isFace() }
-        val nonFacesMin = MainActivity.MIN_NUM_OF_NUMBERS
-        val color2 = if (nonFaces < nonFacesMin) Color.Red else getTextColor(activity)
-        Text(text = stringResource(R.string.custom_deck_non_faces, nonFaces, nonFacesMin),
-            Modifier.fillMaxWidth(),
-            fontFamily = FontFamily(Font(R.font.monofont)),
-            textAlign = TextAlign.Center,
-            style = TextStyle(color = color2, fontSize = 12.sp))
+            val nonFaces = deck.count { !it.isFace() }
+            val nonFacesMin = MainActivity.MIN_NUM_OF_NUMBERS
+            val color2 = if (nonFaces < nonFacesMin) Color.Red else getTextColor(activity)
+            Text(text = stringResource(R.string.custom_deck_non_faces, nonFaces, nonFacesMin),
+                Modifier.fillMaxWidth(),
+                fontFamily = FontFamily(Font(R.font.monofont)),
+                textAlign = TextAlign.Center,
+                style = TextStyle(color = color2, fontSize = 12.sp))
+        }
     }
 }

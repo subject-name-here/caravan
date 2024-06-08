@@ -1,14 +1,8 @@
 package com.unicorns.invisible.caravan.utils
 
 import android.media.MediaPlayer
-import android.media.audiofx.LoudnessEnhancer
 import com.unicorns.invisible.caravan.MainActivity
 import com.unicorns.invisible.caravan.R
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.isActive
-import kotlinx.coroutines.launch
 
 
 fun playCardFlipSound(activity: MainActivity) {
