@@ -100,10 +100,8 @@ class Game(
             enemy.makeMove(this@Game)
             updateView()
             processFieldAndHand(enemyCResources, updateView)
-            delay(760L)
             isPlayerTurn = true
             checkOnGameOver()
-            updateView()
             delay(760L)
         }
     }
@@ -156,6 +154,7 @@ class Game(
             }
         }
 
+        isGameOver = 0
         return false
     }
 
@@ -170,7 +169,7 @@ class Game(
         }
     }
 
-    private fun putJokerOntoCard(card: Card) {
+    fun putJokerOntoCard(card: Card) {
         if (card.rank == Rank.ACE) {
             (playerCaravans + enemyCaravans).forEach { caravan ->
                 caravan.jokerRemoveAllSuits(card)

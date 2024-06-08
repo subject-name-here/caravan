@@ -19,7 +19,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -47,12 +46,9 @@ fun ShowSettings(
     activity: MainActivity,
     getStyle: () -> Int,
     toggleStyle: () -> Unit,
-    getIntro: () -> Boolean,
-    toggleIntro: () -> Unit,
     goBack: () -> Unit
 ) {
     var styleInt by rememberSaveable { mutableIntStateOf(getStyle()) }
-    var intro by rememberSaveable { mutableStateOf(getIntro()) }
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
@@ -86,38 +82,6 @@ fun ShowSettings(
                     Switch(checked = styleInt == 0, onCheckedChange = {
                         styleInt = 1 - styleInt
                         toggleStyle()
-                    }, colors = SwitchColors(
-                        checkedThumbColor = getAccentColor(activity),
-                        checkedTrackColor = getTextBackgroundColor(activity),
-                        checkedBorderColor = Color.Transparent,
-                        checkedIconColor = Color.Transparent,
-                        uncheckedThumbColor = getAccentColor(activity),
-                        uncheckedTrackColor = getTextBackgroundColor(activity),
-                        uncheckedBorderColor = Color.Transparent,
-                        uncheckedIconColor = Color.Transparent,
-                        disabledCheckedThumbColor = colorResource(R.color.red),
-                        disabledCheckedTrackColor = colorResource(R.color.white),
-                        disabledCheckedBorderColor = Color.Transparent,
-                        disabledCheckedIconColor = Color.Transparent,
-                        disabledUncheckedThumbColor = colorResource(R.color.red),
-                        disabledUncheckedTrackColor = colorResource(R.color.white),
-                        disabledUncheckedBorderColor = Color.Transparent,
-                        disabledUncheckedIconColor = Color.Transparent,
-                    ))
-                }
-            }
-            item {
-                Row(horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
-                    Text(
-                        modifier = Modifier.fillMaxWidth(0.66f),
-                        text = stringResource(R.string.intro_music),
-                        fontFamily = FontFamily(Font(R.font.monofont)),
-                        style = TextStyle(color = getTextColor(activity), fontSize = 20.sp, textAlign = TextAlign.Center)
-                    )
-                    Spacer(modifier = Modifier.width(16.dp))
-                    Switch(checked = intro, onCheckedChange = {
-                        intro = !intro
-                        toggleIntro()
                     }, colors = SwitchColors(
                         checkedThumbColor = getAccentColor(activity),
                         checkedTrackColor = getTextBackgroundColor(activity),

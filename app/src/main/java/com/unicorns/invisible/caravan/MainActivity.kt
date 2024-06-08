@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
@@ -27,6 +28,8 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderColors
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchColors
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -45,6 +48,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.SpanStyle
@@ -217,6 +221,7 @@ class MainActivity : AppCompatActivity() {
                             var radioVolume by remember { mutableFloatStateOf(save?.radioVolume ?: 1f) }
                             var soundVolume by remember { mutableFloatStateOf(save?.soundVolume ?: 1f) }
                             var ambientVolume by remember { mutableFloatStateOf(save?.ambientVolume ?: 1f) }
+                            var intro by remember { mutableStateOf(save?.useCaravanIntro ?: true) }
                             Column {
                                 Row(verticalAlignment = Alignment.CenterVertically) {
                                     Text(
@@ -316,6 +321,40 @@ class MainActivity : AppCompatActivity() {
                                         disabledInactiveTrackColor = Color.Gray,
                                     ), onValueChangeFinished = { playNotificationSound(this@MainActivity) {} })
                                 }
+                                Row(horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
+                                    Text(
+                                        modifier = Modifier.fillMaxWidth(0.66f),
+                                        text = stringResource(R.string.intro_music),
+                                        fontFamily = FontFamily(Font(R.font.monofont)),
+                                        style = TextStyle(color = getTextColor(this@MainActivity), fontSize = 20.sp, textAlign = TextAlign.Center)
+                                    )
+                                    Spacer(modifier = Modifier.width(16.dp))
+                                    Switch(checked = intro, onCheckedChange = {
+                                        intro = !intro
+                                        save?.let {
+                                            it.useCaravanIntro = !it.useCaravanIntro
+                                            save(this@MainActivity, it)
+                                        }
+                                    }, colors = SwitchColors(
+                                        checkedThumbColor = getTextBackgroundColor(this@MainActivity),
+                                        checkedTrackColor = getAccentColor(this@MainActivity),
+                                        checkedBorderColor = Color.Transparent,
+                                        checkedIconColor = Color.Transparent,
+                                        uncheckedThumbColor = getTextBackgroundColor(this@MainActivity),
+                                        uncheckedTrackColor = getAccentColor(this@MainActivity),
+                                        uncheckedBorderColor = Color.Transparent,
+                                        uncheckedIconColor = Color.Transparent,
+                                        disabledCheckedThumbColor = colorResource(R.color.red),
+                                        disabledCheckedTrackColor = colorResource(R.color.white),
+                                        disabledCheckedBorderColor = Color.Transparent,
+                                        disabledCheckedIconColor = Color.Transparent,
+                                        disabledUncheckedThumbColor = colorResource(R.color.red),
+                                        disabledUncheckedTrackColor = colorResource(R.color.white),
+                                        disabledUncheckedBorderColor = Color.Transparent,
+                                        disabledUncheckedIconColor = Color.Transparent,
+                                    )
+                                    )
+                                }
                             }
                         },
                         containerColor = getTextBackgroundColor(this),
@@ -334,7 +373,7 @@ class MainActivity : AppCompatActivity() {
                                 .fillMaxWidth()
                                 .wrapContentHeight()
                                 .background(getTextBackgroundColor(this))
-                                .padding(vertical = 4.dp),
+                                .padding(vertical = 8.dp),
                             horizontalArrangement = Arrangement.SpaceAround
                         ) {
                             Text(
@@ -435,11 +474,6 @@ class MainActivity : AppCompatActivity() {
                                 styleIdForTop = styleId
                                 save?.let {
                                     it.styleId = styleId
-                                    save(this@MainActivity, it)
-                                }
-                            }, { save?.useCaravanIntro ?: true }, {
-                                save?.let {
-                                    it.useCaravanIntro = !it.useCaravanIntro
                                     save(this@MainActivity, it)
                                 }
                             }) { showSettings = 0 }

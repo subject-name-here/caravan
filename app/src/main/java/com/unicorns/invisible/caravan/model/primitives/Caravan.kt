@@ -76,8 +76,10 @@ class Caravan {
 
     fun copyFrom(caravan: Caravan) {
         cardsMutable.clear()
-        caravan.cardsMutable.forEach {
-            cardsMutable.add(it.copy())
-        }
+        cardsMutable.addAll(caravan.cardsMutable.map { it.copy() })
+    }
+
+    fun removeCardFromTop() {
+        cardsMutable.removeLastOrNull()
     }
 }

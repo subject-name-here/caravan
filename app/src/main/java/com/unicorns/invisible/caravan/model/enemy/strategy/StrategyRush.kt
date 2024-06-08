@@ -23,7 +23,7 @@ object StrategyRush : Strategy {
             }
 
             if (!card.rank.isFace()) {
-                game.enemyCaravans.sortedBy { it.getValue() }.forEachIndexed { caravanIndex, caravan ->
+                game.enemyCaravans.withIndex().sortedByDescending { it.value.getValue() }.forEach { (caravanIndex, caravan) ->
                     if (caravan.getValue() + card.rank.value <= 26) {
                         if (caravan.canPutCardOnTop(card)) {
                             if (!(checkMoveOnDefeat(game, caravanIndex) && caravan.getValue() + card.rank.value in (21..26))) {

@@ -7,6 +7,7 @@ import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyCheckFuture
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyDestructive
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJoker
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyRush
+import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyTime
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import kotlinx.serialization.Serializable
 
@@ -35,7 +36,12 @@ data object EnemyBestest : Enemy() {
             return
         }
 
-        val strategies = StrategyCheckFuture.strategies.toMutableList()
+        val strategies = mutableListOf(
+            StrategyDestructive,
+            StrategyRush,
+            StrategyCareful,
+            StrategyTime,
+        )
         strategies.toList().forEach {
             val copy = game.copy()
             it.move(copy)

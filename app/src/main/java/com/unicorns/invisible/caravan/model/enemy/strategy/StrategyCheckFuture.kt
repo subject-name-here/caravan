@@ -8,259 +8,323 @@ import com.unicorns.invisible.caravan.model.primitives.Caravan
 import com.unicorns.invisible.caravan.model.primitives.Card
 import com.unicorns.invisible.caravan.model.primitives.Rank
 import com.unicorns.invisible.caravan.model.primitives.Suit
-import com.unicorns.invisible.caravan.save.json
+import com.unicorns.invisible.caravan.multiplayer.MoveResponse
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.Runnable
 import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.joinAll
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.encodeToString
+import java.util.Date
+import java.util.concurrent.RecursiveTask
 
 
 object StrategyCheckFuture : Strategy {
-    val strategies = listOf(
-        StrategyDestructive,
-        StrategyRush,
-        StrategyCareful,
-        StrategyTime,
-        StrategyJoker,
-    )
+    private val gamesToOutcomes = mutableSetOf<Pair<String, Outcome>>()
     override fun move(game: Game): Boolean {
-        strategies.toList().forEachIndexed { index, it ->
-            val copy = game.copy()
-            Log.i("Ulysses", "START$index")
-            if (it.move(copy)) {
-                copy.processJacks()
-                copy.processJoker()
-                copy.checkOnGameOver()
-                if (copy.isGameOver == -1) {
-                    it.move(game)
-                    return true
-                } else {
-                    val outcome = checkPlayerMoves(copy, depth = 2)
-                    when (outcome) {
-                        Outcome.UNKNOWN -> {}
-                        Outcome.DEFEAT_SOON -> {}
-                        Outcome.VICTORY_NEXT_MOVE -> {
-                            if (it.move(game)) {
-                                game.saySomething(R.string.pve_enemy_best, R.string.ulysses_predict)
-                                return true
-                            }
-                        }
-                        Outcome.VICTORY_NEXT_TWO_MOVES -> {
-                            if (it.move(game)) {
-                                game.saySomething(R.string.pve_enemy_best, R.string.i_predict_your_certain_doom_next_in_two_moves)
-                                return true
-                            }
-                        }
-                    }
-                }
+        Log.i("Ulysses", "Started predicting...")
+        val chosenMove = selectMove(game.copy(), 5)
+
+        val outcome = chosenMove.second
+        when (outcome) {
+            Outcome.UNKNOWN -> {
+                Log.i("Ulysses", "Unknown...")
+                return false
             }
-            Log.i("Ulysses", "END$index")
+            Outcome.VICTORY_SOON -> {
+                game.saySomething(R.string.pve_enemy_best, R.string.feels_like_i_am_losing)
+                return false
+            }
+            Outcome.DEFEAT_SOON -> {
+                game.saySomething(R.string.pve_enemy_best, R.string.ulysses_predict)
+            }
         }
 
-        return false
+        val move = chosenMove.first
+        when (move.moveCode) {
+            1 -> {
+                if (move.caravanCode !in game.enemyCaravans.indices || game.enemyCaravans[move.caravanCode].isEmpty()) {
+                    throw Exception("CORRUPTED 1")
+                }
+                game.enemyCaravans[move.caravanCode].dropCaravan()
+            }
+            2 -> {
+                if (move.handCardNumber !in game.enemyCResources.hand.indices) {
+                    game.isCorrupted = true
+                    throw Exception("CORRUPTED 2")
+                }
+                game.enemyCResources.dropCardFromHand(move.handCardNumber)
+            }
+            3 -> {
+                if (move.handCardNumber !in game.enemyCResources.hand.indices || move.caravanCode !in game.enemyCaravans.indices) {
+                    throw Exception("CORRUPTED 3.1")
+                }
+                val card = game.enemyCResources.removeFromHand(move.handCardNumber)
+                if (!game.enemyCaravans[move.caravanCode].canPutCardOnTop(card)) {
+                    game.isCorrupted = true
+                    throw Exception("CORRUPTED 3.2")
+                }
+                game.enemyCaravans[move.caravanCode].putCardOnTop(card)
+            }
+            4 -> {
+                if (move.handCardNumber !in game.enemyCResources.hand.indices) {
+                    throw Exception("CORRUPTED 4.1")
+                }
+                val card = game.enemyCResources.removeFromHand(move.handCardNumber)
+
+                val cardInCaravan = if (move.caravanCode < 0) {
+                    val playersCaravan = 3 + move.caravanCode
+                    if (
+                        playersCaravan !in game.playerCaravans.indices ||
+                        move.cardInCaravanNumber !in game.playerCaravans[playersCaravan].cards.indices
+                    ) {
+                        throw Exception("CORRUPTED 4.2")
+                    }
+                    game.playerCaravans[playersCaravan].cards[move.cardInCaravanNumber]
+                } else {
+                    if (
+                        move.caravanCode !in game.enemyCaravans.indices ||
+                        move.cardInCaravanNumber !in game.enemyCaravans[move.caravanCode].cards.indices
+                    ) {
+                        throw Exception("CORRUPTED 4.3")
+                    }
+                    game.enemyCaravans[move.caravanCode].cards[move.cardInCaravanNumber]
+                }
+                if (!cardInCaravan.canAddModifier(card)) {
+                    throw Exception("CORRUPTED 4.4")
+                }
+                cardInCaravan.addModifier(card)
+            }
+        }
+
+        return true
     }
 
 
-    private val gamesToOutcomes = mutableListOf<Pair<String, Outcome>>()
+    // Map of pairs: if we make move KEY, our enemy gets outcome VALUE
+    private fun checkMoves(game: Game, depth: Int, isEnemy: Boolean): ArrayList<Pair<MoveResponse, Outcome>> {
+        if (depth <= 0) {
+            return arrayListOf(MoveResponse() to Outcome.UNKNOWN, MoveResponse() to Outcome.UNKNOWN)
+        }
+
+        game.isPlayerTurn = isEnemy
+        val hand = if (isEnemy)
+            game.copy().enemyCResources.hand
+        else
+            Rank.entries.map { rank ->
+                if (rank == Rank.JOKER || rank == Rank.KING || rank == Rank.JACK) {
+                    listOf(Card(rank, Suit.HEARTS, CardBack.STANDARD, false))
+                } else {
+                    Suit.entries.map { suit ->
+                        Card(rank, suit, CardBack.STANDARD, false)
+                    }
+                }
+            }.flatten()
+
+        val time = Date().time
+        val reses = ArrayList<Pair<MoveResponse, Outcome>>()
+        class AddToSmallReses(val gameCopy: Game, val moveResponse: MoveResponse) : RecursiveTask<Unit>() {
+            override fun compute() {
+                reses.add(moveResponse to if (gameCopy.isGameOver == if (isEnemy) 1 else -1) {
+                    Outcome.VICTORY_SOON
+                } else {
+                    if (isEnemy) {
+                        checkPlayerMoves(gameCopy, depth - 1)
+                    } else {
+                        selectMove(gameCopy, depth - 1).second
+                    }
+                })
+            }
+        }
+        val tasks = mutableListOf<AddToSmallReses>()
+        val jobs = mutableListOf<Job>()
+        fun processCaravan(caravan: IndexedValue<Caravan>, isEnemyCaravan: Boolean) {
+            runBlocking {
+                if (isEnemy == isEnemyCaravan && caravan.value.getValue() > 0) {
+                    jobs.add(launch(context = Dispatchers.Unconfined) {
+                        val gameCopy = game.copy()
+                        val caravanFromCopy =
+                            (if (isEnemyCaravan) gameCopy.enemyCaravans else gameCopy.playerCaravans)[caravan.index]
+                        caravanFromCopy.dropCaravan()
+                        gameCopy.checkOnGameOver()
+                        tasks.add(AddToSmallReses(
+                            gameCopy, MoveResponse(
+                                moveCode = 1,
+                                caravanCode = caravan.index,
+                            )
+                        ).also { it.fork() })
+                    })
+                }
+
+                hand.withIndex().forEach { (cardIndex, card) ->
+                    if (card.isFace()) {
+                        caravan.value.cards.withIndex().forEach { (potentialCardIndex, potentialCard) ->
+                            if (potentialCard.canAddModifier(card)) {
+                                if (card.rank == Rank.JOKER) {
+                                    jobs.add(launch(context = Dispatchers.Unconfined) {
+                                        val gameCopy2 = game.copy()
+                                        val cardModified =
+                                            (if (isEnemyCaravan) gameCopy2.enemyCaravans else gameCopy2.playerCaravans)[caravan.index].cards[potentialCardIndex]
+                                        cardModified.addModifier(card)
+                                        gameCopy2.putJokerOntoCard(cardModified.card)
+                                        cardModified.deactivateJoker()
+                                        gameCopy2.checkOnGameOver()
+                                        tasks.add(AddToSmallReses(
+                                            gameCopy2, MoveResponse(
+                                                moveCode = 4,
+                                                caravanCode = if (isEnemyCaravan) caravan.index else -3 + caravan.index,
+                                                cardInCaravanNumber = caravan.value.cards.lastIndex,
+                                                handCardNumber = cardIndex
+                                            )
+                                        ).also { it.fork() })
+                                    })
+                                } else {
+                                    jobs.add(launch(context = Dispatchers.Unconfined) {
+                                        val gameCopy = game.copy()
+                                        val caravanFromCopy =
+                                            (if (isEnemyCaravan) gameCopy.enemyCaravans else gameCopy.playerCaravans)[caravan.index]
+                                        caravanFromCopy.cards[potentialCardIndex].addModifier(card)
+                                        if (card.rank == Rank.JACK) {
+                                            caravanFromCopy.removeAllJackedCards()
+                                        }
+                                        gameCopy.checkOnGameOver()
+                                        tasks.add(AddToSmallReses(
+                                            gameCopy, MoveResponse(
+                                                moveCode = 4,
+                                                caravanCode = if (isEnemyCaravan) caravan.index else -3 + caravan.index,
+                                                cardInCaravanNumber = caravan.value.cards.lastIndex,
+                                                handCardNumber = cardIndex
+                                            )
+                                        ).also { it.fork() })
+                                    })
+                                }
+                            }
+                        }
+                    } else if (isEnemy == isEnemyCaravan) {
+                        if (caravan.value.canPutCardOnTop(card)) {
+                            jobs.add(launch(context = Dispatchers.Unconfined) {
+                                val gameCopy = game.copy()
+                                val caravanFromCopy =
+                                    (if (isEnemyCaravan) gameCopy.enemyCaravans else gameCopy.playerCaravans)[caravan.index]
+                                caravanFromCopy.putCardOnTop(card)
+                                gameCopy.checkOnGameOver()
+
+                                tasks.add(AddToSmallReses(
+                                    gameCopy, MoveResponse(
+                                        moveCode = 3,
+                                        caravanCode = caravan.index,
+                                        handCardNumber = cardIndex
+                                    )
+                                ).also { it.fork() })
+                            })
+                        }
+                    }
+                }
+            }
+        }
+
+        game.enemyCaravans.mapIndexed { index, caravan ->
+            processCaravan(IndexedValue(index, caravan), true)
+        }
+        game.playerCaravans.mapIndexed { index, caravan ->
+            processCaravan(IndexedValue(index, caravan), false)
+        }
+        runBlocking {
+            jobs.joinAll()
+        }
+        tasks.map {
+            it.join()
+        }
+
+
+        val resP0 = if (isEnemy) {
+            checkPlayerMoves(game.copy(), depth - 1)
+        } else {
+            selectMove(game.copy(), depth - 1).second
+        }
+        reses.add(MoveResponse(
+            moveCode = 2,
+            handCardNumber = hand.indices.random()
+        ) to resP0)
+
+        if (depth >= 1) {
+            Log.i("Ulysses:time", (Date().time - time).toString() + " " + depth.toString())
+        }
+
+        return reses
+    }
+
+
     private fun checkPlayerMoves(game: Game, depth: Int): Outcome {
-        val gameString = gamesToOutcomes.find { it.first == GameRecord(game).serializeToString() }
+        game.isPlayerTurn = true
+        val gameString = synchronized(gamesToOutcomes) {
+            gamesToOutcomes.find { it.first == GameRecord(game).serializeToString() }
+        }
         if (gameString != null) {
-            Log.i("HIT", " THE CACHE!!!!")
             return gameString.second
         }
 
-        var defeatFlag = false
-        fun processCaravan(gameCopy: Game, isEnemy: Boolean, caravan: Caravan) = CoroutineScope(Dispatchers.Unconfined).async {
-            val smallReses = mutableListOf<Outcome>()
-            fun addToSmallReses() {
-                if (gameCopy.isGameOver == 1) {
-                    smallReses.add(Outcome.DEFEAT_SOON)
-                    defeatFlag = true
-                } else if (defeatFlag) {
-                    smallReses.add(when (checkMyMoves(gameCopy, depth)) {
-                        Outcome.UNKNOWN -> Outcome.UNKNOWN
-                        Outcome.DEFEAT_SOON -> Outcome.DEFEAT_SOON
-                        Outcome.VICTORY_NEXT_MOVE -> Outcome.VICTORY_NEXT_TWO_MOVES
-                        Outcome.VICTORY_NEXT_TWO_MOVES -> Outcome.VICTORY_NEXT_TWO_MOVES
-                    })
-                }
-            }
+        val reses = checkMoves(game, depth, false).map { it.second }
 
-            val caravanSave = Caravan()
-            caravanSave.copyFrom(caravan)
-            if (!isEnemy) {
-                Rank.entries.filter { !it.isFace() }.forEach { rank ->
-                    val card = Card(rank, Suit.HEARTS, CardBack.STANDARD, false)
-                    if (caravan.canPutCardOnTop(card)) {
-                        caravan.putCardOnTop(card)
-                        gameCopy.checkOnGameOver()
-
-                        caravan.copyFrom(caravanSave)
-                    }
-                }
-
-                if (caravan.getValue() > 0) {
-                    caravan.dropCaravan()
-                    gameCopy.checkOnGameOver()
-                    addToSmallReses()
-                    caravan.copyFrom(caravanSave)
-                }
-            }
-            Rank.entries.filter { it == Rank.JACK || it == Rank.KING }.forEach { rank ->
-                val card = Card(rank, Suit.HEARTS, CardBack.STANDARD, false)
-                caravan.cards.forEach { potentialCard ->
-                    if (potentialCard.canAddModifier(card)) {
-                        potentialCard.addModifier(card)
-                        gameCopy.processJacks()
-                        gameCopy.checkOnGameOver()
-                        addToSmallReses()
-                        caravan.copyFrom(caravanSave)
-                    }
-                }
-            }
-            Suit.entries.forEach {
-                val card = Card(Rank.QUEEN, it, CardBack.STANDARD, false)
-                if (!caravan.isEmpty()) {
-                    val potentialCard = caravan.cards.last()
-                    if (potentialCard.canAddModifier(card)) {
-                        potentialCard.addModifier(card)
-                        addToSmallReses()
-                        caravan.copyFrom(caravanSave)
-                    }
-                }
-            }
-            smallReses
+        if (depth > 3 || reses.toList().any { it != Outcome.UNKNOWN }) {
+            Log.i("Ulysses:You", reses.toString())
         }
-
-        val caravans = game.playerCaravans.map { it to false } + game.enemyCaravans.map { it to true }
-        val reses = mutableListOf<Outcome>()
-        val deferreds = caravans.map { (caravan, isEnemy) ->
-            processCaravan(game.copy(), isEnemy, caravan)
-        }
-        runBlocking {
-            reses.addAll(deferreds.awaitAll().flatten())
-        }
-
-        val gameCopy = game.copy()
-
-        val card = Card(Rank.JOKER, Suit.HEARTS, CardBack.STANDARD, false)
-        var gameCopy2 = gameCopy.copy()
-        (gameCopy2.playerCaravans + gameCopy2.enemyCaravans).forEach { caravan ->
-            caravan.cards.forEach { potentialCard ->
-                if (potentialCard.canAddModifier(card)) {
-                    potentialCard.addModifier(card)
-                    gameCopy2.processJoker()
-                    gameCopy2.checkOnGameOver()
-                    if (gameCopy.isGameOver == 1) {
-                        reses.add(Outcome.DEFEAT_SOON)
-                    } else {
-                        reses.add(when (checkMyMoves(gameCopy, depth)) {
-                            Outcome.UNKNOWN -> Outcome.UNKNOWN
-                            Outcome.DEFEAT_SOON -> Outcome.DEFEAT_SOON
-                            Outcome.VICTORY_NEXT_MOVE -> Outcome.VICTORY_NEXT_TWO_MOVES
-                            Outcome.VICTORY_NEXT_TWO_MOVES -> Outcome.VICTORY_NEXT_TWO_MOVES
-                        })
-                    }
-                    gameCopy2 = gameCopy.copy()
-                }
-            }
-        }
-
-        reses.add(when (checkMyMoves(gameCopy, depth)) {
-            Outcome.UNKNOWN -> Outcome.UNKNOWN
-            Outcome.DEFEAT_SOON -> Outcome.DEFEAT_SOON
-            Outcome.VICTORY_NEXT_MOVE -> Outcome.VICTORY_NEXT_TWO_MOVES
-            Outcome.VICTORY_NEXT_TWO_MOVES -> Outcome.VICTORY_NEXT_TWO_MOVES
-        })
 
         val majorOutcome = reses.distinct().map { it to reses.count { r -> r == it } }.maxBy { it.second }
         return when {
-            reses.count { it.isVictory() } >= reses.size - 1 -> Outcome.VICTORY_NEXT_MOVE
-            reses.any { it == Outcome.DEFEAT_SOON } -> Outcome.DEFEAT_SOON
-            majorOutcome.second >= reses.size / 2 -> majorOutcome.first
+            reses.count { it.isVictory() } == reses.size -> Outcome.DEFEAT_SOON
+            reses.any { it == Outcome.DEFEAT_SOON } -> Outcome.VICTORY_SOON
+            majorOutcome.second >= reses.size * 3 / 4 -> majorOutcome.first
             else -> Outcome.UNKNOWN
         }.also {
-            gamesToOutcomes.add(GameRecord(game).serializeToString() to it)
-        }
-    }
-
-    private fun checkMyMoves(game: Game, depth: Int): Outcome {
-        val gameString = gamesToOutcomes.find { it.first == GameRecord(game).serializeToString() }
-        if (gameString != null) {
-            Log.i("HIT", " THE CACHE!!!!")
-            return gameString.second
-        }
-
-        var victoryFlag = false
-        val deferreds = strategies.map {
-            CoroutineScope(Dispatchers.Unconfined).async {
-                val copy = game.copy()
-                it.move(copy)
-                copy.processJoker()
-                copy.processJacks()
-                copy.checkOnGameOver()
-                if (copy.isGameOver == -1) {
-                    Log.i("Ulysses: Me", "Victorious soon!")
-                    victoryFlag = true
-                    Outcome.VICTORY_NEXT_MOVE
-                } else {
-                    if (victoryFlag) {
-                        Outcome.VICTORY_NEXT_MOVE
-                    } else if (depth == 1) {
-                        Outcome.UNKNOWN
-                    } else when (checkPlayerMoves(copy, depth - 1)) {
-                        Outcome.UNKNOWN -> {
-                            Outcome.UNKNOWN
-                        }
-                        Outcome.DEFEAT_SOON -> {
-                            Outcome.DEFEAT_SOON
-                        }
-                        Outcome.VICTORY_NEXT_MOVE, Outcome.VICTORY_NEXT_TWO_MOVES -> {
-                            Outcome.VICTORY_NEXT_TWO_MOVES
-                        }
-                    }
-                }
-            }
-        }
-        return runBlocking {
-            deferreds.joinAll()
-            val reses = deferreds.map { runBlocking { it.await() } }
-            reses.run {
-                when {
-                    this.count { it == Outcome.DEFEAT_SOON } >= this.size - 1 -> Outcome.DEFEAT_SOON
-                    this.any { it.isVictory() } -> Outcome.VICTORY_NEXT_MOVE
-                    else -> Outcome.UNKNOWN
-                }
-            }.also {
+            synchronized(gamesToOutcomes) {
                 gamesToOutcomes.add(GameRecord(game).serializeToString() to it)
             }
         }
+    }
 
+    private fun selectMove(game: Game, depth: Int): Pair<MoveResponse, Outcome> {
+        val reses = checkMoves(game, depth, true)
+        if (depth > 3 || reses.toList().any { it.second != Outcome.UNKNOWN }) {
+            Log.i("Ulysses:Me", reses.toString())
+        }
+
+        val bestMoves = reses.filter { it.second == Outcome.DEFEAT_SOON }
+        if (bestMoves.isNotEmpty()) {
+            return bestMoves.map { it.first }.sortedBy { it.moveCode }[0] to Outcome.VICTORY_SOON
+        }
+
+        val unknownMoves = reses.filter { it.second == Outcome.UNKNOWN }
+        if (unknownMoves.isNotEmpty()) {
+            return unknownMoves.map { it.first }.sortedBy { it.moveCode }[0] to Outcome.UNKNOWN
+        }
+
+        return reses.random().first to Outcome.DEFEAT_SOON
     }
 
     @Serializable
-    class GameRecord(val caravans: List<Caravan>, val hand: List<Card>, val isPlayerTurn: Boolean) {
-        constructor(game: Game) : this(game.playerCaravans + game.enemyCaravans, game.enemyCResources.hand, game.isPlayerTurn)
+    class GameRecord(private val caravans: List<Caravan>) {
+        constructor(game: Game) : this(game.playerCaravans + game.enemyCaravans)
 
         fun serializeToString(): String {
             val result = StringBuilder()
-            result.append("$isPlayerTurn ")
-            hand.forEach {
-                result.append("${it.rank.value} ${it.suit.ordinal} ")
-            }
-            result.append("\n")
             caravans.forEach {
                 it.cards.forEach { cardWithModifiers ->
                     result.append("${cardWithModifiers.card.rank.value} ${cardWithModifiers.card.suit.ordinal} ")
                     cardWithModifiers.modifiersCopy().forEach { modifier ->
-                        result.append("${modifier.rank.value} ${modifier.suit.ordinal} ")
+                        if (modifier.rank == Rank.QUEEN) {
+                            result.append("${modifier.rank.value} ${modifier.suit.ordinal} ")
+                        } else {
+                            result.append("${modifier.rank.value} ")
+                        }
                     }
                 }
-                result.append("\n")
+                result.append("|")
             }
             return result.toString()
         }
@@ -269,11 +333,11 @@ object StrategyCheckFuture : Strategy {
     enum class Outcome {
         UNKNOWN,
         DEFEAT_SOON,
-        VICTORY_NEXT_MOVE,
-        VICTORY_NEXT_TWO_MOVES;
+        VICTORY_SOON;
 
         fun isVictory(): Boolean {
-            return this != UNKNOWN && this != DEFEAT_SOON
+            val res = this != UNKNOWN && this != DEFEAT_SOON
+            return res
         }
     }
 }

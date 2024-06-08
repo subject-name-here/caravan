@@ -38,7 +38,7 @@
     <string name="menu_rules">Правила</string>
     <string name="menu_deck">Настройка колоды</string>
     <string name="menu_about">О Караване</string>
-    <string name="menu_settings">Настройки</string>
+    <string name="menu_settings">Визуал!</string>
 
     <string name="menu_back">Назад</string>
 
@@ -218,7 +218,7 @@
     <string name="check_back_to_menu">Вы уверены, что хотите выйти?</string>
     <string name="check_back_to_menu_ulysses">Убегаешь от своих ошибок?</string>
 
-    <string name="ulysses_predict">Я предвижу твое поражение на слеудющем ходу.</string>
+    <string name="ulysses_predict">Я предвижу твое поражение.</string>
     <string name="tap_card_back_to_open_cards">Нажмите на рубашку, чтобы открыть выбор карт.</string>
     <string name="get_cards_from">Карты выпадают из:\n</string>
     <string name="ulysses_fair_fight_header">Это честная битва.</string>
@@ -232,5 +232,8 @@
 
     <string name="interface_type">Пип-бой</string>
     <string name="intro_music">Первая песня на радио одна и та же</string>
+
+    <string name="feels_like_i_am_losing">Чувствую своё поражение…</string>
+    <string name="i_predict_your_certain_doom_next_in_two_moves">Предвижу твоё поражение в два хода.</string>
 
 </resources>
