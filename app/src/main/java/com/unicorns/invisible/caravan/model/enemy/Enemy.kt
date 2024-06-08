@@ -14,6 +14,7 @@ sealed class Enemy {
     open fun isAlt() = false
 
     // Returns true if the selling of enemy caravan with caravanIndex will end game in favour of player.
+    // Set caravanIndex as -1 to get true if 2 out of 3 caravans are sold.
     fun checkMoveOnDefeat(game: Game, caravanIndex: Int): Boolean {
         val otherCaravansIndices = game.enemyCaravans.indices.filter { it != caravanIndex }
         var score = 0

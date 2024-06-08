@@ -31,7 +31,7 @@ data object EnemyBestest : Enemy() {
         val score = game.playerCaravans.indices.map { check(game.playerCaravans[it].getValue(), game.enemyCaravans[it].getValue()) }
         val antiScore = game.enemyCaravans.indices.map { check(game.enemyCaravans[it].getValue(), game.playerCaravans[it].getValue()) }
 
-        if ((score.any() || antiScore.any()) && StrategyCheckFuture.move(game)) {
+        if ((score.any { it } || antiScore.any { it }) && StrategyCheckFuture.move(game)) {
             return
         }
 
@@ -54,7 +54,7 @@ data object EnemyBestest : Enemy() {
             return
         }
 
-        if (score.any()) {
+        if (score.any { it }) {
             if (StrategyDestructive in strategies && StrategyDestructive.move(game)) {
                 return
             }

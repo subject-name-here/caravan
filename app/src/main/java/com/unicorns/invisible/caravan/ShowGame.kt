@@ -669,7 +669,7 @@ fun RowScope.CaravanOnField(
                         val memModifiers = remember { mutableObjectListOf<Card>() }
                         val modifierVerticalOffsetMovingIn = remember { Animatable(3f * (if (isPlayerTurn) 1f else -1f)) }
                         val key2 = it.modifiersCopy().size - memModifiers.size
-                        LaunchedEffect(key2) {
+                        LaunchedEffect(key2, isMovingOut) {
                             scope.launch {
                                 if (key2 > 0) {
                                     playCardFlipSound(activity)

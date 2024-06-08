@@ -372,7 +372,7 @@ class MainActivity : AppCompatActivity() {
                             )
 
                             Text(
-                                text = "!!!",
+                                text = stringResource(R.string.sound),
                                 modifier = Modifier.clickable {
                                     showSoundSettings = true
                                 },

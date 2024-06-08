@@ -227,5 +227,7 @@
 
     <string name="interface_type">Pip-Boy</string>
     <string name="intro_music">Same Radio Intro</string>
+    <string name="feels_like_i_am_losing">Feels like I am losing...</string>
+    <string name="i_predict_your_certain_doom_next_in_two_moves">I predict your certain doom next in two moves.</string>
 
 </resources>

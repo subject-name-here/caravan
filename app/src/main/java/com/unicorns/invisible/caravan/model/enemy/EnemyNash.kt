@@ -2,6 +2,7 @@ package com.unicorns.invisible.caravan.model.enemy
 
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
+import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyDestructive
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.Card
 import com.unicorns.invisible.caravan.model.primitives.CustomDeck
@@ -43,6 +44,12 @@ data object EnemyNash : Enemy() {
             val caravan = game.enemyCaravans.first { it.cards.isEmpty() }
             caravan.putCardOnTop(game.enemyCResources.removeFromHand(hand.indexOf(card)))
             return
+        }
+
+        if (checkMoveOnDefeat(game, -1)) {
+            if (StrategyDestructive.move(game)) {
+                return
+            }
         }
 
         if ((0..2).random() > 0) {

@@ -606,7 +606,34 @@ fun winCard(activity: MainActivity, save: Save, back: CardBack, numberOfCards: I
         return save.availableCards.none { aCard -> aCard.rank == card.rank && aCard.suit == card.suit && aCard.back == card.back && aCard.isAlt == card.isAlt }
     }
     val deck = CustomDeck(back, isAlt)
-    val reward = deck.takeRandom(if (isCustom) numberOfCards else 7).sortedByDescending { if (checkCard(it)) 1 else 0 }.take(numberOfCards)
+    val deckList = deck.takeRandom(deck.size)
+    val deckOld = deckList.filter { checkCard(it) }
+    val deckNew = deckList - deckOld.toSet()
+    val prob = if (numberOfCards != 1) {
+        // p = 0.95
+        when {
+            isCustom && deckNew.size >= deckOld.size -> 50   // 1.5 games to get 1 new card
+            isCustom -> 28                                   // 3 games to get 1 new card
+            !isCustom && deckNew.size >= deckOld.size -> 60  // 1 games to get 1 new card
+            else -> 33                                       // 2.5 games to get 1 new card
+        }
+    } else {
+        // p = 0.75
+        when {
+            isCustom && deckNew.size >= deckOld.size -> 55    // 1.7 games to get 1 new card
+            isCustom -> 37                                    // 3 games to get 1 new card
+            !isCustom && deckNew.size >= deckOld.size -> 65   // 1.3 games to get 1 new card
+            else -> 42                                        // 2.5 games to get 1 new card
+        }
+    }
+    val reward = run {
+        val probs = (0 until numberOfCards).map {
+            (0..99).random() < prob
+        }
+        val newCards = probs.count { it }.coerceAtMost(deckNew.size)
+        val oldCards = (numberOfCards - newCards).coerceAtMost(deckOld.size)
+        deckNew.take(newCards) + deckOld.take(oldCards)
+    }
     var result = activity.getString(R.string.your_prize_cards_from)
     reward.forEach { card ->
         val deckName = if (card.back == CardBack.STANDARD && isAlt) {
