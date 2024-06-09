@@ -9,6 +9,9 @@ import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJoker
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyRush
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyTime
 import com.unicorns.invisible.caravan.model.primitives.CResources
+import com.unicorns.invisible.caravan.model.primitives.Card
+import com.unicorns.invisible.caravan.model.primitives.Rank
+import com.unicorns.invisible.caravan.model.primitives.Suit
 import kotlinx.serialization.Serializable
 
 
@@ -16,6 +19,22 @@ import kotlinx.serialization.Serializable
 data object EnemyBestest : Enemy() {
     override fun createDeck(): CResources = CResources(CardBack.VAULT_21, false)
     override fun getRewardBack() = CardBack.VAULT_21
+
+    fun init() {
+        StrategyCheckFuture.playerHand = Rank.entries.map { rank ->
+            if (rank == Rank.JOKER || rank == Rank.KING || rank == Rank.JACK) {
+                listOf(Card(rank, Suit.HEARTS, CardBack.STANDARD, false))
+            } else {
+                Suit.entries.map { suit ->
+                    Card(rank, suit, CardBack.STANDARD, false)
+                }
+            }
+        }.flatten().toMutableList()
+        StrategyCheckFuture.startPool()
+    }
+    fun clear() {
+        StrategyCheckFuture.stopPool()
+    }
 
     override fun makeMove(game: Game) {
         if (game.isInitStage()) {
@@ -32,8 +51,12 @@ data object EnemyBestest : Enemy() {
         val score = game.playerCaravans.indices.map { check(game.playerCaravans[it].getValue(), game.enemyCaravans[it].getValue()) }
         val antiScore = game.enemyCaravans.indices.map { check(game.enemyCaravans[it].getValue(), game.playerCaravans[it].getValue()) }
 
-        if ((score.any { it } || antiScore.any { it }) && StrategyCheckFuture.move(game)) {
-            return
+        if (score.any { it } || antiScore.any { it }) {
+            val cardsInPlayerCaravans = game.playerCaravans.flatMap { it.cards }.map { it.card }
+            StrategyCheckFuture.playerHand.removeAll { card -> card in cardsInPlayerCaravans }
+            if (StrategyCheckFuture.move(game)) {
+                return
+            }
         }
 
         val strategies = mutableListOf(

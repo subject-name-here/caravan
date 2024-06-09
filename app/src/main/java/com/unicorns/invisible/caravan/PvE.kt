@@ -187,13 +187,16 @@ fun ShowPvE(
         }
         return
     } else if (showGameUlysses) {
+        val enemy = EnemyBestest
+        enemy.init()
         StartGame(
             activity = activity,
             playerCResources = getPlayerDeck(),
             isCustom = checkedCustomDeck,
-            enemy = EnemyBestest,
+            enemy = enemy,
             showAlertDialog = showAlertDialog
         ) {
+            enemy.clear()
             showGameUlysses = false
         }
         return
@@ -281,18 +284,14 @@ fun ShowPvE(
                 style = TextStyle(color = getTextColor(activity), fontSize = 16.sp),
                 modifier = Modifier
                     .clickable {
-                        showAlertDialog(
-                            "[MISSING IN ACTION]",
-                            "Ulysses will return."
-                        )
-//                        if (checkedCustomDeck) {
-//                            showAlertDialog(
-//                                activity.getString(R.string.ulysses_fair_fight_header),
-//                                activity.getString(R.string.ulysses_fair_fight_body)
-//                            )
-//                        } else {
-//                            showGameUlysses = true
-//                        }
+                        if (checkedCustomDeck) {
+                            showAlertDialog(
+                                activity.getString(R.string.ulysses_fair_fight_header),
+                                activity.getString(R.string.ulysses_fair_fight_body)
+                            )
+                        } else {
+                            showGameUlysses = true
+                        }
                     }
                     .background(getTextBackgroundColor(activity))
                     .padding(4.dp)
