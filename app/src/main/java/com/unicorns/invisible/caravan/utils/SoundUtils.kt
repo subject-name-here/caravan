@@ -151,6 +151,7 @@ private fun playSongFromRadio(activity: MainActivity, songName: String) {
             setDataSource(afd.fileDescriptor, afd.startOffset, afd.length)
             setOnCompletionListener {
                 if (pointer == -1) {
+                    pointer = songList.indices.random()
                     startRadio(activity)
                 } else {
                     nextSong(activity)

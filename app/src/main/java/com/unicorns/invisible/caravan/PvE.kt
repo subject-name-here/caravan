@@ -281,14 +281,18 @@ fun ShowPvE(
                 style = TextStyle(color = getTextColor(activity), fontSize = 16.sp),
                 modifier = Modifier
                     .clickable {
-                        if (checkedCustomDeck) {
-                            showAlertDialog(
-                                activity.getString(R.string.ulysses_fair_fight_header),
-                                activity.getString(R.string.ulysses_fair_fight_body)
-                            )
-                        } else {
-                            showGameUlysses = true
-                        }
+                        showAlertDialog(
+                            "[MISSING IN ACTION]",
+                            "Ulysses will return."
+                        )
+//                        if (checkedCustomDeck) {
+//                            showAlertDialog(
+//                                activity.getString(R.string.ulysses_fair_fight_header),
+//                                activity.getString(R.string.ulysses_fair_fight_body)
+//                            )
+//                        } else {
+//                            showGameUlysses = true
+//                        }
                     }
                     .background(getTextBackgroundColor(activity))
                     .padding(4.dp)
