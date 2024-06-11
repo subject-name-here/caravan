@@ -83,7 +83,7 @@ data object EnemySecuritron38 : Enemy() {
             }
 
             if (!card.rank.isFace()) {
-                game.enemyCaravans.sortedByDescending { it.getValue() }.forEachIndexed { caravanIndex, caravan ->
+                game.enemyCaravans.withIndex().sortedBy { it.value.getValue() }.forEach { (caravanIndex, caravan) ->
                     if (caravan.getValue() + card.rank.value <= 26 && caravan.canPutCardOnTop(card)) {
                         if (!checkMoveOnDefeat(game, caravanIndex)) {
                             caravan.putCardOnTop(game.enemyCResources.removeFromHand(cardIndex))

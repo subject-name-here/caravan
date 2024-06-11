@@ -288,7 +288,7 @@ fun ShowGameRaw(
                         Caravans(
                             activity,
                             { selectedCard },
-                            { selectedCard?.let { game.playerCResources.hand[it] } },
+                            { selectedCard?.let { game.playerCResources.hand.getOrNull(it) } },
                             getSelectedCaravan,
                             setSelectedCaravan,
                             isMaxHeight = true,
@@ -319,7 +319,7 @@ fun ShowGameRaw(
                         Caravans(
                             activity,
                             { selectedCard },
-                            { selectedCard?.let { game.playerCResources.hand[it] } },
+                            { selectedCard?.let { game.playerCResources.hand.getOrNull(it) } },
                             getSelectedCaravan,
                             setSelectedCaravan,
                             isMaxHeight = false,

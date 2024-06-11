@@ -71,4 +71,6 @@ class CResources(private val deck: CustomDeck) {
             deck.add(it.copy())
         }
     }
+
+    fun getDeckCopy(): List<Card> = deck.toList()
 }
