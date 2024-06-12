@@ -79,7 +79,7 @@ fun ShowSettings(
                         style = TextStyle(color = getTextColor(activity), fontSize = 20.sp, textAlign = TextAlign.Center)
                     )
                     Spacer(modifier = Modifier.width(16.dp))
-                    Switch(checked = styleInt == 0, onCheckedChange = {
+                    Switch(checked = styleInt == 1, onCheckedChange = {
                         styleInt = 1 - styleInt
                         toggleStyle()
                     }, colors = SwitchColors(

@@ -143,6 +143,7 @@ fun startRadio(activity: MainActivity) {
 }
 
 var radioPlayer: MediaPlayer? = null
+var isRadioStopped = false
 private fun playSongFromRadio(activity: MainActivity, songName: String) {
     val vol = activity.save?.radioVolume ?: 1f
     radioPlayer = MediaPlayer()
@@ -174,8 +175,10 @@ fun nextSong(activity: MainActivity) {
     pointer = (songList.indices - usedIndices.toSet()).randomOrNull() ?: -1
 }
 fun resume() {
+    isRadioStopped = false
     radioPlayer?.start()
 }
 fun pause() {
+    isRadioStopped = true
     radioPlayer?.pause()
 }

@@ -76,6 +76,7 @@ import com.unicorns.invisible.caravan.utils.getKnobColor
 import com.unicorns.invisible.caravan.utils.getTextBackgroundColor
 import com.unicorns.invisible.caravan.utils.getTextColor
 import com.unicorns.invisible.caravan.utils.getTrackColor
+import com.unicorns.invisible.caravan.utils.isRadioStopped
 import com.unicorns.invisible.caravan.utils.nextSong
 import com.unicorns.invisible.caravan.utils.pause
 import com.unicorns.invisible.caravan.utils.playNotificationSound
@@ -113,7 +114,9 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        radioPlayer?.start()
+        if (!isRadioStopped) {
+            radioPlayer?.start()
+        }
         currentPlayer?.start()
     }
 
