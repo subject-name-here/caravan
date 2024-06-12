@@ -30,6 +30,8 @@ import com.unicorns.invisible.caravan.model.primitives.Card
 
 @Composable
 fun Int.pxToDp() = with(LocalDensity.current) { this@pxToDp.toDp() }
+@Composable
+fun Dp.dpToPx() = with(LocalDensity.current) { this@dpToPx.toPx() }
 
 
 @Composable

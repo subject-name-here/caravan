@@ -64,6 +64,7 @@ import com.unicorns.invisible.caravan.model.primitives.Rank
 import com.unicorns.invisible.caravan.model.primitives.Suit
 import com.unicorns.invisible.caravan.utils.ShowCard
 import com.unicorns.invisible.caravan.utils.ShowCardBack
+import com.unicorns.invisible.caravan.utils.dpToPx
 import com.unicorns.invisible.caravan.utils.getAccentColor
 import com.unicorns.invisible.caravan.utils.getBackgroundColor
 import com.unicorns.invisible.caravan.utils.getDividerColor
@@ -585,6 +586,9 @@ fun RowScope.CaravanOnField(
         }
     }
 
+    val trueWidth = (state.layoutInfo.viewportSize.width - 3.5f * 10.dp.dpToPx())
+    val scale = (1 / (183.toFloat() / trueWidth)).coerceAtMost(1.2f)
+
     Column(Modifier
         .fillMaxHeight()
         .weight(0.25f)
@@ -645,7 +649,7 @@ fun RowScope.CaravanOnField(
                                 }
                                 val offsetWidth = constraints.maxWidth / 2 - placeable.width / 2
                                 val antiOffsetHeight = if (isEnemy)
-                                        (layoutFullHeight - placeable.height / 3 * index - placeable.height)
+                                    (layoutFullHeight - placeable.height / 3 * index - placeable.height)
                                 else
                                     (placeable.height / 3 * index)
                                 layout(constraints.maxWidth, layoutFullHeight) {
@@ -659,7 +663,7 @@ fun RowScope.CaravanOnField(
                             }
 
                         Box(modifier = modifier) {
-                            ShowCard(activity, it.card, Modifier.clickable {
+                            ShowCard(activity, it.card, Modifier.scale(scale).clickable {
                                 if (!itemVerticalOffsetMovingIn.isRunning && !itemHorizontalOffsetMovingOut.isRunning) {
                                     addSelectedCardOnPosition(index)
                                 }
@@ -697,8 +701,8 @@ fun RowScope.CaravanOnField(
                                         (layoutFullHeight - placeable.height / 3 * index - placeable.height)
                                     else
                                         (placeable.height / 3 * index)
-                                        val modifierOffset = ((if (isEnemy) (-10).dp else 10.dp) * (modifierIndex + 1)).toPx().toInt()
-                                    layout(0, 0) {
+                                    val modifierOffset = ((if (isEnemy) (-10).dp else 10.dp) * (modifierIndex + 1)).toPx().toInt()
+                                    layout(placeable.width, 0) {
                                         placeable.place(
                                             modifierOffset + offsetWidth +
                                                     if (isMovingOut) (itemHorizontalOffsetMovingOut.value * placeable.width).toInt() else 0,
@@ -708,7 +712,7 @@ fun RowScope.CaravanOnField(
                                     }
                                 })
                             {
-                                ShowCard(activity, card, Modifier)
+                                ShowCard(activity, card, Modifier.scale(scale))
                             }
                         }
                     }

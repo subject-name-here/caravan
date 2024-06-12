@@ -87,7 +87,7 @@ data object EnemyNash : Enemy() {
                 return false
             }
             game.playerCaravans.withIndex()
-                .filter { it.value.getValue() in (25..26) }
+                .filter { it.value.getValue() in (24..26) }
                 .sortedByDescending { it.value.getValue() }
                 .forEach { (index, caravan) ->
                     val cardToJack = caravan.cards.filter { it.canAddModifier(jack.value) }.maxByOrNull { it.getValue() }
