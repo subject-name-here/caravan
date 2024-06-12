@@ -40,7 +40,6 @@ object StrategyDestructive : Strategy {
                     cardToJack.addModifier(game.enemyCResources.removeFromHand(jack.index))
                     return true
                 }
-
             }
         }
 

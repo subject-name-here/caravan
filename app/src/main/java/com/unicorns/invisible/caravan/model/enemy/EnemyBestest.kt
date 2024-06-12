@@ -14,9 +14,6 @@ data object EnemyBestest : Enemy() {
     override fun createDeck(): CResources = CResources(CardBack.VAULT_21, false)
     override fun getRewardBack() = CardBack.VAULT_21
 
-    fun init() {}
-    fun clear() {}
-
     private fun afterMove(game: Game) {}
 
     override fun makeMove(game: Game) {

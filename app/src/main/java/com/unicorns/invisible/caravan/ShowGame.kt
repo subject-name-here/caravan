@@ -420,7 +420,7 @@ fun PlayerCards(activity: MainActivity, cards: List<Card>, wasCardDropped: Boole
 
 @Composable
 fun RowOfEnemyCards(activity: MainActivity, cards: List<Card>, wasCardDropped: Boolean = false) {
-    Hand(activity, true, cards, wasCardDropped, -1, Color.Transparent, {})
+    Hand(activity, true, cards, wasCardDropped, -1, Color.Transparent) {}
 }
 
 
@@ -688,15 +688,19 @@ fun RowScope.CaravanOnField(
                             Box(modifier = Modifier
                                 .layout { measurable, constraints ->
                                     val placeable = measurable.measure(constraints)
-                                    val layoutFullHeight = max(placeable.height / 3 * (iteratedCollection.size + if (isEnemy) 2 else 3), state.layoutInfo.viewportSize.height)
+                                    val layoutFullHeight = max(
+                                        placeable.height / 3 * (iteratedCollection.size + if (isEnemy) 2 else 3),
+                                        state.layoutInfo.viewportSize.height
+                                    )
                                     val offsetWidth = constraints.maxWidth / 2 - placeable.width / 2
                                     val offsetHeight = if (isEnemy)
                                         (layoutFullHeight - placeable.height / 3 * index - placeable.height)
                                     else
                                         (placeable.height / 3 * index)
-                                    layout(constraints.maxWidth, 0) {
+                                        val modifierOffset = ((if (isEnemy) (-10).dp else 10.dp) * (modifierIndex + 1)).toPx().toInt()
+                                    layout(0, 0) {
                                         placeable.place(
-                                            ((if (isEnemy) (-10).dp else 10.dp) * (modifierIndex + 1)).toPx().toInt() + offsetWidth +
+                                            modifierOffset + offsetWidth +
                                                     if (isMovingOut) (itemHorizontalOffsetMovingOut.value * placeable.width).toInt() else 0,
                                             offsetHeight +
                                                     if (isMovingInModifier) (modifierVerticalOffsetMovingIn.value * placeable.height).toInt() else 0
