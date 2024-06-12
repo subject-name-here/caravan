@@ -231,5 +231,7 @@
     <string name="intro_music">Same Radio Intro</string>
     <string name="feels_like_i_am_losing">Feels like I am losing…</string>
     <string name="i_predict_your_certain_doom_next_in_two_moves">I predict your certain doom next in two moves.</string>
+    <string name="recovering">[RECOVERING]</string>
+    <string name="ulysses_will_return">Ulysses will return.</string>
 
 </resources>

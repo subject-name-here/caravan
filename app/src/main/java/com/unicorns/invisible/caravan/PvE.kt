@@ -282,8 +282,8 @@ fun ShowPvE(
                 modifier = Modifier
                     .clickable {
                         showAlertDialog(
-                            "[RECOVERING]",
-                            "Ulysses will return."
+                            activity.getString(R.string.recovering),
+                            activity.getString(R.string.ulysses_will_return)
                         )
 //                        if (checkedCustomDeck) {
 //                            showAlertDialog(

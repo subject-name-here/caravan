@@ -10,6 +10,8 @@ import com.google.android.gms.games.snapshot.Snapshot
 import com.google.android.gms.games.snapshot.SnapshotMetadataChange
 import com.google.android.gms.tasks.Continuation
 import com.google.android.gms.tasks.Task
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.tasks.await
 import java.io.IOException
@@ -58,25 +60,32 @@ abstract class SaveDataActivity : AppCompatActivity() {
 
     var snapshotsClient: SnapshotsClient? = null
         private set
+    protected abstract fun onSnapshotClientInitialized()
     private fun signInLoud() {
         val gamesSignInClient = PlayGames.getGamesSignInClient(this)
         gamesSignInClient.isAuthenticated()
             .addOnCompleteListener { isAuthenticatedTask: Task<AuthenticationResult> ->
                 val isAuthenticated = (isAuthenticatedTask.isSuccessful && isAuthenticatedTask.result.isAuthenticated)
                 if (isAuthenticated) {
-                    Toast.makeText(this, "KEKEK", Toast.LENGTH_SHORT).show()
+                    snapshotsClient = PlayGames.getSnapshotsClient(this)
+                    onSnapshotClientInitialized()
                 } else {
                     PlayGames.getGamesSignInClient(this).signIn().addOnCompleteListener { task ->
-                        if (task.isSuccessful) {
+                        if (task.isSuccessful && isAuthenticatedTask.result.isAuthenticated) {
                             snapshotsClient = PlayGames.getSnapshotsClient(this)
-                            Toast.makeText(this, "BOOBEEBOO", Toast.LENGTH_SHORT).show()
+                            onSnapshotClientInitialized()
                         } else {
-                            Toast.makeText(this, "Failed", Toast.LENGTH_SHORT).show()
+                            MainScope().launch {
+                                Toast.makeText(
+                                    this@SaveDataActivity,
+                                    "Failed to auth in Google Play Services",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
                         }
                     }
                 }
             }
-
     }
 
     companion object {

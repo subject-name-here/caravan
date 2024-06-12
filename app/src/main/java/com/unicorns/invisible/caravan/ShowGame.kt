@@ -585,6 +585,7 @@ fun RowScope.CaravanOnField(
             delay(95L)
             itemVerticalOffsetMovingIn.snapTo(2.5f * enemyMult)
             itemHorizontalOffsetMovingOut.snapTo(0f)
+            recomposeKey = !recomposeKey
         }
     }
 
@@ -645,6 +646,7 @@ fun RowScope.CaravanOnField(
                         val modifier = Modifier
                             .layout { measurable, constraints ->
                                 val placeable = measurable.measure(constraints)
+                                // TODO: too big of a gap at the top and at the bottom
                                 val layoutFullHeight = if (isEnemy) {
                                     max(
                                         placeable.height / 3 * (iteratedCollection.size + 2),
@@ -690,6 +692,7 @@ fun RowScope.CaravanOnField(
                                 recomposeKey = !recomposeKey
                                 delay(95L)
                                 modifierVerticalOffsetMovingIn.snapTo(3f * (if (isPlayerTurn) 1f else -1f))
+                                recomposeKey = !recomposeKey
                             }
                         }
 

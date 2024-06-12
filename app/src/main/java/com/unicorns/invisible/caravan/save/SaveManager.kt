@@ -1,14 +1,14 @@
 package com.unicorns.invisible.caravan.save
 
-import android.util.Log
 import com.unicorns.invisible.caravan.MainActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.io.File
+import java.nio.charset.Charset
+import java.nio.charset.StandardCharsets
 
 
 val json = Json {
@@ -33,22 +33,13 @@ fun getSaveFile(activity: MainActivity): File {
 }
 
 fun saveOnGD(activity: MainActivity) {
-    CoroutineScope(Dispatchers.Default).launch {
-        if (activity.snapshotsClient == null) return@launch
-        val bytes = json.encodeToString(activity.save!!).toByteArray()
-        activity.uploadDataToDrive(bytes)
-    }
+    if (activity.snapshotsClient == null) return
+    val bytes = json.encodeToString(activity.save!!).toByteArray(StandardCharsets.UTF_8)
+    activity.uploadDataToDrive(bytes)
 }
-fun loadFromGD(activity: MainActivity) {
-    runBlocking {
-        if (activity.snapshotsClient != null) {
-            try {
-                val data = activity.fetchDataFromDrive()
-                Log.i("Ulysses", data.contentToString())
-                activity.save = json.decodeFromString<Save>(data.contentToString())
-            } catch (e: Exception) {
-                Log.i("GoogleDriveLoad", e.message.toString())
-            }
-        }
+suspend fun loadFromGD(activity: MainActivity) {
+    val data = activity.fetchDataFromDrive()?.toString(StandardCharsets.UTF_8)
+    if (data != null && data != "") {
+        activity.save = json.decodeFromString<Save>(data)
     }
 }

@@ -33,6 +33,7 @@ compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling
 compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 compose-activity = { group = "androidx.activity", name = "activity-compose", version.ref = "activity" }
 compose-foundation = { group = "androidx.compose.foundation", name = "foundation", version = "1.7.0-beta02" }
+compose-runtime = { group = "androidx.compose.runtime", name = "runtime-livedata", version = "1.6.8" }
 coil = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
 coil-svg = { group = "io.coil-kt", name = "coil-svg", version.ref = "coil" }
 

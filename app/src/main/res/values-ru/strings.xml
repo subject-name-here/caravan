@@ -236,4 +236,7 @@
     <string name="feels_like_i_am_losing">Чувствую своё поражение…</string>
     <string name="i_predict_your_certain_doom_next_in_two_moves">Предвижу твоё поражение в два хода.</string>
 
+    <string name="recovering">[ВОССТАНАВЛИВАЕТСЯ]</string>
+    <string name="ulysses_will_return">Улисс ещё вернется.</string>
+
 </resources>

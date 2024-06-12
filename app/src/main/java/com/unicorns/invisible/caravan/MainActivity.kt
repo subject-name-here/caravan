@@ -2,6 +2,7 @@ package com.unicorns.invisible.caravan
 
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
@@ -34,6 +35,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -62,6 +64,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withLink
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.MutableLiveData
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.save.Save
@@ -85,7 +88,10 @@ import com.unicorns.invisible.caravan.utils.radioPlayer
 import com.unicorns.invisible.caravan.utils.resume
 import com.unicorns.invisible.caravan.utils.scrollbar
 import com.unicorns.invisible.caravan.utils.startRadio
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.chromium.net.CronetEngine
 import java.util.UUID
@@ -122,26 +128,27 @@ class MainActivity : SaveDataActivity() {
         currentPlayer?.start()
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        runBlocking {
+    override fun onSnapshotClientInitialized() {
+        CoroutineScope(Dispatchers.Default).launch {
             val savedOnGDData = fetchDataFromDrive()
             if (savedOnGDData == null || savedOnGDData.isEmpty()) {
                 save = if (getSaveFile(this@MainActivity).exists()) {
-                    loadLocalSave(this@MainActivity)
+                    loadLocalSave(this@MainActivity).also { getSaveFile(this@MainActivity).delete() }
                 } else {
                     Save()
                 }
                 saveOnGD(this@MainActivity)
             }
             loadFromGD(this@MainActivity)
+            flag.postValue(true)
         }
+    }
+
+    private var flag = MutableLiveData<Boolean>(false)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
 
         id = UUID.randomUUID().toString()
-
-        styleId = save?.styleId ?: 1
-        startRadio(this)
-
         if (cronetEngine == null) {
             try {
                 val myBuilder = CronetEngine.Builder(this)
@@ -152,361 +159,386 @@ class MainActivity : SaveDataActivity() {
         }
 
         setContent {
-            var deckSelection by rememberSaveable { mutableStateOf(false) }
-            var showPvP by rememberSaveable { mutableStateOf(false) }
-            var showAbout by rememberSaveable { mutableStateOf(false) }
-            var showGameStats by rememberSaveable { mutableStateOf(false) }
-            var showTutorial by rememberSaveable { mutableStateOf(false) }
-            var showRules by rememberSaveable { mutableStateOf(false) }
-
-            var showSettings by rememberSaveable { mutableIntStateOf(0) }
-            var styleIdForTop by rememberSaveable { mutableIntStateOf(styleId) }
-
-            var showSoundSettings by remember { mutableStateOf(false) }
-            var showSoundSettings2 by remember { mutableStateOf(false) }
-
-            var selectedDeck by rememberSaveable { mutableStateOf(save?.selectedDeck ?: (CardBack.STANDARD to false)) }
-
-            var showAlertDialog by remember { mutableStateOf(false) }
-            var showAlertDialog2 by remember { mutableStateOf(false) }
-            var alertDialogHeader by remember { mutableStateOf("") }
-            var alertDialogMessage by remember { mutableStateOf("") }
-
-            fun showAlertDialog(header: String, message: String) {
-                showAlertDialog = true
-                alertDialogHeader = header
-                alertDialogMessage = message
-            }
-            fun hideAlertDialog() {
-                showAlertDialog = false
-                showAlertDialog2 = false
-            }
-
-            if (showAlertDialog) {
-                LaunchedEffect(Unit) {
-                    delay(50L)
-                    playNotificationSound(this@MainActivity) { showAlertDialog2 = true }
-                }
-
-                if (showAlertDialog2) {
-                    AlertDialog(
-                        modifier = Modifier.border(width = 4.dp, color = getAccentColor(this)),
-                        onDismissRequest = { hideAlertDialog() },
-                        confirmButton = { Text(text = stringResource(R.string.close), color = getAccentColor(this), modifier = Modifier.clickable { hideAlertDialog() }) },
-                        dismissButton = { if (goBack != null) {
-                            Text(
-                                text = stringResource(R.string.back_to_menu), color = getAccentColor(this),
-                                modifier = Modifier.clickable { hideAlertDialog(); goBack?.invoke(); goBack = null }
-                            )
-                        } },
-                        title = { Text(text = alertDialogHeader, color = getTextColor(this)) },
-                        text = { Text(text = alertDialogMessage) },
-                        containerColor = getTextBackgroundColor(this),
-                        textContentColor = getTextColor(this),
-                        shape = RectangleShape,
+            val k by flag.observeAsState()
+            if (k == false) {
+                Box(Modifier.fillMaxSize().background(colorResource(R.color.colorBack)), contentAlignment = Alignment.Center) {
+                    Text(
+                        text = "PLEASE\nSTAND BY", color = colorResource(R.color.colorText),
+                        fontFamily = FontFamily(Font(R.font.monofont)),
+                        style = TextStyle(
+                            color = getTextColor(this@MainActivity),
+                            fontSize = 32.sp,
+                            textAlign = TextAlign.Center,
+                            fontWeight = FontWeight.ExtraBold
+                        )
                     )
                 }
+            } else {
+                Screen()
+            }
+        }
+    }
+
+    @Composable
+    fun Screen() {
+        styleId = save?.styleId ?: 1
+        startRadio(this)
+
+        var deckSelection by rememberSaveable { mutableStateOf(false) }
+        var showPvP by rememberSaveable { mutableStateOf(false) }
+        var showAbout by rememberSaveable { mutableStateOf(false) }
+        var showGameStats by rememberSaveable { mutableStateOf(false) }
+        var showTutorial by rememberSaveable { mutableStateOf(false) }
+        var showRules by rememberSaveable { mutableStateOf(false) }
+
+        var showSettings by rememberSaveable { mutableIntStateOf(0) }
+        var styleIdForTop by rememberSaveable { mutableIntStateOf(styleId) }
+
+        var showSoundSettings by remember { mutableStateOf(false) }
+        var showSoundSettings2 by remember { mutableStateOf(false) }
+
+        var selectedDeck by rememberSaveable { mutableStateOf(save?.selectedDeck ?: (CardBack.STANDARD to false)) }
+
+        var showAlertDialog by remember { mutableStateOf(false) }
+        var showAlertDialog2 by remember { mutableStateOf(false) }
+        var alertDialogHeader by remember { mutableStateOf("") }
+        var alertDialogMessage by remember { mutableStateOf("") }
+
+        fun showAlertDialog(header: String, message: String) {
+            showAlertDialog = true
+            alertDialogHeader = header
+            alertDialogMessage = message
+        }
+        fun hideAlertDialog() {
+            showAlertDialog = false
+            showAlertDialog2 = false
+        }
+
+        if (showAlertDialog) {
+            LaunchedEffect(Unit) {
+                delay(50L)
+                playNotificationSound(this@MainActivity) { showAlertDialog2 = true }
             }
 
-            fun hideSoundSettings() {
-                showSoundSettings2 = false
-                showSoundSettings = false
+            if (showAlertDialog2) {
+                AlertDialog(
+                    modifier = Modifier.border(width = 4.dp, color = getAccentColor(this)),
+                    onDismissRequest = { hideAlertDialog() },
+                    confirmButton = { Text(text = stringResource(R.string.close), color = getAccentColor(this), modifier = Modifier.clickable { hideAlertDialog() }) },
+                    dismissButton = { if (goBack != null) {
+                        Text(
+                            text = stringResource(R.string.back_to_menu), color = getAccentColor(this),
+                            modifier = Modifier.clickable { hideAlertDialog(); goBack?.invoke(); goBack = null }
+                        )
+                    } },
+                    title = { Text(text = alertDialogHeader, color = getTextColor(this)) },
+                    text = { Text(text = alertDialogMessage) },
+                    containerColor = getTextBackgroundColor(this),
+                    textContentColor = getTextColor(this),
+                    shape = RectangleShape,
+                )
             }
-            if (showSoundSettings) {
-                LaunchedEffect(Unit) {
-                    delay(50L)
-                    playNotificationSound(this@MainActivity) { showSoundSettings2 = true }
-                }
+        }
 
-                if (showSoundSettings2) {
-                    AlertDialog(
-                        modifier = Modifier.border(width = 4.dp, color = getAccentColor(this)),
-                        onDismissRequest = {
-                            saveOnGD(this)
-                            hideSoundSettings()
-                        },
-                        confirmButton = {
-                            Text(text = stringResource(R.string.save), color = getAccentColor(this), modifier = Modifier.clickable {
-                                saveOnGD(this); hideSoundSettings()
-                            })
-                        },
-                        title = { Text(text = stringResource(R.string.sound), color = getTextColor(this)) },
-                        text = {
-                            var radioVolume by remember { mutableFloatStateOf(save?.radioVolume ?: 1f) }
-                            var soundVolume by remember { mutableFloatStateOf(save?.soundVolume ?: 1f) }
-                            var ambientVolume by remember { mutableFloatStateOf(save?.ambientVolume ?: 1f) }
-                            var intro by remember { mutableStateOf(save?.useCaravanIntro ?: true) }
-                            Column {
-                                Row(verticalAlignment = Alignment.CenterVertically) {
-                                    Text(
-                                        text = stringResource(R.string.radio),
-                                        modifier = Modifier
-                                            .clickable {
-                                                nextSong(this@MainActivity)
-                                            }
-                                            .fillMaxWidth(0.33f),
-                                        fontFamily = FontFamily(Font(R.font.monofont)),
-                                        style = TextStyle(
-                                            color = getTextColor(this@MainActivity),
-                                            fontSize = 16.sp,
-                                            textAlign = TextAlign.Center,
-                                            fontWeight = FontWeight.ExtraBold
-                                        )
-                                    )
+        fun hideSoundSettings() {
+            showSoundSettings2 = false
+            showSoundSettings = false
+        }
+        if (showSoundSettings) {
+            LaunchedEffect(Unit) {
+                delay(50L)
+                playNotificationSound(this@MainActivity) { showSoundSettings2 = true }
+            }
 
-                                    Slider(radioVolume, onValueChange = {
-                                        radioVolume = it; save?.radioVolume = it
-                                        radioPlayer?.setVolume(it, it)
-                                    }, colors = SliderColors(
-                                        thumbColor = getAccentColor(this@MainActivity),
-                                        activeTrackColor = getAccentColor(this@MainActivity),
-                                        activeTickColor = getAccentColor(this@MainActivity),
-                                        inactiveTickColor = getAccentColor(this@MainActivity),
-                                        inactiveTrackColor = getAccentColor(this@MainActivity),
-                                        disabledThumbColor = Color.Gray,
-                                        disabledActiveTrackColor = Color.Gray,
-                                        disabledActiveTickColor = Color.Gray,
-                                        disabledInactiveTickColor = Color.Gray,
-                                        disabledInactiveTrackColor = Color.Gray,
-                                    ))
-                                }
-                                Row(verticalAlignment = Alignment.CenterVertically) {
-                                    Text(
-                                        text = stringResource(R.string.ambient),
-                                        modifier = Modifier
-                                            .clickable {
-                                                nextSong(this@MainActivity)
-                                            }
-                                            .fillMaxWidth(0.33f),
-                                        fontFamily = FontFamily(Font(R.font.monofont)),
-                                        style = TextStyle(
-                                            color = getTextColor(this@MainActivity),
-                                            fontSize = 16.sp,
-                                            textAlign = TextAlign.Center,
-                                            fontWeight = FontWeight.ExtraBold
-                                        )
-                                    )
-
-                                    Slider(ambientVolume, onValueChange = {
-                                        ambientVolume = it; save?.ambientVolume = it
-                                        currentPlayer?.setVolume(it / 2, it / 2)
-                                    }, colors = SliderColors(
-                                        thumbColor = getAccentColor(this@MainActivity),
-                                        activeTrackColor = getAccentColor(this@MainActivity),
-                                        activeTickColor = getAccentColor(this@MainActivity),
-                                        inactiveTickColor = getAccentColor(this@MainActivity),
-                                        inactiveTrackColor = getAccentColor(this@MainActivity),
-                                        disabledThumbColor = Color.Gray,
-                                        disabledActiveTrackColor = Color.Gray,
-                                        disabledActiveTickColor = Color.Gray,
-                                        disabledInactiveTickColor = Color.Gray,
-                                        disabledInactiveTrackColor = Color.Gray,
-                                    ))
-                                }
-                                Row(verticalAlignment = Alignment.CenterVertically) {
-                                    Text(
-                                        text = stringResource(R.string.sfx),
-                                        modifier = Modifier
-                                            .clickable {
-                                                nextSong(this@MainActivity)
-                                            }
-                                            .fillMaxWidth(0.33f),
-                                        fontFamily = FontFamily(Font(R.font.monofont)),
-                                        style = TextStyle(
-                                            color = getTextColor(this@MainActivity),
-                                            fontSize = 16.sp,
-                                            textAlign = TextAlign.Center,
-                                            fontWeight = FontWeight.ExtraBold
-                                        )
-                                    )
-
-                                    Slider(soundVolume, onValueChange = {
-                                        soundVolume = it; save?.soundVolume = it
-                                    }, colors = SliderColors(
-                                        thumbColor = getAccentColor(this@MainActivity),
-                                        activeTrackColor = getAccentColor(this@MainActivity),
-                                        activeTickColor = getAccentColor(this@MainActivity),
-                                        inactiveTickColor = getAccentColor(this@MainActivity),
-                                        inactiveTrackColor = getAccentColor(this@MainActivity),
-                                        disabledThumbColor = Color.Gray,
-                                        disabledActiveTrackColor = Color.Gray,
-                                        disabledActiveTickColor = Color.Gray,
-                                        disabledInactiveTickColor = Color.Gray,
-                                        disabledInactiveTrackColor = Color.Gray,
-                                    ), onValueChangeFinished = { playNotificationSound(this@MainActivity) {} })
-                                }
-                                Row(horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
-                                    Text(
-                                        modifier = Modifier.fillMaxWidth(0.66f),
-                                        text = stringResource(R.string.intro_music),
-                                        fontFamily = FontFamily(Font(R.font.monofont)),
-                                        style = TextStyle(color = getTextColor(this@MainActivity), fontSize = 20.sp, textAlign = TextAlign.Center)
-                                    )
-                                    Spacer(modifier = Modifier.width(16.dp))
-                                    Switch(checked = intro, onCheckedChange = {
-                                        intro = !intro
-                                        save?.let {
-                                            it.useCaravanIntro = !it.useCaravanIntro
-                                            saveOnGD(this@MainActivity)
+            if (showSoundSettings2) {
+                AlertDialog(
+                    modifier = Modifier.border(width = 4.dp, color = getAccentColor(this)),
+                    onDismissRequest = {
+                        saveOnGD(this)
+                        hideSoundSettings()
+                    },
+                    confirmButton = {
+                        Text(text = stringResource(R.string.save), color = getAccentColor(this), modifier = Modifier.clickable {
+                            saveOnGD(this); hideSoundSettings()
+                        })
+                    },
+                    title = { Text(text = stringResource(R.string.sound), color = getTextColor(this)) },
+                    text = {
+                        var radioVolume by remember { mutableFloatStateOf(save?.radioVolume ?: 1f) }
+                        var soundVolume by remember { mutableFloatStateOf(save?.soundVolume ?: 1f) }
+                        var ambientVolume by remember { mutableFloatStateOf(save?.ambientVolume ?: 1f) }
+                        var intro by remember { mutableStateOf(save?.useCaravanIntro ?: true) }
+                        Column {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Text(
+                                    text = stringResource(R.string.radio),
+                                    modifier = Modifier
+                                        .clickable {
+                                            nextSong(this@MainActivity)
                                         }
-                                    }, colors = SwitchColors(
-                                        checkedThumbColor = getTextBackgroundColor(this@MainActivity),
-                                        checkedTrackColor = getAccentColor(this@MainActivity),
-                                        checkedBorderColor = Color.Transparent,
-                                        checkedIconColor = Color.Transparent,
-                                        uncheckedThumbColor = getTextBackgroundColor(this@MainActivity),
-                                        uncheckedTrackColor = getAccentColor(this@MainActivity),
-                                        uncheckedBorderColor = Color.Transparent,
-                                        uncheckedIconColor = Color.Transparent,
-                                        disabledCheckedThumbColor = colorResource(R.color.red),
-                                        disabledCheckedTrackColor = colorResource(R.color.white),
-                                        disabledCheckedBorderColor = Color.Transparent,
-                                        disabledCheckedIconColor = Color.Transparent,
-                                        disabledUncheckedThumbColor = colorResource(R.color.red),
-                                        disabledUncheckedTrackColor = colorResource(R.color.white),
-                                        disabledUncheckedBorderColor = Color.Transparent,
-                                        disabledUncheckedIconColor = Color.Transparent,
+                                        .fillMaxWidth(0.33f),
+                                    fontFamily = FontFamily(Font(R.font.monofont)),
+                                    style = TextStyle(
+                                        color = getTextColor(this@MainActivity),
+                                        fontSize = 16.sp,
+                                        textAlign = TextAlign.Center,
+                                        fontWeight = FontWeight.ExtraBold
                                     )
-                                    )
-                                }
+                                )
+
+                                Slider(radioVolume, onValueChange = {
+                                    radioVolume = it; save?.radioVolume = it
+                                    radioPlayer?.setVolume(it, it)
+                                }, colors = SliderColors(
+                                    thumbColor = getAccentColor(this@MainActivity),
+                                    activeTrackColor = getAccentColor(this@MainActivity),
+                                    activeTickColor = getAccentColor(this@MainActivity),
+                                    inactiveTickColor = getAccentColor(this@MainActivity),
+                                    inactiveTrackColor = getAccentColor(this@MainActivity),
+                                    disabledThumbColor = Color.Gray,
+                                    disabledActiveTrackColor = Color.Gray,
+                                    disabledActiveTickColor = Color.Gray,
+                                    disabledInactiveTickColor = Color.Gray,
+                                    disabledInactiveTrackColor = Color.Gray,
+                                ))
                             }
-                        },
-                        containerColor = getTextBackgroundColor(this),
-                        textContentColor = getTextColor(this),
-                        shape = RectangleShape,
-                    )
-                }
-            }
-
-            Scaffold(
-                topBar = {
-                    var isPaused by remember { mutableStateOf(false) }
-                    key(styleIdForTop) {
-                        Row(
-                            Modifier
-                                .fillMaxWidth()
-                                .wrapContentHeight()
-                                .background(getTextBackgroundColor(this))
-                                .padding(vertical = 8.dp),
-                            horizontalArrangement = Arrangement.SpaceAround
-                        ) {
-                            Text(
-                                text = ">|",
-                                modifier = Modifier.clickable {
-                                    nextSong(this@MainActivity)
-                                },
-                                fontFamily = FontFamily(Font(R.font.monofont)),
-                                style = TextStyle(
-                                    color = getTextColor(this@MainActivity),
-                                    fontSize = 14.sp,
-                                    textAlign = TextAlign.Center,
-                                    fontWeight = FontWeight.ExtraBold
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Text(
+                                    text = stringResource(R.string.ambient),
+                                    modifier = Modifier
+                                        .clickable {
+                                            nextSong(this@MainActivity)
+                                        }
+                                        .fillMaxWidth(0.33f),
+                                    fontFamily = FontFamily(Font(R.font.monofont)),
+                                    style = TextStyle(
+                                        color = getTextColor(this@MainActivity),
+                                        fontSize = 16.sp,
+                                        textAlign = TextAlign.Center,
+                                        fontWeight = FontWeight.ExtraBold
+                                    )
                                 )
-                            )
 
-                            Text(
-                                text = if (isPaused) "|>" else "||",
-                                modifier = Modifier.clickable {
-                                    if (isPaused) {
-                                        resume()
-                                        isPaused = false
-                                    } else {
-                                        pause()
-                                        isPaused = true
+                                Slider(ambientVolume, onValueChange = {
+                                    ambientVolume = it; save?.ambientVolume = it
+                                    currentPlayer?.setVolume(it / 2, it / 2)
+                                }, colors = SliderColors(
+                                    thumbColor = getAccentColor(this@MainActivity),
+                                    activeTrackColor = getAccentColor(this@MainActivity),
+                                    activeTickColor = getAccentColor(this@MainActivity),
+                                    inactiveTickColor = getAccentColor(this@MainActivity),
+                                    inactiveTrackColor = getAccentColor(this@MainActivity),
+                                    disabledThumbColor = Color.Gray,
+                                    disabledActiveTrackColor = Color.Gray,
+                                    disabledActiveTickColor = Color.Gray,
+                                    disabledInactiveTickColor = Color.Gray,
+                                    disabledInactiveTrackColor = Color.Gray,
+                                ))
+                            }
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Text(
+                                    text = stringResource(R.string.sfx),
+                                    modifier = Modifier
+                                        .clickable {
+                                            nextSong(this@MainActivity)
+                                        }
+                                        .fillMaxWidth(0.33f),
+                                    fontFamily = FontFamily(Font(R.font.monofont)),
+                                    style = TextStyle(
+                                        color = getTextColor(this@MainActivity),
+                                        fontSize = 16.sp,
+                                        textAlign = TextAlign.Center,
+                                        fontWeight = FontWeight.ExtraBold
+                                    )
+                                )
+
+                                Slider(soundVolume, onValueChange = {
+                                    soundVolume = it; save?.soundVolume = it
+                                }, colors = SliderColors(
+                                    thumbColor = getAccentColor(this@MainActivity),
+                                    activeTrackColor = getAccentColor(this@MainActivity),
+                                    activeTickColor = getAccentColor(this@MainActivity),
+                                    inactiveTickColor = getAccentColor(this@MainActivity),
+                                    inactiveTrackColor = getAccentColor(this@MainActivity),
+                                    disabledThumbColor = Color.Gray,
+                                    disabledActiveTrackColor = Color.Gray,
+                                    disabledActiveTickColor = Color.Gray,
+                                    disabledInactiveTickColor = Color.Gray,
+                                    disabledInactiveTrackColor = Color.Gray,
+                                ), onValueChangeFinished = { playNotificationSound(this@MainActivity) {} })
+                            }
+                            Row(horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
+                                Text(
+                                    modifier = Modifier.fillMaxWidth(0.66f),
+                                    text = stringResource(R.string.intro_music),
+                                    fontFamily = FontFamily(Font(R.font.monofont)),
+                                    style = TextStyle(color = getTextColor(this@MainActivity), fontSize = 20.sp, textAlign = TextAlign.Center)
+                                )
+                                Spacer(modifier = Modifier.width(16.dp))
+                                Switch(checked = intro, onCheckedChange = {
+                                    intro = !intro
+                                    save?.let {
+                                        it.useCaravanIntro = !it.useCaravanIntro
+                                        saveOnGD(this@MainActivity)
                                     }
-                                },
-                                fontWeight = FontWeight.ExtraBold,
-                                fontFamily = FontFamily(Font(R.font.monofont)),
-                                style = TextStyle(
-                                    color = getTextColor(this@MainActivity),
-                                    fontSize = 14.sp,
-                                    textAlign = TextAlign.Center,
+                                }, colors = SwitchColors(
+                                    checkedThumbColor = getTextBackgroundColor(this@MainActivity),
+                                    checkedTrackColor = getAccentColor(this@MainActivity),
+                                    checkedBorderColor = Color.Transparent,
+                                    checkedIconColor = Color.Transparent,
+                                    uncheckedThumbColor = getTextBackgroundColor(this@MainActivity),
+                                    uncheckedTrackColor = getAccentColor(this@MainActivity),
+                                    uncheckedBorderColor = Color.Transparent,
+                                    uncheckedIconColor = Color.Transparent,
+                                    disabledCheckedThumbColor = colorResource(R.color.red),
+                                    disabledCheckedTrackColor = colorResource(R.color.white),
+                                    disabledCheckedBorderColor = Color.Transparent,
+                                    disabledCheckedIconColor = Color.Transparent,
+                                    disabledUncheckedThumbColor = colorResource(R.color.red),
+                                    disabledUncheckedTrackColor = colorResource(R.color.white),
+                                    disabledUncheckedBorderColor = Color.Transparent,
+                                    disabledUncheckedIconColor = Color.Transparent,
                                 )
-                            )
+                                )
+                            }
+                        }
+                    },
+                    containerColor = getTextBackgroundColor(this),
+                    textContentColor = getTextColor(this),
+                    shape = RectangleShape,
+                )
+            }
+        }
 
-                            Text(
-                                text = stringResource(R.string.sound),
-                                modifier = Modifier.clickable {
-                                    showSoundSettings = true
-                                },
-                                fontFamily = FontFamily(Font(R.font.monofont)),
-                                style = TextStyle(
-                                    color = getTextColor(this@MainActivity),
-                                    fontSize = 14.sp,
-                                    textAlign = TextAlign.Center,
-                                ),
+        Scaffold(
+            topBar = {
+                var isPaused by remember { mutableStateOf(false) }
+                key(styleIdForTop) {
+                    Row(
+                        Modifier
+                            .fillMaxWidth()
+                            .wrapContentHeight()
+                            .background(getTextBackgroundColor(this))
+                            .padding(vertical = 8.dp),
+                        horizontalArrangement = Arrangement.SpaceAround
+                    ) {
+                        Text(
+                            text = ">|",
+                            modifier = Modifier.clickable {
+                                nextSong(this@MainActivity)
+                            },
+                            fontFamily = FontFamily(Font(R.font.monofont)),
+                            style = TextStyle(
+                                color = getTextColor(this@MainActivity),
+                                fontSize = 14.sp,
+                                textAlign = TextAlign.Center,
                                 fontWeight = FontWeight.ExtraBold
                             )
-                        }
+                        )
+
+                        Text(
+                            text = if (isPaused) "|>" else "||",
+                            modifier = Modifier.clickable {
+                                if (isPaused) {
+                                    resume()
+                                    isPaused = false
+                                } else {
+                                    pause()
+                                    isPaused = true
+                                }
+                            },
+                            fontWeight = FontWeight.ExtraBold,
+                            fontFamily = FontFamily(Font(R.font.monofont)),
+                            style = TextStyle(
+                                color = getTextColor(this@MainActivity),
+                                fontSize = 14.sp,
+                                textAlign = TextAlign.Center,
+                            )
+                        )
+
+                        Text(
+                            text = stringResource(R.string.sound),
+                            modifier = Modifier.clickable {
+                                showSoundSettings = true
+                            },
+                            fontFamily = FontFamily(Font(R.font.monofont)),
+                            style = TextStyle(
+                                color = getTextColor(this@MainActivity),
+                                fontSize = 14.sp,
+                                textAlign = TextAlign.Center,
+                            ),
+                            fontWeight = FontWeight.ExtraBold
+                        )
                     }
                 }
-            ) { innerPadding ->
-                Box(Modifier.padding(innerPadding)) {
-                    when {
-                        showRules -> {
-                            ShowRules(activity = this@MainActivity) { showRules = false }
-                        }
-                        showTutorial -> {
-                            Tutorial(activity = this@MainActivity) { showTutorial = false }
-                        }
-                        deckSelection -> {
-                            DeckSelection(
-                                this@MainActivity,
-                                { selectedDeck },
-                                { back, isAlt -> selectedDeck = back to isAlt }
-                            ) { deckSelection = false }
-                        }
-                        showAbout -> {
-                            ShowAbout(activity = this@MainActivity) { showAbout = false }
-                        }
-                        showGameStats -> {
-                            ShowPvE(
+            }
+        ) { innerPadding ->
+            Box(Modifier.padding(innerPadding)) {
+                when {
+                    showRules -> {
+                        ShowRules(activity = this@MainActivity) { showRules = false }
+                    }
+                    showTutorial -> {
+                        Tutorial(activity = this@MainActivity) { showTutorial = false }
+                    }
+                    deckSelection -> {
+                        DeckSelection(
+                            this@MainActivity,
+                            { selectedDeck },
+                            { back, isAlt -> selectedDeck = back to isAlt }
+                        ) { deckSelection = false }
+                    }
+                    showAbout -> {
+                        ShowAbout(activity = this@MainActivity) { showAbout = false }
+                    }
+                    showGameStats -> {
+                        ShowPvE(
+                            activity = this@MainActivity,
+                            selectedDeck = { selectedDeck },
+                            ::showAlertDialog
+                        ) { showGameStats = false }
+                    }
+                    showPvP -> {
+                        if (!checkIfCustomDeckCanBeUsedInGame(CResources(save!!.getCustomDeckCopy()))) {
+                            showAlertDialog(
+                                stringResource(R.string.custom_deck_is_too_small),
+                                stringResource(R.string.custom_deck_is_too_small_message)
+                            )
+                            showPvP = false
+                        } else {
+                            ShowPvP(
                                 activity = this@MainActivity,
                                 selectedDeck = { selectedDeck },
                                 ::showAlertDialog
-                            ) { showGameStats = false }
+                            ) { showPvP = false }
                         }
-                        showPvP -> {
-                            if (!checkIfCustomDeckCanBeUsedInGame(CResources(save!!.getCustomDeckCopy()))) {
-                                showAlertDialog(
-                                    stringResource(R.string.custom_deck_is_too_small),
-                                    stringResource(R.string.custom_deck_is_too_small_message)
-                                )
-                                showPvP = false
-                            } else {
-                                ShowPvP(
-                                    activity = this@MainActivity,
-                                    selectedDeck = { selectedDeck },
-                                    ::showAlertDialog
-                                ) { showPvP = false }
+                    }
+                    showSettings > 0 -> {
+                        ShowSettings(activity = this@MainActivity, { styleId }, {
+                            styleId = 1 - styleId
+                            showSettings = 3 - showSettings
+                            styleIdForTop = styleId
+                            save?.let {
+                                it.styleId = styleId
+                                saveOnGD(this@MainActivity)
                             }
-                        }
-                        showSettings > 0 -> {
-                            ShowSettings(activity = this@MainActivity, { styleId }, {
-                                styleId = 1 - styleId
-                                showSettings = 3 - showSettings
-                                styleIdForTop = styleId
-                                save?.let {
-                                    it.styleId = styleId
-                                    saveOnGD(this@MainActivity)
-                                }
-                            }) { showSettings = 0 }
-                        }
-                        else -> {
-                            MainMenu(
-                                { deckSelection = true },
-                                { showAbout = true },
-                                { showGameStats = true },
-                                { showPvP = true },
-                                { showTutorial = true },
-                                { showRules = true },
-                                { showSettings = 1 }
-                            )
-                        }
+                        }) { showSettings = 0 }
+                    }
+                    else -> {
+                        MainMenu(
+                            { deckSelection = true },
+                            { showAbout = true },
+                            { showGameStats = true },
+                            { showPvP = true },
+                            { showTutorial = true },
+                            { showRules = true },
+                            { showSettings = 1 }
+                        )
                     }
                 }
             }
         }
+
     }
 
     @Composable

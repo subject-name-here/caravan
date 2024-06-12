@@ -79,5 +79,5 @@ dependencies {
     implementation(libs.ac2)
     implementation(libs.ac3)
 
-
+    implementation(libs.compose.runtime)
 }
