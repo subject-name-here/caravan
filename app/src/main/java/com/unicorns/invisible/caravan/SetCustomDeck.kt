@@ -39,7 +39,7 @@ import com.unicorns.invisible.caravan.model.primitives.Card
 import com.unicorns.invisible.caravan.model.primitives.CustomDeck
 import com.unicorns.invisible.caravan.model.primitives.Rank
 import com.unicorns.invisible.caravan.model.primitives.Suit
-import com.unicorns.invisible.caravan.save.save
+import com.unicorns.invisible.caravan.save.saveOnGD
 import com.unicorns.invisible.caravan.utils.CheckboxCustom
 import com.unicorns.invisible.caravan.utils.ShowCard
 import com.unicorns.invisible.caravan.utils.ShowCardBack
@@ -70,7 +70,7 @@ fun SetCustomDeck(
                 deck.add(card)
             }
         }
-        save(activity, activity.save!!)
+        saveOnGD(activity)
 
     }
     fun isAvailable(card: Card): Boolean {
@@ -165,7 +165,7 @@ fun SetCustomDeck(
                                 { check },
                                 {
                                     activity.save!!.altDecksChosen[back] = !check
-                                    save(activity, activity.save!!)
+                                    saveOnGD(activity)
                                     check = !check
                                     updater = !updater
                                 }
@@ -228,7 +228,7 @@ fun SetCustomDeck(
             modifier = Modifier
                 .clickable {
                     activity.save?.let {
-                        save(activity, activity.save!!)
+                        saveOnGD(activity)
                     }
                     goBack()
                 }

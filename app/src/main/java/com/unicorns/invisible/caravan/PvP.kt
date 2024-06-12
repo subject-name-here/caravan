@@ -50,7 +50,7 @@ import com.unicorns.invisible.caravan.model.primitives.Rank
 import com.unicorns.invisible.caravan.model.primitives.Suit
 import com.unicorns.invisible.caravan.multiplayer.decodeMove
 import com.unicorns.invisible.caravan.save.json
-import com.unicorns.invisible.caravan.save.save
+import com.unicorns.invisible.caravan.save.saveOnGD
 import com.unicorns.invisible.caravan.utils.CheckboxCustom
 import com.unicorns.invisible.caravan.utils.getBackgroundColor
 import com.unicorns.invisible.caravan.utils.getDividerColor
@@ -502,7 +502,7 @@ fun StartPvP(
             playWinSound(activity)
             showAlertDialog(activity.getString(R.string.result), activity.getString(R.string.you_win) +
                     winCard(activity, activity.save!!, CardBack.STANDARD, 1, isAlt = true, isCustom = false))
-            save(activity, activity.save!!)
+            saveOnGD(activity)
         }
         it.onLose = {
             playLoseSound(activity)

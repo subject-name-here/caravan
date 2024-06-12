@@ -103,6 +103,14 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
         selectedCard = if (index == selectedCard) null else index
         selectedCaravan = -1
     }
+    fun onCaravanClicked(index: Int) {
+        if (game.isOver()) {
+            return
+        }
+        selectedCaravan = index
+        selectedCard = null
+        caravansKey = !caravansKey
+    }
 
     fun updateCaravans() {
         caravansKey = !caravansKey
@@ -142,21 +150,18 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
 
         val cardIndex = selectedCard
         val card = cardIndex?.let { game.playerCResources.hand[cardIndex] }
-        if (card != null && game.isPlayerTurn && !game.isOver() && (!game.isInitStage() || !card.isFace())) {
-            when (card.rank.value) {
-                in 1..10 -> {
-                    if (position == caravan.cards.size && !isEnemy) {
-                        if (caravan.canPutCardOnTop(card)) {
-                            playCardFlipSound(activity)
-                            caravan.putCardOnTop(game.playerCResources.removeFromHand(cardIndex))
-                            onCaravanCardInserted()
-                        }
-                    }
+        if (card != null && game.isPlayerTurn && !game.isOver() && !(game.isInitStage() && card.isFace())) {
+            if (card.isFace()) {
+                if (position in caravan.cards.indices && caravan.cards[position].canAddModifier(card)) {
+                    playCardFlipSound(activity)
+                    caravan.cards[position].addModifier(game.playerCResources.removeFromHand(cardIndex))
+                    onCaravanCardInserted()
                 }
-                Rank.JACK.value, Rank.QUEEN.value, Rank.KING.value, Rank.JOKER.value -> {
-                    if (position in caravan.cards.indices && caravan.cards[position].canAddModifier(card)) {
+            } else {
+                if (position == caravan.cards.size && !isEnemy) {
+                    if (caravan.canPutCardOnTop(card)) {
                         playCardFlipSound(activity)
-                        caravan.cards[position].addModifier(game.playerCResources.removeFromHand(cardIndex))
+                        caravan.putCardOnTop(game.playerCResources.removeFromHand(cardIndex))
                         onCaravanCardInserted()
                     }
                 }
@@ -175,11 +180,7 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
         ::onCardClicked,
         selectedCard,
         getSelectedCaravan = { selectedCaravan },
-        setSelectedCaravan = {
-            selectedCaravan = it
-            selectedCard = null
-            caravansKey = !caravansKey
-        },
+        setSelectedCaravan = ::onCaravanClicked,
         { a1, _, a3, a4 -> addCardToCaravan(a1, a3, a4) },
         ::dropCardFromHand,
         ::dropCaravan,
@@ -222,9 +223,10 @@ fun ShowGameRaw(
         MainScope().launch {
             val caravan = game.enemyCaravans[caravanNum]
             when (caravanNum) {
-                0 -> state1Enemy.scrollToItem(0, (stateToSizeOfItem(state1Enemy).toFloat() * position / caravan.size).toInt())
-                1 -> state2Enemy.scrollToItem(0, (stateToSizeOfItem(state2Enemy).toFloat() * position / caravan.size).toInt())
-                2 -> state3Enemy.scrollToItem(0, (stateToSizeOfItem(state3Enemy).toFloat() * position / caravan.size).toInt())
+                // TODO: check autoscrolls
+                0 -> state1Enemy.scrollToItem(0, (stateToSizeOfItem(state1Enemy).toFloat() * (caravan.size - position - 1) / caravan.size).toInt())
+                1 -> state2Enemy.scrollToItem(0, (stateToSizeOfItem(state2Enemy).toFloat() * (caravan.size - position - 1) / caravan.size).toInt())
+                2 -> state3Enemy.scrollToItem(0, (stateToSizeOfItem(state3Enemy).toFloat() * (caravan.size - position - 1) / caravan.size).toInt())
             }
         }
     }
@@ -566,7 +568,7 @@ fun RowScope.CaravanOnField(
 
     val key = caravan.size - memCaravan.size
     val scope = rememberCoroutineScope()
-    LaunchedEffect(key) {
+    LaunchedEffect(key, recomposeKey) {
         scope.launch {
             if (key > 0) {
                 playCardFlipSound(activity)
@@ -586,7 +588,11 @@ fun RowScope.CaravanOnField(
         }
     }
 
-    val trueWidth = (state.layoutInfo.viewportSize.width - 3.5f * 10.dp.dpToPx())
+    fun stateWidth(): Int {
+        return state.layoutInfo.viewportSize.width
+    }
+
+    val trueWidth = (stateWidth() - 3.5f * 10.dp.dpToPx())
     val scale = (1 / (183.toFloat() / trueWidth)).coerceAtMost(1.2f)
 
     Column(Modifier

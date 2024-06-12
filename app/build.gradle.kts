@@ -73,4 +73,11 @@ dependencies {
 
     implementation(libs.cronet)
     implementation(kotlin("script-runtime"))
+
+    implementation(libs.gp)
+    implementation(libs.ac1)
+    implementation(libs.ac2)
+    implementation(libs.ac3)
+
+
 }

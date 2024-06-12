@@ -48,7 +48,7 @@ import com.unicorns.invisible.caravan.model.primitives.Card
 import com.unicorns.invisible.caravan.model.primitives.CustomDeck
 import com.unicorns.invisible.caravan.model.primitives.Rank
 import com.unicorns.invisible.caravan.save.Save
-import com.unicorns.invisible.caravan.save.save
+import com.unicorns.invisible.caravan.save.saveOnGD
 import com.unicorns.invisible.caravan.utils.CheckboxCustom
 import com.unicorns.invisible.caravan.utils.getBackgroundColor
 import com.unicorns.invisible.caravan.utils.getDividerColor
@@ -386,7 +386,7 @@ fun ShowPvE(
                     checkedCustomDeck = !checkedCustomDeck
                     activity.save?.let {
                         it.useCustomDeck = checkedCustomDeck
-                        save(activity, it)
+                        saveOnGD(activity)
                     }
                 },
                 { true }
@@ -533,7 +533,7 @@ fun StartGame(
             ).also {
                 activity.save?.let { save ->
                     save.gamesStarted++
-                    save(activity, save)
+                    saveOnGD(activity)
                 }
                 it.startGame()
             }
@@ -567,7 +567,7 @@ fun StartGame(
                 }
                 save.gamesFinished++
                 save.wins++
-                save(activity, save)
+                saveOnGD(activity)
             }
             if (game.enemy is EnemyBestest) {
                 showAlertDialog(activity.getString(R.string.result_ulysses), message)
@@ -579,7 +579,7 @@ fun StartGame(
             playLoseSound(activity)
             activity.save?.let { save ->
                 save.gamesFinished++
-                save(activity, save)
+                saveOnGD(activity)
             }
             if (game.enemy is EnemyBestest) {
                 showAlertDialog(activity.getString(R.string.ulysses_victory), activity.getString(R.string.you_lose))

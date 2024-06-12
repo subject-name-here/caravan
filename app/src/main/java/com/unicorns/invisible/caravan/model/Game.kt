@@ -102,7 +102,7 @@ class Game(
             processFieldAndHand(enemyCResources, updateView)
             isPlayerTurn = true
             checkOnGameOver()
-            delay(760L)
+            delay(1500L)
         }
     }
 

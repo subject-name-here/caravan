@@ -36,7 +36,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.unicorns.invisible.caravan.model.CardBack
-import com.unicorns.invisible.caravan.save.save
+import com.unicorns.invisible.caravan.save.saveOnGD
 import com.unicorns.invisible.caravan.utils.getAccentColor
 import com.unicorns.invisible.caravan.utils.getBackgroundColor
 import com.unicorns.invisible.caravan.utils.getDividerColor
@@ -66,7 +66,7 @@ fun DeckSelection(
                 }.clickable {
                     setSelectedBack(cardBack, isAlt)
                     save.selectedDeck = cardBack to isAlt
-                    save(activity, save)
+                    saveOnGD(activity)
                 }
             }
         }

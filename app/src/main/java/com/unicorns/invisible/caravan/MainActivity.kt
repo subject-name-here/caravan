@@ -4,7 +4,6 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.compose.setContent
-import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -66,8 +65,10 @@ import androidx.compose.ui.unit.sp
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.save.Save
-import com.unicorns.invisible.caravan.save.loadSave
-import com.unicorns.invisible.caravan.save.save
+import com.unicorns.invisible.caravan.save.getSaveFile
+import com.unicorns.invisible.caravan.save.loadFromGD
+import com.unicorns.invisible.caravan.save.loadLocalSave
+import com.unicorns.invisible.caravan.save.saveOnGD
 import com.unicorns.invisible.caravan.utils.currentPlayer
 import com.unicorns.invisible.caravan.utils.getAccentColor
 import com.unicorns.invisible.caravan.utils.getBackgroundColor
@@ -85,6 +86,7 @@ import com.unicorns.invisible.caravan.utils.resume
 import com.unicorns.invisible.caravan.utils.scrollbar
 import com.unicorns.invisible.caravan.utils.startRadio
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.runBlocking
 import org.chromium.net.CronetEngine
 import java.util.UUID
 
@@ -93,7 +95,7 @@ const val crvnUrl = "http://crvnserver.onrender.com"
 
 
 @Suppress("MoveLambdaOutsideParentheses")
-class MainActivity : AppCompatActivity() {
+class MainActivity : SaveDataActivity() {
     var save: Save? = null
 
     var goBack: (() -> Unit)? = null
@@ -122,12 +124,21 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        runBlocking {
+            val savedOnGDData = fetchDataFromDrive()
+            if (savedOnGDData == null || savedOnGDData.isEmpty()) {
+                save = if (getSaveFile(this@MainActivity).exists()) {
+                    loadLocalSave(this@MainActivity)
+                } else {
+                    Save()
+                }
+                saveOnGD(this@MainActivity)
+            }
+            loadFromGD(this@MainActivity)
+        }
+
         id = UUID.randomUUID().toString()
 
-        save = loadSave(this) ?: run {
-            save(this, Save())
-            loadSave(this)!!
-        }
         styleId = save?.styleId ?: 1
         startRadio(this)
 
@@ -211,12 +222,12 @@ class MainActivity : AppCompatActivity() {
                     AlertDialog(
                         modifier = Modifier.border(width = 4.dp, color = getAccentColor(this)),
                         onDismissRequest = {
-                            save(this, this.save!!)
+                            saveOnGD(this)
                             hideSoundSettings()
                         },
                         confirmButton = {
                             Text(text = stringResource(R.string.save), color = getAccentColor(this), modifier = Modifier.clickable {
-                                save(this, this.save!!); hideSoundSettings()
+                                saveOnGD(this); hideSoundSettings()
                             })
                         },
                         title = { Text(text = stringResource(R.string.sound), color = getTextColor(this)) },
@@ -336,7 +347,7 @@ class MainActivity : AppCompatActivity() {
                                         intro = !intro
                                         save?.let {
                                             it.useCaravanIntro = !it.useCaravanIntro
-                                            save(this@MainActivity, it)
+                                            saveOnGD(this@MainActivity)
                                         }
                                     }, colors = SwitchColors(
                                         checkedThumbColor = getTextBackgroundColor(this@MainActivity),
@@ -477,7 +488,7 @@ class MainActivity : AppCompatActivity() {
                                 styleIdForTop = styleId
                                 save?.let {
                                     it.styleId = styleId
-                                    save(this@MainActivity, it)
+                                    saveOnGD(this@MainActivity)
                                 }
                             }) { showSettings = 0 }
                         }
