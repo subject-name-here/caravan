@@ -18,7 +18,8 @@ import java.io.IOException
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
-
+var snapshotsClient: SnapshotsClient? = null
+    private set
 abstract class SaveDataActivity : AppCompatActivity() {
     fun uploadDataToDrive(data: ByteArray): Boolean {
         if (snapshotsClient == null) return false
@@ -53,27 +54,25 @@ abstract class SaveDataActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        PlayGamesSdk.initialize(this)
-        signInLoud()
+        if (snapshotsClient == null) {
+            PlayGamesSdk.initialize(this)
+            signInLoud()
+        }
     }
 
-    var snapshotsClient: SnapshotsClient? = null
-        private set
     protected abstract fun onSnapshotClientInitialized()
     private fun signInLoud() {
         val gamesSignInClient = PlayGames.getGamesSignInClient(this)
         gamesSignInClient.isAuthenticated()
-            .addOnCompleteListener { isAuthenticatedTask: Task<AuthenticationResult> ->
+            .addOnCompleteListener { isAuthenticatedTask ->
                 val isAuthenticated = (isAuthenticatedTask.isSuccessful && isAuthenticatedTask.result.isAuthenticated)
                 if (isAuthenticated) {
                     snapshotsClient = PlayGames.getSnapshotsClient(this)
                     onSnapshotClientInitialized()
                 } else {
                     PlayGames.getGamesSignInClient(this).signIn().addOnCompleteListener { task ->
-                        if (task.isSuccessful && isAuthenticatedTask.result.isAuthenticated) {
+                        if (task.isSuccessful && task.result.isAuthenticated) {
                             snapshotsClient = PlayGames.getSnapshotsClient(this)
-                            onSnapshotClientInitialized()
                         } else {
                             MainScope().launch {
                                 Toast.makeText(
@@ -83,6 +82,7 @@ abstract class SaveDataActivity : AppCompatActivity() {
                                 ).show()
                             }
                         }
+                        onSnapshotClientInitialized()
                     }
                 }
             }

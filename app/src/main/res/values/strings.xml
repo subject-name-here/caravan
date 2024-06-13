@@ -234,4 +234,23 @@
     <string name="recovering">[RECOVERING]</string>
     <string name="ulysses_will_return">Ulysses will return.</string>
 
+    <string name="intro_tip_1">Did you know that \"Caravan game\" is an acronym? It stands for \"Cards And Reclamation Approved by Vault-Tec And NCR\" game?\n\n(no, it\'s not)</string>
+    <string name="intro_tip_2">Unlike chess, Queens are not so useful in Caravan. However, you can have fun by sabotaging enemy\'s caravan with them.</string>
+    <string name="intro_tip_3">Joker in the right place in the right time can bring victory (or defeat). Use them carefully.</string>
+    <string name="intro_tip_4">You can change caravan direction without Queen by using same suit cards.</string>
+    <string name="intro_tip_5">Jack can remove a card from enemy\'s caravan. King, however, can force enemy to remove the card from their caravan.</string>
+    <string name="intro_tip_6">Good time-of-the-day, wherever and whenever you are!</string>
+    <string name="intro_tip_7">There are two edges: with custom deck the game might be too easy, but with deck o\' 54 it might be too hard and unfair.</string>
+    <string name="intro_tip_8">Using deck o\' 54 gives better chances of winning a new card for custom deck.</string>
+    <string name="intro_tip_9">If your enemy is about to win, but you have a sold caravan, consider dropping it to buy yourself a couple of moves.</string>
+    <string name="intro_tip_10">What happens in Vegas - stays in Vegas. Until Mr. New Vegas tells about it via the radio.</string>
+    <string name="intro_tip_11">Great Khans once were a major raider force. Now they are just drug dealers.</string>
+    <string name="intro_tip_12">What happened to Shady Sands?</string>
+    <string name="intro_tip_13">While not so popular as 10-K-6 tactic, 9-K-8 sometimes can be more flexible.</string>
+    <string name="intro_tip_14">If you have Jokers in your custom deck, think about throwing there a couple of Aces.</string>
+    <string name="intro_tip_15">Discarding a caravan might give you a valuable advantage in a long game: you have one card more in your deck.</string>
+    <string name="intro_tip_16">There are legends about mysterious card deck 13. The rumours are that it has cards unscathed by the war, like the ones from Vault 21.</string>
+
+    <string name="intro_tip_vault">Did you know that there are 122 vaults in the Fallout world? Only 17 of them were not experimenting on their inhabitants.</string>
+    <string name="intro_tip_desert">Cazadors can easily tear down a deathclaw or two. Imagine what they can do to your puny fragile body.</string>
 </resources>

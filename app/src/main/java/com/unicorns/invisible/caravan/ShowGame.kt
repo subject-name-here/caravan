@@ -35,6 +35,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -557,44 +558,15 @@ fun RowScope.CaravanOnField(
     selectCaravan: () -> Unit = {},
     addSelectedCardOnPosition: (Int) -> Unit,
 ) {
-    val enemyMult = if (isEnemy) -1 else 1
-
-    val memCaravan = remember { mutableObjectListOf<CardWithModifier>() }
-
-    val itemVerticalOffsetMovingIn = remember { Animatable(2.5f * enemyMult) }
-    val itemHorizontalOffsetMovingOut = remember { Animatable(0f) }
-
-    var recomposeKey by remember { mutableStateOf(false) }
-
-    val key = caravan.size - memCaravan.size
-    val scope = rememberCoroutineScope()
-    LaunchedEffect(key, recomposeKey) {
-        scope.launch {
-            if (key > 0) {
-                playCardFlipSound(activity)
-
-                itemVerticalOffsetMovingIn.animateTo(0f, TweenSpec(190, 380))
-            } else if (key < 0) {
-                playCardFlipSound(activity)
-                itemHorizontalOffsetMovingOut.snapTo(0f)
-                itemHorizontalOffsetMovingOut.animateTo(2f, TweenSpec(190, 380))
-            }
-            memCaravan.clear()
-            memCaravan.addAll(caravan.cards)
-            recomposeKey = !recomposeKey
-            delay(95L)
-            itemVerticalOffsetMovingIn.snapTo(2.5f * enemyMult)
-            itemHorizontalOffsetMovingOut.snapTo(0f)
-            recomposeKey = !recomposeKey
+    var width by remember { mutableIntStateOf(0) }
+    LaunchedEffect(Unit) {
+        while (width == 0) {
+            width = state.layoutInfo.viewportSize.width
+            delay(380L)
         }
     }
-
-    fun stateWidth(): Int {
-        return state.layoutInfo.viewportSize.width
-    }
-
-    val trueWidth = (stateWidth() - 3.5f * 10.dp.dpToPx())
-    val scale = (1 / (183.toFloat() / trueWidth)).coerceAtMost(1.2f)
+    val trueWidth = (width - 3.5f * 10.dp.dpToPx())
+    val scale = (trueWidth / 183.toFloat()).coerceAtMost(1.2f)
 
     Column(Modifier
         .fillMaxHeight()
@@ -620,8 +592,6 @@ fun RowScope.CaravanOnField(
                     .padding(2.dp)
             )
         }
-        LaunchedEffect(recomposeKey) {}
-
         LazyColumn(
             state = state,
             verticalArrangement = Arrangement.Top,
@@ -637,23 +607,53 @@ fun RowScope.CaravanOnField(
         ) {
             item {
                 Box(Modifier.wrapContentHeight(unbounded = true)) {
-                    val iteratedCollection = (memCaravan.asMutableList() + caravan.cards).distinct()
-                    iteratedCollection.forEach {
-                        val index = if (it in memCaravan) memCaravan.indexOf(it) else caravan.cards.indexOf(it)
-                        val isMovingOut = it !in caravan.cards
-                        val isMovingIn = it !in memCaravan
+                    @Composable
+                    fun ModifierOnCardInCaravan(
+                        modifier: Card,
+                        cardIndex: Int,
+                        modifierIndex: Int,
+                    ) {
+                        Box(modifier = Modifier
+                            .layout { measurable, constraints ->
+                                val placeable = measurable.measure(constraints)
+                                val layoutFullHeight = max(
+                                    placeable.height / 3 * (caravan.size + if (isEnemy) 2 else 3),
+                                    state.layoutInfo.viewportSize.height
+                                )
+                                val offsetWidth = constraints.maxWidth / 2 - placeable.width / 2
+                                val offsetHeight = if (isEnemy)
+                                    (layoutFullHeight - placeable.height / 3 * cardIndex - placeable.height)
+                                else
+                                    (placeable.height / 3 * cardIndex)
+                                val modifierOffset = ((if (isEnemy) (-10).dp else 10.dp) * (modifierIndex + 1)).toPx().toInt()
+                                layout(placeable.width, 0) {
+                                    placeable.place(
+                                        modifierOffset + offsetWidth,
+                                        offsetHeight
+                                    )
+                                }
+                            })
+                        {
+                            ShowCard(activity, modifier, Modifier.scale(scale))
+                        }
+                    }
 
+                    @Composable
+                    fun CardInCaravan(
+                        it: CardWithModifier,
+                        index: Int,
+                    ) {
                         val modifier = Modifier
                             .layout { measurable, constraints ->
                                 val placeable = measurable.measure(constraints)
                                 // TODO: too big of a gap at the top and at the bottom
                                 val layoutFullHeight = if (isEnemy) {
                                     max(
-                                        placeable.height / 3 * (iteratedCollection.size + 2),
+                                        placeable.height / 3 * (caravan.size + 2),
                                         state.layoutInfo.viewportSize.height - 1
                                     )
                                 } else {
-                                    placeable.height / 3 * (iteratedCollection.size + 3)
+                                    placeable.height / 3 * (caravan.size + 3)
                                 }
                                 val offsetWidth = constraints.maxWidth / 2 - placeable.width / 2
                                 val antiOffsetHeight = if (isEnemy)
@@ -662,69 +662,27 @@ fun RowScope.CaravanOnField(
                                     (placeable.height / 3 * index)
                                 layout(constraints.maxWidth, layoutFullHeight) {
                                     placeable.place(
-                                        offsetWidth +
-                                                (if (isMovingOut) (itemHorizontalOffsetMovingOut.value * placeable.width).toInt() else 0),
-                                        antiOffsetHeight +
-                                                (if (isMovingIn) (itemVerticalOffsetMovingIn.value * placeable.height).toInt() else 0)
+                                        offsetWidth,
+                                        antiOffsetHeight
                                     )
                                 }
                             }
 
                         Box(modifier = modifier) {
                             ShowCard(activity, it.card, Modifier.scale(scale).clickable {
-                                if (!itemVerticalOffsetMovingIn.isRunning && !itemHorizontalOffsetMovingOut.isRunning) {
-                                    addSelectedCardOnPosition(index)
-                                }
+                                addSelectedCardOnPosition(caravan.cards.indexOf(it))
                             })
                         }
 
-                        val memModifiers = remember { mutableObjectListOf<Card>() }
-                        val modifierVerticalOffsetMovingIn = remember { Animatable(3f * (if (isPlayerTurn) 1f else -1f)) }
-                        val key2 = it.modifiersCopy().size - memModifiers.size
-                        LaunchedEffect(key2, isMovingOut) {
-                            scope.launch {
-                                if (key2 > 0) {
-                                    playCardFlipSound(activity)
-                                    modifierVerticalOffsetMovingIn.animateTo(0f, TweenSpec(190, 380))
-                                }
-                                memModifiers.clear()
-                                memModifiers.addAll(it.modifiersCopy())
-                                recomposeKey = !recomposeKey
-                                delay(95L)
-                                modifierVerticalOffsetMovingIn.snapTo(3f * (if (isPlayerTurn) 1f else -1f))
-                                recomposeKey = !recomposeKey
-                            }
-                        }
-
-                        (memModifiers.asMutableList() + it.modifiersCopy()).distinct().forEachIndexed { modifierIndex, card ->
-                            val isMovingInModifier = card !in memModifiers && !isMovingOut
-                            Box(modifier = Modifier
-                                .layout { measurable, constraints ->
-                                    val placeable = measurable.measure(constraints)
-                                    val layoutFullHeight = max(
-                                        placeable.height / 3 * (iteratedCollection.size + if (isEnemy) 2 else 3),
-                                        state.layoutInfo.viewportSize.height
-                                    )
-                                    val offsetWidth = constraints.maxWidth / 2 - placeable.width / 2
-                                    val offsetHeight = if (isEnemy)
-                                        (layoutFullHeight - placeable.height / 3 * index - placeable.height)
-                                    else
-                                        (placeable.height / 3 * index)
-                                    val modifierOffset = ((if (isEnemy) (-10).dp else 10.dp) * (modifierIndex + 1)).toPx().toInt()
-                                    layout(placeable.width, 0) {
-                                        placeable.place(
-                                            modifierOffset + offsetWidth +
-                                                    if (isMovingOut) (itemHorizontalOffsetMovingOut.value * placeable.width).toInt() else 0,
-                                            offsetHeight +
-                                                    if (isMovingInModifier) (modifierVerticalOffsetMovingIn.value * placeable.height).toInt() else 0
-                                        )
-                                    }
-                                })
-                            {
-                                ShowCard(activity, card, Modifier.scale(scale))
-                            }
+                        it.modifiersCopy().forEachIndexed { cardIndex, card ->
+                            ModifierOnCardInCaravan(card, index, cardIndex)
                         }
                     }
+
+                    caravan.cards.forEachIndexed { index, it ->
+                        CardInCaravan(it, index)
+                    }
+
                     if (!isEnemy) {
                         if (!caravan.isFull() && (!isInitStage || caravan.cards.isEmpty())) {
                             when (canPutSelectedCardOnTop()) {

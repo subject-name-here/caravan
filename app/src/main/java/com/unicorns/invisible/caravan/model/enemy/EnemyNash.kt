@@ -145,6 +145,23 @@ data object EnemyNash : Enemy() {
             return
         }
 
+        if (jack != null) {
+            game.playerCaravans.withIndex()
+                .filter { it.value.getValue() in (1..26) }
+                .sortedByDescending { it.value.getValue() }
+                .forEach { (index, caravan) ->
+                    val cardToJack = caravan.cards.filter { it.canAddModifier(jack.value) }.maxByOrNull { it.getValue() }
+                    if (cardToJack != null) {
+                        val futureValue = caravan.getValue() - cardToJack.getValue()
+                        val enemyValue = game.enemyCaravans[index].getValue()
+                        if (!(checkMoveOnDefeat(game, index) && enemyValue in (21..26) && (enemyValue > futureValue || futureValue > 26))) {
+                            cardToJack.addModifier(game.enemyCResources.removeFromHand(jack.index))
+                            return
+                        }
+                    }
+                }
+        }
+
         game.enemyCResources.dropCardFromHand(hand.withIndex().minByOrNull {
             when (it.value.rank) {
                 Rank.JACK -> 0

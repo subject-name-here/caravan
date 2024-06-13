@@ -2,7 +2,6 @@ package com.unicorns.invisible.caravan
 
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
@@ -92,17 +91,17 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import org.chromium.net.CronetEngine
 import java.util.UUID
 
 
 const val crvnUrl = "http://crvnserver.onrender.com"
 
+var saveGlobal: Save? = null
 
 @Suppress("MoveLambdaOutsideParentheses")
 class MainActivity : SaveDataActivity() {
-    var save: Save? = null
+    val save: Save? = saveGlobal
 
     var goBack: (() -> Unit)? = null
 
@@ -132,7 +131,7 @@ class MainActivity : SaveDataActivity() {
         CoroutineScope(Dispatchers.Default).launch {
             val savedOnGDData = fetchDataFromDrive()
             if (savedOnGDData == null || savedOnGDData.isEmpty()) {
-                save = if (getSaveFile(this@MainActivity).exists()) {
+                saveGlobal = if (getSaveFile(this@MainActivity).exists()) {
                     loadLocalSave(this@MainActivity).also { getSaveFile(this@MainActivity).delete() }
                 } else {
                     Save()
@@ -140,11 +139,14 @@ class MainActivity : SaveDataActivity() {
                 saveOnGD(this@MainActivity)
             }
             loadFromGD(this@MainActivity)
-            flag.postValue(true)
+            readyFlag.postValue(true)
+            if (radioPlayer == null) {
+                startRadio(this@MainActivity)
+            }
         }
     }
 
-    private var flag = MutableLiveData<Boolean>(false)
+    private var readyFlag = MutableLiveData<Boolean>(false)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -158,20 +160,78 @@ class MainActivity : SaveDataActivity() {
             }
         }
 
+        val advice = listOf(
+            R.string.intro_tip_1,
+            R.string.intro_tip_2,
+            R.string.intro_tip_3,
+            R.string.intro_tip_4,
+            R.string.intro_tip_5,
+            R.string.intro_tip_6,
+            R.string.intro_tip_7,
+            R.string.intro_tip_8,
+            R.string.intro_tip_9,
+            R.string.intro_tip_10,
+            R.string.intro_tip_11,
+            R.string.intro_tip_12,
+            R.string.intro_tip_13,
+            R.string.intro_tip_14,
+            R.string.intro_tip_15,
+            R.string.intro_tip_16,
+            R.string.intro_tip_vault,
+            R.string.intro_tip_desert,
+        ).random()
+
         setContent {
-            val k by flag.observeAsState()
-            if (k == false) {
-                Box(Modifier.fillMaxSize().background(colorResource(R.color.colorBack)), contentAlignment = Alignment.Center) {
-                    Text(
-                        text = "PLEASE\nSTAND BY", color = colorResource(R.color.colorText),
-                        fontFamily = FontFamily(Font(R.font.monofont)),
-                        style = TextStyle(
-                            color = getTextColor(this@MainActivity),
-                            fontSize = 32.sp,
-                            textAlign = TextAlign.Center,
-                            fontWeight = FontWeight.ExtraBold
+            val k by readyFlag.observeAsState()
+            var isIntroScreen by rememberSaveable { mutableStateOf(true) }
+            if (isIntroScreen) {
+                Box(
+                    Modifier.fillMaxSize().background(colorResource(R.color.colorBack)).clickable {
+                        if (readyFlag.value == true) {
+                            isIntroScreen = false
+                        }
+                    },
+                    contentAlignment = Alignment.Center
+                ) {
+                    Column(Modifier.fillMaxSize().padding(4.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
+                        if (k == true) {
+                            Text(
+                                text = "Press any key", color = colorResource(R.color.colorText),
+                                fontFamily = FontFamily(Font(R.font.monofont)),
+                                style = TextStyle(
+                                    color = getTextColor(this@MainActivity),
+                                    fontSize = 24.sp,
+                                    textAlign = TextAlign.Center,
+                                    fontWeight = FontWeight.ExtraBold
+                                ),
+                                modifier = Modifier.padding(4.dp)
+                            )
+                        } else {
+                            Text(
+                                text = "PLEASE\nSTAND BY", color = colorResource(R.color.colorText),
+                                fontFamily = FontFamily(Font(R.font.monofont)),
+                                style = TextStyle(
+                                    color = getTextColor(this@MainActivity),
+                                    fontSize = 32.sp,
+                                    textAlign = TextAlign.Center,
+                                    fontWeight = FontWeight.ExtraBold
+                                ),
+                                modifier = Modifier.padding(4.dp)
+                            )
+                        }
+                        Text(
+                            text = getString(advice),
+                            color = colorResource(R.color.colorText),
+                            fontFamily = FontFamily(Font(R.font.monofont)),
+                            style = TextStyle(
+                                color = getTextColor(this@MainActivity),
+                                fontSize = 16.sp,
+                                textAlign = TextAlign.Center,
+                                fontWeight = FontWeight.ExtraBold
+                            ),
+                            modifier = Modifier.padding(vertical = 4.dp, horizontal = 12.dp)
                         )
-                    )
+                    }
                 }
             } else {
                 Screen()
@@ -182,7 +242,6 @@ class MainActivity : SaveDataActivity() {
     @Composable
     fun Screen() {
         styleId = save?.styleId ?: 1
-        startRadio(this)
 
         var deckSelection by rememberSaveable { mutableStateOf(false) }
         var showPvP by rememberSaveable { mutableStateOf(false) }
@@ -254,8 +313,7 @@ class MainActivity : SaveDataActivity() {
                 AlertDialog(
                     modifier = Modifier.border(width = 4.dp, color = getAccentColor(this)),
                     onDismissRequest = {
-                        saveOnGD(this)
-                        hideSoundSettings()
+                        saveOnGD(this); hideSoundSettings()
                     },
                     confirmButton = {
                         Text(text = stringResource(R.string.save), color = getAccentColor(this), modifier = Modifier.clickable {

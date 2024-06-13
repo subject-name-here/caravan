@@ -1,13 +1,11 @@
 package com.unicorns.invisible.caravan.save
 
 import com.unicorns.invisible.caravan.MainActivity
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import com.unicorns.invisible.caravan.saveGlobal
+import com.unicorns.invisible.caravan.snapshotsClient
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.io.File
-import java.nio.charset.Charset
 import java.nio.charset.StandardCharsets
 
 
@@ -33,13 +31,13 @@ fun getSaveFile(activity: MainActivity): File {
 }
 
 fun saveOnGD(activity: MainActivity) {
-    if (activity.snapshotsClient == null) return
+    if (snapshotsClient == null) return
     val bytes = json.encodeToString(activity.save!!).toByteArray(StandardCharsets.UTF_8)
     activity.uploadDataToDrive(bytes)
 }
 suspend fun loadFromGD(activity: MainActivity) {
     val data = activity.fetchDataFromDrive()?.toString(StandardCharsets.UTF_8)
     if (data != null && data != "") {
-        activity.save = json.decodeFromString<Save>(data)
+        saveGlobal = json.decodeFromString<Save>(data)
     }
 }

@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -26,86 +28,94 @@ import androidx.compose.ui.text.withLink
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.unicorns.invisible.caravan.utils.getBackgroundColor
+import com.unicorns.invisible.caravan.utils.getKnobColor
 import com.unicorns.invisible.caravan.utils.getTextBackgroundColor
 import com.unicorns.invisible.caravan.utils.getTextColor
+import com.unicorns.invisible.caravan.utils.getTrackColor
+import com.unicorns.invisible.caravan.utils.scrollbar
 
 
 @Composable
 fun ShowAbout(activity: MainActivity, goBack: () -> Unit) {
-    Column(
+    val state = rememberLazyListState()
+    LazyColumn(
+        state = state,
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
         modifier = Modifier
+            .scrollbar(state, horizontal = false, knobColor = getKnobColor(activity), trackColor = getTrackColor(activity), padding = 4.dp)
             .fillMaxSize()
             .background(getBackgroundColor(activity))
-            .padding(horizontal = 16.dp)
+            .padding(16.dp)
     ) {
-        Text(
-            text = stringResource(R.string.about_1),
-            fontFamily = FontFamily(Font(R.font.monofont)),
-            style = TextStyle(color = getTextColor(activity), fontSize = 20.sp, textAlign = TextAlign.Center)
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-        Text(
-            text = stringResource(R.string.about_2),
-            fontFamily = FontFamily(Font(R.font.monofont)),
-            style = TextStyle(color = getTextColor(activity), fontSize = 20.sp, textAlign = TextAlign.Center)
-        )
-        Spacer(modifier = Modifier.height(16.dp))
+        item {
+            Text(
+                text = stringResource(R.string.about_1),
+                fontFamily = FontFamily(Font(R.font.monofont)),
+                style = TextStyle(color = getTextColor(activity), fontSize = 20.sp, textAlign = TextAlign.Center)
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                text = stringResource(R.string.about_2),
+                fontFamily = FontFamily(Font(R.font.monofont)),
+                style = TextStyle(color = getTextColor(activity), fontSize = 20.sp, textAlign = TextAlign.Center)
+            )
+            Spacer(modifier = Modifier.height(16.dp))
 
-        val annotatedString = buildAnnotatedString {
-            append(stringResource(R.string.about_3_1))
-            withLink(
-                link = LinkAnnotation.Url(
-                    url = "mailto:unicornsinvisible@gmail.com",
-                    styles = TextLinkStyles(
-                        style = SpanStyle(
-                            color = getTextColor(activity),
-                            fontFamily = FontFamily(Font(R.font.monofont)),
-                            textDecoration = TextDecoration.Underline)
-                    )
-                ),
-            ) {
-                append("unicornsinvisible@gmail.com")
+            val annotatedString = buildAnnotatedString {
+                append(stringResource(R.string.about_3_1))
+                withLink(
+                    link = LinkAnnotation.Url(
+                        url = "mailto:unicornsinvisible@gmail.com",
+                        styles = TextLinkStyles(
+                            style = SpanStyle(
+                                color = getTextColor(activity),
+                                fontFamily = FontFamily(Font(R.font.monofont)),
+                                textDecoration = TextDecoration.Underline)
+                        )
+                    ),
+                ) {
+                    append("unicornsinvisible@gmail.com")
+                }
+                append(stringResource(R.string.about_3_2))
             }
-            append(stringResource(R.string.about_3_2))
-        }
-        Text(text = annotatedString,
-            style = TextStyle(color = getTextColor(activity),
-                fontFamily = FontFamily(Font(R.font.monofont)), fontSize = 20.sp, textAlign = TextAlign.Center),
-        )
-        Spacer(modifier = Modifier.height(16.dp))
+            Text(text = annotatedString,
+                style = TextStyle(color = getTextColor(activity),
+                    fontFamily = FontFamily(Font(R.font.monofont)), fontSize = 20.sp, textAlign = TextAlign.Center),
+            )
+            Spacer(modifier = Modifier.height(16.dp))
 
-        val annotatedString2 = buildAnnotatedString {
-            append(stringResource(R.string.about_4_1))
-            withLink(
-                link = LinkAnnotation.Url(
-                    url = "https://www.reddit.com/r/cardgames/comments/97c7g2/caravan_card_game_in_reallife_detailed_rules/",
-                    styles = TextLinkStyles(
-                        style = SpanStyle(
-                            color = getTextColor(activity),
-                            fontFamily = FontFamily(Font(R.font.monofont)),
-                            textDecoration = TextDecoration.Underline)
-                    )
-                ),
-            ) {
-                append(stringResource(R.string.about_4_2))
+            val annotatedString2 = buildAnnotatedString {
+                append(stringResource(R.string.about_4_1))
+                withLink(
+                    link = LinkAnnotation.Url(
+                        url = "https://www.reddit.com/r/cardgames/comments/97c7g2/caravan_card_game_in_reallife_detailed_rules/",
+                        styles = TextLinkStyles(
+                            style = SpanStyle(
+                                color = getTextColor(activity),
+                                fontFamily = FontFamily(Font(R.font.monofont)),
+                                textDecoration = TextDecoration.Underline)
+                        )
+                    ),
+                ) {
+                    append(stringResource(R.string.about_4_2))
+                }
+                append(stringResource(R.string.about_4_3))
             }
-            append(stringResource(R.string.about_4_3))
-        }
-        Text(text = annotatedString2,
-            style = TextStyle(color = getTextColor(activity),
-                fontFamily = FontFamily(Font(R.font.monofont)),fontSize = 20.sp, textAlign = TextAlign.Center),
-        )
+            Text(text = annotatedString2,
+                style = TextStyle(color = getTextColor(activity),
+                    fontFamily = FontFamily(Font(R.font.monofont)),fontSize = 20.sp, textAlign = TextAlign.Center),
+            )
 
-        Spacer(modifier = Modifier.height(48.dp))
-        Text(
-            text = stringResource(R.string.menu_back),
-            fontFamily = FontFamily(Font(R.font.monofont)),
-            modifier = Modifier.clickable {
-                goBack()
-            }.background(getTextBackgroundColor(activity)).padding(8.dp),
-            style = TextStyle(color = getTextColor(activity), fontSize = 24.sp)
-        )
+            Spacer(modifier = Modifier.height(48.dp))
+            Text(
+                text = stringResource(R.string.menu_back),
+                fontFamily = FontFamily(Font(R.font.monofont)),
+                modifier = Modifier.clickable {
+                    goBack()
+                }.background(getTextBackgroundColor(activity)).padding(8.dp),
+                style = TextStyle(color = getTextColor(activity), fontSize = 24.sp)
+            )
+        }
     }
 }

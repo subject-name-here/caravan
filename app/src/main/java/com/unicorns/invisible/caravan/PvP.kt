@@ -563,16 +563,14 @@ fun StartPvP(
                 game.isExchangingCards = false
                 game.isPlayerTurn = isCreator
 
-                CoroutineScope(Dispatchers.Default).launch {
-                    game.enemy.makeMove(game)
-                    updateEnemyHand()
-                    game.processFieldAndHand(game.enemyCResources) {}
+                game.enemy.makeMove(game)
+                updateEnemyHand()
+                game.processFieldAndHand(game.enemyCResources) {}
 
-                    updateCaravans()
+                updateCaravans()
 
-                    game.isPlayerTurn = true
-                    game.checkOnGameOver()
-                }
+                game.isPlayerTurn = true
+                game.checkOnGameOver()
             }
         }
     }
