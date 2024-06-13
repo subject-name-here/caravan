@@ -23,4 +23,10 @@
     <color name="colorText">#01C802</color>
     <color name="colorTextGrey">#09980A</color>
 
+    <color name="pipGirlBlue">#5BCEFA</color>
+    <color name="pipGirlPink">#F5A9B8</color>
+    <color name="alaskaBlue">#0F204B</color>
+    <color name="alaskaLightBlue">#00b2d6</color>
+    <color name="whiteHalfTransparent">#66FFFFFF</color>
+
 </resources>

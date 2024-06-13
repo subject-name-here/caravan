@@ -268,10 +268,7 @@ fun ShowGameRaw(
                 )
             }
         }) { innerPadding ->
-            BoxWithConstraints(Modifier.padding(innerPadding).paint(
-                painterResource(id = R.drawable.game_back3),
-                contentScale = ContentScale.FillBounds
-            )) {
+            BoxWithConstraints(Modifier.padding(innerPadding).getTableBackground(activity.styleId)) {
                 var wasCardDropped by remember { mutableStateOf(false) }
                 if (maxWidth > maxHeight) {
                     Row(Modifier.fillMaxSize()) {

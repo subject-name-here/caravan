@@ -17,8 +17,10 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchColors
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -29,6 +31,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -44,11 +47,13 @@ import com.unicorns.invisible.caravan.utils.scrollbar
 @Composable
 fun ShowSettings(
     activity: MainActivity,
-    getStyle: () -> Int,
-    toggleStyle: () -> Unit,
+    getStyle: () -> Style,
+    selectStyle: (Int) -> Unit,
     goBack: () -> Unit
 ) {
-    var styleInt by rememberSaveable { mutableIntStateOf(getStyle()) }
+    var styleInt by rememberSaveable { mutableStateOf(getStyle()) }
+    val mainState = rememberLazyListState()
+    LaunchedEffect(styleInt) {}
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
@@ -57,7 +62,7 @@ fun ShowSettings(
             .background(getBackgroundColor(activity))
             .padding(horizontal = 16.dp)
     ) {
-        val mainState = rememberLazyListState()
+
         LazyColumn(
             Modifier
                 .fillMaxHeight(0.9f)
@@ -74,32 +79,22 @@ fun ShowSettings(
                 Row(horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
                     Text(
                         modifier = Modifier.fillMaxWidth(0.66f),
-                        text = stringResource(R.string.interface_type),
+                        text = "Style",
+                        fontWeight = FontWeight.ExtraBold,
                         fontFamily = FontFamily(Font(R.font.monofont)),
                         style = TextStyle(color = getTextColor(activity), fontSize = 20.sp, textAlign = TextAlign.Center)
                     )
                     Spacer(modifier = Modifier.width(16.dp))
-                    Switch(checked = styleInt == 1, onCheckedChange = {
-                        styleInt = 1 - styleInt
-                        toggleStyle()
-                    }, colors = SwitchColors(
-                        checkedThumbColor = getAccentColor(activity),
-                        checkedTrackColor = getTextBackgroundColor(activity),
-                        checkedBorderColor = Color.Transparent,
-                        checkedIconColor = Color.Transparent,
-                        uncheckedThumbColor = getAccentColor(activity),
-                        uncheckedTrackColor = getTextBackgroundColor(activity),
-                        uncheckedBorderColor = Color.Transparent,
-                        uncheckedIconColor = Color.Transparent,
-                        disabledCheckedThumbColor = colorResource(R.color.red),
-                        disabledCheckedTrackColor = colorResource(R.color.white),
-                        disabledCheckedBorderColor = Color.Transparent,
-                        disabledCheckedIconColor = Color.Transparent,
-                        disabledUncheckedThumbColor = colorResource(R.color.red),
-                        disabledUncheckedTrackColor = colorResource(R.color.white),
-                        disabledUncheckedBorderColor = Color.Transparent,
-                        disabledUncheckedIconColor = Color.Transparent,
-                    ))
+                    Text(
+                        text = "TOGGLE!",
+                        modifier = Modifier.background(getTextBackgroundColor(activity)).padding(4.dp).clickable {
+                            styleInt = Style.entries[(styleInt.ordinal + 1) % Style.entries.size.coerceIn(0, 4)] // TODO
+                            selectStyle(styleInt.ordinal)
+                        },
+                        fontFamily = FontFamily(Font(R.font.monofont)),
+                        fontWeight = FontWeight.ExtraBold,
+                        style = TextStyle(color = getTextColor(activity), fontSize = 20.sp, textAlign = TextAlign.Center)
+                    )
                 }
             }
         }

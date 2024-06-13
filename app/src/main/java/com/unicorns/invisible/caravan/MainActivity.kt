@@ -108,7 +108,7 @@ class MainActivity : SaveDataActivity() {
 
     var id = ""
 
-    var styleId = 1
+    var styleId: Style = Style.PIP_BOY
 
     fun checkIfCustomDeckCanBeUsedInGame(playerCResources: CResources): Boolean {
         return playerCResources.deckSize >= MIN_DECK_SIZE && playerCResources.numOfNumbers >= MIN_NUM_OF_NUMBERS
@@ -242,7 +242,7 @@ class MainActivity : SaveDataActivity() {
 
     @Composable
     fun Screen() {
-        styleId = save?.styleId ?: 1
+        styleId = Style.entries[save?.styleId ?: 1]
 
         var deckSelection by rememberSaveable { mutableStateOf(false) }
         var showPvP by rememberSaveable { mutableStateOf(false) }
@@ -251,8 +251,8 @@ class MainActivity : SaveDataActivity() {
         var showTutorial by rememberSaveable { mutableStateOf(false) }
         var showRules by rememberSaveable { mutableStateOf(false) }
 
-        var showSettings by rememberSaveable { mutableIntStateOf(0) }
-        var styleIdForTop by rememberSaveable { mutableIntStateOf(styleId) }
+        var showSettings by rememberSaveable { mutableStateOf(false) }
+        var styleIdForTop by rememberSaveable { mutableStateOf(styleId) }
 
         var showSoundSettings by remember { mutableStateOf(false) }
         var showSoundSettings2 by remember { mutableStateOf(false) }
@@ -572,16 +572,15 @@ class MainActivity : SaveDataActivity() {
                             ) { showPvP = false }
                         }
                     }
-                    showSettings > 0 -> {
+                    showSettings -> {
                         ShowSettings(activity = this@MainActivity, { styleId }, {
-                            styleId = 1 - styleId
-                            showSettings = 3 - showSettings
+                            styleId = Style.entries[it]
                             styleIdForTop = styleId
                             save?.let {
-                                it.styleId = styleId
+                                it.styleId = styleId.ordinal
                                 saveOnGD(this@MainActivity)
                             }
-                        }) { showSettings = 0 }
+                        }) { showSettings = false }
                     }
                     else -> {
                         MainMenu(
@@ -591,7 +590,7 @@ class MainActivity : SaveDataActivity() {
                             { showPvP = true },
                             { showTutorial = true },
                             { showRules = true },
-                            { showSettings = 1 }
+                            { showSettings = true }
                         )
                     }
                 }
