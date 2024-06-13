@@ -28,5 +28,10 @@
     <color name="alaskaBlue">#0F204B</color>
     <color name="alaskaLightBlue">#00b2d6</color>
     <color name="whiteHalfTransparent">#66FFFFFF</color>
+    <color name="oldWorldBack">#f3dfc1</color>
+    <color name="oldWorldTextBack">#c9c9c9</color>
+    <color name="oldWorldTextBackHT">#66c9c9c9</color>
+    <color name="oldWorldText">#1a1c1a</color>
+
 
 </resources>

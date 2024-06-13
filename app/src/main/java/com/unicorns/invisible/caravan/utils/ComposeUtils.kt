@@ -7,6 +7,10 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxColors
+import androidx.compose.material3.Slider
+import androidx.compose.material3.SliderColors
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -18,14 +22,17 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
 import coil.decode.SvgDecoder
 import coil.request.ImageRequest
 import com.unicorns.invisible.caravan.MainActivity
+import com.unicorns.invisible.caravan.R
 import com.unicorns.invisible.caravan.model.getCardName
 import com.unicorns.invisible.caravan.model.primitives.Card
+import com.unicorns.invisible.caravan.save.saveOnGD
 
 
 @Composable
@@ -207,4 +214,47 @@ fun CheckboxCustom(activity: MainActivity, checked: () -> Boolean, onCheckedChan
         disabledUncheckedBorderColor = Color.Red,
         disabledIndeterminateBorderColor = Color.Red,
     ), enabled = enabled())
+}
+
+// Both these Slider and Switch have colors chosen out of the assumption that the background color is TextBackgroundColor
+
+@Composable
+fun SliderCustom(activity: MainActivity, getValue: () -> Float, setValue: (Float) -> Unit, onValueChangedFinished: () -> Unit = {}) {
+    Slider(getValue(), onValueChange = {
+        setValue(it); activity.save?.soundVolume = it
+    }, colors = SliderColors(
+        thumbColor = getTextColor(activity),
+        activeTrackColor = getBackgroundColor(activity),
+        activeTickColor = getBackgroundColor(activity),
+        inactiveTickColor = getBackgroundColor(activity),
+        inactiveTrackColor = getBackgroundColor(activity),
+        disabledThumbColor = Color.Gray,
+        disabledActiveTrackColor = Color.Gray,
+        disabledActiveTickColor = Color.Gray,
+        disabledInactiveTickColor = Color.Gray,
+        disabledInactiveTrackColor = Color.Gray,
+    ), onValueChangeFinished = onValueChangedFinished)
+}
+
+@Composable
+fun SwitchCustom(activity: MainActivity, checked: () -> Boolean, onCheckedChange: (Boolean) -> Unit) {
+    Switch(checked = checked(), onCheckedChange = onCheckedChange, colors = SwitchColors(
+        checkedThumbColor = getTextColor(activity),
+        checkedTrackColor = getBackgroundColor(activity),
+        checkedBorderColor = Color.Transparent,
+        checkedIconColor = Color.Transparent,
+        uncheckedThumbColor = getTextColor(activity),
+        uncheckedTrackColor = getBackgroundColor(activity),
+        uncheckedBorderColor = Color.Transparent,
+        uncheckedIconColor = Color.Transparent,
+        disabledCheckedThumbColor = colorResource(R.color.red),
+        disabledCheckedTrackColor = colorResource(R.color.white),
+        disabledCheckedBorderColor = Color.Transparent,
+        disabledCheckedIconColor = Color.Transparent,
+        disabledUncheckedThumbColor = colorResource(R.color.red),
+        disabledUncheckedTrackColor = colorResource(R.color.white),
+        disabledUncheckedBorderColor = Color.Transparent,
+        disabledUncheckedIconColor = Color.Transparent,
+    )
+    )
 }

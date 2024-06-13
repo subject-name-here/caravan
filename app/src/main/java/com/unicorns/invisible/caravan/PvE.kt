@@ -639,6 +639,7 @@ fun winCard(activity: MainActivity, save: Save, back: CardBack, numberOfCards: I
         deckNew.take(newCards) + deckOld.take(oldCards)
     }
     var result = activity.getString(R.string.your_prize_cards_from)
+    var capsEarned = 0
     reward.forEach { card ->
         val deckName = if (card.back == CardBack.STANDARD && isAlt) {
             activity.getString(card.back.getSierraMadreDeckName())
@@ -663,7 +664,16 @@ fun winCard(activity: MainActivity, save: Save, back: CardBack, numberOfCards: I
             } else {
                 activity.getString(R.string.old_card, cardName)
             }
+            capsEarned += activity.save?.getCardPrice(card) ?: 0 // TODO: flexible system? do we need it?
+            activity.save?.let {
+                it.soldCards[card.back to isAlt] = (it.soldCards[card.back to isAlt] ?: 0) + 1
+            }
         }
     }
+    if (capsEarned > 0) {
+        activity.save?.caps?.plus(capsEarned)
+        result += "\nCaps earned: $capsEarned.\n"
+    }
+
     return result
 }

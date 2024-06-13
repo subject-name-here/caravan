@@ -25,10 +25,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Slider
-import androidx.compose.material3.SliderColors
-import androidx.compose.material3.Switch
-import androidx.compose.material3.SwitchColors
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -36,7 +32,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -44,7 +39,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.drawscope.Stroke
@@ -71,8 +65,9 @@ import com.unicorns.invisible.caravan.save.getSaveFile
 import com.unicorns.invisible.caravan.save.loadFromGD
 import com.unicorns.invisible.caravan.save.loadLocalSave
 import com.unicorns.invisible.caravan.save.saveOnGD
+import com.unicorns.invisible.caravan.utils.SliderCustom
+import com.unicorns.invisible.caravan.utils.SwitchCustom
 import com.unicorns.invisible.caravan.utils.currentPlayer
-import com.unicorns.invisible.caravan.utils.getAccentColor
 import com.unicorns.invisible.caravan.utils.getBackgroundColor
 import com.unicorns.invisible.caravan.utils.getDividerColor
 import com.unicorns.invisible.caravan.utils.getKnobColor
@@ -197,6 +192,17 @@ class MainActivity : SaveDataActivity() {
                     Column(Modifier.fillMaxSize().padding(4.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
                         if (k == true) {
                             Text(
+                                text = "CARAVAN", color = colorResource(R.color.colorText),
+                                fontFamily = FontFamily(Font(R.font.monofont)),
+                                style = TextStyle(
+                                    color = getTextColor(this@MainActivity),
+                                    fontSize = 32.sp,
+                                    textAlign = TextAlign.Center,
+                                    fontWeight = FontWeight.ExtraBold
+                                ),
+                                modifier = Modifier.padding(4.dp)
+                            )
+                            Text(
                                 text = "Press any key", color = colorResource(R.color.colorText),
                                 fontFamily = FontFamily(Font(R.font.monofont)),
                                 style = TextStyle(
@@ -207,6 +213,7 @@ class MainActivity : SaveDataActivity() {
                                 ),
                                 modifier = Modifier.padding(4.dp)
                             )
+                            Spacer(Modifier.height(8.dp))
                         } else {
                             Text(
                                 text = "PLEASE\nSTAND BY", color = colorResource(R.color.colorText),
@@ -282,12 +289,12 @@ class MainActivity : SaveDataActivity() {
 
             if (showAlertDialog2) {
                 AlertDialog(
-                    modifier = Modifier.border(width = 4.dp, color = getAccentColor(this)),
+                    modifier = Modifier.border(width = 4.dp, color = getTextColor(this)),
                     onDismissRequest = { hideAlertDialog() },
-                    confirmButton = { Text(text = stringResource(R.string.close), color = getAccentColor(this), modifier = Modifier.clickable { hideAlertDialog() }) },
+                    confirmButton = { Text(text = stringResource(R.string.close), color = getTextColor(this), modifier = Modifier.clickable { hideAlertDialog() }) },
                     dismissButton = { if (goBack != null) {
                         Text(
-                            text = stringResource(R.string.back_to_menu), color = getAccentColor(this),
+                            text = stringResource(R.string.back_to_menu), color = getTextColor(this),
                             modifier = Modifier.clickable { hideAlertDialog(); goBack?.invoke(); goBack = null }
                         )
                     } },
@@ -312,16 +319,16 @@ class MainActivity : SaveDataActivity() {
 
             if (showSoundSettings2) {
                 AlertDialog(
-                    modifier = Modifier.border(width = 4.dp, color = getAccentColor(this)),
+                    modifier = Modifier.border(width = 4.dp, color = getKnobColor(this)),
                     onDismissRequest = {
                         saveOnGD(this); hideSoundSettings()
                     },
                     confirmButton = {
-                        Text(text = stringResource(R.string.save), color = getAccentColor(this), modifier = Modifier.clickable {
+                        Text(text = stringResource(R.string.save), color = getTextColor(this), modifier = Modifier.clickable {
                             saveOnGD(this); hideSoundSettings()
-                        })
+                        }, fontWeight = FontWeight.ExtraBold)
                     },
-                    title = { Text(text = stringResource(R.string.sound), color = getTextColor(this)) },
+                    title = { Text(text = stringResource(R.string.sound), color = getTextColor(this), fontWeight = FontWeight.ExtraBold) },
                     text = {
                         var radioVolume by remember { mutableFloatStateOf(save?.radioVolume ?: 1f) }
                         var soundVolume by remember { mutableFloatStateOf(save?.soundVolume ?: 1f) }
@@ -345,21 +352,15 @@ class MainActivity : SaveDataActivity() {
                                     )
                                 )
 
-                                Slider(radioVolume, onValueChange = {
-                                    radioVolume = it; save?.radioVolume = it
-                                    radioPlayer?.setVolume(it, it)
-                                }, colors = SliderColors(
-                                    thumbColor = getAccentColor(this@MainActivity),
-                                    activeTrackColor = getAccentColor(this@MainActivity),
-                                    activeTickColor = getAccentColor(this@MainActivity),
-                                    inactiveTickColor = getAccentColor(this@MainActivity),
-                                    inactiveTrackColor = getAccentColor(this@MainActivity),
-                                    disabledThumbColor = Color.Gray,
-                                    disabledActiveTrackColor = Color.Gray,
-                                    disabledActiveTickColor = Color.Gray,
-                                    disabledInactiveTickColor = Color.Gray,
-                                    disabledInactiveTrackColor = Color.Gray,
-                                ))
+                                SliderCustom(
+                                    this@MainActivity,
+                                    { radioVolume },
+                                    {
+                                        radioVolume = it
+                                        save?.radioVolume = it
+                                        radioPlayer?.setVolume(it, it)
+                                    }
+                                )
                             }
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 Text(
@@ -378,21 +379,10 @@ class MainActivity : SaveDataActivity() {
                                     )
                                 )
 
-                                Slider(ambientVolume, onValueChange = {
+                                SliderCustom(this@MainActivity, { ambientVolume }, {
                                     ambientVolume = it; save?.ambientVolume = it
                                     currentPlayer?.setVolume(it / 2, it / 2)
-                                }, colors = SliderColors(
-                                    thumbColor = getAccentColor(this@MainActivity),
-                                    activeTrackColor = getAccentColor(this@MainActivity),
-                                    activeTickColor = getAccentColor(this@MainActivity),
-                                    inactiveTickColor = getAccentColor(this@MainActivity),
-                                    inactiveTrackColor = getAccentColor(this@MainActivity),
-                                    disabledThumbColor = Color.Gray,
-                                    disabledActiveTrackColor = Color.Gray,
-                                    disabledActiveTickColor = Color.Gray,
-                                    disabledInactiveTickColor = Color.Gray,
-                                    disabledInactiveTrackColor = Color.Gray,
-                                ))
+                                })
                             }
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 Text(
@@ -411,20 +401,9 @@ class MainActivity : SaveDataActivity() {
                                     )
                                 )
 
-                                Slider(soundVolume, onValueChange = {
+                                SliderCustom(this@MainActivity, { soundVolume }, {
                                     soundVolume = it; save?.soundVolume = it
-                                }, colors = SliderColors(
-                                    thumbColor = getAccentColor(this@MainActivity),
-                                    activeTrackColor = getAccentColor(this@MainActivity),
-                                    activeTickColor = getAccentColor(this@MainActivity),
-                                    inactiveTickColor = getAccentColor(this@MainActivity),
-                                    inactiveTrackColor = getAccentColor(this@MainActivity),
-                                    disabledThumbColor = Color.Gray,
-                                    disabledActiveTrackColor = Color.Gray,
-                                    disabledActiveTickColor = Color.Gray,
-                                    disabledInactiveTickColor = Color.Gray,
-                                    disabledInactiveTrackColor = Color.Gray,
-                                ), onValueChangeFinished = { playNotificationSound(this@MainActivity) {} })
+                                }, { playNotificationSound(this@MainActivity) {} })
                             }
                             Row(horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
                                 Text(
@@ -434,31 +413,13 @@ class MainActivity : SaveDataActivity() {
                                     style = TextStyle(color = getTextColor(this@MainActivity), fontSize = 20.sp, textAlign = TextAlign.Center)
                                 )
                                 Spacer(modifier = Modifier.width(16.dp))
-                                Switch(checked = intro, onCheckedChange = {
+                                SwitchCustom(this@MainActivity, { intro }) {
                                     intro = !intro
                                     save?.let {
                                         it.useCaravanIntro = !it.useCaravanIntro
                                         saveOnGD(this@MainActivity)
                                     }
-                                }, colors = SwitchColors(
-                                    checkedThumbColor = getTextBackgroundColor(this@MainActivity),
-                                    checkedTrackColor = getAccentColor(this@MainActivity),
-                                    checkedBorderColor = Color.Transparent,
-                                    checkedIconColor = Color.Transparent,
-                                    uncheckedThumbColor = getTextBackgroundColor(this@MainActivity),
-                                    uncheckedTrackColor = getAccentColor(this@MainActivity),
-                                    uncheckedBorderColor = Color.Transparent,
-                                    uncheckedIconColor = Color.Transparent,
-                                    disabledCheckedThumbColor = colorResource(R.color.red),
-                                    disabledCheckedTrackColor = colorResource(R.color.white),
-                                    disabledCheckedBorderColor = Color.Transparent,
-                                    disabledCheckedIconColor = Color.Transparent,
-                                    disabledUncheckedThumbColor = colorResource(R.color.red),
-                                    disabledUncheckedTrackColor = colorResource(R.color.white),
-                                    disabledUncheckedBorderColor = Color.Transparent,
-                                    disabledUncheckedIconColor = Color.Transparent,
-                                )
-                                )
+                                }
                             }
                         }
                     },

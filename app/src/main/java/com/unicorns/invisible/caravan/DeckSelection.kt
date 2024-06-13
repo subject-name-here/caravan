@@ -60,9 +60,9 @@ fun DeckSelection(
             if (checker[cardBack] == true) {
                 val (backSelected, isAltSelected) = getSelectedBack()
                 return if (backSelected == cardBack && isAltSelected == isAlt) {
-                    Modifier.border(width = 4.dp, color = getAccentColor(activity))
+                    Modifier.border(width = 4.dp, color = getAccentColor(activity)).padding(4.dp)
                 } else {
-                    Modifier
+                    Modifier.padding(4.dp)
                 }.clickable {
                     setSelectedBack(cardBack, isAlt)
                     save.selectedDeck = cardBack to isAlt
@@ -70,7 +70,7 @@ fun DeckSelection(
                 }
             }
         }
-        return Modifier.alpha(0.5f)
+        return Modifier.padding(4.dp).alpha(0.5f)
     }
 
     var setCustomDeck by rememberSaveable { mutableStateOf(false) }
@@ -180,7 +180,6 @@ fun DeckSelection(
                     )
                 }
                 Spacer(modifier = Modifier.height(24.dp))
-
             }
         }
 

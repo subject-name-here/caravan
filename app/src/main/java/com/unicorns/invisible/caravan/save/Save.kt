@@ -61,4 +61,77 @@ class Save {
     var ambientVolume = 1f
 
     var useCaravanIntro = true
+
+    @EncodeDefault
+    var caps = 0
+
+    @EncodeDefault
+    val soldCards = HashMap<Pair<CardBack, Boolean>, Int>()
+    fun getCardPrice(card: Card): Int {
+        val soldAlready = soldCards[card.back to card.isAlt] ?: 0
+        return if (!card.isAlt) {
+            when (card.back) {
+                CardBack.STANDARD -> 0
+                CardBack.TOPS, CardBack.ULTRA_LUXE, CardBack.GOMORRAH -> when (soldAlready) {
+                    in (0..9) -> 10
+                    in (10..19) -> 8
+                    in (20..29) -> 6
+                    in (30..39) -> 4
+                    in (40..49) -> 2
+                    else -> 1
+                }
+                CardBack.LUCKY_38 -> when (soldAlready) {
+                    in (0..9) -> 10
+                    in (10..19) -> 9
+                    in (20..29) -> 7
+                    in (30..39) -> 5
+                    in (40..49) -> 3
+                    else -> 1
+                }
+                CardBack.VAULT_21 -> when (soldAlready) {
+                    in (0..9) -> 10
+                    in (10..19) -> 9
+                    in (20..29) -> 8
+                    in (30..39) -> 6
+                    in (40..49) -> 4
+                    in (50..59) -> 3
+                    else -> 1
+                }
+            }
+        } else {
+            when (card.back) {
+                CardBack.STANDARD -> when (soldAlready) {
+                    in (0..9) -> 30
+                    in (10..19) -> 25
+                    in (20..29) -> 20
+                    in (30..39) -> 15
+                    in (40..49) -> 10
+                    in (50..59) -> 5
+                    in (60..69) -> 3
+                    else -> 1
+                }
+                CardBack.ULTRA_LUXE, CardBack.GOMORRAH -> when (soldAlready) {
+                    in (0..9) -> 30
+                    in (10..19) -> 20
+                    in (20..29) -> 15
+                    in (30..39) -> 10
+                    in (40..49) -> 5
+                    in (50..59) -> 3
+                    else -> 1
+                }
+                CardBack.TOPS -> when (soldAlready) {
+                    in (0..8) -> 30
+                    in (9..16) -> 25
+                    in (17..24) -> 20
+                    in (25..32) -> 15
+                    in (33..40) -> 10
+                    in (41..48) -> 8
+                    in (49..56) -> 5
+                    in (57..64) -> 3
+                    else -> 1
+                }
+                CardBack.LUCKY_38, CardBack.VAULT_21 -> (30 - soldAlready / 5).coerceAtLeast(1)
+            }
+        }
+    }
 }

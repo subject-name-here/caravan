@@ -13,20 +13,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.Switch
-import androidx.compose.material3.SwitchColors
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
@@ -35,7 +30,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.unicorns.invisible.caravan.utils.getAccentColor
 import com.unicorns.invisible.caravan.utils.getBackgroundColor
 import com.unicorns.invisible.caravan.utils.getKnobColor
 import com.unicorns.invisible.caravan.utils.getTextBackgroundColor
@@ -88,7 +82,7 @@ fun ShowSettings(
                     Text(
                         text = "TOGGLE!",
                         modifier = Modifier.background(getTextBackgroundColor(activity)).padding(4.dp).clickable {
-                            styleInt = Style.entries[(styleInt.ordinal + 1) % Style.entries.size.coerceIn(0, 4)] // TODO
+                            styleInt = Style.entries[(styleInt.ordinal + 1) % Style.entries.size.coerceIn(0, 5)] // TODO
                             selectStyle(styleInt.ordinal)
                         },
                         fontFamily = FontFamily(Font(R.font.monofont)),
