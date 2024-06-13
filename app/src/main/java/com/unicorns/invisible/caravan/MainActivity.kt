@@ -101,7 +101,8 @@ var saveGlobal: Save? = null
 
 @Suppress("MoveLambdaOutsideParentheses")
 class MainActivity : SaveDataActivity() {
-    val save: Save? = saveGlobal
+    val save: Save?
+        get() = saveGlobal
 
     var goBack: (() -> Unit)? = null
 

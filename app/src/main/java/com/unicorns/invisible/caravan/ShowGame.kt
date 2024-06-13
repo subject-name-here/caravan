@@ -3,7 +3,6 @@ package com.unicorns.invisible.caravan
 import androidx.collection.mutableObjectListOf
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.TweenSpec
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -632,8 +631,13 @@ fun RowScope.CaravanOnField(
                         isMovingOut: Boolean
                     ) {
                         val animationIn = remember { Animatable(3f * (if (isPlayerTurn) 1 else -1)) }
+                        val animationOut = remember { Animatable(0f) }
                         LaunchedEffect(isMovingIn) {
                             animationIn.animateTo(0f, TweenSpec(380, 380))
+                        }
+                        LaunchedEffect(isMovingOut) {
+                            animationOut.snapTo(0f)
+                            animationOut.animateTo(2f, TweenSpec(380, 380))
                         }
                         Box(modifier = Modifier
                             .layout { measurable, constraints ->
@@ -650,7 +654,7 @@ fun RowScope.CaravanOnField(
                                 val modifierOffset = ((if (isEnemy) (-10).dp else 10.dp) * (modifierIndex + 1)).toPx().toInt()
                                 layout(placeable.width, 0) {
                                     placeable.place(
-                                        modifierOffset + offsetWidth,
+                                        modifierOffset + offsetWidth + (placeable.width * if (isMovingOut) animationOut.value else 0f).toInt(),
                                         offsetHeight + (animationIn.value * placeable.height).toInt()
                                     )
                                 }
@@ -668,8 +672,13 @@ fun RowScope.CaravanOnField(
                         isMovingOut: Boolean,
                     ) {
                         val animationIn = remember { Animatable(enemyMult * 3f) }
+                        val animationOut = remember { Animatable(0f) }
                         LaunchedEffect(isMovingIn) {
-                            animationIn.animateTo(0f, TweenSpec(380, 380))
+                            animationIn.animateTo(0f, TweenSpec(190, 380))
+                        }
+                        LaunchedEffect(isMovingOut) {
+                            animationOut.snapTo(0f)
+                            animationOut.animateTo(2f, TweenSpec(190, 380))
                         }
 
                         val modifier = Modifier
@@ -691,7 +700,7 @@ fun RowScope.CaravanOnField(
                                     (placeable.height / 3 * index)
                                 layout(constraints.maxWidth, layoutFullHeight) {
                                     placeable.place(
-                                        offsetWidth,
+                                        offsetWidth + (placeable.width * if (isMovingOut) animationOut.value else 0f).toInt(),
                                         antiOffsetHeight + (animationIn.value * placeable.height).toInt()
                                     )
                                 }
@@ -702,6 +711,12 @@ fun RowScope.CaravanOnField(
                                 addSelectedCardOnPosition(caravan.cards.indexOf(it))
                             })
                         }
+                    }
+
+                    cardHolder.forEachIndexed { index, it ->
+                        val isMovingIn = it !in caravan.cards
+                        val isMovingOut = it !in caravan.cards
+                        CardInCaravan(it, index, isMovingIn, isMovingOut)
 
                         fun getHash2() = it.hashCode() + it.modifiersCopy().sumOf { it.hashCode() }
                         var modifiersListMem by remember { mutableIntStateOf(getHash2()) }
@@ -719,15 +734,11 @@ fun RowScope.CaravanOnField(
                             copy2.asMutableList() + (it.modifiersCopy() - copy2.asMutableList().toSet())
                         }
 
-                        modHolder.forEachIndexed { cardIndex, card ->
-                            ModifierOnCardInCaravan(card, index, cardIndex, card in it.modifiersCopy(), isMovingOut)
+                        modHolder.forEachIndexed { modifierIndex, card ->
+                            if (card in it.modifiersCopy()) {
+                                ModifierOnCardInCaravan(card, index, modifierIndex, card in it.modifiersCopy(), isMovingOut)
+                            }
                         }
-                    }
-
-                    cardHolder.forEachIndexed { index, it ->
-                        val isMovingIn = it !in caravan.cards
-                        val isMovingOut = it !in caravan.cards
-                        CardInCaravan(it, index, isMovingIn, isMovingOut)
                     }
 
                     if (!isEnemy) {

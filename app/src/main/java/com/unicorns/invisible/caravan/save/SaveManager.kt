@@ -1,5 +1,6 @@
 package com.unicorns.invisible.caravan.save
 
+import android.util.Log
 import com.unicorns.invisible.caravan.MainActivity
 import com.unicorns.invisible.caravan.saveGlobal
 import com.unicorns.invisible.caravan.snapshotsClient
@@ -32,11 +33,12 @@ fun getSaveFile(activity: MainActivity): File {
 
 fun saveOnGD(activity: MainActivity) {
     if (snapshotsClient == null) return
-    val bytes = json.encodeToString(activity.save!!).toByteArray(StandardCharsets.UTF_8)
+    val bytes = json.encodeToString(saveGlobal).toByteArray(StandardCharsets.UTF_8)
     activity.uploadDataToDrive(bytes)
 }
 suspend fun loadFromGD(activity: MainActivity) {
     val data = activity.fetchDataFromDrive()?.toString(StandardCharsets.UTF_8)
+    Log.i("Ulysses", data ?: "null")
     if (data != null && data != "") {
         saveGlobal = json.decodeFromString<Save>(data)
     }
