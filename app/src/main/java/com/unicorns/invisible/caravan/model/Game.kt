@@ -105,6 +105,7 @@ class Game(
             isPlayerTurn = true
             checkOnGameOver()
             delay(380L)
+            updateView()
         }
     }
 

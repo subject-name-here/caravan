@@ -487,9 +487,11 @@ class MainActivity : SaveDataActivity() {
                         horizontalArrangement = Arrangement.SpaceAround
                     ) {
                         Text(
-                            text = ">|",
+                            text = if (isPaused) "NONE" else ">|",
                             modifier = Modifier.clickable {
-                                nextSong(this@MainActivity)
+                                if (!isPaused) {
+                                    nextSong(this@MainActivity)
+                                }
                             },
                             fontFamily = FontFamily(Font(R.font.monofont)),
                             style = TextStyle(
@@ -664,7 +666,7 @@ class MainActivity : SaveDataActivity() {
                             .fillMaxWidth()
                             .align(Alignment.Bottom)
                             .padding(end = 12.dp),
-                        text = "VERSION #${
+                        text = "VER #${
                             packageManager.getPackageInfo(
                                 "com.unicorns.invisible.caravan",
                                 PackageManager.MATCH_ALL
