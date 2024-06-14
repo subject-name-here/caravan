@@ -127,12 +127,17 @@ class MainActivity : SaveDataActivity() {
         CoroutineScope(Dispatchers.Default).launch {
             val savedOnGDData = fetchDataFromDrive()
             if (savedOnGDData == null || savedOnGDData.isEmpty()) {
-                saveGlobal = if (getSaveFile(this@MainActivity).exists()) {
-                    loadLocalSave(this@MainActivity).also { getSaveFile(this@MainActivity).delete() }
+                val saveFile = getSaveFile(this@MainActivity)
+                saveGlobal = if (saveFile.exists()) {
+                    loadLocalSave(this@MainActivity) ?: Save()
                 } else {
                     Save()
                 }
-                saveOnGD(this@MainActivity)
+                if (saveOnGD(this@MainActivity).await()) {
+                    if (saveFile.exists()) {
+                        saveFile.delete()
+                    }
+                }
             }
             loadFromGD(this@MainActivity)
             readyFlag.postValue(true)
@@ -443,9 +448,11 @@ class MainActivity : SaveDataActivity() {
                         horizontalArrangement = Arrangement.SpaceAround
                     ) {
                         Text(
-                            text = ">|",
+                            text = if (isPaused) "NONE" else ">|",
                             modifier = Modifier.clickable {
-                                nextSong(this@MainActivity)
+                                if (!isPaused) {
+                                    nextSong(this@MainActivity)
+                                }
                             },
                             fontFamily = FontFamily(Font(R.font.monofont)),
                             style = TextStyle(
@@ -619,7 +626,7 @@ class MainActivity : SaveDataActivity() {
                             .fillMaxWidth()
                             .align(Alignment.Bottom)
                             .padding(end = 12.dp),
-                        text = "VERSION #${
+                        text = "VER #${
                             packageManager.getPackageInfo(
                                 "com.unicorns.invisible.caravan",
                                 PackageManager.MATCH_ALL
