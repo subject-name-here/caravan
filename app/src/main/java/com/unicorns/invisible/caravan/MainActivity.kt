@@ -132,12 +132,17 @@ class MainActivity : SaveDataActivity() {
         CoroutineScope(Dispatchers.Default).launch {
             val savedOnGDData = fetchDataFromDrive()
             if (savedOnGDData == null || savedOnGDData.isEmpty()) {
-                saveGlobal = if (getSaveFile(this@MainActivity).exists()) {
-                    loadLocalSave(this@MainActivity).also { getSaveFile(this@MainActivity).delete() }
+                val saveFile = getSaveFile(this@MainActivity)
+                saveGlobal = if (saveFile.exists()) {
+                    loadLocalSave(this@MainActivity) ?: Save()
                 } else {
                     Save()
                 }
-                saveOnGD(this@MainActivity)
+                if (saveOnGD(this@MainActivity).await()) {
+                    if (saveFile.exists()) {
+                        saveFile.delete()
+                    }
+                }
             }
             loadFromGD(this@MainActivity)
             readyFlag.postValue(true)
