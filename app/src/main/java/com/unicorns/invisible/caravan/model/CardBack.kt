@@ -50,7 +50,7 @@ enum class CardBack {
     fun getSierraMadreDeckName(): Int = R.string.standard_deck_alt_name
 
     fun getOwners(): List<Int> = when (this) {
-        STANDARD -> listOf(R.string.standard_deck_owners)
+        STANDARD -> listOf(R.string.no_one, R.string.standard_deck_owners)
         TOPS -> listOf(R.string.pve_enemy_hard, R.string.pve_enemy_queen)
         ULTRA_LUXE -> listOf(R.string.pve_enemy_easy, R.string.johnson_nash)
         GOMORRAH -> listOf(R.string.pve_enemy_medium, R.string.no_bark)

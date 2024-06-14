@@ -1,9 +1,9 @@
 package com.unicorns.invisible.caravan
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -15,9 +15,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -27,8 +24,10 @@ import com.unicorns.invisible.caravan.model.primitives.Caravan
 import com.unicorns.invisible.caravan.model.primitives.Rank
 import com.unicorns.invisible.caravan.multiplayer.MoveResponse
 import com.unicorns.invisible.caravan.multiplayer.decodeMove
-import com.unicorns.invisible.caravan.utils.getBackgroundColor
-import com.unicorns.invisible.caravan.utils.getGameTextColor
+import com.unicorns.invisible.caravan.utils.TextFallout
+import com.unicorns.invisible.caravan.utils.getTextBackgroundColor
+import com.unicorns.invisible.caravan.utils.getTextColor
+import com.unicorns.invisible.caravan.utils.getTextStrokeColor
 import com.unicorns.invisible.caravan.utils.sendRequest
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -337,15 +336,16 @@ fun ShowGamePvP(
     )
 
     key (timeOnTimer) {
-        Box(modifier = Modifier.fillMaxSize()) {
-            Text(
-                text = timeOnTimer.toString(),
-                modifier = Modifier
-                    .padding(8.dp)
-                    .align(Alignment.BottomEnd),
-                textAlign = TextAlign.Right,
-                fontFamily = FontFamily(Font(R.font.monofont)),
-                style = TextStyle(color = getGameTextColor(activity), background = getBackgroundColor(activity), fontSize = 18.sp)
+        Box(modifier = Modifier.fillMaxSize().background(getTextBackgroundColor(activity))) {
+            TextFallout(
+                timeOnTimer.toString(),
+                getTextColor(activity),
+                getTextStrokeColor(activity),
+                14.sp,
+                Alignment.BottomEnd,
+                Modifier
+                    .padding(8.dp),
+                TextAlign.Center
             )
         }
     }

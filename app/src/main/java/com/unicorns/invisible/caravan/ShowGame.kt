@@ -38,18 +38,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.paint
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -63,16 +58,16 @@ import com.unicorns.invisible.caravan.model.primitives.Rank
 import com.unicorns.invisible.caravan.model.primitives.Suit
 import com.unicorns.invisible.caravan.utils.ShowCard
 import com.unicorns.invisible.caravan.utils.ShowCardBack
+import com.unicorns.invisible.caravan.utils.TextFallout
 import com.unicorns.invisible.caravan.utils.dpToPx
-import com.unicorns.invisible.caravan.utils.getAccentColor
 import com.unicorns.invisible.caravan.utils.getBackgroundColor
 import com.unicorns.invisible.caravan.utils.getDividerColor
-import com.unicorns.invisible.caravan.utils.getGameTextBackgroundColor
-import com.unicorns.invisible.caravan.utils.getGameTextColor
 import com.unicorns.invisible.caravan.utils.getGrayTransparent
 import com.unicorns.invisible.caravan.utils.getKnobColor
+import com.unicorns.invisible.caravan.utils.getSelectionColor
 import com.unicorns.invisible.caravan.utils.getTextBackgroundColor
 import com.unicorns.invisible.caravan.utils.getTextColor
+import com.unicorns.invisible.caravan.utils.getTextStrokeColor
 import com.unicorns.invisible.caravan.utils.getTrackColor
 import com.unicorns.invisible.caravan.utils.playCardFlipSound
 import com.unicorns.invisible.caravan.utils.pxToDp
@@ -254,17 +249,19 @@ fun ShowGameRaw(
                 .wrapContentHeight().fillMaxWidth()
                 .background(getBackgroundColor(activity))
             ) {
-                Text(
-                    text = stringResource(R.string.back_to_menu),
-                    fontWeight = FontWeight.ExtraBold,
-                    fontFamily = FontFamily(Font(R.font.monofont)),
-                    modifier = Modifier
+                TextFallout(
+                    stringResource(R.string.back_to_menu),
+                    getTextColor(activity),
+                    getTextStrokeColor(activity),
+                    16.sp,
+                    Alignment.Center,
+                    Modifier
+                        .fillMaxWidth()
                         .clickable {
                             goBack()
                         }
-                        .fillMaxWidth()
                         .padding(8.dp),
-                    style = TextStyle(color = getTextColor(activity), fontSize = 16.sp, textAlign = TextAlign.Center),
+                    TextAlign.Center
                 )
             }
         }) { innerPadding ->
@@ -370,12 +367,15 @@ fun EnemySide(
             Box(Modifier.fillMaxSize()) {
                 ShowDeck(game.enemyCResources, activity)
                 if (isPvP) {
-                    Text(text = getEnemySymbol(), style = TextStyle(
-                        fontSize = 24.sp,
-                        fontFamily = FontFamily(Font(R.font.symbola)),
-                        color = getGameTextColor(activity),
-                        background = getTextBackgroundColor(activity)
-                    ), modifier = Modifier.align(Alignment.BottomEnd))
+                    TextFallout(
+                        getEnemySymbol(),
+                        getTextColor(activity),
+                        getTextStrokeColor(activity),
+                        24.sp,
+                        Alignment.BottomEnd,
+                        Modifier.background(getTextBackgroundColor(activity)),
+                        TextAlign.Center
+                    )
                 }
             }
         }
@@ -392,21 +392,24 @@ fun PlayerSide(
     onCardClicked: (Int) -> Unit,
     getMySymbol: () -> String, setMySymbol: () -> Unit
 ) {
-    val selectedCardColor = getAccentColor(activity)
+    val selectedCardColor = getSelectionColor(activity)
     Row(verticalAlignment = Alignment.Bottom, modifier = Modifier.fillMaxSize()
     ) {
         PlayerCards(activity, game.playerCResources.hand, wasCardDropped(), selectedCard, selectedCardColor, onCardClicked)
         Box {
             ShowDeck(game.playerCResources, activity)
             if (isPvP) {
-                Text(text = getMySymbol(), style = TextStyle(
-                    fontSize = 24.sp,
-                    fontFamily = FontFamily(Font(R.font.symbola)),
-                    color = getGameTextColor(activity),
-                    background = getTextBackgroundColor(activity)
-                ), modifier = Modifier.clickable {
-                    setMySymbol()
-                })
+                TextFallout(
+                    getMySymbol(),
+                    getTextColor(activity),
+                    getTextStrokeColor(activity),
+                    24.sp,
+                    Alignment.TopStart,
+                    Modifier.background(getTextBackgroundColor(activity)).clickable {
+                        setMySymbol()
+                    },
+                    TextAlign.Center
+                )
             }
         }
     }
@@ -569,23 +572,26 @@ fun RowScope.CaravanOnField(
         .weight(0.25f)
     ) {
         if (!isEnemy) {
-            Text(text = if (isInitStage || caravan.getValue() == 0) "" else stringResource(R.string.discard),
-                textAlign = TextAlign.Center,
-                color = getGameTextColor(activity),
-                fontWeight = FontWeight.ExtraBold,
-                fontFamily = FontFamily(Font(R.font.monofont)),
-                modifier = Modifier
+            TextFallout(
+                if (isInitStage || caravan.getValue() == 0) "" else stringResource(R.string.discard),
+                getTextColor(activity),
+                getTextStrokeColor(activity),
+                14.sp,
+                Alignment.Center,
+                Modifier
                     .fillMaxWidth()
                     .clickable {
                         selectCaravan()
                     }
-                    .padding(2.dp)
+                    .padding(start = 2.dp, end = 2.dp, bottom = 2.dp, top = 0.dp)
                     .background(
-                        if (isInitStage || caravan.getValue() == 0) Color.Transparent else getGameTextBackgroundColor(
-                            activity
-                        )
+                        if (isInitStage || caravan.getValue() == 0) Color.Transparent else run {
+                            val color = getTextBackgroundColor(activity)
+                            Color(color.red, color.green, color.blue, 0.4f)
+                        }
                     )
-                    .padding(2.dp)
+                    .padding(2.dp),
+                TextAlign.Center
             )
         }
         LazyColumn(
@@ -771,7 +777,7 @@ fun RowScope.CaravanOnField(
                                         .align(Alignment.BottomCenter)
                                         .padding(horizontal = 4.dp)
                                         .background(getTextBackgroundColor(activity))
-                                        .border(4.dp, getGameTextColor(activity))
+                                        .border(4.dp, getTextColor(activity))
                                     ) {}
                                 }
                             }
@@ -791,14 +797,14 @@ fun ShowDeck(cResources: CResources, activity: MainActivity, isKnown: Boolean = 
             .padding(end = 4.dp),
         verticalArrangement = Arrangement.Center
     ) {
-        Text(
-            text = cResources.deckSize.toString(),
-            textAlign = TextAlign.Center,
-            color = getAccentColor(activity),
-            fontWeight = FontWeight.ExtraBold,
-            fontFamily = FontFamily(Font(R.font.monofont)),
-            modifier = Modifier.fillMaxWidth(),
-            fontSize = 16.sp,
+        TextFallout(
+            cResources.deckSize.toString(),
+            getTextColor(activity),
+            getTextStrokeColor(activity),
+            16.sp,
+            Alignment.Center,
+            Modifier.fillMaxWidth(),
+            TextAlign.Center
         )
         if (isKnown) {
             val (back, isAlt) = cResources.getDeckBack() ?: (null to false)
@@ -817,7 +823,7 @@ fun RowScope.Score(activity: MainActivity, num: Int, caravan: Caravan, opposingV
     else if (caravan.getValue() in (21..26) && (opposingValue !in (21..26) || caravan.getValue() > opposingValue))
         Triple(Color.Green, caravan.getValue().toString(), true)
     else
-        Triple(getAccentColor(activity), caravan.getValue().toString(), false)
+        Triple(getTextColor(activity), caravan.getValue().toString(), false)
     Box(Modifier.weight(0.25f).height(24.dp).padding(2.dp).background(getGrayTransparent(activity)).padding(2.dp)) {
         Text(
             text = cities[num],
@@ -831,16 +837,14 @@ fun RowScope.Score(activity: MainActivity, num: Int, caravan: Caravan, opposingV
             softWrap = false,
         )
         Spacer(Modifier.width(2.dp))
-        Text(
-            text = text,
-            modifier = Modifier.align(Alignment.CenterEnd),
-            textAlign = TextAlign.Center,
-            color = textColor,
-            fontWeight = FontWeight.ExtraBold,
-            fontFamily = FontFamily(Font(R.font.monofont)),
-            maxLines = 1,
-            softWrap = false,
-            fontSize = 14.sp,
+        TextFallout(
+            text,
+            textColor,
+            getSelectionColor(activity),
+            14.sp,
+            Alignment.CenterEnd,
+            Modifier,
+            textAlign = TextAlign.End
         )
     }
 }
@@ -940,7 +944,7 @@ fun Caravans(
                                 dropSelectedCaravan()
                             }
                         }
-                        .background(getGameTextBackgroundColor(activity))
+                        .background(getTextBackgroundColor(activity))
                         .padding(6.dp)
                 } else {
                     Modifier
@@ -949,17 +953,15 @@ fun Caravans(
                         .background(getGrayTransparent(activity))
                         .padding(6.dp)
                 }
-                Box(modifier) {
-                    Text(
-                        text = text,
-                        textAlign = TextAlign.Center,
-                        color = getAccentColor(activity),
-                        fontWeight = FontWeight.ExtraBold,
-                        fontFamily = FontFamily(Font(R.font.monofont)),
-                        modifier = Modifier.align(Alignment.Center),
-                        fontSize = 16.sp,
-                    )
-                }
+                TextFallout(
+                    text,
+                    getTextColor(activity),
+                    getTextStrokeColor(activity),
+                    16.sp,
+                    Alignment.Center,
+                    modifier,
+                    TextAlign.Center
+                )
             }
         }
 

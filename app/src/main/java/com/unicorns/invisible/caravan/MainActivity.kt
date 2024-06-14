@@ -25,7 +25,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -39,6 +38,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.drawscope.Stroke
@@ -47,7 +47,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextLinkStyles
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -67,12 +66,18 @@ import com.unicorns.invisible.caravan.save.loadLocalSave
 import com.unicorns.invisible.caravan.save.saveOnGD
 import com.unicorns.invisible.caravan.utils.SliderCustom
 import com.unicorns.invisible.caravan.utils.SwitchCustom
+import com.unicorns.invisible.caravan.utils.TextFallout
 import com.unicorns.invisible.caravan.utils.currentPlayer
 import com.unicorns.invisible.caravan.utils.getBackgroundColor
+import com.unicorns.invisible.caravan.utils.getDialogBackground
+import com.unicorns.invisible.caravan.utils.getDialogTextColor
 import com.unicorns.invisible.caravan.utils.getDividerColor
 import com.unicorns.invisible.caravan.utils.getKnobColor
+import com.unicorns.invisible.caravan.utils.getMusicPanelColor
+import com.unicorns.invisible.caravan.utils.getMusicTextColor
 import com.unicorns.invisible.caravan.utils.getTextBackgroundColor
 import com.unicorns.invisible.caravan.utils.getTextColor
+import com.unicorns.invisible.caravan.utils.getTextStrokeColor
 import com.unicorns.invisible.caravan.utils.getTrackColor
 import com.unicorns.invisible.caravan.utils.isRadioStopped
 import com.unicorns.invisible.caravan.utils.nextSong
@@ -184,78 +189,87 @@ class MainActivity : SaveDataActivity() {
 
         setContent {
             val k by readyFlag.observeAsState()
-            var isIntroScreen by rememberSaveable { mutableStateOf(true) }
-            if (isIntroScreen) {
-                Box(
-                    Modifier.fillMaxSize().background(colorResource(R.color.colorBack)).clickable {
-                        if (readyFlag.value == true) {
-                            isIntroScreen = false
+            var isIntroScreen by rememberSaveable { mutableStateOf(k != true) }
+
+            @Composable
+            fun getColors(): Triple<Color, Color, Color> {
+                return Triple(
+                    (if (k == true) getTextColor(this) else colorResource(R.color.colorText)),
+                    (if (k == true) getBackgroundColor(this) else colorResource(R.color.colorBack)),
+                    (if (k == true) getTextStrokeColor(this) else colorResource(R.color.colorTextStroke)),
+                )
+            }
+
+            key (k) {
+                styleId = Style.entries[save?.styleId ?: 1]
+                val (textColor, backgroundColor, strokeColor) = getColors()
+                if (isIntroScreen) {
+                    Box(
+                        Modifier
+                            .fillMaxSize()
+                            .background(backgroundColor)
+                            .clickable {
+                                if (readyFlag.value == true) {
+                                    isIntroScreen = false
+                                }
+                            },
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Column(
+                            Modifier
+                                .fillMaxSize()
+                                .padding(4.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
+                            if (k == true) {
+                                TextFallout(
+                                    "CARAVAN",
+                                    textColor,
+                                    strokeColor,
+                                    40.sp,
+                                    Alignment.Center,
+                                    Modifier.padding(4.dp),
+                                    TextAlign.Center
+                                )
+                                TextFallout(
+                                    stringResource(R.string.tap_to_play),
+                                    textColor,
+                                    strokeColor,
+                                    24.sp,
+                                    Alignment.Center,
+                                    Modifier.padding(4.dp),
+                                    TextAlign.Center
+                                )
+                                Spacer(Modifier.height(8.dp))
+                            } else {
+                                TextFallout(
+                                    "PLEASE\nSTAND BY",
+                                    textColor,
+                                    strokeColor,
+                                    32.sp,
+                                    Alignment.Center,
+                                    Modifier.padding(4.dp),
+                                    TextAlign.Center
+                                )
+                            }
+                            TextFallout(
+                                getString(advice),
+                                textColor,
+                                strokeColor,
+                                16.sp,
+                                Alignment.Center,
+                                Modifier.padding(vertical = 4.dp, horizontal = 12.dp),
+                                TextAlign.Center
+                            )
                         }
-                    },
-                    contentAlignment = Alignment.Center
-                ) {
-                    Column(Modifier.fillMaxSize().padding(4.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
-                        if (k == true) {
-                            Text(
-                                text = "CARAVAN", color = colorResource(R.color.colorText),
-                                fontFamily = FontFamily(Font(R.font.monofont)),
-                                style = TextStyle(
-                                    color = getTextColor(this@MainActivity),
-                                    fontSize = 32.sp,
-                                    textAlign = TextAlign.Center,
-                                    fontWeight = FontWeight.ExtraBold
-                                ),
-                                modifier = Modifier.padding(4.dp)
-                            )
-                            Text(
-                                text = "Press any key", color = colorResource(R.color.colorText),
-                                fontFamily = FontFamily(Font(R.font.monofont)),
-                                style = TextStyle(
-                                    color = getTextColor(this@MainActivity),
-                                    fontSize = 24.sp,
-                                    textAlign = TextAlign.Center,
-                                    fontWeight = FontWeight.ExtraBold
-                                ),
-                                modifier = Modifier.padding(4.dp)
-                            )
-                            Spacer(Modifier.height(8.dp))
-                        } else {
-                            Text(
-                                text = "PLEASE\nSTAND BY", color = colorResource(R.color.colorText),
-                                fontFamily = FontFamily(Font(R.font.monofont)),
-                                style = TextStyle(
-                                    color = getTextColor(this@MainActivity),
-                                    fontSize = 32.sp,
-                                    textAlign = TextAlign.Center,
-                                    fontWeight = FontWeight.ExtraBold
-                                ),
-                                modifier = Modifier.padding(4.dp)
-                            )
-                        }
-                        Text(
-                            text = getString(advice),
-                            color = colorResource(R.color.colorText),
-                            fontFamily = FontFamily(Font(R.font.monofont)),
-                            style = TextStyle(
-                                color = getTextColor(this@MainActivity),
-                                fontSize = 16.sp,
-                                textAlign = TextAlign.Center,
-                                fontWeight = FontWeight.ExtraBold
-                            ),
-                            modifier = Modifier.padding(vertical = 4.dp, horizontal = 12.dp)
-                        )
                     }
+                } else {
+                    Screen()
                 }
-            } else {
-                Screen()
             }
         }
     }
 
     @Composable
     fun Screen() {
-        styleId = Style.entries[save?.styleId ?: 1]
-
         var deckSelection by rememberSaveable { mutableStateOf(false) }
         var showPvP by rememberSaveable { mutableStateOf(false) }
         var showAbout by rememberSaveable { mutableStateOf(false) }
@@ -296,17 +310,49 @@ class MainActivity : SaveDataActivity() {
                 AlertDialog(
                     modifier = Modifier.border(width = 4.dp, color = getTextColor(this)),
                     onDismissRequest = { hideAlertDialog() },
-                    confirmButton = { Text(text = stringResource(R.string.close), color = getTextColor(this), modifier = Modifier.clickable { hideAlertDialog() }) },
+                    confirmButton = {
+                        TextFallout(
+                            stringResource(R.string.close),
+                            getTextColor(this),
+                            getTextBackgroundColor(this),
+                            18.sp, Alignment.Center,
+                            Modifier
+                                .background(getTextBackgroundColor(this))
+                                .clickable { hideAlertDialog() }
+                                .padding(4.dp),
+                            TextAlign.Center
+                        )
+                    },
                     dismissButton = { if (goBack != null) {
-                        Text(
-                            text = stringResource(R.string.back_to_menu), color = getTextColor(this),
-                            modifier = Modifier.clickable { hideAlertDialog(); goBack?.invoke(); goBack = null }
+                        TextFallout(
+                            stringResource(R.string.back_to_menu),
+                            getTextColor(this),
+                            getTextBackgroundColor(this), 18.sp, Alignment.Center,
+                            Modifier
+                                .background(getTextBackgroundColor(this))
+                                .clickable { hideAlertDialog(); goBack?.invoke(); goBack = null }
+                                .padding(4.dp),
+                            TextAlign.Center
                         )
                     } },
-                    title = { Text(text = alertDialogHeader, color = getTextColor(this)) },
-                    text = { Text(text = alertDialogMessage) },
-                    containerColor = getTextBackgroundColor(this),
-                    textContentColor = getTextColor(this),
+                    title = {
+                        TextFallout(
+                            alertDialogHeader, getDialogTextColor(this), getDialogTextColor(this),
+                            24.sp, Alignment.CenterStart, Modifier,
+                            TextAlign.Center
+                        )
+                    },
+                    text = {
+                        TextFallout(
+                            alertDialogMessage,
+                            getTextColor(this),
+                            getTextBackgroundColor(this),
+                            16.sp, Alignment.CenterStart, Modifier,
+                            TextAlign.Center
+                        )
+                    },
+                    containerColor = getDialogBackground(this),
+                    textContentColor = getDialogTextColor(this),
                     shape = RectangleShape,
                 )
             }
@@ -329,11 +375,30 @@ class MainActivity : SaveDataActivity() {
                         saveOnGD(this); hideSoundSettings()
                     },
                     confirmButton = {
-                        Text(text = stringResource(R.string.save), color = getTextColor(this), modifier = Modifier.clickable {
-                            saveOnGD(this); hideSoundSettings()
-                        }, fontWeight = FontWeight.ExtraBold)
+                        TextFallout(
+                            stringResource(R.string.save),
+                            getTextColor(this),
+                            getTextBackgroundColor(this),
+                            18.sp,
+                            Alignment.Center,
+                            Modifier
+                                .background(getTextBackgroundColor(this))
+                                .clickable { saveOnGD(this); hideSoundSettings() }
+                                .padding(4.dp),
+                            TextAlign.Center
+                        )
                     },
-                    title = { Text(text = stringResource(R.string.sound), color = getTextColor(this), fontWeight = FontWeight.ExtraBold) },
+                    title = {
+                        TextFallout(
+                            stringResource(R.string.sound),
+                            getDialogTextColor(this),
+                            getDialogTextColor(this),
+                            24.sp,
+                            Alignment.Center,
+                            Modifier,
+                            TextAlign.Center
+                        )
+                    },
                     text = {
                         var radioVolume by remember { mutableFloatStateOf(save?.radioVolume ?: 1f) }
                         var soundVolume by remember { mutableFloatStateOf(save?.soundVolume ?: 1f) }
@@ -341,20 +406,14 @@ class MainActivity : SaveDataActivity() {
                         var intro by remember { mutableStateOf(save?.useCaravanIntro ?: true) }
                         Column {
                             Row(verticalAlignment = Alignment.CenterVertically) {
-                                Text(
-                                    text = stringResource(R.string.radio),
-                                    modifier = Modifier
-                                        .clickable {
-                                            nextSong(this@MainActivity)
-                                        }
-                                        .fillMaxWidth(0.33f),
-                                    fontFamily = FontFamily(Font(R.font.monofont)),
-                                    style = TextStyle(
-                                        color = getTextColor(this@MainActivity),
-                                        fontSize = 16.sp,
-                                        textAlign = TextAlign.Center,
-                                        fontWeight = FontWeight.ExtraBold
-                                    )
+                                TextFallout(
+                                    stringResource(R.string.radio),
+                                    getDialogTextColor(this@MainActivity),
+                                    getDialogTextColor(this@MainActivity),
+                                    16.sp,
+                                    Alignment.CenterStart,
+                                    modifier = Modifier.fillMaxWidth(0.33f),
+                                    TextAlign.Start,
                                 )
 
                                 SliderCustom(
@@ -368,20 +427,14 @@ class MainActivity : SaveDataActivity() {
                                 )
                             }
                             Row(verticalAlignment = Alignment.CenterVertically) {
-                                Text(
-                                    text = stringResource(R.string.ambient),
-                                    modifier = Modifier
-                                        .clickable {
-                                            nextSong(this@MainActivity)
-                                        }
-                                        .fillMaxWidth(0.33f),
-                                    fontFamily = FontFamily(Font(R.font.monofont)),
-                                    style = TextStyle(
-                                        color = getTextColor(this@MainActivity),
-                                        fontSize = 16.sp,
-                                        textAlign = TextAlign.Center,
-                                        fontWeight = FontWeight.ExtraBold
-                                    )
+                                TextFallout(
+                                    stringResource(R.string.ambient),
+                                    getDialogTextColor(this@MainActivity),
+                                    getDialogTextColor(this@MainActivity),
+                                    16.sp,
+                                    Alignment.CenterStart,
+                                    modifier = Modifier.fillMaxWidth(0.33f),
+                                    TextAlign.Start
                                 )
 
                                 SliderCustom(this@MainActivity, { ambientVolume }, {
@@ -390,20 +443,14 @@ class MainActivity : SaveDataActivity() {
                                 })
                             }
                             Row(verticalAlignment = Alignment.CenterVertically) {
-                                Text(
-                                    text = stringResource(R.string.sfx),
-                                    modifier = Modifier
-                                        .clickable {
-                                            nextSong(this@MainActivity)
-                                        }
-                                        .fillMaxWidth(0.33f),
-                                    fontFamily = FontFamily(Font(R.font.monofont)),
-                                    style = TextStyle(
-                                        color = getTextColor(this@MainActivity),
-                                        fontSize = 16.sp,
-                                        textAlign = TextAlign.Center,
-                                        fontWeight = FontWeight.ExtraBold
-                                    )
+                                TextFallout(
+                                    stringResource(R.string.sfx),
+                                    getDialogTextColor(this@MainActivity),
+                                    getDialogTextColor(this@MainActivity),
+                                    16.sp,
+                                    Alignment.CenterStart,
+                                    modifier = Modifier.fillMaxWidth(0.33f),
+                                    TextAlign.Start
                                 )
 
                                 SliderCustom(this@MainActivity, { soundVolume }, {
@@ -411,11 +458,14 @@ class MainActivity : SaveDataActivity() {
                                 }, { playNotificationSound(this@MainActivity) {} })
                             }
                             Row(horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
-                                Text(
-                                    modifier = Modifier.fillMaxWidth(0.66f),
-                                    text = stringResource(R.string.intro_music),
-                                    fontFamily = FontFamily(Font(R.font.monofont)),
-                                    style = TextStyle(color = getTextColor(this@MainActivity), fontSize = 20.sp, textAlign = TextAlign.Center)
+                                TextFallout(
+                                    stringResource(R.string.intro_music),
+                                    getDialogTextColor(this@MainActivity),
+                                    getDialogTextColor(this@MainActivity),
+                                    20.sp,
+                                    Alignment.CenterStart,
+                                    Modifier.fillMaxWidth(0.66f),
+                                    TextAlign.Start
                                 )
                                 Spacer(modifier = Modifier.width(16.dp))
                                 SwitchCustom(this@MainActivity, { intro }) {
@@ -428,8 +478,8 @@ class MainActivity : SaveDataActivity() {
                             }
                         }
                     },
-                    containerColor = getTextBackgroundColor(this),
-                    textContentColor = getTextColor(this),
+                    containerColor = getDialogBackground(this),
+                    textContentColor = getDialogTextColor(this),
                     shape = RectangleShape,
                 )
             }
@@ -443,29 +493,32 @@ class MainActivity : SaveDataActivity() {
                         Modifier
                             .fillMaxWidth()
                             .wrapContentHeight()
-                            .background(getTextBackgroundColor(this))
+                            .background(getMusicPanelColor(this))
                             .padding(vertical = 8.dp),
                         horizontalArrangement = Arrangement.SpaceAround
                     ) {
-                        Text(
-                            text = if (isPaused) "NONE" else ">|",
-                            modifier = Modifier.clickable {
-                                if (!isPaused) {
-                                    nextSong(this@MainActivity)
-                                }
-                            },
-                            fontFamily = FontFamily(Font(R.font.monofont)),
-                            style = TextStyle(
-                                color = getTextColor(this@MainActivity),
-                                fontSize = 14.sp,
-                                textAlign = TextAlign.Center,
-                                fontWeight = FontWeight.ExtraBold
-                            )
+                        TextFallout(
+                            if (isPaused) "NONE" else ">|",
+                            getMusicTextColor(this@MainActivity),
+                            getMusicTextColor(this@MainActivity),
+                            16.sp,
+                            Alignment.Center,
+                            Modifier.weight(1f).wrapContentWidth()
+                                .clickable {
+                                    if (!isPaused) {
+                                        nextSong(this@MainActivity)
+                                    }
+                                }.background(getTextBackgroundColor(this@MainActivity)).padding(4.dp),
+                            TextAlign.Center
                         )
 
-                        Text(
-                            text = if (isPaused) "|>" else "||",
-                            modifier = Modifier.clickable {
+                        TextFallout(
+                            if (isPaused) "|>" else "||",
+                            getMusicTextColor(this@MainActivity),
+                            getMusicTextColor(this@MainActivity),
+                            16.sp,
+                            Alignment.Center,
+                            Modifier.weight(1f).wrapContentWidth().clickable {
                                 if (isPaused) {
                                     resume()
                                     isPaused = false
@@ -473,28 +526,19 @@ class MainActivity : SaveDataActivity() {
                                     pause()
                                     isPaused = true
                                 }
-                            },
-                            fontWeight = FontWeight.ExtraBold,
-                            fontFamily = FontFamily(Font(R.font.monofont)),
-                            style = TextStyle(
-                                color = getTextColor(this@MainActivity),
-                                fontSize = 14.sp,
-                                textAlign = TextAlign.Center,
-                            )
+                            }.background(getTextBackgroundColor(this@MainActivity)).padding(4.dp),
+                            TextAlign.Center
                         )
-
-                        Text(
-                            text = stringResource(R.string.sound),
-                            modifier = Modifier.clickable {
+                        TextFallout(
+                            stringResource(R.string.sound),
+                            getMusicTextColor(this@MainActivity),
+                            getMusicTextColor(this@MainActivity),
+                            16.sp,
+                            Alignment.Center,
+                            Modifier.weight(1f).wrapContentWidth().clickable {
                                 showSoundSettings = true
-                            },
-                            fontFamily = FontFamily(Font(R.font.monofont)),
-                            style = TextStyle(
-                                color = getTextColor(this@MainActivity),
-                                fontSize = 14.sp,
-                                textAlign = TextAlign.Center,
-                            ),
-                            fontWeight = FontWeight.ExtraBold
+                            }.background(getTextBackgroundColor(this@MainActivity)).padding(4.dp),
+                            TextAlign.Center
                         )
                     }
                 }
@@ -587,8 +631,7 @@ class MainActivity : SaveDataActivity() {
                 Modifier
                     .fillMaxWidth()
                     .height(32.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceAround
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 Row(
                     Modifier
@@ -607,40 +650,37 @@ class MainActivity : SaveDataActivity() {
                                 style = Stroke(width = 8f),
                             )
                         }) {
-                    Text(
-                        modifier = Modifier
+                    TextFallout(
+                        text = getString(R.string.app_name),
+                        getTextColor(this@MainActivity),
+                        getTextStrokeColor(this@MainActivity),
+                        28.sp,
+                        Alignment.CenterStart,
+                        Modifier
                             .wrapContentWidth()
                             .align(Alignment.Top)
                             .padding(start = 12.dp, top = 0.dp, end = 12.dp)
                             .background(getBackgroundColor(this@MainActivity))
                             .padding(start = 4.dp, top = 0.dp, end = 4.dp),
-                        text = getString(R.string.app_name),
-                        fontWeight = FontWeight.ExtraBold,
-                        fontFamily = FontFamily(Font(R.font.monofont)),
-                        textAlign = TextAlign.Start,
-                        style = TextStyle(color = getTextColor(this@MainActivity), fontSize = 28.sp)
+                        TextAlign.Start
                     )
 
-                    Text(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .align(Alignment.Bottom)
-                            .padding(end = 12.dp),
-                        text = "VER #${
-                            packageManager.getPackageInfo(
-                                "com.unicorns.invisible.caravan",
-                                PackageManager.MATCH_ALL
-                            ).versionName
-                        }",
-                        fontWeight = FontWeight.Bold,
-                        fontFamily = FontFamily(Font(R.font.monofont)),
-                        textAlign = TextAlign.End,
-                        style = TextStyle(
-                            color = getTextColor(this@MainActivity),
-                            background = getBackgroundColor(this@MainActivity),
-                            fontSize = 14.sp
+                    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.BottomEnd) {
+                        TextFallout(
+                            "VER #${
+                                packageManager.getPackageInfo(
+                                    "com.unicorns.invisible.caravan",
+                                    PackageManager.MATCH_ALL
+                                ).versionName
+                            }",
+                            getTextColor(this@MainActivity),
+                            getTextStrokeColor(this@MainActivity),
+                            14.sp,
+                            Alignment.CenterEnd,
+                            Modifier.padding(end = 12.dp),
+                            TextAlign.End
                         )
-                    )
+                    }
                 }
 
                 Row(
@@ -665,12 +705,12 @@ class MainActivity : SaveDataActivity() {
                                 url = "https://discord.gg/xSTJpjvzJV",
                                 styles = TextLinkStyles(
                                     style = SpanStyle(
-                                        color = getTextColor(this@MainActivity),
-                                        background = getBackgroundColor(this@MainActivity),
+                                        color = getTextStrokeColor(this@MainActivity),
                                         fontSize = 18.sp,
                                         fontWeight = FontWeight.Bold,
                                         fontFamily = FontFamily(Font(R.font.monofont)),
-                                        textDecoration = TextDecoration.Underline
+                                        textDecoration = TextDecoration.Underline,
+                                        drawStyle = Stroke()
                                     )
                                 )
                             ),
@@ -679,15 +719,27 @@ class MainActivity : SaveDataActivity() {
                         }
                     }
                     Box(Modifier.fillMaxSize()) {
-                        Text(
-                            text = discord,
-                            modifier = Modifier
+                        TextFallout(
+                            discord,
+                            getTextColor(this@MainActivity),
+                            getTextStrokeColor(this@MainActivity),
+                            18.sp,
+                            Alignment.Center,
+                            Modifier
                                 .align(Alignment.BottomEnd)
                                 .padding(end = 12.dp),
-                            style = TextStyle(
-                                textAlign = TextAlign.Center,
-                                fontFamily = FontFamily(Font(R.font.monofont)),
-                            )
+                            TextAlign.Center
+                        )
+                        TextFallout(
+                            stringResource(R.string.menu_discord),
+                            getTextColor(this@MainActivity),
+                            Color.Transparent,
+                            18.sp,
+                            Alignment.Center,
+                            Modifier
+                                .align(Alignment.BottomEnd)
+                                .padding(end = 12.dp),
+                            TextAlign.Center
                         )
                     }
                 }
@@ -711,81 +763,31 @@ class MainActivity : SaveDataActivity() {
                 state = state
             ) {
                 item {
+                    @Composable
+                    fun MenuItem(text: String, onClick: () -> Unit) {
+                        TextFallout(
+                            text,
+                            getTextColor(this@MainActivity),
+                            getTextStrokeColor(this@MainActivity),
+                            20.sp,
+                            Alignment.CenterStart,
+                            Modifier
+                                .clickable { onClick() }
+                                .background(getTextBackgroundColor(this@MainActivity))
+                                .padding(8.dp),
+                            TextAlign.Start
+                        )
+                    }
                     Spacer(Modifier.height(64.dp))
-                    Text(
-                        text = getString(R.string.menu_pve),
-                        modifier = Modifier
-                            .clickable {
-                                showPvE()
-                            }
-                            .background(getTextBackgroundColor(this@MainActivity))
-                            .padding(8.dp),
-                        style = TextStyle(
-                            color = getTextColor(this@MainActivity),
-                            fontSize = 20.sp,
-                            fontFamily = FontFamily(Font(R.font.monofont)),
-                        )
-                    )
+                    MenuItem(getString(R.string.menu_pve), showPvE)
                     Spacer(modifier = Modifier.height(20.dp))
-                    Text(
-                        text = getString(R.string.menu_pvp),
-                        modifier = Modifier
-                            .clickable {
-                                showPvP()
-                            }
-                            .background(getTextBackgroundColor(this@MainActivity))
-                            .padding(8.dp),
-                        style = TextStyle(
-                            color = getTextColor(this@MainActivity),
-                            fontSize = 20.sp,
-                            fontFamily = FontFamily(Font(R.font.monofont)),
-                        )
-                    )
+                    MenuItem(getString(R.string.menu_pvp), showPvP)
                     Spacer(modifier = Modifier.height(20.dp))
-                    Text(
-                        text = getString(R.string.menu_tutorial),
-                        modifier = Modifier
-                            .clickable {
-                                showTutorial()
-                            }
-                            .background(getTextBackgroundColor(this@MainActivity))
-                            .padding(8.dp),
-                        style = TextStyle(
-                            color = getTextColor(this@MainActivity),
-                            fontSize = 20.sp,
-                            fontFamily = FontFamily(Font(R.font.monofont)),
-                        )
-                    )
+                    MenuItem(getString(R.string.menu_tutorial), showTutorial)
                     Spacer(modifier = Modifier.height(20.dp))
-                    Text(
-                        text = getString(R.string.menu_rules),
-                        modifier = Modifier
-                            .clickable {
-                                showRules()
-                            }
-                            .background(getTextBackgroundColor(this@MainActivity))
-                            .padding(8.dp),
-                        style = TextStyle(
-                            color = getTextColor(this@MainActivity),
-                            fontSize = 20.sp,
-                            fontFamily = FontFamily(Font(R.font.monofont)),
-                        )
-                    )
+                    MenuItem(getString(R.string.menu_rules), showRules)
                     Spacer(modifier = Modifier.height(20.dp))
-                    Text(
-                        text = getString(R.string.menu_deck),
-                        modifier = Modifier
-                            .clickable {
-                                showDeckSelection()
-                            }
-                            .background(getTextBackgroundColor(this@MainActivity))
-                            .padding(8.dp),
-                        style = TextStyle(
-                            color = getTextColor(this@MainActivity),
-                            fontSize = 20.sp,
-                            fontFamily = FontFamily(Font(R.font.monofont)),
-                        )
-                    )
+                    MenuItem(getString(R.string.menu_deck), showDeckSelection)
                     Spacer(modifier = Modifier.height(32.dp))
                 }
             }
@@ -819,9 +821,13 @@ class MainActivity : SaveDataActivity() {
                     ) {
 
                         BoxWithConstraints(Modifier.fillMaxSize()) {
-                            Text(
-                                text = getString(R.string.menu_settings),
-                                modifier = Modifier
+                            TextFallout(
+                                getString(R.string.menu_settings),
+                                getTextColor(this@MainActivity),
+                                getTextStrokeColor(this@MainActivity),
+                                18.sp,
+                                Alignment.Center,
+                                Modifier
                                     .padding(end = 8.dp)
                                     .align(Alignment.TopEnd)
                                     .clickable {
@@ -829,11 +835,7 @@ class MainActivity : SaveDataActivity() {
                                     }
                                     .background(getTextBackgroundColor(this@MainActivity))
                                     .padding(4.dp),
-                                style = TextStyle(
-                                    color = getTextColor(this@MainActivity),
-                                    fontSize = 18.sp,
-                                    fontFamily = FontFamily(Font(R.font.monofont)),
-                                )
+                                TextAlign.Center
                             )
                         }
                     }
@@ -855,21 +857,21 @@ class MainActivity : SaveDataActivity() {
                             },
                     ) {
                         BoxWithConstraints(Modifier.fillMaxSize()) {
-                            Text(
-                                text = getString(R.string.menu_about),
-                                modifier = Modifier
+                            TextFallout(
+                                getString(R.string.menu_about),
+                                getTextColor(this@MainActivity),
+                                getTextStrokeColor(this@MainActivity),
+                                18.sp,
+                                Alignment.Center,
+                                Modifier
                                     .align(Alignment.TopEnd)
+                                    .padding(end = 8.dp)
                                     .clickable {
                                         showAbout()
                                     }
-                                    .padding(end = 8.dp)
                                     .background(getTextBackgroundColor(this@MainActivity))
                                     .padding(4.dp),
-                                style = TextStyle(
-                                    color = getTextColor(this@MainActivity),
-                                    fontSize = 18.sp,
-                                    fontFamily = FontFamily(Font(R.font.monofont)),
-                                )
+                                TextAlign.Center
                             )
                         }
                     }

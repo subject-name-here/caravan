@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -17,7 +16,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextLinkStyles
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -26,10 +24,12 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withLink
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.unicorns.invisible.caravan.utils.TextFallout
 import com.unicorns.invisible.caravan.utils.getBackgroundColor
 import com.unicorns.invisible.caravan.utils.getKnobColor
 import com.unicorns.invisible.caravan.utils.getTextBackgroundColor
 import com.unicorns.invisible.caravan.utils.getTextColor
+import com.unicorns.invisible.caravan.utils.getTextStrokeColor
 import com.unicorns.invisible.caravan.utils.getTrackColor
 import com.unicorns.invisible.caravan.utils.scrollbar
 
@@ -48,16 +48,24 @@ fun ShowAbout(activity: MainActivity, goBack: () -> Unit) {
             .padding(16.dp)
     ) {
         item {
-            Text(
-                text = stringResource(R.string.about_1),
-                fontFamily = FontFamily(Font(R.font.monofont)),
-                style = TextStyle(color = getTextColor(activity), fontSize = 20.sp, textAlign = TextAlign.Center)
+            TextFallout(
+                stringResource(R.string.about_1),
+                getTextColor(activity),
+                getTextStrokeColor(activity),
+                20.sp,
+                Alignment.Center,
+                Modifier,
+                TextAlign.Center
             )
             Spacer(modifier = Modifier.height(16.dp))
-            Text(
-                text = stringResource(R.string.about_2),
-                fontFamily = FontFamily(Font(R.font.monofont)),
-                style = TextStyle(color = getTextColor(activity), fontSize = 20.sp, textAlign = TextAlign.Center)
+            TextFallout(
+                stringResource(R.string.about_2),
+                getTextColor(activity),
+                getTextStrokeColor(activity),
+                20.sp,
+                Alignment.Center,
+                Modifier,
+                TextAlign.Center
             )
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -78,9 +86,15 @@ fun ShowAbout(activity: MainActivity, goBack: () -> Unit) {
                 }
                 append(stringResource(R.string.about_3_2))
             }
-            Text(text = annotatedString,
-                style = TextStyle(color = getTextColor(activity),
-                    fontFamily = FontFamily(Font(R.font.monofont)), fontSize = 20.sp, textAlign = TextAlign.Center),
+
+            TextFallout(
+                annotatedString,
+                getTextColor(activity),
+                getTextStrokeColor(activity),
+                20.sp,
+                Alignment.Center,
+                Modifier,
+                TextAlign.Center
             )
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -101,19 +115,27 @@ fun ShowAbout(activity: MainActivity, goBack: () -> Unit) {
                 }
                 append(stringResource(R.string.about_4_3))
             }
-            Text(text = annotatedString2,
-                style = TextStyle(color = getTextColor(activity),
-                    fontFamily = FontFamily(Font(R.font.monofont)),fontSize = 20.sp, textAlign = TextAlign.Center),
+            TextFallout(
+                annotatedString2,
+                getTextColor(activity),
+                getTextStrokeColor(activity),
+                20.sp,
+                Alignment.Center,
+                Modifier,
+                TextAlign.Center
             )
 
             Spacer(modifier = Modifier.height(48.dp))
-            Text(
-                text = stringResource(R.string.menu_back),
-                fontFamily = FontFamily(Font(R.font.monofont)),
-                modifier = Modifier.clickable {
+            TextFallout(
+                stringResource(R.string.menu_back),
+                getTextColor(activity),
+                getTextStrokeColor(activity),
+                24.sp,
+                Alignment.Center,
+                Modifier.background(getTextBackgroundColor(activity)).clickable {
                     goBack()
-                }.background(getTextBackgroundColor(activity)).padding(8.dp),
-                style = TextStyle(color = getTextColor(activity), fontSize = 24.sp)
+                }.padding(8.dp),
+                TextAlign.Center
             )
         }
     }

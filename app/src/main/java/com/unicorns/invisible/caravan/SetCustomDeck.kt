@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -15,7 +16,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
@@ -28,9 +28,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -43,11 +40,13 @@ import com.unicorns.invisible.caravan.save.saveOnGD
 import com.unicorns.invisible.caravan.utils.CheckboxCustom
 import com.unicorns.invisible.caravan.utils.ShowCard
 import com.unicorns.invisible.caravan.utils.ShowCardBack
-import com.unicorns.invisible.caravan.utils.getAccentColor
+import com.unicorns.invisible.caravan.utils.TextFallout
 import com.unicorns.invisible.caravan.utils.getBackgroundColor
 import com.unicorns.invisible.caravan.utils.getKnobColor
+import com.unicorns.invisible.caravan.utils.getSelectionColor
 import com.unicorns.invisible.caravan.utils.getTextBackgroundColor
 import com.unicorns.invisible.caravan.utils.getTextColor
+import com.unicorns.invisible.caravan.utils.getTextStrokeColor
 import com.unicorns.invisible.caravan.utils.getTrackColor
 import com.unicorns.invisible.caravan.utils.scrollbar
 
@@ -87,15 +86,17 @@ fun SetCustomDeck(
         var updater by remember { mutableStateOf(false) }
         ShowCharacteristics(activity, updater)
 
-        Text(
-            text = stringResource(R.string.tap_card_back_to_open_cards),
-            fontFamily = FontFamily(Font(R.font.monofont)),
-            modifier = Modifier
+        TextFallout(
+            stringResource(R.string.tap_card_back_to_open_cards),
+            getTextColor(activity),
+            getTextStrokeColor(activity),
+            24.sp,
+            Alignment.Center,
+            Modifier
                 .fillMaxWidth()
                 .wrapContentHeight()
                 .padding(8.dp),
-            textAlign = TextAlign.Center,
-            style = TextStyle(color = getTextColor(activity), fontSize = 24.sp)
+            TextAlign.Center
         )
 
         val mainState = rememberLazyListState()
@@ -120,16 +121,19 @@ fun SetCustomDeck(
                             Modifier
                                 .padding(horizontal = 8.dp)
                                 .fillMaxWidth(0.33f)) {
-                            Text(
-                                text = stringResource(
+                            TextFallout(
+                                stringResource(
                                     if (back == CardBack.STANDARD && check)
                                         back.getSierraMadreDeckName()
                                     else
                                         back.getDeckName()
                                 ),
-                                modifier = Modifier.align(Alignment.CenterHorizontally),
-                                fontFamily = FontFamily(Font(R.font.monofont)),
-                                style = TextStyle(color = getTextColor(activity), fontSize = 12.sp)
+                                getTextColor(activity),
+                                getTextStrokeColor(activity),
+                                12.sp,
+                                Alignment.Center,
+                                Modifier.fillMaxWidth(),
+                                TextAlign.Center
                             )
                             ShowCardBack(
                                 activity,
@@ -139,26 +143,33 @@ fun SetCustomDeck(
                                     .clickable { rowTabShow = !rowTabShow },
                             )
                         }
-                        Text(
-                            text = stringResource(R.string.get_cards_from) + back.getOwners().joinToString("\n") { activity.getString(it) },
-                            modifier = Modifier
+                        val owners = back.getOwners()
+                        val owner = if (check) owners[1] else owners[0]
+                        TextFallout(
+                            stringResource(R.string.get_cards_from) + activity.getString(owner),
+                            getTextColor(activity),
+                            getTextStrokeColor(activity),
+                            12.sp,
+                            Alignment.CenterStart,
+                            Modifier
                                 .fillMaxWidth(0.66f)
                                 .align(Alignment.CenterVertically),
-                            fontFamily = FontFamily(Font(R.font.monofont)),
-                            style = TextStyle(color = getTextColor(activity), fontSize = 12.sp)
+                            TextAlign.Center
                         )
                         Column(
                             Modifier
                                 .fillMaxSize()
                                 .padding(vertical = 8.dp), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
-                            Text(
+                            TextFallout(
                                 text = "ALT!",
+                                getTextColor(activity),
+                                getTextStrokeColor(activity),
+                                12.sp,
+                                Alignment.Center,
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .wrapContentHeight(),
-                                fontFamily = FontFamily(Font(R.font.monofont)),
-                                textAlign = TextAlign.Center,
-                                style = TextStyle(color = getTextColor(activity), fontSize = 12.sp)
+                                TextAlign.Center
                             )
                             CheckboxCustom(
                                 activity,
@@ -205,11 +216,11 @@ fun SetCustomDeck(
                                             }
                                             .border(
                                                 width = (if (isSelected) 4 else 0).dp,
-                                                color = getAccentColor(activity)
+                                                color = getSelectionColor(activity)
                                             )
                                             .padding(4.dp)
                                             .alpha(if (isSelected) 1f else 0.5f)
-                                            .background(if (isSelected) getAccentColor(activity) else Color.Transparent))
+                                            .background(if (isSelected) getTextStrokeColor(activity) else Color.Transparent))
                                     } else {
                                         ShowCardBack(activity, card, Modifier
                                             .padding(4.dp)
@@ -222,22 +233,24 @@ fun SetCustomDeck(
                 }
             }
         }
-        Text(
+        TextFallout(
             text = stringResource(id = R.string.menu_back),
-            fontFamily = FontFamily(Font(R.font.monofont)),
+            getTextColor(activity),
+            getTextStrokeColor(activity),
+            24.sp,
+            Alignment.Center,
             modifier = Modifier
+                .fillMaxHeight()
+                .wrapContentHeight()
                 .clickable {
                     activity.save?.let {
                         saveOnGD(activity)
                     }
                     goBack()
                 }
-                .fillMaxHeight()
-                .wrapContentHeight()
                 .background(getTextBackgroundColor(activity))
                 .padding(8.dp),
-            textAlign = TextAlign.Center,
-            style = TextStyle(color = getTextColor(activity), fontSize = 24.sp)
+            TextAlign.Center
         )
     }
 }
@@ -249,20 +262,27 @@ fun ShowCharacteristics(activity: MainActivity, updater: Boolean) {
             val deck = activity.save?.getCustomDeckCopy() ?: CustomDeck()
             val deckSizeMin = MainActivity.MIN_DECK_SIZE
             val color1 = if (deck.size < deckSizeMin) Color.Red else getTextColor(activity)
-            Text(text = stringResource(R.string.custom_deck_size, deck.size, deckSizeMin),
+            TextFallout(
+                text = stringResource(R.string.custom_deck_size, deck.size, deckSizeMin),
+                color1,
+                getTextStrokeColor(activity),
+                12.sp,
+                Alignment.Center,
                 Modifier.fillMaxWidth(0.5f),
-                textAlign = TextAlign.Center,
-                fontFamily = FontFamily(Font(R.font.monofont)),
-                style = TextStyle(color = color1, fontSize = 12.sp))
-
+                TextAlign.Center
+            )
             val nonFaces = deck.count { !it.isFace() }
             val nonFacesMin = MainActivity.MIN_NUM_OF_NUMBERS
             val color2 = if (nonFaces < nonFacesMin) Color.Red else getTextColor(activity)
-            Text(text = stringResource(R.string.custom_deck_non_faces, nonFaces, nonFacesMin),
+            TextFallout(
+                text = stringResource(R.string.custom_deck_non_faces, nonFaces, nonFacesMin),
+                color2,
+                getTextStrokeColor(activity),
+                12.sp,
+                Alignment.Center,
                 Modifier.fillMaxWidth(),
-                fontFamily = FontFamily(Font(R.font.monofont)),
-                textAlign = TextAlign.Center,
-                style = TextStyle(color = color2, fontSize = 12.sp))
+                TextAlign.Center,
+            )
         }
     }
 }

@@ -295,6 +295,7 @@ fun Tutorial(activity: MainActivity, goBack: () -> Unit) {
         }
     }
 
+    // TODO!!!!
     if (showAlertDialog) {
         AlertDialog(
             onDismissRequest = { hideAlertDialog() },

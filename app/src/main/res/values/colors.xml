@@ -9,29 +9,65 @@
     <color name="green">#FF00FF00</color>
     <color name="dark_green">#FF009900</color>
 
-    <color name="colorPrimary">#AA6644</color>
-    <color name="colorPrimaryHalfTransparent">#77AA6644</color>
-    <color name="colorPrimaryDark">#441111</color>
-    <color name="colorPrimaryDarkLighter">#552222</color>
-    <color name="colorAccent">#DDCC66</color>
-    <color name="colorAccentGrey">#D0C288</color>
+    <!--
+        All themes must have four colors:
+        Background,
+        Text,
+        text stroke,
+        text Background,
+    -->
+
+    <color name="desertBackground">#FFFFC4</color>
+    <color name="desertText">#441111</color>
+    <color name="desertTextBackground">#AA6644</color>
+    <color name="desertAccent">#DDCC66</color>
 
     <color name="colorBack">#001601</color>
-    <color name="colorBackLighter">#004501</color>
-    <color name="colorLightBack">#023202</color>
-    <color name="colorLightBackHalfTransparent">#66023202</color>
-    <color name="colorText">#01C802</color>
-    <color name="colorTextGrey">#09980A</color>
+    <color name="colorTextBack">#023202</color>
+    <color name="colorTextStroke">#01C802</color>
+    <color name="colorText">#09980A</color>
 
     <color name="pipGirlBlue">#5BCEFA</color>
     <color name="pipGirlPink">#F5A9B8</color>
+    <color name="pipGirlWhite">#FFFFFF</color>
+    <color name="pipGirlBlack">#000000</color>
+
+    <color name="alaskaWhite">#FFFFFF</color>
     <color name="alaskaBlue">#0F204B</color>
     <color name="alaskaLightBlue">#00b2d6</color>
-    <color name="whiteHalfTransparent">#66FFFFFF</color>
+    <color name="alaskaYellow">#FFB612</color>
+
     <color name="oldWorldBack">#f3dfc1</color>
     <color name="oldWorldTextBack">#c9c9c9</color>
-    <color name="oldWorldTextBackHT">#66c9c9c9</color>
     <color name="oldWorldText">#1a1c1a</color>
+    <color name="oldWorldTextBack2">#82827f</color>
 
+    <color name="newWorldBack">#1f1c19</color>
+    <color name="newWorldTextBack">#FFFFFF</color>
+    <color name="newWorldText">#524940</color>
+    <color name="newWorldStroke">#FF0000</color>
+    <color name="newWorldAccent">#272766</color>
+
+    <color name="sierraMadreBack">#483D30</color>
+    <color name="sierraMadreTextBack">#635C61</color>
+    <color name="sierraMadreText">#BBAA92</color>
+    <color name="sierraMadreAccent">#DDBF8A</color>
+
+    <color name="madreRojaBack">#EA7948</color>
+    <color name="madreRojaText">#270507</color>
+    <color name="madreRojaTextBack">#EAB862</color>
+    <color name="madreRojaAccent">#A41521</color>
+
+    <color name="vault21Back">#0066b1</color>
+    <color name="vault21TextBack">#ffe1ba</color>
+    <color name="vault21Text">#001423</color>
+    <color name="vault21Accent">#fff773</color>
+    <color name="vault21Stroke">#8b5c29</color>
+
+    <color name="vault22Back">#0C0A06</color>
+    <color name="vault22TextBack">#3E3E25</color>
+    <color name="vault22Text">#93c7a7</color>
+    <color name="vault22Accent">#57552D</color>
+    <color name="vault22Stroke">#00dd00</color>
 
 </resources>

@@ -3,6 +3,7 @@ package com.unicorns.invisible.caravan
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -22,6 +23,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
@@ -30,10 +32,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.unicorns.invisible.caravan.utils.TextFallout
 import com.unicorns.invisible.caravan.utils.getBackgroundColor
 import com.unicorns.invisible.caravan.utils.getKnobColor
 import com.unicorns.invisible.caravan.utils.getTextBackgroundColor
 import com.unicorns.invisible.caravan.utils.getTextColor
+import com.unicorns.invisible.caravan.utils.getTextStrokeColor
 import com.unicorns.invisible.caravan.utils.getTrackColor
 import com.unicorns.invisible.caravan.utils.scrollbar
 
@@ -71,18 +75,22 @@ fun ShowSettings(
         ) {
             item {
                 Row(horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
-                    Text(
-                        modifier = Modifier.fillMaxWidth(0.66f),
-                        text = "Style",
-                        fontWeight = FontWeight.ExtraBold,
-                        fontFamily = FontFamily(Font(R.font.monofont)),
-                        style = TextStyle(color = getTextColor(activity), fontSize = 20.sp, textAlign = TextAlign.Center)
+                    TextFallout(
+                        "Theme",
+                        getTextColor(activity),
+                        getTextStrokeColor(activity),
+                        20.sp,
+                        Alignment.CenterStart,
+                        Modifier.fillMaxWidth(0.66f),
+                        TextAlign.Start
                     )
+
                     Spacer(modifier = Modifier.width(16.dp))
+                    // TODO!!! Extract also.
                     Text(
                         text = "TOGGLE!",
                         modifier = Modifier.background(getTextBackgroundColor(activity)).padding(4.dp).clickable {
-                            styleInt = Style.entries[(styleInt.ordinal + 1) % Style.entries.size.coerceIn(0, 5)] // TODO
+                            styleInt = Style.entries[(styleInt.ordinal + 1) % Style.entries.size]
                             selectStyle(styleInt.ordinal)
                         },
                         fontFamily = FontFamily(Font(R.font.monofont)),
@@ -93,16 +101,19 @@ fun ShowSettings(
             }
         }
 
-        Text(
-            text = stringResource(R.string.menu_back),
-            modifier = Modifier
+        TextFallout(
+            stringResource(R.string.menu_back),
+            getTextColor(activity),
+            getTextStrokeColor(activity),
+            24.sp,
+            Alignment.Center,
+            Modifier
+                .background(getTextBackgroundColor(activity))
                 .clickable {
                     goBack()
                 }
-                .background(getTextBackgroundColor(activity))
                 .padding(8.dp),
-            fontFamily = FontFamily(Font(R.font.monofont)),
-            style = TextStyle(color = getTextColor(activity), fontSize = 24.sp)
+            TextAlign.Center
         )
     }
 }

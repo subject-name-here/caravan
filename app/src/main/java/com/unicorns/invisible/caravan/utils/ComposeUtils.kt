@@ -3,6 +3,7 @@ package com.unicorns.invisible.caravan.utils
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Checkbox
@@ -11,8 +12,10 @@ import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderColors
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchColors
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithContent
@@ -20,11 +23,22 @@ import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.Fill
+import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import coil.decode.SvgDecoder
 import coil.request.ImageRequest
@@ -32,7 +46,6 @@ import com.unicorns.invisible.caravan.MainActivity
 import com.unicorns.invisible.caravan.R
 import com.unicorns.invisible.caravan.model.getCardName
 import com.unicorns.invisible.caravan.model.primitives.Card
-import com.unicorns.invisible.caravan.save.saveOnGD
 
 
 @Composable
@@ -216,18 +229,16 @@ fun CheckboxCustom(activity: MainActivity, checked: () -> Boolean, onCheckedChan
     ), enabled = enabled())
 }
 
-// Both these Slider and Switch have colors chosen out of the assumption that the background color is TextBackgroundColor
+// Both these Slider and Switch have colors chosen out of the assumption that the background color is Selection color
 
 @Composable
 fun SliderCustom(activity: MainActivity, getValue: () -> Float, setValue: (Float) -> Unit, onValueChangedFinished: () -> Unit = {}) {
-    Slider(getValue(), onValueChange = {
-        setValue(it); activity.save?.soundVolume = it
-    }, colors = SliderColors(
-        thumbColor = getTextColor(activity),
-        activeTrackColor = getBackgroundColor(activity),
-        activeTickColor = getBackgroundColor(activity),
-        inactiveTickColor = getBackgroundColor(activity),
-        inactiveTrackColor = getBackgroundColor(activity),
+    Slider(getValue(), onValueChange = { setValue(it) }, colors = SliderColors(
+        thumbColor = getSliderThumbColor(activity),
+        activeTrackColor = getSliderTrackColor(activity),
+        activeTickColor = getSliderTrackColor(activity),
+        inactiveTickColor = getSliderTrackColor(activity),
+        inactiveTrackColor = getSliderTrackColor(activity),
         disabledThumbColor = Color.Gray,
         disabledActiveTrackColor = Color.Gray,
         disabledActiveTickColor = Color.Gray,
@@ -239,12 +250,12 @@ fun SliderCustom(activity: MainActivity, getValue: () -> Float, setValue: (Float
 @Composable
 fun SwitchCustom(activity: MainActivity, checked: () -> Boolean, onCheckedChange: (Boolean) -> Unit) {
     Switch(checked = checked(), onCheckedChange = onCheckedChange, colors = SwitchColors(
-        checkedThumbColor = getTextColor(activity),
-        checkedTrackColor = getBackgroundColor(activity),
+        checkedThumbColor = getSwitchThumbColor(activity),
+        checkedTrackColor = getSwitchTrackColor(activity),
         checkedBorderColor = Color.Transparent,
         checkedIconColor = Color.Transparent,
-        uncheckedThumbColor = getTextColor(activity),
-        uncheckedTrackColor = getBackgroundColor(activity),
+        uncheckedThumbColor = getSwitchThumbColor(activity),
+        uncheckedTrackColor = getSwitchTrackColor(activity),
         uncheckedBorderColor = Color.Transparent,
         uncheckedIconColor = Color.Transparent,
         disabledCheckedThumbColor = colorResource(R.color.red),
@@ -257,4 +268,93 @@ fun SwitchCustom(activity: MainActivity, checked: () -> Boolean, onCheckedChange
         disabledUncheckedIconColor = Color.Transparent,
     )
     )
+}
+
+// TEXT
+
+private fun getStrokeWidth(textSize: TextUnit): Float {
+    return when {
+        textSize >= 30.sp -> 4f
+        textSize >= 24.sp -> 2f
+        textSize >= 18.sp -> 1f
+        else -> 0f
+    }
+}
+@Composable
+fun TextFallout(
+    text: String,
+    textColor: Color,
+    strokeColor: Color,
+    textSize: TextUnit,
+    contentAlignment: Alignment,
+    modifier: Modifier,
+    textAlign: TextAlign,
+) {
+    val strokeWidth = getStrokeWidth(textSize)
+    Box(modifier, contentAlignment = contentAlignment) {
+        Text(
+            text = text, color = textColor,
+            fontFamily = FontFamily(Font(R.font.monofont)),
+            style = TextStyle(
+                color = textColor,
+                fontSize = textSize,
+                fontWeight = FontWeight.Light,
+                drawStyle = Fill
+            ),
+            textAlign = textAlign
+        )
+        if (textColor.toArgb() == strokeColor.toArgb()) {
+            return@Box
+        }
+        Text(
+            text = text, color = strokeColor,
+            fontFamily = FontFamily(Font(R.font.monofont)),
+            style = TextStyle(
+                color = strokeColor,
+                fontSize = textSize,
+                fontWeight = FontWeight.Normal,
+                drawStyle = Stroke(width = strokeWidth)
+            ),
+            textAlign = textAlign
+        )
+    }
+}
+@Composable
+fun TextFallout(
+    text: AnnotatedString,
+    textColor: Color,
+    strokeColor: Color,
+    textSize: TextUnit,
+    contentAlignment: Alignment,
+    modifier: Modifier,
+    textAlign: TextAlign,
+) {
+    val strokeWidth = getStrokeWidth(textSize)
+    Box(modifier, contentAlignment = contentAlignment) {
+        Text(
+            text = text, color = textColor,
+            fontFamily = FontFamily(Font(R.font.monofont)),
+            style = TextStyle(
+                color = textColor,
+                fontSize = textSize,
+                fontWeight = FontWeight.Light,
+                drawStyle = Fill
+            ),
+            textAlign = textAlign
+        )
+        if (textColor.toArgb() == strokeColor.toArgb()) {
+            return@Box
+        }
+        Text(
+            text = text, color = strokeColor,
+            fontFamily = FontFamily(Font(R.font.monofont)),
+            style = TextStyle(
+                color = strokeColor,
+                fontSize = textSize,
+                fontWeight = FontWeight.Normal,
+                drawStyle = Stroke(width = strokeWidth)
+            ),
+            textAlign = textAlign
+        )
+    }
 }

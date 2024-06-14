@@ -17,7 +17,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -28,21 +27,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.save.saveOnGD
-import com.unicorns.invisible.caravan.utils.getAccentColor
+import com.unicorns.invisible.caravan.utils.TextFallout
 import com.unicorns.invisible.caravan.utils.getBackgroundColor
 import com.unicorns.invisible.caravan.utils.getDividerColor
 import com.unicorns.invisible.caravan.utils.getKnobColor
+import com.unicorns.invisible.caravan.utils.getSelectionColor
 import com.unicorns.invisible.caravan.utils.getTextBackgroundColor
 import com.unicorns.invisible.caravan.utils.getTextColor
+import com.unicorns.invisible.caravan.utils.getTextStrokeColor
 import com.unicorns.invisible.caravan.utils.getTrackColor
 import com.unicorns.invisible.caravan.utils.scrollbar
 
@@ -60,7 +58,7 @@ fun DeckSelection(
             if (checker[cardBack] == true) {
                 val (backSelected, isAltSelected) = getSelectedBack()
                 return if (backSelected == cardBack && isAltSelected == isAlt) {
-                    Modifier.border(width = 4.dp, color = getAccentColor(activity)).padding(4.dp)
+                    Modifier.border(width = 3.dp, color = getSelectionColor(activity)).padding(4.dp)
                 } else {
                     Modifier.padding(4.dp)
                 }.clickable {
@@ -82,7 +80,6 @@ fun DeckSelection(
     }
 
     Column(Modifier.fillMaxSize().background(getBackgroundColor(activity))) {
-
         val state = rememberLazyListState()
         LazyColumn(
             modifier = Modifier
@@ -94,10 +91,14 @@ fun DeckSelection(
         ) {
             item {
                 Spacer(modifier = Modifier.height(12.dp))
-                Text(
-                    text = stringResource(R.string.deck_select),
-                    fontFamily = FontFamily(Font(R.font.monofont)),
-                    style = TextStyle(color = getTextColor(activity), fontSize = 24.sp)
+                TextFallout(
+                    stringResource(R.string.deck_select),
+                    getTextColor(activity),
+                    getTextStrokeColor(activity),
+                    24.sp,
+                    Alignment.Center,
+                    Modifier,
+                    TextAlign.Center
                 )
                 Spacer(modifier = Modifier.height(12.dp))
                 Row {
@@ -193,45 +194,56 @@ fun DeckSelection(
             verticalArrangement = Arrangement.Center,
         ) {
             item {
-                Text(
-                    text = stringResource(R.string.deck_select_about),
-                    fontFamily = FontFamily(Font(R.font.monofont)),
-                    modifier = Modifier.padding(12.dp),
-                    textAlign = TextAlign.Center,
-                    style = TextStyle(color = getTextColor(activity), fontSize = 16.sp)
+                TextFallout(
+                    stringResource(R.string.deck_select_about),
+                    getTextColor(activity),
+                    getTextStrokeColor(activity),
+                    16.sp,
+                    Alignment.Center,
+                    Modifier.padding(12.dp),
+                    textAlign = TextAlign.Start
                 )
 
                 HorizontalDivider(color = getDividerColor(activity))
                 Spacer(modifier = Modifier.height(20.dp))
-                Text(
-                    text = stringResource(R.string.deck_custom),
-                    modifier = Modifier.clickable {
+                TextFallout(
+                    stringResource(R.string.deck_custom),
+                    getTextColor(activity),
+                    getTextStrokeColor(activity),
+                    20.sp,
+                    Alignment.Center,
+                    Modifier.background(getTextBackgroundColor(activity)).clickable {
                         setCustomDeck = true
-                    }.background(getTextBackgroundColor(activity)).padding(8.dp),
-                    fontFamily = FontFamily(Font(R.font.monofont)),
-                    style = TextStyle(color = getTextColor(activity), fontSize = 20.sp)
+                    }.padding(8.dp),
+                    TextAlign.Center
                 )
+
                 Spacer(modifier = Modifier.height(12.dp))
 
-                Text(
-                    text = stringResource(R.string.deck_custom_about),
+                TextFallout(
+                    stringResource(R.string.deck_custom_about),
+                    getTextColor(activity),
+                    getTextStrokeColor(activity),
+                    14.sp,
+                    Alignment.Center,
                     Modifier.padding(12.dp),
-                    fontFamily = FontFamily(Font(R.font.monofont)),
-                    textAlign = TextAlign.Center,
-                    style = TextStyle(color = getTextColor(activity), fontSize = 14.sp)
+                    textAlign = TextAlign.Center
                 )
-                Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier.height(16.dp))
                 HorizontalDivider(color = getDividerColor(activity))
-                Spacer(modifier = Modifier.height(32.dp))
-                Text(
-                    text = stringResource(R.string.menu_back),
-                    modifier = Modifier.clickable {
+                Spacer(modifier = Modifier.height(24.dp))
+                TextFallout(
+                    stringResource(R.string.menu_back),
+                    getTextColor(activity),
+                    getTextStrokeColor(activity),
+                    24.sp,
+                    Alignment.Center,
+                    Modifier.background(getTextBackgroundColor(activity)).clickable {
                         goBack()
-                    }.background(getTextBackgroundColor(activity)).padding(8.dp),
-                    fontFamily = FontFamily(Font(R.font.monofont)),
-                    style = TextStyle(color = getTextColor(activity), fontSize = 24.sp)
+                    }.padding(8.dp),
+                    textAlign = TextAlign.Center
                 )
-                Spacer(modifier = Modifier.height(32.dp))
+                Spacer(modifier = Modifier.height(24.dp))
             }
         }
     }

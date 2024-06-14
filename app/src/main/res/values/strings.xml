@@ -253,4 +253,8 @@
 
     <string name="intro_tip_vault">Did you know that there are 122 vaults in the Fallout world? Only 17 of them were not experimenting on their inhabitants.</string>
     <string name="intro_tip_desert">Cazadors can easily tear down a deathclaw or two. Imagine what they can do to your puny fragile body.</string>
+
+
+    <string name="tap_to_play">Tap to Play</string>
+    <string name="no_one">no one</string>
 </resources>

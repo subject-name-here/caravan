@@ -659,14 +659,14 @@ fun winCard(activity: MainActivity, save: Save, back: CardBack, numberOfCards: I
                 activity.getString(R.string.new_card, cardName)
             }
         } else {
+            capsEarned += activity.save?.getCardPrice(card) ?: 0
+            activity.save?.let {
+                it.soldCards[card.back to isAlt] = (it.soldCards[card.back to isAlt] ?: 0) + 1
+            }
             if (isAlt && card.back != CardBack.STANDARD) {
                 activity.getString(R.string.old_card_alt, cardName)
             } else {
                 activity.getString(R.string.old_card, cardName)
-            }
-            capsEarned += activity.save?.getCardPrice(card) ?: 0 // TODO: flexible system? do we need it?
-            activity.save?.let {
-                it.soldCards[card.back to isAlt] = (it.soldCards[card.back to isAlt] ?: 0) + 1
             }
         }
     }
