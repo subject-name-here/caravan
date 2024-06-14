@@ -22,6 +22,7 @@ import com.unicorns.invisible.caravan.model.primitives.Card
 import com.unicorns.invisible.caravan.model.primitives.CustomDeck
 import com.unicorns.invisible.caravan.model.primitives.Rank
 import com.unicorns.invisible.caravan.model.primitives.Suit
+import com.unicorns.invisible.caravan.utils.stopMusic
 
 @Composable
 fun Tutorial(activity: MainActivity, goBack: () -> Unit) {
@@ -67,7 +68,7 @@ fun Tutorial(activity: MainActivity, goBack: () -> Unit) {
         updater = !updater
     }
 
-    ShowGame(activity = activity, game = game) { goBack() }
+    ShowGame(activity = activity, game = game) { stopMusic(); goBack() }
 
     key(updater) {
         when (tutorialKey) {

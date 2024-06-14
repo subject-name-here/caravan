@@ -152,7 +152,7 @@ class MainActivity : SaveDataActivity() {
         }
     }
 
-    private var readyFlag = MutableLiveData<Boolean>(false)
+    private var readyFlag = MutableLiveData(false)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -313,11 +313,11 @@ class MainActivity : SaveDataActivity() {
                     confirmButton = {
                         TextFallout(
                             stringResource(R.string.close),
-                            getTextColor(this),
-                            getTextBackgroundColor(this),
+                            getDialogBackground(this),
+                            getDialogBackground(this),
                             18.sp, Alignment.Center,
                             Modifier
-                                .background(getTextBackgroundColor(this))
+                                .background(getDialogTextColor(this))
                                 .clickable { hideAlertDialog() }
                                 .padding(4.dp),
                             TextAlign.Center
@@ -326,10 +326,10 @@ class MainActivity : SaveDataActivity() {
                     dismissButton = { if (goBack != null) {
                         TextFallout(
                             stringResource(R.string.back_to_menu),
-                            getTextColor(this),
-                            getTextBackgroundColor(this), 18.sp, Alignment.Center,
+                            getDialogBackground(this),
+                            getDialogBackground(this), 18.sp, Alignment.Center,
                             Modifier
-                                .background(getTextBackgroundColor(this))
+                                .background(getDialogTextColor(this))
                                 .clickable { hideAlertDialog(); goBack?.invoke(); goBack = null }
                                 .padding(4.dp),
                             TextAlign.Center
@@ -339,16 +339,16 @@ class MainActivity : SaveDataActivity() {
                         TextFallout(
                             alertDialogHeader, getDialogTextColor(this), getDialogTextColor(this),
                             24.sp, Alignment.CenterStart, Modifier,
-                            TextAlign.Center
+                            TextAlign.Start
                         )
                     },
                     text = {
                         TextFallout(
                             alertDialogMessage,
-                            getTextColor(this),
-                            getTextBackgroundColor(this),
+                            getDialogTextColor(this),
+                            getDialogTextColor(this),
                             16.sp, Alignment.CenterStart, Modifier,
-                            TextAlign.Center
+                            TextAlign.Start
                         )
                     },
                     containerColor = getDialogBackground(this),
@@ -377,12 +377,12 @@ class MainActivity : SaveDataActivity() {
                     confirmButton = {
                         TextFallout(
                             stringResource(R.string.save),
-                            getTextColor(this),
-                            getTextBackgroundColor(this),
+                            getDialogBackground(this),
+                            getDialogBackground(this),
                             18.sp,
                             Alignment.Center,
                             Modifier
-                                .background(getTextBackgroundColor(this))
+                                .background(getDialogTextColor(this))
                                 .clickable { saveOnGD(this); hideSoundSettings() }
                                 .padding(4.dp),
                             TextAlign.Center
@@ -588,8 +588,8 @@ class MainActivity : SaveDataActivity() {
                         ShowSettings(activity = this@MainActivity, { styleId }, {
                             styleId = Style.entries[it]
                             styleIdForTop = styleId
-                            save?.let {
-                                it.styleId = styleId.ordinal
+                            save?.let { s ->
+                                s.styleId = styleId.ordinal
                                 saveOnGD(this@MainActivity)
                             }
                         }) { showSettings = false }

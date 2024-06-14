@@ -62,6 +62,7 @@ import com.unicorns.invisible.caravan.utils.TextFallout
 import com.unicorns.invisible.caravan.utils.dpToPx
 import com.unicorns.invisible.caravan.utils.getBackgroundColor
 import com.unicorns.invisible.caravan.utils.getDividerColor
+import com.unicorns.invisible.caravan.utils.getGameScoreColor
 import com.unicorns.invisible.caravan.utils.getGrayTransparent
 import com.unicorns.invisible.caravan.utils.getKnobColor
 import com.unicorns.invisible.caravan.utils.getSelectionColor
@@ -823,7 +824,7 @@ fun RowScope.Score(activity: MainActivity, num: Int, caravan: Caravan, opposingV
     else if (caravan.getValue() in (21..26) && (opposingValue !in (21..26) || caravan.getValue() > opposingValue))
         Triple(Color.Green, caravan.getValue().toString(), true)
     else
-        Triple(getTextColor(activity), caravan.getValue().toString(), false)
+        Triple(getGameScoreColor(activity), caravan.getValue().toString(), false)
     Box(Modifier.weight(0.25f).height(24.dp).padding(2.dp).background(getGrayTransparent(activity)).padding(2.dp)) {
         Text(
             text = cities[num],
@@ -840,11 +841,11 @@ fun RowScope.Score(activity: MainActivity, num: Int, caravan: Caravan, opposingV
         TextFallout(
             text,
             textColor,
-            getSelectionColor(activity),
+            textColor,
             14.sp,
             Alignment.CenterEnd,
-            Modifier,
-            textAlign = TextAlign.End
+            Modifier.fillMaxSize(),
+            textAlign = TextAlign.Start
         )
     }
 }
@@ -944,7 +945,10 @@ fun Caravans(
                                 dropSelectedCaravan()
                             }
                         }
-                        .background(getTextBackgroundColor(activity))
+                        .background(run {
+                            val color = getTextBackgroundColor(activity)
+                            Color(color.red, color.green, color.blue, 0.4f)
+                        })
                         .padding(6.dp)
                 } else {
                     Modifier

@@ -214,7 +214,7 @@ fun Modifier.scrollbar(
 @Composable
 fun CheckboxCustom(activity: MainActivity, checked: () -> Boolean, onCheckedChange: (Boolean) -> Unit, enabled: () -> Boolean) {
     Checkbox(checked = checked(), onCheckedChange = onCheckedChange, colors = CheckboxColors(
-        checkedCheckmarkColor = getTextColor(activity),
+        checkedCheckmarkColor = getCheckBoxBorderColor(activity),
         uncheckedCheckmarkColor = Color.Transparent,
         checkedBoxColor = getTextBackgroundColor(activity),
         uncheckedBoxColor = Color.Transparent,

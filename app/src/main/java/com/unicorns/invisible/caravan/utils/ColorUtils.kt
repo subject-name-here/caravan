@@ -126,34 +126,42 @@ fun getDialogBackground(activity: MainActivity): Color {
 fun getDialogTextColor(activity: MainActivity): Color {
     return when (activity.styleId) {
         Style.SIERRA_MADRE -> getBackgroundColor(activity)
-        Style.NEW_WORLD -> Color(activity.getColor(R.color.newWorldAccent))
+        Style.NEW_WORLD -> Color(activity.getColor(R.color.newWorldTextBack))
         else -> getTextColor(activity)
     }
 }
 
 fun getDividerColor(activity: MainActivity): Color = getTextColor(activity)
-fun getCheckBoxBorderColor(activity: MainActivity): Color = getTextStrokeColor(activity)
+fun getCheckBoxBorderColor(activity: MainActivity): Color = getSelectionColor(activity)
 fun getTrackColor(activity: MainActivity): Color = getTextBackgroundColor(activity)
 fun getKnobColor(activity: MainActivity): Color = getTextColor(activity)
 
 fun getSwitchTrackColor(activity: MainActivity): Color = when (activity.styleId) {
-    Style.ALASKA_FRONTIER, Style.NEW_WORLD -> getTextBackgroundColor(activity)
+    Style.ALASKA_FRONTIER -> getTextColor(activity)
+    Style.NEW_WORLD -> getTextBackgroundColor(activity)
     else -> getBackgroundColor(activity)
 }
 fun getSwitchThumbColor(activity: MainActivity): Color = when (activity.styleId) {
-    Style.DESERT -> Color(activity.getColor(R.color.desertAccent))
+    Style.DESERT -> Color(activity.getColor(R.color.desertText))
     Style.PIP_BOY -> Color(activity.getColor(R.color.colorTextStroke))
     Style.ALASKA_FRONTIER -> Color(activity.getColor(R.color.alaskaYellow))
     Style.PIP_GIRL -> Color(activity.getColor(R.color.pipGirlPink))
     Style.OLD_WORLD -> Color(activity.getColor(R.color.oldWorldText))
     Style.NEW_WORLD -> Color(activity.getColor(R.color.newWorldStroke))
-    Style.SIERRA_MADRE -> Color(activity.getColor(R.color.sierraMadreText))
+    Style.SIERRA_MADRE -> Color(activity.getColor(R.color.sierraMadreTextBack))
     Style.MADRE_ROJA -> Color(activity.getColor(R.color.madreRojaText))
     Style.VAULT_21 -> Color(activity.getColor(R.color.vault21Text))
     Style.VAULT_22 -> Color(activity.getColor(R.color.vault22Stroke))
 }
 fun getSliderTrackColor(activity: MainActivity): Color = getSwitchTrackColor(activity)
 fun getSliderThumbColor(activity: MainActivity): Color = getSwitchThumbColor(activity)
+
+fun getGameScoreColor(activity: MainActivity): Color {
+    return when (activity.styleId) {
+        Style.NEW_WORLD -> Color(activity.getColor(R.color.newWorldAccent))
+        else -> getTextColor(activity)
+    }
+}
 
 fun getGrayTransparent(activity: MainActivity): Color {
     return Color(activity.getColor(R.color.grayHalfTransparent))
