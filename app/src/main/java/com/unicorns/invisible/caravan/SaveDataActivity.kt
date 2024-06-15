@@ -1,6 +1,7 @@
 package com.unicorns.invisible.caravan
 
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.games.PlayGames
@@ -68,7 +69,7 @@ abstract class SaveDataActivity : AppCompatActivity() {
                     snapshotsClient = PlayGames.getSnapshotsClient(this)
                     onSnapshotClientInitialized()
                 } else {
-                    PlayGames.getGamesSignInClient(this).signIn().addOnCompleteListener { task ->
+                    gamesSignInClient.signIn().addOnCompleteListener { task ->
                         if (task.isSuccessful && task.result.isAuthenticated) {
                             snapshotsClient = PlayGames.getSnapshotsClient(this)
                         } else {

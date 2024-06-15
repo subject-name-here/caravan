@@ -200,70 +200,68 @@ class MainActivity : SaveDataActivity() {
                 )
             }
 
-            key (k) {
-                styleId = Style.entries[save?.styleId ?: 1]
-                val (textColor, backgroundColor, strokeColor) = getColors()
-                if (isIntroScreen) {
-                    Box(
+            styleId = Style.entries[save?.styleId ?: 1]
+            val (textColor, backgroundColor, strokeColor) = getColors()
+            if (isIntroScreen) {
+                Box(
+                    Modifier
+                        .fillMaxSize()
+                        .background(backgroundColor)
+                        .clickable {
+                            if (readyFlag.value == true) {
+                                isIntroScreen = false
+                            }
+                        },
+                    contentAlignment = Alignment.Center
+                ) {
+                    Column(
                         Modifier
                             .fillMaxSize()
-                            .background(backgroundColor)
-                            .clickable {
-                                if (readyFlag.value == true) {
-                                    isIntroScreen = false
-                                }
-                            },
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Column(
-                            Modifier
-                                .fillMaxSize()
-                                .padding(4.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
-                            if (k == true) {
-                                TextFallout(
-                                    "CARAVAN",
-                                    textColor,
-                                    strokeColor,
-                                    40.sp,
-                                    Alignment.Center,
-                                    Modifier.padding(4.dp),
-                                    TextAlign.Center
-                                )
-                                TextFallout(
-                                    stringResource(R.string.tap_to_play),
-                                    textColor,
-                                    strokeColor,
-                                    24.sp,
-                                    Alignment.Center,
-                                    Modifier.padding(4.dp),
-                                    TextAlign.Center
-                                )
-                                Spacer(Modifier.height(8.dp))
-                            } else {
-                                TextFallout(
-                                    "PLEASE\nSTAND BY",
-                                    textColor,
-                                    strokeColor,
-                                    32.sp,
-                                    Alignment.Center,
-                                    Modifier.padding(4.dp),
-                                    TextAlign.Center
-                                )
-                            }
+                            .padding(4.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
+                        if (k == true) {
                             TextFallout(
-                                getString(advice),
+                                "CARAVAN",
                                 textColor,
                                 strokeColor,
-                                16.sp,
+                                40.sp,
                                 Alignment.Center,
-                                Modifier.padding(vertical = 4.dp, horizontal = 12.dp),
+                                Modifier.padding(4.dp),
+                                TextAlign.Center
+                            )
+                            TextFallout(
+                                stringResource(R.string.tap_to_play),
+                                textColor,
+                                strokeColor,
+                                24.sp,
+                                Alignment.Center,
+                                Modifier.padding(4.dp),
+                                TextAlign.Center
+                            )
+                            Spacer(Modifier.height(8.dp))
+                        } else {
+                            TextFallout(
+                                "PLEASE\nSTAND BY",
+                                textColor,
+                                strokeColor,
+                                32.sp,
+                                Alignment.Center,
+                                Modifier.padding(4.dp),
                                 TextAlign.Center
                             )
                         }
+                        TextFallout(
+                            getString(advice),
+                            textColor,
+                            strokeColor,
+                            16.sp,
+                            Alignment.Center,
+                            Modifier.padding(vertical = 4.dp, horizontal = 12.dp),
+                            TextAlign.Center
+                        )
                     }
-                } else {
-                    Screen()
                 }
+            } else {
+                Screen()
             }
         }
     }
