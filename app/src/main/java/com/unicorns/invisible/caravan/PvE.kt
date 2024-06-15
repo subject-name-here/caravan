@@ -282,18 +282,18 @@ fun ShowPvE(
                 style = TextStyle(color = getTextColor(activity), fontSize = 16.sp),
                 modifier = Modifier
                     .clickable {
-                        showAlertDialog(
-                            activity.getString(R.string.recovering),
-                            activity.getString(R.string.ulysses_will_return)
-                        )
-//                        if (checkedCustomDeck) {
-//                            showAlertDialog(
-//                                activity.getString(R.string.ulysses_fair_fight_header),
-//                                activity.getString(R.string.ulysses_fair_fight_body)
-//                            )
-//                        } else {
-//                            showGameUlysses = true
-//                        }
+//                        showAlertDialog(
+//                            activity.getString(R.string.recovering),
+//                            activity.getString(R.string.ulysses_will_return)
+//                        )
+                        if (checkedCustomDeck) {
+                            showAlertDialog(
+                                activity.getString(R.string.ulysses_fair_fight_header),
+                                activity.getString(R.string.ulysses_fair_fight_body)
+                            )
+                        } else {
+                            showGameUlysses = true
+                        }
                     }
                     .background(getTextBackgroundColor(activity))
                     .padding(4.dp)
@@ -674,7 +674,7 @@ fun winCard(activity: MainActivity, save: Save, back: CardBack, numberOfCards: I
         }
     }
     if (capsEarned > 0) {
-        activity.save?.caps?.plus(capsEarned)
+        activity.save!!.caps += capsEarned
         result += "\nCaps earned: $capsEarned.\n"
     }
 

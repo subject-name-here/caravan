@@ -1,6 +1,5 @@
 package com.unicorns.invisible.caravan
 
-import androidx.compose.foundation.background
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.paint
@@ -19,32 +18,18 @@ import com.unicorns.invisible.caravan.Style.SIERRA_MADRE
 import com.unicorns.invisible.caravan.Style.VAULT_21
 import com.unicorns.invisible.caravan.Style.VAULT_22
 
-enum class Style {
-    DESERT,
-    PIP_BOY,
-    ALASKA_FRONTIER,
-    PIP_GIRL,
-    OLD_WORLD,
-    NEW_WORLD,
-    SIERRA_MADRE,
-    MADRE_ROJA,
-    VAULT_21,
-    VAULT_22;
 
-    fun getMenuItem(): Int? {
-        return when (this) {
-            DESERT -> null
-            PIP_BOY -> null
-            ALASKA_FRONTIER -> null
-            PIP_GIRL -> null
-            OLD_WORLD -> null
-            NEW_WORLD -> null
-            SIERRA_MADRE -> null
-            MADRE_ROJA -> null
-            VAULT_21 -> null
-            VAULT_22 -> null
-        }
-    }
+enum class Style(val styleName: String, val price: Int) {
+    DESERT("Desert", 0),
+    ALASKA_FRONTIER("Frontier of Anchorage", 500),
+    PIP_BOY("Pip-boy", 0),
+    PIP_GIRL("Pip-Girl", 2500),
+    OLD_WORLD("Old World", 2000),
+    NEW_WORLD("New World", 3000),
+    SIERRA_MADRE("Sierra Madre", 2000),
+    MADRE_ROJA("Madre Roja", 3000),
+    VAULT_21("Vault 21", 2100),
+    VAULT_22("Vault 22", 2200);
 }
 
 

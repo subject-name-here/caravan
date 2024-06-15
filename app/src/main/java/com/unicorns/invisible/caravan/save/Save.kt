@@ -1,5 +1,6 @@
 package com.unicorns.invisible.caravan.save
 
+import com.unicorns.invisible.caravan.Style
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.primitives.Card
 import com.unicorns.invisible.caravan.model.primitives.CustomDeck
@@ -134,4 +135,7 @@ class Save {
             }
         }
     }
+
+    @EncodeDefault
+    val ownedStyles = mutableSetOf(Style.DESERT, Style.PIP_BOY)
 }

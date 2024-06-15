@@ -202,16 +202,23 @@ class MainActivity : SaveDataActivity() {
 
             styleId = Style.entries[save?.styleId ?: 1]
             val (textColor, backgroundColor, strokeColor) = getColors()
+            val modifier = if (k == true) {
+                Modifier
+                    .fillMaxSize()
+                    .background(backgroundColor)
+                    .clickable {
+                        if (readyFlag.value == true) {
+                            isIntroScreen = false
+                        }
+                    }
+            } else {
+                Modifier
+                    .fillMaxSize()
+                    .background(backgroundColor)
+            }
             if (isIntroScreen) {
                 Box(
-                    Modifier
-                        .fillMaxSize()
-                        .background(backgroundColor)
-                        .clickable {
-                            if (readyFlag.value == true) {
-                                isIntroScreen = false
-                            }
-                        },
+                    modifier,
                     contentAlignment = Alignment.Center
                 ) {
                     Column(
@@ -590,7 +597,7 @@ class MainActivity : SaveDataActivity() {
                                 s.styleId = styleId.ordinal
                                 saveOnGD(this@MainActivity)
                             }
-                        }) { showSettings = false }
+                        }, ::showAlertDialog) { showSettings = false }
                     }
                     else -> {
                         MainMenu(
