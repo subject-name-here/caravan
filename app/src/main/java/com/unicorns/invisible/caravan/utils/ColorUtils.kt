@@ -132,7 +132,10 @@ fun getDialogTextColor(activity: MainActivity): Color {
 }
 
 fun getDividerColor(activity: MainActivity): Color = getTextColor(activity)
-fun getCheckBoxBorderColor(activity: MainActivity): Color = getSelectionColor(activity)
+fun getCheckBoxBorderColor(activity: MainActivity): Color = when (activity.styleId) {
+    Style.VAULT_21 -> Color(activity.getColor(R.color.vault21Stroke))
+    else -> getSelectionColor(activity)
+}
 fun getTrackColor(activity: MainActivity): Color = getTextBackgroundColor(activity)
 fun getKnobColor(activity: MainActivity): Color = getTextColor(activity)
 
@@ -158,6 +161,7 @@ fun getSliderThumbColor(activity: MainActivity): Color = getSwitchThumbColor(act
 
 fun getGameScoreColor(activity: MainActivity): Color {
     return when (activity.styleId) {
+        Style.PIP_GIRL -> Color(activity.getColor(R.color.pipGirlWhite))
         Style.NEW_WORLD -> Color(activity.getColor(R.color.newWorldAccent))
         else -> getTextColor(activity)
     }

@@ -61,6 +61,7 @@ import com.unicorns.invisible.caravan.utils.playWinSound
 import com.unicorns.invisible.caravan.utils.scrollbar
 import com.unicorns.invisible.caravan.utils.stopMusic
 import java.util.Locale
+import kotlin.math.max
 
 
 @Composable
@@ -630,9 +631,11 @@ fun winCard(activity: MainActivity, save: Save, back: CardBack, numberOfCards: I
             else -> 42                                        // 2.5 games to get 1 new card
         }
     }
+    val simpleProb = (deckNew.size.toFloat() / deckList.size.toFloat() * 100).toInt()
     val reward = run {
+        val finalProb = max(prob, simpleProb)
         val probs = (0 until numberOfCards).map {
-            (0..99).random() < prob
+            (0..99).random() < finalProb
         }
         val newCards = probs.count { it }.coerceAtMost(deckNew.size)
         val oldCards = (numberOfCards - newCards).coerceAtMost(deckOld.size)

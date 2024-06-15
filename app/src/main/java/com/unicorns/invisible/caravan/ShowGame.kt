@@ -532,7 +532,7 @@ fun Hand(
                             }
                         }
                         .border(
-                            width = if (index == (selectedCard ?: -1)) 4.dp else (-1).dp,
+                            width = if (index == (selectedCard ?: -1)) 3.dp else (-1).dp,
                             color = selectedCardColor
                         )
                         .padding(4.dp)

@@ -202,7 +202,7 @@ private fun getLucky38AltName(card: Card): String {
 private fun getVault21AltName(card: Card): String {
     if (card.rank == Rank.JOKER) {
         return if (card.suit == Suit.HEARTS) {
-            "vault21ALT/1J.png"
+            "vault21ALT/1J.svg"
         } else {
             "vault21ALT/2J.svg"
         }

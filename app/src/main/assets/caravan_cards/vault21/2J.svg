@@ -1,2 +1,24 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<svg xmlns="http://www.w3.org/2000/svg" class="card" face="2J" height="3.5in" preserveAspectRatio="none" viewBox="-120 -168 240 336" width="2.5in"><rect width="239" height="335" x="-119.5" y="-167.5" rx="12" ry="12" fill="#d5c482" stroke="black"></rect><text font-size="80" font-family="Bariol" text-anchor="middle" transform="rotate(60)" y="20" fill="#0066b1">Joker</text></svg>
+<svg xmlns:xlink="http://www.w3.org/1999/xlink" class="card" face="2J" height="336" preserveAspectRatio="none"
+    viewBox="-120 -168 240 336" width="240" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <text id="smile" fill="#000000" font-family="Bariol"
+            font-size="32"
+            text-anchor="middle">:)</text>
+        <text id="antismile" fill="#000000" font-family="Bariol"
+            font-size="32"
+            text-anchor="middle">:(</text>
+    </defs>
+
+    <rect fill="#d5c482" height="336" rx="12" ry="12" stroke="black" width="240" x="-120"
+        y="-168"></rect>
+    <text fill="#000000" font-family="Bariol" font-size="80" text-anchor="middle" transform="rotate(60)"
+        y="20">Joker
+    </text>
+
+    <use height="32" width="32" x="-114.4" y="-156" xlink:href="#smile"></use>
+
+    <g transform="rotate(180)">
+        <use height="32" width="32" x="-114.4" y="-156" xlink:href="#antismile"></use>
+    </g>
+</svg>

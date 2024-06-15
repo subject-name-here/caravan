@@ -58,10 +58,10 @@ fun DeckSelection(
             if (checker[cardBack] == true) {
                 val (backSelected, isAltSelected) = getSelectedBack()
                 return if (backSelected == cardBack && isAltSelected == isAlt) {
-                    Modifier.border(width = 3.dp, color = getSelectionColor(activity)).padding(4.dp)
+                    Modifier.border(width = 3.dp, color = getSelectionColor(activity))
                 } else {
-                    Modifier.padding(4.dp)
-                }.clickable {
+                    Modifier
+                }.padding(4.dp).clickable {
                     setSelectedBack(cardBack, isAlt)
                     save.selectedDeck = cardBack to isAlt
                     saveOnGD(activity)

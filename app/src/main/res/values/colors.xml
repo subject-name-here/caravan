@@ -43,8 +43,8 @@
     <color name="oldWorldTextBack2">#82827f</color>
 
     <color name="newWorldBack">#1f1c19</color>
-    <color name="newWorldTextBack">#FFFFFF</color>
-    <color name="newWorldText">#524940</color>
+    <color name="newWorldTextBack">#6f6f6f</color>
+    <color name="newWorldText">#FDB515</color>
     <color name="newWorldStroke">#FF0000</color>
     <color name="newWorldAccent">#272766</color>
 

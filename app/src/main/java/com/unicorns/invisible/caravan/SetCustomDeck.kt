@@ -215,12 +215,11 @@ fun SetCustomDeck(
                                                 updater = !updater
                                             }
                                             .border(
-                                                width = (if (isSelected) 4 else 0).dp,
+                                                width = (if (isSelected) 3 else 0).dp,
                                                 color = getSelectionColor(activity)
                                             )
                                             .padding(4.dp)
-                                            .alpha(if (isSelected) 1f else 0.5f)
-                                            .background(if (isSelected) getTextStrokeColor(activity) else Color.Transparent))
+                                            .alpha(if (isSelected) 1f else 0.5f))
                                     } else {
                                         ShowCardBack(activity, card, Modifier
                                             .padding(4.dp)
