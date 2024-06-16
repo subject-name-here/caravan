@@ -1,12 +1,21 @@
 package com.unicorns.invisible.caravan
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.offset
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.paint
+import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.ColorMatrix
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import coil.compose.AsyncImagePainter
+import coil.compose.rememberAsyncImagePainter
+import coil.decode.SvgDecoder
+import coil.request.ImageRequest
 import com.unicorns.invisible.caravan.Style.ALASKA_FRONTIER
 import com.unicorns.invisible.caravan.Style.DESERT
 import com.unicorns.invisible.caravan.Style.MADRE_ROJA
@@ -17,6 +26,9 @@ import com.unicorns.invisible.caravan.Style.PIP_GIRL
 import com.unicorns.invisible.caravan.Style.SIERRA_MADRE
 import com.unicorns.invisible.caravan.Style.VAULT_21
 import com.unicorns.invisible.caravan.Style.VAULT_22
+import com.unicorns.invisible.caravan.utils.dpToPx
+import com.unicorns.invisible.caravan.utils.pxToDp
+import kotlin.random.Random
 
 
 enum class Style(val styleName: String, val price: Int) {
@@ -77,4 +89,38 @@ fun getStyleCities(style: Style): List<String> {
         VAULT_22 -> listOf("GRRRRR", "BRRRR", "VRRR", "MRRRRRR", "HRRRR", "DRRR")
         else -> listOf("BONEYARD", "REDDING", "VAULT CITY", "DAYGLOW", "NEW RENO", "THE HUB")
     }
+}
+
+@Composable
+fun StylePicture(activity: MainActivity, style: Style, key: Int, modifier: Modifier) {
+    val prefix = "file:///android_asset/menu_items/"
+    val painterToColorFilter = when (style) {
+        OLD_WORLD -> listOf(
+            rememberAsyncImagePainter(
+                ImageRequest.Builder(activity)
+                    .size(256, 256)
+                    .data(prefix + "old_world/nuka-coladecal.png")
+                    .decoderFactory(SvgDecoder.Factory())
+                    .build()
+            ) to null,
+            rememberAsyncImagePainter(
+                ImageRequest.Builder(activity)
+                    .size(256, 256)
+                    .data(prefix + "old_world/holyhandgrenades.png")
+                    .decoderFactory(SvgDecoder.Factory())
+                    .build(),
+            ) to ColorFilter.tint(color = Color.Black)
+        )
+        else -> null
+    }?.random(Random(key))
+
+    if (painterToColorFilter != null) {
+        Image(
+            painter = painterToColorFilter.first,
+            contentDescription = "",
+            modifier,
+            colorFilter = painterToColorFilter.second
+        )
+    }
+
 }

@@ -161,8 +161,10 @@ fun playVatsReady(activity: MainActivity) {
 
 var currentPlayer: MediaPlayer? = null
 fun stopMusic() {
-    currentPlayer?.stop()
-    currentPlayer?.release()
+    if (currentPlayer?.isPlaying == true) {
+        currentPlayer?.stop()
+        currentPlayer?.release()
+    }
     currentPlayer = null
 }
 fun startAmbient(activity: MainActivity) {
@@ -249,6 +251,7 @@ private fun playSongFromRadio(activity: MainActivity, songName: String) {
             val afd = activity.assets.openFd("radio/$songName")
             setDataSource(afd.fileDescriptor, afd.startOffset, afd.length)
             setOnCompletionListener {
+                release()
                 if (pointer == -1) {
                     startRadio(activity)
                 } else {
@@ -263,8 +266,10 @@ private fun playSongFromRadio(activity: MainActivity, songName: String) {
 
 
 fun nextSong(activity: MainActivity) {
-    radioPlayer?.stop()
-    radioPlayer?.release()
+    if (radioPlayer?.isPlaying == true) {
+        radioPlayer?.stop()
+        radioPlayer?.release()
+    }
     if (pointer !in songList.indices) {
         pointer = songList.indices.random()
     }

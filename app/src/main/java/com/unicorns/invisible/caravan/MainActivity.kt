@@ -4,6 +4,7 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -16,12 +17,14 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -30,13 +33,16 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.RectangleShape
@@ -56,6 +62,9 @@ import androidx.compose.ui.text.withLink
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.MutableLiveData
+import coil.compose.rememberAsyncImagePainter
+import coil.decode.SvgDecoder
+import coil.request.ImageRequest
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.save.Save
@@ -69,6 +78,7 @@ import com.unicorns.invisible.caravan.utils.TextFallout
 import com.unicorns.invisible.caravan.utils.clickableCancel
 import com.unicorns.invisible.caravan.utils.clickableOk
 import com.unicorns.invisible.caravan.utils.currentPlayer
+import com.unicorns.invisible.caravan.utils.dpToPx
 import com.unicorns.invisible.caravan.utils.effectPlayer
 import com.unicorns.invisible.caravan.utils.getBackgroundColor
 import com.unicorns.invisible.caravan.utils.getDialogBackground
@@ -87,6 +97,7 @@ import com.unicorns.invisible.caravan.utils.pause
 import com.unicorns.invisible.caravan.utils.playClickSound
 import com.unicorns.invisible.caravan.utils.playCloseSound
 import com.unicorns.invisible.caravan.utils.playNotificationSound
+import com.unicorns.invisible.caravan.utils.pxToDp
 import com.unicorns.invisible.caravan.utils.radioPlayer
 import com.unicorns.invisible.caravan.utils.resume
 import com.unicorns.invisible.caravan.utils.scrollbar
@@ -97,6 +108,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.chromium.net.CronetEngine
 import java.util.UUID
+import kotlin.random.Random
 
 
 const val crvnUrl = "http://crvnserver.onrender.com"
@@ -124,7 +136,7 @@ class MainActivity : SaveDataActivity() {
         super.onPause()
         radioPlayer?.pause()
         currentPlayer?.pause()
-        effectPlayer?.stop()
+        // TODO: stop effects player too.
     }
 
     override fun onResume() {
@@ -805,34 +817,52 @@ class MainActivity : SaveDataActivity() {
                 state = state
             ) {
                 item {
-                    @Composable
-                    fun MenuItem(text: String, onClick: () -> Unit) {
-                        TextFallout(
-                            text,
-                            getTextColor(this@MainActivity),
-                            getTextStrokeColor(this@MainActivity),
-                            20.sp,
-                            Alignment.CenterStart,
-                            Modifier
-                                .clickableOk(this@MainActivity) { onClick() }
-                                .background(getTextBackgroundColor(this@MainActivity))
-                                .padding(8.dp),
-                            TextAlign.Start
-                        )
+                    BoxWithConstraints(Modifier.fillMaxWidth()) {
+                        val rand = Random(id.hashCode())
+                        var height by remember { mutableIntStateOf(0) }
+                        LaunchedEffect(Unit) {
+                            while (height == 0) {
+                                height = state.layoutInfo.viewportSize.height
+                                delay(380L)
+                            }
+                        }
+                        StylePicture(this@MainActivity, styleId, id.hashCode(), Modifier.align(Alignment.Center)
+                            .rotate(-30f + rand.nextFloat() * 60f)
+                            .offset(
+                                (0..(maxWidth.dpToPx().toInt() / 4)).random(rand).pxToDp(),
+                                (-height / 4 + (0..height / 2).random(rand)).pxToDp()
+                            ))
+                        Column(Modifier.fillMaxWidth()) {
+                            @Composable
+                            fun MenuItem(text: String, onClick: () -> Unit) {
+                                TextFallout(
+                                    text,
+                                    getTextColor(this@MainActivity),
+                                    getTextStrokeColor(this@MainActivity),
+                                    20.sp,
+                                    Alignment.CenterStart,
+                                    Modifier
+                                        .clickableOk(this@MainActivity) { onClick() }
+                                        .background(getTextBackgroundColor(this@MainActivity))
+                                        .padding(8.dp),
+                                    TextAlign.Start
+                                )
+                            }
+                            Spacer(Modifier.height(64.dp))
+                            MenuItem(getString(R.string.menu_pve), showPvE)
+                            Spacer(modifier = Modifier.height(20.dp))
+                            MenuItem(getString(R.string.menu_pvp), showPvP)
+                            Spacer(modifier = Modifier.height(20.dp))
+                            MenuItem(getString(R.string.menu_tutorial), showTutorial)
+                            Spacer(modifier = Modifier.height(20.dp))
+                            MenuItem(getString(R.string.menu_rules), showRules)
+                            Spacer(modifier = Modifier.height(20.dp))
+                            MenuItem(getString(R.string.menu_deck), showDeckSelection)
+                            Spacer(modifier = Modifier.height(20.dp))
+                            MenuItem(stringResource(R.string.menu_vision), showVision)
+                            Spacer(modifier = Modifier.height(32.dp))
+                        }
                     }
-                    Spacer(Modifier.height(64.dp))
-                    MenuItem(getString(R.string.menu_pve), showPvE)
-                    Spacer(modifier = Modifier.height(20.dp))
-                    MenuItem(getString(R.string.menu_pvp), showPvP)
-                    Spacer(modifier = Modifier.height(20.dp))
-                    MenuItem(getString(R.string.menu_tutorial), showTutorial)
-                    Spacer(modifier = Modifier.height(20.dp))
-                    MenuItem(getString(R.string.menu_rules), showRules)
-                    Spacer(modifier = Modifier.height(20.dp))
-                    MenuItem(getString(R.string.menu_deck), showDeckSelection)
-                    Spacer(modifier = Modifier.height(20.dp))
-                    MenuItem(stringResource(R.string.menu_vision), showVision)
-                    Spacer(modifier = Modifier.height(32.dp))
                 }
             }
 
