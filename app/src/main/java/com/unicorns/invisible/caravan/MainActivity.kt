@@ -68,6 +68,7 @@ import com.unicorns.invisible.caravan.utils.SliderCustom
 import com.unicorns.invisible.caravan.utils.SwitchCustom
 import com.unicorns.invisible.caravan.utils.TextFallout
 import com.unicorns.invisible.caravan.utils.currentPlayer
+import com.unicorns.invisible.caravan.utils.effectPlayer
 import com.unicorns.invisible.caravan.utils.getBackgroundColor
 import com.unicorns.invisible.caravan.utils.getDialogBackground
 import com.unicorns.invisible.caravan.utils.getDialogTextColor
@@ -110,6 +111,8 @@ class MainActivity : SaveDataActivity() {
 
     var styleId: Style = Style.PIP_BOY
 
+    var animationTickLength = MutableLiveData(380L)
+
     fun checkIfCustomDeckCanBeUsedInGame(playerCResources: CResources): Boolean {
         return playerCResources.deckSize >= MIN_DECK_SIZE && playerCResources.numOfNumbers >= MIN_NUM_OF_NUMBERS
     }
@@ -118,6 +121,7 @@ class MainActivity : SaveDataActivity() {
         super.onPause()
         radioPlayer?.pause()
         currentPlayer?.pause()
+        effectPlayer?.stop()
     }
 
     override fun onResume() {

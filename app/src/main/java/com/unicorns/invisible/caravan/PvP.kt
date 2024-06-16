@@ -565,7 +565,8 @@ fun StartPvP(
 
                 game.enemy.makeMove(game)
                 updateEnemyHand()
-                game.processFieldAndHand(game.enemyCResources) {}
+                game.processField()
+                game.processHand(game.enemyCResources)
 
                 updateCaravans()
 

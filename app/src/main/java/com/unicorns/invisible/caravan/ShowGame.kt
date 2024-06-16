@@ -1,5 +1,6 @@
 package com.unicorns.invisible.caravan
 
+import android.util.Log
 import androidx.collection.mutableObjectListOf
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.TweenSpec
@@ -131,7 +132,6 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
         val selectedCaravanNN = selectedCaravan
         if (selectedCaravanNN == -1) return
         game.playerCaravans[selectedCaravanNN].dropCaravan()
-        updateCaravans()
         resetSelected()
         game.afterPlayerMove { updateEnemyHand(); updateCaravans() }
     }
@@ -140,7 +140,6 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
         fun onCaravanCardInserted() {
             resetSelected()
             game.afterPlayerMove { updateEnemyHand(); updateCaravans() }
-            updateCaravans()
         }
 
         val cardIndex = selectedCard
@@ -149,6 +148,9 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
             if (card.isFace()) {
                 if (position in caravan.cards.indices && caravan.cards[position].canAddModifier(card)) {
                     playCardFlipSound(activity)
+                    if (card.rank == Rank.JOKER) {
+                        // TODO: playu wild wasteland sound
+                    }
                     caravan.cards[position].addModifier(game.playerCResources.removeFromHand(cardIndex))
                     onCaravanCardInserted()
                 }
@@ -466,7 +468,7 @@ fun Hand(
             memCards.addAll(cards)
 
             recomposeKey = !recomposeKey
-            delay(95L)
+            delay(activity.animationTickLength.value?.div(4L) ?: 0)
             itemVerticalOffsetMovingIn.snapTo(2.5f * enemyMult)
             itemVerticalOffsetMovingOut.snapTo(0f)
         }
@@ -618,7 +620,7 @@ fun RowScope.CaravanOnField(
                         caravan.cards
                     } else {
                         LaunchedEffect(Unit) {
-                            delay(760L)
+                            delay(1140L)
                             copy.clear()
                             copy.addAll(caravan.cards)
                             caravanMem = getHash()
@@ -631,35 +633,27 @@ fun RowScope.CaravanOnField(
                         modifier: Card,
                         cardIndex: Int,
                         modifierIndex: Int,
-                        isMovingIn: Boolean,
                         isMovingOut: Boolean
                     ) {
                         val animationIn = remember { Animatable(3f * (if (isPlayerTurn) 1 else -1)) }
                         val animationOut = remember { Animatable(0f) }
-                        LaunchedEffect(isMovingIn) {
-                            animationIn.animateTo(0f, TweenSpec(380, 380))
+                        val index by remember { mutableIntStateOf(cardIndex) }
+                        val isModMovingIn = cardIndex == index
+                        LaunchedEffect(isModMovingIn) {
+                            animationIn.animateTo(0f, TweenSpec(190, 570))
                         }
                         LaunchedEffect(isMovingOut) {
                             animationOut.snapTo(0f)
-                            animationOut.animateTo(2f, TweenSpec(380, 380))
+                            animationOut.animateTo(2f, TweenSpec(190, 380))
                         }
                         Box(modifier = Modifier
                             .layout { measurable, constraints ->
                                 val placeable = measurable.measure(constraints)
-                                val layoutFullHeight = max(
-                                    placeable.height / 3 * (caravan.size + if (isEnemy) 2 else 3),
-                                    state.layoutInfo.viewportSize.height
-                                )
-                                val offsetWidth = constraints.maxWidth / 2 - placeable.width / 2
-                                val offsetHeight = if (isEnemy)
-                                    (layoutFullHeight - placeable.height / 3 * cardIndex - placeable.height)
-                                else
-                                    (placeable.height / 3 * cardIndex)
                                 val modifierOffset = ((if (isEnemy) (-10).dp else 10.dp) * (modifierIndex + 1)).toPx().toInt()
                                 layout(placeable.width, 0) {
                                     placeable.place(
-                                        modifierOffset + offsetWidth + (placeable.width * if (isMovingOut) animationOut.value else 0f).toInt(),
-                                        offsetHeight + (animationIn.value * placeable.height).toInt()
+                                        modifierOffset + (placeable.width * if (isMovingOut) animationOut.value else 0f).toInt(),
+                                        (animationIn.value * placeable.height).toInt()
                                     )
                                 }
                             })
@@ -678,7 +672,7 @@ fun RowScope.CaravanOnField(
                         val animationIn = remember { Animatable(enemyMult * 3f) }
                         val animationOut = remember { Animatable(0f) }
                         LaunchedEffect(isMovingIn) {
-                            animationIn.animateTo(0f, TweenSpec(190, 380))
+                            animationIn.animateTo(0f, TweenSpec(190, 570))
                         }
                         LaunchedEffect(isMovingOut) {
                             animationOut.snapTo(0f)
@@ -688,14 +682,13 @@ fun RowScope.CaravanOnField(
                         val modifier = Modifier
                             .layout { measurable, constraints ->
                                 val placeable = measurable.measure(constraints)
-                                // TODO: too big of a gap at the top and at the bottom
                                 val layoutFullHeight = if (isEnemy) {
                                     max(
-                                        placeable.height / 3 * (caravan.size + 2),
+                                        placeable.height / 3 * (copy.size + 2),
                                         state.layoutInfo.viewportSize.height - 1
                                     )
                                 } else {
-                                    placeable.height / 3 * (caravan.size + 3)
+                                    placeable.height / 3 * (copy.size + 3)
                                 }
                                 val offsetWidth = constraints.maxWidth / 2 - placeable.width / 2
                                 val antiOffsetHeight = if (isEnemy)
@@ -714,6 +707,10 @@ fun RowScope.CaravanOnField(
                             ShowCard(activity, it.card, Modifier.scale(scale).clickable {
                                 addSelectedCardOnPosition(caravan.cards.indexOf(it))
                             })
+
+                            it.modifiersCopy().withIndex().forEach { (modifierIndex, card) ->
+                                ModifierOnCardInCaravan(card, index, modifierIndex, isMovingOut)
+                            }
                         }
                     }
 
@@ -721,31 +718,9 @@ fun RowScope.CaravanOnField(
                         val isMovingIn = it !in caravan.cards
                         val isMovingOut = it !in caravan.cards
                         CardInCaravan(it, index, isMovingIn, isMovingOut)
-
-                        fun getHash2() = it.hashCode() + it.modifiersCopy().sumOf { it.hashCode() }
-                        var modifiersListMem by remember { mutableIntStateOf(getHash2()) }
-                        val copy2 = remember { mutableObjectListOf<Card>() }
-
-                        val modHolder = if (getHash2() == modifiersListMem) {
-                            it.modifiersCopy()
-                        } else {
-                            LaunchedEffect(Unit) {
-                                delay(760L)
-                                copy2.clear()
-                                copy2.addAll(it.modifiersCopy())
-                                modifiersListMem = getHash2()
-                            }
-                            copy2.asMutableList() + (it.modifiersCopy() - copy2.asMutableList().toSet())
-                        }
-
-                        modHolder.forEachIndexed { modifierIndex, card ->
-                            if (card in it.modifiersCopy()) {
-                                ModifierOnCardInCaravan(card, index, modifierIndex, card in it.modifiersCopy(), isMovingOut)
-                            }
-                        }
                     }
 
-                    if (!isEnemy) {
+                    if (!isEnemy && getHash() == caravanMem) {
                         if (!caravan.isFull() && (!isInitStage || caravan.cards.isEmpty())) {
                             when (canPutSelectedCardOnTop()) {
                                 1 -> {

@@ -3,6 +3,7 @@ package com.unicorns.invisible.caravan
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -15,6 +16,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -46,11 +48,20 @@ fun afterPlayerMove(
     corrupt: (String) -> Unit,
     startPinging: () -> Unit,
 ) {
-    game.isPlayerTurn = false
+
     CoroutineScope(Dispatchers.Default).launch {
         delay(380L)
+        game.isPlayerTurn = false
         val isNewCardAdded = game.playerCResources.deckSize > 0 && game.playerCResources.hand.size < 5
-        game.processFieldAndHand(game.playerCResources, updateView)
+        if (game.processField()) {
+            delay(380L) // Remove cards; move cards within caravan
+            updateView()
+        }
+        if (game.processHand(game.playerCResources)) {
+            delay(190L) // Take card into hand
+            updateView()
+        }
+
         if (isNewCardAdded) {
             val newCard = game.playerCResources.hand.last()
             move.newCardInHandBack = newCard.back.ordinal
@@ -114,14 +125,22 @@ fun pingForMove(
         }
 
         CoroutineScope(Dispatchers.Default).launch {
+            delay(190L) // Just break.
             game.enemy.makeMove(game)
-            delay(350L)
             updateView()
-            game.processFieldAndHand(game.enemyCResources, updateView)
-
+            delay(380L) // Move card from hand; move card ontoField
+            if (game.processField()) {
+                delay(380L)
+                updateView()
+            }
+            if (game.processHand(game.enemyCResources)) {
+                delay(190L)
+                updateView()
+            }
             game.isPlayerTurn = true
             game.checkOnGameOver()
             updateView()
+            delay(190L)
             afterEnemyMove(!game.isOver())
         }
     }
@@ -290,6 +309,9 @@ fun ShowGamePvP(
                 }
                 Rank.JACK.value, Rank.QUEEN.value, Rank.KING.value, Rank.JOKER.value -> {
                     if (position in caravan.cards.indices && caravan.cards[position].canAddModifier(card)) {
+                        if (card.rank == Rank.JOKER) {
+                            // TODO: play wild wasteland sound
+                        }
                         caravan.cards[position].addModifier(game.playerCResources.removeFromHand(cardIndex))
                         onCaravanCardInserted(
                             cardIndex, caravanIndex, position
@@ -336,7 +358,7 @@ fun ShowGamePvP(
     )
 
     key (timeOnTimer) {
-        Box(modifier = Modifier.fillMaxSize().background(getTextBackgroundColor(activity))) {
+        Box(modifier = Modifier.fillMaxSize().background(Color.Transparent)) {
             TextFallout(
                 timeOnTimer.toString(),
                 getTextColor(activity),
@@ -344,6 +366,7 @@ fun ShowGamePvP(
                 14.sp,
                 Alignment.BottomEnd,
                 Modifier
+                    .background(getTextBackgroundColor(activity))
                     .padding(8.dp),
                 TextAlign.Center
             )

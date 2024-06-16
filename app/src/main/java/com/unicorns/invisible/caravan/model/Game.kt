@@ -72,40 +72,62 @@ class Game(
         initDeck(enemyCResources, maxNumOfFaces)
     }
 
-    fun processFieldAndHand(cResources: CResources, updateView: () -> Unit) {
+    fun processField(): Boolean {
         val caravans = playerCaravans + enemyCaravans
         val cards = caravans.flatMap { it.cards }
-        if (cards.any { it.hasJacks() || it.hasActiveJoker } || (cResources.hand.size < 5 && cResources.deckSize > 0)) {
+        if (cards.any { it.hasJacks() || it.hasActiveJoker }) {
             processJacks()
             processJoker()
 
-            if (cResources.hand.size < 5) {
-                cResources.addToHand()
-            }
-
-            updateView()
+            return true
         }
+        return false
     }
 
+    fun processHand(cResources: CResources): Boolean {
+        if (cResources.hand.size < 5 && cResources.deckSize > 0) {
+            cResources.addToHand()
+            return true
+        }
+        return false
+    }
+
+    // TODO
     fun afterPlayerMove(updateView: () -> Unit) {
         CoroutineScope(Dispatchers.Default).launch {
-            delay(380L)
+            delay(570L) // Move card from hand; move card ontoField
             isPlayerTurn = false
-            processFieldAndHand(playerCResources, updateView)
-            delay(380L)
+            if (processField()) { // Remove cards; move cards within caravan
+                updateView()
+                delay(760L)
+            }
+            if (processHand(playerCResources)) { // Take card into hand
+                updateView()
+                delay(190L)
+            }
+
             if (checkOnGameOver()) {
                 return@launch
             }
 
+            delay(380L) // Just break.
+
             enemy.makeMove(this@Game)
             updateView()
-            delay(380L)
-            processFieldAndHand(enemyCResources, updateView)
-            delay(380L)
+            delay(380L) // Move card from hand; move card ontoField
+            delay(570L)
+            if (processField()) { // Remove cards; move cards within caravan
+                updateView()
+                delay(760L)
+            }
+            if (processHand(enemyCResources)) {
+                updateView()
+                delay(190L)
+            }
             isPlayerTurn = true
             checkOnGameOver()
+            delay(380L)
             updateView()
-            delay(540L)
         }
     }
 

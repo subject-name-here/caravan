@@ -64,7 +64,7 @@ class Save {
     var useCaravanIntro = true
 
     @EncodeDefault
-    var caps = 0
+    var caps = 10000
 
     @EncodeDefault
     val soldCards = HashMap<Pair<CardBack, Boolean>, Int>()

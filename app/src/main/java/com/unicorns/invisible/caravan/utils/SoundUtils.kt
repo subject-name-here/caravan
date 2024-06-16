@@ -5,14 +5,18 @@ import com.unicorns.invisible.caravan.MainActivity
 import com.unicorns.invisible.caravan.R
 
 
+var effectPlayer: MediaPlayer? = null
 fun playCardFlipSound(activity: MainActivity) {
     val vol = activity.save?.soundVolume ?: 1f
-    MediaPlayer
+    effectPlayer = MediaPlayer
         .create(activity, getRandomCardFlipSound())
         .apply {
             setVolume(vol, vol)
+            setOnCompletionListener {
+                release()
+            }
+            start()
         }
-        .start()
 }
 fun getRandomCardFlipSound(): Int {
     return listOf(
@@ -31,25 +35,31 @@ fun getRandomCardFlipSound(): Int {
 
 fun playLoseSound(activity: MainActivity) {
     val vol = activity.save?.soundVolume ?: 1f
-    MediaPlayer
+    effectPlayer = MediaPlayer
         .create(activity, listOf(R.raw.lose1, R.raw.lose3, R.raw.any).random())
         .apply {
             setVolume(vol, vol)
+            setOnCompletionListener {
+                release()
+            }
             start()
         }
 }
 fun playWinSound(activity: MainActivity) {
     val vol = activity.save?.soundVolume ?: 1f
-    MediaPlayer
+    effectPlayer = MediaPlayer
         .create(activity, listOf(R.raw.win1, R.raw.win2, R.raw.any).random())
         .apply {
             setVolume(vol, vol)
+            setOnCompletionListener {
+                release()
+            }
             start()
         }
 }
 
 fun playNotificationSound(activity: MainActivity, onPrepared: () -> Unit) {
-    MediaPlayer
+    effectPlayer = MediaPlayer
         .create(activity, R.raw.notification)
         .apply {
             setVolume(activity.save?.soundVolume ?: 1f, activity.save?.soundVolume ?: 1f)
@@ -57,8 +67,8 @@ fun playNotificationSound(activity: MainActivity, onPrepared: () -> Unit) {
             setOnCompletionListener {
                 release()
             }
+            start()
         }
-        .start()
 }
 
 var currentPlayer: MediaPlayer? = null
