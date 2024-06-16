@@ -119,6 +119,7 @@ data object EnemyHard : Enemy() {
 
             if (card.rank == Rank.JOKER) {
                 if (StrategyJoker.move(game)) {
+                    game.jokerPlayedSound()
                     return
                 }
             }

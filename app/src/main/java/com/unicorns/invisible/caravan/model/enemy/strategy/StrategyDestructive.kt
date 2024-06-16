@@ -9,10 +9,6 @@ object StrategyDestructive : Strategy {
     override fun move(game: Game): Boolean {
         val hand = game.enemyCResources.hand
 
-        if (StrategyJoker.move(game)) {
-            return true
-        }
-
         val king = hand.withIndex().find { it.value.rank == Rank.KING }
         if (king != null) {
             val caravan = game.playerCaravans.filter { it.getValue() in (21..26) }.maxByOrNull { it.getValue() }

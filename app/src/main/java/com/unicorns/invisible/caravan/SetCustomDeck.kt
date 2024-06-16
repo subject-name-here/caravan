@@ -194,7 +194,7 @@ fun SetCustomDeck(
                                         trackColor = getTrackColor(activity),
                                         horizontal = true
                                     )
-                                    .padding(horizontal = 4.dp), state = state) lambda@ {
+                                    .padding(horizontal = 4.dp).padding(bottom = 4.dp), state = state) lambda@ {
                                 items(CustomDeck(back, check).toList().sortedWith { o1, o2 ->
                                     if (o1.rank != o2.rank) {
                                         o2.rank.value - o1.rank.value

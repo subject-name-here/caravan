@@ -13,21 +13,32 @@
                 fill="none" stroke="#0066b1" stroke-linecap="square" stroke-miterlimit="1.5"
                 stroke-width="80"></path>
         </symbol>
+        <symbol id="SS2Y" preserveAspectRatio="xMinYMid" viewBox="-600 -600 1200 1200">
+            <path
+                d="M0 -500C350 -250 460 -100 460 100C460 300 260 340 210 340C110 340 55 285 100 300L130 500L-130 500L-100 300C-55 285 -110 340 -210 340C-260 340 -460 300 -460 100C-460 -100 -350 -250 0 -500Z"
+                fill="#fff773"></path>
+        </symbol>
+        <symbol id="VS9Y" preserveAspectRatio="xMinYMid" viewBox="-500 -500 1000 1000">
+            <path
+                d="M250 -100A250 250 0 0 1 -250 -100L-250 -210A250 250 0 0 1 250 -210L250 210A250 250 0 0 1 0 460C-150 460 -180 400 -200 375"
+                fill="none" stroke="#fff773" stroke-linecap="square" stroke-miterlimit="1.5"
+                stroke-width="80"></path>
+        </symbol>
         <rect height="260.8" id="XS9" width="164.8" x="-82.4" y="-130.4"></rect>
     </defs>
-    <rect fill="#000000" height="335" rx="12" ry="12" stroke="#0066b1" width="239" x="-119.5"
+    <rect fill="#000000" height="335" rx="12" ry="12" stroke="#000000" width="239" x="-119.5"
         y="-167.5"></rect>
     <use fill="#FFF" height="260.8" stroke="#88f" width="164.8" xlink:href="#XS9"></use>
-    <use height="32" width="32" x="-114.4" y="-156" xlink:href="#VS9"></use>
-    <use height="26.032" width="26.032" x="-111.416" y="-119" xlink:href="#SS9"></use>
+    <use height="32" width="32" x="-114.4" y="-156" xlink:href="#VS9Y"></use>
+    <use height="26.032" width="26.032" x="-111.416" y="-119" xlink:href="#SS2Y"></use>
     <use height="70" width="70" x="-85.567" y="-131.234" xlink:href="#SS9"></use>
     <use height="70" width="70" x="15.567" y="-131.234" xlink:href="#SS9"></use>
     <use height="70" width="70" x="-85.567" y="-67.078" xlink:href="#SS9"></use>
     <use height="70" width="70" x="15.567" y="-67.078" xlink:href="#SS9"></use>
     <use height="70" width="70" x="-35" y="-35" xlink:href="#SS9"></use>
     <g transform="rotate(180)">
-        <use height="32" width="32" x="-114.4" y="-156" xlink:href="#VS9"></use>
-        <use height="26.032" width="26.032" x="-111.416" y="-119" xlink:href="#SS9"></use>
+        <use height="32" width="32" x="-114.4" y="-156" xlink:href="#VS9Y"></use>
+        <use height="26.032" width="26.032" x="-111.416" y="-119" xlink:href="#SS2Y"></use>
         <use height="70" width="70" x="-85.567" y="-131.234" xlink:href="#SS9"></use>
         <use height="70" width="70" x="15.567" y="-131.234" xlink:href="#SS9"></use>
         <use height="70" width="70" x="-85.567" y="-67.078" xlink:href="#SS9"></use>

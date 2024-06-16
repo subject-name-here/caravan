@@ -70,6 +70,28 @@ fun playNotificationSound(activity: MainActivity, onPrepared: () -> Unit) {
             start()
         }
 }
+fun playJokerReceivedSounds(activity: MainActivity) {
+    effectPlayer = MediaPlayer
+        .create(activity, R.raw.mus_mysteriousstranger_a_01)
+        .apply {
+            setVolume(activity.save?.soundVolume ?: 1f, activity.save?.soundVolume ?: 1f)
+            setOnCompletionListener {
+                release()
+            }
+            start()
+        }
+}
+fun playJokerSounds(activity: MainActivity) {
+    effectPlayer = MediaPlayer
+        .create(activity, R.raw.mus_mysteriousstranger_a_02)
+        .apply {
+            setVolume(activity.save?.soundVolume ?: 1f, activity.save?.soundVolume ?: 1f)
+            setOnCompletionListener {
+                release()
+            }
+            start()
+        }
+}
 
 var currentPlayer: MediaPlayer? = null
 fun stopMusic() {

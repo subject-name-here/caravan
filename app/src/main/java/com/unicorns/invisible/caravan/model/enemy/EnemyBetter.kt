@@ -3,9 +3,11 @@ package com.unicorns.invisible.caravan.model.enemy
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyDestructive
+import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJoker
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyRush
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyTime
 import com.unicorns.invisible.caravan.model.primitives.CResources
+import com.unicorns.invisible.caravan.utils.playJokerSounds
 import kotlinx.serialization.Serializable
 
 
@@ -37,6 +39,10 @@ data object EnemyBetter : Enemy() {
                 return
             }
         } else if (score.sum() > 2f) {
+            if (StrategyJoker.move(game)) {
+                game.jokerPlayedSound()
+                return
+            }
             if (StrategyDestructive.move(game)) {
                 return
             }

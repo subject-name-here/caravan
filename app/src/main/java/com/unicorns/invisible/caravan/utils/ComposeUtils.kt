@@ -216,7 +216,7 @@ fun CheckboxCustom(activity: MainActivity, checked: () -> Boolean, onCheckedChan
     Checkbox(checked = checked(), onCheckedChange = onCheckedChange, colors = CheckboxColors(
         checkedCheckmarkColor = getCheckBoxBorderColor(activity),
         uncheckedCheckmarkColor = Color.Transparent,
-        checkedBoxColor = getTextBackgroundColor(activity),
+        checkedBoxColor = getCheckBoxFillColor(activity),
         uncheckedBoxColor = Color.Transparent,
         disabledCheckedBoxColor = Color.Red,
         disabledUncheckedBoxColor = Color.Red,

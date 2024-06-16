@@ -138,4 +138,7 @@ class Save {
 
     @EncodeDefault
     val ownedStyles = mutableSetOf(Style.DESERT, Style.PIP_BOY)
+
+    @EncodeDefault
+    var animationLengthTick = 380L
 }

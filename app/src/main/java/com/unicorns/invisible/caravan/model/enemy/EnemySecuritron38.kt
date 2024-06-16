@@ -34,6 +34,7 @@ data object EnemySecuritron38 : Enemy() {
         hand.withIndex().sortedByDescending { it.value.rank.value }.forEach { (cardIndex, card) ->
             if (card.rank == Rank.JOKER) {
                 if (StrategyJoker.move(game)) {
+                    game.jokerPlayedSound()
                     return
                 }
             }

@@ -56,6 +56,7 @@ import com.unicorns.invisible.caravan.utils.getKnobColor
 import com.unicorns.invisible.caravan.utils.getTextBackgroundColor
 import com.unicorns.invisible.caravan.utils.getTextColor
 import com.unicorns.invisible.caravan.utils.getTrackColor
+import com.unicorns.invisible.caravan.utils.playJokerSounds
 import com.unicorns.invisible.caravan.utils.playLoseSound
 import com.unicorns.invisible.caravan.utils.playWinSound
 import com.unicorns.invisible.caravan.utils.scrollbar
@@ -589,6 +590,7 @@ fun StartGame(
             }
         }
         it.saySomething = { id1, id2 -> showAlertDialog(activity.getString(id1), activity.getString(id2)) }
+        it.jokerPlayedSound = { playJokerSounds(activity) }
     }
     activity.goBack = { stopMusic(); goBack() }
     ShowGame(activity, game) {

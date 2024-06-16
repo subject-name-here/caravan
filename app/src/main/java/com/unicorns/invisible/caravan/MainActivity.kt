@@ -205,6 +205,7 @@ class MainActivity : SaveDataActivity() {
             }
 
             styleId = Style.entries[save?.styleId ?: 1]
+            animationTickLength.value = save?.animationLengthTick ?: 380L
             val (textColor, backgroundColor, strokeColor) = getColors()
             val modifier = if (k == true) {
                 Modifier
@@ -285,8 +286,9 @@ class MainActivity : SaveDataActivity() {
         var showGameStats by rememberSaveable { mutableStateOf(false) }
         var showTutorial by rememberSaveable { mutableStateOf(false) }
         var showRules by rememberSaveable { mutableStateOf(false) }
-
         var showSettings by rememberSaveable { mutableStateOf(false) }
+
+        var showVision by rememberSaveable { mutableStateOf(false) }
         var styleIdForTop by rememberSaveable { mutableStateOf(styleId) }
 
         var showSoundSettings by remember { mutableStateOf(false) }
@@ -512,12 +514,16 @@ class MainActivity : SaveDataActivity() {
                             getMusicTextColor(this@MainActivity),
                             16.sp,
                             Alignment.Center,
-                            Modifier.weight(1f).wrapContentWidth()
+                            Modifier
+                                .weight(1f)
+                                .wrapContentWidth()
                                 .clickable {
                                     if (!isPaused) {
                                         nextSong(this@MainActivity)
                                     }
-                                }.background(getTextBackgroundColor(this@MainActivity)).padding(4.dp),
+                                }
+                                .background(getTextBackgroundColor(this@MainActivity))
+                                .padding(4.dp),
                             TextAlign.Center
                         )
 
@@ -527,15 +533,20 @@ class MainActivity : SaveDataActivity() {
                             getMusicTextColor(this@MainActivity),
                             16.sp,
                             Alignment.Center,
-                            Modifier.weight(1f).wrapContentWidth().clickable {
-                                if (isPaused) {
-                                    resume()
-                                    isPaused = false
-                                } else {
-                                    pause()
-                                    isPaused = true
+                            Modifier
+                                .weight(1f)
+                                .wrapContentWidth()
+                                .clickable {
+                                    if (isPaused) {
+                                        resume()
+                                        isPaused = false
+                                    } else {
+                                        pause()
+                                        isPaused = true
+                                    }
                                 }
-                            }.background(getTextBackgroundColor(this@MainActivity)).padding(4.dp),
+                                .background(getTextBackgroundColor(this@MainActivity))
+                                .padding(4.dp),
                             TextAlign.Center
                         )
                         TextFallout(
@@ -544,9 +555,14 @@ class MainActivity : SaveDataActivity() {
                             getMusicTextColor(this@MainActivity),
                             16.sp,
                             Alignment.Center,
-                            Modifier.weight(1f).wrapContentWidth().clickable {
-                                showSoundSettings = true
-                            }.background(getTextBackgroundColor(this@MainActivity)).padding(4.dp),
+                            Modifier
+                                .weight(1f)
+                                .wrapContentWidth()
+                                .clickable {
+                                    showSoundSettings = true
+                                }
+                                .background(getTextBackgroundColor(this@MainActivity))
+                                .padding(4.dp),
                             TextAlign.Center
                         )
                     }
@@ -593,7 +609,7 @@ class MainActivity : SaveDataActivity() {
                             ) { showPvP = false }
                         }
                     }
-                    showSettings -> {
+                    showVision -> {
                         ShowSettings(activity = this@MainActivity, { styleId }, {
                             styleId = Style.entries[it]
                             styleIdForTop = styleId
@@ -601,7 +617,14 @@ class MainActivity : SaveDataActivity() {
                                 s.styleId = styleId.ordinal
                                 saveOnGD(this@MainActivity)
                             }
-                        }, ::showAlertDialog) { showSettings = false }
+                        }, ::showAlertDialog) { showVision = false }
+                    }
+                    showSettings -> {
+                        ShowTrueSettings(
+                            this@MainActivity,
+                            { animationTickLength.value!! },
+                            { animationTickLength.value = it; save!!.animationLengthTick = it; saveOnGD(this@MainActivity) }
+                        ) { showSettings = false }
                     }
                     else -> {
                         MainMenu(
@@ -611,6 +634,7 @@ class MainActivity : SaveDataActivity() {
                             { showPvP = true },
                             { showTutorial = true },
                             { showRules = true },
+                            { showVision = true },
                             { showSettings = true }
                         )
                     }
@@ -628,6 +652,7 @@ class MainActivity : SaveDataActivity() {
         showPvP: () -> Unit,
         showTutorial: () -> Unit,
         showRules: () -> Unit,
+        showVision: () -> Unit,
         showSettings: () -> Unit,
     ) {
         Spacer(Modifier.height(32.dp))
@@ -797,6 +822,8 @@ class MainActivity : SaveDataActivity() {
                     MenuItem(getString(R.string.menu_rules), showRules)
                     Spacer(modifier = Modifier.height(20.dp))
                     MenuItem(getString(R.string.menu_deck), showDeckSelection)
+                    Spacer(modifier = Modifier.height(20.dp))
+                    MenuItem(stringResource(R.string.menu_vision), showVision)
                     Spacer(modifier = Modifier.height(32.dp))
                 }
             }

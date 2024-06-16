@@ -39,6 +39,9 @@ class Game(
     @Transient
     var saySomething: (Int, Int) -> Unit = { _, _ -> }
 
+    @Transient
+    var jokerPlayedSound: () -> Unit = {}
+
     var isGameOver = 0
         private set(value) {
             field = value
@@ -92,46 +95,45 @@ class Game(
         return false
     }
 
-    // TODO
-    fun afterPlayerMove(updateView: () -> Unit) {
+    fun afterPlayerMove(updateView: () -> Unit, hTick: Long) {
         CoroutineScope(Dispatchers.Default).launch {
-            delay(570L) // Move card from hand; move card ontoField
+            delay(hTick * 3) // Move card from hand; move card ontoField
             isPlayerTurn = false
             if (processField()) { // Remove cards; move cards within caravan
                 updateView()
-                delay(760L)
+                delay(hTick * 4)
             }
             if (processHand(playerCResources)) { // Take card into hand
                 updateView()
-                delay(190L)
+                delay(hTick)
             }
 
             if (checkOnGameOver()) {
                 return@launch
             }
 
-            delay(380L) // Just break.
+            delay(hTick * 2) // Just break.
 
             enemy.makeMove(this@Game)
             updateView()
-            delay(380L) // Move card from hand; move card ontoField
-            delay(570L)
+            delay(hTick * 2) // Move card from hand; move card ontoField
+            delay(hTick * 3)
             if (processField()) { // Remove cards; move cards within caravan
                 updateView()
-                delay(760L)
+                delay(hTick * 4)
             }
             if (processHand(enemyCResources)) {
                 updateView()
-                delay(190L)
+                delay(hTick)
             }
             isPlayerTurn = true
             checkOnGameOver()
-            delay(380L)
+            delay(hTick * 2)
             updateView()
         }
     }
 
-    fun processJacks() {
+    private fun processJacks() {
         (playerCaravans + enemyCaravans).forEach { caravan ->
             caravan.removeAllJackedCards()
         }
@@ -194,7 +196,7 @@ class Game(
         }
     }
 
-    fun putJokerOntoCard(card: Card) {
+    private fun putJokerOntoCard(card: Card) {
         if (card.rank == Rank.ACE) {
             (playerCaravans + enemyCaravans).forEach { caravan ->
                 caravan.jokerRemoveAllSuits(card)
@@ -202,22 +204,6 @@ class Game(
         } else {
             (playerCaravans + enemyCaravans).forEach { caravan ->
                 caravan.jokerRemoveAllRanks(card)
-            }
-        }
-    }
-
-    fun copy(): Game {
-        return Game(
-            CResources(CustomDeck()),
-            enemy
-        ).also {
-            it.playerCResources.copyFrom(this.playerCResources)
-            it.enemyCResources.copyFrom(this.enemyCResources)
-            it.playerCaravans.forEachIndexed { index, caravan ->
-                caravan.copyFrom(this.playerCaravans[index])
-            }
-            it.enemyCaravans.forEachIndexed { index, caravan ->
-                caravan.copyFrom(this.enemyCaravans[index])
             }
         }
     }

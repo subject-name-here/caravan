@@ -12,16 +12,26 @@
                 fill="none" stroke="#0066b1" stroke-linecap="square" stroke-miterlimit="1.5"
                 stroke-width="80"></path>
         </symbol>
+        <symbol id="SS2Y" preserveAspectRatio="xMinYMid" viewBox="-600 -600 1200 1200">
+            <path
+                d="M0 -500C350 -250 460 -100 460 100C460 300 260 340 210 340C110 340 55 285 100 300L130 500L-130 500L-100 300C-55 285 -110 340 -210 340C-260 340 -460 300 -460 100C-460 -100 -350 -250 0 -500Z"
+                fill="#fff773"></path>
+        </symbol>
+        <symbol id="VSJY" preserveAspectRatio="xMinYMid" viewBox="-500 -500 1000 1000">
+            <path d="M50 -460L250 -460M150 -460L150 250A100 100 0 0 1 -250 250L-250 220"
+                fill="none" stroke="#fff773" stroke-linecap="square" stroke-miterlimit="1.5"
+                stroke-width="80"></path>
+        </symbol>
         <rect height="260.8" id="XSJ" width="164.8" x="-82.4" y="-130.4"></rect>
     </defs>
-    <rect fill="#000000" height="335" rx="12" ry="12" stroke="#0066b1" width="239" x="-119.5"
+    <rect fill="#000000" height="335" rx="12" ry="12" stroke="#000000" width="239" x="-119.5"
         y="-167.5"></rect>
     <use fill="#FFF" height="260.8" stroke="#88f" width="164.8" xlink:href="#XSJ"></use>
     <use height="164.8" width="164.8" x="-82.4" y="-82.4" xlink:href="#VSJ"></use>
-    <use height="32" width="32" x="-114.4" y="-156" xlink:href="#VSJ"></use>
-    <use height="26.032" width="26.032" x="-111.416" y="-119" xlink:href="#SSJ"></use>
+    <use height="32" width="32" x="-114.4" y="-156" xlink:href="#VSJY"></use>
+    <use height="26.032" width="26.032" x="-111.416" y="-119" xlink:href="#SS2Y"></use>
     <g transform="rotate(180)">
-        <use height="32" width="32" x="-114.4" y="-156" xlink:href="#VSJ"></use>
-        <use height="26.032" width="26.032" x="-111.416" y="-119" xlink:href="#SSJ"></use>
+        <use height="32" width="32" x="-114.4" y="-156" xlink:href="#VSJY"></use>
+        <use height="26.032" width="26.032" x="-111.416" y="-119" xlink:href="#SS2Y"></use>
     </g>
 </svg>

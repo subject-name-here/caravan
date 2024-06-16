@@ -37,8 +37,9 @@
     <string name="menu_tutorial">Обучение</string>
     <string name="menu_rules">Правила</string>
     <string name="menu_deck">Настройка колоды</string>
+    <string name="menu_vision">Визуал!</string>
     <string name="menu_about">О Караване</string>
-    <string name="menu_settings">Визуал!</string>
+    <string name="menu_settings">Настройки</string>
 
     <string name="menu_back">Назад</string>
 

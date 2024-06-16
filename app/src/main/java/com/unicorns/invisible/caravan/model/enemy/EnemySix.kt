@@ -86,6 +86,7 @@ data object EnemySix : Enemy() {
         }
 
         if (Random.nextBoolean() && StrategyJoker.move(game)) {
+            game.jokerPlayedSound()
             return
         }
 

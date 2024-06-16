@@ -1,6 +1,5 @@
 package com.unicorns.invisible.caravan
 
-import android.util.Log
 import androidx.collection.mutableObjectListOf
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.TweenSpec
@@ -62,16 +61,18 @@ import com.unicorns.invisible.caravan.utils.ShowCardBack
 import com.unicorns.invisible.caravan.utils.TextFallout
 import com.unicorns.invisible.caravan.utils.dpToPx
 import com.unicorns.invisible.caravan.utils.getBackgroundColor
-import com.unicorns.invisible.caravan.utils.getDividerColor
+import com.unicorns.invisible.caravan.utils.getGameDividerColor
 import com.unicorns.invisible.caravan.utils.getGameScoreColor
+import com.unicorns.invisible.caravan.utils.getGameSelectionColor
 import com.unicorns.invisible.caravan.utils.getGrayTransparent
 import com.unicorns.invisible.caravan.utils.getKnobColor
-import com.unicorns.invisible.caravan.utils.getSelectionColor
 import com.unicorns.invisible.caravan.utils.getTextBackgroundColor
 import com.unicorns.invisible.caravan.utils.getTextColor
 import com.unicorns.invisible.caravan.utils.getTextStrokeColor
 import com.unicorns.invisible.caravan.utils.getTrackColor
 import com.unicorns.invisible.caravan.utils.playCardFlipSound
+import com.unicorns.invisible.caravan.utils.playJokerReceivedSounds
+import com.unicorns.invisible.caravan.utils.playJokerSounds
 import com.unicorns.invisible.caravan.utils.pxToDp
 import com.unicorns.invisible.caravan.utils.scrollbar
 import com.unicorns.invisible.caravan.utils.startAmbient
@@ -126,20 +127,20 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
         val selectedCardNN = selectedCard ?: return
         game.playerCResources.removeFromHand(selectedCardNN)
         resetSelected()
-        game.afterPlayerMove { updateEnemyHand(); updateCaravans() }
+        game.afterPlayerMove({ updateEnemyHand(); updateCaravans() }, activity.animationTickLength.value!! / 2L)
     }
     fun dropCaravan() {
         val selectedCaravanNN = selectedCaravan
         if (selectedCaravanNN == -1) return
         game.playerCaravans[selectedCaravanNN].dropCaravan()
         resetSelected()
-        game.afterPlayerMove { updateEnemyHand(); updateCaravans() }
+        game.afterPlayerMove({ updateEnemyHand(); updateCaravans() }, activity.animationTickLength.value!! / 2L)
     }
 
     fun addCardToCaravan(caravan: Caravan, position: Int, isEnemy: Boolean) {
         fun onCaravanCardInserted() {
             resetSelected()
-            game.afterPlayerMove { updateEnemyHand(); updateCaravans() }
+            game.afterPlayerMove({ updateEnemyHand(); updateCaravans() }, activity.animationTickLength.value!! / 2L)
         }
 
         val cardIndex = selectedCard
@@ -149,7 +150,7 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
                 if (position in caravan.cards.indices && caravan.cards[position].canAddModifier(card)) {
                     playCardFlipSound(activity)
                     if (card.rank == Rank.JOKER) {
-                        // TODO: playu wild wasteland sound
+                        playJokerSounds(activity)
                     }
                     caravan.cards[position].addModifier(game.playerCResources.removeFromHand(cardIndex))
                     onCaravanCardInserted()
@@ -395,7 +396,7 @@ fun PlayerSide(
     onCardClicked: (Int) -> Unit,
     getMySymbol: () -> String, setMySymbol: () -> Unit
 ) {
-    val selectedCardColor = getSelectionColor(activity)
+    val selectedCardColor = getGameSelectionColor(activity)
     Row(verticalAlignment = Alignment.Bottom, modifier = Modifier.fillMaxSize()
     ) {
         PlayerCards(activity, game.playerCResources.hand, wasCardDropped(), selectedCard, selectedCardColor, onCardClicked)
@@ -459,10 +460,14 @@ fun Hand(
         LaunchedEffect(key) {
             if (key > 0) {
                 playCardFlipSound(activity)
-                itemVerticalOffsetMovingIn.animateTo(0f, TweenSpec(190))
+                itemVerticalOffsetMovingIn.animateTo(0f,
+                    TweenSpec(activity.animationTickLength.value!!.toInt() / 2)
+                )
             } else if (key < 0) {
                 playCardFlipSound(activity)
-                itemVerticalOffsetMovingOut.animateTo((if (wasCardDropped) 2.5f else -2.5f) * enemyMult, TweenSpec(190))
+                itemVerticalOffsetMovingOut.animateTo((if (wasCardDropped) 2.5f else -2.5f) * enemyMult,
+                    TweenSpec(activity.animationTickLength.value!!.toInt() / 2)
+                )
             }
             memCards.clear()
             memCards.addAll(cards)
@@ -506,6 +511,11 @@ fun Hand(
                         }
                 )
             } else {
+                if (it.rank == Rank.JOKER && isMovingIn) {
+                    LaunchedEffect(Unit) {
+                        playJokerReceivedSounds(activity)
+                    }
+                }
                 ShowCard(
                     activity,
                     it,
@@ -564,11 +574,13 @@ fun RowScope.CaravanOnField(
     LaunchedEffect(Unit) {
         while (width == 0) {
             width = state.layoutInfo.viewportSize.width
-            delay(380L)
+            delay(activity.animationTickLength.value!!)
         }
     }
     val trueWidth = (width - 3.5f * 10.dp.dpToPx())
     val scale = (trueWidth / 183.toFloat()).coerceAtMost(1.2f)
+
+    val hTick = activity.animationTickLength.value!!.toInt() / 2
 
     Column(Modifier
         .fillMaxHeight()
@@ -620,7 +632,7 @@ fun RowScope.CaravanOnField(
                         caravan.cards
                     } else {
                         LaunchedEffect(Unit) {
-                            delay(1140L)
+                            delay(activity.animationTickLength.value!! * 3L)
                             copy.clear()
                             copy.addAll(caravan.cards)
                             caravanMem = getHash()
@@ -640,11 +652,11 @@ fun RowScope.CaravanOnField(
                         val index by remember { mutableIntStateOf(cardIndex) }
                         val isModMovingIn = cardIndex == index
                         LaunchedEffect(isModMovingIn) {
-                            animationIn.animateTo(0f, TweenSpec(190, 570))
+                            animationIn.animateTo(0f, TweenSpec(hTick, hTick * 3))
                         }
                         LaunchedEffect(isMovingOut) {
                             animationOut.snapTo(0f)
-                            animationOut.animateTo(2f, TweenSpec(190, 380))
+                            animationOut.animateTo(2f, TweenSpec(hTick, hTick * 2))
                         }
                         Box(modifier = Modifier
                             .layout { measurable, constraints ->
@@ -672,11 +684,11 @@ fun RowScope.CaravanOnField(
                         val animationIn = remember { Animatable(enemyMult * 3f) }
                         val animationOut = remember { Animatable(0f) }
                         LaunchedEffect(isMovingIn) {
-                            animationIn.animateTo(0f, TweenSpec(190, 570))
+                            animationIn.animateTo(0f, TweenSpec(hTick, hTick * 3))
                         }
                         LaunchedEffect(isMovingOut) {
                             animationOut.snapTo(0f)
-                            animationOut.animateTo(2f, TweenSpec(190, 380))
+                            animationOut.animateTo(2f, TweenSpec(hTick, hTick * 2))
                         }
 
                         val modifier = Modifier
@@ -885,7 +897,7 @@ fun Caravans(
                         Score(activity, it, caravan, opposingValue)
                     }
                 }
-                HorizontalDivider(thickness = 4.dp, color = getDividerColor(activity))
+                HorizontalDivider(thickness = 4.dp, color = getGameDividerColor(activity))
                 Row(Modifier.fillMaxWidth().height(24.dp)) {
                     repeat(3) {
                         val caravan = getPlayerCaravan(it)

@@ -81,6 +81,9 @@ class EnemyPlayer(
                     game.isCorrupted = true
                     return
                 }
+                if (card.rank == Rank.JOKER) {
+                    game.jokerPlayedSound()
+                }
                 cardInCaravan.addModifier(card)
             }
         }

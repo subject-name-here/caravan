@@ -16,9 +16,9 @@
         y="20">Joker
     </text>
 
-    <use height="32" width="32" x="-114.4" y="-156" xlink:href="#smile"></use>
+    <use height="32" width="32" x="-105" y="-136" xlink:href="#smile"></use>
 
     <g transform="rotate(180)">
-        <use height="32" width="32" x="-114.4" y="-156" xlink:href="#antismile"></use>
+        <use height="32" width="32" x="-105" y="-136" xlink:href="#antismile"></use>
     </g>
 </svg>

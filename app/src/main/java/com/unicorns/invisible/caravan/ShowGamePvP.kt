@@ -30,6 +30,7 @@ import com.unicorns.invisible.caravan.utils.TextFallout
 import com.unicorns.invisible.caravan.utils.getTextBackgroundColor
 import com.unicorns.invisible.caravan.utils.getTextColor
 import com.unicorns.invisible.caravan.utils.getTextStrokeColor
+import com.unicorns.invisible.caravan.utils.playJokerSounds
 import com.unicorns.invisible.caravan.utils.sendRequest
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -40,6 +41,7 @@ import kotlinx.coroutines.launch
 
 fun afterPlayerMove(
     game: Game,
+    hTick: Long,
     roomNumber: Int,
     isCreator: Boolean,
     move: MoveResponse,
@@ -50,15 +52,15 @@ fun afterPlayerMove(
 ) {
 
     CoroutineScope(Dispatchers.Default).launch {
-        delay(380L)
+        delay(hTick * 2)
         game.isPlayerTurn = false
         val isNewCardAdded = game.playerCResources.deckSize > 0 && game.playerCResources.hand.size < 5
         if (game.processField()) {
-            delay(380L) // Remove cards; move cards within caravan
+            delay(hTick * 2) // Remove cards; move cards within caravan
             updateView()
         }
         if (game.processHand(game.playerCResources)) {
-            delay(190L) // Take card into hand
+            delay(hTick) // Take card into hand
             updateView()
         }
 
@@ -100,7 +102,7 @@ fun afterPlayerMove(
 
 
 fun pingForMove(
-    game: Game, room: Int, isCreator: Boolean,
+    game: Game, hTick: Long, room: Int, isCreator: Boolean,
     setEnemySymbol: (Int) -> Unit,
     corrupt: (String) -> Unit,
     updateView: () -> Unit,
@@ -110,7 +112,7 @@ fun pingForMove(
         if (result.getString("body") == "-1") {
             CoroutineScope(Dispatchers.Unconfined).launch {
                 delay(760L)
-                pingForMove(game, room, isCreator, setEnemySymbol, corrupt, updateView, afterEnemyMove)
+                pingForMove(game, hTick, room, isCreator, setEnemySymbol, corrupt, updateView, afterEnemyMove)
             }
             return@sendRequest
         }
@@ -125,22 +127,22 @@ fun pingForMove(
         }
 
         CoroutineScope(Dispatchers.Default).launch {
-            delay(190L) // Just break.
+            delay(hTick) // Just break.
             game.enemy.makeMove(game)
             updateView()
-            delay(380L) // Move card from hand; move card ontoField
+            delay(hTick * 2) // Move card from hand; move card ontoField
             if (game.processField()) {
-                delay(380L)
+                delay(hTick * 2)
                 updateView()
             }
             if (game.processHand(game.enemyCResources)) {
-                delay(190L)
+                delay(hTick)
                 updateView()
             }
             game.isPlayerTurn = true
             game.checkOnGameOver()
             updateView()
-            delay(190L)
+            delay(hTick)
             afterEnemyMove(!game.isOver())
         }
     }
@@ -159,6 +161,7 @@ fun ShowGamePvP(
     updateCaravans: () -> Unit,
     goBack: () -> Unit,
 ) {
+    val hTick = activity.animationTickLength.value!! / 2
     var selectedCard by remember { mutableStateOf<Int?>(null) }
 
     var selectedCaravan by remember { mutableIntStateOf(-1) }
@@ -206,7 +209,7 @@ fun ShowGamePvP(
         val selectedCardNN = selectedCard ?: return
         game.playerCResources.removeFromHand(selectedCardNN)
         resetSelected()
-        afterPlayerMove(game, roomNumber, isCreator = isCreator, MoveResponse(
+        afterPlayerMove(game, hTick, roomNumber, isCreator = isCreator, MoveResponse(
             moveCode = 2,
             handCardNumber = selectedCardNN,
         ), chosenSymbol,
@@ -214,7 +217,7 @@ fun ShowGamePvP(
             ::corruptGame,
             {
                 pingForMove(
-                    game, roomNumber, isCreator,
+                    game, hTick, roomNumber, isCreator,
                     { enemyChosenSymbol = it },
                     ::corruptGame,
                     { updateCaravans(); updateEnemyHand() },
@@ -230,7 +233,7 @@ fun ShowGamePvP(
         game.playerCaravans[selectedCaravanNN].dropCaravan()
         updateCaravans()
         resetSelected()
-        afterPlayerMove(game, roomNumber, isCreator = isCreator, MoveResponse(
+        afterPlayerMove(game, hTick, roomNumber, isCreator = isCreator, MoveResponse(
             moveCode = 1,
             caravanCode = selectedCaravanNN,
         ), chosenSymbol,
@@ -238,7 +241,7 @@ fun ShowGamePvP(
             ::corruptGame,
             {
                 pingForMove(
-                    game, roomNumber, isCreator,
+                    game, hTick, roomNumber, isCreator,
                     { enemyChosenSymbol = it },
                     ::corruptGame,
                     { updateCaravans(); updateEnemyHand() },
@@ -254,7 +257,7 @@ fun ShowGamePvP(
             resetSelected()
             updateCaravans()
             if (cardInCaravan == null) {
-                afterPlayerMove(game, roomNumber, isCreator = isCreator, MoveResponse(
+                afterPlayerMove(game, hTick, roomNumber, isCreator = isCreator, MoveResponse(
                     moveCode = 3,
                     handCardNumber = cardIndex,
                     caravanCode = caravanIndex
@@ -263,7 +266,7 @@ fun ShowGamePvP(
                     ::corruptGame,
                     {
                         pingForMove(
-                            game, roomNumber, isCreator,
+                            game, hTick, roomNumber, isCreator,
                             { enemyChosenSymbol = it },
                             ::corruptGame,
                             { updateCaravans(); updateEnemyHand() },
@@ -272,7 +275,7 @@ fun ShowGamePvP(
                     }
                 )
             } else {
-                afterPlayerMove(game, roomNumber, isCreator = isCreator, MoveResponse(
+                afterPlayerMove(game, hTick, roomNumber, isCreator = isCreator, MoveResponse(
                     moveCode = 4,
                     handCardNumber = cardIndex,
                     cardInCaravanNumber = cardInCaravan,
@@ -282,7 +285,7 @@ fun ShowGamePvP(
                     ::corruptGame,
                     {
                         pingForMove(
-                            game, roomNumber, isCreator,
+                            game, hTick, roomNumber, isCreator,
                             { enemyChosenSymbol = it },
                             ::corruptGame,
                             { updateCaravans(); updateEnemyHand() },
@@ -310,7 +313,7 @@ fun ShowGamePvP(
                 Rank.JACK.value, Rank.QUEEN.value, Rank.KING.value, Rank.JOKER.value -> {
                     if (position in caravan.cards.indices && caravan.cards[position].canAddModifier(card)) {
                         if (card.rank == Rank.JOKER) {
-                            // TODO: play wild wasteland sound
+                            playJokerSounds(activity)
                         }
                         caravan.cards[position].addModifier(game.playerCResources.removeFromHand(cardIndex))
                         onCaravanCardInserted(

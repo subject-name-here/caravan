@@ -3,6 +3,7 @@ package com.unicorns.invisible.caravan.model.enemy
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyDestructive
+import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJoker
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.Caravan
 import com.unicorns.invisible.caravan.model.primitives.Card

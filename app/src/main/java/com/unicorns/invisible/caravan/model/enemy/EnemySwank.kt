@@ -3,6 +3,7 @@ package com.unicorns.invisible.caravan.model.enemy
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyDestructive
+import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJoker
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.Caravan
 import com.unicorns.invisible.caravan.model.primitives.Card
@@ -60,6 +61,10 @@ data object EnemySwank : Enemy() {
         }
         val score = game.playerCaravans.indices.map { check(game.playerCaravans[it], game.enemyCaravans[it].getValue()) }
         if (score.sum() > 2.4f) {
+            if (StrategyJoker.move(game)) {
+                game.jokerPlayedSound()
+                return
+            }
             if (StrategyDestructive.move(game)) {
                 return
             }
