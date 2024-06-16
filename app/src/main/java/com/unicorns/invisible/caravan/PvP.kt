@@ -17,7 +17,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
@@ -34,7 +33,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -52,12 +50,18 @@ import com.unicorns.invisible.caravan.multiplayer.decodeMove
 import com.unicorns.invisible.caravan.save.json
 import com.unicorns.invisible.caravan.save.saveOnGD
 import com.unicorns.invisible.caravan.utils.CheckboxCustom
+import com.unicorns.invisible.caravan.utils.TextFallout
+import com.unicorns.invisible.caravan.utils.clickableCancel
+import com.unicorns.invisible.caravan.utils.clickableOk
 import com.unicorns.invisible.caravan.utils.getBackgroundColor
 import com.unicorns.invisible.caravan.utils.getDividerColor
 import com.unicorns.invisible.caravan.utils.getKnobColor
 import com.unicorns.invisible.caravan.utils.getTextBackgroundColor
 import com.unicorns.invisible.caravan.utils.getTextColor
+import com.unicorns.invisible.caravan.utils.getTextStrokeColor
 import com.unicorns.invisible.caravan.utils.getTrackColor
+import com.unicorns.invisible.caravan.utils.playClickSound
+import com.unicorns.invisible.caravan.utils.playCloseSound
 import com.unicorns.invisible.caravan.utils.playLoseSound
 import com.unicorns.invisible.caravan.utils.playWinSound
 import com.unicorns.invisible.caravan.utils.scrollbar
@@ -342,22 +346,23 @@ fun ShowPvP(
             Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(
-                text = stringResource(R.string.find),
-                modifier = Modifier
-                    .clickable {
+            TextFallout(
+                stringResource(R.string.find),
+                getTextColor(activity),
+                getTextStrokeColor(activity),
+                18.sp,
+                Alignment.Center,
+                Modifier
+                    .clickableOk(activity) {
                         updateAvailableRoom(checkedCustomDeck)
                     }
                     .fillMaxWidth()
                     .wrapContentHeight()
                     .padding(horizontal = 8.dp, vertical = 16.dp).background(getTextBackgroundColor(activity)).padding(8.dp),
-                textAlign = TextAlign.Center,
-                fontFamily = FontFamily(Font(R.font.monofont)),
-                fontWeight = FontWeight.ExtraBold,
-                style = TextStyle(color = getTextColor(activity), fontSize = 18.sp)
+                TextAlign.Center
             )
             Row(modifier = Modifier.height(96.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
-                Text(
+                TextFallout(
                     text = when (isRoomCreated) {
                         0 -> stringResource(R.string.create_room)
                         1 -> stringResource(R.string.pool)
@@ -365,14 +370,15 @@ fun ShowPvP(
                         4 -> stringResource(R.string.incorrect_room_number)
                         else -> stringResource(R.string.your_room_is, isRoomCreated)
                     },
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center,
-                    fontFamily = FontFamily(Font(R.font.monofont)),
-                    style = TextStyle(color = getTextColor(activity), fontSize = 14.sp),
+                    getTextColor(activity),
+                    getTextStrokeColor(activity),
+                    14.sp,
+                    Alignment.Center,
                     modifier = Modifier
                         .fillMaxWidth(0.33f)
                         .padding(horizontal = 8.dp)
-                        .clickable { createRoom() }.background(getTextBackgroundColor(activity)).padding(4.dp)
+                        .clickableOk(activity) { createRoom() }.background(getTextBackgroundColor(activity)).padding(4.dp),
+                    textAlign = TextAlign.Center,
                 )
                 TextField(
                     modifier = Modifier.fillMaxWidth(0.5f),
@@ -381,28 +387,28 @@ fun ShowPvP(
                     value = roomNumber,
                     onValueChange = { roomNumber = it },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    textStyle = TextStyle(fontSize = 14.sp, color = getTextColor(activity)),
-                    label = { Text(text = stringResource(R.string.room_number),
-                        fontFamily = FontFamily(Font(R.font.monofont)),
-                        style = TextStyle(color = getTextColor(activity), fontSize = 11.sp)) },
+                    textStyle = TextStyle(fontSize = 14.sp, color = getTextColor(activity), fontFamily = FontFamily(Font(R.font.monofont))),
+                    label = { TextFallout(text = stringResource(R.string.room_number), getTextColor(activity), getTextStrokeColor(activity),
+                        11.sp, Alignment.Center, Modifier, TextAlign.Center) },
                     colors = TextFieldDefaults.colors().copy(
                         cursorColor = getTextColor(activity),
                         focusedContainerColor = getTextBackgroundColor(activity),
                         unfocusedContainerColor = getTextBackgroundColor(activity),
-                        disabledContainerColor = getTextBackgroundColor(activity),
+                        disabledContainerColor = getBackgroundColor(activity),
                     )
                 )
                 Spacer(modifier = Modifier.width(8.dp))
-                Text(
+                TextFallout(
                     text = stringResource(R.string.join),
-                    fontWeight = FontWeight.Bold,
-                    fontFamily = FontFamily(Font(R.font.monofont)),
-                    textAlign = TextAlign.Center,
-                    style = TextStyle(color = getTextColor(activity), fontSize = 14.sp),
-                    modifier = Modifier
+                    getTextColor(activity),
+                    getTextStrokeColor(activity),
+                    14.sp,
+                    Alignment.Center,
+                    Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 8.dp)
-                        .clickable { joinRoom() }.background(getTextBackgroundColor(activity)).padding(4.dp),
+                        .clickableOk(activity) { joinRoom() }.background(getTextBackgroundColor(activity)).padding(4.dp),
+                    textAlign = TextAlign.Center,
                 )
             }
             Column(
@@ -412,30 +418,52 @@ fun ShowPvP(
                 Row(modifier = Modifier
                     .fillMaxWidth()
                     .height(48.dp), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
-                    Text(modifier = Modifier.fillMaxWidth(0.7f),
-                        fontFamily = FontFamily(Font(R.font.monofont)),
-                        text = stringResource(R.string.pve_use_custom_deck), style = TextStyle(
-                        color = getTextColor(activity), fontSize = 14.sp
-                    ))
+                    TextFallout(
+                        stringResource(R.string.pve_use_custom_deck),
+                        getTextColor(activity),
+                        getTextStrokeColor(activity),
+                        14.sp,
+                        Alignment.CenterStart,
+                        Modifier.fillMaxWidth(0.7f),
+                        TextAlign.Start
+                    )
                     CheckboxCustom(
                         activity,
                         { checkedCustomDeck },
-                        { checkedCustomDeck = !checkedCustomDeck },
+                        {
+                            checkedCustomDeck = !checkedCustomDeck
+                            if (checkedCustomDeck) {
+                                playClickSound(activity)
+                            } else {
+                                playCloseSound(activity)
+                            }
+                        },
                         { isRoomCreated == 0 }
                     )
                 }
                 Row(modifier = Modifier
                     .fillMaxWidth()
                     .height(48.dp), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
-                    Text(modifier = Modifier.fillMaxWidth(0.7f),
-                        fontFamily = FontFamily(Font(R.font.monofont)),
-                        text = stringResource(R.string.private_room), style = TextStyle(
-                        color = getTextColor(activity), fontSize = 14.sp
-                    ))
+                    TextFallout(
+                        stringResource(R.string.private_room),
+                        getTextColor(activity),
+                        getTextStrokeColor(activity),
+                        14.sp,
+                        Alignment.CenterStart,
+                        Modifier.fillMaxWidth(0.7f),
+                        TextAlign.Start
+                    )
                     CheckboxCustom(
                         activity,
                         { checkedPrivate },
-                        { checkedPrivate = !checkedPrivate },
+                        {
+                            checkedPrivate = !checkedPrivate
+                            if (checkedPrivate) {
+                                playClickSound(activity)
+                            } else {
+                                playCloseSound(activity)
+                            }
+                        },
                         { isRoomCreated == 0 }
                     )
                 }
@@ -445,30 +473,39 @@ fun ShowPvP(
         HorizontalDivider(color = getDividerColor(activity))
         Spacer(modifier = Modifier.height(16.dp))
         Column(Modifier.fillMaxSize(0.75f), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(
-                modifier = Modifier.padding(horizontal = 16.dp),
-                fontFamily = FontFamily(Font(R.font.monofont)),
-                text = stringResource(R.string.no_stats_here),
-                textAlign = TextAlign.Center,
-                style = TextStyle(color = getTextColor(activity), fontSize = 20.sp)
+            TextFallout(
+                stringResource(R.string.no_stats_here),
+                getTextColor(activity),
+                getTextStrokeColor(activity),
+                20.sp,
+                Alignment.Center,
+                Modifier.padding(horizontal = 16.dp),
+                TextAlign.Center
             )
             Spacer(modifier = Modifier.height(12.dp))
-            Text(
-                text = stringResource(R.string.pvp_piece),
-                fontFamily = FontFamily(Font(R.font.monofont)),
-                style = TextStyle(color = getTextColor(activity), fontSize = 13.sp)
+            TextFallout(
+                stringResource(R.string.pvp_piece),
+                getTextColor(activity),
+                getTextStrokeColor(activity),
+                13.sp,
+                Alignment.Center,
+                Modifier.padding(horizontal = 16.dp),
+                TextAlign.Start
             )
         }
         Spacer(modifier = Modifier.height(32.dp))
-        Text(
+        TextFallout(
             text = stringResource(R.string.menu_back),
-            fontFamily = FontFamily(Font(R.font.monofont)),
-            style = TextStyle(color = getTextColor(activity), fontSize = 24.sp),
-            modifier = Modifier.clickable {
+            getTextColor(activity),
+            getTextStrokeColor(activity),
+            24.sp,
+            Alignment.Center,
+            Modifier.clickableCancel(activity) {
                 if (isRoomCreated == 0) {
                     goBack()
                 }
-            }.background(getTextBackgroundColor(activity)).padding(8.dp)
+            }.background(getTextBackgroundColor(activity)).padding(8.dp),
+            TextAlign.Center
         )
         Spacer(modifier = Modifier.height(32.dp))
     } }

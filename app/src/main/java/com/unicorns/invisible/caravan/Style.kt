@@ -67,3 +67,14 @@ fun Modifier.getTableBackground(style: Style): Modifier {
         }
     )
 }
+
+fun getStyleCities(style: Style): List<String> {
+    return when (style) {
+        ALASKA_FRONTIER -> listOf("ALPINE", "KOTZEBUE", "NEWTOK", "AKUTAN", "ANCHORAGE", "SCAGWAY")
+        OLD_WORLD, SIERRA_MADRE -> listOf("L.A.", "REDDING", "BLACK ROCK", "SAN DIEGO", "RENO", "ED. AFB")
+        MADRE_ROJA -> listOf("YOU", "CAN", "NEVER", "LEAVE", "SIERRA", "MADRE")
+        VAULT_21, -> listOf("LONG 15", "PRIMM", "NOVAK", "188", "NEW VEGAS", "HOOVER DAM")
+        VAULT_22 -> listOf("GRRRRR", "BRRRR", "VRRR", "MRRRRRR", "HRRRR", "DRRR")
+        else -> listOf("BONEYARD", "REDDING", "VAULT CITY", "DAYGLOW", "NEW RENO", "THE HUB")
+    }
+}

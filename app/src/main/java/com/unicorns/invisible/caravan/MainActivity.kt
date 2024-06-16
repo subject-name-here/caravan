@@ -6,7 +6,6 @@ import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -67,6 +66,8 @@ import com.unicorns.invisible.caravan.save.saveOnGD
 import com.unicorns.invisible.caravan.utils.SliderCustom
 import com.unicorns.invisible.caravan.utils.SwitchCustom
 import com.unicorns.invisible.caravan.utils.TextFallout
+import com.unicorns.invisible.caravan.utils.clickableCancel
+import com.unicorns.invisible.caravan.utils.clickableOk
 import com.unicorns.invisible.caravan.utils.currentPlayer
 import com.unicorns.invisible.caravan.utils.effectPlayer
 import com.unicorns.invisible.caravan.utils.getBackgroundColor
@@ -83,6 +84,8 @@ import com.unicorns.invisible.caravan.utils.getTrackColor
 import com.unicorns.invisible.caravan.utils.isRadioStopped
 import com.unicorns.invisible.caravan.utils.nextSong
 import com.unicorns.invisible.caravan.utils.pause
+import com.unicorns.invisible.caravan.utils.playClickSound
+import com.unicorns.invisible.caravan.utils.playCloseSound
 import com.unicorns.invisible.caravan.utils.playNotificationSound
 import com.unicorns.invisible.caravan.utils.radioPlayer
 import com.unicorns.invisible.caravan.utils.resume
@@ -211,7 +214,7 @@ class MainActivity : SaveDataActivity() {
                 Modifier
                     .fillMaxSize()
                     .background(backgroundColor)
-                    .clickable {
+                    .clickableOk(this) {
                         if (readyFlag.value == true) {
                             isIntroScreen = false
                         }
@@ -329,7 +332,7 @@ class MainActivity : SaveDataActivity() {
                             18.sp, Alignment.Center,
                             Modifier
                                 .background(getDialogTextColor(this))
-                                .clickable { hideAlertDialog() }
+                                .clickableCancel(this) { hideAlertDialog() }
                                 .padding(4.dp),
                             TextAlign.Center
                         )
@@ -341,7 +344,7 @@ class MainActivity : SaveDataActivity() {
                             getDialogBackground(this), 18.sp, Alignment.Center,
                             Modifier
                                 .background(getDialogTextColor(this))
-                                .clickable { hideAlertDialog(); goBack?.invoke(); goBack = null }
+                                .clickableCancel(this) { hideAlertDialog(); goBack?.invoke(); goBack = null }
                                 .padding(4.dp),
                             TextAlign.Center
                         )
@@ -394,7 +397,7 @@ class MainActivity : SaveDataActivity() {
                             Alignment.Center,
                             Modifier
                                 .background(getDialogTextColor(this))
-                                .clickable { saveOnGD(this); hideSoundSettings() }
+                                .clickableCancel(this) { saveOnGD(this); hideSoundSettings() }
                                 .padding(4.dp),
                             TextAlign.Center
                         )
@@ -483,6 +486,11 @@ class MainActivity : SaveDataActivity() {
                                     intro = !intro
                                     save?.let {
                                         it.useCaravanIntro = !it.useCaravanIntro
+                                        if (it.useCaravanIntro) {
+                                            playClickSound(this@MainActivity)
+                                        } else {
+                                            playCloseSound(this@MainActivity)
+                                        }
                                         saveOnGD(this@MainActivity)
                                     }
                                 }
@@ -517,7 +525,7 @@ class MainActivity : SaveDataActivity() {
                             Modifier
                                 .weight(1f)
                                 .wrapContentWidth()
-                                .clickable {
+                                .clickableOk(this@MainActivity) {
                                     if (!isPaused) {
                                         nextSong(this@MainActivity)
                                     }
@@ -536,7 +544,7 @@ class MainActivity : SaveDataActivity() {
                             Modifier
                                 .weight(1f)
                                 .wrapContentWidth()
-                                .clickable {
+                                .clickableOk(this@MainActivity) {
                                     if (isPaused) {
                                         resume()
                                         isPaused = false
@@ -558,7 +566,7 @@ class MainActivity : SaveDataActivity() {
                             Modifier
                                 .weight(1f)
                                 .wrapContentWidth()
-                                .clickable {
+                                .clickableOk(this@MainActivity) {
                                     showSoundSettings = true
                                 }
                                 .background(getTextBackgroundColor(this@MainActivity))
@@ -806,7 +814,7 @@ class MainActivity : SaveDataActivity() {
                             20.sp,
                             Alignment.CenterStart,
                             Modifier
-                                .clickable { onClick() }
+                                .clickableOk(this@MainActivity) { onClick() }
                                 .background(getTextBackgroundColor(this@MainActivity))
                                 .padding(8.dp),
                             TextAlign.Start
@@ -866,7 +874,7 @@ class MainActivity : SaveDataActivity() {
                                 Modifier
                                     .padding(end = 8.dp)
                                     .align(Alignment.TopEnd)
-                                    .clickable {
+                                    .clickableOk(this@MainActivity) {
                                         showSettings()
                                     }
                                     .background(getTextBackgroundColor(this@MainActivity))
@@ -902,7 +910,7 @@ class MainActivity : SaveDataActivity() {
                                 Modifier
                                     .align(Alignment.TopEnd)
                                     .padding(end = 8.dp)
-                                    .clickable {
+                                    .clickableOk(this@MainActivity) {
                                         showAbout()
                                     }
                                     .background(getTextBackgroundColor(this@MainActivity))

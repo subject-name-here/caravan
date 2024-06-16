@@ -40,6 +40,8 @@ import com.unicorns.invisible.caravan.utils.CheckboxCustom
 import com.unicorns.invisible.caravan.utils.ShowCard
 import com.unicorns.invisible.caravan.utils.ShowCardBack
 import com.unicorns.invisible.caravan.utils.TextFallout
+import com.unicorns.invisible.caravan.utils.clickableCancel
+import com.unicorns.invisible.caravan.utils.clickableSelect
 import com.unicorns.invisible.caravan.utils.getBackgroundColor
 import com.unicorns.invisible.caravan.utils.getKnobColor
 import com.unicorns.invisible.caravan.utils.getSelectionColor
@@ -47,6 +49,8 @@ import com.unicorns.invisible.caravan.utils.getTextBackgroundColor
 import com.unicorns.invisible.caravan.utils.getTextColor
 import com.unicorns.invisible.caravan.utils.getTextStrokeColor
 import com.unicorns.invisible.caravan.utils.getTrackColor
+import com.unicorns.invisible.caravan.utils.playClickSound
+import com.unicorns.invisible.caravan.utils.playCloseSound
 import com.unicorns.invisible.caravan.utils.scrollbar
 
 
@@ -139,7 +143,14 @@ fun SetCustomDeck(
                                 Card(Rank.ACE, Suit.CLUBS, back, check),
                                 Modifier
                                     .align(Alignment.CenterHorizontally)
-                                    .clickable { rowTabShow = !rowTabShow },
+                                    .clickable {
+                                        rowTabShow = !rowTabShow
+                                        if (rowTabShow) {
+                                            playClickSound(activity)
+                                        } else {
+                                            playCloseSound(activity)
+                                        }
+                                    },
                             )
                         }
                         val owners = back.getOwners()
@@ -177,6 +188,11 @@ fun SetCustomDeck(
                                     activity.save!!.altDecksChosen[back] = !check
                                     saveOnGD(activity)
                                     check = !check
+                                    if (check) {
+                                        playClickSound(activity)
+                                    } else {
+                                        playCloseSound(activity)
+                                    }
                                     updater = !updater
                                 }
                             ) { activity.save!!.availableDecksAlt[back] == true }
@@ -208,7 +224,7 @@ fun SetCustomDeck(
 
                                     if (isAvailable(card)) {
                                         ShowCard(activity, card, Modifier
-                                            .clickable {
+                                            .clickableSelect(activity) {
                                                 toggleToCustomDeck(card)
                                                 isSelected = !isSelected
                                                 updater = !updater
@@ -240,7 +256,7 @@ fun SetCustomDeck(
             modifier = Modifier
                 .fillMaxHeight()
                 .wrapContentHeight()
-                .clickable {
+                .clickableCancel(activity) {
                     activity.save?.let {
                         saveOnGD(activity)
                     }

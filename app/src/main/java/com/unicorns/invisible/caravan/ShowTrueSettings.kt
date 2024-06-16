@@ -26,12 +26,15 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.unicorns.invisible.caravan.utils.TextFallout
+import com.unicorns.invisible.caravan.utils.clickableCancel
 import com.unicorns.invisible.caravan.utils.getBackgroundColor
 import com.unicorns.invisible.caravan.utils.getKnobColor
 import com.unicorns.invisible.caravan.utils.getTextBackgroundColor
 import com.unicorns.invisible.caravan.utils.getTextColor
 import com.unicorns.invisible.caravan.utils.getTextStrokeColor
 import com.unicorns.invisible.caravan.utils.getTrackColor
+import com.unicorns.invisible.caravan.utils.playClickSound
+import com.unicorns.invisible.caravan.utils.playCloseSound
 import com.unicorns.invisible.caravan.utils.scrollbar
 
 
@@ -85,7 +88,13 @@ fun ShowTrueSettings(
                                 18.sp,
                                 Alignment.Center,
                                 Modifier.weight(1f).background(getTextBackgroundColor(activity)).clickable {
-                                    tickLength = (tickLength - 95L).coerceAtLeast(190L)
+                                    val tmpTickLength = tickLength - 95L
+                                    if (tmpTickLength < 190L) {
+                                        playCloseSound(activity)
+                                    } else {
+                                        playClickSound(activity)
+                                        tickLength = (tmpTickLength).coerceAtLeast(190L)
+                                    }
                                 },
                                 TextAlign.Center
                             )
@@ -105,7 +114,13 @@ fun ShowTrueSettings(
                                 18.sp,
                                 Alignment.Center,
                                 Modifier.weight(1f).background(getTextBackgroundColor(activity)).clickable {
-                                    tickLength = (tickLength + 95L).coerceAtMost(760L)
+                                    val tmpTickLength = tickLength + 95L
+                                    if (tmpTickLength > 760L) {
+                                        playCloseSound(activity)
+                                    } else {
+                                        playClickSound(activity)
+                                        tickLength = (tmpTickLength).coerceAtMost(760L)
+                                    }
                                 },
                                 TextAlign.Center
                             )
@@ -124,7 +139,7 @@ fun ShowTrueSettings(
             Alignment.Center,
             Modifier
                 .background(getTextBackgroundColor(activity))
-                .clickable {
+                .clickableCancel(activity) {
                     setTickLength(tickLength)
                     goBack()
                 }

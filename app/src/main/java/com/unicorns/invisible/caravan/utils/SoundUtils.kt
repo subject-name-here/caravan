@@ -92,6 +92,72 @@ fun playJokerSounds(activity: MainActivity) {
             start()
         }
 }
+fun playCloseSound(activity: MainActivity) {
+    effectPlayer = MediaPlayer
+        .create(activity, R.raw.ui_menu_cancel)
+        .apply {
+            setVolume(activity.save?.soundVolume ?: 1f, activity.save?.soundVolume ?: 1f)
+            setOnCompletionListener {
+                release()
+            }
+            start()
+        }
+}
+fun playClickSound(activity: MainActivity) {
+    effectPlayer = MediaPlayer
+        .create(activity, R.raw.ui_menu_ok)
+        .apply {
+            setVolume(activity.save?.soundVolume ?: 1f, activity.save?.soundVolume ?: 1f)
+            setOnCompletionListener {
+                release()
+            }
+            start()
+        }
+}
+fun playSelectSound(activity: MainActivity) {
+    effectPlayer = MediaPlayer
+        .create(activity, R.raw.ui_vats_move)
+        .apply {
+            setVolume((activity.save?.soundVolume ?: 1f) / 2, (activity.save?.soundVolume ?: 1f) / 2)
+            setOnCompletionListener {
+                release()
+            }
+            start()
+        }
+}
+fun playPimpBoySound(activity: MainActivity) {
+    effectPlayer = MediaPlayer
+        .create(activity, R.raw.ui_pimpboy)
+        .apply {
+            setVolume((activity.save?.soundVolume ?: 1f) / 2, (activity.save?.soundVolume ?: 1f) / 2)
+            setOnCompletionListener {
+                release()
+            }
+            start()
+        }
+}
+fun playVatsEnter(activity: MainActivity) {
+    effectPlayer = MediaPlayer
+        .create(activity, R.raw.ui_vats_enter)
+        .apply {
+            setVolume((activity.save?.soundVolume ?: 1f) / 2, (activity.save?.soundVolume ?: 1f) / 2)
+            setOnCompletionListener {
+                release()
+            }
+            start()
+        }
+}
+fun playVatsReady(activity: MainActivity) {
+    effectPlayer = MediaPlayer
+        .create(activity, R.raw.ui_vats_ready)
+        .apply {
+            setVolume((activity.save?.soundVolume ?: 1f) / 2, (activity.save?.soundVolume ?: 1f) / 2)
+            setOnCompletionListener {
+                release()
+            }
+            start()
+        }
+}
 
 var currentPlayer: MediaPlayer? = null
 fun stopMusic() {

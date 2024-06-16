@@ -59,6 +59,8 @@ import com.unicorns.invisible.caravan.model.primitives.Suit
 import com.unicorns.invisible.caravan.utils.ShowCard
 import com.unicorns.invisible.caravan.utils.ShowCardBack
 import com.unicorns.invisible.caravan.utils.TextFallout
+import com.unicorns.invisible.caravan.utils.clickableCancel
+import com.unicorns.invisible.caravan.utils.clickableOk
 import com.unicorns.invisible.caravan.utils.dpToPx
 import com.unicorns.invisible.caravan.utils.getBackgroundColor
 import com.unicorns.invisible.caravan.utils.getGameDividerColor
@@ -71,8 +73,11 @@ import com.unicorns.invisible.caravan.utils.getTextColor
 import com.unicorns.invisible.caravan.utils.getTextStrokeColor
 import com.unicorns.invisible.caravan.utils.getTrackColor
 import com.unicorns.invisible.caravan.utils.playCardFlipSound
+import com.unicorns.invisible.caravan.utils.playCloseSound
 import com.unicorns.invisible.caravan.utils.playJokerReceivedSounds
 import com.unicorns.invisible.caravan.utils.playJokerSounds
+import com.unicorns.invisible.caravan.utils.playSelectSound
+import com.unicorns.invisible.caravan.utils.playVatsReady
 import com.unicorns.invisible.caravan.utils.pxToDp
 import com.unicorns.invisible.caravan.utils.scrollbar
 import com.unicorns.invisible.caravan.utils.startAmbient
@@ -97,7 +102,16 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
         if (game.isOver()) {
             return
         }
-        selectedCard = if (index == selectedCard) null else index
+        selectedCard = if (index == selectedCard) {
+            null
+        } else {
+            index
+        }
+        if (selectedCard == null) {
+            playCloseSound(activity)
+        } else {
+            playSelectSound(activity)
+        }
         selectedCaravan = -1
     }
     fun onCaravanClicked(index: Int) {
@@ -105,6 +119,11 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
             return
         }
         selectedCaravan = index
+        if (selectedCaravan == -1) {
+            playCloseSound(activity)
+        } else {
+            playSelectSound(activity)
+        }
         selectedCard = null
         caravansKey = !caravansKey
     }
@@ -139,6 +158,7 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
 
     fun addCardToCaravan(caravan: Caravan, position: Int, isEnemy: Boolean) {
         fun onCaravanCardInserted() {
+            playVatsReady(activity)
             resetSelected()
             game.afterPlayerMove({ updateEnemyHand(); updateCaravans() }, activity.animationTickLength.value!! / 2L)
         }
@@ -261,7 +281,7 @@ fun ShowGameRaw(
                     Alignment.Center,
                     Modifier
                         .fillMaxWidth()
-                        .clickable {
+                        .clickableCancel(activity) {
                             goBack()
                         }
                         .padding(8.dp),
@@ -409,7 +429,7 @@ fun PlayerSide(
                     getTextStrokeColor(activity),
                     24.sp,
                     Alignment.TopStart,
-                    Modifier.background(getTextBackgroundColor(activity)).clickable {
+                    Modifier.background(getTextBackgroundColor(activity)).clickableOk(activity) {
                         setMySymbol()
                     },
                     TextAlign.Center
@@ -803,9 +823,9 @@ fun ShowDeck(cResources: CResources, activity: MainActivity, isKnown: Boolean = 
     }
 }
 
-private val cities = listOf("BONEYARD", "REDDING", "VAULT CITY", "DAYGLOW", "NEW RENO", "THE HUB")
 @Composable
 fun RowScope.Score(activity: MainActivity, num: Int, caravan: Caravan, opposingValue: Int) {
+    val cities = getStyleCities(activity.styleId)
     val (textColor, text, isColored) = if (caravan.getValue() > 26)
         Triple(Color.Red, caravan.getValue().toString(), true)
     else if (caravan.getValue() in (21..26) && (opposingValue !in (21..26) || caravan.getValue() > opposingValue))
@@ -927,8 +947,10 @@ fun Caravans(
                             if (!canDiscard()) return@clickable
                             val selectedCard = getSelectedCardInt()
                             if (selectedCard != null) {
+                                playVatsReady(activity)
                                 dropCardFromHand()
                             } else if (getSelectedCaravan() in (0..2)) {
+                                playVatsReady(activity)
                                 dropSelectedCaravan()
                             }
                         }

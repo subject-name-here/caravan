@@ -3,6 +3,7 @@ package com.unicorns.invisible.caravan.utils
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -357,4 +358,17 @@ fun TextFallout(
             textAlign = textAlign
         )
     }
+}
+
+@Composable
+fun Modifier.clickableCancel(activity: MainActivity, block: () -> Unit): Modifier {
+    return this.clickable { playCloseSound(activity); block() }
+}
+@Composable
+fun Modifier.clickableOk(activity: MainActivity, block: () -> Unit): Modifier {
+    return this.clickable { playClickSound(activity); block() }
+}
+@Composable
+fun Modifier.clickableSelect(activity: MainActivity, block: () -> Unit): Modifier {
+    return this.clickable { playSelectSound(activity); block() }
 }

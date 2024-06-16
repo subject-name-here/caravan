@@ -24,6 +24,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.unicorns.invisible.caravan.utils.TextFallout
+import com.unicorns.invisible.caravan.utils.clickableCancel
+import com.unicorns.invisible.caravan.utils.clickableOk
 import com.unicorns.invisible.caravan.utils.getBackByStyle
 import com.unicorns.invisible.caravan.utils.getBackgroundColor
 import com.unicorns.invisible.caravan.utils.getKnobColor
@@ -35,6 +37,7 @@ import com.unicorns.invisible.caravan.utils.getTextColor
 import com.unicorns.invisible.caravan.utils.getTextColorByStyle
 import com.unicorns.invisible.caravan.utils.getTextStrokeColor
 import com.unicorns.invisible.caravan.utils.getTrackColor
+import com.unicorns.invisible.caravan.utils.playPimpBoySound
 import com.unicorns.invisible.caravan.utils.scrollbar
 
 
@@ -104,6 +107,8 @@ fun ShowSettings(
                                     activity.save!!.caps -= style.price
                                     styleInt = style
                                     selectStyle(style.ordinal)
+                                    showAlertDialog("Transaction succeeded!", "You have bought ${style.styleName} style!")
+                                    playPimpBoySound(activity)
                                 } else {
                                     showAlertDialog("Transaction failed!", "Not enough caps!")
                                 }
@@ -125,7 +130,7 @@ fun ShowSettings(
             Alignment.Center,
             Modifier
                 .background(getTextBackgroundColor(activity))
-                .clickable {
+                .clickableCancel(activity) {
                     goBack()
                 }
                 .padding(8.dp),
@@ -162,7 +167,7 @@ fun ShowStyle(
                 .background(getMusicPanelColorByStyle(activity, style))
                 .padding(6.dp)
                 .background(getTextBackByStyle(activity, style))
-                .clickable {
+                .clickableOk(activity) {
                     onClick(style.ordinal)
                 },
             TextAlign.Center

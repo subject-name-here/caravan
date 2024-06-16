@@ -2,7 +2,6 @@ package com.unicorns.invisible.caravan
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -34,6 +33,9 @@ import coil.compose.AsyncImage
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.save.saveOnGD
 import com.unicorns.invisible.caravan.utils.TextFallout
+import com.unicorns.invisible.caravan.utils.clickableCancel
+import com.unicorns.invisible.caravan.utils.clickableOk
+import com.unicorns.invisible.caravan.utils.clickableSelect
 import com.unicorns.invisible.caravan.utils.getBackgroundColor
 import com.unicorns.invisible.caravan.utils.getDividerColor
 import com.unicorns.invisible.caravan.utils.getKnobColor
@@ -52,6 +54,7 @@ fun DeckSelection(
     setSelectedBack: (CardBack, Boolean) -> Unit,
     goBack: () -> Unit,
 ) {
+    @Composable
     fun getModifier(cardBack: CardBack, isAlt: Boolean): Modifier {
         activity.save?.let { save ->
             val checker = if (isAlt) save.availableDecksAlt else save.availableDecks
@@ -61,7 +64,7 @@ fun DeckSelection(
                     Modifier.border(width = 3.dp, color = getSelectionColor(activity))
                 } else {
                     Modifier
-                }.padding(4.dp).clickable {
+                }.padding(4.dp).clickableSelect(activity) {
                     setSelectedBack(cardBack, isAlt)
                     save.selectedDeck = cardBack to isAlt
                     saveOnGD(activity)
@@ -212,7 +215,7 @@ fun DeckSelection(
                     getTextStrokeColor(activity),
                     20.sp,
                     Alignment.Center,
-                    Modifier.background(getTextBackgroundColor(activity)).clickable {
+                    Modifier.background(getTextBackgroundColor(activity)).clickableOk(activity) {
                         setCustomDeck = true
                     }.padding(8.dp),
                     TextAlign.Center
@@ -238,7 +241,7 @@ fun DeckSelection(
                     getTextStrokeColor(activity),
                     24.sp,
                     Alignment.Center,
-                    Modifier.background(getTextBackgroundColor(activity)).clickable {
+                    Modifier.background(getTextBackgroundColor(activity)).clickableCancel(activity) {
                         goBack()
                     }.padding(8.dp),
                     textAlign = TextAlign.Center

@@ -1,6 +1,9 @@
 package com.unicorns.invisible.caravan
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -11,8 +14,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.GameSaver
@@ -22,6 +30,11 @@ import com.unicorns.invisible.caravan.model.primitives.Card
 import com.unicorns.invisible.caravan.model.primitives.CustomDeck
 import com.unicorns.invisible.caravan.model.primitives.Rank
 import com.unicorns.invisible.caravan.model.primitives.Suit
+import com.unicorns.invisible.caravan.utils.TextFallout
+import com.unicorns.invisible.caravan.utils.clickableCancel
+import com.unicorns.invisible.caravan.utils.getDialogBackground
+import com.unicorns.invisible.caravan.utils.getDialogTextColor
+import com.unicorns.invisible.caravan.utils.getTextColor
 import com.unicorns.invisible.caravan.utils.stopMusic
 
 @Composable
@@ -296,13 +309,16 @@ fun Tutorial(activity: MainActivity, goBack: () -> Unit) {
         }
     }
 
-    // TODO!!!!
     if (showAlertDialog) {
         AlertDialog(
+            modifier = Modifier.border(width = 4.dp, color = getTextColor(activity)),
             onDismissRequest = { hideAlertDialog() },
             confirmButton = { Text(text = "OK", modifier = Modifier.clickable { hideAlertDialog() }) },
             title = { Text(text = alertDialogHeader) },
             text = { Text(text = alertDialogMessage) },
+            containerColor = getDialogBackground(activity),
+            textContentColor = getDialogTextColor(activity),
+            shape = RectangleShape,
         )
     }
 }

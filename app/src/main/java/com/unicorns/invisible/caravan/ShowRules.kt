@@ -18,6 +18,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.unicorns.invisible.caravan.utils.TextFallout
+import com.unicorns.invisible.caravan.utils.clickableCancel
 import com.unicorns.invisible.caravan.utils.getBackgroundColor
 import com.unicorns.invisible.caravan.utils.getKnobColor
 import com.unicorns.invisible.caravan.utils.getTextBackgroundColor
@@ -55,7 +56,7 @@ fun ShowRules(activity: MainActivity, goBack: () -> Unit) {
             getTextStrokeColor(activity),
             24.sp,
             Alignment.Center,
-            Modifier.background(getTextBackgroundColor(activity)).clickable {
+            Modifier.background(getTextBackgroundColor(activity)).clickableCancel(activity) {
                 goBack()
             }.padding(8.dp),
             TextAlign.Center
