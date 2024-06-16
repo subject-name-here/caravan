@@ -59,6 +59,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withLink
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.MutableLiveData
@@ -819,6 +820,7 @@ class MainActivity : SaveDataActivity() {
                 item {
                     BoxWithConstraints(Modifier.fillMaxWidth()) {
                         val rand = Random(id.hashCode())
+                        var width = maxWidth.dpToPx().toInt()
                         var height by remember { mutableIntStateOf(0) }
                         LaunchedEffect(Unit) {
                             while (height == 0) {
@@ -828,10 +830,12 @@ class MainActivity : SaveDataActivity() {
                         }
                         StylePicture(this@MainActivity, styleId, id.hashCode(), Modifier.align(Alignment.Center)
                             .rotate(-30f + rand.nextFloat() * 60f)
-                            .offset(
-                                (0..(maxWidth.dpToPx().toInt() / 4)).random(rand).pxToDp(),
-                                (-height / 4 + (0..height / 2).random(rand)).pxToDp()
-                            ))
+                            .offset {
+                                IntOffset(
+                                    (0..(width / 4)).random(rand),
+                                    (-height / 4 + (0..height / 2).random(rand))
+                                )
+                            })
                         Column(Modifier.fillMaxWidth()) {
                             @Composable
                             fun MenuItem(text: String, onClick: () -> Unit) {
