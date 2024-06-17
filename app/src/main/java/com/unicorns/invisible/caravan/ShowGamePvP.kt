@@ -30,7 +30,10 @@ import com.unicorns.invisible.caravan.utils.TextFallout
 import com.unicorns.invisible.caravan.utils.getTextBackgroundColor
 import com.unicorns.invisible.caravan.utils.getTextColor
 import com.unicorns.invisible.caravan.utils.getTextStrokeColor
+import com.unicorns.invisible.caravan.utils.playCloseSound
 import com.unicorns.invisible.caravan.utils.playJokerSounds
+import com.unicorns.invisible.caravan.utils.playSelectSound
+import com.unicorns.invisible.caravan.utils.playVatsReady
 import com.unicorns.invisible.caravan.utils.sendRequest
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -188,7 +191,16 @@ fun ShowGamePvP(
         if (game.isOver()) {
             return
         }
-        selectedCard = if (index == selectedCard) null else index
+        selectedCard = if (index == selectedCard) {
+            null
+        } else {
+            index
+        }
+        if (selectedCard == null) {
+            playCloseSound(activity)
+        } else {
+            playSelectSound(activity)
+        }
         selectedCaravan = -1
     }
 
@@ -207,6 +219,7 @@ fun ShowGamePvP(
     fun dropCardFromHand() {
         if (game.isExchangingCards) return
         val selectedCardNN = selectedCard ?: return
+        playVatsReady(activity)
         game.playerCResources.removeFromHand(selectedCardNN)
         resetSelected()
         afterPlayerMove(game, hTick, roomNumber, isCreator = isCreator, MoveResponse(
@@ -230,6 +243,7 @@ fun ShowGamePvP(
         if (game.isExchangingCards) return
         val selectedCaravanNN = selectedCaravan
         if (selectedCaravanNN == -1) return
+        playVatsReady(activity)
         game.playerCaravans[selectedCaravanNN].dropCaravan()
         updateCaravans()
         resetSelected()
@@ -349,8 +363,16 @@ fun ShowGamePvP(
         ::onCardClicked,
         selectedCard,
         getSelectedCaravan = { selectedCaravan },
-        setSelectedCaravan = {
+        setSelectedCaravan = lambda@ {
+            if (game.isOver()) {
+                return@lambda
+            }
             selectedCaravan = it
+            if (selectedCaravan == -1) {
+                playCloseSound(activity)
+            } else {
+                playSelectSound(activity)
+            }
             selectedCard = null
             updateCaravans()
         },

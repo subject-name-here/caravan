@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -144,13 +145,16 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
     }
     fun dropCardFromHand() {
         val selectedCardNN = selectedCard ?: return
+        playVatsReady(activity)
         game.playerCResources.removeFromHand(selectedCardNN)
         resetSelected()
         game.afterPlayerMove({ updateEnemyHand(); updateCaravans() }, activity.animationTickLength.value!! / 2L)
     }
     fun dropCaravan() {
+
         val selectedCaravanNN = selectedCaravan
         if (selectedCaravanNN == -1) return
+        playVatsReady(activity)
         game.playerCaravans[selectedCaravanNN].dropCaravan()
         resetSelected()
         game.afterPlayerMove({ updateEnemyHand(); updateCaravans() }, activity.animationTickLength.value!! / 2L)
@@ -158,7 +162,6 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
 
     fun addCardToCaravan(caravan: Caravan, position: Int, isEnemy: Boolean) {
         fun onCaravanCardInserted() {
-            playVatsReady(activity)
             resetSelected()
             game.afterPlayerMove({ updateEnemyHand(); updateCaravans() }, activity.animationTickLength.value!! / 2L)
         }
@@ -622,7 +625,7 @@ fun RowScope.CaravanOnField(
                     .background(
                         if (isInitStage || caravan.getValue() == 0) Color.Transparent else run {
                             val color = getTextBackgroundColor(activity)
-                            Color(color.red, color.green, color.blue, 0.4f)
+                            Color(color.red, color.green, color.blue, 0.75f)
                         }
                     )
                     .padding(2.dp),
@@ -811,7 +814,7 @@ fun ShowDeck(cResources: CResources, activity: MainActivity, isKnown: Boolean = 
             getTextStrokeColor(activity),
             16.sp,
             Alignment.Center,
-            Modifier.fillMaxWidth(),
+            Modifier.fillMaxWidth().wrapContentWidth().background(getBackgroundColor(activity)),
             TextAlign.Center
         )
         if (isKnown) {
@@ -947,16 +950,14 @@ fun Caravans(
                             if (!canDiscard()) return@clickable
                             val selectedCard = getSelectedCardInt()
                             if (selectedCard != null) {
-                                playVatsReady(activity)
                                 dropCardFromHand()
                             } else if (getSelectedCaravan() in (0..2)) {
-                                playVatsReady(activity)
                                 dropSelectedCaravan()
                             }
                         }
                         .background(run {
                             val color = getTextBackgroundColor(activity)
-                            Color(color.red, color.green, color.blue, 0.4f)
+                            Color(color.red, color.green, color.blue, 0.75f)
                         })
                         .padding(6.dp)
                 } else {

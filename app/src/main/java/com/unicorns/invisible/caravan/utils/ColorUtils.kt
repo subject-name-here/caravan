@@ -143,10 +143,8 @@ fun getGameDividerColor(activity: MainActivity): Color = when (activity.styleId)
     Style.NEW_WORLD -> Color(activity.getColor(R.color.newWorldAccent))
     else -> getTextColor(activity)
 }
-fun getCheckBoxBorderColor(activity: MainActivity): Color = when (activity.styleId) {
-    Style.VAULT_21 -> Color(activity.getColor(R.color.vault21Stroke))
-    else -> getSelectionColor(activity)
-}
+fun getCheckBoxBorderColor(activity: MainActivity): Color = getSelectionColor(activity)
+
 fun getCheckBoxFillColor(activity: MainActivity): Color = when (activity.styleId) {
     Style.DESERT -> Color(activity.getColor(R.color.desertText))
     Style.PIP_BOY -> Color(activity.getColor(R.color.colorTextBack))
@@ -156,7 +154,7 @@ fun getCheckBoxFillColor(activity: MainActivity): Color = when (activity.styleId
     Style.NEW_WORLD -> Color(activity.getColor(R.color.newWorldText))
     Style.SIERRA_MADRE -> Color(activity.getColor(R.color.sierraMadreTextBack))
     Style.MADRE_ROJA -> Color(activity.getColor(R.color.madreRojaTextBack))
-    Style.VAULT_21 -> Color(activity.getColor(R.color.vault21Accent))
+    Style.VAULT_21 -> Color(activity.getColor(R.color.vault21Stroke))
     Style.VAULT_22 -> Color(activity.getColor(R.color.vault22Accent))
 }
 fun getTrackColor(activity: MainActivity): Color = getTextBackgroundColor(activity)
@@ -195,6 +193,7 @@ fun getGameSelectionColor(activity: MainActivity): Color {
     return when (activity.styleId) {
         Style.DESERT -> Color(activity.getColor(R.color.desertAccent))
         Style.ALASKA_FRONTIER -> Color(activity.getColor(R.color.alaskaYellow))
+        Style.MADRE_ROJA -> Color(activity.getColor(R.color.madreRojaTextBack))
         else -> getTextColor(activity)
     }
 }

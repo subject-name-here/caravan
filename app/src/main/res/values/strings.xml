@@ -192,7 +192,6 @@
         Just press \"Join any Room!!!\", if you:\n
         - want to find anyone.\n
         - saw notification from bot on Discord.\n
-        If not, well, here is manual:\n
         To create room:\n
         - enter room number (if one number fails, try another),\n
         - select room privacy setting, \n
@@ -251,6 +250,7 @@
     <string name="intro_tip_14">If you have Jokers in your custom deck, think about throwing there a couple of Aces.</string>
     <string name="intro_tip_15">Discarding a caravan might give you a valuable advantage in a long game: you have one card more in your deck.</string>
     <string name="intro_tip_16">There are legends about mysterious card deck 13. The rumours are that it has cards unscathed by the war, like the ones from Vault 21.</string>
+    <string name="intro_tip_17">The more you sell cards with the same back, the less they cost.</string>
 
     <string name="intro_tip_vault">Did you know that there are 122 vaults in the Fallout world? Only 17 of them were not experimenting on their inhabitants.</string>
     <string name="intro_tip_desert">Cazadors can easily tear down a deathclaw or two. Imagine what they can do to your puny fragile body.</string>

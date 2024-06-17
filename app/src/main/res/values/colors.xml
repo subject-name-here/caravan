@@ -58,9 +58,9 @@
     <color name="madreRojaTextBack">#EAB862</color>
     <color name="madreRojaAccent">#A41521</color>
 
-    <color name="vault21Back">#0066b1</color>
+    <color name="vault21Back">#0077c2</color>
     <color name="vault21TextBack">#ffe1ba</color>
-    <color name="vault21Text">#001423</color>
+    <color name="vault21Text">#000000</color>
     <color name="vault21Accent">#fff773</color>
     <color name="vault21Stroke">#8b5c29</color>
 

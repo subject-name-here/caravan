@@ -51,6 +51,7 @@ import com.unicorns.invisible.caravan.utils.getTextStrokeColor
 import com.unicorns.invisible.caravan.utils.getTrackColor
 import com.unicorns.invisible.caravan.utils.playClickSound
 import com.unicorns.invisible.caravan.utils.playCloseSound
+import com.unicorns.invisible.caravan.utils.playSelectSound
 import com.unicorns.invisible.caravan.utils.scrollbar
 
 
@@ -224,9 +225,14 @@ fun SetCustomDeck(
 
                                     if (isAvailable(card)) {
                                         ShowCard(activity, card, Modifier
-                                            .clickableSelect(activity) {
+                                            .clickable {
                                                 toggleToCustomDeck(card)
                                                 isSelected = !isSelected
+                                                if (isSelected) {
+                                                    playSelectSound(activity)
+                                                } else {
+                                                    playCloseSound(activity)
+                                                }
                                                 updater = !updater
                                             }
                                             .border(

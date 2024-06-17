@@ -7,6 +7,10 @@ import com.unicorns.invisible.caravan.model.primitives.CustomDeck
 import kotlinx.serialization.EncodeDefault
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Date
+import java.util.Locale
 
 
 @OptIn(ExperimentalSerializationApi::class)
@@ -66,8 +70,30 @@ class Save {
     @EncodeDefault
     var caps = 10000
 
+    private var previousDate = Date().time
     @EncodeDefault
     val soldCards = HashMap<Pair<CardBack, Boolean>, Int>()
+    fun updateSoldCards(): Boolean {
+        val currentDate = Date().time
+        val prevDate = previousDate
+        previousDate = currentDate
+
+        val simpleDateFormat = SimpleDateFormat("yyyyMMdd", Locale.ENGLISH)
+        if (simpleDateFormat.format(Date(currentDate)).equals(simpleDateFormat.format(Date(prevDate)))) {
+            return false
+        }
+        CardBack.entries.forEach { back ->
+            val cardBought = (3..26).random()
+            val cardBoughtAlt = (2..17).random()
+            if (back to true in soldCards) {
+                soldCards[back to true] = (soldCards[back to true]!! - cardBought).coerceAtLeast(0)
+            }
+            if (back to false in soldCards) {
+                soldCards[back to false] = (soldCards[back to false]!! - cardBoughtAlt).coerceAtLeast(0)
+            }
+        }
+        return true
+    }
     fun getCardPrice(card: Card): Int {
         val soldAlready = soldCards[card.back to card.isAlt] ?: 0
         return if (!card.isAlt) {

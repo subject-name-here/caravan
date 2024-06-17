@@ -1,6 +1,7 @@
 package com.unicorns.invisible.caravan
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.BoxWithConstraintsScope
 import androidx.compose.foundation.layout.offset
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -12,7 +13,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.ColorMatrix
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import coil.compose.AsyncImagePainter
+import androidx.compose.ui.unit.IntOffset
 import coil.compose.rememberAsyncImagePainter
 import coil.decode.SvgDecoder
 import coil.request.ImageRequest
@@ -92,35 +93,42 @@ fun getStyleCities(style: Style): List<String> {
 }
 
 @Composable
-fun StylePicture(activity: MainActivity, style: Style, key: Int, modifier: Modifier) {
-    val prefix = "file:///android_asset/menu_items/"
-    val painterToColorFilter = when (style) {
-        OLD_WORLD -> listOf(
-            rememberAsyncImagePainter(
-                ImageRequest.Builder(activity)
-                    .size(256, 256)
-                    .data(prefix + "old_world/nuka-coladecal.png")
-                    .decoderFactory(SvgDecoder.Factory())
-                    .build()
-            ) to null,
-            rememberAsyncImagePainter(
-                ImageRequest.Builder(activity)
-                    .size(256, 256)
-                    .data(prefix + "old_world/holyhandgrenades.png")
-                    .decoderFactory(SvgDecoder.Factory())
-                    .build(),
-            ) to ColorFilter.tint(color = Color.Black)
-        )
-        else -> null
-    }?.random(Random(key))
+fun BoxWithConstraintsScope.StylePicture(activity: MainActivity, style: Style, key: Int, width: Int, height: Int) {
+    val rand = Random(key)
+    when (style) {
+        OLD_WORLD -> {
+            val prefix = "file:///android_asset/menu_items/"
+            val painterToColorFilter = listOf(
+                rememberAsyncImagePainter(
+                    ImageRequest.Builder(activity)
+                        .size(256, 256)
+                        .data(prefix + "old_world/nuka-coladecal.png")
+                        .decoderFactory(SvgDecoder.Factory())
+                        .build()
+                ) to null,
+                rememberAsyncImagePainter(
+                    ImageRequest.Builder(activity)
+                        .size(256, 256)
+                        .data(prefix + "old_world/holyhandgrenades.png")
+                        .decoderFactory(SvgDecoder.Factory())
+                        .build(),
+                ) to ColorFilter.tint(color = Color.Black)
+            ).random(Random(key))
 
-    if (painterToColorFilter != null) {
-        Image(
-            painter = painterToColorFilter.first,
-            contentDescription = "",
-            modifier,
-            colorFilter = painterToColorFilter.second
-        )
+            Image(
+                painter = painterToColorFilter.first,
+                contentDescription = "",
+                Modifier.align(Alignment.Center)
+                    .rotate(-30f + rand.nextFloat() * 60f)
+                    .offset {
+                        IntOffset(
+                            (0..(width / 4)).random(rand),
+                            (-height / 4 + (0..height / 2).random(rand))
+                        )
+                    },
+                colorFilter = painterToColorFilter.second
+            )
+        }
+        else -> {}
     }
-
 }

@@ -4,7 +4,6 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -17,14 +16,12 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -40,9 +37,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.RectangleShape
@@ -59,13 +54,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withLink
-import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.MutableLiveData
-import coil.compose.rememberAsyncImagePainter
-import coil.decode.SvgDecoder
-import coil.request.ImageRequest
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.save.Save
@@ -92,16 +83,14 @@ import com.unicorns.invisible.caravan.utils.getTextBackgroundColor
 import com.unicorns.invisible.caravan.utils.getTextColor
 import com.unicorns.invisible.caravan.utils.getTextStrokeColor
 import com.unicorns.invisible.caravan.utils.getTrackColor
-import com.unicorns.invisible.caravan.utils.isRadioStopped
 import com.unicorns.invisible.caravan.utils.nextSong
 import com.unicorns.invisible.caravan.utils.pause
 import com.unicorns.invisible.caravan.utils.playClickSound
 import com.unicorns.invisible.caravan.utils.playCloseSound
 import com.unicorns.invisible.caravan.utils.playNotificationSound
-import com.unicorns.invisible.caravan.utils.pxToDp
-import com.unicorns.invisible.caravan.utils.radioPlayer
 import com.unicorns.invisible.caravan.utils.resume
 import com.unicorns.invisible.caravan.utils.scrollbar
+import com.unicorns.invisible.caravan.utils.setRadioVolume
 import com.unicorns.invisible.caravan.utils.startRadio
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -109,7 +98,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.chromium.net.CronetEngine
 import java.util.UUID
-import kotlin.random.Random
 
 
 const val crvnUrl = "http://crvnserver.onrender.com"
@@ -135,16 +123,14 @@ class MainActivity : SaveDataActivity() {
 
     override fun onPause() {
         super.onPause()
-        radioPlayer?.pause()
+        pause()
         currentPlayer?.pause()
-        // TODO: stop effects player too.
+        effectPlayer?.stop()
     }
 
     override fun onResume() {
         super.onResume()
-        if (!isRadioStopped) {
-            radioPlayer?.start()
-        }
+        resume()
         currentPlayer?.start()
     }
 
@@ -166,9 +152,7 @@ class MainActivity : SaveDataActivity() {
             }
             loadFromGD(this@MainActivity)
             readyFlag.postValue(true)
-            if (radioPlayer == null) {
-                startRadio(this@MainActivity)
-            }
+            startRadio(this@MainActivity)
         }
     }
 
@@ -203,6 +187,7 @@ class MainActivity : SaveDataActivity() {
             R.string.intro_tip_14,
             R.string.intro_tip_15,
             R.string.intro_tip_16,
+            R.string.intro_tip_17,
             R.string.intro_tip_vault,
             R.string.intro_tip_desert,
         ).random()
@@ -303,6 +288,7 @@ class MainActivity : SaveDataActivity() {
         var showTutorial by rememberSaveable { mutableStateOf(false) }
         var showRules by rememberSaveable { mutableStateOf(false) }
         var showSettings by rememberSaveable { mutableStateOf(false) }
+        var showStock by rememberSaveable { mutableStateOf(false) }
 
         var showVision by rememberSaveable { mutableStateOf(false) }
         var styleIdForTop by rememberSaveable { mutableStateOf(styleId) }
@@ -449,7 +435,7 @@ class MainActivity : SaveDataActivity() {
                                     {
                                         radioVolume = it
                                         save?.radioVolume = it
-                                        radioPlayer?.setVolume(it, it)
+                                        setRadioVolume(it)
                                     }
                                 )
                             }
@@ -647,6 +633,9 @@ class MainActivity : SaveDataActivity() {
                             { animationTickLength.value = it; save!!.animationLengthTick = it; saveOnGD(this@MainActivity) }
                         ) { showSettings = false }
                     }
+                    showStock -> {
+                        StockMarket(this@MainActivity) { showStock = false }
+                    }
                     else -> {
                         MainMenu(
                             { deckSelection = true },
@@ -656,7 +645,9 @@ class MainActivity : SaveDataActivity() {
                             { showTutorial = true },
                             { showRules = true },
                             { showVision = true },
-                            { showSettings = true }
+                            { showSettings = true },
+                            { showStock = true },
+                            ::showAlertDialog,
                         )
                     }
                 }
@@ -675,6 +666,8 @@ class MainActivity : SaveDataActivity() {
         showRules: () -> Unit,
         showVision: () -> Unit,
         showSettings: () -> Unit,
+        showStock: () -> Unit,
+        showAlertDialog: (String, String) -> Unit,
     ) {
         Spacer(Modifier.height(32.dp))
         Column(
@@ -819,8 +812,7 @@ class MainActivity : SaveDataActivity() {
             ) {
                 item {
                     BoxWithConstraints(Modifier.fillMaxWidth()) {
-                        val rand = Random(id.hashCode())
-                        var width = maxWidth.dpToPx().toInt()
+                        val width = maxWidth.dpToPx().toInt()
                         var height by remember { mutableIntStateOf(0) }
                         LaunchedEffect(Unit) {
                             while (height == 0) {
@@ -828,14 +820,7 @@ class MainActivity : SaveDataActivity() {
                                 delay(380L)
                             }
                         }
-                        StylePicture(this@MainActivity, styleId, id.hashCode(), Modifier.align(Alignment.Center)
-                            .rotate(-30f + rand.nextFloat() * 60f)
-                            .offset {
-                                IntOffset(
-                                    (0..(width / 4)).random(rand),
-                                    (-height / 4 + (0..height / 2).random(rand))
-                                )
-                            })
+                        StylePicture(this@MainActivity, styleId, id.hashCode(), width, height)
                         Column(Modifier.fillMaxWidth()) {
                             @Composable
                             fun MenuItem(text: String, onClick: () -> Unit) {
@@ -864,6 +849,8 @@ class MainActivity : SaveDataActivity() {
                             MenuItem(getString(R.string.menu_deck), showDeckSelection)
                             Spacer(modifier = Modifier.height(20.dp))
                             MenuItem(stringResource(R.string.menu_vision), showVision)
+                            Spacer(modifier = Modifier.height(20.dp))
+                            MenuItem("Stock Warket", showStock)
                             Spacer(modifier = Modifier.height(32.dp))
                         }
                     }
@@ -954,6 +941,13 @@ class MainActivity : SaveDataActivity() {
                         }
                     }
                 }
+            }
+        }
+
+        LaunchedEffect(Unit) {
+            if (save!!.updateSoldCards()) {
+                saveOnGD(this@MainActivity)
+                showAlertDialog("Card prices update!", "Some cards are now more expensive! Go check \"Vision!\" shop.")
             }
         }
     }

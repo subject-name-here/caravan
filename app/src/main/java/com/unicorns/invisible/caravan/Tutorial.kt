@@ -35,6 +35,7 @@ import com.unicorns.invisible.caravan.utils.clickableCancel
 import com.unicorns.invisible.caravan.utils.getDialogBackground
 import com.unicorns.invisible.caravan.utils.getDialogTextColor
 import com.unicorns.invisible.caravan.utils.getTextColor
+import com.unicorns.invisible.caravan.utils.getTextStrokeColor
 import com.unicorns.invisible.caravan.utils.stopMusic
 
 @Composable
@@ -313,9 +314,39 @@ fun Tutorial(activity: MainActivity, goBack: () -> Unit) {
         AlertDialog(
             modifier = Modifier.border(width = 4.dp, color = getTextColor(activity)),
             onDismissRequest = { hideAlertDialog() },
-            confirmButton = { Text(text = "OK", modifier = Modifier.clickable { hideAlertDialog() }) },
-            title = { Text(text = alertDialogHeader) },
-            text = { Text(text = alertDialogMessage) },
+            confirmButton = {
+                TextFallout(
+                    "OK",
+                    getDialogTextColor(activity),
+                    getDialogTextColor(activity),
+                    14.sp,
+                    Alignment.CenterEnd,
+                    Modifier.clickableCancel(activity) { hideAlertDialog() },
+                    TextAlign.End
+                )
+            },
+            title = {
+                TextFallout(
+                    alertDialogHeader,
+                    getDialogTextColor(activity),
+                    getDialogTextColor(activity),
+                    20.sp,
+                    Alignment.CenterEnd,
+                    Modifier.clickableCancel(activity) { hideAlertDialog() },
+                    TextAlign.End
+                )
+            },
+            text = {
+                TextFallout(
+                    alertDialogMessage,
+                    getDialogTextColor(activity),
+                    getDialogTextColor(activity),
+                    14.sp,
+                    Alignment.CenterEnd,
+                    Modifier.clickableCancel(activity) { hideAlertDialog() },
+                    TextAlign.End
+                )
+            },
             containerColor = getDialogBackground(activity),
             textContentColor = getDialogTextColor(activity),
             shape = RectangleShape,

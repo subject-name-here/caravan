@@ -109,6 +109,7 @@ class Game(
             }
 
             if (checkOnGameOver()) {
+                updateView()
                 return@launch
             }
 

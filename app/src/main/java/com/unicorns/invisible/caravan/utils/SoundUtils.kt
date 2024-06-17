@@ -5,19 +5,41 @@ import com.unicorns.invisible.caravan.MainActivity
 import com.unicorns.invisible.caravan.R
 
 
-var effectPlayer: MediaPlayer? = null
-fun playCardFlipSound(activity: MainActivity) {
-    val vol = activity.save?.soundVolume ?: 1f
+fun playNotificationSound(activity: MainActivity, onPrepared: () -> Unit) {
+    val volume = activity.save?.soundVolume ?: 1f
     effectPlayer = MediaPlayer
-        .create(activity, getRandomCardFlipSound())
+        .create(activity, R.raw.notification)
         .apply {
-            setVolume(vol, vol)
+            setVolume(volume, volume)
+            setOnPreparedListener { onPrepared() }
             setOnCompletionListener {
+                if (effectPlayer == this) {
+                    effectPlayer = null
+                }
                 release()
             }
             start()
         }
 }
+
+var effectPlayer: MediaPlayer? = null
+private fun playEffectPlayerSound(activity: MainActivity, soundId: Int, volumeFraction: Int = 1) {
+    val vol = (activity.save?.soundVolume ?: 1f) / volumeFraction
+    effectPlayer = MediaPlayer
+        .create(activity, soundId)
+        .apply {
+            setVolume(vol, vol)
+            setOnCompletionListener {
+                if (effectPlayer == this) {
+                    effectPlayer = null
+                }
+                release()
+            }
+            start()
+        }
+}
+
+fun playCardFlipSound(activity: MainActivity) = playEffectPlayerSound(activity, getRandomCardFlipSound())
 fun getRandomCardFlipSound(): Int {
     return listOf(
         R.raw.fol_gmble_cardflip_01,
@@ -34,130 +56,29 @@ fun getRandomCardFlipSound(): Int {
 }
 
 fun playLoseSound(activity: MainActivity) {
-    val vol = activity.save?.soundVolume ?: 1f
-    effectPlayer = MediaPlayer
-        .create(activity, listOf(R.raw.lose1, R.raw.lose3, R.raw.any).random())
-        .apply {
-            setVolume(vol, vol)
-            setOnCompletionListener {
-                release()
-            }
-            start()
-        }
+    if (effectPlayer?.isPlaying == true) {
+        effectPlayer?.stop()
+    }
+    playEffectPlayerSound(activity, listOf(R.raw.lose1, R.raw.lose3, R.raw.any).random(), 2)
 }
 fun playWinSound(activity: MainActivity) {
-    val vol = activity.save?.soundVolume ?: 1f
-    effectPlayer = MediaPlayer
-        .create(activity, listOf(R.raw.win1, R.raw.win2, R.raw.any).random())
-        .apply {
-            setVolume(vol, vol)
-            setOnCompletionListener {
-                release()
-            }
-            start()
-        }
+    if (effectPlayer?.isPlaying == true) {
+        effectPlayer?.stop()
+    }
+    playEffectPlayerSound(activity, listOf(R.raw.win1, R.raw.win2, R.raw.any).random(), 2)
 }
 
-fun playNotificationSound(activity: MainActivity, onPrepared: () -> Unit) {
-    effectPlayer = MediaPlayer
-        .create(activity, R.raw.notification)
-        .apply {
-            setVolume(activity.save?.soundVolume ?: 1f, activity.save?.soundVolume ?: 1f)
-            setOnPreparedListener { onPrepared() }
-            setOnCompletionListener {
-                release()
-            }
-            start()
-        }
-}
-fun playJokerReceivedSounds(activity: MainActivity) {
-    effectPlayer = MediaPlayer
-        .create(activity, R.raw.mus_mysteriousstranger_a_01)
-        .apply {
-            setVolume(activity.save?.soundVolume ?: 1f, activity.save?.soundVolume ?: 1f)
-            setOnCompletionListener {
-                release()
-            }
-            start()
-        }
-}
-fun playJokerSounds(activity: MainActivity) {
-    effectPlayer = MediaPlayer
-        .create(activity, R.raw.mus_mysteriousstranger_a_02)
-        .apply {
-            setVolume(activity.save?.soundVolume ?: 1f, activity.save?.soundVolume ?: 1f)
-            setOnCompletionListener {
-                release()
-            }
-            start()
-        }
-}
-fun playCloseSound(activity: MainActivity) {
-    effectPlayer = MediaPlayer
-        .create(activity, R.raw.ui_menu_cancel)
-        .apply {
-            setVolume(activity.save?.soundVolume ?: 1f, activity.save?.soundVolume ?: 1f)
-            setOnCompletionListener {
-                release()
-            }
-            start()
-        }
-}
-fun playClickSound(activity: MainActivity) {
-    effectPlayer = MediaPlayer
-        .create(activity, R.raw.ui_menu_ok)
-        .apply {
-            setVolume(activity.save?.soundVolume ?: 1f, activity.save?.soundVolume ?: 1f)
-            setOnCompletionListener {
-                release()
-            }
-            start()
-        }
-}
-fun playSelectSound(activity: MainActivity) {
-    effectPlayer = MediaPlayer
-        .create(activity, R.raw.ui_vats_move)
-        .apply {
-            setVolume((activity.save?.soundVolume ?: 1f) / 2, (activity.save?.soundVolume ?: 1f) / 2)
-            setOnCompletionListener {
-                release()
-            }
-            start()
-        }
-}
-fun playPimpBoySound(activity: MainActivity) {
-    effectPlayer = MediaPlayer
-        .create(activity, R.raw.ui_pimpboy)
-        .apply {
-            setVolume((activity.save?.soundVolume ?: 1f) / 2, (activity.save?.soundVolume ?: 1f) / 2)
-            setOnCompletionListener {
-                release()
-            }
-            start()
-        }
-}
-fun playVatsEnter(activity: MainActivity) {
-    effectPlayer = MediaPlayer
-        .create(activity, R.raw.ui_vats_enter)
-        .apply {
-            setVolume((activity.save?.soundVolume ?: 1f) / 2, (activity.save?.soundVolume ?: 1f) / 2)
-            setOnCompletionListener {
-                release()
-            }
-            start()
-        }
-}
-fun playVatsReady(activity: MainActivity) {
-    effectPlayer = MediaPlayer
-        .create(activity, R.raw.ui_vats_ready)
-        .apply {
-            setVolume((activity.save?.soundVolume ?: 1f) / 2, (activity.save?.soundVolume ?: 1f) / 2)
-            setOnCompletionListener {
-                release()
-            }
-            start()
-        }
-}
+fun playJokerReceivedSounds(activity: MainActivity) =
+    playEffectPlayerSound(activity, R.raw.mus_mysteriousstranger_a_01, 2)
+fun playJokerSounds(activity: MainActivity) =
+    playEffectPlayerSound(activity, R.raw.mus_mysteriousstranger_a_02, 2)
+
+fun playCloseSound(activity: MainActivity) = playEffectPlayerSound(activity, R.raw.ui_menu_cancel)
+fun playClickSound(activity: MainActivity) = playEffectPlayerSound(activity, R.raw.ui_menu_ok)
+fun playSelectSound(activity: MainActivity) = playEffectPlayerSound(activity, R.raw.ui_vats_move, 3)
+fun playPimpBoySound(activity: MainActivity) = playEffectPlayerSound(activity, R.raw.ui_pimpboy, 3)
+fun playVatsEnter(activity: MainActivity) = playEffectPlayerSound(activity, R.raw.ui_vats_enter, 3)
+fun playVatsReady(activity: MainActivity) = playEffectPlayerSound(activity, R.raw.ui_vats_ready, 3)
 
 var currentPlayer: MediaPlayer? = null
 fun stopMusic() {
@@ -182,8 +103,9 @@ fun startAmbient(activity: MainActivity) {
         ).random()).apply {
             setVolume(vol, vol)
             setOnCompletionListener {
-                release()
                 if (currentPlayer == this) {
+                    currentPlayer = null
+                    release()
                     startAmbient(activity)
                 }
             }
@@ -234,7 +156,12 @@ private val songList = ("MUS_Aint_That_A_Kick_In_the_Head.amr\n" +
 
 private var pointer = songList.indices.random()
 private var usedIndices = mutableListOf<Int>()
+private var radioStartedFlag = false
 fun startRadio(activity: MainActivity) {
+    if (radioStartedFlag) {
+        return
+    }
+    radioStartedFlag = true
     if (activity.save?.useCaravanIntro != false) {
         playSongFromRadio(activity, "MUS_caravan_whiplash.amr")
     } else {
@@ -251,12 +178,11 @@ private fun playSongFromRadio(activity: MainActivity, songName: String) {
             val afd = activity.assets.openFd("radio/$songName")
             setDataSource(afd.fileDescriptor, afd.startOffset, afd.length)
             setOnCompletionListener {
-                release()
-                if (pointer == -1) {
-                    startRadio(activity)
-                } else {
-                    nextSong(activity)
+                if (radioPlayer == this) {
+                    radioPlayer = null
                 }
+                release()
+                nextSong(activity)
             }
             prepare()
             setVolume(vol, vol)
@@ -268,7 +194,6 @@ private fun playSongFromRadio(activity: MainActivity, songName: String) {
 fun nextSong(activity: MainActivity) {
     if (radioPlayer?.isPlaying == true) {
         radioPlayer?.stop()
-        radioPlayer?.release()
     }
     if (pointer !in songList.indices) {
         pointer = songList.indices.random()
@@ -284,4 +209,7 @@ fun resume() {
 fun pause() {
     isRadioStopped = true
     radioPlayer?.pause()
+}
+fun setRadioVolume(volume: Float) {
+    radioPlayer?.setVolume(volume, volume)
 }

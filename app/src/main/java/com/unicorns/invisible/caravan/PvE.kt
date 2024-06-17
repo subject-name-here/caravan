@@ -15,6 +15,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -546,7 +547,9 @@ fun StartGame(
     }
 }
 
-fun winCard(activity: MainActivity, save: Save, back: CardBack, numberOfCards: Int, isAlt: Boolean, isCustom: Boolean): String {
+fun winCard(
+    activity: MainActivity, save: Save, back: CardBack, numberOfCards: Int, isAlt: Boolean, isCustom: Boolean
+): String {
     fun checkCard(card: Card): Boolean {
         return save.availableCards.none { aCard -> aCard.rank == card.rank && aCard.suit == card.suit && aCard.back == card.back && aCard.isAlt == card.isAlt }
     }
