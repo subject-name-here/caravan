@@ -151,7 +151,6 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
         game.afterPlayerMove({ updateEnemyHand(); updateCaravans() }, activity.animationTickLength.value!! / 2L)
     }
     fun dropCaravan() {
-
         val selectedCaravanNN = selectedCaravan
         if (selectedCaravanNN == -1) return
         playVatsReady(activity)

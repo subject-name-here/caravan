@@ -91,7 +91,10 @@ fun ShowPvE(
 
     var checkedCustomDeck by rememberSaveable { mutableStateOf(activity.save?.useCustomDeck ?: false) }
     fun getPlayerDeck(): CResources {
-        return if (checkedCustomDeck) CResources(activity.save?.getCustomDeckCopy()!!) else CResources(selectedDeck().first, selectedDeck().second)
+        return if (checkedCustomDeck)
+            CResources(activity.save?.getCustomDeckCopy() ?: CustomDeck(CardBack.STANDARD, false))
+        else
+            CResources(selectedDeck().first, selectedDeck().second)
     }
 
     if (showGameEasy) {

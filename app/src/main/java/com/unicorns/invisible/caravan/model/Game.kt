@@ -117,8 +117,7 @@ class Game(
 
             enemy.makeMove(this@Game)
             updateView()
-            delay(hTick * 2) // Move card from hand; move card ontoField
-            delay(hTick * 3)
+            delay(hTick * 3) // Move card from hand; move card ontoField
             if (processField()) { // Remove cards; move cards within caravan
                 updateView()
                 delay(hTick * 4)

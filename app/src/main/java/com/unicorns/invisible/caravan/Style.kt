@@ -3,7 +3,6 @@ package com.unicorns.invisible.caravan
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.BoxWithConstraintsScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -13,7 +12,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -28,8 +26,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.min
-import androidx.compose.ui.zIndex
 import coil.compose.rememberAsyncImagePainter
 import coil.decode.SvgDecoder
 import coil.request.ImageRequest
@@ -46,7 +42,6 @@ import com.unicorns.invisible.caravan.Style.SIERRA_MADRE
 import com.unicorns.invisible.caravan.Style.VAULT_21
 import com.unicorns.invisible.caravan.Style.VAULT_22
 import com.unicorns.invisible.caravan.utils.dpToPx
-import com.unicorns.invisible.caravan.utils.pxToDp
 import kotlin.math.min
 import kotlin.random.Random
 
@@ -113,6 +108,7 @@ fun getStyleCities(style: Style): List<String> {
 
 @Composable
 fun BoxWithConstraintsScope.StylePicture(activity: MainActivity, style: Style, key: Int, width: Int, height: Int) {
+    // TODO: jumping pictures!!! put size everywhere!!
     val prefix = "file:///android_asset/menu_items/"
     val rand = Random(key)
     when (style) {
@@ -313,13 +309,219 @@ fun BoxWithConstraintsScope.StylePicture(activity: MainActivity, style: Style, k
             )
         }
         MADRE_ROJA -> {
-            // TODO!!!
+            val painterDrip = rememberAsyncImagePainter(
+                ImageRequest.Builder(activity)
+                    .data(prefix + "madre_roja/drip.png")
+                    .build()
+            )
+            Image(
+                painter = painterDrip,
+                contentDescription = "",
+                Modifier.padding(start = 18.dp),
+                alignment = Alignment.TopStart,
+                contentScale = ContentScale.None
+            )
+
+            Image(
+                painter = rememberAsyncImagePainter(
+                    ImageRequest.Builder(activity)
+                        .data(prefix + "madre_roja/graffiti_${(1..2).random(rand)}.png")
+                        .build()
+                ),
+                contentDescription = "",
+                modifier = Modifier.fillMaxWidth().padding(end = 18.dp, top = 18.dp),
+                contentScale = ContentScale.Inside,
+                alignment = Alignment.TopEnd,
+            )
+
+            Row(Modifier.fillMaxWidth().align(Alignment.CenterEnd)) {
+                Box(Modifier.weight(1f))
+                Column(
+                    Modifier.weight(1f).padding(top = 48.dp, end = 8.dp, bottom = 48.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Box(Modifier.weight(1f)) {  }
+                    Box(Modifier.weight(1f)) {  }
+                    val graffiti = if (rand.nextBoolean()) {
+                        "madre_roja/let_go.png"
+                    } else {
+                        listOf(
+                            "madre_roja/madre_0.png",
+                            "madre_roja/madre_1.png",
+                            "madre_roja/madre_2.png",
+                            "madre_roja/madre_3.png",
+                            "madre_roja/madre_4.png",
+                            "madre_roja/madre_5.png",
+                            "madre_roja/madre_6.png",
+                            "madre_roja/madre_7.png",
+                            "madre_roja/madre_8.png",
+                            "madre_roja/madre_9.png",
+                            "madre_roja/madre_10.png",
+                            "madre_roja/madre_11.png",
+                        ).random(rand)
+                    }
+                    Image(
+                        painter = rememberAsyncImagePainter(
+                            ImageRequest.Builder(activity)
+                                .data(prefix + graffiti)
+                                .build()
+                        ),
+                        contentDescription = "",
+                        Modifier.weight(2f).scale(2f),
+                        alignment = Alignment.CenterEnd,
+                        contentScale = ContentScale.Inside
+                    )
+                    Box(Modifier.weight(1f)) {  }
+                    Box(Modifier.weight(1f)) {  }
+                }
+            }
         }
         DESERT -> {
-            // TODO!!
+            val painterMain = rememberAsyncImagePainter(
+                ImageRequest.Builder(activity)
+                    .size(512, 512)
+                    .data(prefix + "desert/nv_graffiti_02.png")
+                    .build(),
+            )
+
+            val graffitiPainter = listOf(
+                rememberAsyncImagePainter(
+                    ImageRequest.Builder(activity)
+                        .size(293, 107)
+                        .data(prefix + "desert/ligas.png")
+                        .build(),
+                ),
+                rememberAsyncImagePainter(
+                    ImageRequest.Builder(activity)
+                        .size(289, 105)
+                        .data(prefix + "desert/raders_ahead.png")
+                        .build(),
+                ),
+                rememberAsyncImagePainter(
+                    ImageRequest.Builder(activity)
+                        .size(499, 100)
+                        .data(prefix + "desert/stop_whining.png")
+                        .build(),
+                ),
+            ).random(rand)
+            Row(Modifier.fillMaxWidth().align(Alignment.CenterEnd)) {
+                Box(Modifier.weight(1f))
+                Box(Modifier.weight(1f).padding(top = 48.dp, end = 8.dp, bottom = 48.dp)) {
+                    Column {
+                        Image(
+                            painter = painterMain,
+                            contentDescription = "",
+                            Modifier,
+                            alignment = Alignment.CenterEnd,
+                            contentScale = ContentScale.Fit
+                        )
+                        if (rand.nextBoolean()) {
+                            Image(
+                                painter = graffitiPainter,
+                                contentDescription = "",
+                                Modifier.fillMaxWidth().rotate(-20f + rand.nextFloat() * 40f).offset(x = ((-4..4).random().dp)),
+                                alignment = Alignment.Center,
+                                contentScale = ContentScale.Fit,
+                                colorFilter = ColorFilter.tint(Color.Black)
+                            )
+                        }
+                    }
+                }
+            }
         }
         ALASKA_FRONTIER -> {
-            // TODO!!
+            if (rand.nextBoolean()) {
+                val painter = listOf(
+                    rememberAsyncImagePainter(
+                        ImageRequest.Builder(activity)
+                            .size(339, 512)
+                            .data(prefix + "alaska/america_prop_1.png")
+                            .build(),
+                    ),
+                    rememberAsyncImagePainter(
+                        ImageRequest.Builder(activity)
+                            .size(512, 512)
+                            .data(prefix + "alaska/america_prop_2.png")
+                            .build(),
+                    )
+                ).random(rand)
+
+                Row(Modifier.fillMaxWidth().align(Alignment.CenterEnd)) {
+                    Box(Modifier.weight(1f))
+                    Column(
+                        Modifier.weight(1f).padding(top = 48.dp, end = 8.dp, bottom = 48.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Image(
+                            painter = painter,
+                            contentDescription = "",
+                            Modifier,
+                            alignment = Alignment.CenterEnd,
+                            contentScale = ContentScale.Inside
+                        )
+                    }
+                }
+
+                Image(
+                    painter = rememberAsyncImagePainter(
+                        ImageRequest.Builder(activity)
+                            .size(256, 256)
+                            .data(prefix + "alaska/autodoc.png")
+                            .build(),
+                    ),
+                    contentDescription = "",
+                    Modifier.fillMaxSize().padding(top = 48.dp),
+                    alignment = Alignment.TopCenter,
+                    contentScale = ContentScale.Inside
+                )
+            } else {
+                val painter = listOf(
+                    rememberAsyncImagePainter(
+                        ImageRequest.Builder(activity)
+                            .size(412, 512)
+                            .data(prefix + "alaska/china_prop_1.png")
+                            .build(),
+                    ),
+                    rememberAsyncImagePainter(
+                        ImageRequest.Builder(activity)
+                            .size(409, 512)
+                            .data(prefix + "alaska/china_prop_2.png")
+                            .build(),
+                    )
+                ).random(rand)
+
+                Row(Modifier.fillMaxWidth().align(Alignment.CenterEnd)) {
+                    Box(Modifier.weight(1f))
+                    Column(
+                        Modifier.weight(1f).padding(top = 48.dp, end = 8.dp, bottom = 48.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Image(
+                            painter = painter,
+                            contentDescription = "",
+                            Modifier,
+                            alignment = Alignment.CenterEnd,
+                            contentScale = ContentScale.Inside
+                        )
+                    }
+                }
+
+                Image(
+                    painter = rememberAsyncImagePainter(
+                        ImageRequest.Builder(activity)
+                            .size(128, 128)
+                            .data(prefix + "alaska/dlcanchredstar.jpg")
+                            .build(),
+                    ),
+                    contentDescription = "",
+                    Modifier.fillMaxSize().padding(top = 48.dp),
+                    alignment = Alignment.TopCenter,
+                    contentScale = ContentScale.Inside
+                )
+            }
         }
         NEW_WORLD -> {
             val painter4 = rememberAsyncImagePainter(
