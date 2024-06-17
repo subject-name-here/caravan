@@ -3,6 +3,7 @@ package com.unicorns.invisible.caravan.utils
 import android.media.MediaPlayer
 import com.unicorns.invisible.caravan.MainActivity
 import com.unicorns.invisible.caravan.R
+import com.unicorns.invisible.caravan.Style
 
 
 fun playNotificationSound(activity: MainActivity, onPrepared: () -> Unit) {
@@ -163,7 +164,11 @@ fun startRadio(activity: MainActivity) {
     }
     radioStartedFlag = true
     if (activity.save?.useCaravanIntro != false) {
-        playSongFromRadio(activity, "MUS_caravan_whiplash.amr")
+        if (activity.styleId == Style.SIERRA_MADRE || activity.styleId == Style.MADRE_ROJA) {
+            playSongFromRadio(activity, "begin_again.amr")
+        } else {
+            playSongFromRadio(activity, "MUS_caravan_whiplash.amr")
+        }
     } else {
         nextSong(activity)
     }

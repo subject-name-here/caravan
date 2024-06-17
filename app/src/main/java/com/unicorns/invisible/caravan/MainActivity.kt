@@ -152,6 +152,7 @@ class MainActivity : SaveDataActivity() {
             }
             loadFromGD(this@MainActivity)
             readyFlag.postValue(true)
+            styleId = Style.entries[save!!.styleId]
             startRadio(this@MainActivity)
         }
     }
@@ -637,18 +638,23 @@ class MainActivity : SaveDataActivity() {
                         StockMarket(this@MainActivity) { showStock = false }
                     }
                     else -> {
-                        MainMenu(
-                            { deckSelection = true },
-                            { showAbout = true },
-                            { showGameStats = true },
-                            { showPvP = true },
-                            { showTutorial = true },
-                            { showRules = true },
-                            { showVision = true },
-                            { showSettings = true },
-                            { showStock = true },
-                            ::showAlertDialog,
-                        )
+                        BoxWithConstraints {
+                            val width = maxWidth.dpToPx().toInt()
+                            val height = maxHeight.dpToPx().toInt()
+                            MainMenu(
+                                { deckSelection = true },
+                                { showAbout = true },
+                                { showGameStats = true },
+                                { showPvP = true },
+                                { showTutorial = true },
+                                { showRules = true },
+                                { showVision = true },
+                                { showSettings = true },
+                                { showStock = true },
+                                ::showAlertDialog,
+                            )
+                            StylePicture(this@MainActivity, styleId, id.hashCode(), width, height)
+                        }
                     }
                 }
             }
@@ -806,53 +812,41 @@ class MainActivity : SaveDataActivity() {
                         knobColor = getKnobColor(this@MainActivity),
                         trackColor = getTrackColor(this@MainActivity),
                         horizontal = false
-                    )
-                    .padding(start = 16.dp),
+                    ),
                 state = state
             ) {
                 item {
-                    BoxWithConstraints(Modifier.fillMaxWidth()) {
-                        val width = maxWidth.dpToPx().toInt()
-                        var height by remember { mutableIntStateOf(0) }
-                        LaunchedEffect(Unit) {
-                            while (height == 0) {
-                                height = state.layoutInfo.viewportSize.height
-                                delay(380L)
-                            }
+                    Column(Modifier.fillMaxWidth().padding(start = 16.dp)) {
+                        @Composable
+                        fun MenuItem(text: String, onClick: () -> Unit) {
+                            TextFallout(
+                                text,
+                                getTextColor(this@MainActivity),
+                                getTextStrokeColor(this@MainActivity),
+                                20.sp,
+                                Alignment.CenterStart,
+                                Modifier
+                                    .clickableOk(this@MainActivity) { onClick() }
+                                    .background(getTextBackgroundColor(this@MainActivity))
+                                    .padding(8.dp),
+                                TextAlign.Start
+                            )
                         }
-                        StylePicture(this@MainActivity, styleId, id.hashCode(), width, height)
-                        Column(Modifier.fillMaxWidth()) {
-                            @Composable
-                            fun MenuItem(text: String, onClick: () -> Unit) {
-                                TextFallout(
-                                    text,
-                                    getTextColor(this@MainActivity),
-                                    getTextStrokeColor(this@MainActivity),
-                                    20.sp,
-                                    Alignment.CenterStart,
-                                    Modifier
-                                        .clickableOk(this@MainActivity) { onClick() }
-                                        .background(getTextBackgroundColor(this@MainActivity))
-                                        .padding(8.dp),
-                                    TextAlign.Start
-                                )
-                            }
-                            Spacer(Modifier.height(64.dp))
-                            MenuItem(getString(R.string.menu_pve), showPvE)
-                            Spacer(modifier = Modifier.height(20.dp))
-                            MenuItem(getString(R.string.menu_pvp), showPvP)
-                            Spacer(modifier = Modifier.height(20.dp))
-                            MenuItem(getString(R.string.menu_tutorial), showTutorial)
-                            Spacer(modifier = Modifier.height(20.dp))
-                            MenuItem(getString(R.string.menu_rules), showRules)
-                            Spacer(modifier = Modifier.height(20.dp))
-                            MenuItem(getString(R.string.menu_deck), showDeckSelection)
-                            Spacer(modifier = Modifier.height(20.dp))
-                            MenuItem(stringResource(R.string.menu_vision), showVision)
-                            Spacer(modifier = Modifier.height(20.dp))
-                            MenuItem("Stock Warket", showStock)
-                            Spacer(modifier = Modifier.height(32.dp))
-                        }
+                        Spacer(Modifier.height(64.dp))
+                        MenuItem(getString(R.string.menu_pve), showPvE)
+                        Spacer(modifier = Modifier.height(20.dp))
+                        MenuItem(getString(R.string.menu_pvp), showPvP)
+                        Spacer(modifier = Modifier.height(20.dp))
+                        MenuItem(getString(R.string.menu_tutorial), showTutorial)
+                        Spacer(modifier = Modifier.height(20.dp))
+                        MenuItem(getString(R.string.menu_rules), showRules)
+                        Spacer(modifier = Modifier.height(20.dp))
+                        MenuItem(getString(R.string.menu_deck), showDeckSelection)
+                        Spacer(modifier = Modifier.height(20.dp))
+                        MenuItem(stringResource(R.string.menu_vision), showVision)
+                        Spacer(modifier = Modifier.height(20.dp))
+                        MenuItem("Stack Market", showStock)
+                        Spacer(modifier = Modifier.height(32.dp))
                     }
                 }
             }

@@ -1,22 +1,40 @@
 package com.unicorns.invisible.caravan
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.BoxWithConstraintsScope
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.sizeIn
+import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.paint
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.ColorMatrix
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.min
+import androidx.compose.ui.zIndex
 import coil.compose.rememberAsyncImagePainter
 import coil.decode.SvgDecoder
 import coil.request.ImageRequest
+import coil.size.Size
+import coil.size.pxOrElse
 import com.unicorns.invisible.caravan.Style.ALASKA_FRONTIER
 import com.unicorns.invisible.caravan.Style.DESERT
 import com.unicorns.invisible.caravan.Style.MADRE_ROJA
@@ -29,6 +47,7 @@ import com.unicorns.invisible.caravan.Style.VAULT_21
 import com.unicorns.invisible.caravan.Style.VAULT_22
 import com.unicorns.invisible.caravan.utils.dpToPx
 import com.unicorns.invisible.caravan.utils.pxToDp
+import kotlin.math.min
 import kotlin.random.Random
 
 
@@ -87,47 +106,320 @@ fun getStyleCities(style: Style): List<String> {
         OLD_WORLD, SIERRA_MADRE -> listOf("L.A.", "REDDING", "BLACK ROCK", "SAN DIEGO", "RENO", "ED. AFB")
         MADRE_ROJA -> listOf("YOU", "CAN", "NEVER", "LEAVE", "SIERRA", "MADRE")
         VAULT_21, -> listOf("LONG 15", "PRIMM", "NOVAK", "188", "NEW VEGAS", "HOOVER DAM")
-        VAULT_22 -> listOf("GRRRRR", "BRRRR", "VRRR", "MRRRRRR", "HRRRR", "DRRR")
+        VAULT_22 -> listOf("GRRRRR", "BRRRR", "VRRR", "MRR", "HRRRRRRR", "DRRRRRR")
         else -> listOf("BONEYARD", "REDDING", "VAULT CITY", "DAYGLOW", "NEW RENO", "THE HUB")
     }
 }
 
 @Composable
 fun BoxWithConstraintsScope.StylePicture(activity: MainActivity, style: Style, key: Int, width: Int, height: Int) {
+    val prefix = "file:///android_asset/menu_items/"
     val rand = Random(key)
     when (style) {
         OLD_WORLD -> {
-            val prefix = "file:///android_asset/menu_items/"
-            val painterToColorFilter = listOf(
+            val flagPainter = listOf(
                 rememberAsyncImagePainter(
                     ImageRequest.Builder(activity)
-                        .size(256, 256)
-                        .data(prefix + "old_world/nuka-coladecal.png")
-                        .decoderFactory(SvgDecoder.Factory())
+                        .data(prefix + "old_world/china.png")
                         .build()
-                ) to null,
+                    ),
                 rememberAsyncImagePainter(
                     ImageRequest.Builder(activity)
-                        .size(256, 256)
-                        .data(prefix + "old_world/holyhandgrenades.png")
-                        .decoderFactory(SvgDecoder.Factory())
-                        .build(),
-                ) to ColorFilter.tint(color = Color.Black)
-            ).random(Random(key))
+                        .data(prefix + "old_world/usa.png")
+                        .build()
+                ),
+                rememberAsyncImagePainter(
+                    ImageRequest.Builder(activity)
+                        .data(prefix + "old_world/nevada_flag.png")
+                        .build()
+                )
+            ).random(rand)
+            val painter3 = rememberAsyncImagePainter(
+                ImageRequest.Builder(activity)
+                    .size(512, 256)
+                    .data(prefix + listOf(
+                        "old_world/repconn_poster1.jpg",
+                        "old_world/repconn_poster2.jpg",
+                        "old_world/repconnposter03.jpg",
+                    ).random(rand))
+                    .build()
+            )
+
+
+            Row(Modifier.fillMaxWidth().align(Alignment.BottomEnd)) {
+                Image(
+                    painter = painter3,
+                    contentDescription = "",
+                    Modifier.fillMaxWidth().padding(end = 8.dp, bottom = 52.dp),
+                    alignment = Alignment.BottomEnd,
+                    contentScale = ContentScale.Inside
+                )
+            }
+            Row(Modifier.fillMaxWidth().align(Alignment.TopEnd)) {
+                Image(
+                    painter = flagPainter,
+                    contentDescription = "",
+                    modifier = Modifier.fillMaxWidth().padding(top = 48.dp, end = 8.dp),
+                    contentScale = ContentScale.Inside,
+                    alignment = Alignment.TopEnd
+                )
+            }
 
             Image(
-                painter = painterToColorFilter.first,
+                painter = rememberAsyncImagePainter(
+                    ImageRequest.Builder(activity)
+                        .size(238, 207)
+                        .data(prefix + "old_world/decal1.png")
+                        .decoderFactory(SvgDecoder.Factory())
+                        .build()
+                ),
                 contentDescription = "",
                 Modifier.align(Alignment.Center)
                     .rotate(-30f + rand.nextFloat() * 60f)
                     .offset {
+                        // TODO: animation!
                         IntOffset(
                             (0..(width / 4)).random(rand),
                             (-height / 4 + (0..height / 2).random(rand))
                         )
-                    },
-                colorFilter = painterToColorFilter.second
+                    }.padding(vertical = 48.dp),
             )
+        }
+        VAULT_22 -> {
+            val painter = rememberAsyncImagePainter(
+                ImageRequest.Builder(activity)
+                    .size(512, 356)
+                    .data(prefix + "vault_22/v22sign.png")
+                    .build()
+            )
+            Row(Modifier.fillMaxWidth().align(Alignment.BottomEnd)) {
+                Image(
+                    painter = painter,
+                    contentDescription = "",
+                    Modifier.fillMaxWidth().padding(end = 8.dp, bottom = 48.dp),
+                    alignment = Alignment.BottomEnd,
+                    contentScale = ContentScale.Inside
+                )
+            }
+
+            val mossUp = listOf(
+                "vault_22/v22moss2.png" to Size(136, 76),
+                "vault_22/v22moss4.png" to Size(139, 139),
+                "vault_22/v22moss5.png" to Size(141, 73),
+                "vault_22/v22moss3.png" to Size(187, 151),
+            )
+
+            var currentWidth = 0
+            Row(Modifier.fillMaxWidth().offset(-5.dp, 0.dp), horizontalArrangement = Arrangement.Start) {
+                while (currentWidth < width) {
+                    val curMossUp = mossUp.random(rand)
+                    val painter2 = rememberAsyncImagePainter(
+                        ImageRequest.Builder(activity)
+                            .size(curMossUp.second)
+                            .data(prefix + curMossUp.first)
+                            .build()
+                    )
+                    Image(
+                        painter = painter2,
+                        contentDescription = "",
+                        modifier = Modifier
+                            .rotate(if (curMossUp.first == "vault_22/v22moss3.png") 90f else 0f)
+                            .offset {
+                                if (curMossUp.first == "vault_22/v22moss3.png")
+                                    IntOffset(-20, 0)
+                                else
+                                    IntOffset(0, -5)
+                            },
+                        contentScale = ContentScale.Inside,
+                        alignment = Alignment.TopStart
+                    )
+                    currentWidth += curMossUp.second.width.pxOrElse { 0 }
+                }
+            }
+        }
+        SIERRA_MADRE -> {
+            val painter = rememberAsyncImagePainter(
+                ImageRequest.Builder(activity)
+                    .size(512, 512)
+                    .data(prefix + "sierra_madre/mosaic.png")
+                    .build()
+            )
+            val painterLogo = rememberAsyncImagePainter(
+                ImageRequest.Builder(activity)
+                    .size(512, 512)
+                    .data(prefix + listOf("sierra_madre/logo1.png", "sierra_madre/logo2.png").random(rand))
+                    .build()
+            )
+            Row(Modifier.fillMaxWidth().align(Alignment.CenterEnd)) {
+                Box(Modifier.weight(1f))
+                Column(
+                    Modifier.weight(1f).padding(top = 48.dp, end = 8.dp, bottom = 48.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Image(
+                        painter = painterLogo,
+                        contentDescription = "",
+                        Modifier,
+                        alignment = Alignment.CenterEnd,
+                        contentScale = ContentScale.Inside
+                    )
+                    Image(
+                        painter = painter,
+                        contentDescription = "",
+                        Modifier,
+                        alignment = Alignment.CenterEnd,
+                        contentScale = ContentScale.Inside
+                    )
+                }
+            }
+
+            val painterFrame = rememberAsyncImagePainter(
+                ImageRequest.Builder(activity)
+                    .data(prefix + "sierra_madre/frame.png")
+                    .build()
+            )
+            Box(
+                Modifier.fillMaxHeight().offset { IntOffset(12.dp.roundToPx() + 8, -(12.dp.roundToPx() + 8)) },
+                contentAlignment = Alignment.BottomStart
+            ) {
+                Image(
+                    painter = painterFrame,
+                    contentDescription = "",
+                    Modifier.height(36.dp).width(36.dp),
+                    alignment = Alignment.BottomStart,
+                    contentScale = ContentScale.None
+                )
+            }
+
+            val painterPostcard1 = rememberAsyncImagePainter(
+                ImageRequest.Builder(activity)
+                    .data(prefix + "sierra_madre/postcard1.png")
+                    .build()
+            )
+            val painterPostcard2 = rememberAsyncImagePainter(
+                ImageRequest.Builder(activity)
+                    .data(prefix + "sierra_madre/postcard2.png")
+                    .build()
+            )
+            val painter44 = listOf(painterPostcard1, painterPostcard2).random(rand)
+
+            Image(
+                painter = painter44,
+                contentDescription = "",
+                Modifier.rotate(-40f + rand.nextFloat() * 80f),
+                alignment = Alignment.TopStart,
+                contentScale = ContentScale.None
+            )
+        }
+        MADRE_ROJA -> {
+            // TODO!!!
+        }
+        DESERT -> {
+            // TODO!!
+        }
+        ALASKA_FRONTIER -> {
+            // TODO!!
+        }
+        NEW_WORLD -> {
+            val painter4 = rememberAsyncImagePainter(
+                ImageRequest.Builder(activity)
+                    .size(327, 75)
+                    .data(prefix + "new_world/ghoul_and_loving_it.png")
+                    .build()
+            )
+            val painter5_1 = rememberAsyncImagePainter(
+                ImageRequest.Builder(activity)
+                    .size(128, 128)
+                    .data(prefix + "new_world/nvgraffitisierra03.png")
+                    .build()
+            )
+            val painter5_2 = rememberAsyncImagePainter(
+                ImageRequest.Builder(activity)
+                    .size(256, 128)
+                    .data(prefix + "new_world/nvgraffitisierra07.png")
+                    .build()
+            )
+            val painter5_3 = rememberAsyncImagePainter(
+                ImageRequest.Builder(activity)
+                    .size(256, 128)
+                    .data(prefix + "new_world/wwromanes.png")
+                    .build()
+            )
+
+            Row(Modifier.fillMaxWidth()) {
+                Image(
+                    painter = painter4,
+                    contentDescription = "",
+                    modifier = Modifier.weight(1f).padding(top = 8.dp, start = 18.dp),
+                    contentScale = ContentScale.Inside,
+                    alignment = Alignment.TopStart,
+                    colorFilter = ColorFilter.tint(Color.White)
+                )
+                Image(
+                    painter = listOf(painter5_1, painter5_2, painter5_3).random(rand),
+                    contentDescription = "",
+                    modifier = Modifier.weight(1f).padding(top = 2.dp, start = 8.dp, end = 8.dp),
+                    contentScale = ContentScale.Inside,
+                    alignment = Alignment.TopCenter,
+                    colorFilter = ColorFilter.tint(Color.White)
+                )
+            }
+
+            if (rand.nextBoolean()) {
+                val objPainter = rememberAsyncImagePainter(
+                    ImageRequest.Builder(activity)
+                        .size(235, 501)
+                        .data(prefix + "new_world/legion1.png")
+                        .build()
+                )
+                val painter3 = rememberAsyncImagePainter(
+                    ImageRequest.Builder(activity)
+                        .data(prefix + "new_world/graffiti_cool.png")
+                        .build()
+                )
+
+                Row(Modifier.fillMaxWidth().align(Alignment.CenterEnd).padding(top = 48.dp, end = 8.dp)) {
+                    Box(Modifier.weight(3f))
+                    Box(Modifier.weight(1f)) {
+                        val totalHeight = 501 + 185
+                        val newHeight = min(totalHeight * 2, height)
+                        val scale = newHeight.toFloat() / totalHeight
+                        Image(
+                            painter = painter3,
+                            contentDescription = "",
+                            modifier = Modifier.scale(scale).offset { IntOffset(0, (-50 * scale).toInt()) },
+                            contentScale = ContentScale.None
+                        )
+                        Image(
+                            painter = objPainter,
+                            contentDescription = "",
+                            Modifier.scale(scale),
+                            contentScale = ContentScale.None
+                        )
+                    }
+                }
+            } else {
+                val painter6 = rememberAsyncImagePainter(
+                    ImageRequest.Builder(activity)
+                        .data(prefix + "new_world/graffiti_coolest.png")
+                        .build()
+                )
+
+                Row(Modifier.fillMaxWidth().align(Alignment.CenterEnd)) {
+                    Box(Modifier.weight(3f))
+                    Box(Modifier.weight(1f).padding(top = 48.dp, bottom = 48.dp, end = 8.dp)) {
+                        val totalHeight1 = 676
+                        val newHeight1 = min(totalHeight1 * 2, height - (96.dp).dpToPx().toInt())
+                        val scale = newHeight1.toFloat() / totalHeight1
+                        Image(
+                            painter = painter6,
+                            contentDescription = "",
+                            Modifier.scale(scale)
+                        )
+                    }
+                }
+            }
         }
         else -> {}
     }
