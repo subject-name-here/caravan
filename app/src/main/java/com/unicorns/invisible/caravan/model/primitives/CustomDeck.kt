@@ -32,7 +32,7 @@ class CustomDeck() {
     fun count(predicate: (Card) -> Boolean) = cards.count(predicate)
     fun firstOrNull() = cards.firstOrNull()
     fun removeFirst() = cards.removeFirst()
-    fun remove(card: Card) = cards.removeAll { it.suit == card.suit && it.back == card.back && it.rank == card.rank }
+    fun remove(card: Card) = cards.removeAll { it.suit == card.suit && it.back == card.back && it.rank == card.rank && it.isAlt == card.isAlt }
     fun removeAll(elements: Collection<Card>) = elements.forEach { remove(it) }
 
     operator fun contains(card: Card): Boolean {

@@ -60,6 +60,7 @@ import com.unicorns.invisible.caravan.model.primitives.Suit
 import com.unicorns.invisible.caravan.utils.ShowCard
 import com.unicorns.invisible.caravan.utils.ShowCardBack
 import com.unicorns.invisible.caravan.utils.TextFallout
+import com.unicorns.invisible.caravan.utils.TextSymbola
 import com.unicorns.invisible.caravan.utils.clickableCancel
 import com.unicorns.invisible.caravan.utils.clickableOk
 import com.unicorns.invisible.caravan.utils.dpToPx
@@ -393,15 +394,16 @@ fun EnemySide(
             Box(Modifier.fillMaxSize()) {
                 ShowDeck(game.enemyCResources, activity)
                 if (isPvP) {
-                    TextFallout(
-                        getEnemySymbol(),
-                        getTextColor(activity),
-                        getTextStrokeColor(activity),
-                        24.sp,
-                        Alignment.BottomEnd,
-                        Modifier.background(getTextBackgroundColor(activity)),
-                        TextAlign.Center
-                    )
+                    Box(modifier = Modifier.fillMaxSize().background(Color.Transparent), contentAlignment = Alignment.Center) {
+                        TextSymbola(
+                            getEnemySymbol(),
+                            getTextColor(activity),
+                            24.sp,
+                            Alignment.Center,
+                            Modifier.background(getTextBackgroundColor(activity)),
+                            TextAlign.Center
+                        )
+                    }
                 }
             }
         }
@@ -424,13 +426,12 @@ fun PlayerSide(
         PlayerCards(activity, game.playerCResources.hand, wasCardDropped(), selectedCard, selectedCardColor, onCardClicked)
         Box {
             ShowDeck(game.playerCResources, activity)
-            if (isPvP) {
-                TextFallout(
+            Box(modifier = Modifier.fillMaxSize().background(Color.Transparent), contentAlignment = Alignment.Center) {
+                TextSymbola(
                     getMySymbol(),
                     getTextColor(activity),
-                    getTextStrokeColor(activity),
                     24.sp,
-                    Alignment.TopStart,
+                    Alignment.Center,
                     Modifier.background(getTextBackgroundColor(activity)).clickableOk(activity) {
                         setMySymbol()
                     },

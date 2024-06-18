@@ -321,6 +321,28 @@ fun TextFallout(
     }
 }
 @Composable
+fun TextSymbola(
+    text: String,
+    textColor: Color,
+    textSize: TextUnit,
+    contentAlignment: Alignment,
+    modifier: Modifier,
+    textAlign: TextAlign,
+) {
+    Box(modifier, contentAlignment = contentAlignment) {
+        Text(
+            text = text, color = textColor,
+            fontFamily = FontFamily(Font(R.font.symbola)),
+            style = TextStyle(
+                color = textColor,
+                fontSize = textSize,
+                drawStyle = Fill
+            ),
+            textAlign = textAlign
+        )
+    }
+}
+@Composable
 fun TextFallout(
     text: AnnotatedString,
     textColor: Color,

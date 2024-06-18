@@ -809,6 +809,7 @@ class MainActivity : SaveDataActivity() {
                     .fillMaxHeight(0.8f)
                     .scrollbar(
                         state,
+                        alignEnd = false,
                         knobColor = getKnobColor(this@MainActivity),
                         trackColor = getTrackColor(this@MainActivity),
                         horizontal = false

@@ -17,7 +17,7 @@ fun playNotificationSound(activity: MainActivity, onPrepared: () -> Unit) {
                 if (effectPlayer == this) {
                     effectPlayer = null
                 }
-                release()
+                // release()
             }
             start()
         }
@@ -34,7 +34,7 @@ private fun playEffectPlayerSound(activity: MainActivity, soundId: Int, volumeFr
                 if (effectPlayer == this) {
                     effectPlayer = null
                 }
-                release()
+                // release()
             }
             start()
         }
@@ -106,7 +106,7 @@ fun startAmbient(activity: MainActivity) {
             setOnCompletionListener {
                 if (currentPlayer == this) {
                     currentPlayer = null
-                    release()
+                    // release()
                     startAmbient(activity)
                 }
             }
@@ -186,7 +186,7 @@ private fun playSongFromRadio(activity: MainActivity, songName: String) {
                 if (radioPlayer == this) {
                     radioPlayer = null
                 }
-                release()
+                // release()
                 nextSong(activity)
             }
             prepare()

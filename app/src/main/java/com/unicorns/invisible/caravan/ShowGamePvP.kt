@@ -383,7 +383,7 @@ fun ShowGamePvP(
     )
 
     key (timeOnTimer) {
-        Box(modifier = Modifier.fillMaxSize().background(Color.Transparent)) {
+        Box(modifier = Modifier.fillMaxSize().background(Color.Transparent), contentAlignment = Alignment.BottomEnd) {
             TextFallout(
                 timeOnTimer.toString(),
                 getTextColor(activity),

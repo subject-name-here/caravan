@@ -342,9 +342,9 @@ fun Tutorial(activity: MainActivity, goBack: () -> Unit) {
                     getDialogTextColor(activity),
                     getDialogTextColor(activity),
                     14.sp,
-                    Alignment.CenterEnd,
+                    Alignment.CenterStart,
                     Modifier.clickableCancel(activity) { hideAlertDialog() },
-                    TextAlign.End
+                    TextAlign.Start
                 )
             },
             containerColor = getDialogBackground(activity),
