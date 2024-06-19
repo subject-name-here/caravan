@@ -63,6 +63,7 @@ import com.unicorns.invisible.caravan.utils.getTrackColor
 import com.unicorns.invisible.caravan.utils.playClickSound
 import com.unicorns.invisible.caravan.utils.playCloseSound
 import com.unicorns.invisible.caravan.utils.playLoseSound
+import com.unicorns.invisible.caravan.utils.playQuitMultiplayer
 import com.unicorns.invisible.caravan.utils.playWinSound
 import com.unicorns.invisible.caravan.utils.scrollbar
 import com.unicorns.invisible.caravan.utils.sendRequest
@@ -546,7 +547,13 @@ fun StartPvP(
             showAlertDialog(activity.getString(R.string.result), activity.getString(R.string.you_lose))
         }
     }
-    activity.goBack = { stopMusic(); goBack() }
+    activity.goBack = {
+        if (!game.isOver() && game.isPlayerTurn) {
+            playQuitMultiplayer(activity)
+        }
+        stopMusic()
+        goBack()
+    }
 
     var enemyHandKey by remember { mutableStateOf(true) }
     fun updateEnemyHand() {

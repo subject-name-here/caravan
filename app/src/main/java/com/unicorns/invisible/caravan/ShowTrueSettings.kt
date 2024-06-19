@@ -5,9 +5,11 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -57,7 +59,7 @@ fun ShowTrueSettings(
     ) {
         LazyColumn(
             Modifier
-                .fillMaxHeight(0.9f)
+                .fillMaxHeight(0.8f)
                 .fillMaxWidth()
                 .scrollbar(
                     mainState,
@@ -68,6 +70,7 @@ fun ShowTrueSettings(
             mainState
         ) {
             item {
+                Spacer(Modifier.height(16.dp))
                 Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
                     Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                         TextFallout(

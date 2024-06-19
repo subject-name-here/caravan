@@ -73,7 +73,7 @@ fun ShowSettings(
 
         LazyColumn(
             Modifier
-                .fillMaxHeight(0.9f)
+                .fillMaxHeight(0.8f)
                 .fillMaxWidth()
                 .scrollbar(
                     mainState,
@@ -84,6 +84,7 @@ fun ShowSettings(
             mainState
         ) {
             item {
+                Spacer(Modifier.height(16.dp))
                 Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
                     Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                         TextFallout(

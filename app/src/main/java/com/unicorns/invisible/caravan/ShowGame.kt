@@ -78,6 +78,7 @@ import com.unicorns.invisible.caravan.utils.playCardFlipSound
 import com.unicorns.invisible.caravan.utils.playCloseSound
 import com.unicorns.invisible.caravan.utils.playJokerReceivedSounds
 import com.unicorns.invisible.caravan.utils.playJokerSounds
+import com.unicorns.invisible.caravan.utils.playNoCardAlarm
 import com.unicorns.invisible.caravan.utils.playSelectSound
 import com.unicorns.invisible.caravan.utils.playVatsReady
 import com.unicorns.invisible.caravan.utils.pxToDp
@@ -228,6 +229,10 @@ fun ShowGameRaw(
     enemyHandKey: Int
 ) {
     LaunchedEffect(Unit) { startAmbient(activity) }
+
+    if (game.playerCResources.deckSize == 0) {
+        LaunchedEffect(Unit) { playNoCardAlarm(activity) }
+    }
 
     val state1Enemy = rememberLazyListState()
     val state1Player = rememberLazyListState()

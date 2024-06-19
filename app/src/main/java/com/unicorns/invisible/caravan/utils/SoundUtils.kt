@@ -80,6 +80,8 @@ fun playSelectSound(activity: MainActivity) = playEffectPlayerSound(activity, R.
 fun playPimpBoySound(activity: MainActivity) = playEffectPlayerSound(activity, R.raw.ui_pimpboy, 3)
 fun playVatsEnter(activity: MainActivity) = playEffectPlayerSound(activity, R.raw.ui_vats_enter, 3)
 fun playVatsReady(activity: MainActivity) = playEffectPlayerSound(activity, R.raw.ui_vats_ready, 3)
+fun playQuitMultiplayer(activity: MainActivity) = playEffectPlayerSound(activity, R.raw.quit_multiplayer, 3)
+fun playNoCardAlarm(activity: MainActivity) = playEffectPlayerSound(activity, R.raw.no_cards_alarm, 3)
 
 var currentPlayer: MediaPlayer? = null
 fun stopMusic() {

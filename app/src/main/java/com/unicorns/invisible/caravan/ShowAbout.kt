@@ -126,7 +126,18 @@ fun ShowAbout(activity: MainActivity, goBack: () -> Unit) {
                 TextAlign.Center
             )
 
-            Spacer(modifier = Modifier.height(48.dp))
+            Spacer(modifier = Modifier.height(16.dp))
+            TextFallout(
+                stringResource(R.string.about_5),
+                getTextColor(activity),
+                getTextStrokeColor(activity),
+                20.sp,
+                Alignment.Center,
+                Modifier,
+                TextAlign.Center
+            )
+
+            Spacer(modifier = Modifier.height(32.dp))
             TextFallout(
                 stringResource(R.string.menu_back),
                 getTextColor(activity),

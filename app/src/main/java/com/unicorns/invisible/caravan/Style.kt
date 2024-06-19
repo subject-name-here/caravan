@@ -1,10 +1,12 @@
 package com.unicorns.invisible.caravan
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraintsScope
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,9 +14,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.BiasAlignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.paint
 import androidx.compose.ui.draw.rotate
@@ -23,12 +30,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.ColorMatrix
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.FixedScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
 import coil.decode.SvgDecoder
 import coil.request.ImageRequest
+import coil.size.Scale
 import coil.size.Size
 import coil.size.pxOrElse
 import com.unicorns.invisible.caravan.Style.ALASKA_FRONTIER
@@ -42,6 +51,9 @@ import com.unicorns.invisible.caravan.Style.SIERRA_MADRE
 import com.unicorns.invisible.caravan.Style.VAULT_21
 import com.unicorns.invisible.caravan.Style.VAULT_22
 import com.unicorns.invisible.caravan.utils.dpToPx
+import com.unicorns.invisible.caravan.utils.pxToDp
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
 import kotlin.math.min
 import kotlin.random.Random
 
@@ -206,7 +218,7 @@ fun BoxWithConstraintsScope.StylePicture(activity: MainActivity, style: Style, k
             )
 
             var currentWidth = 0
-            Row(Modifier.fillMaxWidth().offset(-5.dp, 0.dp), horizontalArrangement = Arrangement.Start) {
+            Row(Modifier.fillMaxWidth().offset((-5).dp, 0.dp), horizontalArrangement = Arrangement.Start) {
                 while (currentWidth < width) {
                     val curMossUp = mossUp.random(rand)
                     val painter2 = rememberAsyncImagePainter(
@@ -623,6 +635,77 @@ fun BoxWithConstraintsScope.StylePicture(activity: MainActivity, style: Style, k
                 }
             }
         }
-        else -> {}
+        PIP_BOY -> {
+
+        }
+        PIP_GIRL -> {
+
+        }
+        VAULT_21 -> {
+            val totalHeight = 768
+            val newHeight = min(totalHeight * 2, height - (96.dp).dpToPx().toInt())
+            val scale1 = newHeight.toFloat() / totalHeight
+            val totalWidth = 768
+            val newWidth = min(totalWidth * 2, width / 2)
+            val scale2 = newWidth.toFloat() / totalWidth
+            val scale = minOf(scale1, scale2)
+            Box(Modifier.fillMaxSize().padding(vertical = 48.dp), Alignment.CenterEnd) {
+                val painter1 = rememberAsyncImagePainter(
+                    ImageRequest.Builder(activity)
+                        .size(256, 256)
+                        .data(prefix + "vault_21/load_roulette_wheel.png")
+                        .build()
+                )
+                val painter0 = rememberAsyncImagePainter(
+                    ImageRequest.Builder(activity)
+                        .size(16, 256)
+                        .data(prefix + "vault_21/load_roulette_ball.png")
+                        .build()
+                )
+                val painter2 = rememberAsyncImagePainter(
+                    ImageRequest.Builder(activity)
+                        .size(768, 768)
+                        .data(prefix + "vault_21/load_bars.png")
+                        .build()
+                )
+                val wheelRotation = remember { mutableFloatStateOf(0f) }
+                val ballRotation = remember { mutableFloatStateOf(0f) }
+                LaunchedEffect(Unit) {
+                    while (isActive) {
+                        wheelRotation.floatValue += 5f
+                        delay(activity.animationTickLength.value!! / 5)
+                    }
+                }
+                LaunchedEffect(Unit) {
+                    while (isActive) {
+                        ballRotation.floatValue -= 4f
+                        delay(activity.animationTickLength.value!! / 5)
+                    }
+                }
+
+                Box(Modifier.fillMaxSize(), contentAlignment = Alignment.CenterEnd) {
+                    Box(Modifier.size(672.pxToDp(), 672.pxToDp()), contentAlignment = Alignment.Center) {
+                        Image(
+                            painter = painter2,
+                            contentDescription = "",
+                            modifier = Modifier.fillMaxSize(),
+                            contentScale = FixedScale(scale),
+                        )
+                        Box(Modifier.size(672.pxToDp(), 672.pxToDp()).scale(scale), contentAlignment = Alignment.Center) {
+                            Image(
+                                painter = painter1,
+                                contentDescription = "",
+                                modifier = Modifier.rotate(wheelRotation.floatValue),
+                            )
+                            Image(
+                                painter = painter0,
+                                contentDescription = "",
+                                modifier = Modifier.rotate(ballRotation.floatValue),
+                            )
+                        }
+                    }
+                }
+            }
+        }
     }
 }

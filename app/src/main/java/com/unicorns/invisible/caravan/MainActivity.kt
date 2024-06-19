@@ -940,7 +940,7 @@ class MainActivity : SaveDataActivity() {
         }
 
         LaunchedEffect(Unit) {
-            if (save!!.updateSoldCards()) {
+            if (save?.updateSoldCards() == true) {
                 saveOnGD(this@MainActivity)
                 showAlertDialog("Card prices update!", "Some cards are now more expensive! Go check \"Vision!\" shop.")
             }
