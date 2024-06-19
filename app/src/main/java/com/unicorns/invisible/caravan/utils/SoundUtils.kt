@@ -82,6 +82,9 @@ fun playVatsEnter(activity: MainActivity) = playEffectPlayerSound(activity, R.ra
 fun playVatsReady(activity: MainActivity) = playEffectPlayerSound(activity, R.raw.ui_vats_ready, 3)
 fun playQuitMultiplayer(activity: MainActivity) = playEffectPlayerSound(activity, R.raw.quit_multiplayer, 3)
 fun playNoCardAlarm(activity: MainActivity) = playEffectPlayerSound(activity, R.raw.no_cards_alarm, 3)
+fun playYesBeep(activity: MainActivity) = playEffectPlayerSound(activity, R.raw.beep_a)
+fun playNoBeep(activity: MainActivity) = playEffectPlayerSound(activity, R.raw.beep_b)
+fun playFanfares(activity: MainActivity) = playEffectPlayerSound(activity, R.raw.fanfares)
 
 var currentPlayer: MediaPlayer? = null
 fun stopMusic() {

@@ -83,8 +83,8 @@ class Save {
             return false
         }
         CardBack.entries.forEach { back ->
-            val cardBought = (3..26).random()
-            val cardBoughtAlt = (2..17).random()
+            val cardBought = (3..15).random()
+            val cardBoughtAlt = (2..11).random()
             if (back to true in soldCards) {
                 soldCards[back to true] = (soldCards[back to true]!! - cardBought).coerceAtLeast(0)
             }

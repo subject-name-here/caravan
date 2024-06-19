@@ -192,7 +192,7 @@ fun getGameScoreColor(activity: MainActivity): Color {
 fun getGameSelectionColor(activity: MainActivity): Color {
     return when (activity.styleId) {
         Style.DESERT -> Color(activity.getColor(R.color.desertAccent))
-        Style.ALASKA_FRONTIER -> Color(activity.getColor(R.color.alaskaYellow))
+        Style.ALASKA_FRONTIER -> Color(activity.getColor(R.color.alaskaBlue))
         Style.OLD_WORLD -> Color(activity.getColor(R.color.oldWorldBack))
         Style.MADRE_ROJA -> Color(activity.getColor(R.color.madreRojaTextBack))
         else -> getTextColor(activity)

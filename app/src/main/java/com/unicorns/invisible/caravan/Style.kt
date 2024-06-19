@@ -2,12 +2,13 @@ package com.unicorns.invisible.caravan
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraintsScope
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,10 +17,16 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.BiasAlignment
 import androidx.compose.ui.Modifier
@@ -32,8 +39,13 @@ import androidx.compose.ui.graphics.ColorMatrix
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.FixedScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import coil.decode.SvgDecoder
 import coil.request.ImageRequest
@@ -50,7 +62,15 @@ import com.unicorns.invisible.caravan.Style.PIP_GIRL
 import com.unicorns.invisible.caravan.Style.SIERRA_MADRE
 import com.unicorns.invisible.caravan.Style.VAULT_21
 import com.unicorns.invisible.caravan.Style.VAULT_22
+import com.unicorns.invisible.caravan.save.saveOnGD
+import com.unicorns.invisible.caravan.utils.TextFallout
 import com.unicorns.invisible.caravan.utils.dpToPx
+import com.unicorns.invisible.caravan.utils.getTextBackgroundColor
+import com.unicorns.invisible.caravan.utils.getTextColor
+import com.unicorns.invisible.caravan.utils.getTextStrokeColor
+import com.unicorns.invisible.caravan.utils.playFanfares
+import com.unicorns.invisible.caravan.utils.playNoBeep
+import com.unicorns.invisible.caravan.utils.playYesBeep
 import com.unicorns.invisible.caravan.utils.pxToDp
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
@@ -88,9 +108,7 @@ fun Modifier.getTableBackground(style: Style): Modifier {
             VAULT_22 -> R.drawable.table_green
         }),
         contentScale = ContentScale.Crop, // TODO!
-        colorFilter = if (style != PIP_GIRL) {
-            ColorFilter.colorMatrix(ColorMatrix())
-        } else {
+        colorFilter = if (style == PIP_GIRL) {
             ColorFilter.colorMatrix(ColorMatrix().apply {
                 timesAssign(
                     ColorMatrix(
@@ -103,6 +121,21 @@ fun Modifier.getTableBackground(style: Style): Modifier {
                     )
                 )
             })
+        } else if (style == ALASKA_FRONTIER) {
+            ColorFilter.colorMatrix(ColorMatrix().apply {
+                timesAssign(
+                    ColorMatrix(
+                        floatArrayOf(
+                            3f, 0f, 0f, 0f, 0f,
+                            0f, 3f, 0f, 0f, 0f,
+                            0f, 0f, 3f, 0f, 0f,
+                            0f, 0f, 0f, 1f, 0f
+                        )
+                    )
+                )
+            })
+        } else {
+            ColorFilter.colorMatrix(ColorMatrix())
         }
     )
 }
@@ -432,7 +465,7 @@ fun BoxWithConstraintsScope.StylePicture(activity: MainActivity, style: Style, k
                             Image(
                                 painter = graffitiPainter,
                                 contentDescription = "",
-                                Modifier.fillMaxWidth().rotate(-20f + rand.nextFloat() * 40f).offset(x = ((-4..4).random().dp)),
+                                Modifier.fillMaxWidth().rotate(-20f + rand.nextFloat() * 40f).offset(x = ((-4..4).random(rand).dp)),
                                 alignment = Alignment.Center,
                                 contentScale = ContentScale.Fit,
                                 colorFilter = ColorFilter.tint(Color.Black)
@@ -476,18 +509,23 @@ fun BoxWithConstraintsScope.StylePicture(activity: MainActivity, style: Style, k
                     }
                 }
 
-                Image(
-                    painter = rememberAsyncImagePainter(
-                        ImageRequest.Builder(activity)
-                            .size(256, 256)
-                            .data(prefix + "alaska/autodoc.png")
-                            .build(),
-                    ),
-                    contentDescription = "",
-                    Modifier.fillMaxSize().padding(top = 48.dp),
-                    alignment = Alignment.TopCenter,
-                    contentScale = ContentScale.Inside
+                val painterFrame = rememberAsyncImagePainter(
+                    ImageRequest.Builder(activity)
+                        .data(prefix + "alaska/autodoc.png")
+                        .build()
                 )
+                Box(
+                    Modifier.fillMaxHeight().offset { IntOffset(12.dp.roundToPx() + 8, -(12.dp.roundToPx() + 8)) },
+                    contentAlignment = Alignment.BottomStart
+                ) {
+                    Image(
+                        painter = painterFrame,
+                        contentDescription = "",
+                        Modifier.height(36.dp).width(36.dp),
+                        alignment = Alignment.BottomStart,
+                        contentScale = ContentScale.None
+                    )
+                }
             } else {
                 val painter = listOf(
                     rememberAsyncImagePainter(
@@ -521,18 +559,23 @@ fun BoxWithConstraintsScope.StylePicture(activity: MainActivity, style: Style, k
                     }
                 }
 
-                Image(
-                    painter = rememberAsyncImagePainter(
-                        ImageRequest.Builder(activity)
-                            .size(128, 128)
-                            .data(prefix + "alaska/dlcanchredstar.jpg")
-                            .build(),
-                    ),
-                    contentDescription = "",
-                    Modifier.fillMaxSize().padding(top = 48.dp),
-                    alignment = Alignment.TopCenter,
-                    contentScale = ContentScale.Inside
+                val painterFrame = rememberAsyncImagePainter(
+                    ImageRequest.Builder(activity)
+                        .data(prefix + "alaska/dlcanchredstar.jpg")
+                        .build()
                 )
+                Box(
+                    Modifier.fillMaxHeight().offset { IntOffset(12.dp.roundToPx() + 8, -(12.dp.roundToPx() + 8)) },
+                    contentAlignment = Alignment.BottomStart
+                ) {
+                    Image(
+                        painter = painterFrame,
+                        contentDescription = "",
+                        Modifier.height(36.dp).width(36.dp),
+                        alignment = Alignment.BottomStart,
+                        contentScale = ContentScale.None
+                    )
+                }
             }
         }
         NEW_WORLD -> {
@@ -636,10 +679,146 @@ fun BoxWithConstraintsScope.StylePicture(activity: MainActivity, style: Style, k
             }
         }
         PIP_BOY -> {
+            Row(Modifier.fillMaxWidth().align(Alignment.CenterEnd).padding(top = 48.dp, bottom = 48.dp, end = 8.dp)) {
+                Box(Modifier.weight(1f))
+                Column(Modifier.weight(1f), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
+                    val numberOfRounds = 20
+                    var cnt by rememberSaveable { mutableIntStateOf(0) }
+                    if (cnt == numberOfRounds) {
+                        LaunchedEffect(Unit) {
+                            playFanfares(activity)
+                            activity.save?.let {
+                                it.caps += 22229
+                                saveOnGD(activity)
+                            }
+                            delay(25000L)
+                            cnt = 0
+                        }
 
+                    }
+                    var side by rememberSaveable { mutableStateOf(Random.nextBoolean()) }
+
+                    TextFallout(
+                        "And this is the device #50724. " +
+                                "It was our first attempt to measure someone\'s Luck. " +
+                                "All you have to do to win is to pass 20 rounds of guessing game: Heads or Tails? " +
+                                "Choose right - counter adds 1. Choose wrong - counter goes to zero. " +
+                                "Counter gets to 20 - get a prize. " +
+                                "Not monetary, of course, just a huge pile of bottlecaps we received from Sunset Sarsaparilla HQ. " +
+                                "Still have no idea why we've got it.",
+                        getTextColor(activity),
+                        getTextStrokeColor(activity),
+                        12.sp,
+                        Alignment.TopCenter,
+                        Modifier.fillMaxWidth(),
+                        TextAlign.Center,
+                    )
+                    Spacer(Modifier.height(12.dp))
+                    TextFallout(
+                        "$cnt / $numberOfRounds",
+                        getTextColor(activity),
+                        getTextStrokeColor(activity),
+                        14.sp,
+                        Alignment.TopCenter,
+                        Modifier.fillMaxWidth(),
+                        TextAlign.Center,
+                    )
+                    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
+                        TextFallout(
+                            "HEADS",
+                            getTextColor(activity),
+                            getTextStrokeColor(activity),
+                            16.sp,
+                            Alignment.Center,
+                            Modifier.background(getTextBackgroundColor(activity)).padding(4.dp).clickable {
+                                if (cnt == numberOfRounds) return@clickable
+                                if (side) {
+                                    cnt++
+                                    playYesBeep(activity)
+                                } else {
+                                    cnt = 0
+                                    playNoBeep(activity)
+                                }
+                                side = Random.nextBoolean()
+                            },
+                            TextAlign.Center,
+                        )
+                        TextFallout(
+                            "TAILS",
+                            getTextColor(activity),
+                            getTextStrokeColor(activity),
+                            16.sp,
+                            Alignment.Center,
+                            Modifier.background(getTextBackgroundColor(activity)).padding(4.dp).clickable {
+                                if (cnt == numberOfRounds) return@clickable
+                                if (!side) {
+                                    cnt++
+                                    playYesBeep(activity)
+                                } else {
+                                    cnt = 0
+                                    playNoBeep(activity)
+                                }
+                                side = Random.nextBoolean()
+                            },
+                            TextAlign.Center,
+                        )
+                    }
+                }
+            }
         }
         PIP_GIRL -> {
-
+            val phrases = listOf(
+                "I have no sleep tonight;\nTransmission starts again.\nBut telling you what\'s right\nIs crying in the rain.",
+                "6-28-69\nRemember.",
+                "Storms come and go,\nBut you\'re still standing.",
+                "War never changes.\n\nBut people do, through the roads they walk.",
+                "...about\n2.8 times 10^7\npeople...",
+                "Billie pondered: \"What's Pip-Boy?\""
+            )
+            val painters = listOf(
+                rememberAsyncImagePainter(
+                    ImageRequest.Builder(activity)
+                        .data(prefix + "pip_girl/vault_girl1.png")
+                        .build()
+                ),
+                rememberAsyncImagePainter(
+                    ImageRequest.Builder(activity)
+                        .data(prefix + "pip_girl/vault_girl2.png")
+                        .build()
+                ),
+            )
+            if ((1..8).random(rand) in (1..6)) {
+                val text = phrases.random(rand)
+                Row(Modifier.fillMaxWidth().align(Alignment.CenterEnd).padding(top = 48.dp, bottom = 48.dp, end = 8.dp)) {
+                    Box(Modifier.weight(1f))
+                    Box(Modifier.weight(1f), contentAlignment = Alignment.Center) {
+                        Text(
+                            text =  text,
+                            textAlign = TextAlign.Center,
+                            color = Color.Black,
+                            fontFamily = FontFamily(Font(R.font.help)),
+                            modifier = Modifier
+                                .align(Alignment.Center)
+                                .rotate(-20f + rand.nextFloat() * 40f)
+                                .offset(x = ((-5..5).random(rand).dp), y = ((-5..5).random(rand).dp)),
+                            fontSize = 12.sp,
+                        )
+                    }
+                }
+            } else {
+                Row(Modifier.fillMaxWidth().align(Alignment.CenterEnd).padding(top = 48.dp, bottom = 48.dp, end = 8.dp)) {
+                    Box(Modifier.weight(1f))
+                    Box(Modifier.weight(1f)) {
+                        Image(
+                            painter = painters.random(rand),
+                            contentDescription = "",
+                            Modifier.fillMaxSize(),
+                            contentScale = ContentScale.Fit,
+                            alignment = Alignment.Center
+                        )
+                    }
+                }
+            }
         }
         VAULT_21 -> {
             val totalHeight = 768

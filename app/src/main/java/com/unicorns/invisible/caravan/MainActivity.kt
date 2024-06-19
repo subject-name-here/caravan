@@ -844,8 +844,6 @@ class MainActivity : SaveDataActivity() {
                         Spacer(modifier = Modifier.height(20.dp))
                         MenuItem(getString(R.string.menu_deck), showDeckSelection)
                         Spacer(modifier = Modifier.height(20.dp))
-                        MenuItem(stringResource(R.string.menu_vision), showVision)
-                        Spacer(modifier = Modifier.height(20.dp))
                         MenuItem("Stack Market", showStock)
                         Spacer(modifier = Modifier.height(32.dp))
                     }
@@ -862,7 +860,7 @@ class MainActivity : SaveDataActivity() {
                 ) {
                     Row(
                         Modifier
-                            .fillMaxWidth(0.66f)
+                            .fillMaxWidth(0.4f)
                             .fillMaxHeight()
                             .padding(start = 12.dp)
                             .drawBehind {
@@ -879,7 +877,44 @@ class MainActivity : SaveDataActivity() {
                             }
                             .align(Alignment.CenterVertically)
                     ) {
+                        BoxWithConstraints(Modifier.fillMaxSize()) {
+                            TextFallout(
+                                getString(R.string.menu_vision),
+                                getTextColor(this@MainActivity),
+                                getTextStrokeColor(this@MainActivity),
+                                18.sp,
+                                Alignment.Center,
+                                Modifier
+                                    .padding(end = 8.dp)
+                                    .align(Alignment.TopEnd)
+                                    .clickableOk(this@MainActivity) {
+                                        showVision()
+                                    }
+                                    .background(getTextBackgroundColor(this@MainActivity))
+                                    .padding(4.dp),
+                                TextAlign.Center
+                            )
+                        }
+                    }
 
+                    Row(
+                        Modifier
+                            .fillMaxWidth(0.6f)
+                            .fillMaxHeight()
+                            .padding(start = 12.dp)
+                            .drawBehind {
+                                drawPath(
+                                    Path().apply {
+                                        moveTo(0f, size.height * 3 / 4)
+                                        lineTo(size.width, size.height * 3 / 4)
+                                        lineTo(size.width, 0f)
+                                    },
+                                    color = getDividerColor(this@MainActivity),
+                                    style = Stroke(width = 8f),
+                                )
+                            }
+                            .align(Alignment.CenterVertically)
+                    ) {
                         BoxWithConstraints(Modifier.fillMaxSize()) {
                             TextFallout(
                                 getString(R.string.menu_settings),
