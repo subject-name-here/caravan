@@ -74,7 +74,7 @@ fun ShowTrueSettings(
                 Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
                     Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                         TextFallout(
-                            "Animation Length",
+                            stringResource(R.string.animation_length),
                             getTextColor(activity),
                             getTextStrokeColor(activity),
                             18.sp,
@@ -90,15 +90,18 @@ fun ShowTrueSettings(
                                 getTextStrokeColor(activity),
                                 18.sp,
                                 Alignment.Center,
-                                Modifier.weight(1f).background(getTextBackgroundColor(activity)).clickable {
-                                    val tmpTickLength = tickLength - 95L
-                                    if (tmpTickLength < 190L) {
-                                        playCloseSound(activity)
-                                    } else {
-                                        playClickSound(activity)
-                                        tickLength = (tmpTickLength).coerceAtLeast(190L)
-                                    }
-                                },
+                                Modifier
+                                    .weight(1f)
+                                    .background(getTextBackgroundColor(activity))
+                                    .clickable {
+                                        val tmpTickLength = tickLength - 95L
+                                        if (tmpTickLength < 190L) {
+                                            playCloseSound(activity)
+                                        } else {
+                                            playClickSound(activity)
+                                            tickLength = (tmpTickLength).coerceAtLeast(190L)
+                                        }
+                                    },
                                 TextAlign.Center
                             )
                             TextFallout(
@@ -116,15 +119,18 @@ fun ShowTrueSettings(
                                 getTextStrokeColor(activity),
                                 18.sp,
                                 Alignment.Center,
-                                Modifier.weight(1f).background(getTextBackgroundColor(activity)).clickable {
-                                    val tmpTickLength = tickLength + 95L
-                                    if (tmpTickLength > 760L) {
-                                        playCloseSound(activity)
-                                    } else {
-                                        playClickSound(activity)
-                                        tickLength = (tmpTickLength).coerceAtMost(760L)
-                                    }
-                                },
+                                Modifier
+                                    .weight(1f)
+                                    .background(getTextBackgroundColor(activity))
+                                    .clickable {
+                                        val tmpTickLength = tickLength + 95L
+                                        if (tmpTickLength > 760L) {
+                                            playCloseSound(activity)
+                                        } else {
+                                            playClickSound(activity)
+                                            tickLength = (tmpTickLength).coerceAtMost(760L)
+                                        }
+                                    },
                                 TextAlign.Center
                             )
                         }

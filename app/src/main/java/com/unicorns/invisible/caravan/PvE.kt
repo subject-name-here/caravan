@@ -621,7 +621,7 @@ fun winCard(
     }
     if (capsEarned > 0) {
         activity.save!!.caps += capsEarned
-        result += "\nCaps earned: $capsEarned.\n"
+        result += activity.getString(R.string.caps_earned, capsEarned)
     }
 
     return result

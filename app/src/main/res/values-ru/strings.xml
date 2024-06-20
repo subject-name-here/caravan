@@ -265,4 +265,23 @@
 
     <string name="tap_to_play">Нажмите, чтобы играть</string>
     <string name="no_one">никого</string>
+
+    <string name="caps_earned">\nКрышычек получено: %1$s.\n</string>
+    <string name="caps">КРЫШКИ: %1$s</string>
+    <string name="transaction_succeeded">Успешно!</string>
+    <string name="you_have_bought_style">Вы купили тему %1$s!</string>
+    <string name="transaction_failed">Ошибка!</string>
+    <string name="not_enough_caps">Недостаточно крышечек!</string>
+    <string name="card_prices">ЦЕНЫ НА КАРТЫ!!!</string>
+    <string name="updates_every_midnight">(обновление каждую полночь.)</string>
+    <string name="cost_caps">" крышечек"</string>
+    <string name="animation_length">Время на анимацию</string>
+    <string name="stack_market">Стоимость карт</string>
+    <string name="card_prices_update">Обновление цен на карты!</string>
+    <string name="some_cards_are_now_more_expensive">Некоторые карты стоят дороже!</string>
+    <string name="themes">Темы</string>
+
+    <string name="room_exists_already">Номер уже существует!!!</string>
+    <string name="select">ВЫБРАТЬ</string>
+    <string name="buy">КУПИТЬ</string>
 </resources>

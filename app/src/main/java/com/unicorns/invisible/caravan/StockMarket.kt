@@ -66,7 +66,7 @@ fun StockMarket(
             item {
                 Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
                     TextFallout(
-                        "CARD PRICES!!!",
+                        stringResource(R.string.card_prices),
                         getTextColor(activity),
                         getTextStrokeColor(activity),
                         24.sp,
@@ -75,7 +75,7 @@ fun StockMarket(
                         TextAlign.Center
                     )
                     TextFallout(
-                        "(updated every midnight.)",
+                        stringResource(R.string.updates_every_midnight),
                         getTextColor(activity),
                         getTextStrokeColor(activity),
                         16.sp,
@@ -99,7 +99,10 @@ fun StockMarket(
                         if (back == CardBack.STANDARD && !isAlt) {
                             return@forEach
                         }
-                        Row(Modifier.fillMaxWidth().padding(horizontal = 4.dp, vertical = 8.dp), verticalAlignment = Alignment.CenterVertically) {
+                        Row(
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 4.dp, vertical = 8.dp), verticalAlignment = Alignment.CenterVertically) {
                             ShowCardBack(
                                 activity,
                                 Card(Rank.ACE, Suit.CLUBS, back, isAlt),
@@ -107,12 +110,15 @@ fun StockMarket(
                             )
                             val style = activity.styleId
                             TextFallout(
-                                activity.save!!.getCardPrice(Card(Rank.ACE, Suit.CLUBS, back, isAlt)).toString() + " caps",
+                                activity.save!!.getCardPrice(Card(Rank.ACE, Suit.CLUBS, back, isAlt)).toString() + stringResource(
+                                    R.string.cost_caps
+                                ),
                                 getTextColorByStyle(activity, style),
                                 getStrokeColorByStyle(activity, style),
                                 18.sp,
                                 Alignment.Center,
-                                Modifier.weight(0.5f)
+                                Modifier
+                                    .weight(0.5f)
                                     .padding(end = 4.dp)
                                     .background(getTextBackByStyle(activity, style))
                                     .padding(4.dp),

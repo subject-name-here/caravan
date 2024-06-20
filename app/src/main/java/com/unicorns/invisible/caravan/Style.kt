@@ -1,10 +1,16 @@
 package com.unicorns.invisible.caravan
 
+import android.util.Log
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.AnimationVector2D
+import androidx.compose.animation.core.TweenSpec
+import androidx.compose.animation.core.TwoWayConverter
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.BoxWithConstraintsScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -20,11 +26,13 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -74,10 +82,15 @@ import com.unicorns.invisible.caravan.utils.playYesBeep
 import com.unicorns.invisible.caravan.utils.pxToDp
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
+import kotlin.math.atan2
+import kotlin.math.hypot
 import kotlin.math.min
+import kotlin.math.pow
 import kotlin.random.Random
 
 
+// TODO: extract styleNames!!
 enum class Style(val styleName: String, val price: Int) {
     DESERT("Desert", 0),
     ALASKA_FRONTIER("Frontier of Anchorage", 500),
@@ -94,6 +107,7 @@ enum class Style(val styleName: String, val price: Int) {
 
 @Composable
 fun Modifier.getTableBackground(style: Style): Modifier {
+    // TODO: reduce number of tables, use colorFilters!
     return paint(
         painterResource(id = when (style) {
             DESERT -> R.drawable.table_wood
@@ -107,35 +121,39 @@ fun Modifier.getTableBackground(style: Style): Modifier {
             VAULT_21 -> R.drawable.table_blue
             VAULT_22 -> R.drawable.table_green
         }),
-        contentScale = ContentScale.Crop, // TODO!
-        colorFilter = if (style == PIP_GIRL) {
-            ColorFilter.colorMatrix(ColorMatrix().apply {
-                timesAssign(
-                    ColorMatrix(
-                        floatArrayOf(
-                            2f, 0f, 0f, 0f, 0f,
-                            0f, 1.75f, 0f, 0f, 0f,
-                            0f, 0f, 1.75f, 0f, 0f,
-                            0f, 0f, 0f, 1f, 0f
+        contentScale = ContentScale.Crop,
+        colorFilter = when (style) {
+            PIP_GIRL -> {
+                ColorFilter.colorMatrix(ColorMatrix().apply {
+                    timesAssign(
+                        ColorMatrix(
+                            floatArrayOf(
+                                2f, 0f, 0f, 0f, 0f,
+                                0f, 1.75f, 0f, 0f, 0f,
+                                0f, 0f, 1.75f, 0f, 0f,
+                                0f, 0f, 0f, 1f, 0f
+                            )
                         )
                     )
-                )
-            })
-        } else if (style == ALASKA_FRONTIER) {
-            ColorFilter.colorMatrix(ColorMatrix().apply {
-                timesAssign(
-                    ColorMatrix(
-                        floatArrayOf(
-                            3f, 0f, 0f, 0f, 0f,
-                            0f, 3f, 0f, 0f, 0f,
-                            0f, 0f, 3f, 0f, 0f,
-                            0f, 0f, 0f, 1f, 0f
+                })
+            }
+            ALASKA_FRONTIER -> {
+                ColorFilter.colorMatrix(ColorMatrix().apply {
+                    timesAssign(
+                        ColorMatrix(
+                            floatArrayOf(
+                                3f, 0f, 0f, 0f, 0f,
+                                0f, 3f, 0f, 0f, 0f,
+                                0f, 0f, 3f, 0f, 0f,
+                                0f, 0f, 0f, 1f, 0f
+                            )
                         )
                     )
-                )
-            })
-        } else {
-            ColorFilter.colorMatrix(ColorMatrix())
+                })
+            }
+            else -> {
+                ColorFilter.colorMatrix(ColorMatrix())
+            }
         }
     )
 }
@@ -161,16 +179,19 @@ fun BoxWithConstraintsScope.StylePicture(activity: MainActivity, style: Style, k
             val flagPainter = listOf(
                 rememberAsyncImagePainter(
                     ImageRequest.Builder(activity)
+                        .size(424, 256)
                         .data(prefix + "old_world/china.png")
                         .build()
                     ),
                 rememberAsyncImagePainter(
                     ImageRequest.Builder(activity)
+                        .size(522, 256)
                         .data(prefix + "old_world/usa.png")
                         .build()
                 ),
                 rememberAsyncImagePainter(
                     ImageRequest.Builder(activity)
+                        .size(396, 256)
                         .data(prefix + "old_world/nevada_flag.png")
                         .build()
                 )
@@ -206,25 +227,59 @@ fun BoxWithConstraintsScope.StylePicture(activity: MainActivity, style: Style, k
                 )
             }
 
-            Image(
-                painter = rememberAsyncImagePainter(
-                    ImageRequest.Builder(activity)
-                        .size(238, 207)
-                        .data(prefix + "old_world/decal1.png")
-                        .decoderFactory(SvgDecoder.Factory())
-                        .build()
-                ),
-                contentDescription = "",
-                Modifier.align(Alignment.Center)
-                    .rotate(-30f + rand.nextFloat() * 60f)
-                    .offset {
-                        // TODO: animation!
-                        IntOffset(
-                            (0..(width / 4)).random(rand),
-                            (-height / 4 + (0..height / 2).random(rand))
+            Row(Modifier.fillMaxSize()) {
+                Box(Modifier.weight(1f)) {}
+                BoxWithConstraints(Modifier.weight(1f).fillMaxHeight()) {
+                    val mW = maxWidth.dpToPx().toInt() - 238
+                    val mH = maxHeight.dpToPx().toInt() - 207
+                    fun getOffset() = IntOffset(
+                        (0..mW).random(rand),
+                        (0..mH).random(rand)
+                    )
+                    val offset = remember { Animatable(
+                        getOffset(),
+                        TwoWayConverter(
+                            { AnimationVector2D(it.x.toFloat(), it.y.toFloat()) },
+                            { IntOffset(it.v1.toInt(), it.v2.toInt()) }
+                        ),
+                        null, "Animatable"
+                    ) }
+
+                    val rotation = remember { Animatable(0f) }
+                    LaunchedEffect(Unit) {
+                        while (isActive) {
+                            val newOffset = getOffset()
+                            val length = hypot((newOffset.x - offset.value.x).toDouble(), (newOffset.y - offset.value.y).toDouble())
+                            val newRotation = atan2((newOffset.y - offset.value.y).toDouble(), (newOffset.x - offset.value.x).toDouble())
+                            val degrees = 180 * newRotation / Math.PI
+                            rotation.animateTo(degrees.toFloat(), TweenSpec(activity.animationTickLength.value!!.toInt() * 10))
+                            offset.animateTo(newOffset, TweenSpec(length.toInt()))
+                        }
+                    }
+
+                    Box(
+                        Modifier
+                            .padding(vertical = 48.dp)
+                            .offset { offset.value },
+                    ) {
+                        Image(
+                            painter = rememberAsyncImagePainter(
+                                ImageRequest.Builder(activity)
+                                    .size(238, 207)
+                                    .data(prefix + "old_world/decal1.png")
+                                    .decoderFactory(SvgDecoder.Factory())
+                                    .build()
+                            ),
+                            contentDescription = "",
+                            alignment = Alignment.TopStart,
+                            modifier = Modifier
+                                .rotate(rotation.value)
+
                         )
-                    }.padding(vertical = 48.dp),
-            )
+                    }
+                }
+            }
+
         }
         VAULT_22 -> {
             val painter = rememberAsyncImagePainter(
@@ -476,6 +531,12 @@ fun BoxWithConstraintsScope.StylePicture(activity: MainActivity, style: Style, k
             }
         }
         ALASKA_FRONTIER -> {
+            val painterFrame = rememberAsyncImagePainter(
+                ImageRequest.Builder(activity)
+                    .size(128, 128)
+                    .data(prefix + "alaska/dlcanchredstar.jpg")
+                    .build()
+            )
             if (rand.nextBoolean()) {
                 val painter = listOf(
                     rememberAsyncImagePainter(
@@ -509,21 +570,21 @@ fun BoxWithConstraintsScope.StylePicture(activity: MainActivity, style: Style, k
                     }
                 }
 
-                val painterFrame = rememberAsyncImagePainter(
-                    ImageRequest.Builder(activity)
-                        .data(prefix + "alaska/autodoc.png")
-                        .build()
-                )
-                Box(
-                    Modifier.fillMaxHeight().offset { IntOffset(12.dp.roundToPx() + 8, -(12.dp.roundToPx() + 8)) },
-                    contentAlignment = Alignment.BottomStart
-                ) {
+                Row(Modifier.fillMaxWidth().align(Alignment.TopCenter).padding(top = 48.dp)) {
                     Image(
                         painter = painterFrame,
                         contentDescription = "",
-                        Modifier.height(36.dp).width(36.dp),
-                        alignment = Alignment.BottomStart,
-                        contentScale = ContentScale.None
+                        Modifier.fillMaxWidth(),
+                        alignment = Alignment.TopCenter,
+                        contentScale = ContentScale.None,
+                        colorFilter = ColorFilter.colorMatrix(ColorMatrix(
+                            floatArrayOf(
+                                0f, 0f, 1f, 0f, 0f,
+                                0f, 1f, 0f, 0f, 0f,
+                                1f, 0f, 0f, 0f, 0f,
+                                0f, 0f, 0f, 1f, 0f
+                            )
+                        ))
                     )
                 }
             } else {
@@ -559,20 +620,12 @@ fun BoxWithConstraintsScope.StylePicture(activity: MainActivity, style: Style, k
                     }
                 }
 
-                val painterFrame = rememberAsyncImagePainter(
-                    ImageRequest.Builder(activity)
-                        .data(prefix + "alaska/dlcanchredstar.jpg")
-                        .build()
-                )
-                Box(
-                    Modifier.fillMaxHeight().offset { IntOffset(12.dp.roundToPx() + 8, -(12.dp.roundToPx() + 8)) },
-                    contentAlignment = Alignment.BottomStart
-                ) {
+                Row(Modifier.fillMaxWidth().align(Alignment.TopCenter).padding(top = 48.dp)) {
                     Image(
                         painter = painterFrame,
                         contentDescription = "",
-                        Modifier.height(36.dp).width(36.dp),
-                        alignment = Alignment.BottomStart,
+                        Modifier.fillMaxWidth(),
+                        alignment = Alignment.TopCenter,
                         contentScale = ContentScale.None
                     )
                 }
@@ -624,6 +677,27 @@ fun BoxWithConstraintsScope.StylePicture(activity: MainActivity, style: Style, k
             }
 
             if (rand.nextBoolean()) {
+                val painter3 = rememberAsyncImagePainter(
+                    ImageRequest.Builder(activity)
+                        .data(prefix + "new_world/graffiti_cool.png")
+                        .build()
+                )
+
+                Row(Modifier.fillMaxWidth().align(Alignment.CenterEnd).padding(top = 48.dp, end = 8.dp)) {
+                    Box(Modifier.weight(3f))
+                    Box(Modifier.weight(1f)) {
+                        val totalHeight = 185
+                        val newHeight = min(totalHeight * 3, height)
+                        val scale = newHeight.toFloat() / totalHeight
+                        Image(
+                            painter = painter3,
+                            contentDescription = "",
+                            modifier = Modifier.scale(scale),
+                            contentScale = ContentScale.None
+                        )
+                    }
+                }
+            } else if (rand.nextBoolean()) {
                 val objPainter = rememberAsyncImagePainter(
                     ImageRequest.Builder(activity)
                         .size(235, 501)
@@ -659,6 +733,7 @@ fun BoxWithConstraintsScope.StylePicture(activity: MainActivity, style: Style, k
             } else {
                 val painter6 = rememberAsyncImagePainter(
                     ImageRequest.Builder(activity)
+                        .size(577, 676)
                         .data(prefix + "new_world/graffiti_coolest.png")
                         .build()
                 )
@@ -778,11 +853,13 @@ fun BoxWithConstraintsScope.StylePicture(activity: MainActivity, style: Style, k
             val painters = listOf(
                 rememberAsyncImagePainter(
                     ImageRequest.Builder(activity)
+                        .size(256, 256)
                         .data(prefix + "pip_girl/vault_girl1.png")
                         .build()
                 ),
                 rememberAsyncImagePainter(
                     ImageRequest.Builder(activity)
+                        .size(256, 256)
                         .data(prefix + "pip_girl/vault_girl2.png")
                         .build()
                 ),

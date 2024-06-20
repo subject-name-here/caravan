@@ -239,7 +239,7 @@ fun ShowPvP(
         ) { result ->
             val response = result.toString()
             if (response.contains("exists")) {
-                showFailure("Room exists already!!!")
+                showFailure(activity.getString(R.string.room_exists_already))
                 return@sendRequest
             }
             isCreator = true
@@ -337,9 +337,11 @@ fun ShowPvP(
         modifier = Modifier
             .fillMaxSize()
             .background(getBackgroundColor(activity))
-            .scrollbar(state,
+            .scrollbar(
+                state,
                 knobColor = getKnobColor(activity), trackColor = getTrackColor(activity),
-                horizontal = false),
+                horizontal = false
+            ),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) { item {
@@ -359,7 +361,9 @@ fun ShowPvP(
                     }
                     .fillMaxWidth()
                     .wrapContentHeight()
-                    .padding(horizontal = 8.dp, vertical = 16.dp).background(getTextBackgroundColor(activity)).padding(8.dp),
+                    .padding(horizontal = 8.dp, vertical = 16.dp)
+                    .background(getTextBackgroundColor(activity))
+                    .padding(8.dp),
                 TextAlign.Center
             )
             Row(modifier = Modifier.height(96.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
@@ -378,7 +382,9 @@ fun ShowPvP(
                     modifier = Modifier
                         .fillMaxWidth(0.33f)
                         .padding(horizontal = 8.dp)
-                        .clickableOk(activity) { createRoom() }.background(getTextBackgroundColor(activity)).padding(4.dp),
+                        .clickableOk(activity) { createRoom() }
+                        .background(getTextBackgroundColor(activity))
+                        .padding(4.dp),
                     textAlign = TextAlign.Center,
                 )
                 TextField(
@@ -408,7 +414,9 @@ fun ShowPvP(
                     Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 8.dp)
-                        .clickableOk(activity) { joinRoom() }.background(getTextBackgroundColor(activity)).padding(4.dp),
+                        .clickableOk(activity) { joinRoom() }
+                        .background(getTextBackgroundColor(activity))
+                        .padding(4.dp),
                     textAlign = TextAlign.Center,
                 )
             }
@@ -501,11 +509,14 @@ fun ShowPvP(
             getTextStrokeColor(activity),
             24.sp,
             Alignment.Center,
-            Modifier.clickableCancel(activity) {
-                if (isRoomCreated == 0) {
-                    goBack()
+            Modifier
+                .clickableCancel(activity) {
+                    if (isRoomCreated == 0) {
+                        goBack()
+                    }
                 }
-            }.background(getTextBackgroundColor(activity)).padding(8.dp),
+                .background(getTextBackgroundColor(activity))
+                .padding(8.dp),
             TextAlign.Center
         )
         Spacer(modifier = Modifier.height(32.dp))
@@ -557,7 +568,6 @@ fun StartPvP(
 
     var enemyHandKey by remember { mutableStateOf(true) }
     fun updateEnemyHand() {
-        Log.i("update", "enemy hand key")
         enemyHandKey = !enemyHandKey
     }
     var caravansKey by remember { mutableStateOf(true) }

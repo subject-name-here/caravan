@@ -81,7 +81,7 @@ fun playPimpBoySound(activity: MainActivity) = playEffectPlayerSound(activity, R
 fun playVatsEnter(activity: MainActivity) = playEffectPlayerSound(activity, R.raw.ui_vats_enter, 3)
 fun playVatsReady(activity: MainActivity) = playEffectPlayerSound(activity, R.raw.ui_vats_ready, 3)
 fun playQuitMultiplayer(activity: MainActivity) = playEffectPlayerSound(activity, R.raw.quit_multiplayer, 3)
-fun playNoCardAlarm(activity: MainActivity) = playEffectPlayerSound(activity, R.raw.no_cards_alarm, 3)
+fun playNoCardAlarm(activity: MainActivity) = playEffectPlayerSound(activity, R.raw.no_cards_alarm)
 fun playYesBeep(activity: MainActivity) = playEffectPlayerSound(activity, R.raw.beep_a)
 fun playNoBeep(activity: MainActivity) = playEffectPlayerSound(activity, R.raw.beep_b)
 fun playFanfares(activity: MainActivity) = playEffectPlayerSound(activity, R.raw.fanfares)
@@ -213,11 +213,11 @@ fun nextSong(activity: MainActivity) {
     pointer = (songList.indices - usedIndices.toSet()).randomOrNull() ?: -1
 }
 fun resume() {
-    isRadioStopped = false
-    radioPlayer?.start()
+    if (!isRadioStopped) {
+        radioPlayer?.start()
+    }
 }
 fun pause() {
-    isRadioStopped = true
     radioPlayer?.pause()
 }
 fun setRadioVolume(volume: Float) {

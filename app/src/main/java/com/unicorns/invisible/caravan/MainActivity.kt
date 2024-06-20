@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -83,6 +84,7 @@ import com.unicorns.invisible.caravan.utils.getTextBackgroundColor
 import com.unicorns.invisible.caravan.utils.getTextColor
 import com.unicorns.invisible.caravan.utils.getTextStrokeColor
 import com.unicorns.invisible.caravan.utils.getTrackColor
+import com.unicorns.invisible.caravan.utils.isRadioStopped
 import com.unicorns.invisible.caravan.utils.nextSong
 import com.unicorns.invisible.caravan.utils.pause
 import com.unicorns.invisible.caravan.utils.playClickSound
@@ -344,7 +346,9 @@ class MainActivity : SaveDataActivity() {
                             getDialogBackground(this), 18.sp, Alignment.Center,
                             Modifier
                                 .background(getDialogTextColor(this))
-                                .clickableCancel(this) { hideAlertDialog(); goBack?.invoke(); goBack = null }
+                                .clickableCancel(this) {
+                                    hideAlertDialog(); goBack?.invoke(); goBack = null
+                                }
                                 .padding(4.dp),
                             TextAlign.Center
                         )
@@ -546,9 +550,11 @@ class MainActivity : SaveDataActivity() {
                                 .wrapContentWidth()
                                 .clickableOk(this@MainActivity) {
                                     if (isPaused) {
+                                        isRadioStopped = false
                                         resume()
                                         isPaused = false
                                     } else {
+                                        isRadioStopped = true
                                         pause()
                                         isPaused = true
                                     }
@@ -817,7 +823,10 @@ class MainActivity : SaveDataActivity() {
                 state = state
             ) {
                 item {
-                    Column(Modifier.fillMaxWidth().padding(start = 16.dp)) {
+                    Column(
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(start = 16.dp)) {
                         @Composable
                         fun MenuItem(text: String, onClick: () -> Unit) {
                             TextFallout(
@@ -844,7 +853,7 @@ class MainActivity : SaveDataActivity() {
                         Spacer(modifier = Modifier.height(20.dp))
                         MenuItem(getString(R.string.menu_deck), showDeckSelection)
                         Spacer(modifier = Modifier.height(20.dp))
-                        MenuItem("Stack Market", showStock)
+                        MenuItem(stringResource(R.string.stack_market), showStock)
                         Spacer(modifier = Modifier.height(32.dp))
                     }
                 }
@@ -860,9 +869,9 @@ class MainActivity : SaveDataActivity() {
                 ) {
                     Row(
                         Modifier
-                            .fillMaxWidth(0.4f)
-                            .fillMaxHeight()
-                            .padding(start = 12.dp)
+                            .fillMaxSize()
+                            .padding(horizontal = 12.dp)
+                            .padding(bottom = 4.dp)
                             .drawBehind {
                                 drawPath(
                                     Path().apply {
@@ -874,101 +883,60 @@ class MainActivity : SaveDataActivity() {
                                     color = getDividerColor(this@MainActivity),
                                     style = Stroke(width = 8f),
                                 )
-                            }
-                            .align(Alignment.CenterVertically)
-                    ) {
-                        BoxWithConstraints(Modifier.fillMaxSize()) {
-                            TextFallout(
-                                getString(R.string.menu_vision),
-                                getTextColor(this@MainActivity),
-                                getTextStrokeColor(this@MainActivity),
-                                18.sp,
-                                Alignment.Center,
-                                Modifier
-                                    .padding(end = 8.dp)
-                                    .align(Alignment.TopEnd)
-                                    .clickableOk(this@MainActivity) {
-                                        showVision()
-                                    }
-                                    .background(getTextBackgroundColor(this@MainActivity))
-                                    .padding(4.dp),
-                                TextAlign.Center
-                            )
-                        }
-                    }
-
-                    Row(
-                        Modifier
-                            .fillMaxWidth(0.6f)
-                            .fillMaxHeight()
-                            .padding(start = 12.dp)
-                            .drawBehind {
-                                drawPath(
-                                    Path().apply {
-                                        moveTo(0f, size.height * 3 / 4)
-                                        lineTo(size.width, size.height * 3 / 4)
-                                        lineTo(size.width, 0f)
-                                    },
-                                    color = getDividerColor(this@MainActivity),
-                                    style = Stroke(width = 8f),
-                                )
-                            }
-                            .align(Alignment.CenterVertically)
-                    ) {
-                        BoxWithConstraints(Modifier.fillMaxSize()) {
-                            TextFallout(
-                                getString(R.string.menu_settings),
-                                getTextColor(this@MainActivity),
-                                getTextStrokeColor(this@MainActivity),
-                                18.sp,
-                                Alignment.Center,
-                                Modifier
-                                    .padding(end = 8.dp)
-                                    .align(Alignment.TopEnd)
-                                    .clickableOk(this@MainActivity) {
-                                        showSettings()
-                                    }
-                                    .background(getTextBackgroundColor(this@MainActivity))
-                                    .padding(4.dp),
-                                TextAlign.Center
-                            )
-                        }
-                    }
-
-                    Row(
-                        Modifier
-                            .fillMaxSize()
-                            .padding(start = 12.dp, end = 12.dp)
-                            .drawBehind {
-                                drawPath(
-                                    Path().apply {
-                                        moveTo(0f, size.height * 3 / 4)
-                                        lineTo(size.width, size.height * 3 / 4)
-                                        lineTo(size.width, 0f)
-                                    },
-                                    color = getDividerColor(this@MainActivity),
-                                    style = Stroke(width = 8f),
-                                )
                             },
+                        horizontalArrangement = Arrangement.SpaceEvenly,
+                        verticalAlignment = Alignment.Bottom
                     ) {
-                        BoxWithConstraints(Modifier.fillMaxSize()) {
-                            TextFallout(
-                                getString(R.string.menu_about),
-                                getTextColor(this@MainActivity),
-                                getTextStrokeColor(this@MainActivity),
-                                18.sp,
-                                Alignment.Center,
-                                Modifier
-                                    .align(Alignment.TopEnd)
-                                    .padding(end = 8.dp)
-                                    .clickableOk(this@MainActivity) {
-                                        showAbout()
-                                    }
-                                    .background(getTextBackgroundColor(this@MainActivity))
-                                    .padding(4.dp),
-                                TextAlign.Center
-                            )
-                        }
+                        TextFallout(
+                            getString(R.string.menu_vision),
+                            getTextColor(this@MainActivity),
+                            getTextStrokeColor(this@MainActivity),
+                            18.sp,
+                            Alignment.Center,
+                            Modifier
+                                .background(getBackgroundColor(this@MainActivity))
+                                .padding(horizontal = 4.dp)
+                                .background(getTextBackgroundColor(this@MainActivity))
+                                .clickableOk(this@MainActivity) {
+                                    showVision()
+                                }
+                                .padding(4.dp),
+                            TextAlign.Center
+                        )
+
+                        TextFallout(
+                            getString(R.string.menu_settings),
+                            getTextColor(this@MainActivity),
+                            getTextStrokeColor(this@MainActivity),
+                            18.sp,
+                            Alignment.Center,
+                            Modifier
+                                .background(getBackgroundColor(this@MainActivity))
+                                .padding(horizontal = 4.dp)
+                                .clickableOk(this@MainActivity) {
+                                    showSettings()
+                                }
+                                .background(getTextBackgroundColor(this@MainActivity))
+                                .padding(4.dp),
+                            TextAlign.Center
+                        )
+
+                        TextFallout(
+                            getString(R.string.menu_about),
+                            getTextColor(this@MainActivity),
+                            getTextStrokeColor(this@MainActivity),
+                            18.sp,
+                            Alignment.Center,
+                            Modifier
+                                .background(getBackgroundColor(this@MainActivity))
+                                .padding(horizontal = 4.dp)
+                                .clickableOk(this@MainActivity) {
+                                    showAbout()
+                                }
+                                .background(getTextBackgroundColor(this@MainActivity))
+                                .padding(4.dp),
+                            TextAlign.Center
+                        )
                     }
                 }
             }
@@ -977,7 +945,10 @@ class MainActivity : SaveDataActivity() {
         LaunchedEffect(Unit) {
             if (save?.updateSoldCards() == true) {
                 saveOnGD(this@MainActivity)
-                showAlertDialog("Card prices update!", "Some cards are now more expensive! Go check \"Vision!\" shop.")
+                showAlertDialog(
+                    getString(R.string.card_prices_update),
+                    getString(R.string.some_cards_are_now_more_expensive)
+                )
             }
         }
     }

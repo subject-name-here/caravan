@@ -88,7 +88,7 @@ fun ShowSettings(
                 Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
                     Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                         TextFallout(
-                            "Themes",
+                            stringResource(R.string.themes),
                             getTextColor(activity),
                             getTextStrokeColor(activity),
                             32.sp,
@@ -97,7 +97,7 @@ fun ShowSettings(
                             TextAlign.Center
                         )
                         TextFallout(
-                            "CAPS: ${activity.save!!.caps}",
+                            stringResource(R.string.caps, activity.save!!.caps),
                             getTextColor(activity),
                             getTextStrokeColor(activity),
                             24.sp,
@@ -118,10 +118,16 @@ fun ShowSettings(
                                     activity.save!!.caps -= style.price
                                     styleInt = style
                                     selectStyle(style.ordinal)
-                                    showAlertDialog("Transaction succeeded!", "You have bought ${style.styleName} style!")
+                                    showAlertDialog(activity.getString(R.string.transaction_succeeded),
+                                        activity.getString(
+                                            R.string.you_have_bought_style, style.styleName
+                                        ))
                                     playPimpBoySound(activity)
                                 } else {
-                                    showAlertDialog("Transaction failed!", "Not enough caps!")
+                                    showAlertDialog(activity.getString(R.string.transaction_failed),
+                                        activity.getString(
+                                            R.string.not_enough_caps
+                                        ))
                                 }
                             } else if (style.ordinal != activity.save!!.styleId) {
                                 styleInt = style
@@ -158,23 +164,33 @@ fun ShowStyle(
     isStyleUsed: Boolean,
     onClick: (Int) -> Unit
 ) {
-    Row(Modifier.fillMaxWidth().padding(horizontal = 4.dp, vertical = 8.dp), verticalAlignment = Alignment.CenterVertically) {
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 4.dp, vertical = 8.dp), verticalAlignment = Alignment.CenterVertically) {
         TextFallout(
             style.styleName,
             getTextColorByStyle(activity, style),
             getStrokeColorByStyle(activity, style),
             18.sp,
             Alignment.CenterStart,
-            Modifier.fillMaxWidth(0.66f).padding(horizontal = 4.dp).background(getBackByStyle(activity, style)).padding(4.dp),
+            Modifier
+                .fillMaxWidth(0.66f)
+                .padding(horizontal = 4.dp)
+                .background(getBackByStyle(activity, style))
+                .padding(4.dp),
             TextAlign.Start
         )
         TextFallout(
-            if (isStyleBought) (if (isStyleUsed) "OK" else "SELECT") else "BUY",
+            if (isStyleBought) (if (isStyleUsed) "OK" else stringResource(R.string.select)) else stringResource(
+                R.string.buy
+            ),
             getTextColorByStyle(activity, style),
             getTextColorByStyle(activity, style),
             16.sp,
             Alignment.Center,
-            Modifier.fillMaxWidth(0.5f)
+            Modifier
+                .fillMaxWidth(0.5f)
                 .background(getMusicPanelColorByStyle(activity, style))
                 .padding(6.dp)
                 .background(getTextBackByStyle(activity, style))
@@ -191,7 +207,8 @@ fun ShowStyle(
                 getStrokeColorByStyle(activity, style),
                 18.sp,
                 Alignment.Center,
-                Modifier.fillMaxWidth()
+                Modifier
+                    .fillMaxWidth()
                     .background(getBackByStyle(activity, style))
                     .padding(6.dp)
                     .background(getTextBackByStyle(activity, style)),

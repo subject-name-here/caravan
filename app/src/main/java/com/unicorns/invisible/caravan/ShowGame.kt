@@ -39,6 +39,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.layout
@@ -297,7 +298,10 @@ fun ShowGameRaw(
                 )
             }
         }) { innerPadding ->
-            BoxWithConstraints(Modifier.padding(innerPadding).getTableBackground(activity.styleId)) {
+            Box(Modifier.fillMaxSize().padding(innerPadding).rotate(180f)) {
+                Box(Modifier.fillMaxSize().getTableBackground(activity.styleId)) {}
+            }
+            BoxWithConstraints(Modifier.padding(innerPadding)) {
                 var wasCardDropped by remember { mutableStateOf(false) }
                 if (maxWidth > maxHeight) {
                     Row(Modifier.fillMaxSize()) {
@@ -333,6 +337,7 @@ fun ShowGameRaw(
                             ::isInitStage,
                             { game.isPlayerTurn },
                             ::canDiscard,
+                            { game.isOver() },
                             { num -> game.playerCaravans[num] },
                             { num -> game.enemyCaravans[num] },
                         )
@@ -364,6 +369,7 @@ fun ShowGameRaw(
                             ::isInitStage,
                             { game.isPlayerTurn },
                             ::canDiscard,
+                            { game.isOver() },
                             { num -> game.playerCaravans[num] },
                             { num -> game.enemyCaravans[num] },
                         )
@@ -886,6 +892,7 @@ fun Caravans(
     getIsInitStage: () -> Boolean,
     isPlayersTurn: () -> Boolean,
     canDiscard: () -> Boolean,
+    isGameOver: () -> Boolean,
     getPlayerCaravan: (Int) -> Caravan,
     getEnemyCaravan: (Int) -> Caravan
 ) {
@@ -936,9 +943,9 @@ fun Caravans(
             }
             Column(modifier = Modifier.fillMaxHeight().weight(0.25f)) {
                 val text = when {
+                    isGameOver() -> stringResource(R.string.can_t_act)
                     !isPlayersTurn() -> stringResource(R.string.wait)
                     getIsInitStage() -> stringResource(R.string.init_stage)
-                    !canDiscard() -> stringResource(R.string.can_t_act)
                     getSelectedCardInt() != null -> {
                         stringResource(R.string.discard_card)
                     }
