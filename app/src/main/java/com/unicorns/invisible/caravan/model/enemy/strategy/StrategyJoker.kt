@@ -22,9 +22,10 @@ object StrategyJoker : Strategy {
             val gameCopyString = json.encodeToString(game)
             fun joke(potentialCardToJoker: CardWithModifier): Int {
                 val gameCopy = json.decodeFromString<Game>(gameCopyString)
-                val cardInCopy = (gameCopy.playerCaravans + gameCopy.enemyCaravans).flatMap { it.cards }.find {
-                    potentialCardToJoker.card.rank == it.card.rank && potentialCardToJoker.card.suit == it.card.suit
-                }
+                val cardInCopy =
+                    (gameCopy.playerCaravans + gameCopy.enemyCaravans).flatMap { it.cards }.find {
+                        potentialCardToJoker.card.rank == it.card.rank && potentialCardToJoker.card.suit == it.card.suit
+                    }
                 if (cardInCopy?.canAddModifier(card) == true) {
                     cardInCopy.addModifier(card)
                     gameCopy.processJoker()
@@ -72,9 +73,12 @@ object StrategyJoker : Strategy {
                             }
                         }
                     }
-                    val overWeightCaravansCopy = gameCopy.enemyCaravans.filter { it.getValue() > 26 }
-                    val perfectCaravansCopy = gameCopy.enemyCaravans.filter { it.getValue() in (21..26) }
-                    val playersReadyCaravansCopy = gameCopy.playerCaravans.filter { it.getValue() in (21..26) }
+                    val overWeightCaravansCopy =
+                        gameCopy.enemyCaravans.filter { it.getValue() > 26 }
+                    val perfectCaravansCopy =
+                        gameCopy.enemyCaravans.filter { it.getValue() in (21..26) }
+                    val playersReadyCaravansCopy =
+                        gameCopy.playerCaravans.filter { it.getValue() in (21..26) }
                     val score2 = (perfectCaravansCopy.size - perfectCaravans.size) * 3 +
                             overWeightCaravans.size - overWeightCaravansCopy.size +
                             playersReadyCaravans.size - playersReadyCaravansCopy.size

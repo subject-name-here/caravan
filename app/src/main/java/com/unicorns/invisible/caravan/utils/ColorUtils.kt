@@ -9,6 +9,7 @@ import com.unicorns.invisible.caravan.Style
 fun getBackgroundColor(activity: MainActivity): Color {
     return getBackByStyle(activity, activity.styleId)
 }
+
 fun getBackByStyle(activity: MainActivity, styleId: Style) = when (styleId) {
     Style.DESERT -> Color(activity.getColor(R.color.desertBackground))
     Style.PIP_BOY -> Color(activity.getColor(R.color.colorBack))
@@ -25,6 +26,7 @@ fun getBackByStyle(activity: MainActivity, styleId: Style) = when (styleId) {
 fun getTextColor(activity: MainActivity): Color {
     return getTextColorByStyle(activity, activity.styleId)
 }
+
 fun getTextColorByStyle(activity: MainActivity, styleId: Style) = when (styleId) {
     Style.DESERT -> Color(activity.getColor(R.color.desertText))
     Style.PIP_BOY -> Color(activity.getColor(R.color.colorText))
@@ -41,6 +43,7 @@ fun getTextColorByStyle(activity: MainActivity, styleId: Style) = when (styleId)
 fun getTextStrokeColor(activity: MainActivity): Color {
     return getStrokeColorByStyle(activity, activity.styleId)
 }
+
 fun getStrokeColorByStyle(activity: MainActivity, styleId: Style) = when (styleId) {
     Style.DESERT -> getTextColor(activity)
     Style.PIP_BOY -> Color(activity.getColor(R.color.colorTextStroke))
@@ -57,6 +60,7 @@ fun getStrokeColorByStyle(activity: MainActivity, styleId: Style) = when (styleI
 fun getTextBackgroundColor(activity: MainActivity): Color {
     return getTextBackByStyle(activity, activity.styleId)
 }
+
 fun getTextBackByStyle(activity: MainActivity, styleId: Style) = when (styleId) {
     Style.DESERT -> Color(activity.getColor(R.color.desertTextBackground))
     Style.PIP_BOY -> Color(activity.getColor(R.color.colorTextBack))
@@ -73,6 +77,7 @@ fun getTextBackByStyle(activity: MainActivity, styleId: Style) = when (styleId) 
 fun getSelectionColor(activity: MainActivity): Color {
     return getSelectionColorByStyle(activity, activity.styleId)
 }
+
 fun getSelectionColorByStyle(activity: MainActivity, styleId: Style) = when (styleId) {
     Style.DESERT -> Color(activity.getColor(R.color.desertTextBackground))
     Style.PIP_BOY -> Color(activity.getColor(R.color.colorTextStroke))
@@ -89,6 +94,7 @@ fun getSelectionColorByStyle(activity: MainActivity, styleId: Style) = when (sty
 fun getMusicPanelColor(activity: MainActivity): Color {
     return getMusicPanelColorByStyle(activity, activity.styleId)
 }
+
 fun getMusicPanelColorByStyle(activity: MainActivity, styleId: Style) = when (styleId) {
     Style.DESERT -> Color(activity.getColor(R.color.desertAccent))
     Style.PIP_BOY -> Color(activity.getColor(R.color.colorText))
@@ -101,6 +107,7 @@ fun getMusicPanelColorByStyle(activity: MainActivity, styleId: Style) = when (st
     Style.VAULT_21 -> Color(activity.getColor(R.color.vault21Accent))
     Style.VAULT_22 -> Color(activity.getColor(R.color.vault22Accent))
 }
+
 fun getMusicTextColor(activity: MainActivity): Color {
     return when (activity.styleId) {
         Style.DESERT -> getTextColor(activity)
@@ -115,6 +122,7 @@ fun getMusicTextColor(activity: MainActivity): Color {
         Style.VAULT_22 -> Color(activity.getColor(R.color.vault22Text))
     }
 }
+
 fun getDialogBackground(activity: MainActivity): Color {
     return when (activity.styleId) {
         Style.DESERT -> Color(activity.getColor(R.color.desertAccent))
@@ -129,6 +137,7 @@ fun getDialogBackground(activity: MainActivity): Color {
         Style.VAULT_22 -> Color(activity.getColor(R.color.vault22Accent))
     }
 }
+
 fun getDialogTextColor(activity: MainActivity): Color {
     return when (activity.styleId) {
         Style.SIERRA_MADRE -> getBackgroundColor(activity)
@@ -143,6 +152,7 @@ fun getGameDividerColor(activity: MainActivity): Color = when (activity.styleId)
     Style.NEW_WORLD -> Color(activity.getColor(R.color.newWorldAccent))
     else -> getTextColor(activity)
 }
+
 fun getCheckBoxBorderColor(activity: MainActivity): Color = getSelectionColor(activity)
 
 fun getCheckBoxFillColor(activity: MainActivity): Color = when (activity.styleId) {
@@ -157,6 +167,7 @@ fun getCheckBoxFillColor(activity: MainActivity): Color = when (activity.styleId
     Style.VAULT_21 -> Color(activity.getColor(R.color.vault21Stroke))
     Style.VAULT_22 -> Color(activity.getColor(R.color.vault22Accent))
 }
+
 fun getTrackColor(activity: MainActivity): Color = getTextBackgroundColor(activity)
 fun getKnobColor(activity: MainActivity): Color = getTextColor(activity)
 
@@ -165,6 +176,7 @@ fun getSwitchTrackColor(activity: MainActivity): Color = when (activity.styleId)
     Style.NEW_WORLD -> getTextBackgroundColor(activity)
     else -> getBackgroundColor(activity)
 }
+
 fun getSwitchThumbColor(activity: MainActivity): Color = when (activity.styleId) {
     Style.DESERT -> Color(activity.getColor(R.color.desertText))
     Style.PIP_BOY -> Color(activity.getColor(R.color.colorTextStroke))
@@ -177,6 +189,7 @@ fun getSwitchThumbColor(activity: MainActivity): Color = when (activity.styleId)
     Style.VAULT_21 -> Color(activity.getColor(R.color.vault21Text))
     Style.VAULT_22 -> Color(activity.getColor(R.color.vault22Stroke))
 }
+
 fun getSliderTrackColor(activity: MainActivity): Color = getSwitchTrackColor(activity)
 fun getSliderThumbColor(activity: MainActivity): Color = getSwitchThumbColor(activity)
 

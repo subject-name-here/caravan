@@ -64,7 +64,10 @@ fun StockMarket(
             mainState
         ) {
             item {
-                Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
                     TextFallout(
                         stringResource(R.string.card_prices),
                         getTextColor(activity),
@@ -102,7 +105,9 @@ fun StockMarket(
                         Row(
                             Modifier
                                 .fillMaxWidth()
-                                .padding(horizontal = 4.dp, vertical = 8.dp), verticalAlignment = Alignment.CenterVertically) {
+                                .padding(horizontal = 4.dp, vertical = 8.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
                             ShowCardBack(
                                 activity,
                                 Card(Rank.ACE, Suit.CLUBS, back, isAlt),
@@ -110,7 +115,14 @@ fun StockMarket(
                             )
                             val style = activity.styleId
                             TextFallout(
-                                activity.save!!.getCardPrice(Card(Rank.ACE, Suit.CLUBS, back, isAlt)).toString() + stringResource(
+                                activity.save!!.getCardPrice(
+                                    Card(
+                                        Rank.ACE,
+                                        Suit.CLUBS,
+                                        back,
+                                        isAlt
+                                    )
+                                ).toString() + stringResource(
                                     R.string.cost_caps
                                 ),
                                 getTextColorByStyle(activity, style),

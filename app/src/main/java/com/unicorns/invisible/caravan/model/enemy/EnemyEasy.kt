@@ -40,7 +40,8 @@ data object EnemyEasy : Enemy() {
                 }
             }
             if (card.rank == Rank.JACK) {
-                val caravan = game.playerCaravans.filter { it.getValue() in (21..26) }.randomOrNull()
+                val caravan =
+                    game.playerCaravans.filter { it.getValue() in (21..26) }.randomOrNull()
                 if (caravan != null) {
                     val cardToAdd = caravan.cards.maxBy { it.getValue() }
                     if (cardToAdd.canAddModifier(card)) {
@@ -50,9 +51,11 @@ data object EnemyEasy : Enemy() {
                 }
             }
             if (card.rank == Rank.KING) {
-                val caravan = game.playerCaravans.filter { it.getValue() in (21..26) }.randomOrNull()
+                val caravan =
+                    game.playerCaravans.filter { it.getValue() in (21..26) }.randomOrNull()
                 if (caravan != null) {
-                    val cardToKing = caravan.cards.filter { it.canAddModifier(card) }.maxByOrNull { it.card.rank.value }
+                    val cardToKing = caravan.cards.filter { it.canAddModifier(card) }
+                        .maxByOrNull { it.card.rank.value }
                     if (cardToKing != null && cardToKing.canAddModifier(card)) {
                         cardToKing.addModifier(game.enemyCResources.removeFromHand(cardIndex))
                         return

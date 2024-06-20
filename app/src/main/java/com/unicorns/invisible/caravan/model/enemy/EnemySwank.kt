@@ -29,6 +29,7 @@ data object EnemySwank : Enemy() {
             add(Card(Rank.JOKER, Suit.CLUBS, back, true))
         }
     })
+
     override fun getRewardBack() = CardBack.TOPS
     override fun isAlt(): Boolean {
         return true
@@ -59,7 +60,13 @@ data object EnemySwank : Enemy() {
                 else -> 0f
             }
         }
-        val score = game.playerCaravans.indices.map { check(game.playerCaravans[it], game.enemyCaravans[it].getValue()) }
+
+        val score = game.playerCaravans.indices.map {
+            check(
+                game.playerCaravans[it],
+                game.enemyCaravans[it].getValue()
+            )
+        }
         if (score.sum() > 2.4f) {
             if (StrategyJoker.move(game)) {
                 game.jokerPlayedSound()
@@ -133,7 +140,10 @@ data object EnemySwank : Enemy() {
                 if (caravan != null) {
                     if (
                         caravan.value.canPutCardOnTop(card) &&
-                        !(checkMoveOnDefeat(game, caravan.index) && caravan.value.getValue() + card.rank.value in (21..26))
+                        !(checkMoveOnDefeat(
+                            game,
+                            caravan.index
+                        ) && caravan.value.getValue() + card.rank.value in (21..26))
                     ) {
                         caravan.value.putCardOnTop(game.enemyCResources.removeFromHand(cardIndex))
                         return
@@ -150,7 +160,10 @@ data object EnemySwank : Enemy() {
                 if (caravan != null) {
                     if (
                         caravan.value.canPutCardOnTop(card) &&
-                        !(checkMoveOnDefeat(game, caravan.index) && caravan.value.getValue() + card.rank.value in (21..26))
+                        !(checkMoveOnDefeat(
+                            game,
+                            caravan.index
+                        ) && caravan.value.getValue() + card.rank.value in (21..26))
                     ) {
                         caravan.value.putCardOnTop(game.enemyCResources.removeFromHand(cardIndex))
                         return

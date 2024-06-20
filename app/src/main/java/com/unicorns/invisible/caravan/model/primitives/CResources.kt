@@ -24,6 +24,7 @@ class CResources(private val deck: CustomDeck) {
             handMutable.add(deck.removeFirst())
         }
     }
+
     fun addToHandR(): Card? {
         if (deck.size == 0) {
             return null
@@ -32,6 +33,7 @@ class CResources(private val deck: CustomDeck) {
         handMutable.add(card)
         return card
     }
+
     fun addCardToHandPvP(card: Card) {
         if (deck.size > 0) {
             deck.removeFirst()

@@ -10,6 +10,7 @@ class Caravan {
         get() = cardsMutable.toList()
     val size: Int
         get() = cardsMutable.size
+
     fun isEmpty() = cardsMutable.size == 0
     fun isFull() = size >= 10
 
@@ -20,9 +21,11 @@ class Caravan {
     fun removeAllJackedCards() {
         cardsMutable.removeAll { it.hasJacks() }
     }
+
     fun jokerRemoveAllRanks(card: Card) {
         cardsMutable.removeAll { it.card.rank == card.rank && !it.hasActiveJoker }
     }
+
     fun jokerRemoveAllSuits(card: Card) {
         cardsMutable.removeAll { it.card.suit == card.suit && !it.hasActiveJoker }
     }
@@ -50,6 +53,7 @@ class Caravan {
             last.card.rank == preLast.card.rank -> {
                 return true
             }
+
             last.card.rank > preLast.card.rank -> {
                 if (
                     last.isQueenReversingSequence() && card.rank < last.card.rank ||
@@ -58,6 +62,7 @@ class Caravan {
                     return true
                 }
             }
+
             last.card.rank < preLast.card.rank -> {
                 if (
                     last.isQueenReversingSequence() && card.rank > last.card.rank ||
@@ -70,6 +75,7 @@ class Caravan {
 
         return false
     }
+
     fun putCardOnTop(card: Card) {
         cardsMutable.add(CardWithModifier(card))
     }

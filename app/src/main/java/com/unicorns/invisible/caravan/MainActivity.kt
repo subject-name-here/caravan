@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -31,7 +30,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -169,7 +167,11 @@ class MainActivity : SaveDataActivity() {
                 val myBuilder = CronetEngine.Builder(this)
                 cronetEngine = myBuilder.build()
             } catch (e: Exception) {
-                Toast.makeText(this, "Failed to init CronetEngine. Multiplayer is unavailable.", Toast.LENGTH_LONG).show()
+                Toast.makeText(
+                    this,
+                    "Failed to init CronetEngine. Multiplayer is unavailable.",
+                    Toast.LENGTH_LONG
+                ).show()
             }
         }
 
@@ -233,7 +235,10 @@ class MainActivity : SaveDataActivity() {
                     Column(
                         Modifier
                             .fillMaxSize()
-                            .padding(4.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
+                            .padding(4.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
                         if (k == true) {
                             TextFallout(
                                 "CARAVAN",
@@ -299,7 +304,11 @@ class MainActivity : SaveDataActivity() {
         var showSoundSettings by remember { mutableStateOf(false) }
         var showSoundSettings2 by remember { mutableStateOf(false) }
 
-        var selectedDeck by rememberSaveable { mutableStateOf(save?.selectedDeck ?: (CardBack.STANDARD to false)) }
+        var selectedDeck by rememberSaveable {
+            mutableStateOf(
+                save?.selectedDeck ?: (CardBack.STANDARD to false)
+            )
+        }
 
         var showAlertDialog by remember { mutableStateOf(false) }
         var showAlertDialog2 by remember { mutableStateOf(false) }
@@ -311,6 +320,7 @@ class MainActivity : SaveDataActivity() {
             alertDialogHeader = header
             alertDialogMessage = message
         }
+
         fun hideAlertDialog() {
             showAlertDialog = false
             showAlertDialog2 = false
@@ -339,20 +349,22 @@ class MainActivity : SaveDataActivity() {
                             TextAlign.Center
                         )
                     },
-                    dismissButton = { if (goBack != null) {
-                        TextFallout(
-                            stringResource(R.string.back_to_menu),
-                            getDialogBackground(this),
-                            getDialogBackground(this), 18.sp, Alignment.Center,
-                            Modifier
-                                .background(getDialogTextColor(this))
-                                .clickableCancel(this) {
-                                    hideAlertDialog(); goBack?.invoke(); goBack = null
-                                }
-                                .padding(4.dp),
-                            TextAlign.Center
-                        )
-                    } },
+                    dismissButton = {
+                        if (goBack != null) {
+                            TextFallout(
+                                stringResource(R.string.back_to_menu),
+                                getDialogBackground(this),
+                                getDialogBackground(this), 18.sp, Alignment.Center,
+                                Modifier
+                                    .background(getDialogTextColor(this))
+                                    .clickableCancel(this) {
+                                        hideAlertDialog(); goBack?.invoke(); goBack = null
+                                    }
+                                    .padding(4.dp),
+                                TextAlign.Center
+                            )
+                        }
+                    },
                     title = {
                         TextFallout(
                             alertDialogHeader, getDialogTextColor(this), getDialogTextColor(this),
@@ -420,7 +432,11 @@ class MainActivity : SaveDataActivity() {
                     text = {
                         var radioVolume by remember { mutableFloatStateOf(save?.radioVolume ?: 1f) }
                         var soundVolume by remember { mutableFloatStateOf(save?.soundVolume ?: 1f) }
-                        var ambientVolume by remember { mutableFloatStateOf(save?.ambientVolume ?: 1f) }
+                        var ambientVolume by remember {
+                            mutableFloatStateOf(
+                                save?.ambientVolume ?: 1f
+                            )
+                        }
                         var intro by remember { mutableStateOf(save?.useCaravanIntro ?: true) }
                         Column {
                             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -475,7 +491,10 @@ class MainActivity : SaveDataActivity() {
                                     soundVolume = it; save?.soundVolume = it
                                 }, { playNotificationSound(this@MainActivity) {} })
                             }
-                            Row(horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
+                            Row(
+                                horizontalArrangement = Arrangement.Center,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
                                 TextFallout(
                                     stringResource(R.string.intro_music),
                                     getDialogTextColor(this@MainActivity),
@@ -524,7 +543,7 @@ class MainActivity : SaveDataActivity() {
                             if (isPaused) "NONE" else ">|",
                             getMusicTextColor(this@MainActivity),
                             getMusicTextColor(this@MainActivity),
-                            16.sp,
+                            18.sp,
                             Alignment.Center,
                             Modifier
                                 .weight(1f)
@@ -543,7 +562,7 @@ class MainActivity : SaveDataActivity() {
                             if (isPaused) "|>" else "||",
                             getMusicTextColor(this@MainActivity),
                             getMusicTextColor(this@MainActivity),
-                            16.sp,
+                            18.sp,
                             Alignment.Center,
                             Modifier
                                 .weight(1f)
@@ -567,7 +586,7 @@ class MainActivity : SaveDataActivity() {
                             stringResource(R.string.sound),
                             getMusicTextColor(this@MainActivity),
                             getMusicTextColor(this@MainActivity),
-                            16.sp,
+                            18.sp,
                             Alignment.Center,
                             Modifier
                                 .weight(1f)
@@ -588,9 +607,11 @@ class MainActivity : SaveDataActivity() {
                     showRules -> {
                         ShowRules(activity = this@MainActivity) { showRules = false }
                     }
+
                     showTutorial -> {
                         Tutorial(activity = this@MainActivity) { showTutorial = false }
                     }
+
                     deckSelection -> {
                         DeckSelection(
                             this@MainActivity,
@@ -598,9 +619,11 @@ class MainActivity : SaveDataActivity() {
                             { back, isAlt -> selectedDeck = back to isAlt }
                         ) { deckSelection = false }
                     }
+
                     showAbout -> {
                         ShowAbout(activity = this@MainActivity) { showAbout = false }
                     }
+
                     showGameStats -> {
                         ShowPvE(
                             activity = this@MainActivity,
@@ -608,6 +631,7 @@ class MainActivity : SaveDataActivity() {
                             ::showAlertDialog
                         ) { showGameStats = false }
                     }
+
                     showPvP -> {
                         if (!checkIfCustomDeckCanBeUsedInGame(CResources(save!!.getCustomDeckCopy()))) {
                             showAlertDialog(
@@ -623,6 +647,7 @@ class MainActivity : SaveDataActivity() {
                             ) { showPvP = false }
                         }
                     }
+
                     showVision -> {
                         ShowSettings(activity = this@MainActivity, { styleId }, {
                             styleId = Style.entries[it]
@@ -633,16 +658,22 @@ class MainActivity : SaveDataActivity() {
                             }
                         }, ::showAlertDialog) { showVision = false }
                     }
+
                     showSettings -> {
                         ShowTrueSettings(
                             this@MainActivity,
                             { animationTickLength.value!! },
-                            { animationTickLength.value = it; save!!.animationLengthTick = it; saveOnGD(this@MainActivity) }
+                            {
+                                animationTickLength.value = it; save!!.animationLengthTick =
+                                it; saveOnGD(this@MainActivity)
+                            }
                         ) { showSettings = false }
                     }
+
                     showStock -> {
                         StockMarket(this@MainActivity) { showStock = false }
                     }
+
                     else -> {
                         BoxWithConstraints {
                             val width = maxWidth.dpToPx().toInt()
@@ -826,7 +857,8 @@ class MainActivity : SaveDataActivity() {
                     Column(
                         Modifier
                             .fillMaxWidth()
-                            .padding(start = 16.dp)) {
+                            .padding(start = 16.dp)
+                    ) {
                         @Composable
                         fun MenuItem(text: String, onClick: () -> Unit) {
                             TextFallout(

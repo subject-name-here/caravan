@@ -8,7 +8,6 @@ import kotlinx.serialization.EncodeDefault
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
 import java.text.SimpleDateFormat
-import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
@@ -28,6 +27,7 @@ class Save {
     val availableDecksAlt = CardBack.entries.associateWith { false }.toMutableMap().apply {
         this[CardBack.STANDARD] = true
     }
+
     @EncodeDefault
     val altDecksChosen = CardBack.entries.associateWith { false }.toMutableMap()
 
@@ -53,15 +53,19 @@ class Save {
 
     @EncodeDefault
     var gamesStarted = 0
+
     @EncodeDefault
     var gamesFinished = 0
+
     @EncodeDefault
     var wins = 0
 
     @EncodeDefault
     var radioVolume = 1f
+
     @EncodeDefault
     var soundVolume = 1f
+
     @EncodeDefault
     var ambientVolume = 1f
 
@@ -71,6 +75,7 @@ class Save {
     var caps = 10000
 
     private var previousDate = Date().time
+
     @EncodeDefault
     val soldCards = HashMap<Pair<CardBack, Boolean>, Int>()
     fun updateSoldCards(): Boolean {
@@ -79,7 +84,9 @@ class Save {
         previousDate = currentDate
 
         val simpleDateFormat = SimpleDateFormat("yyyyMMdd", Locale.ENGLISH)
-        if (simpleDateFormat.format(Date(currentDate)).equals(simpleDateFormat.format(Date(prevDate)))) {
+        if (simpleDateFormat.format(Date(currentDate))
+                .equals(simpleDateFormat.format(Date(prevDate)))
+        ) {
             return false
         }
         CardBack.entries.forEach { back ->
@@ -89,11 +96,13 @@ class Save {
                 soldCards[back to true] = (soldCards[back to true]!! - cardBought).coerceAtLeast(0)
             }
             if (back to false in soldCards) {
-                soldCards[back to false] = (soldCards[back to false]!! - cardBoughtAlt).coerceAtLeast(0)
+                soldCards[back to false] =
+                    (soldCards[back to false]!! - cardBoughtAlt).coerceAtLeast(0)
             }
         }
         return true
     }
+
     fun getCardPrice(card: Card): Int {
         val soldAlready = soldCards[card.back to card.isAlt] ?: 0
         return if (!card.isAlt) {
@@ -107,6 +116,7 @@ class Save {
                     in (40..49) -> 2
                     else -> 1
                 }
+
                 CardBack.LUCKY_38 -> when (soldAlready) {
                     in (0..9) -> 10
                     in (10..19) -> 9
@@ -115,6 +125,7 @@ class Save {
                     in (40..49) -> 3
                     else -> 1
                 }
+
                 CardBack.VAULT_21 -> when (soldAlready) {
                     in (0..9) -> 10
                     in (10..19) -> 9
@@ -137,6 +148,7 @@ class Save {
                     in (60..69) -> 3
                     else -> 1
                 }
+
                 CardBack.ULTRA_LUXE, CardBack.GOMORRAH -> when (soldAlready) {
                     in (0..9) -> 30
                     in (10..19) -> 20
@@ -146,6 +158,7 @@ class Save {
                     in (50..59) -> 3
                     else -> 1
                 }
+
                 CardBack.TOPS -> when (soldAlready) {
                     in (0..8) -> 30
                     in (9..16) -> 25
@@ -157,6 +170,7 @@ class Save {
                     in (57..64) -> 3
                     else -> 1
                 }
+
                 CardBack.LUCKY_38, CardBack.VAULT_21 -> (30 - soldAlready / 5).coerceAtLeast(1)
             }
         }

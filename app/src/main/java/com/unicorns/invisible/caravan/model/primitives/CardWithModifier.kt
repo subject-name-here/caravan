@@ -13,12 +13,14 @@ class CardWithModifier(val card: Card) {
             hasActiveJoker = true
         }
     }
+
     fun canAddModifier(card: Card): Boolean {
         return card.isFace() && (modifiers.size < 3 || card.rank == Rank.JACK)
     }
 
     var hasActiveJoker: Boolean = false
         private set
+
     fun deactivateJoker() {
         hasActiveJoker = false
     }

@@ -1,7 +1,6 @@
 package com.unicorns.invisible.caravan
 
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.games.PlayGames
@@ -19,6 +18,7 @@ import java.io.IOException
 
 var snapshotsClient: SnapshotsClient? = null
     private set
+
 abstract class SaveDataActivity : AppCompatActivity() {
     suspend fun uploadDataToDrive(data: ByteArray): Boolean {
         if (snapshotsClient == null) return false
@@ -38,7 +38,9 @@ abstract class SaveDataActivity : AppCompatActivity() {
         if (snapshotsClient == null) return null
         val conflictResolutionPolicy = SnapshotsClient.RESOLUTION_POLICY_MOST_RECENTLY_MODIFIED
         return snapshotsClient!!.open(SAVE_FILE_NAME, true, conflictResolutionPolicy)
-            .addOnFailureListener { e -> Toast.makeText(this, e.toString(), Toast.LENGTH_LONG).show() }
+            .addOnFailureListener { e ->
+                Toast.makeText(this, e.toString(), Toast.LENGTH_LONG).show()
+            }
             .continueWith(object : Continuation<DataOrConflict<Snapshot?>?, ByteArray?> {
                 override fun then(task: Task<DataOrConflict<Snapshot?>?>): ByteArray? {
                     val snapshot = task.result?.data ?: return null
@@ -64,7 +66,8 @@ abstract class SaveDataActivity : AppCompatActivity() {
         val gamesSignInClient = PlayGames.getGamesSignInClient(this)
         gamesSignInClient.isAuthenticated()
             .addOnCompleteListener { isAuthenticatedTask ->
-                val isAuthenticated = (isAuthenticatedTask.isSuccessful && isAuthenticatedTask.result.isAuthenticated)
+                val isAuthenticated =
+                    (isAuthenticatedTask.isSuccessful && isAuthenticatedTask.result.isAuthenticated)
                 if (isAuthenticated) {
                     snapshotsClient = PlayGames.getSnapshotsClient(this)
                     onSnapshotClientInitialized()

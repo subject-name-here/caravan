@@ -51,6 +51,7 @@ import com.unicorns.invisible.caravan.model.primitives.Card
 
 @Composable
 fun Int.pxToDp() = with(LocalDensity.current) { this@pxToDp.toDp() }
+
 @Composable
 fun Dp.dpToPx() = with(LocalDensity.current) { this@dpToPx.toPx() }
 
@@ -166,7 +167,10 @@ fun Modifier.scrollbar(
                     topLeft =
                     when {
                         // When the scrollbar is horizontal and aligned to the bottom:
-                        horizontal && alignEnd -> Offset(padding.toPx(), size.height - thickness.toPx())
+                        horizontal && alignEnd -> Offset(
+                            padding.toPx(),
+                            size.height - thickness.toPx()
+                        )
                         // When the scrollbar is horizontal and aligned to the top:
                         horizontal && !alignEnd -> Offset(padding.toPx(), 0f)
                         // When the scrollbar is vertical and aligned to the end:
@@ -181,7 +185,10 @@ fun Modifier.scrollbar(
                         Size(thickness.toPx(), size.height - padding.toPx() * 2)
                     },
                     alpha = alpha,
-                    cornerRadius = CornerRadius(x = trackCornerRadius.toPx(), y = trackCornerRadius.toPx()),
+                    cornerRadius = CornerRadius(
+                        x = trackCornerRadius.toPx(),
+                        y = trackCornerRadius.toPx()
+                    ),
                 )
 
                 // Draw the knob
@@ -190,7 +197,10 @@ fun Modifier.scrollbar(
                     topLeft =
                     when {
                         // When the scrollbar is horizontal and aligned to the bottom:
-                        horizontal && alignEnd -> Offset(knobPosition, size.height - thickness.toPx())
+                        horizontal && alignEnd -> Offset(
+                            knobPosition,
+                            size.height - thickness.toPx()
+                        )
                         // When the scrollbar is horizontal and aligned to the top:
                         horizontal && !alignEnd -> Offset(knobPosition, 0f)
                         // When the scrollbar is vertical and aligned to the end:
@@ -205,7 +215,10 @@ fun Modifier.scrollbar(
                         Size(thickness.toPx(), knobSize)
                     },
                     alpha = alpha,
-                    cornerRadius = CornerRadius(x = knobCornerRadius.toPx(), y = knobCornerRadius.toPx()),
+                    cornerRadius = CornerRadius(
+                        x = knobCornerRadius.toPx(),
+                        y = knobCornerRadius.toPx()
+                    ),
                 )
             }
         }
@@ -213,61 +226,80 @@ fun Modifier.scrollbar(
 }
 
 @Composable
-fun CheckboxCustom(activity: MainActivity, checked: () -> Boolean, onCheckedChange: (Boolean) -> Unit, enabled: () -> Boolean) {
-    Checkbox(checked = checked(), onCheckedChange = onCheckedChange, colors = CheckboxColors(
-        checkedCheckmarkColor = getCheckBoxBorderColor(activity),
-        uncheckedCheckmarkColor = Color.Transparent,
-        checkedBoxColor = getCheckBoxFillColor(activity),
-        uncheckedBoxColor = Color.Transparent,
-        disabledCheckedBoxColor = Color.Red,
-        disabledUncheckedBoxColor = Color.Red,
-        disabledIndeterminateBoxColor = Color.Red,
-        checkedBorderColor = getCheckBoxBorderColor(activity),
-        uncheckedBorderColor = getCheckBoxBorderColor(activity),
-        disabledBorderColor = Color.Red,
-        disabledUncheckedBorderColor = Color.Red,
-        disabledIndeterminateBorderColor = Color.Red,
-    ), enabled = enabled())
+fun CheckboxCustom(
+    activity: MainActivity,
+    checked: () -> Boolean,
+    onCheckedChange: (Boolean) -> Unit,
+    enabled: () -> Boolean
+) {
+    Checkbox(
+        checked = checked(), onCheckedChange = onCheckedChange, colors = CheckboxColors(
+            checkedCheckmarkColor = getCheckBoxBorderColor(activity),
+            uncheckedCheckmarkColor = Color.Transparent,
+            checkedBoxColor = getCheckBoxFillColor(activity),
+            uncheckedBoxColor = Color.Transparent,
+            disabledCheckedBoxColor = Color.Red,
+            disabledUncheckedBoxColor = Color.Red,
+            disabledIndeterminateBoxColor = Color.Red,
+            checkedBorderColor = getCheckBoxBorderColor(activity),
+            uncheckedBorderColor = getCheckBoxBorderColor(activity),
+            disabledBorderColor = Color.Red,
+            disabledUncheckedBorderColor = Color.Red,
+            disabledIndeterminateBorderColor = Color.Red,
+        ), enabled = enabled()
+    )
 }
 
 // Both these Slider and Switch have colors chosen out of the assumption that the background color is Selection color
 
 @Composable
-fun SliderCustom(activity: MainActivity, getValue: () -> Float, setValue: (Float) -> Unit, onValueChangedFinished: () -> Unit = {}) {
-    Slider(getValue(), onValueChange = { setValue(it) }, colors = SliderColors(
-        thumbColor = getSliderThumbColor(activity),
-        activeTrackColor = getSliderTrackColor(activity),
-        activeTickColor = getSliderTrackColor(activity),
-        inactiveTickColor = getSliderTrackColor(activity),
-        inactiveTrackColor = getSliderTrackColor(activity),
-        disabledThumbColor = Color.Gray,
-        disabledActiveTrackColor = Color.Gray,
-        disabledActiveTickColor = Color.Gray,
-        disabledInactiveTickColor = Color.Gray,
-        disabledInactiveTrackColor = Color.Gray,
-    ), onValueChangeFinished = onValueChangedFinished)
+fun SliderCustom(
+    activity: MainActivity,
+    getValue: () -> Float,
+    setValue: (Float) -> Unit,
+    onValueChangedFinished: () -> Unit = {}
+) {
+    Slider(
+        getValue(), onValueChange = { setValue(it) }, colors = SliderColors(
+            thumbColor = getSliderThumbColor(activity),
+            activeTrackColor = getSliderTrackColor(activity),
+            activeTickColor = getSliderTrackColor(activity),
+            inactiveTickColor = getSliderTrackColor(activity),
+            inactiveTrackColor = getSliderTrackColor(activity),
+            disabledThumbColor = Color.Gray,
+            disabledActiveTrackColor = Color.Gray,
+            disabledActiveTickColor = Color.Gray,
+            disabledInactiveTickColor = Color.Gray,
+            disabledInactiveTrackColor = Color.Gray,
+        ), onValueChangeFinished = onValueChangedFinished
+    )
 }
 
 @Composable
-fun SwitchCustom(activity: MainActivity, checked: () -> Boolean, onCheckedChange: (Boolean) -> Unit) {
-    Switch(checked = checked(), onCheckedChange = onCheckedChange, colors = SwitchColors(
-        checkedThumbColor = getSwitchThumbColor(activity),
-        checkedTrackColor = getSwitchTrackColor(activity),
-        checkedBorderColor = Color.Transparent,
-        checkedIconColor = Color.Transparent,
-        uncheckedThumbColor = getSwitchThumbColor(activity),
-        uncheckedTrackColor = getSwitchTrackColor(activity),
-        uncheckedBorderColor = Color.Transparent,
-        uncheckedIconColor = Color.Transparent,
-        disabledCheckedThumbColor = colorResource(R.color.red),
-        disabledCheckedTrackColor = colorResource(R.color.white),
-        disabledCheckedBorderColor = Color.Transparent,
-        disabledCheckedIconColor = Color.Transparent,
-        disabledUncheckedThumbColor = colorResource(R.color.red),
-        disabledUncheckedTrackColor = colorResource(R.color.white),
-        disabledUncheckedBorderColor = Color.Transparent,
-        disabledUncheckedIconColor = Color.Transparent,
-    )
+fun SwitchCustom(
+    activity: MainActivity,
+    checked: () -> Boolean,
+    onCheckedChange: (Boolean) -> Unit
+) {
+    Switch(
+        checked = checked(), onCheckedChange = onCheckedChange, colors = SwitchColors(
+            checkedThumbColor = getSwitchThumbColor(activity),
+            checkedTrackColor = getSwitchTrackColor(activity),
+            checkedBorderColor = Color.Transparent,
+            checkedIconColor = Color.Transparent,
+            uncheckedThumbColor = getSwitchThumbColor(activity),
+            uncheckedTrackColor = getSwitchTrackColor(activity),
+            uncheckedBorderColor = Color.Transparent,
+            uncheckedIconColor = Color.Transparent,
+            disabledCheckedThumbColor = colorResource(R.color.red),
+            disabledCheckedTrackColor = colorResource(R.color.white),
+            disabledCheckedBorderColor = Color.Transparent,
+            disabledCheckedIconColor = Color.Transparent,
+            disabledUncheckedThumbColor = colorResource(R.color.red),
+            disabledUncheckedTrackColor = colorResource(R.color.white),
+            disabledUncheckedBorderColor = Color.Transparent,
+            disabledUncheckedIconColor = Color.Transparent,
+        )
     )
 }
 
@@ -281,6 +313,7 @@ private fun getStrokeWidth(textSize: TextUnit): Float {
         else -> 0f
     }
 }
+
 @Composable
 fun TextFallout(
     text: String,
@@ -320,6 +353,7 @@ fun TextFallout(
         )
     }
 }
+
 @Composable
 fun TextSymbola(
     text: String,
@@ -342,6 +376,7 @@ fun TextSymbola(
         )
     }
 }
+
 @Composable
 fun TextFallout(
     text: AnnotatedString,
@@ -386,10 +421,12 @@ fun TextFallout(
 fun Modifier.clickableCancel(activity: MainActivity, block: () -> Unit): Modifier {
     return this.clickable { playCloseSound(activity); block() }
 }
+
 @Composable
 fun Modifier.clickableOk(activity: MainActivity, block: () -> Unit): Modifier {
     return this.clickable { playClickSound(activity); block() }
 }
+
 @Composable
 fun Modifier.clickableSelect(activity: MainActivity, block: () -> Unit): Modifier {
     return this.clickable { playSelectSound(activity); block() }

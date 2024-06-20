@@ -1,7 +1,6 @@
 package com.unicorns.invisible.caravan
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -43,7 +42,13 @@ fun ShowAbout(activity: MainActivity, goBack: () -> Unit) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
         modifier = Modifier
-            .scrollbar(state, horizontal = false, knobColor = getKnobColor(activity), trackColor = getTrackColor(activity), padding = 4.dp)
+            .scrollbar(
+                state,
+                horizontal = false,
+                knobColor = getKnobColor(activity),
+                trackColor = getTrackColor(activity),
+                padding = 4.dp
+            )
             .fillMaxSize()
             .background(getBackgroundColor(activity))
             .padding(16.dp)
@@ -79,7 +84,8 @@ fun ShowAbout(activity: MainActivity, goBack: () -> Unit) {
                             style = SpanStyle(
                                 color = getTextColor(activity),
                                 fontFamily = FontFamily(Font(R.font.monofont)),
-                                textDecoration = TextDecoration.Underline)
+                                textDecoration = TextDecoration.Underline
+                            )
                         )
                     ),
                 ) {
@@ -108,7 +114,8 @@ fun ShowAbout(activity: MainActivity, goBack: () -> Unit) {
                             style = SpanStyle(
                                 color = getTextColor(activity),
                                 fontFamily = FontFamily(Font(R.font.monofont)),
-                                textDecoration = TextDecoration.Underline)
+                                textDecoration = TextDecoration.Underline
+                            )
                         )
                     ),
                 ) {
@@ -144,9 +151,12 @@ fun ShowAbout(activity: MainActivity, goBack: () -> Unit) {
                 getTextStrokeColor(activity),
                 24.sp,
                 Alignment.Center,
-                Modifier.background(getTextBackgroundColor(activity)).clickableCancel(activity) {
-                    goBack()
-                }.padding(8.dp),
+                Modifier
+                    .background(getTextBackgroundColor(activity))
+                    .clickableCancel(activity) {
+                        goBack()
+                    }
+                    .padding(8.dp),
                 TextAlign.Center
             )
         }

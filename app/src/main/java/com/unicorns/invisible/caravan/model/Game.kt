@@ -5,7 +5,6 @@ import com.unicorns.invisible.caravan.model.enemy.Enemy
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.Caravan
 import com.unicorns.invisible.caravan.model.primitives.Card
-import com.unicorns.invisible.caravan.model.primitives.CustomDeck
 import com.unicorns.invisible.caravan.model.primitives.Rank
 import com.unicorns.invisible.caravan.save.json
 import kotlinx.coroutines.CoroutineScope
@@ -34,8 +33,10 @@ class Game(
 
     @Transient
     var onWin: () -> Unit = {}
+
     @Transient
     var onLose: () -> Unit = {}
+
     @Transient
     var saySomething: (Int, Int) -> Unit = { _, _ -> }
 
@@ -50,6 +51,7 @@ class Game(
                 1 -> onWin()
             }
         }
+
     fun isOver() = isGameOver != 0
 
     var isCorrupted = false
@@ -70,6 +72,7 @@ class Game(
             cResources.initHand(tmpHand)
         }
     }
+
     fun startGame(maxNumOfFaces: Int = 5) {
         initDeck(playerCResources, maxNumOfFaces)
         initDeck(enemyCResources, maxNumOfFaces)

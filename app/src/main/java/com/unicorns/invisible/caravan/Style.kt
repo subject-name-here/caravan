@@ -1,6 +1,5 @@
 package com.unicorns.invisible.caravan
 
-import android.util.Log
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.AnimationVector2D
 import androidx.compose.animation.core.TweenSpec
@@ -26,17 +25,14 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.BiasAlignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.paint
 import androidx.compose.ui.draw.rotate
@@ -47,17 +43,16 @@ import androidx.compose.ui.graphics.ColorMatrix
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.FixedScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import coil.decode.SvgDecoder
 import coil.request.ImageRequest
-import coil.size.Scale
 import coil.size.Size
 import coil.size.pxOrElse
 import com.unicorns.invisible.caravan.Style.ALASKA_FRONTIER
@@ -82,26 +77,23 @@ import com.unicorns.invisible.caravan.utils.playYesBeep
 import com.unicorns.invisible.caravan.utils.pxToDp
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
-import kotlinx.coroutines.launch
 import kotlin.math.atan2
 import kotlin.math.hypot
 import kotlin.math.min
-import kotlin.math.pow
 import kotlin.random.Random
 
 
-// TODO: extract styleNames!!
-enum class Style(val styleName: String, val price: Int) {
-    DESERT("Desert", 0),
-    ALASKA_FRONTIER("Frontier of Anchorage", 500),
-    PIP_BOY("Pip-boy", 0),
-    PIP_GIRL("Pip-Girl", 2500),
-    OLD_WORLD("Old World", 2000),
-    NEW_WORLD("New World", 3000),
-    SIERRA_MADRE("Sierra Madre", 2000),
-    MADRE_ROJA("Madre Roja", 3000),
-    VAULT_21("Vault 21", 2100),
-    VAULT_22("Vault 22", 2200);
+enum class Style(val styleNameId: Int, val price: Int) {
+    DESERT(R.string.style_desert, 0),
+    ALASKA_FRONTIER(R.string.style_alaska, 500),
+    PIP_BOY(R.string.style_pip_boy, 0),
+    PIP_GIRL(R.string.style_pip_girl, 2000),
+    OLD_WORLD(R.string.style_old_world, 2000),
+    NEW_WORLD(R.string.style_new_world, 3000),
+    SIERRA_MADRE(R.string.style_sierra_madre, 2000),
+    MADRE_ROJA(R.string.style_madre_roja, 3000),
+    VAULT_21(R.string.style_vault_21, 2100),
+    VAULT_22(R.string.style_vault_22, 2200);
 }
 
 
@@ -109,18 +101,20 @@ enum class Style(val styleName: String, val price: Int) {
 fun Modifier.getTableBackground(style: Style): Modifier {
     // TODO: reduce number of tables, use colorFilters!
     return paint(
-        painterResource(id = when (style) {
-            DESERT -> R.drawable.table_wood
-            ALASKA_FRONTIER -> R.drawable.table_black
-            PIP_BOY -> R.drawable.table_blue
-            PIP_GIRL -> R.drawable.table_black // Future pink-ish
-            OLD_WORLD -> R.drawable.table_amber
-            NEW_WORLD -> R.drawable.table_wood
-            SIERRA_MADRE -> R.drawable.table_brown
-            MADRE_ROJA -> R.drawable.table_brown
-            VAULT_21 -> R.drawable.table_blue
-            VAULT_22 -> R.drawable.table_green
-        }),
+        painterResource(
+            id = when (style) {
+                DESERT -> R.drawable.table_wood
+                ALASKA_FRONTIER -> R.drawable.table_black
+                PIP_BOY -> R.drawable.table_blue
+                PIP_GIRL -> R.drawable.table_black // Future pink-ish
+                OLD_WORLD -> R.drawable.table_amber
+                NEW_WORLD -> R.drawable.table_wood
+                SIERRA_MADRE -> R.drawable.table_brown
+                MADRE_ROJA -> R.drawable.table_brown
+                VAULT_21 -> R.drawable.table_blue
+                VAULT_22 -> R.drawable.table_green
+            }
+        ),
         contentScale = ContentScale.Crop,
         colorFilter = when (style) {
             PIP_GIRL -> {
@@ -137,6 +131,7 @@ fun Modifier.getTableBackground(style: Style): Modifier {
                     )
                 })
             }
+
             ALASKA_FRONTIER -> {
                 ColorFilter.colorMatrix(ColorMatrix().apply {
                     timesAssign(
@@ -151,6 +146,7 @@ fun Modifier.getTableBackground(style: Style): Modifier {
                     )
                 })
             }
+
             else -> {
                 ColorFilter.colorMatrix(ColorMatrix())
             }
@@ -161,16 +157,30 @@ fun Modifier.getTableBackground(style: Style): Modifier {
 fun getStyleCities(style: Style): List<String> {
     return when (style) {
         ALASKA_FRONTIER -> listOf("ALPINE", "KOTZEBUE", "NEWTOK", "AKUTAN", "ANCHORAGE", "SCAGWAY")
-        OLD_WORLD, SIERRA_MADRE -> listOf("L.A.", "REDDING", "BLACK ROCK", "SAN DIEGO", "RENO", "ED. AFB")
+        OLD_WORLD, SIERRA_MADRE -> listOf(
+            "L.A.",
+            "REDDING",
+            "BLACK ROCK",
+            "SAN DIEGO",
+            "RENO",
+            "ED. AFB"
+        )
+
         MADRE_ROJA -> listOf("YOU", "CAN", "NEVER", "LEAVE", "SIERRA", "MADRE")
-        VAULT_21, -> listOf("LONG 15", "PRIMM", "NOVAK", "188", "NEW VEGAS", "HOOVER DAM")
+        VAULT_21 -> listOf("LONG 15", "PRIMM", "NOVAK", "188", "NEW VEGAS", "HOOVER DAM")
         VAULT_22 -> listOf("GRRRRR", "BRRRR", "VRRR", "MRR", "HRRRRRRR", "DRRRRRR")
         else -> listOf("BONEYARD", "REDDING", "VAULT CITY", "DAYGLOW", "NEW RENO", "THE HUB")
     }
 }
 
 @Composable
-fun BoxWithConstraintsScope.StylePicture(activity: MainActivity, style: Style, key: Int, width: Int, height: Int) {
+fun BoxWithConstraintsScope.StylePicture(
+    activity: MainActivity,
+    style: Style,
+    key: Int,
+    width: Int,
+    height: Int
+) {
     // TODO: jumping pictures!!! put size everywhere!!
     val prefix = "file:///android_asset/menu_items/"
     val rand = Random(key)
@@ -182,7 +192,7 @@ fun BoxWithConstraintsScope.StylePicture(activity: MainActivity, style: Style, k
                         .size(424, 256)
                         .data(prefix + "old_world/china.png")
                         .build()
-                    ),
+                ),
                 rememberAsyncImagePainter(
                     ImageRequest.Builder(activity)
                         .size(522, 256)
@@ -199,29 +209,41 @@ fun BoxWithConstraintsScope.StylePicture(activity: MainActivity, style: Style, k
             val painter3 = rememberAsyncImagePainter(
                 ImageRequest.Builder(activity)
                     .size(512, 256)
-                    .data(prefix + listOf(
-                        "old_world/repconn_poster1.jpg",
-                        "old_world/repconn_poster2.jpg",
-                        "old_world/repconnposter03.jpg",
-                    ).random(rand))
+                    .data(
+                        prefix + listOf(
+                            "old_world/repconn_poster1.jpg",
+                            "old_world/repconn_poster2.jpg",
+                            "old_world/repconnposter03.jpg",
+                        ).random(rand)
+                    )
                     .build()
             )
 
 
-            Row(Modifier.fillMaxWidth().align(Alignment.BottomEnd)) {
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.BottomEnd)) {
                 Image(
                     painter = painter3,
                     contentDescription = "",
-                    Modifier.fillMaxWidth().padding(end = 8.dp, bottom = 52.dp),
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(end = 8.dp, bottom = 52.dp),
                     alignment = Alignment.BottomEnd,
                     contentScale = ContentScale.Inside
                 )
             }
-            Row(Modifier.fillMaxWidth().align(Alignment.TopEnd)) {
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.TopEnd)) {
                 Image(
                     painter = flagPainter,
                     contentDescription = "",
-                    modifier = Modifier.fillMaxWidth().padding(top = 48.dp, end = 8.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 48.dp, end = 8.dp),
                     contentScale = ContentScale.Inside,
                     alignment = Alignment.TopEnd
                 )
@@ -229,30 +251,45 @@ fun BoxWithConstraintsScope.StylePicture(activity: MainActivity, style: Style, k
 
             Row(Modifier.fillMaxSize()) {
                 Box(Modifier.weight(1f)) {}
-                BoxWithConstraints(Modifier.weight(1f).fillMaxHeight()) {
+                BoxWithConstraints(
+                    Modifier
+                        .weight(1f)
+                        .fillMaxHeight()) {
                     val mW = maxWidth.dpToPx().toInt() - 238
                     val mH = maxHeight.dpToPx().toInt() - 207
                     fun getOffset() = IntOffset(
                         (0..mW).random(rand),
                         (0..mH).random(rand)
                     )
-                    val offset = remember { Animatable(
-                        getOffset(),
-                        TwoWayConverter(
-                            { AnimationVector2D(it.x.toFloat(), it.y.toFloat()) },
-                            { IntOffset(it.v1.toInt(), it.v2.toInt()) }
-                        ),
-                        null, "Animatable"
-                    ) }
+
+                    val offset = remember {
+                        Animatable(
+                            getOffset(),
+                            TwoWayConverter(
+                                { AnimationVector2D(it.x.toFloat(), it.y.toFloat()) },
+                                { IntOffset(it.v1.toInt(), it.v2.toInt()) }
+                            ),
+                            null, "Animatable"
+                        )
+                    }
 
                     val rotation = remember { Animatable(0f) }
                     LaunchedEffect(Unit) {
                         while (isActive) {
                             val newOffset = getOffset()
-                            val length = hypot((newOffset.x - offset.value.x).toDouble(), (newOffset.y - offset.value.y).toDouble())
-                            val newRotation = atan2((newOffset.y - offset.value.y).toDouble(), (newOffset.x - offset.value.x).toDouble())
+                            val length = hypot(
+                                (newOffset.x - offset.value.x).toDouble(),
+                                (newOffset.y - offset.value.y).toDouble()
+                            )
+                            val newRotation = atan2(
+                                (newOffset.y - offset.value.y).toDouble(),
+                                (newOffset.x - offset.value.x).toDouble()
+                            )
                             val degrees = 180 * newRotation / Math.PI
-                            rotation.animateTo(degrees.toFloat(), TweenSpec(activity.animationTickLength.value!!.toInt() * 10))
+                            rotation.animateTo(
+                                degrees.toFloat(),
+                                TweenSpec(activity.animationTickLength.value!!.toInt() * 10)
+                            )
                             offset.animateTo(newOffset, TweenSpec(length.toInt()))
                         }
                     }
@@ -281,6 +318,7 @@ fun BoxWithConstraintsScope.StylePicture(activity: MainActivity, style: Style, k
             }
 
         }
+
         VAULT_22 -> {
             val painter = rememberAsyncImagePainter(
                 ImageRequest.Builder(activity)
@@ -288,11 +326,16 @@ fun BoxWithConstraintsScope.StylePicture(activity: MainActivity, style: Style, k
                     .data(prefix + "vault_22/v22sign.png")
                     .build()
             )
-            Row(Modifier.fillMaxWidth().align(Alignment.BottomEnd)) {
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.BottomEnd)) {
                 Image(
                     painter = painter,
                     contentDescription = "",
-                    Modifier.fillMaxWidth().padding(end = 8.dp, bottom = 48.dp),
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(end = 8.dp, bottom = 48.dp),
                     alignment = Alignment.BottomEnd,
                     contentScale = ContentScale.Inside
                 )
@@ -306,7 +349,12 @@ fun BoxWithConstraintsScope.StylePicture(activity: MainActivity, style: Style, k
             )
 
             var currentWidth = 0
-            Row(Modifier.fillMaxWidth().offset((-5).dp, 0.dp), horizontalArrangement = Arrangement.Start) {
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .offset((-5).dp, 0.dp),
+                horizontalArrangement = Arrangement.Start
+            ) {
                 while (currentWidth < width) {
                     val curMossUp = mossUp.random(rand)
                     val painter2 = rememberAsyncImagePainter(
@@ -333,6 +381,7 @@ fun BoxWithConstraintsScope.StylePicture(activity: MainActivity, style: Style, k
                 }
             }
         }
+
         SIERRA_MADRE -> {
             val painter = rememberAsyncImagePainter(
                 ImageRequest.Builder(activity)
@@ -343,15 +392,20 @@ fun BoxWithConstraintsScope.StylePicture(activity: MainActivity, style: Style, k
             val painterLogo = rememberAsyncImagePainter(
                 ImageRequest.Builder(activity)
                     .size(512, 512)
-                    .data(prefix + listOf("sierra_madre/logo1.png", "sierra_madre/logo2.png").random(rand))
+                    .data(prefix + "sierra_madre/logo1.png",)
                     .build()
             )
-            Row(Modifier.fillMaxWidth().align(Alignment.CenterEnd)) {
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.CenterEnd)) {
                 Box(Modifier.weight(1f))
                 Column(
-                    Modifier.weight(1f).padding(top = 48.dp, end = 8.dp, bottom = 48.dp),
+                    Modifier
+                        .weight(1f)
+                        .padding(top = 48.dp, end = 8.dp, bottom = 48.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
+                    verticalArrangement = Arrangement.SpaceAround
                 ) {
                     Image(
                         painter = painterLogo,
@@ -372,29 +426,36 @@ fun BoxWithConstraintsScope.StylePicture(activity: MainActivity, style: Style, k
 
             val painterFrame = rememberAsyncImagePainter(
                 ImageRequest.Builder(activity)
+                    .size(256, 256)
                     .data(prefix + "sierra_madre/frame.png")
                     .build()
             )
             Box(
-                Modifier.fillMaxHeight().offset { IntOffset(12.dp.roundToPx() + 8, -(12.dp.roundToPx() + 8)) },
-                contentAlignment = Alignment.BottomStart
+                Modifier
+                    .fillMaxSize()
+                    .padding(bottom = 60.dp),
+                contentAlignment = Alignment.BottomCenter
             ) {
                 Image(
                     painter = painterFrame,
                     contentDescription = "",
-                    Modifier.height(36.dp).width(36.dp),
-                    alignment = Alignment.BottomStart,
-                    contentScale = ContentScale.None
+                    Modifier
+                        .height(60.dp)
+                        .width(60.dp),
+                    alignment = Alignment.BottomCenter,
+                    contentScale = ContentScale.Inside
                 )
             }
 
             val painterPostcard1 = rememberAsyncImagePainter(
                 ImageRequest.Builder(activity)
+                    .size(195, 256)
                     .data(prefix + "sierra_madre/postcard1.png")
                     .build()
             )
             val painterPostcard2 = rememberAsyncImagePainter(
                 ImageRequest.Builder(activity)
+                    .size(197, 256)
                     .data(prefix + "sierra_madre/postcard2.png")
                     .build()
             )
@@ -408,9 +469,11 @@ fun BoxWithConstraintsScope.StylePicture(activity: MainActivity, style: Style, k
                 contentScale = ContentScale.None
             )
         }
+
         MADRE_ROJA -> {
             val painterDrip = rememberAsyncImagePainter(
                 ImageRequest.Builder(activity)
+                    .size(256, 256)
                     .data(prefix + "madre_roja/drip.png")
                     .build()
             )
@@ -425,58 +488,70 @@ fun BoxWithConstraintsScope.StylePicture(activity: MainActivity, style: Style, k
             Image(
                 painter = rememberAsyncImagePainter(
                     ImageRequest.Builder(activity)
+                        .size(256, 128)
                         .data(prefix + "madre_roja/graffiti_${(1..2).random(rand)}.png")
                         .build()
                 ),
                 contentDescription = "",
-                modifier = Modifier.fillMaxWidth().padding(end = 18.dp, top = 18.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(end = 18.dp, top = 18.dp),
                 contentScale = ContentScale.Inside,
                 alignment = Alignment.TopEnd,
             )
 
-            Row(Modifier.fillMaxWidth().align(Alignment.CenterEnd)) {
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.CenterEnd)) {
                 Box(Modifier.weight(1f))
                 Column(
-                    Modifier.weight(1f).padding(top = 48.dp, end = 8.dp, bottom = 48.dp),
+                    Modifier
+                        .weight(1f)
+                        .padding(top = 48.dp, end = 8.dp, bottom = 48.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) {
-                    Box(Modifier.weight(1f)) {  }
-                    Box(Modifier.weight(1f)) {  }
+                    Box(Modifier.weight(1f)) { }
+                    Box(Modifier.weight(1f)) { }
                     val graffiti = if (rand.nextBoolean()) {
-                        "madre_roja/let_go.png"
+                        "madre_roja/let_go.png" to Size(256, 128)
                     } else {
                         listOf(
-                            "madre_roja/madre_0.png",
-                            "madre_roja/madre_1.png",
-                            "madre_roja/madre_2.png",
-                            "madre_roja/madre_3.png",
-                            "madre_roja/madre_4.png",
-                            "madre_roja/madre_5.png",
-                            "madre_roja/madre_6.png",
-                            "madre_roja/madre_7.png",
-                            "madre_roja/madre_8.png",
-                            "madre_roja/madre_9.png",
-                            "madre_roja/madre_10.png",
-                            "madre_roja/madre_11.png",
+                            "madre_roja/madre_0.png" to Size(250, 133),
+                            "madre_roja/madre_1.png" to Size(184, 168),
+                            "madre_roja/madre_2.png" to Size(254, 135),
+                            "madre_roja/madre_3.png" to Size(234, 248),
+                            "madre_roja/madre_4.png" to Size(236, 221),
+                            "madre_roja/madre_5.png" to Size(249, 133),
+                            "madre_roja/madre_6.png" to Size(269, 138),
+                            "madre_roja/madre_7.png" to Size(292, 231),
+                            "madre_roja/madre_8.png" to Size(227, 181),
+                            "madre_roja/madre_9.png" to Size(314, 160),
+                            "madre_roja/madre_10.png" to Size(207, 112),
+                            "madre_roja/madre_11.png" to Size(306, 149),
                         ).random(rand)
                     }
                     Image(
                         painter = rememberAsyncImagePainter(
                             ImageRequest.Builder(activity)
-                                .data(prefix + graffiti)
+                                .size(graffiti.second)
+                                .data(prefix + graffiti.first)
                                 .build()
                         ),
                         contentDescription = "",
-                        Modifier.weight(2f).scale(2f),
+                        Modifier
+                            .weight(2f)
+                            .scale(2f),
                         alignment = Alignment.CenterEnd,
                         contentScale = ContentScale.Inside
                     )
-                    Box(Modifier.weight(1f)) {  }
-                    Box(Modifier.weight(1f)) {  }
+                    Box(Modifier.weight(1f)) { }
+                    Box(Modifier.weight(1f)) { }
                 }
             }
         }
+
         DESERT -> {
             val painterMain = rememberAsyncImagePainter(
                 ImageRequest.Builder(activity)
@@ -505,9 +580,15 @@ fun BoxWithConstraintsScope.StylePicture(activity: MainActivity, style: Style, k
                         .build(),
                 ),
             ).random(rand)
-            Row(Modifier.fillMaxWidth().align(Alignment.CenterEnd)) {
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.CenterEnd)) {
                 Box(Modifier.weight(1f))
-                Box(Modifier.weight(1f).padding(top = 48.dp, end = 8.dp, bottom = 48.dp)) {
+                Box(
+                    Modifier
+                        .weight(1f)
+                        .padding(top = 48.dp, end = 8.dp, bottom = 48.dp)) {
                     Column {
                         Image(
                             painter = painterMain,
@@ -520,7 +601,10 @@ fun BoxWithConstraintsScope.StylePicture(activity: MainActivity, style: Style, k
                             Image(
                                 painter = graffitiPainter,
                                 contentDescription = "",
-                                Modifier.fillMaxWidth().rotate(-20f + rand.nextFloat() * 40f).offset(x = ((-4..4).random(rand).dp)),
+                                Modifier
+                                    .fillMaxWidth()
+                                    .rotate(-20f + rand.nextFloat() * 40f)
+                                    .offset(x = ((-4..4).random(rand).dp)),
                                 alignment = Alignment.Center,
                                 contentScale = ContentScale.Fit,
                                 colorFilter = ColorFilter.tint(Color.Black)
@@ -530,6 +614,7 @@ fun BoxWithConstraintsScope.StylePicture(activity: MainActivity, style: Style, k
                 }
             }
         }
+
         ALASKA_FRONTIER -> {
             val painterFrame = rememberAsyncImagePainter(
                 ImageRequest.Builder(activity)
@@ -553,10 +638,15 @@ fun BoxWithConstraintsScope.StylePicture(activity: MainActivity, style: Style, k
                     )
                 ).random(rand)
 
-                Row(Modifier.fillMaxWidth().align(Alignment.CenterEnd)) {
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .align(Alignment.CenterEnd)) {
                     Box(Modifier.weight(1f))
                     Column(
-                        Modifier.weight(1f).padding(top = 48.dp, end = 8.dp, bottom = 48.dp),
+                        Modifier
+                            .weight(1f)
+                            .padding(top = 48.dp, end = 8.dp, bottom = 48.dp),
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.Center
                     ) {
@@ -570,21 +660,27 @@ fun BoxWithConstraintsScope.StylePicture(activity: MainActivity, style: Style, k
                     }
                 }
 
-                Row(Modifier.fillMaxWidth().align(Alignment.TopCenter).padding(top = 48.dp)) {
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .align(Alignment.TopCenter)
+                        .padding(top = 48.dp)) {
                     Image(
                         painter = painterFrame,
                         contentDescription = "",
                         Modifier.fillMaxWidth(),
                         alignment = Alignment.TopCenter,
                         contentScale = ContentScale.None,
-                        colorFilter = ColorFilter.colorMatrix(ColorMatrix(
-                            floatArrayOf(
-                                0f, 0f, 1f, 0f, 0f,
-                                0f, 1f, 0f, 0f, 0f,
-                                1f, 0f, 0f, 0f, 0f,
-                                0f, 0f, 0f, 1f, 0f
+                        colorFilter = ColorFilter.colorMatrix(
+                            ColorMatrix(
+                                floatArrayOf(
+                                    0f, 0f, 1f, 0f, 0f,
+                                    0f, 1f, 0f, 0f, 0f,
+                                    1f, 0f, 0f, 0f, 0f,
+                                    0f, 0f, 0f, 1f, 0f
+                                )
                             )
-                        ))
+                        )
                     )
                 }
             } else {
@@ -603,10 +699,15 @@ fun BoxWithConstraintsScope.StylePicture(activity: MainActivity, style: Style, k
                     )
                 ).random(rand)
 
-                Row(Modifier.fillMaxWidth().align(Alignment.CenterEnd)) {
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .align(Alignment.CenterEnd)) {
                     Box(Modifier.weight(1f))
                     Column(
-                        Modifier.weight(1f).padding(top = 48.dp, end = 8.dp, bottom = 48.dp),
+                        Modifier
+                            .weight(1f)
+                            .padding(top = 48.dp, end = 8.dp, bottom = 48.dp),
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.Center
                     ) {
@@ -620,7 +721,11 @@ fun BoxWithConstraintsScope.StylePicture(activity: MainActivity, style: Style, k
                     }
                 }
 
-                Row(Modifier.fillMaxWidth().align(Alignment.TopCenter).padding(top = 48.dp)) {
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .align(Alignment.TopCenter)
+                        .padding(top = 48.dp)) {
                     Image(
                         painter = painterFrame,
                         contentDescription = "",
@@ -631,6 +736,7 @@ fun BoxWithConstraintsScope.StylePicture(activity: MainActivity, style: Style, k
                 }
             }
         }
+
         NEW_WORLD -> {
             val painter4 = rememberAsyncImagePainter(
                 ImageRequest.Builder(activity)
@@ -661,7 +767,9 @@ fun BoxWithConstraintsScope.StylePicture(activity: MainActivity, style: Style, k
                 Image(
                     painter = painter4,
                     contentDescription = "",
-                    modifier = Modifier.weight(1f).padding(top = 8.dp, start = 18.dp),
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(top = 8.dp, start = 18.dp),
                     contentScale = ContentScale.Inside,
                     alignment = Alignment.TopStart,
                     colorFilter = ColorFilter.tint(Color.White)
@@ -669,7 +777,9 @@ fun BoxWithConstraintsScope.StylePicture(activity: MainActivity, style: Style, k
                 Image(
                     painter = listOf(painter5_1, painter5_2, painter5_3).random(rand),
                     contentDescription = "",
-                    modifier = Modifier.weight(1f).padding(top = 2.dp, start = 8.dp, end = 8.dp),
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(top = 2.dp, start = 8.dp, end = 8.dp),
                     contentScale = ContentScale.Inside,
                     alignment = Alignment.TopCenter,
                     colorFilter = ColorFilter.tint(Color.White)
@@ -679,11 +789,17 @@ fun BoxWithConstraintsScope.StylePicture(activity: MainActivity, style: Style, k
             if (rand.nextBoolean()) {
                 val painter3 = rememberAsyncImagePainter(
                     ImageRequest.Builder(activity)
+                        .size(287, 185)
                         .data(prefix + "new_world/graffiti_cool.png")
                         .build()
                 )
 
-                Row(Modifier.fillMaxWidth().align(Alignment.CenterEnd).padding(top = 48.dp, end = 8.dp)) {
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .align(Alignment.CenterEnd)
+                        .padding(top = 48.dp, end = 8.dp)
+                ) {
                     Box(Modifier.weight(3f))
                     Box(Modifier.weight(1f)) {
                         val totalHeight = 185
@@ -706,11 +822,17 @@ fun BoxWithConstraintsScope.StylePicture(activity: MainActivity, style: Style, k
                 )
                 val painter3 = rememberAsyncImagePainter(
                     ImageRequest.Builder(activity)
+                        .size(287, 185)
                         .data(prefix + "new_world/graffiti_cool.png")
                         .build()
                 )
 
-                Row(Modifier.fillMaxWidth().align(Alignment.CenterEnd).padding(top = 48.dp, end = 8.dp)) {
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .align(Alignment.CenterEnd)
+                        .padding(top = 48.dp, end = 8.dp)
+                ) {
                     Box(Modifier.weight(3f))
                     Box(Modifier.weight(1f)) {
                         val totalHeight = 501 + 185
@@ -719,7 +841,9 @@ fun BoxWithConstraintsScope.StylePicture(activity: MainActivity, style: Style, k
                         Image(
                             painter = painter3,
                             contentDescription = "",
-                            modifier = Modifier.scale(scale).offset { IntOffset(0, (-50 * scale).toInt()) },
+                            modifier = Modifier
+                                .scale(scale)
+                                .offset { IntOffset(0, (-50 * scale).toInt()) },
                             contentScale = ContentScale.None
                         )
                         Image(
@@ -738,9 +862,15 @@ fun BoxWithConstraintsScope.StylePicture(activity: MainActivity, style: Style, k
                         .build()
                 )
 
-                Row(Modifier.fillMaxWidth().align(Alignment.CenterEnd)) {
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .align(Alignment.CenterEnd)) {
                     Box(Modifier.weight(3f))
-                    Box(Modifier.weight(1f).padding(top = 48.dp, bottom = 48.dp, end = 8.dp)) {
+                    Box(
+                        Modifier
+                            .weight(1f)
+                            .padding(top = 48.dp, bottom = 48.dp, end = 8.dp)) {
                         val totalHeight1 = 676
                         val newHeight1 = min(totalHeight1 * 2, height - (96.dp).dpToPx().toInt())
                         val scale = newHeight1.toFloat() / totalHeight1
@@ -753,10 +883,20 @@ fun BoxWithConstraintsScope.StylePicture(activity: MainActivity, style: Style, k
                 }
             }
         }
+
         PIP_BOY -> {
-            Row(Modifier.fillMaxWidth().align(Alignment.CenterEnd).padding(top = 48.dp, bottom = 48.dp, end = 8.dp)) {
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.CenterEnd)
+                    .padding(top = 48.dp, bottom = 48.dp, end = 8.dp)
+            ) {
                 Box(Modifier.weight(1f))
-                Column(Modifier.weight(1f), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
+                Column(
+                    Modifier.weight(1f),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
                     val numberOfRounds = 20
                     var cnt by rememberSaveable { mutableIntStateOf(0) }
                     if (cnt == numberOfRounds) {
@@ -774,13 +914,7 @@ fun BoxWithConstraintsScope.StylePicture(activity: MainActivity, style: Style, k
                     var side by rememberSaveable { mutableStateOf(Random.nextBoolean()) }
 
                     TextFallout(
-                        "And this is the device #50724. " +
-                                "It was our first attempt to measure someone\'s Luck. " +
-                                "All you have to do to win is to pass 20 rounds of guessing game: Heads or Tails? " +
-                                "Choose right - counter adds 1. Choose wrong - counter goes to zero. " +
-                                "Counter gets to 20 - get a prize. " +
-                                "Not monetary, of course, just a huge pile of bottlecaps we received from Sunset Sarsaparilla HQ. " +
-                                "Still have no idea why we've got it.",
+                        stringResource(R.string.pip_boy_main_screen),
                         getTextColor(activity),
                         getTextStrokeColor(activity),
                         12.sp,
@@ -800,48 +934,56 @@ fun BoxWithConstraintsScope.StylePicture(activity: MainActivity, style: Style, k
                     )
                     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
                         TextFallout(
-                            "HEADS",
+                            stringResource(R.string.heads),
                             getTextColor(activity),
                             getTextStrokeColor(activity),
                             16.sp,
                             Alignment.Center,
-                            Modifier.background(getTextBackgroundColor(activity)).padding(4.dp).clickable {
-                                if (cnt == numberOfRounds) return@clickable
-                                if (side) {
-                                    cnt++
-                                    playYesBeep(activity)
-                                } else {
-                                    cnt = 0
-                                    playNoBeep(activity)
-                                }
-                                side = Random.nextBoolean()
-                            },
+                            Modifier
+                                .background(getTextBackgroundColor(activity))
+                                .padding(4.dp)
+                                .clickable {
+                                    if (cnt == numberOfRounds) return@clickable
+                                    if (side) {
+                                        cnt++
+                                        playYesBeep(activity)
+                                    } else {
+                                        cnt = 0
+                                        playNoBeep(activity)
+                                    }
+                                    side = Random.nextBoolean()
+                                },
                             TextAlign.Center,
                         )
                         TextFallout(
-                            "TAILS",
+                            stringResource(R.string.tails),
                             getTextColor(activity),
                             getTextStrokeColor(activity),
                             16.sp,
                             Alignment.Center,
-                            Modifier.background(getTextBackgroundColor(activity)).padding(4.dp).clickable {
-                                if (cnt == numberOfRounds) return@clickable
-                                if (!side) {
-                                    cnt++
-                                    playYesBeep(activity)
-                                } else {
-                                    cnt = 0
-                                    playNoBeep(activity)
-                                }
-                                side = Random.nextBoolean()
-                            },
+                            Modifier
+                                .background(getTextBackgroundColor(activity))
+                                .padding(4.dp)
+                                .clickable {
+                                    if (cnt == numberOfRounds) return@clickable
+                                    if (!side) {
+                                        cnt++
+                                        playYesBeep(activity)
+                                    } else {
+                                        cnt = 0
+                                        playNoBeep(activity)
+                                    }
+                                    side = Random.nextBoolean()
+                                },
                             TextAlign.Center,
                         )
                     }
                 }
             }
         }
+
         PIP_GIRL -> {
+            // Do not extract those.
             val phrases = listOf(
                 "I have no sleep tonight;\nTransmission starts again.\nBut telling you what\'s right\nIs crying in the rain.",
                 "6-28-69\nRemember.",
@@ -866,24 +1008,37 @@ fun BoxWithConstraintsScope.StylePicture(activity: MainActivity, style: Style, k
             )
             if ((1..8).random(rand) in (1..6)) {
                 val text = phrases.random(rand)
-                Row(Modifier.fillMaxWidth().align(Alignment.CenterEnd).padding(top = 48.dp, bottom = 48.dp, end = 8.dp)) {
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .align(Alignment.CenterEnd)
+                        .padding(top = 48.dp, bottom = 48.dp, end = 8.dp)
+                ) {
                     Box(Modifier.weight(1f))
                     Box(Modifier.weight(1f), contentAlignment = Alignment.Center) {
                         Text(
-                            text =  text,
+                            text = text,
                             textAlign = TextAlign.Center,
                             color = Color.Black,
                             fontFamily = FontFamily(Font(R.font.help)),
                             modifier = Modifier
                                 .align(Alignment.Center)
                                 .rotate(-20f + rand.nextFloat() * 40f)
-                                .offset(x = ((-5..5).random(rand).dp), y = ((-5..5).random(rand).dp)),
+                                .offset(
+                                    x = ((-5..5).random(rand).dp),
+                                    y = ((-5..5).random(rand).dp)
+                                ),
                             fontSize = 12.sp,
                         )
                     }
                 }
             } else {
-                Row(Modifier.fillMaxWidth().align(Alignment.CenterEnd).padding(top = 48.dp, bottom = 48.dp, end = 8.dp)) {
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .align(Alignment.CenterEnd)
+                        .padding(top = 48.dp, bottom = 48.dp, end = 8.dp)
+                ) {
                     Box(Modifier.weight(1f))
                     Box(Modifier.weight(1f)) {
                         Image(
@@ -897,6 +1052,7 @@ fun BoxWithConstraintsScope.StylePicture(activity: MainActivity, style: Style, k
                 }
             }
         }
+
         VAULT_21 -> {
             val totalHeight = 768
             val newHeight = min(totalHeight * 2, height - (96.dp).dpToPx().toInt())
@@ -905,7 +1061,10 @@ fun BoxWithConstraintsScope.StylePicture(activity: MainActivity, style: Style, k
             val newWidth = min(totalWidth * 2, width / 2)
             val scale2 = newWidth.toFloat() / totalWidth
             val scale = minOf(scale1, scale2)
-            Box(Modifier.fillMaxSize().padding(vertical = 48.dp), Alignment.CenterEnd) {
+            Box(
+                Modifier
+                    .fillMaxSize()
+                    .padding(vertical = 48.dp), Alignment.CenterEnd) {
                 val painter1 = rememberAsyncImagePainter(
                     ImageRequest.Builder(activity)
                         .size(256, 256)
@@ -940,14 +1099,22 @@ fun BoxWithConstraintsScope.StylePicture(activity: MainActivity, style: Style, k
                 }
 
                 Box(Modifier.fillMaxSize(), contentAlignment = Alignment.CenterEnd) {
-                    Box(Modifier.size(672.pxToDp(), 672.pxToDp()), contentAlignment = Alignment.Center) {
+                    Box(
+                        Modifier.size(672.pxToDp(), 672.pxToDp()),
+                        contentAlignment = Alignment.Center
+                    ) {
                         Image(
                             painter = painter2,
                             contentDescription = "",
                             modifier = Modifier.fillMaxSize(),
                             contentScale = FixedScale(scale),
                         )
-                        Box(Modifier.size(672.pxToDp(), 672.pxToDp()).scale(scale), contentAlignment = Alignment.Center) {
+                        Box(
+                            Modifier
+                                .size(672.pxToDp(), 672.pxToDp())
+                                .scale(scale),
+                            contentAlignment = Alignment.Center
+                        ) {
                             Image(
                                 painter = painter1,
                                 contentDescription = "",

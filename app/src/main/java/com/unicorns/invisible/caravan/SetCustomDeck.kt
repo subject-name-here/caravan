@@ -41,7 +41,6 @@ import com.unicorns.invisible.caravan.utils.ShowCard
 import com.unicorns.invisible.caravan.utils.ShowCardBack
 import com.unicorns.invisible.caravan.utils.TextFallout
 import com.unicorns.invisible.caravan.utils.clickableCancel
-import com.unicorns.invisible.caravan.utils.clickableSelect
 import com.unicorns.invisible.caravan.utils.getBackgroundColor
 import com.unicorns.invisible.caravan.utils.getKnobColor
 import com.unicorns.invisible.caravan.utils.getSelectionColor
@@ -65,6 +64,7 @@ fun SetCustomDeck(
             card in deck
         } ?: false
     }
+
     fun toggleToCustomDeck(card: Card) {
         activity.save?.customDeck?.let { deck ->
             if (card in deck) {
@@ -76,6 +76,7 @@ fun SetCustomDeck(
         saveOnGD(activity)
 
     }
+
     fun isAvailable(card: Card): Boolean {
         return activity.save?.availableCards?.let { cards ->
             cards.any { it.rank == card.rank && it.suit == card.suit && it.back == card.back && it.isAlt == card.isAlt }
@@ -86,7 +87,8 @@ fun SetCustomDeck(
         Modifier
             .fillMaxSize()
             .background(getBackgroundColor(activity)),
-        horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Top) {
+        horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Top
+    ) {
         var updater by remember { mutableStateOf(false) }
         ShowCharacteristics(activity, updater)
 
@@ -119,12 +121,19 @@ fun SetCustomDeck(
             item {
                 CardBack.entries.forEach { back ->
                     var rowTabShow by remember { mutableStateOf(false) }
-                    var check by rememberSaveable { mutableStateOf(activity.save?.altDecksChosen?.get(back) ?: false) }
+                    var check by rememberSaveable {
+                        mutableStateOf(
+                            activity.save?.altDecksChosen?.get(
+                                back
+                            ) ?: false
+                        )
+                    }
                     Row(Modifier.padding(4.dp), horizontalArrangement = Arrangement.Start) {
                         Column(
                             Modifier
                                 .padding(horizontal = 8.dp)
-                                .fillMaxWidth(0.33f)) {
+                                .fillMaxWidth(0.33f)
+                        ) {
                             TextFallout(
                                 stringResource(
                                     if (back == CardBack.STANDARD && check)
@@ -170,7 +179,10 @@ fun SetCustomDeck(
                         Column(
                             Modifier
                                 .fillMaxSize()
-                                .padding(vertical = 8.dp), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
+                                .padding(vertical = 8.dp),
+                            verticalArrangement = Arrangement.Center,
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
                             TextFallout(
                                 text = "ALT!",
                                 getTextColor(activity),
@@ -201,7 +213,7 @@ fun SetCustomDeck(
                     }
                     if (rowTabShow) {
                         val state = rememberLazyListState()
-                        key (check) {
+                        key(check) {
                             LazyRow(
                                 Modifier
                                     .weight(1f)
@@ -211,7 +223,10 @@ fun SetCustomDeck(
                                         trackColor = getTrackColor(activity),
                                         horizontal = true
                                     )
-                                    .padding(horizontal = 4.dp).padding(bottom = 4.dp), state = state) lambda@ {
+                                    .padding(horizontal = 4.dp)
+                                    .padding(bottom = 4.dp),
+                                state = state
+                            ) lambda@{
                                 items(CustomDeck(back, check).toList().sortedWith { o1, o2 ->
                                     if (o1.rank != o2.rank) {
                                         o2.rank.value - o1.rank.value
@@ -219,9 +234,11 @@ fun SetCustomDeck(
                                         o1.suit.ordinal - o2.suit.ordinal
                                     }
                                 }) { card ->
-                                    var isSelected by remember { mutableStateOf(
-                                        isInCustomDeck(card)
-                                    ) }
+                                    var isSelected by remember {
+                                        mutableStateOf(
+                                            isInCustomDeck(card)
+                                        )
+                                    }
 
                                     if (isAvailable(card)) {
                                         ShowCard(activity, card, Modifier
@@ -242,9 +259,11 @@ fun SetCustomDeck(
                                             .padding(4.dp)
                                             .alpha(if (isSelected) 1f else 0.5f))
                                     } else {
-                                        ShowCardBack(activity, card, Modifier
-                                            .padding(4.dp)
-                                            .alpha(0.33f))
+                                        ShowCardBack(
+                                            activity, card, Modifier
+                                                .padding(4.dp)
+                                                .alpha(0.33f)
+                                        )
                                     }
                                 }
                             }
@@ -277,8 +296,14 @@ fun SetCustomDeck(
 
 @Composable
 fun ShowCharacteristics(activity: MainActivity, updater: Boolean) {
-    key (updater) {
-        Row(Modifier.padding(8.dp).fillMaxWidth().wrapContentHeight(), verticalAlignment = Alignment.CenterVertically) {
+    key(updater) {
+        Row(
+            Modifier
+                .padding(8.dp)
+                .fillMaxWidth()
+                .wrapContentHeight(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             val deck = activity.save?.getCustomDeckCopy() ?: CustomDeck()
             val deckSizeMin = MainActivity.MIN_DECK_SIZE
             val color1 = if (deck.size < deckSizeMin) Color.Red else getTextColor(activity)

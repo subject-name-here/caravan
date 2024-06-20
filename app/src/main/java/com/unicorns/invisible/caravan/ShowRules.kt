@@ -1,7 +1,6 @@
 package com.unicorns.invisible.caravan
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -43,9 +42,24 @@ fun ShowRules(activity: MainActivity, goBack: () -> Unit) {
         LazyColumn(
             Modifier
                 .fillMaxHeight(0.85f)
-                .scrollbar(state, horizontal = false, knobColor = getKnobColor(activity), trackColor = getTrackColor(activity), padding = 4.dp), state = state) {
+                .scrollbar(
+                    state,
+                    horizontal = false,
+                    knobColor = getKnobColor(activity),
+                    trackColor = getTrackColor(activity),
+                    padding = 4.dp
+                ), state = state
+        ) {
             item {
-                TextFallout(rules, getTextColor(activity), getTextStrokeColor(activity), 20.sp, Alignment.Center, Modifier.padding(horizontal = 4.dp), TextAlign.Center)
+                TextFallout(
+                    rules,
+                    getTextColor(activity),
+                    getTextStrokeColor(activity),
+                    20.sp,
+                    Alignment.Center,
+                    Modifier.padding(horizontal = 4.dp),
+                    TextAlign.Center
+                )
             }
         }
 
@@ -56,9 +70,12 @@ fun ShowRules(activity: MainActivity, goBack: () -> Unit) {
             getTextStrokeColor(activity),
             24.sp,
             Alignment.Center,
-            Modifier.background(getTextBackgroundColor(activity)).clickableCancel(activity) {
-                goBack()
-            }.padding(8.dp),
+            Modifier
+                .background(getTextBackgroundColor(activity))
+                .clickableCancel(activity) {
+                    goBack()
+                }
+                .padding(8.dp),
             TextAlign.Center
         )
     }

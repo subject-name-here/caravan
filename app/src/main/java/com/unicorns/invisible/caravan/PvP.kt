@@ -1,8 +1,6 @@
 package com.unicorns.invisible.caravan
 
-import android.util.Log
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -139,13 +137,14 @@ fun ShowPvP(
     }
 
     fun showFailure(s: String) {
-        showAlertDialog("Failure!", s)
+        showAlertDialog(activity.getString(R.string.failure_2), s)
         isRoomCreated = 2
         CoroutineScope(Dispatchers.Unconfined).launch {
             delay(3800L)
             isRoomCreated = 0
         }
     }
+
     fun showIncorrectRoomNumber() {
         isRoomCreated = 4
         CoroutineScope(Dispatchers.Unconfined).launch {
@@ -156,7 +155,7 @@ fun ShowPvP(
 
     fun processResponse(response: List<ULong>) {
         if (response.size != CardBack.entries.size) {
-            showFailure("Response has wrong size!")
+            showFailure(activity.getString(R.string.response_has_wrong_size))
             return
         }
 
@@ -296,7 +295,7 @@ fun ShowPvP(
                         roomNumber = res2.toString()
                         joinRoom()
                     } else {
-                        showFailure("No room to join! Create your own room!")
+                        showFailure(activity.getString(R.string.no_room_to_join))
                     }
                 }
             } else {
@@ -344,183 +343,215 @@ fun ShowPvP(
             ),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
-    ) { item {
-        Column(
-            Modifier.fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
+    ) {
+        item {
+            Column(
+                Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                TextFallout(
+                    stringResource(R.string.find),
+                    getTextColor(activity),
+                    getTextStrokeColor(activity),
+                    18.sp,
+                    Alignment.Center,
+                    Modifier
+                        .clickableOk(activity) {
+                            updateAvailableRoom(checkedCustomDeck)
+                        }
+                        .fillMaxWidth()
+                        .wrapContentHeight()
+                        .padding(horizontal = 8.dp, vertical = 16.dp)
+                        .background(getTextBackgroundColor(activity))
+                        .padding(8.dp),
+                    TextAlign.Center
+                )
+                Row(
+                    modifier = Modifier.height(96.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    TextFallout(
+                        text = when (isRoomCreated) {
+                            0 -> stringResource(R.string.create_room)
+                            1 -> stringResource(R.string.pool)
+                            2 -> stringResource(R.string.failure)
+                            4 -> stringResource(R.string.incorrect_room_number)
+                            else -> stringResource(R.string.your_room_is, isRoomCreated)
+                        },
+                        getTextColor(activity),
+                        getTextStrokeColor(activity),
+                        14.sp,
+                        Alignment.Center,
+                        modifier = Modifier
+                            .fillMaxWidth(0.33f)
+                            .padding(horizontal = 8.dp)
+                            .clickableOk(activity) { createRoom() }
+                            .background(getTextBackgroundColor(activity))
+                            .padding(4.dp),
+                        textAlign = TextAlign.Center,
+                    )
+                    TextField(
+                        modifier = Modifier.fillMaxWidth(0.5f),
+                        singleLine = true,
+                        enabled = isRoomCreated == 0,
+                        value = roomNumber,
+                        onValueChange = { roomNumber = it },
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                        textStyle = TextStyle(
+                            fontSize = 14.sp,
+                            color = getTextColor(activity),
+                            fontFamily = FontFamily(Font(R.font.monofont))
+                        ),
+                        label = {
+                            TextFallout(
+                                text = stringResource(R.string.room_number),
+                                getTextColor(activity),
+                                getTextStrokeColor(activity),
+                                11.sp,
+                                Alignment.Center,
+                                Modifier,
+                                TextAlign.Center
+                            )
+                        },
+                        colors = TextFieldDefaults.colors().copy(
+                            cursorColor = getTextColor(activity),
+                            focusedContainerColor = getTextBackgroundColor(activity),
+                            unfocusedContainerColor = getTextBackgroundColor(activity),
+                            disabledContainerColor = getBackgroundColor(activity),
+                        )
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    TextFallout(
+                        text = stringResource(R.string.join),
+                        getTextColor(activity),
+                        getTextStrokeColor(activity),
+                        14.sp,
+                        Alignment.Center,
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 8.dp)
+                            .clickableOk(activity) { joinRoom() }
+                            .background(getTextBackgroundColor(activity))
+                            .padding(4.dp),
+                        textAlign = TextAlign.Center,
+                    )
+                }
+                Column(
+                    Modifier
+                        .padding(horizontal = 8.dp)
+                        .wrapContentHeight()
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(48.dp),
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        TextFallout(
+                            stringResource(R.string.pve_use_custom_deck),
+                            getTextColor(activity),
+                            getTextStrokeColor(activity),
+                            14.sp,
+                            Alignment.CenterStart,
+                            Modifier.fillMaxWidth(0.7f),
+                            TextAlign.Start
+                        )
+                        CheckboxCustom(
+                            activity,
+                            { checkedCustomDeck },
+                            {
+                                checkedCustomDeck = !checkedCustomDeck
+                                if (checkedCustomDeck) {
+                                    playClickSound(activity)
+                                } else {
+                                    playCloseSound(activity)
+                                }
+                            },
+                            { isRoomCreated == 0 }
+                        )
+                    }
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(48.dp),
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        TextFallout(
+                            stringResource(R.string.private_room),
+                            getTextColor(activity),
+                            getTextStrokeColor(activity),
+                            14.sp,
+                            Alignment.CenterStart,
+                            Modifier.fillMaxWidth(0.7f),
+                            TextAlign.Start
+                        )
+                        CheckboxCustom(
+                            activity,
+                            { checkedPrivate },
+                            {
+                                checkedPrivate = !checkedPrivate
+                                if (checkedPrivate) {
+                                    playClickSound(activity)
+                                } else {
+                                    playCloseSound(activity)
+                                }
+                            },
+                            { isRoomCreated == 0 }
+                        )
+                    }
+                }
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+            HorizontalDivider(color = getDividerColor(activity))
+            Spacer(modifier = Modifier.height(16.dp))
+            Column(
+                Modifier.fillMaxSize(0.75f),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                TextFallout(
+                    stringResource(R.string.no_stats_here),
+                    getTextColor(activity),
+                    getTextStrokeColor(activity),
+                    20.sp,
+                    Alignment.Center,
+                    Modifier.padding(horizontal = 16.dp),
+                    TextAlign.Center
+                )
+                Spacer(modifier = Modifier.height(12.dp))
+                TextFallout(
+                    stringResource(R.string.pvp_piece),
+                    getTextColor(activity),
+                    getTextStrokeColor(activity),
+                    13.sp,
+                    Alignment.Center,
+                    Modifier.padding(horizontal = 16.dp),
+                    TextAlign.Start
+                )
+            }
+            Spacer(modifier = Modifier.height(32.dp))
             TextFallout(
-                stringResource(R.string.find),
+                text = stringResource(R.string.menu_back),
                 getTextColor(activity),
                 getTextStrokeColor(activity),
-                18.sp,
+                24.sp,
                 Alignment.Center,
                 Modifier
-                    .clickableOk(activity) {
-                        updateAvailableRoom(checkedCustomDeck)
+                    .clickableCancel(activity) {
+                        if (isRoomCreated == 0) {
+                            goBack()
+                        }
                     }
-                    .fillMaxWidth()
-                    .wrapContentHeight()
-                    .padding(horizontal = 8.dp, vertical = 16.dp)
                     .background(getTextBackgroundColor(activity))
                     .padding(8.dp),
                 TextAlign.Center
             )
-            Row(modifier = Modifier.height(96.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
-                TextFallout(
-                    text = when (isRoomCreated) {
-                        0 -> stringResource(R.string.create_room)
-                        1 -> stringResource(R.string.pool)
-                        2 -> stringResource(R.string.failure)
-                        4 -> stringResource(R.string.incorrect_room_number)
-                        else -> stringResource(R.string.your_room_is, isRoomCreated)
-                    },
-                    getTextColor(activity),
-                    getTextStrokeColor(activity),
-                    14.sp,
-                    Alignment.Center,
-                    modifier = Modifier
-                        .fillMaxWidth(0.33f)
-                        .padding(horizontal = 8.dp)
-                        .clickableOk(activity) { createRoom() }
-                        .background(getTextBackgroundColor(activity))
-                        .padding(4.dp),
-                    textAlign = TextAlign.Center,
-                )
-                TextField(
-                    modifier = Modifier.fillMaxWidth(0.5f),
-                    singleLine = true,
-                    enabled = isRoomCreated == 0,
-                    value = roomNumber,
-                    onValueChange = { roomNumber = it },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    textStyle = TextStyle(fontSize = 14.sp, color = getTextColor(activity), fontFamily = FontFamily(Font(R.font.monofont))),
-                    label = { TextFallout(text = stringResource(R.string.room_number), getTextColor(activity), getTextStrokeColor(activity),
-                        11.sp, Alignment.Center, Modifier, TextAlign.Center) },
-                    colors = TextFieldDefaults.colors().copy(
-                        cursorColor = getTextColor(activity),
-                        focusedContainerColor = getTextBackgroundColor(activity),
-                        unfocusedContainerColor = getTextBackgroundColor(activity),
-                        disabledContainerColor = getBackgroundColor(activity),
-                    )
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                TextFallout(
-                    text = stringResource(R.string.join),
-                    getTextColor(activity),
-                    getTextStrokeColor(activity),
-                    14.sp,
-                    Alignment.Center,
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 8.dp)
-                        .clickableOk(activity) { joinRoom() }
-                        .background(getTextBackgroundColor(activity))
-                        .padding(4.dp),
-                    textAlign = TextAlign.Center,
-                )
-            }
-            Column(
-                Modifier
-                    .padding(horizontal = 8.dp)
-                    .wrapContentHeight()) {
-                Row(modifier = Modifier
-                    .fillMaxWidth()
-                    .height(48.dp), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
-                    TextFallout(
-                        stringResource(R.string.pve_use_custom_deck),
-                        getTextColor(activity),
-                        getTextStrokeColor(activity),
-                        14.sp,
-                        Alignment.CenterStart,
-                        Modifier.fillMaxWidth(0.7f),
-                        TextAlign.Start
-                    )
-                    CheckboxCustom(
-                        activity,
-                        { checkedCustomDeck },
-                        {
-                            checkedCustomDeck = !checkedCustomDeck
-                            if (checkedCustomDeck) {
-                                playClickSound(activity)
-                            } else {
-                                playCloseSound(activity)
-                            }
-                        },
-                        { isRoomCreated == 0 }
-                    )
-                }
-                Row(modifier = Modifier
-                    .fillMaxWidth()
-                    .height(48.dp), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
-                    TextFallout(
-                        stringResource(R.string.private_room),
-                        getTextColor(activity),
-                        getTextStrokeColor(activity),
-                        14.sp,
-                        Alignment.CenterStart,
-                        Modifier.fillMaxWidth(0.7f),
-                        TextAlign.Start
-                    )
-                    CheckboxCustom(
-                        activity,
-                        { checkedPrivate },
-                        {
-                            checkedPrivate = !checkedPrivate
-                            if (checkedPrivate) {
-                                playClickSound(activity)
-                            } else {
-                                playCloseSound(activity)
-                            }
-                        },
-                        { isRoomCreated == 0 }
-                    )
-                }
-            }
+            Spacer(modifier = Modifier.height(32.dp))
         }
-        Spacer(modifier = Modifier.height(16.dp))
-        HorizontalDivider(color = getDividerColor(activity))
-        Spacer(modifier = Modifier.height(16.dp))
-        Column(Modifier.fillMaxSize(0.75f), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
-            TextFallout(
-                stringResource(R.string.no_stats_here),
-                getTextColor(activity),
-                getTextStrokeColor(activity),
-                20.sp,
-                Alignment.Center,
-                Modifier.padding(horizontal = 16.dp),
-                TextAlign.Center
-            )
-            Spacer(modifier = Modifier.height(12.dp))
-            TextFallout(
-                stringResource(R.string.pvp_piece),
-                getTextColor(activity),
-                getTextStrokeColor(activity),
-                13.sp,
-                Alignment.Center,
-                Modifier.padding(horizontal = 16.dp),
-                TextAlign.Start
-            )
-        }
-        Spacer(modifier = Modifier.height(32.dp))
-        TextFallout(
-            text = stringResource(R.string.menu_back),
-            getTextColor(activity),
-            getTextStrokeColor(activity),
-            24.sp,
-            Alignment.Center,
-            Modifier
-                .clickableCancel(activity) {
-                    if (isRoomCreated == 0) {
-                        goBack()
-                    }
-                }
-                .background(getTextBackgroundColor(activity))
-                .padding(8.dp),
-            TextAlign.Center
-        )
-        Spacer(modifier = Modifier.height(32.dp))
-    } }
+    }
 }
 
 @Composable
@@ -549,13 +580,25 @@ fun StartPvP(
     game.also {
         it.onWin = {
             playWinSound(activity)
-            showAlertDialog(activity.getString(R.string.result), activity.getString(R.string.you_win) +
-                    winCard(activity, activity.save!!, CardBack.STANDARD, 1, isAlt = true, isCustom = false))
+            showAlertDialog(
+                activity.getString(R.string.result), activity.getString(R.string.you_win) +
+                        winCard(
+                            activity,
+                            activity.save!!,
+                            CardBack.STANDARD,
+                            1,
+                            isAlt = true,
+                            isCustom = false
+                        )
+            )
             saveOnGD(activity)
         }
         it.onLose = {
             playLoseSound(activity)
-            showAlertDialog(activity.getString(R.string.result), activity.getString(R.string.you_lose))
+            showAlertDialog(
+                activity.getString(R.string.result),
+                activity.getString(R.string.you_lose)
+            )
         }
     }
     activity.goBack = {
@@ -570,6 +613,7 @@ fun StartPvP(
     fun updateEnemyHand() {
         enemyHandKey = !enemyHandKey
     }
+
     var caravansKey by remember { mutableStateOf(true) }
     fun updateCaravans() {
         caravansKey = !caravansKey
@@ -582,7 +626,7 @@ fun StartPvP(
         sendRequest(link) { result ->
             val body = result.getString("body")
             if (body.contains("Timeout!")) {
-                showAlertDialog("Failed to start the game!", body)
+                showAlertDialog(activity.getString(R.string.failed_to_start_the_game), body)
                 return@sendRequest
             }
 
@@ -661,7 +705,16 @@ fun StartPvP(
         return
     }
 
-    ShowGamePvP(activity, game, isCreator, roomNumber, showAlertDialog, enemyHandKey, ::updateEnemyHand, ::updateCaravans) lambda@{
+    ShowGamePvP(
+        activity,
+        game,
+        isCreator,
+        roomNumber,
+        showAlertDialog,
+        enemyHandKey,
+        ::updateEnemyHand,
+        ::updateCaravans
+    ) lambda@{
         if (game.isOver()) {
             activity.goBack?.invoke()
             activity.goBack = null

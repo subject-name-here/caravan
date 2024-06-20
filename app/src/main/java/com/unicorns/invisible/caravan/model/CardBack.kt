@@ -47,6 +47,7 @@ enum class CardBack {
         LUCKY_38 -> R.string.lucky_38_deck_name
         VAULT_21 -> R.string.vault_21_deck_name
     }
+
     fun getSierraMadreDeckName(): Int = R.string.standard_deck_alt_name
 
     fun getOwners(): List<Int> = when (this) {
@@ -65,90 +66,112 @@ enum class CardBack {
         return when (this) {
             STANDARD, LUCKY_38, VAULT_21 -> ColorFilter.colorMatrix(ColorMatrix())
             TOPS -> ColorFilter.colorMatrix(ColorMatrix().apply {
-                timesAssign(ColorMatrix(
-                    floatArrayOf(
-                        0.9f, 2f, 0f, 0f, 0f,
-                        0.3f, 2f, 0f, 0f, 0f,
-                        0.15f, 2f, 0.1f, 0f, 0f,
-                        0f, 0f, 0f, 1f, 0f
+                timesAssign(
+                    ColorMatrix(
+                        floatArrayOf(
+                            0.9f, 2f, 0f, 0f, 0f,
+                            0.3f, 2f, 0f, 0f, 0f,
+                            0.15f, 2f, 0.1f, 0f, 0f,
+                            0f, 0f, 0f, 1f, 0f
+                        )
                     )
-                ))
-                timesAssign(ColorMatrix(
-                    floatArrayOf(
-                        1f, 0f, 0f, 0f, 0f,
-                        0f, 1f, -1f, 0f, 0f,
-                        0f, 0f, 1f, 0f, 0f,
-                        0f, 0f, 0f, 1f, 0f
+                )
+                timesAssign(
+                    ColorMatrix(
+                        floatArrayOf(
+                            1f, 0f, 0f, 0f, 0f,
+                            0f, 1f, -1f, 0f, 0f,
+                            0f, 0f, 1f, 0f, 0f,
+                            0f, 0f, 0f, 1f, 0f
+                        )
                     )
-                ))
-                timesAssign(ColorMatrix(
-                    floatArrayOf(
-                        1f, 0f, 0f, 0f, 0f,
-                        0f, -1f, 0f, 0f, 255f,
-                        0f, 0f, -1f, 0f, 255f,
-                        0f, 0f, 0f, 1f, 0f
+                )
+                timesAssign(
+                    ColorMatrix(
+                        floatArrayOf(
+                            1f, 0f, 0f, 0f, 0f,
+                            0f, -1f, 0f, 0f, 255f,
+                            0f, 0f, -1f, 0f, 255f,
+                            0f, 0f, 0f, 1f, 0f
+                        )
                     )
-                ))
-                timesAssign(ColorMatrix(
-                    floatArrayOf(
-                        0f, 0f, 1f, 0f, 0f,
-                        0f, 1f, 0f, 0f, 0f,
-                        1f, 0f, 0f, 0f, 0f,
-                        0f, 0f, 0f, 1f, 0f
+                )
+                timesAssign(
+                    ColorMatrix(
+                        floatArrayOf(
+                            0f, 0f, 1f, 0f, 0f,
+                            0f, 1f, 0f, 0f, 0f,
+                            1f, 0f, 0f, 0f, 0f,
+                            0f, 0f, 0f, 1f, 0f
+                        )
                     )
-                ))
+                )
             })
+
             ULTRA_LUXE -> ColorFilter.colorMatrix(ColorMatrix().apply {
-                timesAssign(ColorMatrix(
-                    floatArrayOf(
-                        1f, 0f, 0f, 0f, 0f,
-                        0f, 1f, 0f, 0f, 0f,
-                        0f, 0f, 16f, 0f, 0f,
-                        0f, 0f, 0f, 1f, 0f
+                timesAssign(
+                    ColorMatrix(
+                        floatArrayOf(
+                            1f, 0f, 0f, 0f, 0f,
+                            0f, 1f, 0f, 0f, 0f,
+                            0f, 0f, 16f, 0f, 0f,
+                            0f, 0f, 0f, 1f, 0f
+                        )
                     )
-                ))
-                timesAssign(ColorMatrix(
-                    floatArrayOf(
-                        -1f, 0f, 0f, 0f, 255f,
-                        0f, -1f, 0f, 0f, 255f,
-                        0f, 0f, -1f, 0f, 255f,
-                        0f, 0f, 0f, 1f, 0f
+                )
+                timesAssign(
+                    ColorMatrix(
+                        floatArrayOf(
+                            -1f, 0f, 0f, 0f, 255f,
+                            0f, -1f, 0f, 0f, 255f,
+                            0f, 0f, -1f, 0f, 255f,
+                            0f, 0f, 0f, 1f, 0f
+                        )
                     )
-                ))
-                timesAssign(ColorMatrix(
-                    floatArrayOf(
-                        0f, 0f, 2f, 0f, 0f,
-                        0f, 2f, 0f, 0f, 0f,
-                        2f, 0f, 0f, 0f, 0f,
-                        0f, 0f, 0f, 1f, 0f
+                )
+                timesAssign(
+                    ColorMatrix(
+                        floatArrayOf(
+                            0f, 0f, 2f, 0f, 0f,
+                            0f, 2f, 0f, 0f, 0f,
+                            2f, 0f, 0f, 0f, 0f,
+                            0f, 0f, 0f, 1f, 0f
+                        )
                     )
-                ))
+                )
             })
+
             GOMORRAH -> ColorFilter.colorMatrix(ColorMatrix().apply {
-                timesAssign(ColorMatrix(
-                    floatArrayOf(
-                        0f, 1f, 0f, 0f, 0f,
-                        0.5f, 0.5f, 0f, 0f, 0f,
-                        1f, 0f, 0f, 0f, 0f,
-                        0f, 0f, 0f, 1f, 0f
+                timesAssign(
+                    ColorMatrix(
+                        floatArrayOf(
+                            0f, 1f, 0f, 0f, 0f,
+                            0.5f, 0.5f, 0f, 0f, 0f,
+                            1f, 0f, 0f, 0f, 0f,
+                            0f, 0f, 0f, 1f, 0f
+                        )
                     )
-                ))
-                timesAssign(ColorMatrix(
-                    floatArrayOf(
-                        -1f, 0f, 0f, 0f, 255f,
-                        0f, -1f, 0f, 0f, 255f,
-                        0f, 0f, -1f, 0f, 255f,
-                        0f, 0f, 0f, 1f, 0f
+                )
+                timesAssign(
+                    ColorMatrix(
+                        floatArrayOf(
+                            -1f, 0f, 0f, 0f, 255f,
+                            0f, -1f, 0f, 0f, 255f,
+                            0f, 0f, -1f, 0f, 255f,
+                            0f, 0f, 0f, 1f, 0f
+                        )
                     )
-                ))
-                timesAssign(ColorMatrix(
-                    floatArrayOf(
-                        2f, 0f, 0f, 0f, 0f,
-                        0f, 2f, 0f, 0f, 0f,
-                        0f, 0f, 2f, 0f, 0f,
-                        0f, 0f, 0f, 1f, 0f
+                )
+                timesAssign(
+                    ColorMatrix(
+                        floatArrayOf(
+                            2f, 0f, 0f, 0f, 0f,
+                            0f, 2f, 0f, 0f, 0f,
+                            0f, 0f, 2f, 0f, 0f,
+                            0f, 0f, 0f, 1f, 0f
+                        )
                     )
-                ))
+                )
             })
         }
     }

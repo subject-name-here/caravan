@@ -14,6 +14,7 @@ data object EnemySecuritron38 : Enemy() {
     override fun createDeck(): CResources = CResources(CustomDeck(CardBack.LUCKY_38, true).apply {
         removeAll(toList().filter { it.rank.value < 5 && it.rank.value != Rank.QUEEN.value })
     })
+
     override fun getRewardBack() = CardBack.LUCKY_38
     override fun isAlt(): Boolean {
         return true
@@ -43,7 +44,8 @@ data object EnemySecuritron38 : Enemy() {
                 val caravanToOverweight = game.playerCaravans.filter { it.getValue() > 13 }
                 if (caravanToOverweight.isNotEmpty()) {
                     caravanToOverweight.sortedBy { it.getValue() }.forEach { caravan ->
-                        val cardToKing = caravan.cards.filter { it.canAddModifier(card) }.maxByOrNull { it.getValue() }
+                        val cardToKing = caravan.cards.filter { it.canAddModifier(card) }
+                            .maxByOrNull { it.getValue() }
                         if (cardToKing != null && caravan.getValue() + cardToKing.getValue() > 26) {
                             cardToKing.addModifier(game.enemyCResources.removeFromHand(cardIndex))
                             return
@@ -51,15 +53,20 @@ data object EnemySecuritron38 : Enemy() {
                     }
                 }
                 game.enemyCaravans.withIndex().shuffled().forEach { (index, enemyCaravan) ->
-                    enemyCaravan.cards.sortedByDescending { it.card.rank.value }.forEach { caravanCard ->
-                        if (caravanCard.canAddModifier(card)
-                            && enemyCaravan.getValue() + caravanCard.getValue() in (21..26)
-                            && !checkMoveOnDefeat(game, index)
-                        ) {
-                            caravanCard.addModifier(game.enemyCResources.removeFromHand(cardIndex))
-                            return
+                    enemyCaravan.cards.sortedByDescending { it.card.rank.value }
+                        .forEach { caravanCard ->
+                            if (caravanCard.canAddModifier(card)
+                                && enemyCaravan.getValue() + caravanCard.getValue() in (21..26)
+                                && !checkMoveOnDefeat(game, index)
+                            ) {
+                                caravanCard.addModifier(
+                                    game.enemyCResources.removeFromHand(
+                                        cardIndex
+                                    )
+                                )
+                                return
+                            }
                         }
-                    }
                 }
             }
 
@@ -84,14 +91,18 @@ data object EnemySecuritron38 : Enemy() {
             }
 
             if (!card.rank.isFace()) {
-                game.enemyCaravans.withIndex().sortedBy { it.value.getValue() }.forEach { (caravanIndex, caravan) ->
-                    if (caravan.getValue() + card.rank.value <= 26 && caravan.canPutCardOnTop(card)) {
-                        if (!checkMoveOnDefeat(game, caravanIndex)) {
-                            caravan.putCardOnTop(game.enemyCResources.removeFromHand(cardIndex))
-                            return
+                game.enemyCaravans.withIndex().sortedBy { it.value.getValue() }
+                    .forEach { (caravanIndex, caravan) ->
+                        if (caravan.getValue() + card.rank.value <= 26 && caravan.canPutCardOnTop(
+                                card
+                            )
+                        ) {
+                            if (!checkMoveOnDefeat(game, caravanIndex)) {
+                                caravan.putCardOnTop(game.enemyCResources.removeFromHand(cardIndex))
+                                return
+                            }
                         }
                     }
-                }
             }
         }
 

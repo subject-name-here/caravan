@@ -3,7 +3,6 @@ package com.unicorns.invisible.caravan
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -57,7 +56,8 @@ fun afterPlayerMove(
     CoroutineScope(Dispatchers.Default).launch {
         delay(hTick * 2)
         game.isPlayerTurn = false
-        val isNewCardAdded = game.playerCResources.deckSize > 0 && game.playerCResources.hand.size < 5
+        val isNewCardAdded =
+            game.playerCResources.deckSize > 0 && game.playerCResources.hand.size < 5
         if (game.processField()) {
             delay(hTick * 2) // Remove cards; move cards within caravan
             updateView()
@@ -115,7 +115,16 @@ fun pingForMove(
         if (result.getString("body") == "-1") {
             CoroutineScope(Dispatchers.Unconfined).launch {
                 delay(760L)
-                pingForMove(game, hTick, room, isCreator, setEnemySymbol, corrupt, updateView, afterEnemyMove)
+                pingForMove(
+                    game,
+                    hTick,
+                    room,
+                    isCreator,
+                    setEnemySymbol,
+                    corrupt,
+                    updateView,
+                    afterEnemyMove
+                )
             }
             return@sendRequest
         }
@@ -216,6 +225,7 @@ fun ShowGamePvP(
         selectedCard = null
         timeOnTimer = 0
     }
+
     fun dropCardFromHand() {
         if (game.isExchangingCards) return
         val selectedCardNN = selectedCard ?: return
@@ -234,11 +244,16 @@ fun ShowGamePvP(
                     { enemyChosenSymbol = it },
                     ::corruptGame,
                     { updateCaravans(); updateEnemyHand() },
-                    { if (it) { timeOnTimerTrigger = !timeOnTimerTrigger } }
+                    {
+                        if (it) {
+                            timeOnTimerTrigger = !timeOnTimerTrigger
+                        }
+                    }
                 )
             }
         )
     }
+
     fun dropCaravan() {
         if (game.isExchangingCards) return
         val selectedCaravanNN = selectedCaravan
@@ -259,13 +274,22 @@ fun ShowGamePvP(
                     { enemyChosenSymbol = it },
                     ::corruptGame,
                     { updateCaravans(); updateEnemyHand() },
-                    { if (it) { timeOnTimerTrigger = !timeOnTimerTrigger } }
+                    {
+                        if (it) {
+                            timeOnTimerTrigger = !timeOnTimerTrigger
+                        }
+                    }
                 )
             }
         )
     }
 
-    fun addCardToCaravan(caravan: Caravan, caravanIndex: Int, position: Int, isEnemy: Boolean = false) {
+    fun addCardToCaravan(
+        caravan: Caravan,
+        caravanIndex: Int,
+        position: Int,
+        isEnemy: Boolean = false
+    ) {
         if (game.isExchangingCards) return
         fun onCaravanCardInserted(cardIndex: Int, caravanIndex: Int, cardInCaravan: Int? = null) {
             resetSelected()
@@ -284,7 +308,11 @@ fun ShowGamePvP(
                             { enemyChosenSymbol = it },
                             ::corruptGame,
                             { updateCaravans(); updateEnemyHand() },
-                            { if (it) { timeOnTimerTrigger = !timeOnTimerTrigger } }
+                            {
+                                if (it) {
+                                    timeOnTimerTrigger = !timeOnTimerTrigger
+                                }
+                            }
                         )
                     }
                 )
@@ -303,7 +331,11 @@ fun ShowGamePvP(
                             { enemyChosenSymbol = it },
                             ::corruptGame,
                             { updateCaravans(); updateEnemyHand() },
-                            { if (it) { timeOnTimerTrigger = !timeOnTimerTrigger } }
+                            {
+                                if (it) {
+                                    timeOnTimerTrigger = !timeOnTimerTrigger
+                                }
+                            }
                         )
                     }
                 )
@@ -324,12 +356,20 @@ fun ShowGamePvP(
                         }
                     }
                 }
+
                 Rank.JACK.value, Rank.QUEEN.value, Rank.KING.value, Rank.JOKER.value -> {
-                    if (position in caravan.cards.indices && caravan.cards[position].canAddModifier(card)) {
+                    if (position in caravan.cards.indices && caravan.cards[position].canAddModifier(
+                            card
+                        )
+                    ) {
                         if (card.rank == Rank.JOKER) {
                             playJokerSounds(activity)
                         }
-                        caravan.cards[position].addModifier(game.playerCResources.removeFromHand(cardIndex))
+                        caravan.cards[position].addModifier(
+                            game.playerCResources.removeFromHand(
+                                cardIndex
+                            )
+                        )
                         onCaravanCardInserted(
                             cardIndex, caravanIndex, position
                         )
@@ -363,7 +403,7 @@ fun ShowGamePvP(
         ::onCardClicked,
         selectedCard,
         getSelectedCaravan = { selectedCaravan },
-        setSelectedCaravan = lambda@ {
+        setSelectedCaravan = lambda@{
             if (game.isOver()) {
                 return@lambda
             }
@@ -382,8 +422,13 @@ fun ShowGamePvP(
         if (enemyHandKey) 0 else 1,
     )
 
-    key (timeOnTimer) {
-        Box(modifier = Modifier.fillMaxSize().background(Color.Transparent), contentAlignment = Alignment.BottomEnd) {
+    key(timeOnTimer) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.Transparent),
+            contentAlignment = Alignment.BottomEnd
+        ) {
             TextFallout(
                 timeOnTimer.toString(),
                 getTextColor(activity),

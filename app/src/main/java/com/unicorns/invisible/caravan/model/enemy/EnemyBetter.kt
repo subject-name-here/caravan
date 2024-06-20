@@ -7,7 +7,6 @@ import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJoker
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyRush
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyTime
 import com.unicorns.invisible.caravan.model.primitives.CResources
-import com.unicorns.invisible.caravan.utils.playJokerSounds
 import kotlinx.serialization.Serializable
 
 
@@ -33,7 +32,13 @@ data object EnemyBetter : Enemy() {
                 else -> 0f
             }
         }
-        val score = game.playerCaravans.indices.map { check(game.playerCaravans[it].getValue(), game.enemyCaravans[it].getValue()) }
+
+        val score = game.playerCaravans.indices.map {
+            check(
+                game.playerCaravans[it].getValue(),
+                game.enemyCaravans[it].getValue()
+            )
+        }
         if (2f !in score) {
             if (StrategyRush.move(game)) {
                 return

@@ -41,6 +41,7 @@ fun saveOnGD(activity: MainActivity): Deferred<Boolean> {
     val bytes = json.encodeToString(saveGlobal).toByteArray(StandardCharsets.UTF_8)
     return CoroutineScope(Dispatchers.IO).async { activity.uploadDataToDrive(bytes) }
 }
+
 suspend fun loadFromGD(activity: MainActivity) {
     val data = activity.fetchDataFromDrive()?.toString(StandardCharsets.UTF_8)
     if (data != null && data != "") {

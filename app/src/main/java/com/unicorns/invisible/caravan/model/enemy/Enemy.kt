@@ -28,6 +28,7 @@ sealed class Enemy {
         }
         return score == 2
     }
+
     fun checkMoveOnProbableDefeat(game: Game, caravanIndex: Int): Boolean {
         val otherCaravansIndices = game.enemyCaravans.indices.filter { it != caravanIndex }
         var score = 0
@@ -41,6 +42,7 @@ sealed class Enemy {
         }
         return score == 1
     }
+
     fun checkMoveOnPossibleVictory(game: Game, caravanIndex: Int): Boolean {
         val otherCaravansIndices = game.enemyCaravans.indices.filter { it != caravanIndex }
         var score = 0

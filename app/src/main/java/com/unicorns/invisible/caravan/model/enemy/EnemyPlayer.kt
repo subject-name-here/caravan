@@ -31,6 +31,7 @@ class EnemyPlayer(
                 }
                 game.enemyCaravans[move.caravanCode].dropCaravan()
             }
+
             2 -> {
                 if (move.handCardNumber !in game.enemyCResources.hand.indices) {
                     game.isCorrupted = true
@@ -38,6 +39,7 @@ class EnemyPlayer(
                 }
                 game.enemyCResources.dropCardFromHand(move.handCardNumber)
             }
+
             3 -> {
                 if (move.handCardNumber !in game.enemyCResources.hand.indices || move.caravanCode !in game.enemyCaravans.indices) {
                     game.isCorrupted = true
@@ -50,6 +52,7 @@ class EnemyPlayer(
                 }
                 game.enemyCaravans[move.caravanCode].putCardOnTop(card)
             }
+
             4 -> {
                 if (move.handCardNumber !in game.enemyCResources.hand.indices) {
                     game.isCorrupted = true
@@ -89,12 +92,14 @@ class EnemyPlayer(
         }
 
         if (move.newCardInHandBack != -1) {
-            game.enemyCResources.addCardToHandPvP(Card(
-                Rank.entries[move.newCardInHandRank],
-                Suit.entries[move.newCardInHandSuit],
-                CardBack.entries[move.newCardInHandBack],
-                isAlt = move.isNewCardAlt
-            ))
+            game.enemyCResources.addCardToHandPvP(
+                Card(
+                    Rank.entries[move.newCardInHandRank],
+                    Suit.entries[move.newCardInHandSuit],
+                    CardBack.entries[move.newCardInHandBack],
+                    isAlt = move.isNewCardAlt
+                )
+            )
         }
     }
 }

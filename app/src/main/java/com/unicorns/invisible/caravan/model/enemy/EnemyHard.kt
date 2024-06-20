@@ -45,12 +45,18 @@ data object EnemyHard : Enemy() {
             }
         }.forEach { (cardIndex, card) ->
             if (card.rank == Rank.JACK) {
-                val caravan = game.playerCaravans.withIndex().filter { it.value.getValue() in (12..26) }.randomOrNull()
+                val caravan =
+                    game.playerCaravans.withIndex().filter { it.value.getValue() in (12..26) }
+                        .randomOrNull()
                 val cardToJack = caravan?.value?.cards?.maxByOrNull { it.getValue() }
                 if (cardToJack != null && cardToJack.canAddModifier(card)) {
                     val futureValue = caravan.value.getValue() - cardToJack.getValue()
                     val enemyValue = game.enemyCaravans[caravan.index].getValue()
-                    if (!(checkMoveOnDefeat(game, caravan.index) && enemyValue in (21..26) && (enemyValue > futureValue || futureValue > 26))) {
+                    if (!(checkMoveOnDefeat(
+                            game,
+                            caravan.index
+                        ) && enemyValue in (21..26) && (enemyValue > futureValue || futureValue > 26))
+                    ) {
                         cardToJack.addModifier(game.enemyCResources.removeFromHand(cardIndex))
                         return
                     }
@@ -66,7 +72,11 @@ data object EnemyHard : Enemy() {
                 if (cardToKing != null && cardToKing.canAddModifier(card)) {
                     val futureValue = caravan.getValue() + cardToKing.getValue()
                     val enemyValue = game.enemyCaravans[caravanIndex].getValue()
-                    if (!(checkMoveOnDefeat(game, caravanIndex) && enemyValue in (21..26) && (enemyValue > futureValue || futureValue > 26))) {
+                    if (!(checkMoveOnDefeat(
+                            game,
+                            caravanIndex
+                        ) && enemyValue in (21..26) && (enemyValue > futureValue || futureValue > 26))
+                    ) {
                         cardToKing.addModifier(game.enemyCResources.removeFromHand(cardIndex))
                         return
                     }
@@ -80,8 +90,16 @@ data object EnemyHard : Enemy() {
                             if (it.first.canAddModifier(card)) {
                                 val futureValue = it.second.getValue() + it.first.getValue()
                                 val playerValue = caravan.getValue()
-                                if (!(checkMoveOnDefeat(game, caravanIndex) && futureValue in (21..26) && (futureValue > playerValue || playerValue > 26))) {
-                                    it.first.addModifier(game.enemyCResources.removeFromHand(cardIndex))
+                                if (!(checkMoveOnDefeat(
+                                        game,
+                                        caravanIndex
+                                    ) && futureValue in (21..26) && (futureValue > playerValue || playerValue > 26))
+                                ) {
+                                    it.first.addModifier(
+                                        game.enemyCResources.removeFromHand(
+                                            cardIndex
+                                        )
+                                    )
                                     return
                                 }
                             }
@@ -93,8 +111,15 @@ data object EnemyHard : Enemy() {
                 game.enemyCaravans
                     .sortedByDescending { it.getValue() }
                     .forEachIndexed { caravanIndex, caravan ->
-                        if (caravan.getValue() + card.rank.value <= 26 && caravan.canPutCardOnTop(card)) {
-                            if (!(checkMoveOnDefeat(game, caravanIndex) && caravan.getValue() + card.rank.value in (21..26))) {
+                        if (caravan.getValue() + card.rank.value <= 26 && caravan.canPutCardOnTop(
+                                card
+                            )
+                        ) {
+                            if (!(checkMoveOnDefeat(
+                                    game,
+                                    caravanIndex
+                                ) && caravan.getValue() + card.rank.value in (21..26))
+                            ) {
                                 caravan.putCardOnTop(game.enemyCResources.removeFromHand(cardIndex))
                                 return
                             }
@@ -105,7 +130,8 @@ data object EnemyHard : Enemy() {
             if (card.rank == Rank.QUEEN) {
                 val possibleQueenCaravans = game.enemyCaravans
                     .filter { c ->
-                        c.size >= 2 && c.getValue() < 21 && hand.all { !c.canPutCardOnTop(it) } && c.cards.last().canAddModifier(card)
+                        c.size >= 2 && c.getValue() < 21 && hand.all { !c.canPutCardOnTop(it) } && c.cards.last()
+                            .canAddModifier(card)
                     }
                 if (possibleQueenCaravans.isNotEmpty()) {
                     possibleQueenCaravans

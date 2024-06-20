@@ -37,7 +37,11 @@ object StrategyTime : Strategy {
                     if (caravan.getValue() + card.rank.value <= 26) {
                         if (caravan.canPutCardOnTop(card)) {
                             val caravanIndex = game.enemyCaravans.indexOf(caravan)
-                            if (!EnemyTutorial.checkMoveOnDefeat(game, caravanIndex) && caravan.getValue() + card.rank.value > game.playerCaravans[caravanIndex].getValue()) {
+                            if (!EnemyTutorial.checkMoveOnDefeat(
+                                    game,
+                                    caravanIndex
+                                ) && caravan.getValue() + card.rank.value > game.playerCaravans[caravanIndex].getValue()
+                            ) {
                                 caravan.putCardOnTop(game.enemyCResources.removeFromHand(cardIndex))
                                 return true
                             }

@@ -277,4 +277,23 @@
     <string name="room_exists_already">Room exists already!!!</string>
     <string name="select">SELECT</string>
     <string name="buy">BUY</string>
+
+    <string name="response_has_wrong_size">Response has wrong size!</string>
+    <string name="failure_2">Failure!</string>
+    <string name="no_room_to_join">No room to join! Create your own room!</string>
+    <string name="failed_to_start_the_game">Failed to start the game!</string>
+    <string name="pip_boy_main_screen">And this is the device #50724. It was our first attempt to measure someone\'s Luck. All you have to do to win is to pass 20 rounds of guessing game: Heads or Tails? Choose right - counter adds 1. Choose wrong - counter goes to zero. Counter gets to 20 - get a prize. Not monetary, of course, just a huge pile of bottlecaps we received from Sunset Sarsaparilla HQ. Still have no idea why we\'ve got it.</string>
+    <string name="heads">HEADS</string>
+    <string name="tails">TAILS</string>
+
+    <string name="style_desert">Desert</string>
+    <string name="style_pip_boy">Pip-Boy</string>
+    <string name="style_alaska">Alaska</string>
+    <string name="style_pip_girl">Pip-Girl</string>
+    <string name="style_old_world">Old World</string>
+    <string name="style_new_world">New World</string>
+    <string name="style_sierra_madre">Sierra Madre</string>
+    <string name="style_madre_roja">Madre Roja</string>
+    <string name="style_vault_21">Vault 21</string>
+    <string name="style_vault_22">Vault 22</string>
 </resources>

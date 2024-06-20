@@ -3,7 +3,6 @@ package com.unicorns.invisible.caravan.model.enemy
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyDestructive
-import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJoker
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.Caravan
 import com.unicorns.invisible.caravan.model.primitives.Card
@@ -17,7 +16,12 @@ import kotlinx.serialization.Serializable
 @Serializable
 data object EnemyNash : Enemy() {
     override fun createDeck(): CResources = CResources(CustomDeck().apply {
-        listOf(CardBack.TOPS, CardBack.GOMORRAH, CardBack.ULTRA_LUXE, CardBack.LUCKY_38).forEach { back ->
+        listOf(
+            CardBack.TOPS,
+            CardBack.GOMORRAH,
+            CardBack.ULTRA_LUXE,
+            CardBack.LUCKY_38
+        ).forEach { back ->
             Suit.entries.forEach { suit ->
                 add(Card(Rank.SIX, suit, back, false))
                 add(Card(Rank.JACK, suit, back, true))
@@ -26,6 +30,7 @@ data object EnemyNash : Enemy() {
             }
         }
     })
+
     override fun getRewardBack() = CardBack.ULTRA_LUXE
     override fun isAlt(): Boolean {
         return true
@@ -61,7 +66,11 @@ data object EnemyNash : Enemy() {
                 val king = hand.withIndex().find { it.value.rank == Rank.KING }
                 if (king != null && !caravan.isEmpty() && caravan.getValue() < 21 && caravan !in overWeightCaravans) {
                     val card = caravan.cards[0]
-                    if (card.canAddModifier(king.value) && !(checkMoveOnDefeat(game, index) && caravan.getValue() == 12)) {
+                    if (card.canAddModifier(king.value) && !(checkMoveOnDefeat(
+                            game,
+                            index
+                        ) && caravan.getValue() == 12)
+                    ) {
                         card.addModifier(game.enemyCResources.removeFromHand(king.index))
                         return
                     }
@@ -81,7 +90,11 @@ data object EnemyNash : Enemy() {
             fun putJack(caravan: Caravan, index: Int, cardToJack: CardWithModifier): Boolean {
                 val futureValue = caravan.getValue() - cardToJack.getValue()
                 val enemyValue = game.enemyCaravans[index].getValue()
-                if (!(checkMoveOnDefeat(game, index) && enemyValue in (21..26) && (enemyValue > futureValue || futureValue > 26))) {
+                if (!(checkMoveOnDefeat(
+                        game,
+                        index
+                    ) && enemyValue in (21..26) && (enemyValue > futureValue || futureValue > 26))
+                ) {
                     cardToJack.addModifier(game.enemyCResources.removeFromHand(jack.index))
                     return true
                 }
@@ -91,7 +104,8 @@ data object EnemyNash : Enemy() {
                 .filter { it.value.getValue() in (24..26) }
                 .sortedByDescending { it.value.getValue() }
                 .forEach { (index, caravan) ->
-                    val cardToJack = caravan.cards.filter { it.canAddModifier(jack.value) }.maxByOrNull { it.getValue() }
+                    val cardToJack = caravan.cards.filter { it.canAddModifier(jack.value) }
+                        .maxByOrNull { it.getValue() }
                     if (cardToJack != null) {
                         if (putJack(caravan, index, cardToJack)) {
                             return
@@ -103,7 +117,8 @@ data object EnemyNash : Enemy() {
                     .filter { it.value.getValue() <= 26 }
                     .sortedByDescending { it.value.getValue() }
                     .forEach { (index, caravan) ->
-                        val cardToJack = caravan.cards.filter { it.canAddModifier(jack.value) }.maxByOrNull { it.getValue() }
+                        val cardToJack = caravan.cards.filter { it.canAddModifier(jack.value) }
+                            .maxByOrNull { it.getValue() }
                         if (cardToJack != null) {
                             if (putJack(caravan, index, cardToJack)) {
                                 return
@@ -126,7 +141,11 @@ data object EnemyNash : Enemy() {
 
             if (king != null && !caravan.isEmpty() && caravan.getValue() < 21 && caravan !in overWeightCaravans) {
                 val card = caravan.cards[0]
-                if (card.canAddModifier(king.value) && !(checkMoveOnDefeat(game, index) && caravan.getValue() == 12)) {
+                if (card.canAddModifier(king.value) && !(checkMoveOnDefeat(
+                        game,
+                        index
+                    ) && caravan.getValue() == 12)
+                ) {
                     card.addModifier(game.enemyCResources.removeFromHand(king.index))
                     return
                 }
@@ -134,7 +153,9 @@ data object EnemyNash : Enemy() {
 
             if (queen != null && !caravan.isEmpty() && caravan !in overWeightCaravans) {
                 val card = caravan.cards[0]
-                if (card.modifiersCopy().count { it.rank == Rank.QUEEN } == 0 && card.canAddModifier(queen.value)) {
+                if (card.modifiersCopy()
+                        .count { it.rank == Rank.QUEEN } == 0 && card.canAddModifier(queen.value)
+                ) {
                     card.addModifier(game.enemyCResources.removeFromHand(queen.index))
                     return
                 }
@@ -151,11 +172,16 @@ data object EnemyNash : Enemy() {
                 .filter { it.value.getValue() in (1..26) }
                 .sortedByDescending { it.value.getValue() }
                 .forEach { (index, caravan) ->
-                    val cardToJack = caravan.cards.filter { it.canAddModifier(jack.value) }.maxByOrNull { it.getValue() }
+                    val cardToJack = caravan.cards.filter { it.canAddModifier(jack.value) }
+                        .maxByOrNull { it.getValue() }
                     if (cardToJack != null) {
                         val futureValue = caravan.getValue() - cardToJack.getValue()
                         val enemyValue = game.enemyCaravans[index].getValue()
-                        if (!(checkMoveOnDefeat(game, index) && enemyValue in (21..26) && (enemyValue > futureValue || futureValue > 26))) {
+                        if (!(checkMoveOnDefeat(
+                                game,
+                                index
+                            ) && enemyValue in (21..26) && (enemyValue > futureValue || futureValue > 26))
+                        ) {
                             cardToJack.addModifier(game.enemyCResources.removeFromHand(jack.index))
                             return
                         }

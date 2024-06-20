@@ -50,15 +50,15 @@
 
     <color name="sierraMadreBack">#483D30</color>
     <color name="sierraMadreTextBack">#635C61</color>
-    <color name="sierraMadreText">#BBAA92</color>
-    <color name="sierraMadreAccent">#DDBF8A</color>
+    <color name="sierraMadreText">#DDBF8A</color>
+    <color name="sierraMadreAccent">#BBAA92</color>
 
     <color name="madreRojaBack">#EA7948</color>
     <color name="madreRojaText">#270507</color>
     <color name="madreRojaTextBack">#EAB862</color>
     <color name="madreRojaAccent">#A41521</color>
 
-    <color name="vault21Back">#0077c2</color>
+    <color name="vault21Back">#6098D0</color>
     <color name="vault21TextBack">#ffe1ba</color>
     <color name="vault21Text">#000000</color>
     <color name="vault21Accent">#fff773</color>

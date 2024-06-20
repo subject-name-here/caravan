@@ -40,7 +40,9 @@ private fun playEffectPlayerSound(activity: MainActivity, soundId: Int, volumeFr
         }
 }
 
-fun playCardFlipSound(activity: MainActivity) = playEffectPlayerSound(activity, getRandomCardFlipSound())
+fun playCardFlipSound(activity: MainActivity) =
+    playEffectPlayerSound(activity, getRandomCardFlipSound())
+
 fun getRandomCardFlipSound(): Int {
     return listOf(
         R.raw.fol_gmble_cardflip_01,
@@ -62,6 +64,7 @@ fun playLoseSound(activity: MainActivity) {
     }
     playEffectPlayerSound(activity, listOf(R.raw.lose1, R.raw.lose3, R.raw.any).random(), 2)
 }
+
 fun playWinSound(activity: MainActivity) {
     if (effectPlayer?.isPlaying == true) {
         effectPlayer?.stop()
@@ -71,6 +74,7 @@ fun playWinSound(activity: MainActivity) {
 
 fun playJokerReceivedSounds(activity: MainActivity) =
     playEffectPlayerSound(activity, R.raw.mus_mysteriousstranger_a_01, 2)
+
 fun playJokerSounds(activity: MainActivity) =
     playEffectPlayerSound(activity, R.raw.mus_mysteriousstranger_a_02, 2)
 
@@ -80,7 +84,9 @@ fun playSelectSound(activity: MainActivity) = playEffectPlayerSound(activity, R.
 fun playPimpBoySound(activity: MainActivity) = playEffectPlayerSound(activity, R.raw.ui_pimpboy, 3)
 fun playVatsEnter(activity: MainActivity) = playEffectPlayerSound(activity, R.raw.ui_vats_enter, 3)
 fun playVatsReady(activity: MainActivity) = playEffectPlayerSound(activity, R.raw.ui_vats_ready, 3)
-fun playQuitMultiplayer(activity: MainActivity) = playEffectPlayerSound(activity, R.raw.quit_multiplayer, 3)
+fun playQuitMultiplayer(activity: MainActivity) =
+    playEffectPlayerSound(activity, R.raw.quit_multiplayer, 3)
+
 fun playNoCardAlarm(activity: MainActivity) = playEffectPlayerSound(activity, R.raw.no_cards_alarm)
 fun playYesBeep(activity: MainActivity) = playEffectPlayerSound(activity, R.raw.beep_a)
 fun playNoBeep(activity: MainActivity) = playEffectPlayerSound(activity, R.raw.beep_b)
@@ -94,19 +100,22 @@ fun stopMusic() {
     }
     currentPlayer = null
 }
+
 fun startAmbient(activity: MainActivity) {
     val vol = (activity.save?.ambientVolume ?: 1f) / 2
     currentPlayer = MediaPlayer
-        .create(activity, listOf(
-            R.raw.ambient1,
-            R.raw.ambient2,
-            R.raw.ambient3,
-            R.raw.ambient4,
-            R.raw.ambient5,
-            R.raw.ambient6,
-            R.raw.ambient7,
-            R.raw.ambient8
-        ).random()).apply {
+        .create(
+            activity, listOf(
+                R.raw.ambient1,
+                R.raw.ambient2,
+                R.raw.ambient3,
+                R.raw.ambient4,
+                R.raw.ambient5,
+                R.raw.ambient6,
+                R.raw.ambient7,
+                R.raw.ambient8
+            ).random()
+        ).apply {
             setVolume(vol, vol)
             setOnCompletionListener {
                 if (currentPlayer == this) {
@@ -212,14 +221,17 @@ fun nextSong(activity: MainActivity) {
     usedIndices.add(pointer)
     pointer = (songList.indices - usedIndices.toSet()).randomOrNull() ?: -1
 }
+
 fun resume() {
     if (!isRadioStopped) {
         radioPlayer?.start()
     }
 }
+
 fun pause() {
     radioPlayer?.pause()
 }
+
 fun setRadioVolume(volume: Float) {
     radioPlayer?.setVolume(volume, volume)
 }

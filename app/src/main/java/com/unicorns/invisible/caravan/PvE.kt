@@ -15,7 +15,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -49,8 +48,6 @@ import com.unicorns.invisible.caravan.save.saveOnGD
 import com.unicorns.invisible.caravan.utils.CheckboxCustom
 import com.unicorns.invisible.caravan.utils.TextFallout
 import com.unicorns.invisible.caravan.utils.clickableCancel
-import com.unicorns.invisible.caravan.utils.clickableOk
-import com.unicorns.invisible.caravan.utils.clickableSelect
 import com.unicorns.invisible.caravan.utils.getBackgroundColor
 import com.unicorns.invisible.caravan.utils.getDividerColor
 import com.unicorns.invisible.caravan.utils.getKnobColor
@@ -89,7 +86,12 @@ fun ShowPvE(
     var showGameNash by rememberSaveable { mutableStateOf(false) }
     var showGameBest by rememberSaveable { mutableStateOf(false) }
 
-    var checkedCustomDeck by rememberSaveable { mutableStateOf(activity.save?.useCustomDeck ?: false) }
+    var checkedCustomDeck by rememberSaveable {
+        mutableStateOf(
+            activity.save?.useCustomDeck ?: false
+        )
+    }
+
     fun getPlayerDeck(): CResources {
         return if (checkedCustomDeck)
             CResources(activity.save?.getCustomDeckCopy() ?: CustomDeck(CardBack.STANDARD, false))
@@ -229,84 +231,89 @@ fun ShowPvE(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
             state = state
-        ) { item {
-            Spacer(modifier = Modifier.height(16.dp))
-            TextFallout(
-                stringResource(R.string.pve_select_enemy),
-                getTextColor(activity),
-                getTextStrokeColor(activity),
-                22.sp,
-                Alignment.Center,
-                Modifier,
-                TextAlign.Center
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-
-            @Composable
-            fun OpponentItem(name: String, onClick: () -> Unit) {
+        ) {
+            item {
+                Spacer(modifier = Modifier.height(16.dp))
                 TextFallout(
-                    name,
+                    stringResource(R.string.pve_select_enemy),
                     getTextColor(activity),
                     getTextStrokeColor(activity),
-                    16.sp,
+                    22.sp,
                     Alignment.Center,
-                    Modifier
-                        .clickable { playVatsEnter(activity); onClick() }
-                        .background(getTextBackgroundColor(activity))
-                        .padding(4.dp),
+                    Modifier,
                     TextAlign.Center
                 )
-            }
+                Spacer(modifier = Modifier.height(16.dp))
 
-            OpponentItem(stringResource(R.string.pve_enemy_easy)) { showGameEasy = true }
-            Spacer(modifier = Modifier.height(10.dp))
-            OpponentItem(stringResource(R.string.pve_enemy_medium)) { showGameMedium = true }
-            Spacer(modifier = Modifier.height(10.dp))
-            OpponentItem(stringResource(R.string.pve_enemy_hard)) { showGameHard = true }
-            Spacer(modifier = Modifier.height(10.dp))
-            OpponentItem(stringResource(R.string.pve_enemy_better)) { showGameBetter = true }
-            Spacer(modifier = Modifier.height(10.dp))
-            OpponentItem(stringResource(R.string.pve_enemy_best)) {
+                @Composable
+                fun OpponentItem(name: String, onClick: () -> Unit) {
+                    TextFallout(
+                        name,
+                        getTextColor(activity),
+                        getTextStrokeColor(activity),
+                        16.sp,
+                        Alignment.Center,
+                        Modifier
+                            .clickable { playVatsEnter(activity); onClick() }
+                            .background(getTextBackgroundColor(activity))
+                            .padding(4.dp),
+                        TextAlign.Center
+                    )
+                }
+
+                OpponentItem(stringResource(R.string.pve_enemy_easy)) { showGameEasy = true }
+                Spacer(modifier = Modifier.height(10.dp))
+                OpponentItem(stringResource(R.string.pve_enemy_medium)) { showGameMedium = true }
+                Spacer(modifier = Modifier.height(10.dp))
+                OpponentItem(stringResource(R.string.pve_enemy_hard)) { showGameHard = true }
+                Spacer(modifier = Modifier.height(10.dp))
+                OpponentItem(stringResource(R.string.pve_enemy_better)) { showGameBetter = true }
+                Spacer(modifier = Modifier.height(10.dp))
+                OpponentItem(stringResource(R.string.pve_enemy_best)) {
 //                        showAlertDialog(
 //                            activity.getString(R.string.recovering),
 //                            activity.getString(R.string.ulysses_will_return)
 //                        )
-                if (checkedCustomDeck) {
-                    showAlertDialog(
-                        activity.getString(R.string.ulysses_fair_fight_header),
-                        activity.getString(R.string.ulysses_fair_fight_body)
-                    )
-                } else {
-                    showGameUlysses = true
+                    if (checkedCustomDeck) {
+                        showAlertDialog(
+                            activity.getString(R.string.ulysses_fair_fight_header),
+                            activity.getString(R.string.ulysses_fair_fight_body)
+                        )
+                    } else {
+                        showGameUlysses = true
+                    }
                 }
+                Spacer(modifier = Modifier.height(16.dp))
+                TextFallout(
+                    stringResource(R.string.pve_select_enemy_2),
+                    getTextColor(activity),
+                    getTextStrokeColor(activity),
+                    22.sp,
+                    Alignment.Center,
+                    Modifier,
+                    TextAlign.Center
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                OpponentItem(stringResource(R.string.pve_enemy_queen)) { showGameQueen = true }
+                Spacer(modifier = Modifier.height(10.dp))
+                OpponentItem(stringResource(R.string.no_bark)) { showGameBest = true }
+                Spacer(modifier = Modifier.height(10.dp))
+                OpponentItem(stringResource(R.string.johnson_nash)) { showGameNash = true }
+                Spacer(modifier = Modifier.height(10.dp))
+                OpponentItem(stringResource(R.string.pve_enemy_38)) { showGame38 = true }
+                Spacer(modifier = Modifier.height(10.dp))
+                OpponentItem(stringResource(R.string.pve_enemy_cheater)) { showGameCheater = true }
+                Spacer(modifier = Modifier.height(16.dp))
             }
-            Spacer(modifier = Modifier.height(16.dp))
-            TextFallout(
-                stringResource(R.string.pve_select_enemy_2),
-                getTextColor(activity),
-                getTextStrokeColor(activity),
-                22.sp,
-                Alignment.Center,
-                Modifier,
-                TextAlign.Center
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-            OpponentItem(stringResource(R.string.pve_enemy_queen)) { showGameQueen = true }
-            Spacer(modifier = Modifier.height(10.dp))
-            OpponentItem(stringResource(R.string.no_bark)) { showGameBest = true }
-            Spacer(modifier = Modifier.height(10.dp))
-            OpponentItem(stringResource(R.string.johnson_nash)) { showGameNash = true }
-            Spacer(modifier = Modifier.height(10.dp))
-            OpponentItem(stringResource(R.string.pve_enemy_38)) { showGame38 = true }
-            Spacer(modifier = Modifier.height(10.dp))
-            OpponentItem(stringResource(R.string.pve_enemy_cheater)) { showGameCheater = true }
-            Spacer(modifier = Modifier.height(16.dp))
-        } }
+        }
         HorizontalDivider(color = getDividerColor(activity))
 
-        Row(modifier = Modifier
-            .height(56.dp)
-            .padding(8.dp), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically
+        Row(
+            modifier = Modifier
+                .height(56.dp)
+                .padding(8.dp),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
         ) {
             TextFallout(
                 stringResource(R.string.pve_use_custom_deck),
@@ -410,28 +417,44 @@ fun ShowPvE(
                 StatsItem(
                     text = stringResource(
                         R.string.pve_w_to_l,
-                        if (loss == 0) "-" else String.format(Locale.UK, "%.3f", won.toDouble() / loss)
+                        if (loss == 0) "-" else String.format(
+                            Locale.UK,
+                            "%.3f",
+                            won.toDouble() / loss
+                        )
                     ),
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 StatsItem(
                     text = stringResource(
                         R.string.pve_w_to_finished,
-                        if (finished == 0) "-" else String.format(Locale.UK, "%.2f", (won.toDouble() / finished) * 100)
+                        if (finished == 0) "-" else String.format(
+                            Locale.UK,
+                            "%.2f",
+                            (won.toDouble() / finished) * 100
+                        )
                     ),
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 StatsItem(
                     text = stringResource(
                         R.string.pve_w_to_started,
-                        if (started == 0) "-" else String.format(Locale.UK, "%.2f", won.toDouble() / started * 100.0)
+                        if (started == 0) "-" else String.format(
+                            Locale.UK,
+                            "%.2f",
+                            won.toDouble() / started * 100.0
+                        )
                     ),
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 StatsItem(
                     text = stringResource(
                         R.string.pve_finished_to_started,
-                        if (started == 0) "-" else String.format(Locale.UK, "%.1f", finished.toDouble() / started * 100.0)
+                        if (started == 0) "-" else String.format(
+                            Locale.UK,
+                            "%.1f",
+                            finished.toDouble() / started * 100.0
+                        )
                     ),
                 )
             }
@@ -526,12 +549,19 @@ fun StartGame(
                 saveOnGD(activity)
             }
             if (game.enemy is EnemyBestest) {
-                showAlertDialog(activity.getString(R.string.ulysses_victory), activity.getString(R.string.you_lose))
+                showAlertDialog(
+                    activity.getString(R.string.ulysses_victory),
+                    activity.getString(R.string.you_lose)
+                )
             } else {
-                showAlertDialog(activity.getString(R.string.result), activity.getString(R.string.you_lose))
+                showAlertDialog(
+                    activity.getString(R.string.result),
+                    activity.getString(R.string.you_lose)
+                )
             }
         }
-        it.saySomething = { id1, id2 -> showAlertDialog(activity.getString(id1), activity.getString(id2)) }
+        it.saySomething =
+            { id1, id2 -> showAlertDialog(activity.getString(id1), activity.getString(id2)) }
         it.jokerPlayedSound = { playJokerSounds(activity) }
     }
     activity.goBack = { stopMusic(); goBack() }
@@ -551,11 +581,17 @@ fun StartGame(
 }
 
 fun winCard(
-    activity: MainActivity, save: Save, back: CardBack, numberOfCards: Int, isAlt: Boolean, isCustom: Boolean
+    activity: MainActivity,
+    save: Save,
+    back: CardBack,
+    numberOfCards: Int,
+    isAlt: Boolean,
+    isCustom: Boolean
 ): String {
     fun checkCard(card: Card): Boolean {
         return save.availableCards.none { aCard -> aCard.rank == card.rank && aCard.suit == card.suit && aCard.back == card.back && aCard.isAlt == card.isAlt }
     }
+
     val deck = CustomDeck(back, isAlt)
     val deckList = deck.takeRandom(deck.size)
     val deckOld = deckList.filter { checkCard(it) }

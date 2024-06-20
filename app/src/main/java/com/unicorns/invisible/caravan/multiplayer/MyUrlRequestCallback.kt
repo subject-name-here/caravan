@@ -8,7 +8,8 @@ import org.json.JSONObject
 import java.nio.ByteBuffer
 
 
-abstract class MyUrlRequestCallback (var delegate: OnFinishRequest<JSONObject>) : UrlRequest.Callback() {
+abstract class MyUrlRequestCallback(var delegate: OnFinishRequest<JSONObject>) :
+    UrlRequest.Callback() {
     private var redirectionCounter = 10
 
     override fun onRedirectReceived(

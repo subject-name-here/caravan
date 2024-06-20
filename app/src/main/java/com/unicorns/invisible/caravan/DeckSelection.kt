@@ -64,14 +64,18 @@ fun DeckSelection(
                     Modifier.border(width = 3.dp, color = getSelectionColor(activity))
                 } else {
                     Modifier
-                }.padding(4.dp).clickableSelect(activity) {
-                    setSelectedBack(cardBack, isAlt)
-                    save.selectedDeck = cardBack to isAlt
-                    saveOnGD(activity)
                 }
+                    .padding(4.dp)
+                    .clickableSelect(activity) {
+                        setSelectedBack(cardBack, isAlt)
+                        save.selectedDeck = cardBack to isAlt
+                        saveOnGD(activity)
+                    }
             }
         }
-        return Modifier.padding(4.dp).alpha(0.5f)
+        return Modifier
+            .padding(4.dp)
+            .alpha(0.5f)
     }
 
     var setCustomDeck by rememberSaveable { mutableStateOf(false) }
@@ -82,12 +86,21 @@ fun DeckSelection(
         return
     }
 
-    Column(Modifier.fillMaxSize().background(getBackgroundColor(activity))) {
+    Column(
+        Modifier
+            .fillMaxSize()
+            .background(getBackgroundColor(activity))) {
         val state = rememberLazyListState()
         LazyColumn(
             modifier = Modifier
-                .scrollbar(state, knobColor = getKnobColor(activity), trackColor = getTrackColor(activity), horizontal = false)
-                .fillMaxWidth().fillMaxHeight(0.5f),
+                .scrollbar(
+                    state,
+                    knobColor = getKnobColor(activity),
+                    trackColor = getTrackColor(activity),
+                    horizontal = false
+                )
+                .fillMaxWidth()
+                .fillMaxHeight(0.5f),
             state = state,
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
@@ -108,7 +121,10 @@ fun DeckSelection(
                     AsyncImage(
                         model = "file:///android_asset/caravan_cards_back/" + CardBack.STANDARD.getCardBackAsset(),
                         contentDescription = "",
-                        modifier = getModifier(CardBack.STANDARD, false).clip(RoundedCornerShape(6f))
+                        modifier = getModifier(
+                            CardBack.STANDARD,
+                            false
+                        ).clip(RoundedCornerShape(6f))
                     )
                     Spacer(modifier = Modifier.width(12.dp))
                     AsyncImage(
@@ -120,7 +136,10 @@ fun DeckSelection(
                     AsyncImage(
                         model = "file:///android_asset/caravan_cards_back/" + CardBack.LUCKY_38.getCardBackAsset(),
                         contentDescription = "",
-                        modifier = getModifier(CardBack.LUCKY_38, false).clip(RoundedCornerShape(6f))
+                        modifier = getModifier(
+                            CardBack.LUCKY_38,
+                            false
+                        ).clip(RoundedCornerShape(6f))
                     )
                 }
                 Spacer(modifier = Modifier.height(12.dp))
@@ -128,19 +147,27 @@ fun DeckSelection(
                     AsyncImage(
                         model = "file:///android_asset/caravan_cards_back/" + CardBack.ULTRA_LUXE.getCardBackAsset(),
                         contentDescription = "",
-                        modifier = getModifier(CardBack.ULTRA_LUXE, false).clip(RoundedCornerShape(6f))
+                        modifier = getModifier(CardBack.ULTRA_LUXE, false).clip(
+                            RoundedCornerShape(6f)
+                        )
                     )
                     Spacer(modifier = Modifier.width(12.dp))
                     AsyncImage(
                         model = "file:///android_asset/caravan_cards_back/" + CardBack.GOMORRAH.getCardBackAsset(),
                         contentDescription = "",
-                        modifier = getModifier(CardBack.GOMORRAH, false).clip(RoundedCornerShape(6f))
+                        modifier = getModifier(
+                            CardBack.GOMORRAH,
+                            false
+                        ).clip(RoundedCornerShape(6f))
                     )
                     Spacer(modifier = Modifier.width(12.dp))
                     AsyncImage(
                         model = "file:///android_asset/caravan_cards_back/" + CardBack.VAULT_21.getCardBackAsset(),
                         contentDescription = "",
-                        modifier = getModifier(CardBack.VAULT_21, false).clip(RoundedCornerShape(6f))
+                        modifier = getModifier(
+                            CardBack.VAULT_21,
+                            false
+                        ).clip(RoundedCornerShape(6f))
                     )
                 }
                 Spacer(modifier = Modifier.height(12.dp))
@@ -148,7 +175,10 @@ fun DeckSelection(
                     AsyncImage(
                         model = "file:///android_asset/caravan_cards_back/" + CardBack.ULTRA_LUXE.getCardBackAltAsset(),
                         contentDescription = "",
-                        modifier = getModifier(CardBack.ULTRA_LUXE, true).clip(RoundedCornerShape(6f))
+                        modifier = getModifier(
+                            CardBack.ULTRA_LUXE,
+                            true
+                        ).clip(RoundedCornerShape(6f))
                     )
                     Spacer(modifier = Modifier.width(12.dp))
                     AsyncImage(
@@ -190,7 +220,12 @@ fun DeckSelection(
         val state2 = rememberLazyListState()
         LazyColumn(
             modifier = Modifier
-                .scrollbar(state2, knobColor = getKnobColor(activity), trackColor = getTrackColor(activity), horizontal = false)
+                .scrollbar(
+                    state2,
+                    knobColor = getKnobColor(activity),
+                    trackColor = getTrackColor(activity),
+                    horizontal = false
+                )
                 .fillMaxSize(),
             state = state2,
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -215,9 +250,12 @@ fun DeckSelection(
                     getTextStrokeColor(activity),
                     20.sp,
                     Alignment.Center,
-                    Modifier.background(getTextBackgroundColor(activity)).clickableOk(activity) {
-                        setCustomDeck = true
-                    }.padding(8.dp),
+                    Modifier
+                        .background(getTextBackgroundColor(activity))
+                        .clickableOk(activity) {
+                            setCustomDeck = true
+                        }
+                        .padding(8.dp),
                     TextAlign.Center
                 )
 
@@ -241,9 +279,12 @@ fun DeckSelection(
                     getTextStrokeColor(activity),
                     24.sp,
                     Alignment.Center,
-                    Modifier.background(getTextBackgroundColor(activity)).clickableCancel(activity) {
-                        goBack()
-                    }.padding(8.dp),
+                    Modifier
+                        .background(getTextBackgroundColor(activity))
+                        .clickableCancel(activity) {
+                            goBack()
+                        }
+                        .padding(8.dp),
                     textAlign = TextAlign.Center
                 )
                 Spacer(modifier = Modifier.height(24.dp))
