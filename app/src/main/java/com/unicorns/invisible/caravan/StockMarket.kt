@@ -131,7 +131,7 @@ fun StockMarket(
                                 Alignment.Center,
                                 Modifier
                                     .weight(0.5f)
-                                    .padding(end = 4.dp)
+                                    .padding(end = 8.dp)
                                     .background(getTextBackByStyle(activity, style))
                                     .padding(4.dp),
                                 TextAlign.Center

@@ -254,32 +254,29 @@ fun ShowPvE(
                         16.sp,
                         Alignment.Center,
                         Modifier
-                            .clickable { playVatsEnter(activity); onClick() }
+                            .clickable { onClick() }
                             .background(getTextBackgroundColor(activity))
                             .padding(4.dp),
                         TextAlign.Center
                     )
                 }
 
-                OpponentItem(stringResource(R.string.pve_enemy_easy)) { showGameEasy = true }
+                OpponentItem(stringResource(R.string.pve_enemy_easy)) { playVatsEnter(activity); showGameEasy = true }
                 Spacer(modifier = Modifier.height(10.dp))
-                OpponentItem(stringResource(R.string.pve_enemy_medium)) { showGameMedium = true }
+                OpponentItem(stringResource(R.string.pve_enemy_medium)) { playVatsEnter(activity); showGameMedium = true }
                 Spacer(modifier = Modifier.height(10.dp))
-                OpponentItem(stringResource(R.string.pve_enemy_hard)) { showGameHard = true }
+                OpponentItem(stringResource(R.string.pve_enemy_hard)) { playVatsEnter(activity); showGameHard = true }
                 Spacer(modifier = Modifier.height(10.dp))
-                OpponentItem(stringResource(R.string.pve_enemy_better)) { showGameBetter = true }
+                OpponentItem(stringResource(R.string.pve_enemy_better)) { playVatsEnter(activity); showGameBetter = true }
                 Spacer(modifier = Modifier.height(10.dp))
                 OpponentItem(stringResource(R.string.pve_enemy_best)) {
-//                        showAlertDialog(
-//                            activity.getString(R.string.recovering),
-//                            activity.getString(R.string.ulysses_will_return)
-//                        )
                     if (checkedCustomDeck) {
                         showAlertDialog(
                             activity.getString(R.string.ulysses_fair_fight_header),
                             activity.getString(R.string.ulysses_fair_fight_body)
                         )
                     } else {
+                        playVatsEnter(activity)
                         showGameUlysses = true
                     }
                 }
@@ -294,15 +291,15 @@ fun ShowPvE(
                     TextAlign.Center
                 )
                 Spacer(modifier = Modifier.height(16.dp))
-                OpponentItem(stringResource(R.string.pve_enemy_queen)) { showGameQueen = true }
+                OpponentItem(stringResource(R.string.pve_enemy_queen)) { playVatsEnter(activity); showGameQueen = true }
                 Spacer(modifier = Modifier.height(10.dp))
-                OpponentItem(stringResource(R.string.no_bark)) { showGameBest = true }
+                OpponentItem(stringResource(R.string.no_bark)) { playVatsEnter(activity); showGameBest = true }
                 Spacer(modifier = Modifier.height(10.dp))
-                OpponentItem(stringResource(R.string.johnson_nash)) { showGameNash = true }
+                OpponentItem(stringResource(R.string.johnson_nash)) { playVatsEnter(activity); showGameNash = true }
                 Spacer(modifier = Modifier.height(10.dp))
-                OpponentItem(stringResource(R.string.pve_enemy_38)) { showGame38 = true }
+                OpponentItem(stringResource(R.string.pve_enemy_38)) { playVatsEnter(activity); showGame38 = true }
                 Spacer(modifier = Modifier.height(10.dp))
-                OpponentItem(stringResource(R.string.pve_enemy_cheater)) { showGameCheater = true }
+                OpponentItem(stringResource(R.string.pve_enemy_cheater)) { playVatsEnter(activity); showGameCheater = true }
                 Spacer(modifier = Modifier.height(16.dp))
             }
         }

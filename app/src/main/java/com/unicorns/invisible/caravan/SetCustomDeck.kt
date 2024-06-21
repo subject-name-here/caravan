@@ -128,7 +128,7 @@ fun SetCustomDeck(
                             ) ?: false
                         )
                     }
-                    Row(Modifier.padding(4.dp), horizontalArrangement = Arrangement.Start) {
+                    Row(Modifier.fillMaxWidth().padding(4.dp), horizontalArrangement = Arrangement.Start) {
                         Column(
                             Modifier
                                 .padding(horizontal = 8.dp)

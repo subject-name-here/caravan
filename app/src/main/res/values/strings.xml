@@ -95,7 +95,7 @@
     <string name="old_card_alt">Old: %1$s (ALT).\n</string>
 
     <string name="discard_card">DISCARD CARD</string>
-    <string name="drop_caravan">DROP CARAVAN #%1$s</string>
+    <string name="drop_caravan">DISBAND CARAVAN #%1$s</string>
     <string name="back_to_menu">Back to Menu</string>
     <string name="back_to_main_menu">Back to Main Menu</string>
 
@@ -206,7 +206,7 @@
         Action timeout (move, room waiting) is ~38 seconds, then the room is destroyed.
     </string>
 
-    <string name="discard">Discard!</string>
+    <string name="discard">DISBAND!</string>
     <string name="wait">Wait…</string>
     <string name="init_stage">Init stage!</string>
     <string name="can_t_act">Can\'t act!</string>

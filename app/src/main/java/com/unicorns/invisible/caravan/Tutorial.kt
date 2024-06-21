@@ -397,7 +397,7 @@ fun Tutorial(activity: MainActivity, goBack: () -> Unit) {
                     alertDialogHeader,
                     getDialogTextColor(activity),
                     getDialogTextColor(activity),
-                    20.sp,
+                    24.sp,
                     Alignment.CenterEnd,
                     Modifier,
                     TextAlign.End
@@ -408,7 +408,7 @@ fun Tutorial(activity: MainActivity, goBack: () -> Unit) {
                     alertDialogMessage,
                     getDialogTextColor(activity),
                     getDialogTextColor(activity),
-                    14.sp,
+                    18.sp,
                     Alignment.CenterStart,
                     Modifier,
                     TextAlign.Start

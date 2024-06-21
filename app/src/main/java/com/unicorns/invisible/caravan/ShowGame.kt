@@ -33,6 +33,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -516,24 +517,26 @@ fun PlayerSide(
         )
         Box {
             ShowDeck(game.playerCResources, activity)
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color.Transparent),
-                contentAlignment = Alignment.Center
-            ) {
-                TextSymbola(
-                    getMySymbol(),
-                    getTextColor(activity),
-                    24.sp,
-                    Alignment.Center,
-                    Modifier
-                        .background(getTextBackgroundColor(activity))
-                        .clickableOk(activity) {
-                            setMySymbol()
-                        },
-                    TextAlign.Center
-                )
+            if (isPvP) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.Transparent),
+                    contentAlignment = Alignment.Center
+                ) {
+                    TextSymbola(
+                        getMySymbol(),
+                        getTextColor(activity),
+                        24.sp,
+                        Alignment.Center,
+                        Modifier
+                            .background(getTextBackgroundColor(activity))
+                            .clickableOk(activity) {
+                                setMySymbol()
+                            },
+                        TextAlign.Center
+                    )
+                }
             }
         }
     }
@@ -776,20 +779,21 @@ fun RowScope.CaravanOnField(
                         copy.asMutableList() + (caravan.cards - copy.asMutableList().toSet())
                     }
 
+                    val movedInModifiers = remember { mutableStateListOf<Card>() }
                     @Composable
                     fun ModifierOnCardInCaravan(
                         modifier: Card,
-                        cardIndex: Int,
                         modifierIndex: Int,
                         isMovingOut: Boolean
                     ) {
                         val animationIn =
                             remember { Animatable(3f * (if (isPlayerTurn) 1 else -1)) }
                         val animationOut = remember { Animatable(0f) }
-                        val index by remember { mutableIntStateOf(cardIndex) }
-                        val isModMovingIn = cardIndex == index
-                        LaunchedEffect(isModMovingIn) {
-                            animationIn.animateTo(0f, TweenSpec(hTick, hTick * 3))
+                        if (modifier !in movedInModifiers) {
+                            LaunchedEffect(Unit) {
+                                animationIn.animateTo(0f, TweenSpec(hTick, hTick * 3))
+                                movedInModifiers.add(modifier)
+                            }
                         }
                         LaunchedEffect(isMovingOut) {
                             animationOut.snapTo(0f)
@@ -863,7 +867,7 @@ fun RowScope.CaravanOnField(
                                     })
 
                             it.modifiersCopy().withIndex().forEach { (modifierIndex, card) ->
-                                ModifierOnCardInCaravan(card, index, modifierIndex, isMovingOut)
+                                ModifierOnCardInCaravan(card, modifierIndex, isMovingOut)
                             }
                         }
                     }
