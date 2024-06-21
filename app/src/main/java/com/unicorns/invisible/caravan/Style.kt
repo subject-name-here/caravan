@@ -99,18 +99,17 @@ enum class Style(val styleNameId: Int, val price: Int) {
 
 @Composable
 fun Modifier.getTableBackground(style: Style): Modifier {
-    // TODO: reduce number of tables, use colorFilters!
     return paint(
         painterResource(
             id = when (style) {
                 DESERT -> R.drawable.table_wood
                 ALASKA_FRONTIER -> R.drawable.table_black
                 PIP_BOY -> R.drawable.table_blue
-                PIP_GIRL -> R.drawable.table_black // Future pink-ish
+                PIP_GIRL -> R.drawable.table_black
                 OLD_WORLD -> R.drawable.table_amber
                 NEW_WORLD -> R.drawable.table_wood
-                SIERRA_MADRE -> R.drawable.table_brown
-                MADRE_ROJA -> R.drawable.table_brown
+                SIERRA_MADRE -> R.drawable.table_green
+                MADRE_ROJA -> R.drawable.table_green
                 VAULT_21 -> R.drawable.table_blue
                 VAULT_22 -> R.drawable.table_green
             }
@@ -495,7 +494,7 @@ fun BoxWithConstraintsScope.StylePicture(
                 contentDescription = "",
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(end = 18.dp, top = 18.dp),
+                    .padding(end = 18.dp, top = 48.dp),
                 contentScale = ContentScale.Inside,
                 alignment = Alignment.TopEnd,
             )
