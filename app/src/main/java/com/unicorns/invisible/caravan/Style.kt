@@ -1087,13 +1087,13 @@ fun BoxWithConstraintsScope.StylePicture(
                 LaunchedEffect(Unit) {
                     while (isActive) {
                         wheelRotation.floatValue += 5f
-                        delay(activity.animationTickLength.value!! / 5)
+                        delay(19L)
                     }
                 }
                 LaunchedEffect(Unit) {
                     while (isActive) {
                         ballRotation.floatValue -= 4f
-                        delay(activity.animationTickLength.value!! / 5)
+                        delay(19L)
                     }
                 }
 
