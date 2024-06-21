@@ -145,25 +145,6 @@ data object EnemySix : Enemy() {
             return
         }
 
-        if (kings.isNotEmpty()) {
-            val (cardIndex, card) = kings.random()
-            game.enemyCaravans.withIndex().shuffled().forEach { (caravanIndex, enemyCaravan) ->
-                if (enemyCaravan.getValue() in listOf(10, 16)) {
-                    val ten = enemyCaravan.cards.find {
-                        it.card.rank == Rank.TEN && it.getValue() == 10 && it.canAddModifier(card)
-                    }
-                    if (ten != null && !(checkMoveOnDefeat(
-                            game,
-                            caravanIndex
-                        ) && enemyCaravan.getValue() == 16)
-                    ) {
-                        ten.addModifier(game.enemyCResources.removeFromHand(cardIndex))
-                        return
-                    }
-                }
-            }
-        }
-
         if (overWeightCaravans.isNotEmpty()) {
             overWeightCaravans.random().dropCaravan()
             return

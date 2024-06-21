@@ -985,7 +985,6 @@ fun BoxWithConstraintsScope.StylePicture(
         PIP_GIRL -> {
             // Do not extract those.
             val phrases = listOf(
-                "I have no sleep tonight;\nTransmission starts again.\nBut telling you what\'s right\nIs crying in the rain.",
                 "6-28-69\nRemember.",
                 "Storms come and go,\nBut you\'re still standing.",
                 "War never changes.\n\nBut people do, through the roads they walk.",
