@@ -296,4 +296,6 @@
     <string name="style_madre_roja">Madre Roja</string>
     <string name="style_vault_21">Vault 21</string>
     <string name="style_vault_22">Vault 22</string>
+
+    <string name="get_more_by_earning_cards_you_already_have">(Get more by earning cards you already have!)</string>
 </resources>

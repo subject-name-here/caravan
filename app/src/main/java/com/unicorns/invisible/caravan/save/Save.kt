@@ -4,6 +4,8 @@ import com.unicorns.invisible.caravan.Style
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.primitives.Card
 import com.unicorns.invisible.caravan.model.primitives.CustomDeck
+import com.unicorns.invisible.caravan.model.primitives.Rank
+import com.unicorns.invisible.caravan.model.primitives.Suit
 import kotlinx.serialization.EncodeDefault
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
@@ -32,7 +34,7 @@ class Save {
     val altDecksChosen = CardBack.entries.associateWith { false }.toMutableMap()
 
     @EncodeDefault
-    var styleId: Int = 1
+    var styleId: Int = 2
 
     @EncodeDefault
     val customDeck: CustomDeck = CustomDeck()
@@ -72,7 +74,7 @@ class Save {
     var useCaravanIntro = true
 
     @EncodeDefault
-    var caps = 10000
+    var caps = 0
 
     private var previousDate = Date().time
 
@@ -89,18 +91,28 @@ class Save {
         ) {
             return false
         }
+        var flag = false
         CardBack.entries.forEach { back ->
             val cardBought = (3..15).random()
             val cardBoughtAlt = (2..11).random()
             if (back to true in soldCards) {
-                soldCards[back to true] = (soldCards[back to true]!! - cardBought).coerceAtLeast(0)
+                val oldPrice = getCardPrice(Card(Rank.ACE, Suit.HEARTS, back, true))
+                soldCards[back to true] = (soldCards[back to true]!! - cardBoughtAlt).coerceAtLeast(0)
+                val newPrice = getCardPrice(Card(Rank.ACE, Suit.HEARTS, back, true))
+                if (oldPrice != newPrice) {
+                    flag = true
+                }
             }
             if (back to false in soldCards) {
-                soldCards[back to false] =
-                    (soldCards[back to false]!! - cardBoughtAlt).coerceAtLeast(0)
+                val oldPrice = getCardPrice(Card(Rank.ACE, Suit.HEARTS, back, false))
+                soldCards[back to false] = (soldCards[back to false]!! - cardBought).coerceAtLeast(0)
+                val newPrice = getCardPrice(Card(Rank.ACE, Suit.HEARTS, back, false))
+                if (oldPrice != newPrice) {
+                    flag = true
+                }
             }
         }
-        return true
+        return flag
     }
 
     fun getCardPrice(card: Card): Int {

@@ -1,5 +1,6 @@
 package com.unicorns.invisible.caravan
 
+import android.widget.Space
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -62,20 +63,20 @@ fun ShowSettings(
             .background(getBackgroundColor(activity))
             .padding(horizontal = 16.dp)
     ) {
+        Spacer(Modifier.height(16.dp))
         LazyColumn(
             Modifier
-                .fillMaxHeight(0.8f)
-                .fillMaxWidth()
+                .fillMaxSize()
                 .scrollbar(
                     mainState,
                     horizontal = false,
                     knobColor = getKnobColor(activity),
                     trackColor = getTrackColor(activity)
                 ),
-            mainState
+            mainState,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             item {
-                Spacer(Modifier.height(4.dp))
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
@@ -90,15 +91,27 @@ fun ShowSettings(
                             Modifier.fillMaxWidth(0.5f),
                             TextAlign.Center
                         )
-                        TextFallout(
-                            stringResource(R.string.caps, activity.save!!.caps),
-                            getTextColor(activity),
-                            getTextStrokeColor(activity),
-                            24.sp,
-                            Alignment.Center,
-                            Modifier.fillMaxWidth(),
-                            TextAlign.Center
-                        )
+                        Column(Modifier.fillMaxWidth()) {
+                            TextFallout(
+                                stringResource(R.string.caps, activity.save!!.caps),
+                                getTextColor(activity),
+                                getTextStrokeColor(activity),
+                                24.sp,
+                                Alignment.Center,
+                                Modifier.fillMaxWidth(),
+                                TextAlign.Center
+                            )
+                            TextFallout(
+                                stringResource(R.string.get_more_by_earning_cards_you_already_have),
+                                getTextColor(activity),
+                                getTextStrokeColor(activity),
+                                14.sp,
+                                Alignment.Center,
+                                Modifier.fillMaxWidth(),
+                                TextAlign.Center
+                            )
+                        }
+
                     }
 
                     Style.entries.forEach { style ->
@@ -136,23 +149,24 @@ fun ShowSettings(
                         }
                     }
                 }
+
+                TextFallout(
+                    stringResource(R.string.menu_back),
+                    getTextColor(activity),
+                    getTextStrokeColor(activity),
+                    24.sp,
+                    Alignment.Center,
+                    Modifier
+                        .background(getTextBackgroundColor(activity))
+                        .clickableCancel(activity) {
+                            goBack()
+                        }
+                        .padding(8.dp),
+                    TextAlign.Center
+                )
             }
         }
-
-        TextFallout(
-            stringResource(R.string.menu_back),
-            getTextColor(activity),
-            getTextStrokeColor(activity),
-            24.sp,
-            Alignment.Center,
-            Modifier
-                .background(getTextBackgroundColor(activity))
-                .clickableCancel(activity) {
-                    goBack()
-                }
-                .padding(8.dp),
-            TextAlign.Center
-        )
+        Spacer(Modifier.height(16.dp))
     }
 }
 

@@ -57,7 +57,7 @@ fun ShowRules(activity: MainActivity, goBack: () -> Unit) {
                     getTextStrokeColor(activity),
                     20.sp,
                     Alignment.Center,
-                    Modifier.padding(horizontal = 4.dp),
+                    Modifier.padding(start = 4.dp, end = 8.dp),
                     TextAlign.Center
                 )
             }

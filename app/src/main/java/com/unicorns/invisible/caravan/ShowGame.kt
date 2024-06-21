@@ -869,7 +869,7 @@ fun RowScope.CaravanOnField(
                     }
 
                     cardHolder.forEachIndexed { index, it ->
-                        val isMovingIn = it !in caravan.cards
+                        val isMovingIn = it !in copy
                         val isMovingOut = it !in caravan.cards
                         CardInCaravan(it, index, isMovingIn, isMovingOut)
                     }

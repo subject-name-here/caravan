@@ -7,7 +7,6 @@ import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.Rank
 import kotlinx.serialization.Serializable
 import kotlin.math.max
-import kotlin.random.Random
 
 
 @Serializable
