@@ -12,7 +12,7 @@ object StrategyJoker : Strategy {
 
         val joker = hand.withIndex().find { it.value.rank == Rank.JOKER }
         val overWeightCaravans = game.enemyCaravans.filter { it.getValue() > 26 }
-        val perfectCaravans = game.enemyCaravans.filter { it.getValue() > 26 }
+        val perfectCaravans = game.enemyCaravans.filter { it.getValue() in 21..26 }
         val playersReadyCaravans = game.playerCaravans.filter { it.getValue() in (21..26) }
         if (joker != null) {
             val card = joker.value

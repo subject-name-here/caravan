@@ -180,7 +180,6 @@ fun BoxWithConstraintsScope.StylePicture(
     width: Int,
     height: Int
 ) {
-    // TODO: jumping pictures!!! put size everywhere!!
     val prefix = "file:///android_asset/menu_items/"
     val rand = Random(key)
     when (style) {

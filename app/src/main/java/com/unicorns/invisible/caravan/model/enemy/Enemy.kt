@@ -40,7 +40,16 @@ sealed class Enemy {
         otherCaravansIndices.forEach {
             check(game.playerCaravans[it].getValue(), game.enemyCaravans[it].getValue())
         }
-        return score >= 1
+        var score2 = 0
+        fun check2(p0: Int, e0: Int) {
+            if (p0 in (21..26) && (p0 > e0 || e0 > 26) || e0 in (21..26) && (e0 > p0 || p0 > 26)) {
+                score2++
+            }
+        }
+        otherCaravansIndices.forEach {
+            check2(game.playerCaravans[it].getValue(), game.enemyCaravans[it].getValue())
+        }
+        return score >= 1 && score2 >= 1
     }
 
     fun checkMoveOnShouldYouDoSmth(game: Game, caravanIndex: Int): Boolean {

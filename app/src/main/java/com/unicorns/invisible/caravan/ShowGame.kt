@@ -1,5 +1,6 @@
 package com.unicorns.invisible.caravan
 
+import android.util.Log
 import androidx.collection.mutableObjectListOf
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.TweenSpec
@@ -779,7 +780,7 @@ fun RowScope.CaravanOnField(
                         copy.asMutableList() + (caravan.cards - copy.asMutableList().toSet())
                     }
 
-                    val movedInModifiers = remember { mutableStateListOf<Card>() }
+                    val movedInModifiers = remember { mutableObjectListOf<Card>() }
                     @Composable
                     fun ModifierOnCardInCaravan(
                         modifier: Card,
@@ -793,6 +794,10 @@ fun RowScope.CaravanOnField(
                             LaunchedEffect(Unit) {
                                 animationIn.animateTo(0f, TweenSpec(hTick, hTick * 3))
                                 movedInModifiers.add(modifier)
+                            }
+                        } else {
+                            LaunchedEffect(Unit) {
+                                animationIn.snapTo(0f)
                             }
                         }
                         LaunchedEffect(isMovingOut) {

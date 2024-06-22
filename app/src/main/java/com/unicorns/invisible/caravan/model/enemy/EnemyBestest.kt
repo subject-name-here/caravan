@@ -2,7 +2,7 @@ package com.unicorns.invisible.caravan.model.enemy
 
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
-import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJoker
+import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJokerSimple
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.Rank
 import kotlinx.serialization.Serializable
@@ -20,7 +20,7 @@ data object EnemyBestest : Enemy() {
         val hand = game.enemyCResources.hand
 
         if (game.isInitStage()) {
-            val card = hand.filter { !it.isFace() }.maxBy { it.rank.value }
+            val card = hand.filter { !it.isFace() }.minBy { it.rank.value }
             val caravan = game.enemyCaravans.filter { it.isEmpty() }.random()
             caravan.putCardOnTop(game.enemyCResources.removeFromHand(hand.indexOf(card)))
             return
@@ -44,6 +44,16 @@ data object EnemyBestest : Enemy() {
                                 return
                             }
                         }
+                    if (checkMoveOnImminentVictory(game, it.index) && rivalCaravanValue > 26 || it.value.getValue() == rivalCaravanValue) {
+                        game.playerCaravans.forEach { playerCaravan ->
+                            playerCaravan.cards.forEach { card ->
+                                if (playerCaravan.getValue() - card.getValue() < 21) {
+                                    card.addModifier(game.enemyCResources.removeFromHand(jack.index))
+                                    return
+                                }
+                            }
+                        }
+                    }
                 }
 
                 // If caravan is underweight, check on Kings
@@ -58,6 +68,16 @@ data object EnemyBestest : Enemy() {
                                 return
                             }
                         }
+                    if (checkMoveOnImminentVictory(game, it.index) && rivalCaravanValue < 21) {
+                        game.playerCaravans.forEach { playerCaravan ->
+                            playerCaravan.cards.forEach { card ->
+                                if (playerCaravan.getValue() + card.getValue() > 26 || it.value.getValue() == rivalCaravanValue) {
+                                    card.addModifier(game.enemyCResources.removeFromHand(king.index))
+                                    return
+                                }
+                            }
+                        }
+                    }
                 }
 
                 // Put a card on top!
@@ -81,7 +101,7 @@ data object EnemyBestest : Enemy() {
 
 
         // 2) If not and if player is abt to win, destroy player ready and almost ready caravans (on right columns!)
-        game.enemyCaravans.withIndex().forEach { (caravanIndex, _) ->
+        game.enemyCaravans.withIndex().forEach { (caravanIndex, caravan) ->
             val isLosing = checkMoveOnDefeat(game, caravanIndex) || checkMoveOnShouldYouDoSmth(game, caravanIndex)
             if (isLosing) {
                 hand.withIndex()
@@ -112,7 +132,13 @@ data object EnemyBestest : Enemy() {
                             .forEach { otherCaravan ->
                                 otherCaravan.cards.withIndex()
                                     .filter { it.value.canAddModifier(jack) }
-                                    .sortedByDescending { it.value.getValue() }
+                                    .sortedByDescending {
+                                        if (caravan.getValue() !in (21..26)) {
+                                            it.value.getValue() + 100
+                                        } else {
+                                            it.value.getValue()
+                                        }
+                                    }
                                     .forEach {
                                         if (otherCaravan.getValue() - it.value.getValue() < 21) {
                                             it.value.addModifier(game.enemyCResources.removeFromHand(jackIndex))
@@ -121,6 +147,11 @@ data object EnemyBestest : Enemy() {
                                     }
                             }
                     }
+
+                if (StrategyJokerSimple.move(game)) {
+                    game.jokerPlayedSound()
+                    return
+                }
 
                 // Try creating a draw!
                 hand.withIndex()
@@ -138,13 +169,18 @@ data object EnemyBestest : Enemy() {
                                     otherCaravan.putCardOnTop(game.enemyCResources.removeFromHand(cardIndex))
                                     return
                                 }
+
+                                // Try overselling player's caravan
+                                if (
+                                    otherCaravan.getValue() + card.rank.value > game.playerCaravans[otherCaravanIndex].getValue() &&
+                                    otherCaravan.getValue() + card.rank.value <= 26 &&
+                                    otherCaravan.canPutCardOnTop(card)
+                                ) {
+                                    otherCaravan.putCardOnTop(game.enemyCResources.removeFromHand(cardIndex))
+                                    return
+                                }
                             }
                     }
-
-                if (StrategyJoker.move(game)) {
-                    game.jokerPlayedSound()
-                    return
-                }
 
                 // 2.75) Maybe try a Queen!
                 val playerCaravan = game.playerCaravans[caravanIndex]
@@ -153,10 +189,14 @@ data object EnemyBestest : Enemy() {
                         val last = playerCaravan.cards.last().card.rank.value
                         val preLast = playerCaravan.cards[playerCaravan.cards.lastIndex - 1].card.rank.value
                         if (playerCaravan.cards.last().canAddModifier(card)) {
-                            if (preLast > last && last >= 8) {
+                            val isRev = playerCaravan.cards.last().isQueenReversingSequence()
+                            val isAscending = preLast < last && !isRev || preLast > last && isRev
+                            if (isAscending && last <= 3) {
                                 playerCaravan.cards.last().addModifier(game.enemyCResources.removeFromHand(cardIndex))
                                 return
-                            } else if (last > preLast && last <= 3) {
+                            }
+                            val isDescending = preLast > last && !isRev || preLast < last && isRev
+                            if (isDescending && last >= 8) {
                                 playerCaravan.cards.last().addModifier(game.enemyCResources.removeFromHand(cardIndex))
                                 return
                             }
@@ -165,6 +205,63 @@ data object EnemyBestest : Enemy() {
                 }
             }
         }
+
+        // 4) only then try to put card on our caravan.
+        game.enemyCaravans
+            .withIndex()
+            .filter { it.value.getValue() < 26 }
+            .sortedByDescending {
+                val ourValue = it.value.getValue()
+                val playerValue = game.playerCaravans[it.index].getValue()
+                val isLastCaravanInContention = checkMoveOnPossibleVictory(game, it.index)
+                if (isLastCaravanInContention) {
+                    150 + ourValue
+                } else if (ourValue !in (21..26) && playerValue !in (21..26)) {
+                    ourValue
+                } else if (ourValue !in (21..26) && playerValue in (21..26)) {
+                    ourValue + 100
+                } else if (ourValue in (21..26) && playerValue !in (21..26)) {
+                    playerValue
+                } else {
+                    when {
+                        ourValue > playerValue -> ourValue - playerValue
+                        ourValue == playerValue -> 50
+                        else -> 100
+                    }
+                }
+            }
+            .forEach { (caravanIndex, caravan) ->
+                val mult = if (caravan.size >= 2) {
+                    val last = caravan.cards.last().card.rank.value
+                    val preLast = caravan.cards[caravan.cards.lastIndex - 1].card.rank.value
+                    if (preLast > last) {
+                        -1
+                    } else {
+                        1
+                    }
+                } else if (caravan.size == 1) {
+                    if (caravan.cards.last().card.rank.value <= 5) {
+                        1
+                    } else {
+                        -1
+                    }
+                } else {
+                    -1
+                }
+                hand.withIndex().filter { !it.value.isFace() || it.value.rank == Rank.QUEEN }
+                    .sortedBy { if (it.value.rank == Rank.QUEEN) 5 * mult else it.value.rank.value * mult }
+                    .forEach { (cardIndex, card) ->
+                        if (caravan.getValue() + card.rank.value <= 26 &&
+                            caravan.canPutCardOnTop(card) &&
+                            !(checkMoveOnProbableDefeat(game, caravanIndex) && caravan.getValue() + card.rank.value in (21..26)) &&
+                            !(checkMoveOnDefeat(game, caravanIndex) && caravan.getValue() + card.rank.value in (21..26))
+                        ) {
+                            caravan.putCardOnTop(game.enemyCResources.removeFromHand(cardIndex))
+                            return
+                        }
+                    }
+            }
+
 
         // 3) Try king on underweightCaravans and jacks on overweightCaravans.
         val jack = hand.withIndex().find { it.value.rank == Rank.JACK }
@@ -188,7 +285,7 @@ data object EnemyBestest : Enemy() {
 
         val king = hand.withIndex().find { it.value.rank == Rank.KING }
         if (king != null) {
-            underWeightCaravans.withIndex().sortedByDescending { it.value.getValue() }.forEach {
+            underWeightCaravans.withIndex().filter { it.value.getValue() > 10 }.sortedByDescending { it.value.getValue() }.forEach {
                 it.value.cards
                     .filter { card -> card.canAddModifier(king.value) }
                     .sortedByDescending { card -> card.getValue() }
@@ -204,46 +301,6 @@ data object EnemyBestest : Enemy() {
                     }
             }
         }
-
-
-        // 4) only then try to put card on our caravan.
-        hand.withIndex().filter { !it.value.isFace() || it.value.rank == Rank.QUEEN }
-            .sortedByDescending { if (it.value.rank == Rank.QUEEN) 5 else it.value.rank.value }
-            .forEach { (cardIndex, card) ->
-                game.enemyCaravans
-                    .withIndex()
-                    .filter { it.value.getValue() < 26 }
-                    .sortedByDescending {
-                        val ourValue = it.value.getValue()
-                        val playerValue = game.playerCaravans[it.index].getValue()
-                        val isLastCaravanInContention = checkMoveOnPossibleVictory(game, it.index)
-                        if (ourValue !in (21..26) && playerValue !in (21..26)) {
-                            ourValue
-                        } else if (isLastCaravanInContention) {
-                            150 + ourValue
-                        } else  if (ourValue !in (21..26) && playerValue in (21..26)) {
-                            ourValue + 100
-                        } else if (ourValue in (21..26) && playerValue !in (21..26)) {
-                            playerValue
-                        } else {
-                            when {
-                                ourValue > playerValue -> ourValue - playerValue
-                                ourValue == playerValue -> 50
-                                else -> 100
-                            }
-                        }
-                    }
-                    .forEach { (caravanIndex, caravan) ->
-                        if (caravan.getValue() + card.rank.value <= 26 &&
-                            caravan.canPutCardOnTop(card) &&
-                            !(checkMoveOnProbableDefeat(game, caravanIndex) && caravan.getValue() + card.rank.value in (21..26)) &&
-                            !(checkMoveOnDefeat(game, caravanIndex) && caravan.getValue() + card.rank.value in (21..26))
-                            ) {
-                                caravan.putCardOnTop(game.enemyCResources.removeFromHand(cardIndex))
-                                return
-                            }
-                    }
-            }
 
         // 4.5) Queen.
         hand.withIndex().filter { it.value.rank == Rank.QUEEN }.forEach { (cardIndex, card) ->
@@ -267,7 +324,7 @@ data object EnemyBestest : Enemy() {
             }
         }
 
-        if (StrategyJoker.move(game)) {
+        if (StrategyJokerSimple.move(game)) {
             game.jokerPlayedSound()
             return
         }
@@ -290,7 +347,7 @@ data object EnemyBestest : Enemy() {
                 Rank.NINE -> 7
                 Rank.TEN -> 8
                 Rank.JACK -> 12
-                Rank.QUEEN -> 5
+                Rank.QUEEN -> 6
                 Rank.KING -> 13
                 Rank.JOKER -> 14
             }
