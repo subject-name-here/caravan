@@ -1,5 +1,6 @@
 package com.unicorns.invisible.caravan.save
 
+import com.unicorns.invisible.caravan.AnimationSpeed
 import com.unicorns.invisible.caravan.Style
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.primitives.Card
@@ -192,5 +193,5 @@ class Save {
     val ownedStyles = mutableSetOf(Style.DESERT, Style.PIP_BOY)
 
     @EncodeDefault
-    var animationLengthTick = 380L
+    var animationSpeed = AnimationSpeed.NORMAL
 }

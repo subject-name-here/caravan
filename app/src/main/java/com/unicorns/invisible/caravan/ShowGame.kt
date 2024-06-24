@@ -1,6 +1,5 @@
 package com.unicorns.invisible.caravan
 
-import android.util.Log
 import androidx.collection.mutableObjectListOf
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.TweenSpec
@@ -34,7 +33,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -108,7 +106,7 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
         if (game.isOver()) {
             return
         }
-        selectedCard = if (index == selectedCard) {
+        selectedCard = if (index == selectedCard || index !in game.playerCResources.hand.indices) {
             null
         } else {
             index
@@ -159,7 +157,7 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
         resetSelected()
         game.afterPlayerMove(
             { updateEnemyHand(); updateCaravans() },
-            activity.animationTickLength.value!! / 2L
+            activity.animationSpeed.value ?: AnimationSpeed.NORMAL
         )
     }
 
@@ -171,7 +169,7 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
         resetSelected()
         game.afterPlayerMove(
             { updateEnemyHand(); updateCaravans() },
-            activity.animationTickLength.value!! / 2L
+            activity.animationSpeed.value ?: AnimationSpeed.NORMAL
         )
     }
 
@@ -180,7 +178,7 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
             resetSelected()
             game.afterPlayerMove(
                 { updateEnemyHand(); updateCaravans() },
-                activity.animationTickLength.value!! / 2L
+                activity.animationSpeed.value ?: AnimationSpeed.NORMAL
             )
         }
 
@@ -217,6 +215,7 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
         false,
         game,
         goBack,
+        activity.animationSpeed.value ?: AnimationSpeed.NORMAL,
         { "" },
         { "" },
         {},
@@ -237,6 +236,7 @@ fun ShowGameRaw(
     isPvP: Boolean,
     game: Game,
     goBack: () -> Unit,
+    animationSpeed: AnimationSpeed,
     getEnemySymbol: () -> String,
     getMySymbol: () -> String,
     setMySymbol: () -> Unit,
@@ -366,13 +366,14 @@ fun ShowGameRaw(
                         ) {
                             EnemySide(
                                 activity,
+                                animationSpeed,
                                 isPvP,
                                 getEnemySymbol,
                                 game,
                                 fillHeight = 0.45f,
                                 enemyHandKey
                             )
-                            PlayerSide(activity, isPvP, game, {
+                            PlayerSide(activity, animationSpeed, isPvP, game, {
                                 val res = wasCardDropped
                                 wasCardDropped = false
                                 res
@@ -380,6 +381,7 @@ fun ShowGameRaw(
                         }
                         Caravans(
                             activity,
+                            animationSpeed,
                             { selectedCard },
                             { selectedCard?.let { game.playerCResources.hand.getOrNull(it) } },
                             getSelectedCaravan,
@@ -411,6 +413,7 @@ fun ShowGameRaw(
                     ) {
                         EnemySide(
                             activity,
+                            animationSpeed,
                             isPvP,
                             getEnemySymbol,
                             game,
@@ -419,6 +422,7 @@ fun ShowGameRaw(
                         )
                         Caravans(
                             activity,
+                            animationSpeed,
                             { selectedCard },
                             { selectedCard?.let { game.playerCResources.hand.getOrNull(it) } },
                             getSelectedCaravan,
@@ -441,7 +445,7 @@ fun ShowGameRaw(
                             { num -> game.playerCaravans[num] },
                             { num -> game.enemyCaravans[num] },
                         )
-                        PlayerSide(activity, isPvP, game, {
+                        PlayerSide(activity, animationSpeed, isPvP, game, {
                             val res = wasCardDropped
                             wasCardDropped = false
                             res
@@ -456,6 +460,7 @@ fun ShowGameRaw(
 @Composable
 fun EnemySide(
     activity: MainActivity,
+    animationSpeed: AnimationSpeed,
     isPvP: Boolean,
     getEnemySymbol: () -> String,
     game: Game,
@@ -468,7 +473,7 @@ fun EnemySide(
             .fillMaxHeight(fillHeight)
             .padding(vertical = 4.dp),
     ) {
-        RowOfEnemyCards(activity, game.enemyCResources.hand, enemyHandKey < 0)
+        RowOfEnemyCards(activity, animationSpeed, game.enemyCResources.hand, enemyHandKey < 0)
         key(enemyHandKey) {
             Box(Modifier.fillMaxSize()) {
                 ShowDeck(game.enemyCResources, activity)
@@ -497,6 +502,7 @@ fun EnemySide(
 @Composable
 fun PlayerSide(
     activity: MainActivity,
+    animationSpeed: AnimationSpeed,
     isPvP: Boolean,
     game: Game,
     wasCardDropped: () -> Boolean,
@@ -510,6 +516,7 @@ fun PlayerSide(
     ) {
         PlayerCards(
             activity,
+            animationSpeed,
             game.playerCResources.hand,
             wasCardDropped(),
             selectedCard,
@@ -546,24 +553,26 @@ fun PlayerSide(
 @Composable
 fun PlayerCards(
     activity: MainActivity,
+    animationSpeed: AnimationSpeed,
     cards: List<Card>,
     wasCardDropped: Boolean,
     selectedCard: Int?,
     selectedCardColor: Color,
     onClick: (Int) -> Unit
 ) {
-    Hand(activity, false, cards, wasCardDropped, selectedCard, selectedCardColor, onClick)
+    Hand(activity, animationSpeed, false, cards, wasCardDropped, selectedCard, selectedCardColor, onClick)
 }
 
 @Composable
-fun RowOfEnemyCards(activity: MainActivity, cards: List<Card>, wasCardDropped: Boolean = false) {
-    Hand(activity, true, cards, wasCardDropped, -1, Color.Transparent) {}
+fun RowOfEnemyCards(activity: MainActivity, animationSpeed: AnimationSpeed, cards: List<Card>, wasCardDropped: Boolean = false) {
+    Hand(activity, animationSpeed, true, cards, wasCardDropped, -1, Color.Transparent) {}
 }
 
 
 @Composable
 fun Hand(
     activity: MainActivity,
+    animationSpeed: AnimationSpeed,
     isEnemy: Boolean,
     cards: List<Card>,
     wasCardDropped: Boolean,
@@ -583,44 +592,73 @@ fun Hand(
         val scale = min(scaleW, scaleH)
 
         val memCards = remember { mutableObjectListOf<Card>() }
+        memCards.addAll(cards - memCards.asMutableList().toSet())
 
         val itemVerticalOffsetMovingIn = remember { Animatable(2.5f * enemyMult) }
         val itemVerticalOffsetMovingOut = remember { Animatable(0f) }
 
         var recomposeKey by remember { mutableStateOf(false) }
-
-        val key = cards.size - memCards.size
-        LaunchedEffect(key) {
-            if (key > 0) {
-                playCardFlipSound(activity)
-                itemVerticalOffsetMovingIn.animateTo(
-                    0f,
-                    TweenSpec(activity.animationTickLength.value!!.toInt() / 2)
-                )
-            } else if (key < 0) {
-                playCardFlipSound(activity)
-                itemVerticalOffsetMovingOut.animateTo(
-                    (if (wasCardDropped) 2.5f else -2.5f) * enemyMult,
-                    TweenSpec(activity.animationTickLength.value!!.toInt() / 2)
-                )
-            }
-            memCards.clear()
-            memCards.addAll(cards)
-
-            recomposeKey = !recomposeKey
-            delay(activity.animationTickLength.value?.div(4L) ?: 0)
-            itemVerticalOffsetMovingIn.snapTo(2.5f * enemyMult)
-            itemVerticalOffsetMovingOut.snapTo(0f)
-        }
-
         LaunchedEffect(recomposeKey) { }
 
-        val iteratedCollection = (memCards.asMutableList() + cards.toList()).distinct()
-        iteratedCollection.forEach {
-            val index = if (it in memCards) memCards.indexOf(it) else cards.indexOf(it)
-            val isMovingOut = it !in cards
-            val isMovingIn = it !in memCards
+        val isAnyMovingIn = memCards.any { it.handAnimationMark == Card.AnimationMark.MOVING_IN || it.handAnimationMark == Card.AnimationMark.MOVING_IN_WIP }
+        val isAnyMovingOut = memCards.any { it.handAnimationMark == Card.AnimationMark.MOVING_OUT || it.handAnimationMark == Card.AnimationMark.MOVING_OUT_WIP }
+        LaunchedEffect(isAnyMovingIn) {
+            if (isAnyMovingIn) {
+                playCardFlipSound(activity)
+                if (animationSpeed.delay != 0L) {
+                    itemVerticalOffsetMovingIn.snapTo(2.5f * enemyMult)
+                    memCards.forEach {
+                        if (it.handAnimationMark == Card.AnimationMark.MOVING_IN) {
+                            it.handAnimationMark = Card.AnimationMark.MOVING_IN_WIP
+                        }
+                    }
+                    itemVerticalOffsetMovingIn.animateTo(0f, TweenSpec(animationSpeed.delay.toInt())) {
+                        recomposeKey = !recomposeKey
+                    }
+                }
+                memCards.forEach {
+                    if (it.handAnimationMark == Card.AnimationMark.MOVING_IN || it.handAnimationMark == Card.AnimationMark.MOVING_IN_WIP) {
+                        it.handAnimationMark = Card.AnimationMark.STABLE
+                    }
+                }
+                recomposeKey = !recomposeKey
+            }
+        }
 
+        LaunchedEffect(isAnyMovingOut) {
+            if (isAnyMovingOut) {
+                playCardFlipSound(activity)
+                val target = (if (wasCardDropped) 2.5f else -2.5f) * enemyMult
+                if (animationSpeed.delay != 0L) {
+                    itemVerticalOffsetMovingOut.snapTo(0f)
+                    memCards.forEach {
+                        if (it.handAnimationMark == Card.AnimationMark.MOVING_OUT) {
+                            it.handAnimationMark = Card.AnimationMark.MOVING_OUT_WIP
+                        }
+                    }
+                    itemVerticalOffsetMovingOut.animateTo(target, TweenSpec(animationSpeed.delay.toInt())) {
+                        recomposeKey = !recomposeKey
+                    }
+                }
+                memCards.removeIf { it.handAnimationMark == Card.AnimationMark.MOVING_OUT || it.handAnimationMark == Card.AnimationMark.MOVING_OUT_WIP }
+                recomposeKey = !recomposeKey
+            }
+        }
+
+        val iteratedCollection = if (animationSpeed.delay == 0L) cards else memCards.asMutableList()
+        memCards.forEach {
+            val inValue = if (animationSpeed.delay == 0L) 0f else when (it.handAnimationMark) {
+                Card.AnimationMark.MOVING_IN -> 2.5f * enemyMult
+                Card.AnimationMark.MOVING_IN_WIP -> itemVerticalOffsetMovingIn.value
+                else -> 0f
+            }
+            val outValue = if (animationSpeed.delay == 0L) 0f else when (it.handAnimationMark) {
+                Card.AnimationMark.MOVING_OUT_WIP -> itemVerticalOffsetMovingOut.value
+                else -> 0f
+            }
+            val index = iteratedCollection.indexOf(it)
+            if (index == -1) return@forEach
+            val cardsSize = iteratedCollection.size
             if (isEnemy) {
                 ShowCardBack(
                     activity,
@@ -628,7 +666,6 @@ fun Hand(
                     Modifier
                         .scale(scale)
                         .layout { measurable, constraints ->
-                            val cardsSize = iteratedCollection.size
                             val rowWidth =
                                 if (cardsSize <= 5) cardsSize else (if (index < 5) 5 else (cardsSize - 5))
                             val placeable = measurable.measure(constraints)
@@ -638,17 +675,15 @@ fun Hand(
                             val offsetWidth =
                                 (index % 5) * scaledWidth + maxWidth.toPx() / 2 - (rowWidth / 2f) * scaledWidth
                             val offsetHeight = scaledHeight * (index / 5) + handVerticalAlignment +
-                                    scaledHeight * (
-                                    (if (isMovingIn) itemVerticalOffsetMovingIn.value else 0f) +
-                                            (if (isMovingOut) itemVerticalOffsetMovingOut.value else 0f)
-                                    )
+                                    scaledHeight *
+                                    (inValue + outValue)
                             layout(constraints.maxWidth, 0) {
                                 placeable.place(offsetWidth.toInt(), offsetHeight.toInt())
                             }
                         }
                 )
             } else {
-                if (it.rank == Rank.JOKER && isMovingIn) {
+                if (it.rank == Rank.JOKER && it.handAnimationMark == Card.AnimationMark.MOVING_IN) {
                     LaunchedEffect(Unit) {
                         playJokerReceivedSounds(activity)
                     }
@@ -659,7 +694,6 @@ fun Hand(
                     Modifier
                         .scale(scale)
                         .layout { measurable, constraints ->
-                            val cardsSize = iteratedCollection.size
                             val rowWidth =
                                 if (cardsSize <= 5) cardsSize else (if (index < 5) 5 else (cardsSize - 5))
                             val placeable = measurable.measure(constraints)
@@ -669,10 +703,8 @@ fun Hand(
                             val offsetWidth =
                                 (index % 5) * scaledWidth + maxWidth.toPx() / 2 - (rowWidth / 2f) * scaledWidth
                             val offsetHeight = scaledHeight * (index / 5) + handVerticalAlignment +
-                                    scaledHeight * (
-                                    (if (isMovingIn) itemVerticalOffsetMovingIn.value else 0f) +
-                                            (if (isMovingOut) itemVerticalOffsetMovingOut.value else 0f)
-                                    )
+                                    scaledHeight *
+                                    (inValue + outValue)
                             layout(constraints.maxWidth, 0) {
                                 placeable.place(offsetWidth.toInt(), offsetHeight.toInt())
                             }
@@ -699,6 +731,7 @@ fun Hand(
 @Composable
 fun RowScope.CaravanOnField(
     activity: MainActivity,
+    animationSpeed: AnimationSpeed,
     isPlayerTurn: Boolean,
     caravan: Caravan,
     isEnemy: Boolean,
@@ -713,14 +746,11 @@ fun RowScope.CaravanOnField(
     LaunchedEffect(Unit) {
         while (width == 0) {
             width = state.layoutInfo.viewportSize.width
-            delay(activity.animationTickLength.value!!)
+            delay(95L)
         }
     }
     val trueWidth = (width - 3.5f * 10.dp.dpToPx())
     val scale = (trueWidth / 183.toFloat()).coerceAtMost(1.2f)
-
-    val hTick = activity.animationTickLength.value!!.toInt() / 2
-
     Column(
         Modifier
             .fillMaxHeight()
@@ -764,126 +794,250 @@ fun RowScope.CaravanOnField(
         ) {
             item {
                 Box(Modifier.wrapContentHeight(unbounded = true)) {
-                    fun getHash() = caravan.hashCode() + caravan.cards.sumOf { it.hashCode() }
-                    var caravanMem by remember { mutableIntStateOf(getHash()) }
-                    val copy = remember { mutableObjectListOf<CardWithModifier>() }
+                    if (animationSpeed.delay == 0L) {
+                        @Composable
+                        fun ModifierOnCardInCaravan(
+                            modifier: Card,
+                            modifierIndex: Int,
+                        ) {
+                            Box(modifier = Modifier
+                                .layout { measurable, constraints ->
+                                    val placeable = measurable.measure(constraints)
+                                    val modifierOffset =
+                                        ((if (isEnemy) (-10).dp else 10.dp) * (modifierIndex + 1)).toPx()
+                                            .toInt()
+                                    layout(placeable.width, 0) {
+                                        placeable.place(modifierOffset, 0)
+                                    }
+                                })
+                            {
+                                ShowCard(activity, modifier, Modifier.scale(scale))
+                            }
+                        }
 
-                    val cardHolder = if (getHash() == caravanMem) {
-                        caravan.cards
+                        @Composable
+                        fun CardInCaravan(
+                            it: CardWithModifier,
+                            index: Int
+                        ) {
+                            val modifier = Modifier
+                                .layout { measurable, constraints ->
+                                    val placeable = measurable.measure(constraints)
+                                    val layoutFullHeight = if (isEnemy) {
+                                        max(
+                                            placeable.height / 3 * (caravan.cards.size + 2),
+                                            state.layoutInfo.viewportSize.height - 1
+                                        )
+                                    } else {
+                                        placeable.height / 3 * (caravan.cards.size + 3)
+                                    }
+                                    val offsetWidth = constraints.maxWidth / 2 - placeable.width / 2
+                                    val antiOffsetHeight = if (isEnemy)
+                                        (layoutFullHeight - placeable.height / 3 * index - placeable.height)
+                                    else
+                                        (placeable.height / 3 * index)
+                                    layout(constraints.maxWidth, layoutFullHeight) {
+                                        placeable.place(
+                                            offsetWidth,
+                                            antiOffsetHeight
+                                        )
+                                    }
+                                }
+
+                            Box(modifier = modifier) {
+                                ShowCard(activity, it.card,
+                                    Modifier
+                                        .scale(scale)
+                                        .clickable {
+                                            addSelectedCardOnPosition(caravan.cards.indexOf(it))
+                                        })
+
+                                it.modifiersCopy().withIndex().forEach { (modifierIndex, card) ->
+                                    ModifierOnCardInCaravan(card, modifierIndex)
+                                }
+                            }
+                        }
+
+                        caravan.cards.forEachIndexed { index, it ->
+                            CardInCaravan(it, index)
+                        }
                     } else {
-                        LaunchedEffect(Unit) {
-                            delay(activity.animationTickLength.value!! * 3L)
-                            copy.clear()
-                            copy.addAll(caravan.cards)
-                            caravanMem = getHash()
-                        }
-                        copy.asMutableList() + (caravan.cards - copy.asMutableList().toSet())
-                    }
+                        val memCards = remember { mutableObjectListOf<CardWithModifier>() }
+                        memCards.addAll(caravan.cards - memCards.asMutableList().toSet())
 
-                    val movedInModifiers = remember { mutableObjectListOf<Card>() }
-                    @Composable
-                    fun ModifierOnCardInCaravan(
-                        modifier: Card,
-                        modifierIndex: Int,
-                        isMovingOut: Boolean
-                    ) {
-                        val animationIn =
-                            remember { Animatable(3f * (if (isPlayerTurn) 1 else -1)) }
+                        val animationIn = remember { Animatable(3f) }
                         val animationOut = remember { Animatable(0f) }
-                        if (modifier !in movedInModifiers) {
-                            LaunchedEffect(Unit) {
-                                animationIn.animateTo(0f, TweenSpec(hTick, hTick * 3))
-                                movedInModifiers.add(modifier)
-                            }
-                        } else {
-                            LaunchedEffect(Unit) {
-                                animationIn.snapTo(0f)
-                            }
+                        var recomposeKey by remember { mutableStateOf(false) }
+                        LaunchedEffect(recomposeKey) { }
+
+                        val isAnyMovingIn = memCards.any {
+                            it.card.caravanAnimationMark == Card.AnimationMark.MOVING_IN
+                                    || it.card.caravanAnimationMark == Card.AnimationMark.MOVING_IN_WIP
+                                    || it.modifiersCopy().any { mod ->
+                                        mod.caravanAnimationMark == Card.AnimationMark.MOVING_IN
+                                                || mod.caravanAnimationMark == Card.AnimationMark.MOVING_IN_WIP
+                                    }
                         }
-                        LaunchedEffect(isMovingOut) {
-                            animationOut.snapTo(0f)
-                            animationOut.animateTo(2f, TweenSpec(hTick, hTick * 2))
-                        }
-                        Box(modifier = Modifier
-                            .layout { measurable, constraints ->
-                                val placeable = measurable.measure(constraints)
-                                val modifierOffset =
-                                    ((if (isEnemy) (-10).dp else 10.dp) * (modifierIndex + 1)).toPx()
-                                        .toInt()
-                                layout(placeable.width, 0) {
-                                    placeable.place(
-                                        modifierOffset + (placeable.width * if (isMovingOut) animationOut.value else 0f).toInt(),
-                                        (animationIn.value * placeable.height).toInt()
-                                    )
+                        val isAnyMovingOut = memCards.any { it.card.caravanAnimationMark == Card.AnimationMark.MOVING_OUT
+                                || it.card.caravanAnimationMark == Card.AnimationMark.MOVING_OUT_WIP }
+                        LaunchedEffect(isAnyMovingIn) {
+                            if (isAnyMovingIn) {
+                                playCardFlipSound(activity)
+                                animationIn.snapTo(3f)
+                                memCards.forEach {
+                                    if (it.card.caravanAnimationMark == Card.AnimationMark.MOVING_IN) {
+                                        it.card.caravanAnimationMark = Card.AnimationMark.MOVING_IN_WIP
+                                    }
+                                    it.modifiersCopy().forEach { mod ->
+                                        if (mod.caravanAnimationMark == Card.AnimationMark.MOVING_IN) {
+                                            mod.caravanAnimationMark = Card.AnimationMark.MOVING_IN_WIP
+                                        }
+                                    }
                                 }
-                            })
-                        {
-                            ShowCard(activity, modifier, Modifier.scale(scale))
+                                animationIn.animateTo(0f, TweenSpec(animationSpeed.delay.toInt(), animationSpeed.delay.toInt())) {
+                                    recomposeKey = !recomposeKey
+                                }
+                                memCards.forEach {
+                                    if (it.card.caravanAnimationMark == Card.AnimationMark.MOVING_IN_WIP) {
+                                        it.card.caravanAnimationMark = Card.AnimationMark.STABLE
+                                    }
+                                    it.modifiersCopy().forEach { mod ->
+                                        if (mod.caravanAnimationMark == Card.AnimationMark.MOVING_IN_WIP) {
+                                            mod.caravanAnimationMark = Card.AnimationMark.STABLE
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        LaunchedEffect(isAnyMovingOut) {
+                            if (isAnyMovingOut) {
+                                playCardFlipSound(activity)
+                                animationOut.snapTo(0f)
+                                memCards.forEach {
+                                    if (it.card.caravanAnimationMark == Card.AnimationMark.MOVING_OUT) {
+                                        it.card.caravanAnimationMark = Card.AnimationMark.MOVING_OUT_WIP
+                                    }
+                                }
+                                delay(animationSpeed.delay * 2)
+                                animationOut.animateTo(2f, TweenSpec(animationSpeed.delay.toInt(), animationSpeed.delay.toInt() * 2)) {
+                                    recomposeKey = !recomposeKey
+                                }
+                                memCards.removeIf { it.card.caravanAnimationMark == Card.AnimationMark.MOVING_OUT_WIP }
+                            }
+                        }
+
+                        @Composable
+                        fun ModifierOnCardInCaravan(
+                            modifier: Card,
+                            modifierIndex: Int,
+                            it: CardWithModifier
+                        ) {
+                            val inValue = when (modifier.caravanAnimationMark) {
+                                Card.AnimationMark.MOVING_IN -> {
+                                    3f * (if (isPlayerTurn) 1 else -1)
+                                }
+                                Card.AnimationMark.MOVING_IN_WIP -> {
+                                    animationIn.value * (if (isPlayerTurn) 1 else -1)
+                                }
+                                else -> {
+                                    0f
+                                }
+                            }
+                            val outValue = when (it.card.caravanAnimationMark) {
+                                Card.AnimationMark.MOVING_OUT_WIP -> {
+                                    animationOut.value
+                                }
+                                else -> {
+                                    0f
+                                }
+                            }
+                            Box(modifier = Modifier
+                                .layout { measurable, constraints ->
+                                    val placeable = measurable.measure(constraints)
+                                    val modifierOffset =
+                                        ((if (isEnemy) (-10).dp else 10.dp) * (modifierIndex + 1)).toPx()
+                                            .toInt()
+                                    layout(placeable.width, 0) {
+                                        placeable.place(
+                                            modifierOffset + (placeable.width * outValue).toInt(),
+                                            (inValue * placeable.height * (if (isPlayerTurn) 1 else -1)).toInt()
+                                        )
+                                    }
+                                })
+                            {
+                                ShowCard(activity, modifier, Modifier.scale(scale))
+                            }
+                        }
+
+                        @Composable
+                        fun CardInCaravan(
+                            it: CardWithModifier,
+                            index: Int
+                        ) {
+                            val inValue = when (it.card.caravanAnimationMark) {
+                                Card.AnimationMark.MOVING_IN -> {
+                                    3f * enemyMult
+                                }
+                                Card.AnimationMark.MOVING_IN_WIP -> {
+                                    animationIn.value * enemyMult
+                                }
+                                else -> {
+                                    0f
+                                }
+                            }
+                            val outValue = when (it.card.caravanAnimationMark) {
+                                Card.AnimationMark.MOVING_OUT_WIP -> {
+                                    animationOut.value
+                                }
+                                else -> {
+                                    0f
+                                }
+                            }
+                            val modifier = Modifier
+                                .layout { measurable, constraints ->
+                                    val placeable = measurable.measure(constraints)
+                                    val layoutFullHeight = if (isEnemy) {
+                                        max(
+                                            placeable.height / 3 * (memCards.size + 2),
+                                            state.layoutInfo.viewportSize.height - 1
+                                        )
+                                    } else {
+                                        placeable.height / 3 * (memCards.size + 3)
+                                    }
+                                    val offsetWidth = constraints.maxWidth / 2 - placeable.width / 2
+                                    val antiOffsetHeight = if (isEnemy)
+                                        (layoutFullHeight - placeable.height / 3 * index - placeable.height)
+                                    else
+                                        (placeable.height / 3 * index)
+                                    layout(constraints.maxWidth, layoutFullHeight) {
+                                        placeable.place(
+                                            offsetWidth + (placeable.width * outValue).toInt(),
+                                            antiOffsetHeight + (placeable.height * inValue).toInt()
+                                        )
+                                    }
+                                }
+
+                            Box(modifier = modifier) {
+                                ShowCard(activity, it.card,
+                                    Modifier
+                                        .scale(scale)
+                                        .clickable {
+                                            addSelectedCardOnPosition(caravan.cards.indexOf(it))
+                                        })
+
+                                it.modifiersCopy().withIndex().forEach { (modifierIndex, card) ->
+                                    ModifierOnCardInCaravan(card, modifierIndex, it)
+                                }
+                            }
+                        }
+
+                        memCards.forEachIndexed { index, it ->
+                            CardInCaravan(it, index)
                         }
                     }
 
-                    @Composable
-                    fun CardInCaravan(
-                        it: CardWithModifier,
-                        index: Int,
-                        isMovingIn: Boolean,
-                        isMovingOut: Boolean,
-                    ) {
-                        val animationIn = remember { Animatable(enemyMult * 3f) }
-                        val animationOut = remember { Animatable(0f) }
-                        LaunchedEffect(isMovingIn) {
-                            animationIn.animateTo(0f, TweenSpec(hTick, hTick * 3))
-                        }
-                        LaunchedEffect(isMovingOut) {
-                            animationOut.snapTo(0f)
-                            animationOut.animateTo(2f, TweenSpec(hTick, hTick * 2))
-                        }
-
-                        val modifier = Modifier
-                            .layout { measurable, constraints ->
-                                val placeable = measurable.measure(constraints)
-                                val layoutFullHeight = if (isEnemy) {
-                                    max(
-                                        placeable.height / 3 * (copy.size + 2),
-                                        state.layoutInfo.viewportSize.height - 1
-                                    )
-                                } else {
-                                    placeable.height / 3 * (copy.size + 3)
-                                }
-                                val offsetWidth = constraints.maxWidth / 2 - placeable.width / 2
-                                val antiOffsetHeight = if (isEnemy)
-                                    (layoutFullHeight - placeable.height / 3 * index - placeable.height)
-                                else
-                                    (placeable.height / 3 * index)
-                                layout(constraints.maxWidth, layoutFullHeight) {
-                                    placeable.place(
-                                        offsetWidth + (placeable.width * if (isMovingOut) animationOut.value else 0f).toInt(),
-                                        antiOffsetHeight + (animationIn.value * placeable.height).toInt()
-                                    )
-                                }
-                            }
-
-                        Box(modifier = modifier) {
-                            ShowCard(activity, it.card,
-                                Modifier
-                                    .scale(scale)
-                                    .clickable {
-                                        addSelectedCardOnPosition(caravan.cards.indexOf(it))
-                                    })
-
-                            it.modifiersCopy().withIndex().forEach { (modifierIndex, card) ->
-                                ModifierOnCardInCaravan(card, modifierIndex, isMovingOut)
-                            }
-                        }
-                    }
-
-                    cardHolder.forEachIndexed { index, it ->
-                        val isMovingIn = it !in copy
-                        val isMovingOut = it !in caravan.cards
-                        CardInCaravan(it, index, isMovingIn, isMovingOut)
-                    }
-
-                    if (!isEnemy && getHash() == caravanMem) {
+                    if (!isEnemy) {
                         if (!caravan.isFull() && (!isInitStage || caravan.cards.isEmpty())) {
                             when (canPutSelectedCardOnTop()) {
                                 1 -> {
@@ -1011,6 +1165,7 @@ fun RowScope.Score(activity: MainActivity, num: Int, caravan: Caravan, opposingV
 @Composable
 fun Caravans(
     activity: MainActivity,
+    animationSpeed: AnimationSpeed,
     getSelectedCardInt: () -> Int?,
     getSelectedCard: () -> Card?,
     getSelectedCaravan: () -> Int,
@@ -1048,6 +1203,7 @@ fun Caravans(
             repeat(3) {
                 CaravanOnField(
                     activity,
+                    animationSpeed,
                     isPlayersTurn(),
                     getEnemyCaravan(it),
                     isEnemy = true,
@@ -1155,6 +1311,7 @@ fun Caravans(
             repeat(3) {
                 CaravanOnField(
                     activity,
+                    animationSpeed,
                     isPlayersTurn(),
                     getPlayerCaravan(it),
                     isEnemy = false,

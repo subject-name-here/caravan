@@ -15,7 +15,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableLongStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -40,12 +40,12 @@ import com.unicorns.invisible.caravan.utils.scrollbar
 @Composable
 fun ShowTrueSettings(
     activity: MainActivity,
-    getTickLength: () -> Long,
-    setTickLength: (Long) -> Unit,
+    getSpeed: () -> AnimationSpeed,
+    setSpeed: (AnimationSpeed) -> Unit,
     goBack: () -> Unit
 ) {
     val mainState = rememberLazyListState()
-    var tickLength by remember { mutableLongStateOf(getTickLength()) }
+    var speed by remember { mutableStateOf(getSpeed()) }
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
@@ -94,18 +94,18 @@ fun ShowTrueSettings(
                                     .weight(1f)
                                     .background(getTextBackgroundColor(activity))
                                     .clickable {
-                                        val tmpTickLength = tickLength - 95L
-                                        if (tmpTickLength < 190L) {
+                                        val tmpSpeed = speed.prev()
+                                        if (tmpSpeed == speed) {
                                             playCloseSound(activity)
                                         } else {
                                             playClickSound(activity)
-                                            tickLength = (tmpTickLength).coerceAtLeast(190L)
+                                            speed = tmpSpeed
                                         }
                                     },
                                 TextAlign.Center
                             )
                             TextFallout(
-                                tickLength.toString(),
+                                speed.name,
                                 getTextColor(activity),
                                 getTextStrokeColor(activity),
                                 18.sp,
@@ -123,12 +123,12 @@ fun ShowTrueSettings(
                                     .weight(1f)
                                     .background(getTextBackgroundColor(activity))
                                     .clickable {
-                                        val tmpTickLength = tickLength + 95L
-                                        if (tmpTickLength > 760L) {
+                                        val tmpSpeed = speed.next()
+                                        if (tmpSpeed == speed) {
                                             playCloseSound(activity)
                                         } else {
                                             playClickSound(activity)
-                                            tickLength = (tmpTickLength).coerceAtMost(760L)
+                                            speed = tmpSpeed
                                         }
                                     },
                                 TextAlign.Center
@@ -149,7 +149,7 @@ fun ShowTrueSettings(
             Modifier
                 .background(getTextBackgroundColor(activity))
                 .clickableCancel(activity) {
-                    setTickLength(tickLength)
+                    setSpeed(speed)
                     goBack()
                 }
                 .padding(8.dp),

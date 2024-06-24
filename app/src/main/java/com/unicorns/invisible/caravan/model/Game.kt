@@ -1,6 +1,7 @@
 package com.unicorns.invisible.caravan.model
 
 import androidx.compose.runtime.saveable.Saver
+import com.unicorns.invisible.caravan.AnimationSpeed
 import com.unicorns.invisible.caravan.model.enemy.Enemy
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.Caravan
@@ -98,17 +99,25 @@ class Game(
         return false
     }
 
-    fun afterPlayerMove(updateView: () -> Unit, hTick: Long) {
+    fun afterPlayerMove(updateView: () -> Unit, speed: AnimationSpeed) {
         CoroutineScope(Dispatchers.Default).launch {
-            delay(hTick * 3) // Move card from hand; move card ontoField
+            if (speed.delay != 0L) {
+                delay(speed.delay * 3) // Move card from hand; move card ontoField
+            } else {
+                delay(380L)
+            }
             isPlayerTurn = false
             if (processField()) { // Remove cards; move cards within caravan
                 updateView()
-                delay(hTick * 4)
+                if (speed.delay != 0L) {
+                    delay(speed.delay * 2)
+                }
             }
             if (processHand(playerCResources)) { // Take card into hand
                 updateView()
-                delay(hTick)
+                if (speed.delay != 0L) {
+                    delay(speed.delay)
+                }
             }
 
             if (checkOnGameOver()) {
@@ -116,22 +125,37 @@ class Game(
                 return@launch
             }
 
-            delay(hTick * 2) // Just break.
+            if (speed.delay != 0L) {
+                delay(speed.delay * 2) // Just break.
+            } else {
+                delay(380L)
+            }
 
             enemy.makeMove(this@Game)
             updateView()
-            delay(hTick * 3) // Move card from hand; move card ontoField
+            if (speed.delay != 0L) {
+                delay(speed.delay * 3) // Move card from hand; move card ontoField
+            } else {
+                delay(380L)
+            }
             if (processField()) { // Remove cards; move cards within caravan
                 updateView()
-                delay(hTick * 4)
+                if (speed.delay != 0L) {
+                    delay(speed.delay * 2)
+                }
             }
-            if (processHand(enemyCResources)) {
+            if (processHand(enemyCResources)) { // Take card into hand
                 updateView()
-                delay(hTick)
+                if (speed.delay != 0L) {
+                    delay(speed.delay)
+                }
             }
+
             isPlayerTurn = true
             checkOnGameOver()
-            delay(hTick * 2)
+            if (speed.delay != 0L) {
+                delay(speed.delay * 2) // Just break.
+            }
             updateView()
         }
     }

@@ -9,6 +9,7 @@ class CardWithModifier(val card: Card) {
     private val modifiers: MutableList<Card> = mutableListOf()
     fun addModifier(card: Card) {
         modifiers.add(card)
+        card.caravanAnimationMark = Card.AnimationMark.MOVING_IN
         if (card.rank == Rank.JOKER) {
             hasActiveJoker = true
         }
@@ -41,13 +42,5 @@ class CardWithModifier(val card: Card) {
 
     fun getTopSuit(): Suit {
         return modifiers.findLast { it.rank == Rank.QUEEN }?.suit ?: card.suit
-    }
-
-    fun copy(): CardWithModifier {
-        return CardWithModifier(card.copy()).also {
-            this.modifiers.forEach { modifier ->
-                it.addModifier(modifier.copy())
-            }
-        }
     }
 }

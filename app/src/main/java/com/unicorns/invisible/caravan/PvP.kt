@@ -65,7 +65,7 @@ import com.unicorns.invisible.caravan.utils.playQuitMultiplayer
 import com.unicorns.invisible.caravan.utils.playWinSound
 import com.unicorns.invisible.caravan.utils.scrollbar
 import com.unicorns.invisible.caravan.utils.sendRequest
-import com.unicorns.invisible.caravan.utils.stopMusic
+import com.unicorns.invisible.caravan.utils.stopAmbient
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -605,7 +605,7 @@ fun StartPvP(
         if (!game.isOver() && game.isPlayerTurn) {
             playQuitMultiplayer(activity)
         }
-        stopMusic()
+        stopAmbient()
         goBack()
     }
 

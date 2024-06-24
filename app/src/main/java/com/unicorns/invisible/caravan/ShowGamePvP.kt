@@ -43,7 +43,7 @@ import kotlinx.coroutines.launch
 
 fun afterPlayerMove(
     game: Game,
-    hTick: Long,
+    speed: AnimationSpeed,
     roomNumber: Int,
     isCreator: Boolean,
     move: MoveResponse,
@@ -54,16 +54,22 @@ fun afterPlayerMove(
 ) {
 
     CoroutineScope(Dispatchers.Default).launch {
-        delay(hTick * 2)
+        if (speed.delay != 0L) {
+            delay(speed.delay * 2)
+        }
         game.isPlayerTurn = false
         val isNewCardAdded =
             game.playerCResources.deckSize > 0 && game.playerCResources.hand.size < 5
         if (game.processField()) {
-            delay(hTick * 2) // Remove cards; move cards within caravan
+            if (speed.delay != 0L) {
+                delay(speed.delay * 2) // Remove cards; move cards within caravan
+            }
             updateView()
         }
         if (game.processHand(game.playerCResources)) {
-            delay(hTick) // Take card into hand
+            if (speed.delay != 0L) {
+                delay(speed.delay) // Take card into hand
+            }
             updateView()
         }
 
@@ -105,7 +111,7 @@ fun afterPlayerMove(
 
 
 fun pingForMove(
-    game: Game, hTick: Long, room: Int, isCreator: Boolean,
+    game: Game, speed: AnimationSpeed, room: Int, isCreator: Boolean,
     setEnemySymbol: (Int) -> Unit,
     corrupt: (String) -> Unit,
     updateView: () -> Unit,
@@ -117,7 +123,7 @@ fun pingForMove(
                 delay(760L)
                 pingForMove(
                     game,
-                    hTick,
+                    speed,
                     room,
                     isCreator,
                     setEnemySymbol,
@@ -139,22 +145,33 @@ fun pingForMove(
         }
 
         CoroutineScope(Dispatchers.Default).launch {
-            delay(hTick) // Just break.
+            if (speed.delay != 0L) {
+                delay(speed.delay) // Just break.
+            }
             game.enemy.makeMove(game)
             updateView()
-            delay(hTick * 2) // Move card from hand; move card ontoField
+
+            if (speed.delay != 0L) {
+                delay(speed.delay * 2) // Move card from hand; move card ontoField
+            }
             if (game.processField()) {
-                delay(hTick * 2)
+                if (speed.delay != 0L) {
+                    delay(speed.delay * 2)
+                }
                 updateView()
             }
             if (game.processHand(game.enemyCResources)) {
-                delay(hTick)
+                if (speed.delay != 0L) {
+                    delay(speed.delay)
+                }
                 updateView()
             }
             game.isPlayerTurn = true
             game.checkOnGameOver()
             updateView()
-            delay(hTick)
+            if (speed.delay != 0L) {
+                delay(speed.delay)
+            }
             afterEnemyMove(!game.isOver())
         }
     }
@@ -173,7 +190,7 @@ fun ShowGamePvP(
     updateCaravans: () -> Unit,
     goBack: () -> Unit,
 ) {
-    val hTick = activity.animationTickLength.value!! / 2
+    val speed = activity.animationSpeed.value ?: AnimationSpeed.NORMAL
     var selectedCard by remember { mutableStateOf<Int?>(null) }
 
     var selectedCaravan by remember { mutableIntStateOf(-1) }
@@ -232,7 +249,7 @@ fun ShowGamePvP(
         playVatsReady(activity)
         game.playerCResources.removeFromHand(selectedCardNN)
         resetSelected()
-        afterPlayerMove(game, hTick, roomNumber, isCreator = isCreator, MoveResponse(
+        afterPlayerMove(game, speed, roomNumber, isCreator = isCreator, MoveResponse(
             moveCode = 2,
             handCardNumber = selectedCardNN,
         ), chosenSymbol,
@@ -240,7 +257,7 @@ fun ShowGamePvP(
             ::corruptGame,
             {
                 pingForMove(
-                    game, hTick, roomNumber, isCreator,
+                    game, speed, roomNumber, isCreator,
                     { enemyChosenSymbol = it },
                     ::corruptGame,
                     { updateCaravans(); updateEnemyHand() },
@@ -262,7 +279,7 @@ fun ShowGamePvP(
         game.playerCaravans[selectedCaravanNN].dropCaravan()
         updateCaravans()
         resetSelected()
-        afterPlayerMove(game, hTick, roomNumber, isCreator = isCreator, MoveResponse(
+        afterPlayerMove(game, speed, roomNumber, isCreator = isCreator, MoveResponse(
             moveCode = 1,
             caravanCode = selectedCaravanNN,
         ), chosenSymbol,
@@ -270,7 +287,7 @@ fun ShowGamePvP(
             ::corruptGame,
             {
                 pingForMove(
-                    game, hTick, roomNumber, isCreator,
+                    game, speed, roomNumber, isCreator,
                     { enemyChosenSymbol = it },
                     ::corruptGame,
                     { updateCaravans(); updateEnemyHand() },
@@ -295,7 +312,7 @@ fun ShowGamePvP(
             resetSelected()
             updateCaravans()
             if (cardInCaravan == null) {
-                afterPlayerMove(game, hTick, roomNumber, isCreator = isCreator, MoveResponse(
+                afterPlayerMove(game, speed, roomNumber, isCreator = isCreator, MoveResponse(
                     moveCode = 3,
                     handCardNumber = cardIndex,
                     caravanCode = caravanIndex
@@ -304,7 +321,7 @@ fun ShowGamePvP(
                     ::corruptGame,
                     {
                         pingForMove(
-                            game, hTick, roomNumber, isCreator,
+                            game, speed, roomNumber, isCreator,
                             { enemyChosenSymbol = it },
                             ::corruptGame,
                             { updateCaravans(); updateEnemyHand() },
@@ -317,7 +334,7 @@ fun ShowGamePvP(
                     }
                 )
             } else {
-                afterPlayerMove(game, hTick, roomNumber, isCreator = isCreator, MoveResponse(
+                afterPlayerMove(game, speed, roomNumber, isCreator = isCreator, MoveResponse(
                     moveCode = 4,
                     handCardNumber = cardIndex,
                     cardInCaravanNumber = cardInCaravan,
@@ -327,7 +344,7 @@ fun ShowGamePvP(
                     ::corruptGame,
                     {
                         pingForMove(
-                            game, hTick, roomNumber, isCreator,
+                            game, speed, roomNumber, isCreator,
                             { enemyChosenSymbol = it },
                             ::corruptGame,
                             { updateCaravans(); updateEnemyHand() },
@@ -397,6 +414,7 @@ fun ShowGamePvP(
         true,
         game,
         goBack,
+        speed,
         getEnemySymbol = { symbols[enemyChosenSymbol.coerceIn(0, symbols.size - 1)] },
         getMySymbol = { symbols[chosenSymbol.coerceIn(0, symbols.size - 1)] },
         setMySymbol = { chosenSymbol = (chosenSymbol + 1) % symbols.size },

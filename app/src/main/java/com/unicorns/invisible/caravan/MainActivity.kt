@@ -58,6 +58,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.MutableLiveData
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.primitives.CResources
+import com.unicorns.invisible.caravan.model.primitives.CustomDeck
 import com.unicorns.invisible.caravan.save.Save
 import com.unicorns.invisible.caravan.save.getSaveFile
 import com.unicorns.invisible.caravan.save.loadFromGD
@@ -68,9 +69,8 @@ import com.unicorns.invisible.caravan.utils.SwitchCustom
 import com.unicorns.invisible.caravan.utils.TextFallout
 import com.unicorns.invisible.caravan.utils.clickableCancel
 import com.unicorns.invisible.caravan.utils.clickableOk
-import com.unicorns.invisible.caravan.utils.currentPlayer
 import com.unicorns.invisible.caravan.utils.dpToPx
-import com.unicorns.invisible.caravan.utils.effectPlayer
+import com.unicorns.invisible.caravan.utils.effectPlayers
 import com.unicorns.invisible.caravan.utils.getBackgroundColor
 import com.unicorns.invisible.caravan.utils.getDialogBackground
 import com.unicorns.invisible.caravan.utils.getDialogTextColor
@@ -90,6 +90,7 @@ import com.unicorns.invisible.caravan.utils.playCloseSound
 import com.unicorns.invisible.caravan.utils.playNotificationSound
 import com.unicorns.invisible.caravan.utils.resume
 import com.unicorns.invisible.caravan.utils.scrollbar
+import com.unicorns.invisible.caravan.utils.setAmbientVolume
 import com.unicorns.invisible.caravan.utils.setRadioVolume
 import com.unicorns.invisible.caravan.utils.startRadio
 import kotlinx.coroutines.CoroutineScope
@@ -115,7 +116,7 @@ class MainActivity : SaveDataActivity() {
 
     var styleId: Style = Style.PIP_BOY
 
-    var animationTickLength = MutableLiveData(380L)
+    var animationSpeed = MutableLiveData(AnimationSpeed.NORMAL)
 
     fun checkIfCustomDeckCanBeUsedInGame(playerCResources: CResources): Boolean {
         return playerCResources.deckSize >= MIN_DECK_SIZE && playerCResources.numOfNumbers >= MIN_NUM_OF_NUMBERS
@@ -124,14 +125,12 @@ class MainActivity : SaveDataActivity() {
     override fun onPause() {
         super.onPause()
         pause()
-        currentPlayer?.pause()
-        effectPlayer?.stop()
+        effectPlayers.forEach { if (it.isPlaying) it.stop() }
     }
 
     override fun onResume() {
         super.onResume()
         resume()
-        currentPlayer?.start()
     }
 
     override fun onSnapshotClientInitialized() {
@@ -211,7 +210,7 @@ class MainActivity : SaveDataActivity() {
             }
 
             styleId = Style.entries[save?.styleId ?: 1]
-            animationTickLength.value = save?.animationLengthTick ?: 380L
+            animationSpeed.value = save?.animationSpeed ?: AnimationSpeed.NORMAL
             val (textColor, backgroundColor, strokeColor) = getColors()
             val modifier = if (k == true) {
                 Modifier
@@ -473,7 +472,7 @@ class MainActivity : SaveDataActivity() {
 
                                 SliderCustom(this@MainActivity, { ambientVolume }, {
                                     ambientVolume = it; save?.ambientVolume = it
-                                    currentPlayer?.setVolume(it / 2, it / 2)
+                                    setAmbientVolume(it / 2)
                                 })
                             }
                             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -633,7 +632,7 @@ class MainActivity : SaveDataActivity() {
                     }
 
                     showPvP -> {
-                        if (!checkIfCustomDeckCanBeUsedInGame(CResources(save!!.getCustomDeckCopy()))) {
+                        if (!checkIfCustomDeckCanBeUsedInGame(CResources(save?.getCustomDeckCopy() ?: CustomDeck()))) {
                             showAlertDialog(
                                 stringResource(R.string.custom_deck_is_too_small),
                                 stringResource(R.string.custom_deck_is_too_small_message)
@@ -662,10 +661,11 @@ class MainActivity : SaveDataActivity() {
                     showSettings -> {
                         ShowTrueSettings(
                             this@MainActivity,
-                            { animationTickLength.value!! },
+                            { animationSpeed.value!! },
                             {
-                                animationTickLength.value = it; save!!.animationLengthTick =
-                                it; saveOnGD(this@MainActivity)
+                                animationSpeed.value = it
+                                save!!.animationSpeed = it
+                                saveOnGD(this@MainActivity)
                             }
                         ) { showSettings = false }
                     }

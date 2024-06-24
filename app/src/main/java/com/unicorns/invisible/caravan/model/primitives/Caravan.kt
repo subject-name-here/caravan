@@ -15,18 +15,34 @@ class Caravan {
     fun isFull() = size >= 10
 
     fun dropCaravan() {
+        cardsMutable.forEach { it.card.caravanAnimationMark = Card.AnimationMark.MOVING_OUT }
         cardsMutable.clear()
     }
 
     fun removeAllJackedCards() {
+        cardsMutable.forEach {
+            if (it.hasJacks()) {
+                it.card.caravanAnimationMark = Card.AnimationMark.MOVING_OUT
+            }
+        }
         cardsMutable.removeAll { it.hasJacks() }
     }
 
     fun jokerRemoveAllRanks(card: Card) {
+        cardsMutable.forEach {
+            if (it.card.rank == card.rank && !it.hasActiveJoker) {
+                it.card.caravanAnimationMark = Card.AnimationMark.MOVING_OUT
+            }
+        }
         cardsMutable.removeAll { it.card.rank == card.rank && !it.hasActiveJoker }
     }
 
     fun jokerRemoveAllSuits(card: Card) {
+        cardsMutable.forEach {
+            if (it.card.suit == card.suit && !it.hasActiveJoker) {
+                it.card.caravanAnimationMark = Card.AnimationMark.MOVING_OUT
+            }
+        }
         cardsMutable.removeAll { it.card.suit == card.suit && !it.hasActiveJoker }
     }
 
@@ -77,15 +93,7 @@ class Caravan {
     }
 
     fun putCardOnTop(card: Card) {
+        card.caravanAnimationMark = Card.AnimationMark.MOVING_IN
         cardsMutable.add(CardWithModifier(card))
-    }
-
-    fun copyFrom(caravan: Caravan) {
-        cardsMutable.clear()
-        cardsMutable.addAll(caravan.cardsMutable.map { it.copy() })
-    }
-
-    fun removeCardFromTop() {
-        cardsMutable.removeLastOrNull()
     }
 }

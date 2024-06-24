@@ -62,7 +62,7 @@ import com.unicorns.invisible.caravan.utils.playLoseSound
 import com.unicorns.invisible.caravan.utils.playVatsEnter
 import com.unicorns.invisible.caravan.utils.playWinSound
 import com.unicorns.invisible.caravan.utils.scrollbar
-import com.unicorns.invisible.caravan.utils.stopMusic
+import com.unicorns.invisible.caravan.utils.stopAmbient
 import java.util.Locale
 import kotlin.math.max
 
@@ -561,7 +561,7 @@ fun StartGame(
             { id1, id2 -> showAlertDialog(activity.getString(id1), activity.getString(id2)) }
         it.jokerPlayedSound = { playJokerSounds(activity) }
     }
-    activity.goBack = { stopMusic(); goBack() }
+    activity.goBack = { stopAmbient(); goBack() }
     ShowGame(activity, game) {
         if (game.isOver()) {
             activity.goBack?.invoke()

@@ -4,39 +4,48 @@ import android.media.MediaPlayer
 import com.unicorns.invisible.caravan.MainActivity
 import com.unicorns.invisible.caravan.R
 import com.unicorns.invisible.caravan.Style
+import okio.withLock
+import java.util.concurrent.locks.ReentrantLock
 
 
+val effectPlayers = HashSet<MediaPlayer>()
+val effectPlayersLock = ReentrantLock()
 fun playNotificationSound(activity: MainActivity, onPrepared: () -> Unit) {
     val volume = activity.save?.soundVolume ?: 1f
-    effectPlayer = MediaPlayer
+    MediaPlayer
         .create(activity, R.raw.notification)
         .apply {
             setVolume(volume, volume)
             setOnPreparedListener { onPrepared() }
             setOnCompletionListener {
-                if (effectPlayer == this) {
-                    effectPlayer = null
+                effectPlayersLock.withLock {
+                    effectPlayers.remove(this)
+                    release()
                 }
-                // release()
             }
-            start()
+            effectPlayersLock.withLock {
+                effectPlayers.add(this)
+                start()
+            }
         }
 }
 
-var effectPlayer: MediaPlayer? = null
 private fun playEffectPlayerSound(activity: MainActivity, soundId: Int, volumeFraction: Int = 1) {
     val vol = (activity.save?.soundVolume ?: 1f) / volumeFraction
-    effectPlayer = MediaPlayer
+    MediaPlayer
         .create(activity, soundId)
         .apply {
             setVolume(vol, vol)
             setOnCompletionListener {
-                if (effectPlayer == this) {
-                    effectPlayer = null
+                effectPlayersLock.withLock {
+                    effectPlayers.remove(this)
+                    release()
                 }
-                // release()
             }
-            start()
+            effectPlayersLock.withLock {
+                effectPlayers.add(this)
+                start()
+            }
         }
 }
 
@@ -59,16 +68,9 @@ fun getRandomCardFlipSound(): Int {
 }
 
 fun playLoseSound(activity: MainActivity) {
-    if (effectPlayer?.isPlaying == true) {
-        effectPlayer?.stop()
-    }
     playEffectPlayerSound(activity, listOf(R.raw.lose1, R.raw.lose3, R.raw.any).random(), 2)
 }
-
 fun playWinSound(activity: MainActivity) {
-    if (effectPlayer?.isPlaying == true) {
-        effectPlayer?.stop()
-    }
     playEffectPlayerSound(activity, listOf(R.raw.win1, R.raw.win2, R.raw.any).random(), 2)
 }
 
@@ -84,26 +86,29 @@ fun playSelectSound(activity: MainActivity) = playEffectPlayerSound(activity, R.
 fun playPimpBoySound(activity: MainActivity) = playEffectPlayerSound(activity, R.raw.ui_pimpboy, 3)
 fun playVatsEnter(activity: MainActivity) = playEffectPlayerSound(activity, R.raw.ui_vats_enter, 3)
 fun playVatsReady(activity: MainActivity) = playEffectPlayerSound(activity, R.raw.ui_vats_ready, 3)
-fun playQuitMultiplayer(activity: MainActivity) =
-    playEffectPlayerSound(activity, R.raw.quit_multiplayer, 3)
-
+fun playQuitMultiplayer(activity: MainActivity) = playEffectPlayerSound(activity, R.raw.quit_multiplayer, 3)
 fun playNoCardAlarm(activity: MainActivity) = playEffectPlayerSound(activity, R.raw.no_cards_alarm)
 fun playYesBeep(activity: MainActivity) = playEffectPlayerSound(activity, R.raw.beep_a)
 fun playNoBeep(activity: MainActivity) = playEffectPlayerSound(activity, R.raw.beep_b)
 fun playFanfares(activity: MainActivity) = playEffectPlayerSound(activity, R.raw.fanfares)
 
-var currentPlayer: MediaPlayer? = null
-fun stopMusic() {
-    if (currentPlayer?.isPlaying == true) {
-        currentPlayer?.stop()
-        currentPlayer?.release()
+val ambientPlayers = HashSet<MediaPlayer>()
+val ambientPlayersLock = ReentrantLock()
+var wasAmbientPaused = false
+fun stopAmbient() {
+    ambientPlayersLock.withLock {
+        ambientPlayers.forEach { if (it.isPlaying) it.stop() }
     }
-    currentPlayer = null
+}
+fun setAmbientVolume(volume: Float) {
+    ambientPlayersLock.withLock {
+        ambientPlayers.forEach { it.setVolume(volume, volume) }
+    }
 }
 
 fun startAmbient(activity: MainActivity) {
     val vol = (activity.save?.ambientVolume ?: 1f) / 2
-    currentPlayer = MediaPlayer
+    MediaPlayer
         .create(
             activity, listOf(
                 R.raw.ambient1,
@@ -118,13 +123,18 @@ fun startAmbient(activity: MainActivity) {
         ).apply {
             setVolume(vol, vol)
             setOnCompletionListener {
-                if (currentPlayer == this) {
-                    currentPlayer = null
-                    // release()
-                    startAmbient(activity)
+                ambientPlayersLock.withLock {
+                    ambientPlayers.remove(this)
+                    release()
+                }
+                startAmbient(activity)
+            }
+            ambientPlayersLock.withLock {
+                ambientPlayers.add(this)
+                if (!wasAmbientPaused) {
+                    start()
                 }
             }
-            start()
         }
 }
 
@@ -188,32 +198,37 @@ fun startRadio(activity: MainActivity) {
     }
 }
 
-var radioPlayer: MediaPlayer? = null
+val radioPlayers = HashSet<MediaPlayer>()
+val radioLock = ReentrantLock()
 var isRadioStopped = false
 private fun playSongFromRadio(activity: MainActivity, songName: String) {
     val vol = activity.save?.radioVolume ?: 1f
-    radioPlayer = MediaPlayer()
+    MediaPlayer()
         .apply {
             val afd = activity.assets.openFd("radio/$songName")
             setDataSource(afd.fileDescriptor, afd.startOffset, afd.length)
             setOnCompletionListener {
-                if (radioPlayer == this) {
-                    radioPlayer = null
+                radioLock.withLock {
+                    radioPlayers.remove(this)
+                    release()
                 }
-                // release()
                 nextSong(activity)
             }
             prepare()
             setVolume(vol, vol)
-            start()
+            radioLock.withLock {
+                radioPlayers.add(this)
+                start()
+            }
         }
 }
 
 
 fun nextSong(activity: MainActivity) {
-    if (radioPlayer?.isPlaying == true) {
-        radioPlayer?.stop()
+    radioLock.withLock {
+        radioPlayers.forEach { it.stop() }
     }
+
     if (pointer !in songList.indices) {
         pointer = songList.indices.random()
     }
@@ -224,14 +239,33 @@ fun nextSong(activity: MainActivity) {
 
 fun resume() {
     if (!isRadioStopped) {
-        radioPlayer?.start()
+        radioLock.withLock {
+            radioPlayers.forEach { it.start() }
+        }
+    }
+    ambientPlayersLock.withLock {
+        ambientPlayers.forEach {
+            it.start()
+        }
+        wasAmbientPaused = false
+    }
+}
+fun pause() {
+    radioLock.withLock {
+        radioPlayers.forEach { it.pause() }
+    }
+    ambientPlayersLock.withLock {
+        ambientPlayers.forEach {
+            if (it.isPlaying) {
+                it.pause()
+            }
+        }
+        wasAmbientPaused = true
     }
 }
 
-fun pause() {
-    radioPlayer?.pause()
-}
-
 fun setRadioVolume(volume: Float) {
-    radioPlayer?.setVolume(volume, volume)
+    radioLock.withLock {
+        radioPlayers.forEach { it.setVolume(volume, volume) }
+    }
 }

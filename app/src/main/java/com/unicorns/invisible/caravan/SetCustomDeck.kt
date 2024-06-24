@@ -208,7 +208,7 @@ fun SetCustomDeck(
                                     }
                                     updater = !updater
                                 }
-                            ) { activity.save!!.availableDecksAlt[back] == true }
+                            ) { activity.save?.let { it.availableDecksAlt[back] == true } ?: false }
                         }
                     }
                     if (rowTabShow) {

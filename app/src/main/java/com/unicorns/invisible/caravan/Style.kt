@@ -286,7 +286,7 @@ fun BoxWithConstraintsScope.StylePicture(
                             val degrees = 180 * newRotation / Math.PI
                             rotation.animateTo(
                                 degrees.toFloat(),
-                                TweenSpec(activity.animationTickLength.value!!.toInt() * 10)
+                                TweenSpec((activity.animationSpeed.value?.delay?.toInt() ?: 190) * 10)
                             )
                             offset.animateTo(newOffset, TweenSpec(length.toInt()))
                         }

@@ -16,12 +16,15 @@ class CResources(private val deck: CustomDeck) {
     fun getTopHand() = deck.toList().take(8)
     fun initHand(toPutInHand: List<Card>) {
         deck.removeAll(toPutInHand)
+        toPutInHand.forEach { it.handAnimationMark = Card.AnimationMark.MOVING_IN }
         handMutable.addAll(toPutInHand)
     }
 
     fun addToHand() {
         if (deck.size > 0) {
-            handMutable.add(deck.removeFirst())
+            val card = deck.removeFirst()
+            card.handAnimationMark = Card.AnimationMark.MOVING_IN
+            handMutable.add(card)
         }
     }
 
@@ -30,6 +33,7 @@ class CResources(private val deck: CustomDeck) {
             return null
         }
         val card = deck.removeFirst()
+        card.handAnimationMark = Card.AnimationMark.MOVING_IN
         handMutable.add(card)
         return card
     }
@@ -38,6 +42,7 @@ class CResources(private val deck: CustomDeck) {
         if (deck.size > 0) {
             deck.removeFirst()
         }
+        card.handAnimationMark = Card.AnimationMark.MOVING_IN
         handMutable.add(card)
     }
 
@@ -45,6 +50,7 @@ class CResources(private val deck: CustomDeck) {
     var onRemoveFromHand: () -> Unit = {}
     fun removeFromHand(index: Int): Card {
         onRemoveFromHand()
+        handMutable[index].handAnimationMark = Card.AnimationMark.MOVING_OUT
         return handMutable.removeAt(index)
     }
 
@@ -53,6 +59,7 @@ class CResources(private val deck: CustomDeck) {
     fun dropCardFromHand(index: Int) {
         onRemoveFromHand()
         onDropCardFromHand()
+        handMutable[index].handAnimationMark = Card.AnimationMark.MOVING_OUT
         handMutable.removeAt(index)
     }
 
@@ -64,15 +71,4 @@ class CResources(private val deck: CustomDeck) {
 
     val numOfNumbers: Int
         get() = deck.count { !it.isFace() }
-
-    fun copyFrom(resources: CResources) {
-        handMutable.clear()
-        handMutable.addAll(resources.handMutable)
-        deck.clear()
-        resources.deck.toList().forEach {
-            deck.add(it.copy())
-        }
-    }
-
-    fun getDeckCopy(): List<Card> = deck.toList()
 }

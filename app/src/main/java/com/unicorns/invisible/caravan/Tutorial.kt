@@ -31,7 +31,7 @@ import com.unicorns.invisible.caravan.utils.clickableCancel
 import com.unicorns.invisible.caravan.utils.getDialogBackground
 import com.unicorns.invisible.caravan.utils.getDialogTextColor
 import com.unicorns.invisible.caravan.utils.getTextColor
-import com.unicorns.invisible.caravan.utils.stopMusic
+import com.unicorns.invisible.caravan.utils.stopAmbient
 
 @Composable
 fun Tutorial(activity: MainActivity, goBack: () -> Unit) {
@@ -78,7 +78,7 @@ fun Tutorial(activity: MainActivity, goBack: () -> Unit) {
         updater = !updater
     }
 
-    ShowGame(activity = activity, game = game) { stopMusic(); goBack() }
+    ShowGame(activity = activity, game = game) { stopAmbient(); goBack() }
 
     key(updater) {
         when (tutorialKey) {
