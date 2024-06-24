@@ -857,7 +857,8 @@ class MainActivity : SaveDataActivity() {
                     Column(
                         Modifier
                             .fillMaxWidth()
-                            .padding(start = 16.dp)
+                            .padding(start = 16.dp),
+                        verticalArrangement = Arrangement.Center
                     ) {
                         @Composable
                         fun MenuItem(text: String, onClick: () -> Unit) {
@@ -874,10 +875,26 @@ class MainActivity : SaveDataActivity() {
                                 TextAlign.Start
                             )
                         }
-                        Spacer(Modifier.height(64.dp))
+                        Spacer(Modifier.height(32.dp))
                         MenuItem(stringResource(R.string.menu_pve), showPvE)
                         Spacer(modifier = Modifier.height(20.dp))
-                        MenuItem(stringResource(R.string.menu_pvp), showPvP)
+                        Row {
+                            MenuItem(stringResource(R.string.menu_pvp), showPvP)
+                            // TODO
+//                            Spacer(Modifier.width(4.dp))
+//                            TextFallout(
+//                                "Q",
+//                                getTextColor(this@MainActivity),
+//                                getTextStrokeColor(this@MainActivity),
+//                                20.sp,
+//                                Alignment.CenterStart,
+//                                Modifier
+//                                    .clickableOk(this@MainActivity) {  }
+//                                    .background(getTextBackgroundColor(this@MainActivity))
+//                                    .padding(8.dp),
+//                                TextAlign.Start
+//                            )
+                        }
                         Spacer(modifier = Modifier.height(20.dp))
                         MenuItem(stringResource(R.string.menu_tutorial), showTutorial)
                         Spacer(modifier = Modifier.height(20.dp))
