@@ -179,14 +179,14 @@
     <string name="tutorial_53">That\'s it. I am not going to tell all my tricks, you should figure the game out yourself.</string>
     <string name="tutorial_56">See ya round.</string>
 
-    <string name="create_room">Create Room (you go first)</string>
+    <string name="create_room">Create Room</string>
     <string name="failure">Failure!</string>
     <string name="incorrect_room_number">Incorrect room number!</string>
     <string name="your_room_is">Your Room is %1$s. Awaiting the Opponent.....</string>
     <string name="private_room">Private room</string>
     <string name="find">Join any Room!!!</string>
     <string name="pool">Requesting room…</string>
-    <string name="join">Join Room (you go second)</string>
+    <string name="join">Join Room</string>
     <string name="room_number">Room</string>
     <string name="no_stats_here">No stats here: the game\'s for fun, not for numbers!</string>
     <string name="pvp_piece">
@@ -298,4 +298,14 @@
     <string name="style_vault_22">Vault 22</string>
 
     <string name="get_more_by_earning_cards_you_already_have">(Get more by earning cards you already have!)</string>
+
+    <string name="q_pinging" translatable="false">Q-pinging</string>
+    <string name="q_pinging_warning">Warning! Every time you leave the app, you have to relaunch Q-pinging manually. Also: when you receive message about match, Q-pinging stops automatically.</string>
+    <string name="q_pinging_explanation">When Q-pinging is launched, server is checked for some other players, who are also Q-pinging. If someone else is found, you two are assigned a private multiplayer room to play.</string>
+    <string name="q_pinging_switch">Q-pinging switch</string>
+    <string name="i_ll_join">I\'ll join!</string>
+    <string name="nah_i_ll_pass">Nah, I\'ll pass.</string>
+    <string name="you_have_a_match">You have a match!</string>
+    <string name="q_pinging_message">You have been assigned room #%1$s. Hurry up to be its creator and have the first move! Go to Multiplayer, enter given room number and Join!</string>
+
 </resources>

@@ -30,6 +30,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -61,9 +62,11 @@ import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.CustomDeck
 import com.unicorns.invisible.caravan.save.Save
 import com.unicorns.invisible.caravan.save.getSaveFile
+import com.unicorns.invisible.caravan.save.json
 import com.unicorns.invisible.caravan.save.loadFromGD
 import com.unicorns.invisible.caravan.save.loadLocalSave
 import com.unicorns.invisible.caravan.save.saveOnGD
+import com.unicorns.invisible.caravan.utils.CheckboxCustom
 import com.unicorns.invisible.caravan.utils.SliderCustom
 import com.unicorns.invisible.caravan.utils.SwitchCustom
 import com.unicorns.invisible.caravan.utils.TextFallout
@@ -88,13 +91,16 @@ import com.unicorns.invisible.caravan.utils.pause
 import com.unicorns.invisible.caravan.utils.playClickSound
 import com.unicorns.invisible.caravan.utils.playCloseSound
 import com.unicorns.invisible.caravan.utils.playNotificationSound
+import com.unicorns.invisible.caravan.utils.playQuitMultiplayer
 import com.unicorns.invisible.caravan.utils.resume
 import com.unicorns.invisible.caravan.utils.scrollbar
+import com.unicorns.invisible.caravan.utils.sendRequest
 import com.unicorns.invisible.caravan.utils.setAmbientVolume
 import com.unicorns.invisible.caravan.utils.setRadioVolume
 import com.unicorns.invisible.caravan.utils.startRadio
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.chromium.net.CronetEngine
@@ -125,6 +131,7 @@ class MainActivity : SaveDataActivity() {
     override fun onPause() {
         super.onPause()
         pause()
+        stopQPing()
         effectPlayers.forEach { if (it.isPlaying) it.stop() }
     }
 
@@ -160,7 +167,9 @@ class MainActivity : SaveDataActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        id = UUID.randomUUID().toString()
+        if (id == "") {
+            id = UUID.randomUUID().toString()
+        }
         if (cronetEngine == null) {
             try {
                 val myBuilder = CronetEngine.Builder(this)
@@ -526,6 +535,217 @@ class MainActivity : SaveDataActivity() {
             }
         }
 
+
+        var showQDialog by remember { mutableStateOf(false) }
+        var showQDialog2 by remember { mutableStateOf(false) }
+        var roomNumber by remember { mutableIntStateOf(0) }
+
+        fun showQDialog(room: Int) {
+            showQDialog = true
+            roomNumber = room
+        }
+        fun hideQDialog() {
+            showQDialog = false
+            showQDialog2 = false
+        }
+
+        var showQSetDialog by remember { mutableStateOf(false) }
+        var showQSetDialog2 by remember { mutableStateOf(false) }
+        var useCustomDeckQ by rememberSaveable { mutableStateOf(false) }
+        fun showQSetDialog() {
+            showQSetDialog = true
+        }
+        fun hideQSetDialog() {
+            showQSetDialog = false
+            showQSetDialog2 = false
+        }
+        if (showQSetDialog) {
+            LaunchedEffect(Unit) {
+                delay(50L)
+                playNotificationSound(this@MainActivity) { showQSetDialog2 = true }
+            }
+
+            if (showQSetDialog2) {
+                var isQPinging by remember { mutableStateOf(qJob != null) }
+                if (isQPinging != (qJob != null)) {
+                    isQPinging = qJob != null
+                }
+                AlertDialog(
+                    modifier = Modifier.border(width = 4.dp, color = getTextColor(this)),
+                    onDismissRequest = {},
+                    confirmButton = {},
+                    dismissButton = {
+                        TextFallout(
+                            stringResource(R.string.back_to_menu),
+                            getDialogBackground(this),
+                            getDialogBackground(this), 18.sp, Alignment.Center,
+                            Modifier
+                                .background(getDialogTextColor(this))
+                                .clickableCancel(this) {
+                                    hideQSetDialog()
+                                }
+                                .padding(4.dp),
+                            TextAlign.Center
+                        )
+                    },
+                    title = {
+                        TextFallout(
+                            stringResource(R.string.q_pinging), getDialogTextColor(this), getDialogTextColor(this),
+                            24.sp, Alignment.CenterStart, Modifier,
+                            TextAlign.Start
+                        )
+                    },
+                    text = {
+                        Column {
+                            Row(
+                                horizontalArrangement = Arrangement.Center,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                TextFallout(
+                                    stringResource(R.string.q_pinging_explanation),
+                                    getDialogTextColor(this@MainActivity),
+                                    getDialogTextColor(this@MainActivity),
+                                    20.sp,
+                                    Alignment.CenterStart,
+                                    Modifier.fillMaxWidth(),
+                                    TextAlign.Start
+                                )
+                            }
+                            Spacer(Modifier.height(8.dp))
+                            Row(
+                                horizontalArrangement = Arrangement.Center,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                TextFallout(
+                                    stringResource(R.string.q_pinging_warning),
+                                    getDialogTextColor(this@MainActivity),
+                                    getDialogTextColor(this@MainActivity),
+                                    20.sp,
+                                    Alignment.CenterStart,
+                                    Modifier.fillMaxWidth(),
+                                    TextAlign.Start
+                                )
+                            }
+                            Spacer(Modifier.height(8.dp))
+                            Row(
+                                horizontalArrangement = Arrangement.Center,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                TextFallout(
+                                    stringResource(R.string.q_pinging_switch),
+                                    getDialogTextColor(this@MainActivity),
+                                    getDialogTextColor(this@MainActivity),
+                                    20.sp,
+                                    Alignment.CenterStart,
+                                    Modifier.fillMaxWidth(0.66f),
+                                    TextAlign.Start
+                                )
+                                Spacer(modifier = Modifier.width(16.dp))
+                                SwitchCustom(this@MainActivity, { isQPinging }) {
+                                    isQPinging = !isQPinging
+                                    if (isQPinging) {
+                                        launchQPing(useCustomDeckQ, ::showQDialog)
+                                    } else {
+                                        stopQPing()
+                                    }
+                                }
+                            }
+                            Spacer(Modifier.height(8.dp))
+                            Row(
+                                horizontalArrangement = Arrangement.Center,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                TextFallout(
+                                    stringResource(R.string.pve_use_custom_deck),
+                                    getDialogTextColor(this@MainActivity),
+                                    getDialogTextColor(this@MainActivity),
+                                    20.sp,
+                                    Alignment.CenterStart,
+                                    Modifier.fillMaxWidth(0.66f),
+                                    TextAlign.Start
+                                )
+                                Spacer(modifier = Modifier.width(16.dp))
+                                CheckboxCustom(this@MainActivity, { useCustomDeckQ }, {
+                                    useCustomDeckQ = !useCustomDeckQ
+                                    if (useCustomDeckQ) {
+                                        playClickSound(this@MainActivity)
+                                    } else {
+                                        playCloseSound(this@MainActivity)
+                                    }
+                                }, { !isQPinging })
+                            }
+                        }
+                    },
+                    containerColor = getDialogBackground(this),
+                    textContentColor = getDialogTextColor(this),
+                    shape = RectangleShape,
+                )
+            }
+        }
+        if (showQDialog) {
+            LaunchedEffect(Unit) {
+                delay(50L)
+                playNotificationSound(this@MainActivity) { showQDialog2 = true }
+            }
+
+            if (showQDialog2) {
+                AlertDialog(
+                    modifier = Modifier.border(width = 4.dp, color = getTextColor(this)),
+                    onDismissRequest = {},
+                    confirmButton = {
+                        TextFallout(
+                            stringResource(R.string.i_ll_join),
+                            getDialogBackground(this),
+                            getDialogBackground(this),
+                            18.sp, Alignment.Center,
+                            Modifier
+                                .background(getDialogTextColor(this))
+                                .clickableCancel(this) {
+                                    hideQDialog()
+                                }
+                                .padding(4.dp),
+                            TextAlign.Center
+                        )
+                    },
+                    dismissButton = {
+                        TextFallout(
+                            stringResource(R.string.nah_i_ll_pass),
+                            getDialogBackground(this),
+                            getDialogBackground(this), 18.sp, Alignment.Center,
+                            Modifier
+                                .background(getDialogTextColor(this))
+                                .clickableCancel(this) {
+                                    hideQDialog()
+                                    sendQNegativeResponse(roomNumber)
+                                    playQuitMultiplayer(this)
+                                }
+                                .padding(4.dp),
+                            TextAlign.Center
+                        )
+                    },
+                    title = {
+                        TextFallout(
+                            stringResource(R.string.you_have_a_match), getDialogTextColor(this), getDialogTextColor(this),
+                            24.sp, Alignment.CenterStart, Modifier,
+                            TextAlign.Start
+                        )
+                    },
+                    text = {
+                        TextFallout(
+                            stringResource(R.string.q_pinging_message, roomNumber),
+                            getDialogTextColor(this),
+                            getDialogTextColor(this),
+                            16.sp, Alignment.CenterStart, Modifier,
+                            TextAlign.Start
+                        )
+                    },
+                    containerColor = getDialogBackground(this),
+                    textContentColor = getDialogTextColor(this),
+                    shape = RectangleShape,
+                )
+            }
+        }
+
         Scaffold(
             topBar = {
                 var isPaused by remember { mutableStateOf(false) }
@@ -683,6 +903,7 @@ class MainActivity : SaveDataActivity() {
                                 { showAbout = true },
                                 { showGameStats = true },
                                 { showPvP = true },
+                                { showQSetDialog() },
                                 { showTutorial = true },
                                 { showRules = true },
                                 { showVision = true },
@@ -705,6 +926,7 @@ class MainActivity : SaveDataActivity() {
         showAbout: () -> Unit,
         showPvE: () -> Unit,
         showPvP: () -> Unit,
+        showQ: () -> Unit,
         showTutorial: () -> Unit,
         showRules: () -> Unit,
         showVision: () -> Unit,
@@ -878,23 +1100,9 @@ class MainActivity : SaveDataActivity() {
                         Spacer(Modifier.height(32.dp))
                         MenuItem(stringResource(R.string.menu_pve), showPvE)
                         Spacer(modifier = Modifier.height(20.dp))
-                        Row {
-                            MenuItem(stringResource(R.string.menu_pvp), showPvP)
-                            // TODO
-//                            Spacer(Modifier.width(4.dp))
-//                            TextFallout(
-//                                "Q",
-//                                getTextColor(this@MainActivity),
-//                                getTextStrokeColor(this@MainActivity),
-//                                20.sp,
-//                                Alignment.CenterStart,
-//                                Modifier
-//                                    .clickableOk(this@MainActivity) {  }
-//                                    .background(getTextBackgroundColor(this@MainActivity))
-//                                    .padding(8.dp),
-//                                TextAlign.Start
-//                            )
-                        }
+                        MenuItem(stringResource(R.string.menu_pvp), showPvP)
+                        Spacer(modifier = Modifier.height(20.dp))
+                        MenuItem(stringResource(R.string.q_pinging), showQ)
                         Spacer(modifier = Modifier.height(20.dp))
                         MenuItem(stringResource(R.string.menu_tutorial), showTutorial)
                         Spacer(modifier = Modifier.height(20.dp))
@@ -1000,6 +1208,49 @@ class MainActivity : SaveDataActivity() {
                 )
             }
         }
+    }
+
+    private var qJob: Job? = null
+    private fun launchQPing(isCustom: Boolean, showAlertDialog: (Int) -> Unit) {
+        qJob = CoroutineScope(Dispatchers.IO).launch {
+            fun sendQPing() {
+                sendRequest("$crvnUrl/crvn/q_ping?vid=${id}&is_custom=${isCustom.toPythonBool()}") { result ->
+                    if (result.getString("body") == "0") {
+                        CoroutineScope(Dispatchers.Unconfined).launch {
+                            delay(19000L)
+                            sendQPing()
+                        }
+                        return@sendRequest
+                    }
+                    val response = try {
+                        json.decodeFromString<Int>(result.getString("body"))
+                    } catch (e: Exception) {
+                        CoroutineScope(Dispatchers.Unconfined).launch {
+                            delay(19000L)
+                            sendQPing()
+                        }
+                        return@sendRequest
+                    }
+
+                    if (response in (10..22229)) {
+                        showAlertDialog(response)
+                    } else {
+                        CoroutineScope(Dispatchers.Unconfined).launch {
+                            delay(19000L)
+                            sendQPing()
+                        }
+                    }
+                }
+            }
+            sendQPing()
+        }
+    }
+    private fun stopQPing() {
+        qJob?.cancel()
+        qJob = null
+    }
+    private fun sendQNegativeResponse(room: Int) {
+        sendRequest("$crvnUrl/crvn/q_ping_response?room=${room}") {}
     }
 
     companion object {

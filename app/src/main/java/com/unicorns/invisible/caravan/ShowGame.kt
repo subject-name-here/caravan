@@ -476,19 +476,19 @@ fun EnemySide(
         RowOfEnemyCards(activity, animationSpeed, game.enemyCResources.hand, enemyHandKey < 0)
         key(enemyHandKey) {
             Box(Modifier.fillMaxSize()) {
-                ShowDeck(game.enemyCResources, activity)
+                ShowDeck(game.enemyCResources, activity, isKnown = !isPvP)
                 if (isPvP) {
                     Box(
                         modifier = Modifier
                             .fillMaxSize()
                             .background(Color.Transparent),
-                        contentAlignment = Alignment.Center
+                        contentAlignment = Alignment.BottomCenter
                     ) {
                         TextSymbola(
                             getEnemySymbol(),
                             getTextColor(activity),
                             24.sp,
-                            Alignment.Center,
+                            Alignment.BottomCenter,
                             Modifier.background(getTextBackgroundColor(activity)),
                             TextAlign.Center
                         )
@@ -530,13 +530,13 @@ fun PlayerSide(
                     modifier = Modifier
                         .fillMaxSize()
                         .background(Color.Transparent),
-                    contentAlignment = Alignment.Center
+                    contentAlignment = Alignment.BottomCenter
                 ) {
                     TextSymbola(
                         getMySymbol(),
                         getTextColor(activity),
                         24.sp,
-                        Alignment.Center,
+                        Alignment.BottomCenter,
                         Modifier
                             .background(getTextBackgroundColor(activity))
                             .clickableOk(activity) {

@@ -83,24 +83,21 @@ fun customDeckToInts(customDeck: CustomDeck): List<ULong> {
 
     CardBack.entries.forEachIndexed { _, cardBack ->
         var code = 0UL
-        var cnt = 0
         fun updateCode(card: Card) {
-            if (customDeck.contains(card)) {
-                code = code or (1UL shl cnt)
-            }
-            cnt++
+            val cnt = card.rank.ordinal * Suit.entries.size + card.suit.ordinal
+            code = code or (1UL shl cnt)
         }
-        Rank.entries.forEach { rank ->
-            if (rank == Rank.JOKER) {
-                updateCode(Card(rank, Suit.HEARTS, cardBack, false))
-                updateCode(Card(rank, Suit.CLUBS, cardBack, false))
-            } else {
-                Suit.entries.forEach { suit ->
-                    updateCode(Card(rank, suit, cardBack, false))
-                }
+        var isAlt = false
+        customDeck.toList().forEach {
+            if (it.back == cardBack) {
+                updateCode(it)
+                isAlt = isAlt || it.isAlt
             }
         }
 
+        if (isAlt) {
+            code = code or (1UL shl 60)
+        }
         result.add(code)
     }
     return result
@@ -160,7 +157,8 @@ fun ShowPvP(
         }
 
         val cardsList = mutableListOf<Card>()
-        fun processCard(cardBackIndex: Int, index: Int, card: Card) {
+        fun processCard(cardBackIndex: Int, card: Card) {
+            val index = card.rank.ordinal * Suit.entries.size + card.suit.ordinal
             val n = response[cardBackIndex]
             if ((n shr index) and 1UL == 1UL) {
                 cardsList.add(card)
@@ -168,21 +166,21 @@ fun ShowPvP(
         }
 
         CardBack.entries.forEachIndexed { index, cardBack ->
-            var cnt = 0
+            val isAlt = (response[index] shr 60) and 1UL == 1UL
             Rank.entries.forEach { rank ->
                 if (rank == Rank.JOKER) {
-                    processCard(index, cnt++, Card(rank, Suit.HEARTS, cardBack, false))
-                    processCard(index, cnt++, Card(rank, Suit.CLUBS, cardBack, false))
+                    processCard(index, Card(rank, Suit.HEARTS, cardBack, isAlt))
+                    processCard(index, Card(rank, Suit.CLUBS, cardBack, isAlt))
                 } else {
                     Suit.entries.forEach { suit ->
-                        processCard(index, cnt++, Card(rank, suit, cardBack, false))
+                        processCard(index, Card(rank, suit, cardBack, isAlt))
                     }
                 }
             }
         }
 
         if (!isCreator) {
-            checkedCustomDeck = response[0] > (1UL shl 54)
+            checkedCustomDeck = (response[0] shr 55) and 1UL == 1UL
         }
 
         enemyDeck = CustomDeck().also { customDeck ->
@@ -220,9 +218,10 @@ fun ShowPvP(
         isRoomCreated = roomNumber.toIntOrNull() ?: return
         val deckPair = selectedDeck()
         val deckCodes = customDeckToInts(
-            if (checkedCustomDeck) activity.save!!.getCustomDeckCopy() else CustomDeck(
-                deckPair.first, deckPair.second
-            )
+            if (checkedCustomDeck)
+                activity.save!!.getCustomDeckCopy()
+            else
+                CustomDeck(deckPair.first, deckPair.second)
         )
         sendRequest(
             "$crvnUrl/crvn/create?is_custom=${checkedCustomDeck.toPythonBool()}" +
@@ -260,6 +259,7 @@ fun ShowPvP(
             "$crvnUrl/crvn/join?room=$isRoomCreated" +
                     "&jid=${activity.id}" +
                     "&back=${selectedDeck().first.ordinal}" +
+                    "&is_alt=${selectedDeck().second.toPythonBool()}" +
                     "&deck0=${deckCodes[0]}" +
                     "&deck1=${deckCodes[1]}" +
                     "&deck2=${deckCodes[2]}" +
@@ -267,6 +267,18 @@ fun ShowPvP(
                     "&deck4=${deckCodes[4]}" +
                     "&deck5=${deckCodes[5]}"
         ) { result ->
+            val responseIfCreator = try {
+                json.decodeFromString<Int>(result.getString("body"))
+            } catch (e: Exception) {
+                0
+            }
+            if (responseIfCreator != 0) {
+                isCreator = true
+                checkedCustomDeck = responseIfCreator == 1
+                checkRoomForJoiner()
+                return@sendRequest
+            }
+
             val response = try {
                 json.decodeFromString<List<ULong>>(result.getString("body"))
             } catch (e: Exception) {
@@ -682,7 +694,7 @@ fun StartPvP(
                 "&new_card_back_in_hand_code=${card.back.ordinal}" +
                 "&new_card_rank_in_hand_code=${card.rank.ordinal}" +
                 "&new_card_suit_in_hand_code=${card.suit.ordinal}" +
-                "&is_alt=${(activity.save?.altDecksChosen?.get(card.back) == true).toPythonBool()}"
+                "&is_alt=${card.isAlt.toPythonBool()}"
         sendRequest(link) { _ ->
             pingForMove(::sendHandCard)
         }
