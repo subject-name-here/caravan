@@ -314,4 +314,6 @@
     <string name="you_have_a_match">Матч!</string>
     <string name="q_pinging_message">Вам назначена комната #%1$s. Поспешите, чтобы быть ее создателем и получить право первого хода! Идите в \"Играть с человеком\", введите номер комнаты и нажмите \"Войти в Номер\"!</string>
 
+    <string name="lucky_38">Казино Lucky 38</string>
+
 </resources>

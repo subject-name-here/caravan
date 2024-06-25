@@ -37,9 +37,6 @@ class Game(
     var onLose: () -> Unit = {}
 
     @Transient
-    var saySomething: (Int, Int) -> Unit = { _, _ -> }
-
-    @Transient
     var jokerPlayedSound: () -> Unit = {}
 
     var isGameOver = 0
@@ -164,6 +161,8 @@ class Game(
         }
     }
 
+    @Transient
+    var specialGameOverCondition: () -> Int = { 0 }
     fun checkOnGameOver(): Boolean {
         if (!isPlayerTurn && enemyCResources.hand.isEmpty()) {
             isGameOver = 1
@@ -204,6 +203,12 @@ class Game(
                 isGameOver = -1
                 true
             }
+        }
+
+        val special = specialGameOverCondition()
+        if (special != 0) {
+            isGameOver = special
+            return true
         }
 
         isGameOver = 0

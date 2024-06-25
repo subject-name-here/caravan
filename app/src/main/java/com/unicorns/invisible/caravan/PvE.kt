@@ -557,8 +557,6 @@ fun StartGame(
                 )
             }
         }
-        it.saySomething =
-            { id1, id2 -> showAlertDialog(activity.getString(id1), activity.getString(id2)) }
         it.jokerPlayedSound = { playJokerSounds(activity) }
     }
     activity.goBack = { stopAmbient(); goBack() }

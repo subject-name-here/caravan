@@ -302,6 +302,7 @@ class MainActivity : SaveDataActivity() {
     fun Screen() {
         var deckSelection by rememberSaveable { mutableStateOf(false) }
         var showPvP by rememberSaveable { mutableStateOf(false) }
+        var showHouse by rememberSaveable { mutableStateOf(false) }
         var showAbout by rememberSaveable { mutableStateOf(false) }
         var showGameStats by rememberSaveable { mutableStateOf(false) }
         var showTutorial by rememberSaveable { mutableStateOf(false) }
@@ -859,6 +860,15 @@ class MainActivity : SaveDataActivity() {
                         ShowAbout(activity = this@MainActivity) { showAbout = false }
                     }
 
+                    showHouse -> {
+                        ShowHouse(
+                            activity = this@MainActivity,
+                            selectedDeck = { selectedDeck },
+                            ::showAlertDialog
+                        ) { showHouse = false }
+                    }
+
+
                     showGameStats -> {
                         ShowPvE(
                             activity = this@MainActivity,
@@ -919,6 +929,7 @@ class MainActivity : SaveDataActivity() {
                                 { deckSelection = true },
                                 { showAbout = true },
                                 { showGameStats = true },
+                                { showHouse = true },
                                 { showPvP = true },
                                 { showQSetDialog() },
                                 { showTutorial = true },
@@ -942,6 +953,7 @@ class MainActivity : SaveDataActivity() {
         showDeckSelection: () -> Unit,
         showAbout: () -> Unit,
         showPvE: () -> Unit,
+        showHouse: () -> Unit,
         showPvP: () -> Unit,
         showQ: () -> Unit,
         showTutorial: () -> Unit,
@@ -1116,6 +1128,8 @@ class MainActivity : SaveDataActivity() {
                         }
                         Spacer(Modifier.height(32.dp))
                         MenuItem(stringResource(R.string.menu_pve), showPvE)
+                        Spacer(modifier = Modifier.height(20.dp))
+                        MenuItem(stringResource(R.string.lucky_38), showHouse)
                         Spacer(modifier = Modifier.height(20.dp))
                         MenuItem(stringResource(R.string.menu_pvp), showPvP)
                         Spacer(modifier = Modifier.height(20.dp))

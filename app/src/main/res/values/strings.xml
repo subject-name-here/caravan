@@ -307,5 +307,6 @@
     <string name="nah_i_ll_pass">Nah, I\'ll pass.</string>
     <string name="you_have_a_match">You have a match!</string>
     <string name="q_pinging_message">You have been assigned room #%1$s. Hurry up to be its creator and have the first move! Go to Multiplayer, enter given room number and Join!</string>
+    <string name="lucky_38">Lucky 38</string>
 
 </resources>

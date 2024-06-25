@@ -275,6 +275,33 @@ fun SliderCustom(
     )
 }
 
+// Except for this Slider, it is supposed to be on usual background.
+
+@Composable
+fun SliderValueRangeCustom(
+    activity: MainActivity,
+    getValue: () -> Float,
+    setValue: (Float) -> Unit,
+    steps: Int,
+    onValueChangedFinished: () -> Unit = {}
+) {
+    Slider(
+        getValue(), onValueChange = { setValue(it) }, colors = SliderColors(
+            thumbColor = getTextColor(activity),
+            activeTrackColor = getTextBackgroundColor(activity),
+            activeTickColor = getTextBackgroundColor(activity),
+            inactiveTickColor = getTextBackgroundColor(activity),
+            inactiveTrackColor = getTextBackgroundColor(activity),
+            disabledThumbColor = Color.Gray,
+            disabledActiveTrackColor = Color.Gray,
+            disabledActiveTickColor = Color.Gray,
+            disabledInactiveTickColor = Color.Gray,
+            disabledInactiveTrackColor = Color.Gray,
+        ), onValueChangeFinished = onValueChangedFinished,
+        steps = steps,
+    )
+}
+
 @Composable
 fun SwitchCustom(
     activity: MainActivity,

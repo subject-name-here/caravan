@@ -134,7 +134,6 @@ fun ShowTrueSettings(
                                 TextAlign.Center
                             )
                         }
-
                     }
                 }
             }
