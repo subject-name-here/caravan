@@ -7,14 +7,12 @@ import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.Caravan
 import com.unicorns.invisible.caravan.model.primitives.Card
 import com.unicorns.invisible.caravan.model.primitives.Rank
-import com.unicorns.invisible.caravan.save.json
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
-import kotlinx.serialization.encodeToString
 import java.util.UUID
 
 
@@ -236,7 +234,8 @@ class Game(
     }
 }
 
+var currentGame: Game? = null
 val GameSaver = Saver<Game, String>(
-    save = { json.encodeToString(it) },
-    restore = { json.decodeFromString<Game>(it) }
+    save = { currentGame = it; "" },
+    restore = { val game = currentGame; currentGame = null; game }
 )

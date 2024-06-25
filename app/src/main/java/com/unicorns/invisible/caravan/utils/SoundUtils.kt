@@ -15,6 +15,10 @@ fun playNotificationSound(activity: MainActivity, onPrepared: () -> Unit) {
     MediaPlayer
         .create(activity, R.raw.notification)
         .apply {
+            if (this == null) {
+                onPrepared()
+                return
+            }
             setVolume(volume, volume)
             setOnPreparedListener { onPrepared() }
             setOnCompletionListener {
@@ -35,6 +39,9 @@ private fun playEffectPlayerSound(activity: MainActivity, soundId: Int, volumeFr
     MediaPlayer
         .create(activity, soundId)
         .apply {
+            if (this == null) {
+                return
+            }
             setVolume(vol, vol)
             setOnCompletionListener {
                 effectPlayersLock.withLock {
@@ -201,6 +208,7 @@ fun startRadio(activity: MainActivity) {
 val radioPlayers = HashSet<MediaPlayer>()
 val radioLock = ReentrantLock()
 var isRadioStopped = false
+var isRadioPausedByLeavingActivity = false
 private fun playSongFromRadio(activity: MainActivity, songName: String) {
     val vol = activity.save?.radioVolume ?: 1f
     MediaPlayer()
@@ -218,7 +226,9 @@ private fun playSongFromRadio(activity: MainActivity, songName: String) {
             setVolume(vol, vol)
             radioLock.withLock {
                 radioPlayers.add(this)
-                start()
+                if (!isRadioPausedByLeavingActivity) {
+                    start()
+                }
             }
         }
 }
@@ -241,6 +251,7 @@ fun resume() {
     if (!isRadioStopped) {
         radioLock.withLock {
             radioPlayers.forEach { it.start() }
+            isRadioPausedByLeavingActivity = false
         }
     }
     ambientPlayersLock.withLock {
@@ -253,6 +264,7 @@ fun resume() {
 fun pause() {
     radioLock.withLock {
         radioPlayers.forEach { it.pause() }
+        isRadioPausedByLeavingActivity = true
     }
     ambientPlayersLock.withLock {
         ambientPlayers.forEach {

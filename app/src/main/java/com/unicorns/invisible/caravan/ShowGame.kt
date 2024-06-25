@@ -35,6 +35,7 @@ import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -97,8 +98,8 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
     var selectedCard by remember { mutableStateOf<Int?>(null) }
     var selectedCaravan by remember { mutableIntStateOf(-1) }
 
-    var caravansKey by remember { mutableStateOf(true) }
-    var enemyHandKey by remember { mutableIntStateOf(0) }
+    var caravansKey by rememberSaveable { mutableStateOf(true) }
+    var enemyHandKey by rememberSaveable { mutableIntStateOf(0) }
 
     game.enemyCResources.onDropCardFromHand = { enemyHandKey = -1 }
 
@@ -249,7 +250,11 @@ fun ShowGameRaw(
     dropCaravan: () -> Unit,
     enemyHandKey: Int
 ) {
-    LaunchedEffect(Unit) { startAmbient(activity) }
+    var ambientStartedFlag by rememberSaveable { mutableStateOf(false) }
+    if (!ambientStartedFlag) {
+        ambientStartedFlag = true
+        LaunchedEffect(Unit) { startAmbient(activity) }
+    }
 
     if (game.playerCResources.deckSize == 0) {
         LaunchedEffect(Unit) { playNoCardAlarm(activity) }
@@ -806,7 +811,7 @@ fun RowScope.CaravanOnField(
                                     val modifierOffset =
                                         ((if (isEnemy) (-10).dp else 10.dp) * (modifierIndex + 1)).toPx()
                                             .toInt()
-                                    layout(placeable.width, 0) {
+                                    layout((placeable.width * scale).toInt(), 0) {
                                         placeable.place(modifierOffset, 0)
                                     }
                                 })
@@ -823,23 +828,25 @@ fun RowScope.CaravanOnField(
                             val modifier = Modifier
                                 .layout { measurable, constraints ->
                                     val placeable = measurable.measure(constraints)
+                                    val placeableHeight = (placeable.height * scale).toInt()
+                                    val scaleHeightOffset = placeable.height / 2 - placeableHeight / 2
                                     val layoutFullHeight = if (isEnemy) {
                                         max(
-                                            placeable.height / 3 * (caravan.cards.size + 2),
+                                            placeableHeight / 3 * (caravan.cards.size + 2),
                                             state.layoutInfo.viewportSize.height - 1
                                         )
                                     } else {
-                                        placeable.height / 3 * (caravan.cards.size + 3)
+                                        placeableHeight / 3 * (caravan.cards.size + 3)
                                     }
                                     val offsetWidth = constraints.maxWidth / 2 - placeable.width / 2
                                     val antiOffsetHeight = if (isEnemy)
-                                        (layoutFullHeight - placeable.height / 3 * index - placeable.height)
+                                        (layoutFullHeight - placeableHeight / 3 * index - placeableHeight)
                                     else
-                                        (placeable.height / 3 * index)
-                                    layout(constraints.maxWidth, layoutFullHeight) {
+                                        (placeableHeight / 3 * index)
+                                    layout(constraints.maxWidth, layoutFullHeight.coerceAtLeast(0)) {
                                         placeable.place(
                                             offsetWidth,
-                                            antiOffsetHeight
+                                            antiOffsetHeight - scaleHeightOffset
                                         )
                                     }
                                 }
@@ -955,13 +962,15 @@ fun RowScope.CaravanOnField(
                             Box(modifier = Modifier
                                 .layout { measurable, constraints ->
                                     val placeable = measurable.measure(constraints)
+                                    val placeableHeight = (placeable.height * scale).toInt()
+                                    val placeableWidth = (placeable.width * scale).toInt()
                                     val modifierOffset =
                                         ((if (isEnemy) (-10).dp else 10.dp) * (modifierIndex + 1)).toPx()
                                             .toInt()
-                                    layout(placeable.width, 0) {
+                                    layout(placeableWidth.coerceAtLeast(0), 0) {
                                         placeable.place(
-                                            modifierOffset + (placeable.width * outValue).toInt(),
-                                            (inValue * placeable.height * (if (isPlayerTurn) 1 else -1)).toInt()
+                                            modifierOffset + (placeableWidth * outValue).toInt(),
+                                            (placeableHeight * inValue * (if (isPlayerTurn) 1 else -1)).toInt()
                                         )
                                     }
                                 })
@@ -997,23 +1006,26 @@ fun RowScope.CaravanOnField(
                             val modifier = Modifier
                                 .layout { measurable, constraints ->
                                     val placeable = measurable.measure(constraints)
+                                    val placeableHeight = (placeable.height * scale).toInt()
+                                    val placeableWidth = (placeable.width * scale).toInt()
                                     val layoutFullHeight = if (isEnemy) {
                                         max(
-                                            placeable.height / 3 * (memCards.size + 2),
+                                            placeableHeight / 3 * (memCards.size + 2),
                                             state.layoutInfo.viewportSize.height - 1
                                         )
                                     } else {
-                                        placeable.height / 3 * (memCards.size + 3)
+                                        placeableHeight / 3 * (memCards.size + 3)
                                     }
                                     val offsetWidth = constraints.maxWidth / 2 - placeable.width / 2
                                     val antiOffsetHeight = if (isEnemy)
-                                        (layoutFullHeight - placeable.height / 3 * index - placeable.height)
+                                        (layoutFullHeight - placeableHeight / 3 * index - placeableHeight)
                                     else
-                                        (placeable.height / 3 * index)
-                                    layout(constraints.maxWidth, layoutFullHeight) {
+                                        (placeableHeight / 3 * index)
+                                    val scaleHeightOffset = placeable.height / 2 - placeableHeight / 2
+                                    layout(constraints.maxWidth, layoutFullHeight.coerceAtLeast(0)) {
                                         placeable.place(
-                                            offsetWidth + (placeable.width * outValue).toInt(),
-                                            antiOffsetHeight + (placeable.height * inValue).toInt()
+                                            offsetWidth + (placeableWidth * outValue).toInt(),
+                                            antiOffsetHeight - scaleHeightOffset + (placeableHeight * inValue).toInt()
                                         )
                                     }
                                 }

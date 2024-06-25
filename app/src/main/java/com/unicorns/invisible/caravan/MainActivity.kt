@@ -58,6 +58,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.MutableLiveData
 import com.unicorns.invisible.caravan.model.CardBack
+import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.CustomDeck
 import com.unicorns.invisible.caravan.save.Save
@@ -123,6 +124,8 @@ class MainActivity : SaveDataActivity() {
     var styleId: Style = Style.PIP_BOY
 
     var animationSpeed = MutableLiveData(AnimationSpeed.NORMAL)
+
+    private var isQPinging = MutableLiveData(false)
 
     fun checkIfCustomDeckCanBeUsedInGame(playerCResources: CResources): Boolean {
         return playerCResources.deckSize >= MIN_DECK_SIZE && playerCResources.numOfNumbers >= MIN_NUM_OF_NUMBERS
@@ -552,6 +555,7 @@ class MainActivity : SaveDataActivity() {
         var showQSetDialog by remember { mutableStateOf(false) }
         var showQSetDialog2 by remember { mutableStateOf(false) }
         var useCustomDeckQ by rememberSaveable { mutableStateOf(false) }
+        val isQPingingInner = isQPinging.observeAsState()
         fun showQSetDialog() {
             showQSetDialog = true
         }
@@ -566,10 +570,6 @@ class MainActivity : SaveDataActivity() {
             }
 
             if (showQSetDialog2) {
-                var isQPinging by remember { mutableStateOf(qJob != null) }
-                if (isQPinging != (qJob != null)) {
-                    isQPinging = qJob != null
-                }
                 AlertDialog(
                     modifier = Modifier.border(width = 4.dp, color = getTextColor(this)),
                     onDismissRequest = {},
@@ -641,9 +641,8 @@ class MainActivity : SaveDataActivity() {
                                     TextAlign.Start
                                 )
                                 Spacer(modifier = Modifier.width(16.dp))
-                                SwitchCustom(this@MainActivity, { isQPinging }) {
-                                    isQPinging = !isQPinging
-                                    if (isQPinging) {
+                                SwitchCustom(this@MainActivity, { isQPingingInner.value == true }) {
+                                    if (isQPingingInner.value == false) {
                                         launchQPing(useCustomDeckQ, ::showQDialog)
                                     } else {
                                         stopQPing()
@@ -672,7 +671,7 @@ class MainActivity : SaveDataActivity() {
                                     } else {
                                         playCloseSound(this@MainActivity)
                                     }
-                                }, { !isQPinging })
+                                }, { isQPinging.value == false })
                             }
                         }
                     },
@@ -758,6 +757,23 @@ class MainActivity : SaveDataActivity() {
                             .padding(vertical = 8.dp),
                         horizontalArrangement = Arrangement.SpaceAround
                     ) {
+                        TextFallout(
+                            "Q",
+                            if (isQPingingInner.value == true) Color.Green else Color.Red,
+                            getMusicTextColor(this@MainActivity),
+                            18.sp,
+                            Alignment.Center,
+                            Modifier
+                                .weight(1f)
+                                .wrapContentWidth()
+                                .clickableOk(this@MainActivity) {
+                                    showQSetDialog()
+                                }
+                                .background(getTextBackgroundColor(this@MainActivity))
+                                .padding(4.dp),
+                            TextAlign.Center
+                        )
+
                         TextFallout(
                             if (isPaused) "NONE" else ">|",
                             getMusicTextColor(this@MainActivity),
@@ -862,8 +878,9 @@ class MainActivity : SaveDataActivity() {
                             ShowPvP(
                                 activity = this@MainActivity,
                                 selectedDeck = { selectedDeck },
-                                ::showAlertDialog
-                            ) { showPvP = false }
+                                ::showAlertDialog,
+                                if (roomNumber == 0) null else roomNumber,
+                            ) { roomNumber = 0; showPvP = false }
                         }
                     }
 
@@ -1212,6 +1229,7 @@ class MainActivity : SaveDataActivity() {
 
     private var qJob: Job? = null
     private fun launchQPing(isCustom: Boolean, showAlertDialog: (Int) -> Unit) {
+        isQPinging.value = true
         qJob = CoroutineScope(Dispatchers.IO).launch {
             fun sendQPing() {
                 sendRequest("$crvnUrl/crvn/q_ping?vid=${id}&is_custom=${isCustom.toPythonBool()}") { result ->
@@ -1248,6 +1266,7 @@ class MainActivity : SaveDataActivity() {
     private fun stopQPing() {
         qJob?.cancel()
         qJob = null
+        isQPinging.value = false
     }
     private fun sendQNegativeResponse(room: Int) {
         sendRequest("$crvnUrl/crvn/q_ping_response?room=${room}") {}

@@ -118,9 +118,10 @@ fun ShowPvP(
     activity: MainActivity,
     selectedDeck: () -> Pair<CardBack, Boolean>,
     showAlertDialog: (String, String) -> Unit,
+    roomNumber: Int? = null,
     goBack: () -> Unit
 ) {
-    var roomNumber by rememberSaveable { mutableStateOf("") }
+    var roomNumber by rememberSaveable { mutableStateOf(roomNumber?.toString() ?: "") }
     var checkedCustomDeck by rememberSaveable { mutableStateOf(true) }
     var checkedPrivate by rememberSaveable { mutableStateOf(false) }
     var isRoomCreated by rememberSaveable { mutableIntStateOf(0) }
