@@ -19,7 +19,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
-import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -37,6 +36,8 @@ import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.GameSaver
 import com.unicorns.invisible.caravan.model.enemy.Enemy
 import com.unicorns.invisible.caravan.model.enemy.EnemyBetter
+import com.unicorns.invisible.caravan.model.enemy.EnemyHouse
+import com.unicorns.invisible.caravan.model.enemy.EnemyBenny
 import com.unicorns.invisible.caravan.model.enemy.EnemySecuritron38
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.Caravan
@@ -89,7 +90,7 @@ fun BlitzScreen(
     goBack: () -> Unit,
 ) {
     var showGameBetter by rememberSaveable { mutableStateOf(false) }
-    var showGameLegion by rememberSaveable { mutableStateOf(false) }
+    var showGameBenny by rememberSaveable { mutableStateOf(false) }
 
     var showGame38 by rememberSaveable { mutableStateOf(false) }
     var showGameHouse by rememberSaveable { mutableStateOf(false) }
@@ -117,6 +118,13 @@ fun BlitzScreen(
             )
             return
         }
+        if (bet > (activity.save?.caps ?: 0)) {
+            showAlertDialog(
+                "Not enough caps!",
+                "Please, lower your bet to play."
+            )
+            return
+        }
         StartBlitz(
             activity = activity,
             playerCResources = getPlayerDeck(),
@@ -127,22 +135,43 @@ fun BlitzScreen(
             showGameBetter = false
         }
         return
-    } else if (showGameLegion) {
-//        StartBlitz(
-//            activity = activity,
-//            playerCResources = getPlayerDeck(),
-//            enemy = EnemyLegion,
-//            showAlertDialog = showAlertDialog,
-//            time, bet,
-//        ) {
-//            showGameBetter = false
-//        }
-//        return
+    } else if (showGameBenny) {
+        if (!activity.checkIfCustomDeckCanBeUsedInGame(getPlayerDeck())) {
+            showAlertDialog(
+                stringResource(R.string.custom_deck_is_too_small),
+                stringResource(R.string.custom_deck_is_too_small_message)
+            )
+            return
+        }
+        if (bet > (activity.save?.caps ?: 0)) {
+            showAlertDialog(
+                "Not enough caps!",
+                "Please, lower your bet to play."
+            )
+            return
+        }
+        StartBlitz(
+            activity = activity,
+            playerCResources = getPlayerDeck(),
+            enemy = EnemyBenny,
+            showAlertDialog = showAlertDialog,
+            time, bet,
+        ) {
+            showGameBenny = false
+        }
+        return
     } else if (showGame38) {
         if (!activity.checkIfCustomDeckCanBeUsedInGame(getPlayerDeck())) {
             showAlertDialog(
                 stringResource(R.string.custom_deck_is_too_small),
                 stringResource(R.string.custom_deck_is_too_small_message)
+            )
+            return
+        }
+        if (bet > (activity.save?.caps ?: 0)) {
+            showAlertDialog(
+                "Not enough caps!",
+                "Please, lower your bet to play."
             )
             return
         }
@@ -158,16 +187,31 @@ fun BlitzScreen(
         }
         return
     } else if (showGameHouse) {
-//        StartBlitz(
-//            activity = activity,
-//            playerCResources = getPlayerDeck(),
-//            enemy = EnemyHouse,
-//            showAlertDialog = showAlertDialog,
-//            time, bet,
-//        ) {
-//            showGameBetter = false
-//        }
-//        return
+        if (!activity.checkIfCustomDeckCanBeUsedInGame(getPlayerDeck())) {
+            showAlertDialog(
+                stringResource(R.string.custom_deck_is_too_small),
+                stringResource(R.string.custom_deck_is_too_small_message)
+            )
+            return
+        }
+        if (bet > (activity.save?.caps ?: 0)) {
+            showAlertDialog(
+                "Not enough caps!",
+                "Please, lower your bet to play."
+            )
+            return
+        }
+
+        StartBlitz(
+            activity = activity,
+            playerCResources = getPlayerDeck(),
+            enemy = EnemyHouse,
+            showAlertDialog = showAlertDialog,
+            time, bet,
+        ) {
+            showGameHouse = false
+        }
+        return
     }
 
 
@@ -232,42 +276,21 @@ fun BlitzScreen(
 
                 Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceEvenly) {
                     Column(Modifier.weight(1f), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
-                        TextFallout(
-                            "Robots!",
-                            getTextColor(activity),
-                            getTextStrokeColor(activity),
-                            18.sp,
-                            Alignment.Center,
-                            Modifier
-                                .padding(4.dp),
-                            TextAlign.Center
-                        )
-                        Spacer(Modifier.height(10.dp))
                         OpponentItem(stringResource(R.string.pve_enemy_38)) { playVatsEnter(activity); showGame38 = true }
                         Spacer(Modifier.height(10.dp))
                         OpponentItem(stringResource(R.string.pve_enemy_better)) { playVatsEnter(activity); showGameBetter = true }
                     }
 
                     Column(Modifier.weight(1f), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
-                        TextFallout(
-                            "Humans!",
-                            getTextColor(activity),
-                            getTextStrokeColor(activity),
-                            18.sp,
-                            Alignment.Center,
-                            Modifier.padding(4.dp),
-                            TextAlign.Center
-                        )
-                        Spacer(Modifier.height(10.dp))
-                        OpponentItem("Vulpes Inculta") {
+                        OpponentItem("Benny") {
                             if (checkedCustomDeck) {
                                 showAlertDialog(
-                                    "You dare to make rules?",
-                                    "I am not fighting with custom decks. Leave that to profligates"
+                                    "Babe, I ain't good enough already.",
+                                    "Now how about you leave that custom deck in your deep pocket?"
                                 )
                             } else {
                                 playVatsEnter(activity)
-                                showGameLegion = true
+                                showGameBenny = true
                             }
                         }
                         Spacer(Modifier.height(10.dp))
@@ -319,7 +342,7 @@ fun BlitzScreen(
             Modifier
                 .fillMaxHeight(0.75f)
                 .fillMaxWidth()
-                .padding(16.dp)
+                .padding(horizontal = 16.dp, vertical = 8.dp)
                 .scrollbar(
                     state2,
                     knobColor = getKnobColor(activity), trackColor = getTrackColor(activity),
@@ -331,7 +354,7 @@ fun BlitzScreen(
         ) {
             item {
                 TextFallout(
-                    "Place your bets!",
+                    "Place your bets!\n(You have ${activity.save?.caps ?: 0} caps.)",
                     getTextColor(activity),
                     getTextStrokeColor(activity),
                     20.sp,
@@ -384,7 +407,7 @@ fun BlitzScreen(
                     val reward1 = (reward * 1.207).toInt()
                     val reward2 = (reward * 1.414).toInt()
                     TextFallout(
-                        "Your current reward:\n$reward1 caps for robot enemies;\n$reward2 for human enemies.",
+                        "Your current reward:\n$reward2 for Mr. House;\n$reward1 caps for other enemies.",
                         getTextColor(activity),
                         getTextStrokeColor(activity),
                         20.sp,
@@ -441,7 +464,7 @@ fun StartBlitz(
             playWinSound(activity)
             var message = activity.getString(R.string.you_win)
             activity.save?.let { save ->
-                val reward = (onBet * getTimeMult(time)).toInt()
+                val reward = (onBet * getTimeMult(time) * getEnemyMult(enemy)).toInt()
                 message += "\nYou have earned $reward caps!"
                 save.caps += reward
                 saveOnGD(activity)
@@ -649,8 +672,8 @@ fun getTimeMult(time: Int): Double {
 
 fun getEnemyMult(enemy: Enemy): Double {
     return when (enemy) {
-        is EnemyBetter, is EnemySecuritron38 -> 1.207
-        // TODO 1.414
+        is EnemyBetter, is EnemySecuritron38, is EnemyBenny -> 1.207
+        is EnemyHouse -> 1.414
         else -> 1.0
     }
 }
