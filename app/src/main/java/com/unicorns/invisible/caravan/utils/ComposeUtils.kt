@@ -330,6 +330,34 @@ fun SwitchCustom(
     )
 }
 
+@Composable
+fun SwitchCustomUsualBackground(
+    activity: MainActivity,
+    checked: () -> Boolean,
+    onCheckedChange: (Boolean) -> Unit
+) {
+    Switch(
+        checked = checked(), onCheckedChange = onCheckedChange, colors = SwitchColors(
+            checkedThumbColor = getTextColor(activity),
+            checkedTrackColor = getTextBackgroundColor(activity),
+            checkedBorderColor = Color.Transparent,
+            checkedIconColor = Color.Transparent,
+            uncheckedThumbColor = getTextColor(activity),
+            uncheckedTrackColor = getTextBackgroundColor(activity),
+            uncheckedBorderColor = Color.Transparent,
+            uncheckedIconColor = Color.Transparent,
+            disabledCheckedThumbColor = colorResource(R.color.red),
+            disabledCheckedTrackColor = colorResource(R.color.white),
+            disabledCheckedBorderColor = Color.Transparent,
+            disabledCheckedIconColor = Color.Transparent,
+            disabledUncheckedThumbColor = colorResource(R.color.red),
+            disabledUncheckedTrackColor = colorResource(R.color.white),
+            disabledUncheckedBorderColor = Color.Transparent,
+            disabledUncheckedIconColor = Color.Transparent,
+        )
+    )
+}
+
 // TEXT
 
 private fun getStrokeWidth(textSize: TextUnit): Float {

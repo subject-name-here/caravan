@@ -22,7 +22,7 @@ data object EnemyHouse : Enemy() {
                     add(Card(Rank.JOKER, Suit.HEARTS, back, true))
                     add(Card(Rank.JOKER, Suit.CLUBS, back, true))
                 } else {
-                    Suit.entries.forEach { suit ->
+                    listOf(Suit.HEARTS, Suit.SPADES).forEach { suit ->
                         add(Card(rank, suit, back, true))
                     }
                 }

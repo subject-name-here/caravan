@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.HorizontalDivider
@@ -51,6 +52,7 @@ import com.unicorns.invisible.caravan.model.primitives.Rank
 import com.unicorns.invisible.caravan.save.saveOnGD
 import com.unicorns.invisible.caravan.utils.CheckboxCustom
 import com.unicorns.invisible.caravan.utils.SliderValueRangeCustom
+import com.unicorns.invisible.caravan.utils.SwitchCustomUsualBackground
 import com.unicorns.invisible.caravan.utils.TextFallout
 import com.unicorns.invisible.caravan.utils.clickableCancel
 import com.unicorns.invisible.caravan.utils.clickableOk
@@ -112,8 +114,8 @@ fun BlitzScreen(
         }
     }
 
-    var time by rememberSaveable { mutableIntStateOf(20) }
-    var bet by rememberSaveable { mutableIntStateOf(50) }
+    var time by rememberSaveable { mutableIntStateOf(15) }
+    var bet by rememberSaveable { mutableIntStateOf(30) }
 
     var checkedCustomDeck by rememberSaveable {
         mutableStateOf(
@@ -368,20 +370,29 @@ fun BlitzScreen(
                 Spacer(modifier = Modifier.height(16.dp))
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     TextFallout(
-                        "Time: $time s",
+                        "Time: 15 s",
+                        getTextColor(activity),
+                        getTextStrokeColor(activity),
+                        16.sp,
+                        Alignment.CenterEnd,
+                        modifier = Modifier.weight(0.5f),
+                        TextAlign.End,
+                    )
+                    Spacer(Modifier.width(8.dp))
+                    SwitchCustomUsualBackground(
+                        activity,
+                        { time > 20 },
+                        { time = if (time < 20) 25 else 15 }
+                    )
+                    Spacer(Modifier.width(8.dp))
+                    TextFallout(
+                        "25 s",
                         getTextColor(activity),
                         getTextStrokeColor(activity),
                         16.sp,
                         Alignment.CenterStart,
-                        modifier = Modifier.fillMaxWidth(0.5f),
+                        modifier = Modifier.weight(0.5f),
                         TextAlign.Start,
-                    )
-
-                    SliderValueRangeCustom(
-                        activity,
-                        { (time - 10).toFloat() / 20f },
-                        { time = (it * 20).toInt() + 10 },
-                        3,
                     )
                 }
                 Spacer(modifier = Modifier.height(16.dp))
@@ -398,18 +409,19 @@ fun BlitzScreen(
 
                     SliderValueRangeCustom(
                         activity,
-                        { bet / 100f },
-                        { bet = (it * 1000).roundToInt() / 10 },
-                        9,
+                        { bet / 50f },
+                        { bet = (it * 500).roundToInt() / 10 },
+                        4,
                     )
                 }
                 Spacer(modifier = Modifier.height(16.dp))
                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
                     val timeMult = getTimeMult(time)
                     val enemyMult = when (selectedEnemy) {
-                        -1 -> 0.0
-                        3 -> 1.414
-                        else -> 1.207
+                        0, 1 -> 1.5
+                        3 -> 2.0
+                        2 -> 1.25
+                        else -> 0.0
                     }
                     val reward = (bet * timeMult * enemyMult).toInt()
                     TextFallout(
@@ -684,18 +696,16 @@ fun StartBlitz(
 
 fun getTimeMult(time: Int): Double {
     return when (time) {
-        in (0..14) -> 1.414
-        in (15..19) -> 1.32
-        in (20..24) -> 1.22
-        in (25..29) -> 1.11
-        else -> 1.05
+        in (0..19) -> 1.75
+        else -> 1.25
     }
 }
 
 fun getEnemyMult(enemy: Enemy): Double {
     return when (enemy) {
-        is EnemyBetter, is EnemySecuritron38, is EnemyBenny -> 1.207
-        is EnemyHouse -> 1.414
+        is EnemyBetter, is EnemySecuritron38 -> 1.5
+        is EnemyHouse -> 2.0
+        is EnemyBenny -> 1.25
         else -> 1.0
     }
 }

@@ -37,7 +37,7 @@ data object EnemyBenny : Enemy() {
 
         hand.withIndex().sortedBy { -it.value.rank.value }.forEach { (cardIndex, card) ->
             if (card.rank == Rank.JACK) {
-                val caravan = game.playerCaravans.filter { it.getValue() in (16..26) }
+                val caravan = game.playerCaravans.filter { it.getValue() in (13..26) }
                     .maxByOrNull { it.getValue() }
                 val cardToJack = caravan?.cards?.maxBy { it.getValue() }
                 if (cardToJack != null && cardToJack.canAddModifier(card)) {
@@ -91,11 +91,6 @@ data object EnemyBenny : Enemy() {
             }
         }
 
-        if (overWeightCaravans.isNotEmpty()) {
-            overWeightCaravans.random().dropCaravan()
-            return
-        }
-
         hand.withIndex().filter { it.value.rank == Rank.QUEEN }.forEach { (cardIndex, card) ->
             val possibleQueenCaravans = game.enemyCaravans.withIndex()
                 .filter { ci ->
@@ -133,6 +128,11 @@ data object EnemyBenny : Enemy() {
                     }
                 }
             }
+        }
+
+        if (overWeightCaravans.isNotEmpty()) {
+            overWeightCaravans.random().dropCaravan()
+            return
         }
 
         game.enemyCResources.dropCardFromHand(hand.indices.random())
