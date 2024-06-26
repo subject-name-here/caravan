@@ -34,10 +34,12 @@ import androidx.compose.ui.unit.sp
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.GameSaver
+import com.unicorns.invisible.caravan.model.currentGame
 import com.unicorns.invisible.caravan.model.enemy.Enemy
 import com.unicorns.invisible.caravan.model.enemy.EnemyBetter
 import com.unicorns.invisible.caravan.model.enemy.EnemyHouse
 import com.unicorns.invisible.caravan.model.enemy.EnemyBenny
+import com.unicorns.invisible.caravan.model.enemy.EnemyBestest
 import com.unicorns.invisible.caravan.model.enemy.EnemySecuritron38
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.Caravan
@@ -95,8 +97,8 @@ fun BlitzScreen(
     var showGame38 by rememberSaveable { mutableStateOf(false) }
     var showGameHouse by rememberSaveable { mutableStateOf(false) }
 
-    var time by rememberSaveable { mutableIntStateOf(30) }
-    var bet by rememberSaveable { mutableIntStateOf(0) }
+    var time by rememberSaveable { mutableIntStateOf(20) }
+    var bet by rememberSaveable { mutableIntStateOf(50) }
 
     var checkedCustomDeck by rememberSaveable {
         mutableStateOf(
@@ -231,7 +233,8 @@ fun BlitzScreen(
                     state,
                     knobColor = getKnobColor(activity), trackColor = getTrackColor(activity),
                     horizontal = false,
-                ),
+                )
+                .padding(end = 4.dp),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
             state = state
@@ -443,17 +446,22 @@ fun StartBlitz(
     onBet: Int,
     goBack: () -> Unit,
 ) {
-    var timeOnTimer by rememberSaveable { mutableIntStateOf(0) }
+    var timeOnTimer by rememberSaveable { mutableIntStateOf(time) }
     fun onMove() {
         timeOnTimer += 1
     }
 
     val game by rememberSaveable(stateSaver = GameSaver) {
+        activity.save?.let {
+            it.caps -= onBet
+            saveOnGD(activity)
+        }
         mutableStateOf(
             Game(
                 playerCResources,
                 enemy
             ).also {
+                currentGame = it
                 it.specialGameOverCondition = { if (timeOnTimer <= 0f) -1 else 0 }
                 it.startGame()
             }
@@ -483,7 +491,6 @@ fun StartBlitz(
 
     LaunchedEffect(Unit) {
         if (game.isPlayerTurn) {
-            timeOnTimer = time
             while (isActive && timeOnTimer > 0 && !game.isOver()) {
                 timeOnTimer--
                 if (timeOnTimer < 10) {
@@ -623,7 +630,19 @@ fun StartBlitz(
         activity,
         false,
         game,
-        goBack,
+        {
+            if (game.isOver()) {
+                activity.goBack?.invoke()
+                activity.goBack = null
+                return@ShowGameRaw
+            }
+
+            if (game.enemy is EnemyHouse) {
+                showAlertDialog("What, tired of losing?", "")
+            } else {
+                showAlertDialog(activity.getString(R.string.check_back_to_menu), "")
+            }
+        },
         AnimationSpeed.NONE,
         { "" },
         { "" },

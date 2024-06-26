@@ -247,13 +247,16 @@ fun nextSong(activity: MainActivity) {
     pointer = (songList.indices - usedIndices.toSet()).randomOrNull() ?: -1
 }
 
-fun resume() {
+fun resume(byButton: Boolean = false) {
     if (!isRadioStopped) {
         radioLock.withLock {
             radioPlayers.forEach { it.start() }
-            isRadioPausedByLeavingActivity = false
+            if (!byButton) {
+                isRadioPausedByLeavingActivity = false
+            }
         }
     }
+    if (byButton) return
     ambientPlayersLock.withLock {
         ambientPlayers.forEach {
             it.start()
@@ -261,11 +264,14 @@ fun resume() {
         wasAmbientPaused = false
     }
 }
-fun pause() {
+fun pause(byButton: Boolean = false) {
     radioLock.withLock {
         radioPlayers.forEach { it.pause() }
-        isRadioPausedByLeavingActivity = true
+        if (!byButton) {
+            isRadioPausedByLeavingActivity = true
+        }
     }
+    if (byButton) return
     ambientPlayersLock.withLock {
         ambientPlayers.forEach {
             if (it.isPlaying) {

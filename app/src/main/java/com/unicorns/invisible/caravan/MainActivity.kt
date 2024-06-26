@@ -1,6 +1,16 @@
 package com.unicorns.invisible.caravan
 
+import android.Manifest
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.app.TaskStackBuilder
+import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
+import android.media.AudioAttributes
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.compose.setContent
@@ -56,9 +66,11 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withLink
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.app.ActivityCompat
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.lifecycle.MutableLiveData
 import com.unicorns.invisible.caravan.model.CardBack
-import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.CustomDeck
 import com.unicorns.invisible.caravan.save.Save
@@ -112,14 +124,16 @@ const val crvnUrl = "http://crvnserver.onrender.com"
 
 var saveGlobal: Save? = null
 
+var id = ""
+
+private var readyFlag = MutableLiveData(false)
+
 @Suppress("MoveLambdaOutsideParentheses")
 class MainActivity : SaveDataActivity() {
     val save: Save?
         get() = saveGlobal
 
     var goBack: (() -> Unit)? = null
-
-    var id = ""
 
     var styleId: Style = Style.PIP_BOY
 
@@ -131,15 +145,17 @@ class MainActivity : SaveDataActivity() {
         return playerCResources.deckSize >= MIN_DECK_SIZE && playerCResources.numOfNumbers >= MIN_NUM_OF_NUMBERS
     }
 
+    private var isActivityPaused = false
     override fun onPause() {
         super.onPause()
+        isActivityPaused = true
         pause()
-        stopQPing()
         effectPlayers.forEach { if (it.isPlaying) it.stop() }
     }
 
     override fun onResume() {
         super.onResume()
+        isActivityPaused = false
         resume()
     }
 
@@ -166,9 +182,61 @@ class MainActivity : SaveDataActivity() {
         }
     }
 
-    private var readyFlag = MutableLiveData(false)
+    private val CHANNEL_ID = "CARAVAN_CHANNEL_ID"
+    private fun createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val name = "Q-pinging channel"
+            val descriptionText = "Channel for Q-pinging notifications."
+            val importance = NotificationManager.IMPORTANCE_HIGH
+            val channel = NotificationChannel(CHANNEL_ID, name, importance).apply {
+                description = descriptionText
+                vibrationPattern = longArrayOf(0L, 100L, 200L, 300L)
+                setSound(
+                    Uri.parse("android.resource://$packageName/" + R.raw.notification),
+                    AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_NOTIFICATION).build()
+                )
+            }
+            val notificationManager: NotificationManager =
+                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(channel)
+        }
+    }
+
+    private var notificationId = 22229
+    private fun sendNotification(room: Int) {
+        // Create an Intent for the activity you want to start.
+        val resultIntent = Intent(this, MainActivity::class.java)
+        resultIntent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT)
+        val resultPendingIntent: PendingIntent? = TaskStackBuilder.create(this).run {
+            addNextIntentWithParentStack(resultIntent)
+            getPendingIntent(0, 0)
+        }
+
+        val builder = NotificationCompat.Builder(this, CHANNEL_ID)
+            .setSmallIcon(R.drawable.ic_launcher_foreground)
+            .setContentTitle("Caravan")
+            .setContentText("Multiplayer, room #$room. Now.")
+            .setContentIntent(resultPendingIntent)
+            .setVibrate(longArrayOf(0L, 100L, 200L, 300L))
+            .setSound(Uri.parse("android.resource://$packageName/" + R.raw.notification))
+            .setPriority(NotificationCompat.PRIORITY_MAX)
+            .setCategory(NotificationCompat.CATEGORY_SERVICE)
+        with (NotificationManagerCompat.from(this)) {
+            if (ActivityCompat.checkSelfPermission(
+                    this@MainActivity,
+                    Manifest.permission.POST_NOTIFICATIONS
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                return@with
+            }
+            notify(notificationId++, builder.build())
+        }
+
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        createNotificationChannel()
 
         if (id == "") {
             id = UUID.randomUUID().toString()
@@ -672,7 +740,7 @@ class MainActivity : SaveDataActivity() {
                                     } else {
                                         playCloseSound(this@MainActivity)
                                     }
-                                }, { isQPinging.value == false })
+                                }, { isQPingingInner.value == false })
                             }
                         }
                     },
@@ -806,11 +874,11 @@ class MainActivity : SaveDataActivity() {
                                 .clickableOk(this@MainActivity) {
                                     if (isPaused) {
                                         isRadioStopped = false
-                                        resume()
+                                        resume(byButton = true)
                                         isPaused = false
                                     } else {
                                         isRadioStopped = true
-                                        pause()
+                                        pause(byButton = true)
                                         isPaused = true
                                     }
                                 }
@@ -1249,7 +1317,7 @@ class MainActivity : SaveDataActivity() {
                 sendRequest("$crvnUrl/crvn/q_ping?vid=${id}&is_custom=${isCustom.toPythonBool()}") { result ->
                     if (result.getString("body") == "0") {
                         CoroutineScope(Dispatchers.Unconfined).launch {
-                            delay(19000L)
+                            delay(9500L)
                             sendQPing()
                         }
                         return@sendRequest
@@ -1258,17 +1326,24 @@ class MainActivity : SaveDataActivity() {
                         json.decodeFromString<Int>(result.getString("body"))
                     } catch (e: Exception) {
                         CoroutineScope(Dispatchers.Unconfined).launch {
-                            delay(19000L)
+                            delay(9500L)
                             sendQPing()
                         }
                         return@sendRequest
                     }
 
                     if (response in (10..22229)) {
-                        showAlertDialog(response)
+                        qJob = null
+                        if (isActivityPaused) {
+                            isQPinging.postValue(false)
+                            sendNotification(response)
+                        } else {
+                            isQPinging.postValue(false)
+                            showAlertDialog(response)
+                        }
                     } else {
                         CoroutineScope(Dispatchers.Unconfined).launch {
-                            delay(19000L)
+                            delay(9500L)
                             sendQPing()
                         }
                     }

@@ -38,6 +38,7 @@ import androidx.compose.ui.unit.sp
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.GameSaver
+import com.unicorns.invisible.caravan.model.currentGame
 import com.unicorns.invisible.caravan.model.enemy.EnemyPlayer
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.Card
@@ -228,7 +229,7 @@ fun ShowPvP(
             "$crvnUrl/crvn/create?is_custom=${checkedCustomDeck.toPythonBool()}" +
                     "&room=${isRoomCreated}" +
                     "&is_private=${checkedPrivate.toPythonBool()}" +
-                    "&cid=${activity.id}" +
+                    "&cid=${id}" +
                     "&deck0=${deckCodes[0]}" +
                     "&deck1=${deckCodes[1]}" +
                     "&deck2=${deckCodes[2]}" +
@@ -258,7 +259,7 @@ fun ShowPvP(
         val deckCodes = customDeckToInts(activity.save!!.getCustomDeckCopy())
         sendRequest(
             "$crvnUrl/crvn/join?room=$isRoomCreated" +
-                    "&jid=${activity.id}" +
+                    "&jid=${id}" +
                     "&back=${selectedDeck().first.ordinal}" +
                     "&is_alt=${selectedDeck().second.toPythonBool()}" +
                     "&deck0=${deckCodes[0]}" +
@@ -583,6 +584,7 @@ fun StartPvP(
                 playerCResources,
                 EnemyPlayer(enemyStartDeck)
             ).also {
+                currentGame = it
                 it.isPlayerTurn = false
                 it.isExchangingCards = true
                 it.initDeck(playerCResources, maxNumOfFaces = 4, initHand = false)

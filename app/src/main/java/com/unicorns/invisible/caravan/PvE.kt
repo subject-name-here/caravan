@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.sp
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.GameSaver
+import com.unicorns.invisible.caravan.model.currentGame
 import com.unicorns.invisible.caravan.model.enemy.Enemy
 import com.unicorns.invisible.caravan.model.enemy.EnemyBestest
 import com.unicorns.invisible.caravan.model.enemy.EnemyBetter
@@ -490,6 +491,7 @@ fun StartGame(
     }
 
     val game by rememberSaveable(stateSaver = GameSaver) {
+
         mutableStateOf(
             Game(
                 playerCResources,
@@ -499,6 +501,7 @@ fun StartGame(
                     save.gamesStarted++
                     saveOnGD(activity)
                 }
+                currentGame = it
                 it.startGame()
             }
         )

@@ -16,8 +16,8 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data object EnemyBenny : Enemy() {
-    override fun createDeck(): CResources = CResources(CardBack.LUCKY_38, false)
-    override fun getRewardBack() = CardBack.LUCKY_38
+    override fun createDeck(): CResources = CResources(CardBack.TOPS, true)
+    override fun getRewardBack() = null
 
     override fun makeMove(game: Game) {
         val overWeightCaravans = game.enemyCaravans.filter { it.getValue() > 26 }
@@ -61,9 +61,7 @@ data object EnemyBenny : Enemy() {
                         if (enemyCaravan.getValue() + caravanCard.getValue() in (16..26)) {
                             if (caravanCard.canAddModifier(card)) {
                                 caravanCard.addModifier(
-                                    game.enemyCResources.removeFromHand(
-                                        cardIndex
-                                    )
+                                    game.enemyCResources.removeFromHand(cardIndex)
                                 )
                                 return
                             }
@@ -98,11 +96,45 @@ data object EnemyBenny : Enemy() {
             return
         }
 
-        val uselessPredicate = { it: Card -> it.rank == Rank.QUEEN }
-        if (hand.any(uselessPredicate)) {
-            game.enemyCResources.dropCardFromHand(hand.indexOfFirst(uselessPredicate))
-        } else {
-            game.enemyCResources.dropCardFromHand(hand.indices.random())
+        hand.withIndex().filter { it.value.rank == Rank.QUEEN }.forEach { (cardIndex, card) ->
+            val possibleQueenCaravans = game.enemyCaravans.withIndex()
+                .filter { ci ->
+                    val c = ci.value
+                    c.size >= 2 && c.getValue() < 26 && hand.all { !c.canPutCardOnTop(it) } && c.cards.last().canAddModifier(card)
+                }
+            val caravan = possibleQueenCaravans.maxByOrNull { (_, caravan) ->
+                if (caravan.getValue() in (21..26)) {
+                    10
+                } else {
+                    caravan.getValue()
+                }
+            }
+            if (caravan != null) {
+                caravan.value.cards.last().addModifier(game.enemyCResources.removeFromHand(cardIndex))
+                return
+            }
+
+            game.playerCaravans.forEach { playerCaravan ->
+                if (playerCaravan.size >= 2) {
+                    val last = playerCaravan.cards.last().card.rank.value
+                    val preLast = playerCaravan.cards[playerCaravan.cards.lastIndex - 1].card.rank.value
+                    if (playerCaravan.cards.last().canAddModifier(card)) {
+                        val isRev = playerCaravan.cards.last().isQueenReversingSequence()
+                        val isAscending = preLast < last && !isRev || preLast > last && isRev
+                        if (isAscending && last <= 5) {
+                            playerCaravan.cards.last().addModifier(game.enemyCResources.removeFromHand(cardIndex))
+                            return
+                        }
+                        val isDescending = preLast > last && !isRev || preLast < last && isRev
+                        if (isDescending && last >= 6) {
+                            playerCaravan.cards.last().addModifier(game.enemyCResources.removeFromHand(cardIndex))
+                            return
+                        }
+                    }
+                }
+            }
         }
+
+        game.enemyCResources.dropCardFromHand(hand.indices.random())
     }
 }
