@@ -75,11 +75,11 @@ import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.CustomDeck
 import com.unicorns.invisible.caravan.save.Save
 import com.unicorns.invisible.caravan.save.getSaveFile
-import com.unicorns.invisible.caravan.save.json
 import com.unicorns.invisible.caravan.save.loadFromGD
 import com.unicorns.invisible.caravan.save.loadLocalSave
 import com.unicorns.invisible.caravan.save.saveOnGD
 import com.unicorns.invisible.caravan.utils.CheckboxCustom
+import com.unicorns.invisible.caravan.utils.QPingingWorker
 import com.unicorns.invisible.caravan.utils.SliderCustom
 import com.unicorns.invisible.caravan.utils.SwitchCustom
 import com.unicorns.invisible.caravan.utils.TextFallout
@@ -113,7 +113,6 @@ import com.unicorns.invisible.caravan.utils.setRadioVolume
 import com.unicorns.invisible.caravan.utils.startRadio
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.chromium.net.CronetEngine
@@ -124,9 +123,13 @@ const val crvnUrl = "http://crvnserver.onrender.com"
 
 var saveGlobal: Save? = null
 
-var id = ""
+var userId = ""
 
 private var readyFlag = MutableLiveData(false)
+
+var isQPinging = MutableLiveData(false)
+
+var processQPingingResponse: (Int) -> Unit = {}
 
 @Suppress("MoveLambdaOutsideParentheses")
 class MainActivity : SaveDataActivity() {
@@ -138,8 +141,6 @@ class MainActivity : SaveDataActivity() {
     var styleId: Style = Style.PIP_BOY
 
     var animationSpeed = MutableLiveData(AnimationSpeed.NORMAL)
-
-    private var isQPinging = MutableLiveData(false)
 
     fun checkIfCustomDeckCanBeUsedInGame(playerCResources: CResources): Boolean {
         return playerCResources.deckSize >= MIN_DECK_SIZE && playerCResources.numOfNumbers >= MIN_NUM_OF_NUMBERS
@@ -238,8 +239,8 @@ class MainActivity : SaveDataActivity() {
         super.onCreate(savedInstanceState)
         createNotificationChannel()
 
-        if (id == "") {
-            id = UUID.randomUUID().toString()
+        if (userId == "") {
+            userId = UUID.randomUUID().toString()
         }
         if (cronetEngine == null) {
             try {
@@ -1007,7 +1008,7 @@ class MainActivity : SaveDataActivity() {
                                 { showStock = true },
                                 ::showAlertDialog,
                             )
-                            StylePicture(this@MainActivity, styleId, id.hashCode(), width, height)
+                            StylePicture(this@MainActivity, styleId, userId.hashCode(), width, height)
                         }
                     }
                 }
@@ -1308,53 +1309,21 @@ class MainActivity : SaveDataActivity() {
             }
         }
     }
-
-    private var qJob: Job? = null
     private fun launchQPing(isCustom: Boolean, showAlertDialog: (Int) -> Unit) {
         isQPinging.value = true
-        qJob = CoroutineScope(Dispatchers.IO).launch {
-            fun sendQPing() {
-                sendRequest("$crvnUrl/crvn/q_ping?vid=${id}&is_custom=${isCustom.toPythonBool()}") { result ->
-                    if (result.getString("body") == "0") {
-                        CoroutineScope(Dispatchers.Unconfined).launch {
-                            delay(9500L)
-                            sendQPing()
-                        }
-                        return@sendRequest
-                    }
-                    val response = try {
-                        json.decodeFromString<Int>(result.getString("body"))
-                    } catch (e: Exception) {
-                        CoroutineScope(Dispatchers.Unconfined).launch {
-                            delay(9500L)
-                            sendQPing()
-                        }
-                        return@sendRequest
-                    }
-
-                    if (response in (10..22229)) {
-                        qJob = null
-                        if (isActivityPaused) {
-                            isQPinging.postValue(false)
-                            sendNotification(response)
-                        } else {
-                            isQPinging.postValue(false)
-                            showAlertDialog(response)
-                        }
-                    } else {
-                        CoroutineScope(Dispatchers.Unconfined).launch {
-                            delay(9500L)
-                            sendQPing()
-                        }
-                    }
-                }
+        processQPingingResponse = { response ->
+            if (isActivityPaused) {
+                isQPinging.postValue(false)
+                sendNotification(response)
+            } else {
+                isQPinging.postValue(false)
+                showAlertDialog(response)
             }
-            sendQPing()
         }
+
+        QPingingWorker.enqueue(this, isCustom)
     }
     private fun stopQPing() {
-        qJob?.cancel()
-        qJob = null
         isQPinging.value = false
     }
     private fun sendQNegativeResponse(room: Int) {

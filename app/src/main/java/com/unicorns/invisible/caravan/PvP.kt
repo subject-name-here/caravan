@@ -229,7 +229,7 @@ fun ShowPvP(
             "$crvnUrl/crvn/create?is_custom=${checkedCustomDeck.toPythonBool()}" +
                     "&room=${isRoomCreated}" +
                     "&is_private=${checkedPrivate.toPythonBool()}" +
-                    "&cid=${id}" +
+                    "&cid=${userId}" +
                     "&deck0=${deckCodes[0]}" +
                     "&deck1=${deckCodes[1]}" +
                     "&deck2=${deckCodes[2]}" +
@@ -259,7 +259,7 @@ fun ShowPvP(
         val deckCodes = customDeckToInts(activity.save!!.getCustomDeckCopy())
         sendRequest(
             "$crvnUrl/crvn/join?room=$isRoomCreated" +
-                    "&jid=${id}" +
+                    "&jid=${userId}" +
                     "&back=${selectedDeck().first.ordinal}" +
                     "&is_alt=${selectedDeck().second.toPythonBool()}" +
                     "&deck0=${deckCodes[0]}" +
