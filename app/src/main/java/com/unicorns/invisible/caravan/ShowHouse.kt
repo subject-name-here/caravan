@@ -1,6 +1,8 @@
 package com.unicorns.invisible.caravan
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -27,6 +29,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -50,9 +53,11 @@ import com.unicorns.invisible.caravan.utils.CheckboxCustom
 import com.unicorns.invisible.caravan.utils.SliderValueRangeCustom
 import com.unicorns.invisible.caravan.utils.TextFallout
 import com.unicorns.invisible.caravan.utils.clickableCancel
+import com.unicorns.invisible.caravan.utils.clickableOk
 import com.unicorns.invisible.caravan.utils.getBackgroundColor
 import com.unicorns.invisible.caravan.utils.getDividerColor
 import com.unicorns.invisible.caravan.utils.getKnobColor
+import com.unicorns.invisible.caravan.utils.getSelectionColor
 import com.unicorns.invisible.caravan.utils.getTextBackgroundColor
 import com.unicorns.invisible.caravan.utils.getTextColor
 import com.unicorns.invisible.caravan.utils.getTextStrokeColor
@@ -93,9 +98,19 @@ fun BlitzScreen(
 ) {
     var showGameBetter by rememberSaveable { mutableStateOf(false) }
     var showGameBenny by rememberSaveable { mutableStateOf(false) }
-
     var showGame38 by rememberSaveable { mutableStateOf(false) }
     var showGameHouse by rememberSaveable { mutableStateOf(false) }
+
+    var selectedEnemy by rememberSaveable { mutableIntStateOf(-1) }
+    fun selectEnemy(index: Int) {
+        selectedEnemy = if (index == selectedEnemy) {
+            playCloseSound(activity)
+            -1
+        } else {
+            playSelectSound(activity)
+            index
+        }
+    }
 
     var time by rememberSaveable { mutableIntStateOf(20) }
     var bet by rememberSaveable { mutableIntStateOf(50) }
@@ -113,20 +128,6 @@ fun BlitzScreen(
     }
 
     if (showGameBetter) {
-        if (!activity.checkIfCustomDeckCanBeUsedInGame(getPlayerDeck())) {
-            showAlertDialog(
-                stringResource(R.string.custom_deck_is_too_small),
-                stringResource(R.string.custom_deck_is_too_small_message)
-            )
-            return
-        }
-        if (bet > (activity.save?.caps ?: 0)) {
-            showAlertDialog(
-                "Not enough caps!",
-                "Please, lower your bet to play."
-            )
-            return
-        }
         StartBlitz(
             activity = activity,
             playerCResources = getPlayerDeck(),
@@ -138,20 +139,6 @@ fun BlitzScreen(
         }
         return
     } else if (showGameBenny) {
-        if (!activity.checkIfCustomDeckCanBeUsedInGame(getPlayerDeck())) {
-            showAlertDialog(
-                stringResource(R.string.custom_deck_is_too_small),
-                stringResource(R.string.custom_deck_is_too_small_message)
-            )
-            return
-        }
-        if (bet > (activity.save?.caps ?: 0)) {
-            showAlertDialog(
-                "Not enough caps!",
-                "Please, lower your bet to play."
-            )
-            return
-        }
         StartBlitz(
             activity = activity,
             playerCResources = getPlayerDeck(),
@@ -163,21 +150,6 @@ fun BlitzScreen(
         }
         return
     } else if (showGame38) {
-        if (!activity.checkIfCustomDeckCanBeUsedInGame(getPlayerDeck())) {
-            showAlertDialog(
-                stringResource(R.string.custom_deck_is_too_small),
-                stringResource(R.string.custom_deck_is_too_small_message)
-            )
-            return
-        }
-        if (bet > (activity.save?.caps ?: 0)) {
-            showAlertDialog(
-                "Not enough caps!",
-                "Please, lower your bet to play."
-            )
-            return
-        }
-
         StartBlitz(
             activity = activity,
             playerCResources = getPlayerDeck(),
@@ -189,21 +161,6 @@ fun BlitzScreen(
         }
         return
     } else if (showGameHouse) {
-        if (!activity.checkIfCustomDeckCanBeUsedInGame(getPlayerDeck())) {
-            showAlertDialog(
-                stringResource(R.string.custom_deck_is_too_small),
-                stringResource(R.string.custom_deck_is_too_small_message)
-            )
-            return
-        }
-        if (bet > (activity.save?.caps ?: 0)) {
-            showAlertDialog(
-                "Not enough caps!",
-                "Please, lower your bet to play."
-            )
-            return
-        }
-
         StartBlitz(
             activity = activity,
             playerCResources = getPlayerDeck(),
@@ -262,7 +219,7 @@ fun BlitzScreen(
                 Spacer(modifier = Modifier.height(8.dp))
 
                 @Composable
-                fun OpponentItem(name: String, onClick: () -> Unit) {
+                fun OpponentItem(name: String, index: Int) {
                     TextFallout(
                         name,
                         getTextColor(activity),
@@ -270,7 +227,9 @@ fun BlitzScreen(
                         16.sp,
                         Alignment.Center,
                         Modifier
-                            .clickable { onClick() }
+                            .border(BorderStroke(if (index == selectedEnemy) 3.dp else (-1).dp, getSelectionColor(activity)))
+                            .padding(4.dp)
+                            .clickable { selectEnemy(index) }
                             .background(getTextBackgroundColor(activity))
                             .padding(4.dp),
                         TextAlign.Center
@@ -279,27 +238,68 @@ fun BlitzScreen(
 
                 Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceEvenly) {
                     Column(Modifier.weight(1f), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
-                        OpponentItem(stringResource(R.string.pve_enemy_38)) { playVatsEnter(activity); showGame38 = true }
+                        OpponentItem(stringResource(R.string.pve_enemy_better), 0)
                         Spacer(Modifier.height(10.dp))
-                        OpponentItem(stringResource(R.string.pve_enemy_better)) { playVatsEnter(activity); showGameBetter = true }
+                        OpponentItem(stringResource(R.string.pve_enemy_38), 1)
                     }
 
                     Column(Modifier.weight(1f), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
-                        OpponentItem("Benny") {
-                            if (checkedCustomDeck) {
-                                showAlertDialog(
-                                    "Babe, I ain't good enough already.",
-                                    "Now how about you leave that custom deck in your deep pocket?"
-                                )
-                            } else {
-                                playVatsEnter(activity)
-                                showGameBenny = true
-                            }
-                        }
+                        OpponentItem("Benny", 2)
                         Spacer(Modifier.height(10.dp))
-                        OpponentItem("Mr. House") { playVatsEnter(activity); showGameHouse = true }
+                        OpponentItem("Mr. House", 3)
                     }
                 }
+                Spacer(Modifier.height(8.dp))
+                TextFallout(
+                    "START!",
+                    getTextColor(activity),
+                    getTextStrokeColor(activity),
+                    24.sp,
+                    Alignment.Center,
+                    modifier = Modifier
+                        .clickableOk(activity) {
+                            if (!activity.checkIfCustomDeckCanBeUsedInGame(getPlayerDeck())) {
+                                showAlertDialog(
+                                    activity.getString(R.string.custom_deck_is_too_small),
+                                    activity.getString(R.string.custom_deck_is_too_small_message)
+                                )
+                                return@clickableOk
+                            }
+                            if (bet > (activity.save?.caps ?: 0)) {
+                                showAlertDialog(
+                                    "Not enough caps!",
+                                    "Please, lower your bet to play."
+                                )
+                                return@clickableOk
+                            }
+
+                            when (selectedEnemy) {
+                                -1 -> {
+                                    showAlertDialog(
+                                        "Select your opponent!",
+                                        ""
+                                    )
+                                    return@clickableOk
+                                }
+                                0 -> { showGameBetter = true }
+                                1 -> { showGame38 = true }
+                                2 -> {
+                                    if (checkedCustomDeck) {
+                                        showAlertDialog(
+                                            "Babe, I ain't good enough already.",
+                                            "Now how about you leave that custom deck in your deep pocket?"
+                                        )
+                                    } else {
+                                        showGameBenny = true
+                                    }
+                                }
+                                3 -> { showGameHouse = true }
+                            }
+                        }
+                        .background(getTextBackgroundColor(activity))
+                        .padding(horizontal = 8.dp, vertical = 4.dp),
+                    TextAlign.Center
+                )
             }
         }
         HorizontalDivider(color = getDividerColor(activity))
@@ -406,11 +406,14 @@ fun BlitzScreen(
                 Spacer(modifier = Modifier.height(16.dp))
                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
                     val timeMult = getTimeMult(time)
-                    val reward = (bet * timeMult).toInt()
-                    val reward1 = (reward * 1.207).toInt()
-                    val reward2 = (reward * 1.414).toInt()
+                    val enemyMult = when (selectedEnemy) {
+                        -1 -> 0.0
+                        3 -> 1.414
+                        else -> 1.207
+                    }
+                    val reward = (bet * timeMult * enemyMult).toInt()
                     TextFallout(
-                        "Your current reward:\n$reward2 for Mr. House;\n$reward1 caps for other enemies.",
+                        "Your current reward: $reward caps.",
                         getTextColor(activity),
                         getTextStrokeColor(activity),
                         20.sp,
