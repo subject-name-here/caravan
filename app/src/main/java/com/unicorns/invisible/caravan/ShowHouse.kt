@@ -30,7 +30,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -43,7 +42,6 @@ import com.unicorns.invisible.caravan.model.enemy.Enemy
 import com.unicorns.invisible.caravan.model.enemy.EnemyBetter
 import com.unicorns.invisible.caravan.model.enemy.EnemyHouse
 import com.unicorns.invisible.caravan.model.enemy.EnemyBenny
-import com.unicorns.invisible.caravan.model.enemy.EnemyBestest
 import com.unicorns.invisible.caravan.model.enemy.EnemySecuritron38
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.Caravan
@@ -70,7 +68,6 @@ import com.unicorns.invisible.caravan.utils.playCloseSound
 import com.unicorns.invisible.caravan.utils.playJokerSounds
 import com.unicorns.invisible.caravan.utils.playLoseSound
 import com.unicorns.invisible.caravan.utils.playSelectSound
-import com.unicorns.invisible.caravan.utils.playVatsEnter
 import com.unicorns.invisible.caravan.utils.playVatsReady
 import com.unicorns.invisible.caravan.utils.playWinSound
 import com.unicorns.invisible.caravan.utils.playYesBeep
@@ -114,7 +111,7 @@ fun BlitzScreen(
         }
     }
 
-    var time by rememberSaveable { mutableIntStateOf(15) }
+    var time by rememberSaveable { mutableStateOf(BlitzTime.FAST) }
     var bet by rememberSaveable { mutableIntStateOf(30) }
 
     var checkedCustomDeck by rememberSaveable {
@@ -370,7 +367,7 @@ fun BlitzScreen(
                 Spacer(modifier = Modifier.height(16.dp))
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     TextFallout(
-                        "Time: 15 s",
+                        "Time: ${BlitzTime.FAST.time} s",
                         getTextColor(activity),
                         getTextStrokeColor(activity),
                         16.sp,
@@ -381,12 +378,12 @@ fun BlitzScreen(
                     Spacer(Modifier.width(8.dp))
                     SwitchCustomUsualBackground(
                         activity,
-                        { time > 20 },
-                        { time = if (time < 20) 25 else 15 }
+                        { time == BlitzTime.NORMAL },
+                        { time = time.switch() }
                     )
                     Spacer(Modifier.width(8.dp))
                     TextFallout(
-                        "25 s",
+                        "${BlitzTime.NORMAL.time} s",
                         getTextColor(activity),
                         getTextStrokeColor(activity),
                         16.sp,
@@ -457,11 +454,11 @@ fun StartBlitz(
     playerCResources: CResources,
     enemy: Enemy,
     showAlertDialog: (String, String) -> Unit,
-    time: Int,
+    time: BlitzTime,
     onBet: Int,
     goBack: () -> Unit,
 ) {
-    var timeOnTimer by rememberSaveable { mutableIntStateOf(time) }
+    var timeOnTimer by rememberSaveable { mutableIntStateOf(time.time) }
     fun onMove() {
         timeOnTimer += 1
     }
@@ -694,10 +691,22 @@ fun StartBlitz(
     }
 }
 
-fun getTimeMult(time: Int): Double {
+enum class BlitzTime(val time: Int) {
+    FAST(20),
+    NORMAL(30);
+
+    fun switch(): BlitzTime {
+        return when (this) {
+            FAST -> NORMAL
+            NORMAL -> FAST
+        }
+    }
+}
+
+fun getTimeMult(time: BlitzTime): Double {
     return when (time) {
-        in (0..19) -> 1.75
-        else -> 1.25
+        BlitzTime.FAST -> 1.75
+        BlitzTime.NORMAL -> 1.25
     }
 }
 
