@@ -105,6 +105,7 @@ var wasAmbientPaused = false
 fun stopAmbient() {
     ambientPlayersLock.withLock {
         ambientPlayers.forEach { if (it.isPlaying) it.stop() }
+        ambientPlayers.clear()
     }
 }
 fun setAmbientVolume(volume: Float) {

@@ -194,7 +194,7 @@ fun ShowPvP(
         sendRequest("$crvnUrl/crvn/check_room_for_joiner?room=${isRoomCreated}") { result ->
             if (result.getString("body") == "-1") {
                 CoroutineScope(Dispatchers.Unconfined).launch {
-                    delay(760L)
+                    delay(780L)
                     checkRoomForJoiner()
                 }
                 return@sendRequest

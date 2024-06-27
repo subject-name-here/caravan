@@ -306,7 +306,7 @@
 
     <string name="get_more_by_earning_cards_you_already_have">(Как получить крышечки? Заработайте карты, которые у вас уже есть!)</string>
 
-    <string name="q_pinging_warning">Внимание! Каждый раз, когда вы покидаете приложение, Q-pinging останавливается. Q-pinging также останавливается, когда вы получаете сообщение о матче.</string>
+    <string name="q_pinging_warning">Внимание: Q-pinging останавливается, когда вы получаете сообщение о матче.</string>
     <string name="q_pinging_explanation">Когда Q-pinging запущен, сервер проверяется на предмет игроков, которые также запустили Q-pinging. Если кто-то еще найден, вам двоим назначается приватная комната.</string>
     <string name="q_pinging_switch">Переключатель Q-pinging</string>
     <string name="i_ll_join">Я буду!</string>

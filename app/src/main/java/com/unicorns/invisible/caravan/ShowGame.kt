@@ -607,10 +607,11 @@ fun Hand(
 
         val isAnyMovingIn = memCards.any { it.handAnimationMark == Card.AnimationMark.MOVING_IN || it.handAnimationMark == Card.AnimationMark.MOVING_IN_WIP }
         val isAnyMovingOut = memCards.any { it.handAnimationMark == Card.AnimationMark.MOVING_OUT || it.handAnimationMark == Card.AnimationMark.MOVING_OUT_WIP }
-        LaunchedEffect(isAnyMovingIn) {
-            if (isAnyMovingIn) {
-                playCardFlipSound(activity)
-                if (animationSpeed.delay != 0L) {
+
+        if (animationSpeed.delay != 0L) {
+            LaunchedEffect(isAnyMovingIn) {
+                if (isAnyMovingIn) {
+                    playCardFlipSound(activity)
                     itemVerticalOffsetMovingIn.snapTo(2.5f * enemyMult)
                     memCards.forEach {
                         if (it.handAnimationMark == Card.AnimationMark.MOVING_IN) {
@@ -620,21 +621,19 @@ fun Hand(
                     itemVerticalOffsetMovingIn.animateTo(0f, TweenSpec(animationSpeed.delay.toInt())) {
                         recomposeKey = !recomposeKey
                     }
-                }
-                memCards.forEach {
-                    if (it.handAnimationMark == Card.AnimationMark.MOVING_IN || it.handAnimationMark == Card.AnimationMark.MOVING_IN_WIP) {
-                        it.handAnimationMark = Card.AnimationMark.STABLE
+                    memCards.forEach {
+                        if (it.handAnimationMark == Card.AnimationMark.MOVING_IN || it.handAnimationMark == Card.AnimationMark.MOVING_IN_WIP) {
+                            it.handAnimationMark = Card.AnimationMark.STABLE
+                        }
                     }
+                    recomposeKey = !recomposeKey
                 }
-                recomposeKey = !recomposeKey
             }
-        }
 
-        LaunchedEffect(isAnyMovingOut) {
-            if (isAnyMovingOut) {
-                playCardFlipSound(activity)
-                val target = (if (wasCardDropped) 2.5f else -2.5f) * enemyMult
-                if (animationSpeed.delay != 0L) {
+            LaunchedEffect(isAnyMovingOut) {
+                if (isAnyMovingOut) {
+                    playCardFlipSound(activity)
+                    val target = (if (wasCardDropped) 2.5f else -2.5f) * enemyMult
                     itemVerticalOffsetMovingOut.snapTo(0f)
                     memCards.forEach {
                         if (it.handAnimationMark == Card.AnimationMark.MOVING_OUT) {
@@ -644,9 +643,9 @@ fun Hand(
                     itemVerticalOffsetMovingOut.animateTo(target, TweenSpec(animationSpeed.delay.toInt())) {
                         recomposeKey = !recomposeKey
                     }
+                    memCards.removeIf { it.handAnimationMark == Card.AnimationMark.MOVING_OUT || it.handAnimationMark == Card.AnimationMark.MOVING_OUT_WIP }
+                    recomposeKey = !recomposeKey
                 }
-                memCards.removeIf { it.handAnimationMark == Card.AnimationMark.MOVING_OUT || it.handAnimationMark == Card.AnimationMark.MOVING_OUT_WIP }
-                recomposeKey = !recomposeKey
             }
         }
 
@@ -689,6 +688,9 @@ fun Hand(
                 )
             } else {
                 if (it.rank == Rank.JOKER && it.handAnimationMark == Card.AnimationMark.MOVING_IN) {
+                    if (animationSpeed.delay == 0L) {
+                        it.handAnimationMark = Card.AnimationMark.STABLE
+                    }
                     LaunchedEffect(Unit) {
                         playJokerReceivedSounds(activity)
                     }

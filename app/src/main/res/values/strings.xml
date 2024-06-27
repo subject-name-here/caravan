@@ -300,7 +300,7 @@
     <string name="get_more_by_earning_cards_you_already_have">(Get more by earning cards you already have!)</string>
 
     <string name="q_pinging" translatable="false">Q-pinging</string>
-    <string name="q_pinging_warning">Warning: when you receive message about match, Q-pinging stops automatically. Also, when you leave the app, Q-pinging does not stop and even might send you a notification!</string>
+    <string name="q_pinging_warning">Warning: when you receive message about match, Q-pinging stops automatically.</string>
     <string name="q_pinging_explanation">When Q-pinging is launched, server is checked for some other players, who are also Q-pinging. If someone else is found, you two are assigned a private multiplayer room to play.</string>
     <string name="q_pinging_switch">Q-pinging switch</string>
     <string name="i_ll_join">I\'ll join!</string>

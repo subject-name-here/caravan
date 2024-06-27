@@ -93,7 +93,7 @@ fun ShowSettings(
                         )
                         Column(Modifier.fillMaxWidth()) {
                             TextFallout(
-                                stringResource(R.string.caps, activity.save!!.caps),
+                                stringResource(R.string.caps, activity.save?.caps ?: 0),
                                 getTextColor(activity),
                                 getTextStrokeColor(activity),
                                 24.sp,

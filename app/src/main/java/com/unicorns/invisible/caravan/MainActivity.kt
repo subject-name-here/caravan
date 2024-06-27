@@ -1,16 +1,6 @@
 package com.unicorns.invisible.caravan
 
-import android.Manifest
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.app.PendingIntent
-import android.app.TaskStackBuilder
-import android.content.Context
-import android.content.Intent
 import android.content.pm.PackageManager
-import android.media.AudioAttributes
-import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.compose.setContent
@@ -66,20 +56,17 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withLink
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.app.ActivityCompat
-import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
 import androidx.lifecycle.MutableLiveData
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.CustomDeck
 import com.unicorns.invisible.caravan.save.Save
 import com.unicorns.invisible.caravan.save.getSaveFile
+import com.unicorns.invisible.caravan.save.json
 import com.unicorns.invisible.caravan.save.loadFromGD
 import com.unicorns.invisible.caravan.save.loadLocalSave
 import com.unicorns.invisible.caravan.save.saveOnGD
 import com.unicorns.invisible.caravan.utils.CheckboxCustom
-import com.unicorns.invisible.caravan.utils.QPingingWorker
 import com.unicorns.invisible.caravan.utils.SliderCustom
 import com.unicorns.invisible.caravan.utils.SwitchCustom
 import com.unicorns.invisible.caravan.utils.TextFallout
@@ -87,6 +74,7 @@ import com.unicorns.invisible.caravan.utils.clickableCancel
 import com.unicorns.invisible.caravan.utils.clickableOk
 import com.unicorns.invisible.caravan.utils.dpToPx
 import com.unicorns.invisible.caravan.utils.effectPlayers
+import com.unicorns.invisible.caravan.utils.effectPlayersLock
 import com.unicorns.invisible.caravan.utils.getBackgroundColor
 import com.unicorns.invisible.caravan.utils.getDialogBackground
 import com.unicorns.invisible.caravan.utils.getDialogTextColor
@@ -113,8 +101,10 @@ import com.unicorns.invisible.caravan.utils.setRadioVolume
 import com.unicorns.invisible.caravan.utils.startRadio
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import okio.withLock
 import org.chromium.net.CronetEngine
 import java.util.UUID
 
@@ -128,8 +118,6 @@ var userId = ""
 private var readyFlag = MutableLiveData(false)
 
 var isQPinging = MutableLiveData(false)
-
-var processQPingingResponse: (Int) -> Unit = {}
 
 @Suppress("MoveLambdaOutsideParentheses")
 class MainActivity : SaveDataActivity() {
@@ -146,18 +134,23 @@ class MainActivity : SaveDataActivity() {
         return playerCResources.deckSize >= MIN_DECK_SIZE && playerCResources.numOfNumbers >= MIN_NUM_OF_NUMBERS
     }
 
-    private var isActivityPaused = false
     override fun onPause() {
         super.onPause()
-        isActivityPaused = true
+        stopQPing()
         pause()
-        effectPlayers.forEach { if (it.isPlaying) it.stop() }
+        effectPlayersLock.withLock {
+            effectPlayers.forEach { if (it.isPlaying) it.stop() }
+        }
     }
 
     override fun onResume() {
         super.onResume()
-        isActivityPaused = false
         resume()
+    }
+
+    override fun onDestroy() {
+        stopQPing()
+        super.onDestroy()
     }
 
     override fun onSnapshotClientInitialized() {
@@ -183,61 +176,8 @@ class MainActivity : SaveDataActivity() {
         }
     }
 
-    private val CHANNEL_ID = "CARAVAN_CHANNEL_ID"
-    private fun createNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val name = "Q-pinging channel"
-            val descriptionText = "Channel for Q-pinging notifications."
-            val importance = NotificationManager.IMPORTANCE_HIGH
-            val channel = NotificationChannel(CHANNEL_ID, name, importance).apply {
-                description = descriptionText
-                vibrationPattern = longArrayOf(0L, 100L, 200L, 300L)
-                setSound(
-                    Uri.parse("android.resource://$packageName/" + R.raw.notification),
-                    AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_NOTIFICATION).build()
-                )
-            }
-            val notificationManager: NotificationManager =
-                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            notificationManager.createNotificationChannel(channel)
-        }
-    }
-
-    private var notificationId = 22229
-    private fun sendNotification(room: Int) {
-        // Create an Intent for the activity you want to start.
-        val resultIntent = Intent(this, MainActivity::class.java)
-        resultIntent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT)
-        val resultPendingIntent: PendingIntent? = TaskStackBuilder.create(this).run {
-            addNextIntentWithParentStack(resultIntent)
-            getPendingIntent(0, 0)
-        }
-
-        val builder = NotificationCompat.Builder(this, CHANNEL_ID)
-            .setSmallIcon(R.drawable.ic_launcher_foreground)
-            .setContentTitle("Caravan")
-            .setContentText("Multiplayer, room #$room. Now.")
-            .setContentIntent(resultPendingIntent)
-            .setVibrate(longArrayOf(0L, 100L, 200L, 300L))
-            .setSound(Uri.parse("android.resource://$packageName/" + R.raw.notification))
-            .setPriority(NotificationCompat.PRIORITY_MAX)
-            .setCategory(NotificationCompat.CATEGORY_SERVICE)
-        with (NotificationManagerCompat.from(this)) {
-            if (ActivityCompat.checkSelfPermission(
-                    this@MainActivity,
-                    Manifest.permission.POST_NOTIFICATIONS
-                ) != PackageManager.PERMISSION_GRANTED
-            ) {
-                return@with
-            }
-            notify(notificationId++, builder.build())
-        }
-
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        createNotificationChannel()
 
         if (userId == "") {
             userId = UUID.randomUUID().toString()
@@ -607,7 +547,6 @@ class MainActivity : SaveDataActivity() {
                 )
             }
         }
-
 
         var showQDialog by remember { mutableStateOf(false) }
         var showQDialog2 by remember { mutableStateOf(false) }
@@ -1201,8 +1140,8 @@ class MainActivity : SaveDataActivity() {
                         MenuItem(stringResource(R.string.lucky_38), showHouse)
                         Spacer(modifier = Modifier.height(20.dp))
                         MenuItem(stringResource(R.string.menu_pvp), showPvP)
-                        Spacer(modifier = Modifier.height(20.dp))
-                        MenuItem(stringResource(R.string.q_pinging), showQ)
+//                        Spacer(modifier = Modifier.height(20.dp))
+//                        MenuItem(stringResource(R.string.q_pinging), showQ)
                         Spacer(modifier = Modifier.height(20.dp))
                         MenuItem(stringResource(R.string.menu_tutorial), showTutorial)
                         Spacer(modifier = Modifier.height(20.dp))
@@ -1309,21 +1248,47 @@ class MainActivity : SaveDataActivity() {
             }
         }
     }
+
+    private var qJob: Job? = null
     private fun launchQPing(isCustom: Boolean, showAlertDialog: (Int) -> Unit) {
         isQPinging.value = true
-        processQPingingResponse = { response ->
-            if (isActivityPaused) {
-                isQPinging.postValue(false)
-                sendNotification(response)
-            } else {
-                isQPinging.postValue(false)
-                showAlertDialog(response)
-            }
-        }
+        qJob = CoroutineScope(Dispatchers.IO).launch {
+            fun sendQPing() {
+                sendRequest("$crvnUrl/crvn/q_ping?vid=${userId}&is_custom=${isCustom.toPythonBool()}") { result ->
+                    if (result.getString("body") == "0") {
+                        CoroutineScope(Dispatchers.Unconfined).launch {
+                            delay(9500L)
+                            sendQPing()
+                        }
+                        return@sendRequest
+                    }
+                    val response = try {
+                        json.decodeFromString<Int>(result.getString("body"))
+                    } catch (e: Exception) {
+                        CoroutineScope(Dispatchers.Unconfined).launch {
+                            delay(9500L)
+                            sendQPing()
+                        }
+                        return@sendRequest
+                    }
 
-        QPingingWorker.enqueue(this, isCustom)
+                    if (response in (10..22229)) {
+                        showAlertDialog(response)
+                        isQPinging.postValue(false)
+                    } else {
+                        CoroutineScope(Dispatchers.Unconfined).launch {
+                            delay(9500L)
+                            sendQPing()
+                        }
+                    }
+                }
+            }
+            sendQPing()
+        }
     }
     private fun stopQPing() {
+        qJob?.cancel()
+        qJob = null
         isQPinging.value = false
     }
     private fun sendQNegativeResponse(room: Int) {

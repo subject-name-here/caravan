@@ -47,6 +47,7 @@ serialization = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization
 cronet = { group = "com.google.android.gms", name = "play-services-cronet", version.ref = "cronet" }
 gp = { group = "com.google.android.gms", name = "play-services-games-v2", version.ref = "gpservices" }
 
+
 ac2 = { group = "androidx.credentials", name = "credentials-play-services-auth", version.ref = "ac" }
 ac1 = { group = "androidx.credentials", name = "credentials", version.ref = "ac" }
 ac3 = { group = "com.google.android.libraries.identity.googleid", name = "googleid", version.ref = "ac3" }
