@@ -308,5 +308,21 @@
     <string name="you_have_a_match">You have a match!</string>
     <string name="q_pinging_message">You have been assigned room #%1$s. Hurry up to have the first move! Go to Multiplayer, enter given room number and press Join!</string>
     <string name="lucky_38">Lucky 38</string>
+    <string name="place_your_bets">Place your bets!\n(You have %1$s caps.)</string>
+    <string name="time_s">Time: %1$s s</string>
+    <string name="seconds">%1$s s</string>
+    <string name="bet_caps">Bet: %1$s caps</string>
+    <string name="your_current_reward_caps">Your current reward: %1$s caps.</string>
+    <string name="you_have_earned_caps">\nYou have earned %1$s caps!</string>
+    <string name="blitz">BLITZ!</string>
+    <string name="benny">Benny</string>
+    <string name="mr_house">Mr. House</string>
+    <string name="start">START!</string>
+    <string name="not_enough_caps_warning">Not enough caps!</string>
+    <string name="please_lower_your_bet_to_play">Please, lower your bet to play.</string>
+    <string name="select_your_opponent">Select your opponent!</string>
+    <string name="benny_custom_deck_header">Babe, I ain\'t good enough already.</string>
+    <string name="benny_custom_deck_body">Now how about you leave that custom deck in your deep pocket?</string>
+    <string name="what_tired_of_losing">What, tired of losing?</string>
 
 </resources>

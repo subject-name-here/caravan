@@ -197,7 +197,7 @@ fun BlitzScreen(
         ) {
             item {
                 TextFallout(
-                    "BLITZ!",
+                    stringResource(R.string.blitz),
                     getTextColor(activity),
                     getTextStrokeColor(activity),
                     32.sp,
@@ -226,7 +226,12 @@ fun BlitzScreen(
                         16.sp,
                         Alignment.Center,
                         Modifier
-                            .border(BorderStroke(if (index == selectedEnemy) 3.dp else (-1).dp, getSelectionColor(activity)))
+                            .border(
+                                BorderStroke(
+                                    if (index == selectedEnemy) 3.dp else (-1).dp,
+                                    getSelectionColor(activity)
+                                )
+                            )
                             .padding(4.dp)
                             .clickable { selectEnemy(index) }
                             .background(getTextBackgroundColor(activity))
@@ -243,14 +248,14 @@ fun BlitzScreen(
                     }
 
                     Column(Modifier.weight(1f), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
-                        OpponentItem("Benny", 2)
+                        OpponentItem(stringResource(R.string.benny), 2)
                         Spacer(Modifier.height(10.dp))
-                        OpponentItem("Mr. House", 3)
+                        OpponentItem(stringResource(R.string.mr_house), 3)
                     }
                 }
                 Spacer(Modifier.height(8.dp))
                 TextFallout(
-                    "START!",
+                    stringResource(R.string.start),
                     getTextColor(activity),
                     getTextStrokeColor(activity),
                     24.sp,
@@ -266,8 +271,8 @@ fun BlitzScreen(
                             }
                             if (bet > (activity.save?.caps ?: 0)) {
                                 showAlertDialog(
-                                    "Not enough caps!",
-                                    "Please, lower your bet to play."
+                                    activity.getString(R.string.not_enough_caps_warning),
+                                    activity.getString(R.string.please_lower_your_bet_to_play)
                                 )
                                 return@clickableOk
                             }
@@ -275,24 +280,34 @@ fun BlitzScreen(
                             when (selectedEnemy) {
                                 -1 -> {
                                     showAlertDialog(
-                                        "Select your opponent!",
+                                        activity.getString(R.string.select_your_opponent),
                                         ""
                                     )
                                     return@clickableOk
                                 }
-                                0 -> { showGameBetter = true }
-                                1 -> { showGame38 = true }
+
+                                0 -> {
+                                    showGameBetter = true
+                                }
+
+                                1 -> {
+                                    showGame38 = true
+                                }
+
                                 2 -> {
                                     if (checkedCustomDeck) {
                                         showAlertDialog(
-                                            "Babe, I ain't good enough already.",
-                                            "Now how about you leave that custom deck in your deep pocket?"
+                                            activity.getString(R.string.benny_custom_deck_header),
+                                            activity.getString(R.string.benny_custom_deck_body)
                                         )
                                     } else {
                                         showGameBenny = true
                                     }
                                 }
-                                3 -> { showGameHouse = true }
+
+                                3 -> {
+                                    showGameHouse = true
+                                }
                             }
                         }
                         .background(getTextBackgroundColor(activity))
@@ -356,7 +371,7 @@ fun BlitzScreen(
         ) {
             item {
                 TextFallout(
-                    "Place your bets!\n(You have ${activity.save?.caps ?: 0} caps.)",
+                    stringResource(R.string.place_your_bets, activity.save?.caps ?: 0),
                     getTextColor(activity),
                     getTextStrokeColor(activity),
                     20.sp,
@@ -367,7 +382,7 @@ fun BlitzScreen(
                 Spacer(modifier = Modifier.height(16.dp))
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     TextFallout(
-                        "Time: ${BlitzTime.FAST.time} s",
+                        stringResource(R.string.time_s, BlitzTime.FAST.time),
                         getTextColor(activity),
                         getTextStrokeColor(activity),
                         16.sp,
@@ -383,7 +398,7 @@ fun BlitzScreen(
                     )
                     Spacer(Modifier.width(8.dp))
                     TextFallout(
-                        "${BlitzTime.NORMAL.time} s",
+                        stringResource(R.string.seconds, BlitzTime.NORMAL.time),
                         getTextColor(activity),
                         getTextStrokeColor(activity),
                         16.sp,
@@ -395,7 +410,7 @@ fun BlitzScreen(
                 Spacer(modifier = Modifier.height(16.dp))
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     TextFallout(
-                        "Bet: $bet caps",
+                        stringResource(R.string.bet_caps, bet),
                         getTextColor(activity),
                         getTextStrokeColor(activity),
                         16.sp,
@@ -422,7 +437,7 @@ fun BlitzScreen(
                     }
                     val reward = (bet * timeMult * enemyMult).toInt()
                     TextFallout(
-                        "Your current reward: $reward caps.",
+                        stringResource(R.string.your_current_reward_caps, reward),
                         getTextColor(activity),
                         getTextStrokeColor(activity),
                         20.sp,
@@ -485,7 +500,7 @@ fun StartBlitz(
             var message = activity.getString(R.string.you_win)
             activity.save?.let { save ->
                 val reward = (onBet * getTimeMult(time) * getEnemyMult(enemy)).toInt()
-                message += "\nYou have earned $reward caps!"
+                message += activity.getString(R.string.you_have_earned_caps, reward)
                 save.caps += reward
                 saveOnGD(activity)
             }
@@ -650,7 +665,7 @@ fun StartBlitz(
             }
 
             if (game.enemy is EnemyHouse) {
-                showAlertDialog("What, tired of losing?", "")
+                showAlertDialog(activity.getString(R.string.what_tired_of_losing), "")
             } else {
                 showAlertDialog(activity.getString(R.string.check_back_to_menu), "")
             }

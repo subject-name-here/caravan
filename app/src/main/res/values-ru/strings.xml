@@ -316,4 +316,22 @@
 
     <string name="lucky_38">Казино Lucky 38</string>
 
+    <string name="place_your_bets">Делайте ваши ставки!\n(У вас нак счету %1$s крышечек.)</string>
+    <string name="time_s">Время: %1$s с</string>
+    <string name="seconds">%1$s с</string>
+    <string name="bet_caps">Ставка: %1$s крышечек</string>
+    <string name="your_current_reward_caps">Ваш выигрыш: %1$s крышечек.</string>
+    <string name="you_have_earned_caps">\nВы выиграли %1$s крышечек!</string>
+    <string name="blitz">БЛИЦ!</string>
+    <string name="benny">Бенни</string>
+    <string name="mr_house">Мистер Хаус</string>
+    <string name="start">НАЧАТЬ!</string>
+    <string name="not_enough_caps_warning">Недостаточно крышечек!</string>
+    <string name="please_lower_your_bet_to_play">Пожалуйста, понизьте вашу ставку.</string>
+    <string name="select_your_opponent">Выберите соперника!</string>
+    <string name="benny_custom_deck_header">Детка, я и так недостаточно хорош для Каравана.</string>
+    <string name="benny_custom_deck_body">Давай ты оставишь свою сборную колоду в кармане?</string>
+    <string name="what_tired_of_losing">Что, устал проигрывать?</string>
+
+
 </resources>

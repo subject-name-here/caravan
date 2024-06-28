@@ -31,6 +31,7 @@ import com.unicorns.invisible.caravan.utils.getTextColor
 import com.unicorns.invisible.caravan.utils.getTextStrokeColor
 import com.unicorns.invisible.caravan.utils.playCloseSound
 import com.unicorns.invisible.caravan.utils.playJokerSounds
+import com.unicorns.invisible.caravan.utils.playNoBeep
 import com.unicorns.invisible.caravan.utils.playSelectSound
 import com.unicorns.invisible.caravan.utils.playVatsReady
 import com.unicorns.invisible.caravan.utils.sendRequest
@@ -206,6 +207,9 @@ fun ShowGamePvP(
             timeOnTimer = 38
             while (isActive && timeOnTimer > 0) {
                 timeOnTimer--
+                if (timeOnTimer < 10) {
+                    playNoBeep(activity)
+                }
                 delay(1000L)
             }
         } else {

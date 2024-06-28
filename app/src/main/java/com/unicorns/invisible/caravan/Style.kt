@@ -459,10 +459,11 @@ fun BoxWithConstraintsScope.StylePicture(
             )
             val painter44 = listOf(painterPostcard1, painterPostcard2).random(rand)
 
+            val heightScale = 60.dp.dpToPx() / 256f
             Image(
                 painter = painter44,
                 contentDescription = "",
-                Modifier.rotate(-40f + rand.nextFloat() * 80f),
+                Modifier.rotate(-40f + rand.nextFloat() * 80f).scale(heightScale),
                 alignment = Alignment.TopStart,
                 contentScale = ContentScale.None
             )
