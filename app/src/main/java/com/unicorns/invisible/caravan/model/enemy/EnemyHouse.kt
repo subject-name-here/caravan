@@ -183,16 +183,6 @@ data object EnemyHouse : Enemy() {
                                 otherCaravan.putCardOnTop(game.enemyCResources.removeFromHand(cardIndex))
                                 return
                             }
-
-                            // Try overselling player's caravan
-                            if (
-                                otherCaravan.getValue() + card.rank.value > game.playerCaravans[otherCaravanIndex].getValue() &&
-                                otherCaravan.getValue() + card.rank.value <= 26 &&
-                                otherCaravan.canPutCardOnTop(card)
-                            ) {
-                                otherCaravan.putCardOnTop(game.enemyCResources.removeFromHand(cardIndex))
-                                return
-                            }
                         }
                 }
 

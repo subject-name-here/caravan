@@ -38,7 +38,6 @@ import androidx.compose.ui.unit.sp
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.GameSaver
-import com.unicorns.invisible.caravan.model.currentGame
 import com.unicorns.invisible.caravan.model.enemy.EnemyPlayer
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.Card
@@ -584,7 +583,6 @@ fun StartPvP(
                 playerCResources,
                 EnemyPlayer(enemyStartDeck)
             ).also {
-                currentGame = it
                 it.isPlayerTurn = false
                 it.isExchangingCards = true
                 it.initDeck(playerCResources, maxNumOfFaces = 4, initHand = false)

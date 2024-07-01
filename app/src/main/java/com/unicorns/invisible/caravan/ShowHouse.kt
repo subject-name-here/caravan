@@ -37,7 +37,6 @@ import androidx.compose.ui.unit.sp
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.GameSaver
-import com.unicorns.invisible.caravan.model.currentGame
 import com.unicorns.invisible.caravan.model.enemy.Enemy
 import com.unicorns.invisible.caravan.model.enemy.EnemyBetter
 import com.unicorns.invisible.caravan.model.enemy.EnemyHouse
@@ -85,7 +84,199 @@ fun ShowHouse(
     showAlertDialog: (String, String) -> Unit,
     goBack: () -> Unit,
 ) {
-    BlitzScreen(activity, selectedDeck, showAlertDialog, goBack)
+    var mode by rememberSaveable { mutableStateOf(Lucky38Mode.BLITZ) }
+    when (mode) {
+        Lucky38Mode.BLITZ -> BlitzScreen(activity, selectedDeck, showAlertDialog, { mode = mode.nextMode() }, goBack)
+        Lucky38Mode.TOWER -> {
+            TowerScreen(activity, selectedDeck, showAlertDialog, { mode = mode.nextMode() }, goBack)
+        }
+        Lucky38Mode.ROUGAVAN -> {
+            CaraguelikeScreen(activity, selectedDeck, showAlertDialog, { mode = mode.nextMode() }, goBack)
+        }
+    }
+}
+
+private enum class Lucky38Mode {
+    BLITZ,
+    TOWER,
+    ROUGAVAN;
+    fun nextMode(): Lucky38Mode {
+        return when (this) {
+            BLITZ -> TOWER
+            TOWER -> ROUGAVAN
+            ROUGAVAN -> BLITZ
+        }
+    }
+}
+
+@Composable
+fun TowerScreen(
+    activity: MainActivity,
+    selectedDeck: () -> Pair<CardBack, Boolean>,
+    showAlertDialog: (String, String) -> Unit,
+    nextMode: () -> Unit,
+    goBack: () -> Unit,
+) {
+    Column(
+        Modifier
+            .fillMaxSize()
+            .background(getBackgroundColor(activity)),
+        verticalArrangement = Arrangement.Top,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        val state = rememberLazyListState()
+        LazyColumn(
+            Modifier
+                .fillMaxWidth()
+                .fillMaxHeight(0.3f)
+                .scrollbar(
+                    state,
+                    knobColor = getKnobColor(activity), trackColor = getTrackColor(activity),
+                    horizontal = false,
+                )
+                .padding(end = 4.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally,
+            state = state
+        ) {
+            item {
+                Box(Modifier.fillMaxWidth()) {
+                    Row(
+                        Modifier.align(Alignment.Center),
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        TextFallout(
+                            stringResource(R.string.tower),
+                            getTextColor(activity),
+                            getTextStrokeColor(activity),
+                            32.sp,
+                            Alignment.Center,
+                            Modifier,
+                            TextAlign.Center
+                        )
+                        TextFallout(
+                            "(?)",
+                            getTextColor(activity),
+                            getTextStrokeColor(activity),
+                            24.sp,
+                            Alignment.Center,
+                            Modifier
+                                .background(getTextBackgroundColor(activity))
+                                .clickableOk(activity) {
+                                    showAlertDialog(
+                                        activity.getString(R.string.tower_rules),
+                                        activity.getString(R.string.tower_rules_body)
+                                    )
+                                }
+                                .padding(4.dp),
+                            TextAlign.Center
+                        )
+                    }
+                    TextFallout(
+                        ">>>",
+                        getTextColor(activity),
+                        getTextStrokeColor(activity),
+                        24.sp,
+                        Alignment.CenterEnd,
+                        Modifier
+                            .align(Alignment.CenterEnd)
+                            .background(getTextBackgroundColor(activity))
+                            .clickableOk(activity) {
+                                nextMode()
+                            }
+                            .padding(4.dp),
+                        TextAlign.End
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun CaraguelikeScreen(
+    activity: MainActivity,
+    selectedDeck: () -> Pair<CardBack, Boolean>,
+    showAlertDialog: (String, String) -> Unit,
+    nextMode: () -> Unit,
+    goBack: () -> Unit,
+) {
+    Column(
+        Modifier
+            .fillMaxSize()
+            .background(getBackgroundColor(activity)),
+        verticalArrangement = Arrangement.Top,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        val state = rememberLazyListState()
+        LazyColumn(
+            Modifier
+                .fillMaxWidth()
+                .fillMaxHeight(0.3f)
+                .scrollbar(
+                    state,
+                    knobColor = getKnobColor(activity), trackColor = getTrackColor(activity),
+                    horizontal = false,
+                )
+                .padding(end = 4.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally,
+            state = state
+        ) {
+            item {
+                Box(Modifier.fillMaxWidth()) {
+                    Row(
+                        Modifier.align(Alignment.Center),
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        TextFallout(
+                            stringResource(R.string.roguelike),
+                            getTextColor(activity),
+                            getTextStrokeColor(activity),
+                            32.sp,
+                            Alignment.Center,
+                            Modifier,
+                            TextAlign.Center
+                        )
+                        TextFallout(
+                            "(?)",
+                            getTextColor(activity),
+                            getTextStrokeColor(activity),
+                            24.sp,
+                            Alignment.Center,
+                            Modifier
+                                .background(getTextBackgroundColor(activity))
+                                .clickableOk(activity) {
+                                    showAlertDialog(
+                                        activity.getString(R.string.roguelike_rules),
+                                        activity.getString(R.string.roguelike_rules_body)
+                                    )
+                                }
+                                .padding(4.dp),
+                            TextAlign.Center
+                        )
+                    }
+                    TextFallout(
+                        ">>>",
+                        getTextColor(activity),
+                        getTextStrokeColor(activity),
+                        24.sp,
+                        Alignment.CenterEnd,
+                        Modifier
+                            .align(Alignment.CenterEnd)
+                            .background(getTextBackgroundColor(activity))
+                            .clickableOk(activity) {
+                                nextMode()
+                            }
+                            .padding(4.dp),
+                        TextAlign.End
+                    )
+                }
+            }
+        }
+    }
 }
 
 @Composable
@@ -93,6 +284,7 @@ fun BlitzScreen(
     activity: MainActivity,
     selectedDeck: () -> Pair<CardBack, Boolean>,
     showAlertDialog: (String, String) -> Unit,
+    nextMode: () -> Unit,
     goBack: () -> Unit,
 ) {
     var showGameBetter by rememberSaveable { mutableStateOf(false) }
@@ -196,15 +388,52 @@ fun BlitzScreen(
             state = state
         ) {
             item {
-                TextFallout(
-                    stringResource(R.string.blitz),
-                    getTextColor(activity),
-                    getTextStrokeColor(activity),
-                    32.sp,
-                    Alignment.Center,
-                    Modifier,
-                    TextAlign.Center
-                )
+                Box(Modifier.fillMaxWidth()) {
+                    Row(Modifier.align(Alignment.Center), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
+                        TextFallout(
+                            stringResource(R.string.blitz),
+                            getTextColor(activity),
+                            getTextStrokeColor(activity),
+                            32.sp,
+                            Alignment.Center,
+                            Modifier,
+                            TextAlign.Center
+                        )
+                        TextFallout(
+                            "(?)",
+                            getTextColor(activity),
+                            getTextStrokeColor(activity),
+                            24.sp,
+                            Alignment.Center,
+                            Modifier
+                                .background(getTextBackgroundColor(activity))
+                                .clickableOk(activity) {
+                                    showAlertDialog(
+                                        activity.getString(R.string.blitz_rules),
+                                        activity.getString(R.string.blitz_rules_body)
+                                    )
+                                }
+                                .padding(4.dp),
+                            TextAlign.Center
+                        )
+                    }
+                    TextFallout(
+                        ">>>",
+                        getTextColor(activity),
+                        getTextStrokeColor(activity),
+                        24.sp,
+                        Alignment.CenterEnd,
+                        Modifier
+                            .align(Alignment.CenterEnd)
+                            .background(getTextBackgroundColor(activity))
+                            .clickableOk(activity) {
+                                nextMode()
+                            }
+                            .padding(4.dp),
+                        TextAlign.End
+                    )
+                }
+
                 Spacer(modifier = Modifier.height(8.dp))
                 TextFallout(
                     stringResource(R.string.pve_select_enemy),
@@ -488,7 +717,6 @@ fun StartBlitz(
                 playerCResources,
                 enemy
             ).also {
-                currentGame = it
                 it.specialGameOverCondition = { if (timeOnTimer <= 0f) -1 else 0 }
                 it.startGame()
             }
@@ -720,8 +948,8 @@ enum class BlitzTime(val time: Int) {
 
 fun getTimeMult(time: BlitzTime): Double {
     return when (time) {
-        BlitzTime.FAST -> 1.75
-        BlitzTime.NORMAL -> 1.25
+        BlitzTime.FAST -> 1.5
+        BlitzTime.NORMAL -> 1.0
     }
 }
 

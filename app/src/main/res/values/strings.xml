@@ -193,6 +193,7 @@
         Just press \"Join any Room!!!\", if you:\n
         - want to find anyone.\n
         - saw notification from bot on Discord.\n
+        If you\'re here because of Q-pinging, press \"Join Room\".
         To create room:\n
         - enter room number (if one number fails, try another),\n
         - select room privacy setting, \n
@@ -315,6 +316,8 @@
     <string name="your_current_reward_caps">Your current reward: %1$s caps.</string>
     <string name="you_have_earned_caps">\nYou have earned %1$s caps!</string>
     <string name="blitz">BLITZ!</string>
+    <string name="tower">TOWER!</string>
+    <string name="roguelike">ROGUELIKE!</string>
     <string name="benny">Benny</string>
     <string name="mr_house">Mr. House</string>
     <string name="start">START!</string>
@@ -324,5 +327,13 @@
     <string name="benny_custom_deck_header">Babe, I ain\'t good enough already.</string>
     <string name="benny_custom_deck_body">Now how about you leave that custom deck in your deep pocket?</string>
     <string name="what_tired_of_losing">What, tired of losing?</string>
+    <string name="blitz_rules">BLITZ Rules</string>
+    <string name="blitz_rules_body">The game rules are the same, but now there is a timer (20 or 30 seconds) that ticks down to zero and never stops. Each your move adds +1 second to the timer; when timer reaches 0, you automatically lose.</string>
+
+    <string name="tower_rules">TOWER Rules</string>
+    <string name="tower_rules_body">Ten enemies, one attempt to defeat them all. Coming (not) soon.</string>
+
+    <string name="roguelike_rules">ROGUELIKE Rules</string>
+    <string name="roguelike_rules_body">Infinite enemies, custom decks. Coming (definitely not) soon.</string>
 
 </resources>

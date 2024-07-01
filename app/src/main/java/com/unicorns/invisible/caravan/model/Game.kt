@@ -241,6 +241,6 @@ class Game(
 
 var currentGame: Game? = null
 val GameSaver = Saver<Game, String>(
-    save = { "" },
+    save = { currentGame = it; "" },
     restore = { currentGame }
 )

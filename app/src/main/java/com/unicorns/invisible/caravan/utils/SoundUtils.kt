@@ -217,10 +217,6 @@ private fun playSongFromRadio(activity: MainActivity, songName: String) {
             val afd = activity.assets.openFd("radio/$songName")
             setDataSource(afd.fileDescriptor, afd.startOffset, afd.length)
             setOnCompletionListener {
-                radioLock.withLock {
-                    radioPlayers.remove(this)
-                    release()
-                }
                 nextSong(activity)
             }
             prepare()
@@ -237,7 +233,11 @@ private fun playSongFromRadio(activity: MainActivity, songName: String) {
 
 fun nextSong(activity: MainActivity) {
     radioLock.withLock {
-        radioPlayers.forEach { it.stop() }
+        radioPlayers.forEach {
+            it.stop()
+            radioPlayers.remove(it)
+            it.release()
+        }
     }
 
     if (pointer !in songList.indices) {

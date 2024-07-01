@@ -275,7 +275,6 @@ fun ShowGameRaw(
         MainScope().launch {
             val caravan = game.enemyCaravans[caravanNum]
             when (caravanNum) {
-                // TODO: check autoscrolls
                 0 -> state1Enemy.scrollToItem(
                     0,
                     (stateToSizeOfItem(state1Enemy).toFloat() * (caravan.size - position - 1) / caravan.size).toInt()
@@ -916,6 +915,7 @@ fun RowScope.CaravanOnField(
                                         }
                                     }
                                 }
+                                recomposeKey = !recomposeKey
                             }
                         }
 
@@ -933,6 +933,7 @@ fun RowScope.CaravanOnField(
                                     recomposeKey = !recomposeKey
                                 }
                                 memCards.removeIf { it.card.caravanAnimationMark == Card.AnimationMark.MOVING_OUT_WIP }
+                                recomposeKey = !recomposeKey
                             }
                         }
 

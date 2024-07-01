@@ -9,14 +9,6 @@
     <color name="green">#FF00FF00</color>
     <color name="dark_green">#FF009900</color>
 
-    <!--
-        All themes must have four colors:
-        Background,
-        Text,
-        text stroke,
-        text Background,
-    -->
-
     <color name="desertBackground">#FFFFC4</color>
     <color name="desertText">#441111</color>
     <color name="desertTextBackground">#AA6644</color>

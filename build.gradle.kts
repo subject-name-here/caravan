@@ -5,4 +5,5 @@ plugins {
     alias(libs.plugins.jetbrainsKotlinSerialization) apply false
     alias(libs.plugins.firebase) apply false
     alias(libs.plugins.firebaseCrashlytics) apply false
+    alias(libs.plugins.compose.compiler) apply false
 }

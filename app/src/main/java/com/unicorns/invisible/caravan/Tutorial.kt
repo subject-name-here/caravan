@@ -20,7 +20,6 @@ import androidx.compose.ui.unit.sp
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.GameSaver
-import com.unicorns.invisible.caravan.model.currentGame
 import com.unicorns.invisible.caravan.model.enemy.EnemyTutorial
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.Card
@@ -70,7 +69,7 @@ fun Tutorial(activity: MainActivity, goBack: () -> Unit) {
                     add(Card(Rank.ACE, Suit.DIAMONDS, CardBack.STANDARD))
                 }),
                 enemy
-            ).also { currentGame = it; it.startGame(maxNumOfFaces = 4) }
+            ).also { it.startGame(maxNumOfFaces = 4) }
         )
     }
 

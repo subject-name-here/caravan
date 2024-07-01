@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.jetbrainsKotlinSerialization)
     alias(libs.plugins.firebase)
     alias(libs.plugins.firebaseCrashlytics)
+    alias(libs.plugins.compose.compiler)
 }
 
 android {
@@ -14,8 +15,8 @@ android {
         applicationId = "com.unicorns.invisible.caravan"
         minSdk = 23
         targetSdk = 34
-        versionCode = 40
-        versionName = "1.4.D"
+        versionCode = 42
+        versionName = "1.4.1.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -51,9 +52,6 @@ dependencies {
     implementation(libs.androidx.futures)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
 
     val composeBom = platform("androidx.compose:compose-bom:2024.05.00")
     implementation(composeBom)
@@ -78,8 +76,8 @@ dependencies {
     implementation(kotlin("script-runtime"))
 
     implementation(libs.gp)
-    implementation(libs.ac1)
     implementation(libs.ac2)
+    implementation(libs.ac1)
     implementation(libs.ac3)
 
     implementation(libs.compose.runtime)
