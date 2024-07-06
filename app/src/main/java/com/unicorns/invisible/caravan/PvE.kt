@@ -587,29 +587,15 @@ fun winCard(
 
     val deck = CustomDeck(back, isAlt)
     val deckList = deck.takeRandom(deck.size)
-    val deckOld = deckList.filter { checkCard(it) }
+    val deckOld = deckList.filter { !checkCard(it) }
     val deckNew = deckList - deckOld.toSet()
-    val prob = if (numberOfCards != 1) {
-        // p = 0.95
-        when {
-            isCustom && deckNew.size >= deckOld.size -> 50   // 1.5 games to get 1 new card
-            isCustom -> 28                                   // 3 games to get 1 new card
-            !isCustom && deckNew.size >= deckOld.size -> 60  // 1 games to get 1 new card
-            else -> 33                                       // 2.5 games to get 1 new card
-        }
-    } else {
-        when {
-            isCustom && deckNew.size >= deckOld.size -> 66
-            isCustom -> 45
-            !isCustom && deckNew.size >= deckOld.size -> 75
-            else -> 55
-        }
+    val prob = when {
+        isCustom -> 33
+        else -> 50
     }
-    val simpleProb = (deckNew.size.toFloat() / deckList.size.toFloat() * 100).toInt()
     val reward = run {
-        val finalProb = max(prob, simpleProb)
         val probs = (0 until numberOfCards).map {
-            (0..99).random() < finalProb
+            (0..99).random() < prob
         }
         val newCards = probs.count { it }.coerceAtMost(deckNew.size)
         val oldCards = (numberOfCards - newCards).coerceAtMost(deckOld.size)
