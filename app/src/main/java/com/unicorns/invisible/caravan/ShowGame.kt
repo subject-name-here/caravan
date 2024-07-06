@@ -812,7 +812,7 @@ fun RowScope.CaravanOnField(
                                     val modifierOffset =
                                         ((if (isEnemy) (-10).dp else 10.dp) * (modifierIndex + 1)).toPx()
                                             .toInt()
-                                    layout((placeable.width * scale).toInt(), 0) {
+                                    layout((placeable.width * scale).toInt().coerceAtLeast(0), 0) {
                                         placeable.place(modifierOffset, 0)
                                     }
                                 })

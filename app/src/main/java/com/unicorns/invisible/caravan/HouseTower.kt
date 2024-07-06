@@ -12,10 +12,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -35,41 +31,7 @@ import com.unicorns.invisible.caravan.utils.scrollbar
 
 
 @Composable
-fun ShowHouse(
-    activity: MainActivity,
-    selectedDeck: () -> Pair<CardBack, Boolean>,
-    showAlertDialog: (String, String) -> Unit,
-    goBack: () -> Unit,
-) {
-    var mode by rememberSaveable { mutableStateOf(Lucky38Mode.BLITZ) }
-    when (mode) {
-        Lucky38Mode.BLITZ -> {
-            BlitzScreen(activity, selectedDeck, showAlertDialog, { mode = mode.nextMode() }, goBack)
-        }
-        Lucky38Mode.TOWER -> {
-            TowerScreen(activity, selectedDeck, showAlertDialog, { mode = mode.nextMode() }, goBack)
-        }
-        Lucky38Mode.ROGUELIKE -> {
-            RoguelikeScreen(activity, selectedDeck, showAlertDialog, { mode = mode.nextMode() }, goBack)
-        }
-    }
-}
-
-private enum class Lucky38Mode {
-    BLITZ,
-    TOWER,
-    ROGUELIKE;
-    fun nextMode(): Lucky38Mode {
-        return when (this) {
-            BLITZ -> TOWER
-            TOWER -> ROGUELIKE
-            ROGUELIKE -> BLITZ
-        }
-    }
-}
-
-@Composable
-fun RoguelikeScreen(
+fun TowerScreen(
     activity: MainActivity,
     selectedDeck: () -> Pair<CardBack, Boolean>,
     showAlertDialog: (String, String) -> Unit,
@@ -106,7 +68,7 @@ fun RoguelikeScreen(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         TextFallout(
-                            stringResource(R.string.roguelike),
+                            stringResource(R.string.tower),
                             getTextColor(activity),
                             getTextStrokeColor(activity),
                             32.sp,
@@ -124,8 +86,8 @@ fun RoguelikeScreen(
                                 .background(getTextBackgroundColor(activity))
                                 .clickableOk(activity) {
                                     showAlertDialog(
-                                        activity.getString(R.string.roguelike_rules),
-                                        activity.getString(R.string.roguelike_rules_body)
+                                        activity.getString(R.string.tower_rules),
+                                        activity.getString(R.string.tower_rules_body)
                                     )
                                 }
                                 .padding(4.dp),

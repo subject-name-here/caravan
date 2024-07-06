@@ -17,9 +17,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.sebaslogen.resaca.rememberScoped
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
-import com.unicorns.invisible.caravan.model.GameSaver
 import com.unicorns.invisible.caravan.model.enemy.EnemyTutorial
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.Card
@@ -33,8 +33,29 @@ import com.unicorns.invisible.caravan.utils.getDialogTextColor
 import com.unicorns.invisible.caravan.utils.getTextColor
 import com.unicorns.invisible.caravan.utils.stopAmbient
 
+
 @Composable
-fun Tutorial(activity: MainActivity, goBack: () -> Unit) {
+fun Tutorial(
+    activity: MainActivity,
+    game: Game = rememberScoped {
+        Game(
+            CResources(CustomDeck().apply {
+                add(Card(Rank.JACK, Suit.HEARTS, CardBack.STANDARD))
+                add(Card(Rank.QUEEN, Suit.CLUBS, CardBack.STANDARD))
+                add(Card(Rank.KING, Suit.DIAMONDS, CardBack.STANDARD))
+                add(Card(Rank.JOKER, Suit.HEARTS, CardBack.STANDARD))
+                add(Card(Rank.TWO, Suit.HEARTS, CardBack.STANDARD))
+                add(Card(Rank.TWO, Suit.DIAMONDS, CardBack.STANDARD))
+                add(Card(Rank.TWO, Suit.CLUBS, CardBack.STANDARD))
+                add(Card(Rank.THREE, Suit.HEARTS, CardBack.STANDARD))
+                add(Card(Rank.FOUR, Suit.DIAMONDS, CardBack.STANDARD))
+                add(Card(Rank.ACE, Suit.DIAMONDS, CardBack.STANDARD))
+            }),
+            EnemyTutorial
+        ).also { it.startGame(maxNumOfFaces = 4) }
+    },
+    goBack: () -> Unit
+) {
     var tutorialKey by rememberSaveable { mutableIntStateOf(0) }
 
     var showAlertDialog by rememberSaveable { mutableStateOf(false) }
@@ -50,27 +71,6 @@ fun Tutorial(activity: MainActivity, goBack: () -> Unit) {
     fun hideAlertDialog() {
         showAlertDialog = false
         tutorialKey++
-    }
-
-    val enemy = EnemyTutorial
-    val game by rememberSaveable(stateSaver = GameSaver) {
-        mutableStateOf(
-            Game(
-                CResources(CustomDeck().apply {
-                    add(Card(Rank.JACK, Suit.HEARTS, CardBack.STANDARD))
-                    add(Card(Rank.QUEEN, Suit.CLUBS, CardBack.STANDARD))
-                    add(Card(Rank.KING, Suit.DIAMONDS, CardBack.STANDARD))
-                    add(Card(Rank.JOKER, Suit.HEARTS, CardBack.STANDARD))
-                    add(Card(Rank.TWO, Suit.HEARTS, CardBack.STANDARD))
-                    add(Card(Rank.TWO, Suit.DIAMONDS, CardBack.STANDARD))
-                    add(Card(Rank.TWO, Suit.CLUBS, CardBack.STANDARD))
-                    add(Card(Rank.THREE, Suit.HEARTS, CardBack.STANDARD))
-                    add(Card(Rank.FOUR, Suit.DIAMONDS, CardBack.STANDARD))
-                    add(Card(Rank.ACE, Suit.DIAMONDS, CardBack.STANDARD))
-                }),
-                enemy
-            ).also { it.startGame(maxNumOfFaces = 4) }
-        )
     }
 
     var updater by remember { mutableStateOf(false) }

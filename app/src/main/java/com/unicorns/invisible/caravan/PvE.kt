@@ -25,9 +25,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.sebaslogen.resaca.rememberScoped
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
-import com.unicorns.invisible.caravan.model.GameSaver
 import com.unicorns.invisible.caravan.model.enemy.Enemy
 import com.unicorns.invisible.caravan.model.enemy.EnemyBestest
 import com.unicorns.invisible.caravan.model.enemy.EnemyBetter
@@ -478,6 +478,18 @@ fun StartGame(
     isCustom: Boolean,
     enemy: Enemy,
     showAlertDialog: (String, String) -> Unit,
+    game: Game = rememberScoped {
+        Game(
+            playerCResources,
+            enemy
+        ).also {
+            activity.save?.let { save ->
+                save.gamesStarted++
+                saveOnGD(activity)
+            }
+            it.startGame()
+        }
+    },
     goBack: () -> Unit,
 ) {
     if (!activity.checkIfCustomDeckCanBeUsedInGame(playerCResources)) {
@@ -489,20 +501,6 @@ fun StartGame(
         return
     }
 
-    val game by rememberSaveable(stateSaver = GameSaver) {
-        mutableStateOf(
-            Game(
-                playerCResources,
-                enemy
-            ).also {
-                activity.save?.let { save ->
-                    save.gamesStarted++
-                    saveOnGD(activity)
-                }
-                it.startGame()
-            }
-        )
-    }
     game.also {
         it.onWin = {
             playWinSound(activity)
@@ -600,12 +598,11 @@ fun winCard(
             else -> 33                                       // 2.5 games to get 1 new card
         }
     } else {
-        // p = 0.75
         when {
-            isCustom && deckNew.size >= deckOld.size -> 55    // 1.7 games to get 1 new card
-            isCustom -> 37                                    // 3 games to get 1 new card
-            !isCustom && deckNew.size >= deckOld.size -> 65   // 1.3 games to get 1 new card
-            else -> 42                                        // 2.5 games to get 1 new card
+            isCustom && deckNew.size >= deckOld.size -> 66
+            isCustom -> 45
+            !isCustom && deckNew.size >= deckOld.size -> 75
+            else -> 55
         }
     }
     val simpleProb = (deckNew.size.toFloat() / deckList.size.toFloat() * 100).toInt()

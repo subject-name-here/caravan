@@ -81,4 +81,5 @@ dependencies {
     implementation(libs.ac3)
 
     implementation(libs.compose.runtime)
+    implementation(libs.resaca)
 }

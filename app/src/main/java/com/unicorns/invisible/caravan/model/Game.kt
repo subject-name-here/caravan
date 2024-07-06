@@ -1,6 +1,9 @@
 package com.unicorns.invisible.caravan.model
 
-import androidx.compose.runtime.saveable.Saver
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.unicorns.invisible.caravan.AnimationSpeed
 import com.unicorns.invisible.caravan.model.enemy.Enemy
 import com.unicorns.invisible.caravan.model.primitives.CResources
@@ -238,9 +241,3 @@ class Game(
         }
     }
 }
-
-var currentGame: Game? = null
-val GameSaver = Saver<Game, String>(
-    save = { currentGame = it; "" },
-    restore = { currentGame }
-)

@@ -35,9 +35,9 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.sebaslogen.resaca.rememberScoped
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
-import com.unicorns.invisible.caravan.model.GameSaver
 import com.unicorns.invisible.caravan.model.enemy.EnemyPlayer
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.Card
@@ -118,10 +118,10 @@ fun ShowPvP(
     activity: MainActivity,
     selectedDeck: () -> Pair<CardBack, Boolean>,
     showAlertDialog: (String, String) -> Unit,
-    roomNumber: Int? = null,
+    roomNumberInt: Int? = null,
     goBack: () -> Unit
 ) {
-    var roomNumber by rememberSaveable { mutableStateOf(roomNumber?.toString() ?: "") }
+    var roomNumber by rememberSaveable { mutableStateOf(roomNumberInt?.toString() ?: "") }
     var checkedCustomDeck by rememberSaveable { mutableStateOf(true) }
     var checkedPrivate by rememberSaveable { mutableStateOf(false) }
     var isRoomCreated by rememberSaveable { mutableIntStateOf(0) }
@@ -575,21 +575,19 @@ fun StartPvP(
     isCreator: Boolean,
     roomNumber: Int,
     showAlertDialog: (String, String) -> Unit,
+    game: Game = rememberScoped {
+        Game(
+            playerCResources,
+            EnemyPlayer(enemyStartDeck)
+        ).also {
+            it.isPlayerTurn = false
+            it.isExchangingCards = true
+            it.initDeck(playerCResources, maxNumOfFaces = 4, initHand = false)
+            currentGameId = it.id
+        }
+    },
     goBack: () -> Unit,
 ) {
-    val game by rememberSaveable(stateSaver = GameSaver) {
-        mutableStateOf(
-            Game(
-                playerCResources,
-                EnemyPlayer(enemyStartDeck)
-            ).also {
-                it.isPlayerTurn = false
-                it.isExchangingCards = true
-                it.initDeck(playerCResources, maxNumOfFaces = 4, initHand = false)
-                currentGameId = it.id
-            }
-        )
-    }
     game.also {
         it.onWin = {
             playWinSound(activity)
