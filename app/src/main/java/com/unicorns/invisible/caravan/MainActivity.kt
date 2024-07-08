@@ -58,6 +58,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.MutableLiveData
 import com.unicorns.invisible.caravan.model.CardBack
+import com.unicorns.invisible.caravan.model.Game
+import com.unicorns.invisible.caravan.model.challenge.Challenge
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.CustomDeck
 import com.unicorns.invisible.caravan.save.Save
@@ -318,6 +320,7 @@ class MainActivity : SaveDataActivity() {
         var showRules by rememberSaveable { mutableStateOf(false) }
         var showSettings by rememberSaveable { mutableStateOf(false) }
         var showStock by rememberSaveable { mutableStateOf(false) }
+        var showDailys by rememberSaveable { mutableStateOf(false) }
 
         var showVision by rememberSaveable { mutableStateOf(false) }
         var styleIdForTop by rememberSaveable { mutableStateOf(styleId) }
@@ -929,6 +932,10 @@ class MainActivity : SaveDataActivity() {
                         StockMarket(this@MainActivity) { showStock = false }
                     }
 
+                    showDailys -> {
+                        ShowDailys(this@MainActivity) { showDailys = false }
+                    }
+
                     else -> {
                         BoxWithConstraints {
                             val width = maxWidth.dpToPx().toInt()
@@ -939,11 +946,11 @@ class MainActivity : SaveDataActivity() {
                                 { showGameStats = true },
                                 { showHouse = true },
                                 { showPvP = true },
-                                { showQSetDialog() },
                                 { showTutorial = true },
                                 { showRules = true },
                                 { showVision = true },
                                 { showSettings = true },
+                                { showDailys = true },
                                 { showStock = true },
                                 ::showAlertDialog,
                             )
@@ -963,11 +970,11 @@ class MainActivity : SaveDataActivity() {
         showPvE: () -> Unit,
         showHouse: () -> Unit,
         showPvP: () -> Unit,
-        showQ: () -> Unit,
         showTutorial: () -> Unit,
         showRules: () -> Unit,
         showVision: () -> Unit,
         showSettings: () -> Unit,
+        showDailys: () -> Unit,
         showStock: () -> Unit,
         showAlertDialog: (String, String) -> Unit,
     ) {
@@ -1149,7 +1156,9 @@ class MainActivity : SaveDataActivity() {
                         Spacer(modifier = Modifier.height(20.dp))
                         MenuItem(stringResource(R.string.menu_deck), showDeckSelection)
                         Spacer(modifier = Modifier.height(20.dp))
-                        MenuItem(stringResource(R.string.stack_market), showStock)
+                        MenuItem(stringResource(R.string.missions), showDailys)
+//                        Spacer(modifier = Modifier.height(20.dp))
+//                        MenuItem(stringResource(R.string.stack_market), showStock)
                         Spacer(modifier = Modifier.height(32.dp))
                     }
                 }
@@ -1241,11 +1250,12 @@ class MainActivity : SaveDataActivity() {
         LaunchedEffect(Unit) {
             if (save?.updateSoldCards() == true) {
                 saveOnGD(this@MainActivity)
-                showAlertDialog(
-                    getString(R.string.card_prices_update),
-                    getString(R.string.some_cards_are_now_more_expensive)
-                )
+//                showAlertDialog(
+//                    getString(R.string.card_prices_update),
+//                    getString(R.string.some_cards_are_now_more_expensive)
+//                )
             }
+            save?.updateChallenges()
         }
     }
 
@@ -1293,6 +1303,21 @@ class MainActivity : SaveDataActivity() {
     }
     private fun sendQNegativeResponse(room: Int) {
         sendRequest("$crvnUrl/crvn/q_ping_response?room=${room}") {}
+    }
+
+    fun processChallengesMove(move: Challenge.Move, game: Game) {
+        save?.let {
+            it.challenges.forEach {
+                it.processMove(move, game)
+            }
+        }
+    }
+    fun processChallengesGameOver(game: Game) {
+        save?.let {
+            it.challenges.forEach {
+                it.processGameResult(game)
+            }
+        }
     }
 
     companion object {

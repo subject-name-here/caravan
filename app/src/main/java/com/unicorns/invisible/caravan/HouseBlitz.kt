@@ -37,6 +37,7 @@ import androidx.compose.ui.unit.sp
 import com.sebaslogen.resaca.rememberScoped
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
+import com.unicorns.invisible.caravan.model.challenge.Challenge
 import com.unicorns.invisible.caravan.model.enemy.Enemy
 import com.unicorns.invisible.caravan.model.enemy.EnemyBenny
 import com.unicorns.invisible.caravan.model.enemy.EnemyBetter
@@ -44,10 +45,8 @@ import com.unicorns.invisible.caravan.model.enemy.EnemyHouse
 import com.unicorns.invisible.caravan.model.enemy.EnemySecuritron38
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.Caravan
-import com.unicorns.invisible.caravan.model.primitives.Card
 import com.unicorns.invisible.caravan.model.primitives.CustomDeck
 import com.unicorns.invisible.caravan.model.primitives.Rank
-import com.unicorns.invisible.caravan.model.primitives.Suit
 import com.unicorns.invisible.caravan.save.saveOnGD
 import com.unicorns.invisible.caravan.utils.CheckboxCustom
 import com.unicorns.invisible.caravan.utils.SliderValueRangeCustom
@@ -423,7 +422,10 @@ fun BlitzScreen(
                     SwitchCustomUsualBackground(
                         activity,
                         { time == BlitzTime.NORMAL },
-                        { time = time.switch() }
+                        {
+                            time = time.switch()
+                            playClickSound(activity)
+                        }
                     )
                     Spacer(Modifier.width(8.dp))
                     TextFallout(
@@ -521,6 +523,7 @@ fun StartBlitz(
 
     game.also {
         it.onWin = {
+            activity.processChallengesGameOver(it)
             playWinSound(activity)
             var message = activity.getString(R.string.you_win)
             activity.save?.let { save ->
@@ -632,6 +635,7 @@ fun StartBlitz(
         val selectedCaravanNN = selectedCaravan
         if (selectedCaravanNN == -1) return
         playVatsReady(activity)
+        activity.processChallengesMove(Challenge.Move(moveCode = 1), game)
         game.playerCaravans[selectedCaravanNN].dropCaravan()
         resetSelected()
         onMove()
@@ -660,6 +664,10 @@ fun StartBlitz(
                     if (card.rank == Rank.JOKER) {
                         playJokerSounds(activity)
                     }
+                    activity.processChallengesMove(Challenge.Move(
+                        moveCode = 4,
+                        handCard = card
+                    ), game)
                     caravan.cards[position].addModifier(
                         game.playerCResources.removeFromHand(
                             cardIndex
@@ -671,6 +679,10 @@ fun StartBlitz(
                 if (position == caravan.cards.size && !isEnemy) {
                     if (caravan.canPutCardOnTop(card)) {
                         playCardFlipSound(activity)
+                        activity.processChallengesMove(Challenge.Move(
+                            moveCode = 3,
+                            handCard = card
+                        ), game)
                         caravan.putCardOnTop(game.playerCResources.removeFromHand(cardIndex))
                         onCaravanCardInserted()
                     }

@@ -290,7 +290,7 @@
     <string name="failure_2">Ошибка!</string>
     <string name="no_room_to_join">Нет номера, в который можно вступить! Создайте свой собственный!</string>
     <string name="failed_to_start_the_game">Не смог начать игру!</string>
-    <string name="pip_boy_main_screen">А это прибор #50724. Наша первая попытка измерить Удачу. Всё, что нужно - пройти двадцать раундов игры: Орёл или Решка? Выбери правильно - счетчик увеличится на 1. Неправильно - счетчик падает до нуля. Счетчик добрался до 20 - получи приз. Не денежный, конечно, Просто куча крышек от бутылок Sunset Sarsaparilla. До сих пор не понимаю, зачем нам их прислали.</string>
+    <string name="pip_boy_main_screen">Прибор #50724: измерь свою удачу!</string>
     <string name="heads">ОРЁЛ</string>
     <string name="tails">РЕШКА</string>
 
@@ -344,5 +344,49 @@
 
     <string name="roguelike_rules">Правила РОГАЛИКа</string>
     <string name="roguelike_rules_body">Три жизни, бесконечное количество врагов, сборные колоды. Скоро (вообще нет).</string>
+
+    <string name="play_cards_of_rank">Сыграйте %1$s карт ранга %2$s.</string>
+
+    <string name="ace_in_the_hole">Туз в рукаве</string>
+    <string name="always_bet_on_jack">Всегда ставь на Валета</string>
+    <string name="queen_s_gambit">Дамы вперед</string>
+    <string name="king_of_the_hill">Да здравствует Король!</string>
+    <string name="wild_card">Джокер!</string>
+    <string name="two_is_enough">Двоих достаточно</string>
+    <string name="good_things_come_in_threes">Бог любит Тройку</string>
+    <string name="four_flush">Четвертование</string>
+    <string name="high_five">Дай пять!</string>
+    <string name="in_dice_i_would_have_won">Если бы мы играли в кости…</string>
+    <string name="lucky_seven">Счастливое число</string>
+    <string name="pieces_of_eight">Восьмое чудо света</string>
+    <string name="the_whole_nine_yards">Девятый вал</string>
+    <string name="all_in">Ва-банк!</string>
+
+    <string name="standing_here_i_realize">Standing Here, I Realize</string>
+    <string name="courier_six">Courier Six?</string>
+    <string name="house_has_gone_bust">Казино - крышка!</string>
+    <string name="robots">Роботы!</string>
+    <string name="unlikely_alliance_1">Странный альянс 1</string>
+    <string name="unlikely_alliance_2">Странный альянс 2</string>
+    <string name="tops_guns">Председатели</string>
+    <string name="defeat_enemies">Победите соперников: %1$s</string>
+    <string name="boulder_city">Боулдер-Сити</string>
+    <string name="win_a_game_by_discarding_your_caravan">Выиграйте игру так, чтобы вашим последним ходом был сброс каравана.</string>
+    <string name="i_have_the_last_laugh">Я смеюсь последним</string>
+    <string name="win_a_game_by_playing_joker">Выиграйте игру так, чтобы последней сыгранной картой был Джокер.</string>
+    <string name="say_no_to_even">Никаких чётных</string>
+    <string name="say_no_to_odd">Никаких нечётных</string>
+    <string name="not_every_man_jack">Валет не для всех</string>
+    <string name="french_revolution">Французская революция</string>
+    <string name="put_it_all_on_black">Всё на черное!</string>
+    <string name="put_it_all_on_red">Всё на красное!</string>
+    <string name="do_not_play_even_number_cards_2_4_6_8_10">Не играйте чётные карты (2, 4, 6, 8, 10). (Дебют не считается!)</string>
+    <string name="do_not_play_odd_number_cards_3_5_7_9">Не играйте нечётные карты (3, 5, 7, 9). (Дебют не считается!)</string>
+    <string name="do_not_play_jacks">Не играйте Валеты.</string>
+    <string name="do_not_play_kings">Не играйте Короли.</string>
+    <string name="do_not_play_hearts_or_diamonds">Не играйте Черви и Буби. (Дебют не считается!)</string>
+    <string name="do_not_play_clubs_or_spades">Не играйте Пики и Крести. (Дебют не считается!)</string>
+    <string name="claim_caps">Забрать крышки</string>
+    <string name="claim_tickets">Забрать билеты</string>
 
 </resources>

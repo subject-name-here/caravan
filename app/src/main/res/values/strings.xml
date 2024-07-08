@@ -283,7 +283,7 @@
     <string name="failure_2">Failure!</string>
     <string name="no_room_to_join">No room to join! Create your own room!</string>
     <string name="failed_to_start_the_game">Failed to start the game!</string>
-    <string name="pip_boy_main_screen">And this is the device #50724. It was our first attempt to measure someone\'s Luck. All you have to do to win is to pass 20 rounds of guessing game: Heads or Tails? Choose right - counter adds 1. Choose wrong - counter goes to zero. Counter gets to 20 - get a prize. Not monetary, of course, just a huge pile of bottlecaps we received from Sunset Sarsaparilla HQ. Still have no idea why we\'ve got it.</string>
+    <string name="pip_boy_main_screen">Device #50724: Luck-o-Meter.</string>
     <string name="heads">HEADS</string>
     <string name="tails">TAILS</string>
 
@@ -335,5 +335,50 @@
 
     <string name="roguelike_rules">ROGUELIKE Rules</string>
     <string name="roguelike_rules_body">Infinite enemies, custom decks. Coming (definitely not) soon.</string>
+
+    <string name="play_cards_of_rank">Play %1$s cards of rank %2$s.</string>
+
+    <string name="ace_in_the_hole">Ace in the Hole</string>
+    <string name="always_bet_on_jack">Always bet on Jack</string>
+    <string name="queen_s_gambit">Queen\'s Gambit</string>
+    <string name="king_of_the_hill">King of the Hill</string>
+    <string name="wild_card">Wild Card</string>
+    <string name="two_is_enough">Two is Enough</string>
+    <string name="good_things_come_in_threes">Good Things Come In Threes</string>
+    <string name="four_flush">Four Flush</string>
+    <string name="high_five">High Five!</string>
+    <string name="in_dice_i_would_have_won">In Dice I Would Have Won</string>
+    <string name="lucky_seven">Lucky Seven</string>
+    <string name="pieces_of_eight">Pieces of Eight</string>
+    <string name="the_whole_nine_yards">The Whole Nine Yards</string>
+    <string name="all_in">All in!</string>
+    <string name="standing_here_i_realize">Standing Here, I Realize</string>
+    <string name="courier_six">Courier Six?</string>
+    <string name="house_has_gone_bust">House Has Gone Bust!</string>
+    <string name="robots">Robots!</string>
+    <string name="unlikely_alliance_1">Unlikely Alliance 1</string>
+    <string name="unlikely_alliance_2">Unlikely Alliance 2</string>
+    <string name="tops_guns">Tops Guns</string>
+    <string name="defeat_enemies">Defeat enemies: %1$s</string>
+    <string name="boulder_city">Boulder City</string>
+    <string name="win_a_game_by_discarding_your_caravan">Win a game by discarding your caravan.</string>
+    <string name="i_have_the_last_laugh">I Have The Last Laugh</string>
+    <string name="win_a_game_by_playing_joker">Win a game by playing Joker.</string>
+    <string name="say_no_to_even">Say No To Even</string>
+    <string name="say_no_to_odd">Say No To Odd</string>
+    <string name="not_every_man_jack">Not Every Man Jack</string>
+    <string name="french_revolution">French Revolution</string>
+    <string name="put_it_all_on_black">Put It All On Black!</string>
+    <string name="put_it_all_on_red">Put It All On Red!</string>
+    <string name="do_not_play_even_number_cards_2_4_6_8_10">Do not play even number cards (2, 4, 6, 8, 10). (Init stage is not counted.)</string>
+    <string name="do_not_play_odd_number_cards_3_5_7_9">Do not play odd number cards (3, 5, 7, 9). (Init stage is not counted.)</string>
+    <string name="do_not_play_jacks">Do not play Jacks.</string>
+    <string name="do_not_play_kings">Do not play Kings.</string>
+    <string name="do_not_play_hearts_or_diamonds">Do not play Hearts or Diamonds. (Init stage is not counted.)</string>
+    <string name="do_not_play_clubs_or_spades">Do not play Clubs or Spades. (Init stage is not counted.)</string>
+    <string name="claim_caps">Claim Caps</string>
+    <string name="claim_tickets">Claim Tickets</string>
+    <string name="missions">Missions!</string>
+
 
 </resources>

@@ -20,6 +20,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.unicorns.invisible.caravan.model.Game
+import com.unicorns.invisible.caravan.model.challenge.Challenge
 import com.unicorns.invisible.caravan.model.enemy.EnemyPlayer
 import com.unicorns.invisible.caravan.model.primitives.Caravan
 import com.unicorns.invisible.caravan.model.primitives.Rank
@@ -53,7 +54,6 @@ fun afterPlayerMove(
     corrupt: (String) -> Unit,
     startPinging: () -> Unit,
 ) {
-
     CoroutineScope(Dispatchers.Default).launch {
         if (speed.delay != 0L) {
             delay(speed.delay * 2)
@@ -121,7 +121,7 @@ fun pingForMove(
     sendRequest("$crvnUrl/crvn/get_move?room=$room&is_creators_move=${isCreator.toPythonBool()}") { result ->
         if (result.getString("body") == "-1") {
             CoroutineScope(Dispatchers.Unconfined).launch {
-                delay(760L)
+                delay(1900L)
                 pingForMove(
                     game,
                     speed,
@@ -280,6 +280,7 @@ fun ShowGamePvP(
         val selectedCaravanNN = selectedCaravan
         if (selectedCaravanNN == -1) return
         playVatsReady(activity)
+        activity.processChallengesMove(Challenge.Move(moveCode = 1), game)
         game.playerCaravans[selectedCaravanNN].dropCaravan()
         updateCaravans()
         resetSelected()
@@ -370,6 +371,10 @@ fun ShowGamePvP(
                 in 1..10 -> {
                     if (position == caravan.cards.size && !isEnemy) {
                         if (caravan.canPutCardOnTop(card)) {
+                            activity.processChallengesMove(Challenge.Move(
+                                moveCode = 3,
+                                handCard = card
+                            ), game)
                             caravan.putCardOnTop(game.playerCResources.removeFromHand(cardIndex))
                             onCaravanCardInserted(
                                 cardIndex, caravanIndex, null,
@@ -386,6 +391,10 @@ fun ShowGamePvP(
                         if (card.rank == Rank.JOKER) {
                             playJokerSounds(activity)
                         }
+                        activity.processChallengesMove(Challenge.Move(
+                            moveCode = 4,
+                            handCard = card
+                        ), game)
                         caravan.cards[position].addModifier(
                             game.playerCResources.removeFromHand(
                                 cardIndex

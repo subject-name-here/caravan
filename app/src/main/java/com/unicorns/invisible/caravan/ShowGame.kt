@@ -53,6 +53,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.unicorns.invisible.caravan.model.Game
+import com.unicorns.invisible.caravan.model.challenge.Challenge
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.Caravan
 import com.unicorns.invisible.caravan.model.primitives.Card
@@ -166,6 +167,7 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
         val selectedCaravanNN = selectedCaravan
         if (selectedCaravanNN == -1) return
         playVatsReady(activity)
+        activity.processChallengesMove(Challenge.Move(moveCode = 1), game)
         game.playerCaravans[selectedCaravanNN].dropCaravan()
         resetSelected()
         game.afterPlayerMove(
@@ -192,6 +194,11 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
                     if (card.rank == Rank.JOKER) {
                         playJokerSounds(activity)
                     }
+
+                    activity.processChallengesMove(Challenge.Move(
+                        moveCode = 4,
+                        handCard = card
+                    ), game)
                     caravan.cards[position].addModifier(
                         game.playerCResources.removeFromHand(
                             cardIndex
@@ -203,6 +210,10 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
                 if (position == caravan.cards.size && !isEnemy) {
                     if (caravan.canPutCardOnTop(card)) {
                         playCardFlipSound(activity)
+                        activity.processChallengesMove(Challenge.Move(
+                            moveCode = 3,
+                            handCard = card
+                        ), game)
                         caravan.putCardOnTop(game.playerCResources.removeFromHand(cardIndex))
                         onCaravanCardInserted()
                     }

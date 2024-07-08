@@ -18,6 +18,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -60,6 +61,7 @@ import com.unicorns.invisible.caravan.utils.getTextStrokeColor
 import com.unicorns.invisible.caravan.utils.getTrackColor
 import com.unicorns.invisible.caravan.utils.playClickSound
 import com.unicorns.invisible.caravan.utils.playCloseSound
+import com.unicorns.invisible.caravan.utils.playJokerSounds
 import com.unicorns.invisible.caravan.utils.playLoseSound
 import com.unicorns.invisible.caravan.utils.playQuitMultiplayer
 import com.unicorns.invisible.caravan.utils.playWinSound
@@ -193,7 +195,7 @@ fun ShowPvP(
         sendRequest("$crvnUrl/crvn/check_room_for_joiner?room=${isRoomCreated}") { result ->
             if (result.getString("body") == "-1") {
                 CoroutineScope(Dispatchers.Unconfined).launch {
-                    delay(780L)
+                    delay(1900L)
                     checkRoomForJoiner()
                 }
                 return@sendRequest
@@ -590,6 +592,7 @@ fun StartPvP(
 ) {
     game.also {
         it.onWin = {
+            activity.processChallengesGameOver(it)
             playWinSound(activity)
             showAlertDialog(
                 activity.getString(R.string.result), activity.getString(R.string.you_win) +
@@ -611,6 +614,7 @@ fun StartPvP(
                 activity.getString(R.string.you_lose)
             )
         }
+        it.jokerPlayedSound = { playJokerSounds(activity) }
     }
     activity.goBack = {
         if (!game.isOver() && game.isPlayerTurn) {
@@ -630,6 +634,7 @@ fun StartPvP(
         caravansKey = !caravansKey
     }
 
+    LaunchedEffect(caravansKey, enemyHandKey) {}
 
     fun pingForMove(sendHandCard: () -> Unit) {
         val link = "$crvnUrl/crvn/get_move?room=$roomNumber" +
@@ -645,7 +650,7 @@ fun StartPvP(
                 decodeMove(body)
             } catch (e: Exception) {
                 CoroutineScope(Dispatchers.Unconfined).launch {
-                    delay(760L)
+                    delay(1900L)
                     pingForMove(sendHandCard)
                 }
                 return@sendRequest

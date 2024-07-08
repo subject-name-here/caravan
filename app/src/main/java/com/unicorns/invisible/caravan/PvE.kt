@@ -503,6 +503,7 @@ fun StartGame(
 
     game.also {
         it.onWin = {
+            activity.processChallengesGameOver(it)
             playWinSound(activity)
             var message = activity.getString(R.string.you_win)
             activity.save?.let { save ->
@@ -590,8 +591,8 @@ fun winCard(
     val deckOld = deckList.filter { !checkCard(it) }
     val deckNew = deckList - deckOld.toSet()
     val prob = when {
-        isCustom -> 33
-        else -> 50
+        isCustom -> if (numberOfCards == 1) 50 else 40
+        else -> if (numberOfCards == 1) 70 else 60
     }
     val reward = run {
         val probs = (0 until numberOfCards).map {
