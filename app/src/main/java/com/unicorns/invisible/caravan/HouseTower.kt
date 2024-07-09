@@ -64,6 +64,7 @@ import com.unicorns.invisible.caravan.utils.playVatsReady
 import com.unicorns.invisible.caravan.utils.playWinSound
 import com.unicorns.invisible.caravan.utils.playYesBeep
 import com.unicorns.invisible.caravan.utils.scrollbar
+import com.unicorns.invisible.caravan.utils.startLevel11Theme
 import com.unicorns.invisible.caravan.utils.stopAmbient
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
@@ -102,6 +103,7 @@ fun TowerScreen(
     when {
         showGameLevel1 -> {
             StartTowerGame(activity, EnemyEasy, showAlertDialog, {
+                startLevel11Theme(activity)
                 levelMemory = level
                 level = 0
                 activity.save?.let {

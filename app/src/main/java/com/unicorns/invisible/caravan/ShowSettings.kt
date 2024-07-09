@@ -113,6 +113,9 @@ fun ShowSettings(
                     }
 
                     Style.entries.forEach { style ->
+                        if (style == Style.ENCLAVE && activity.save?.isEnclaveThemeAvailable != true) {
+                            return@forEach
+                        }
                         ShowStyle(
                             activity, style,
                             style in activity.save!!.ownedStyles,

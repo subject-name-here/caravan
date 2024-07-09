@@ -21,6 +21,7 @@ fun getBackByStyle(activity: MainActivity, styleId: Style) = when (styleId) {
     Style.MADRE_ROJA -> Color(activity.getColor(R.color.madreRojaBack))
     Style.VAULT_21 -> Color(activity.getColor(R.color.vault21Back))
     Style.VAULT_22 -> Color(activity.getColor(R.color.vault22Back))
+    Style.ENCLAVE -> Color(activity.getColor(R.color.enclaveBack))
 }
 
 fun getTextColor(activity: MainActivity): Color {
@@ -38,6 +39,7 @@ fun getTextColorByStyle(activity: MainActivity, styleId: Style) = when (styleId)
     Style.MADRE_ROJA -> Color(activity.getColor(R.color.madreRojaText))
     Style.VAULT_21 -> Color(activity.getColor(R.color.vault21Text))
     Style.VAULT_22 -> Color(activity.getColor(R.color.vault22Text))
+    Style.ENCLAVE -> Color(activity.getColor(R.color.enclaveText))
 }
 
 fun getTextStrokeColor(activity: MainActivity): Color {
@@ -55,6 +57,7 @@ fun getStrokeColorByStyle(activity: MainActivity, styleId: Style) = when (styleI
     Style.MADRE_ROJA -> getTextColor(activity)
     Style.VAULT_21 -> Color(activity.getColor(R.color.vault21Stroke))
     Style.VAULT_22 -> Color(activity.getColor(R.color.vault22Stroke))
+    Style.ENCLAVE -> Color(activity.getColor(R.color.enclaveStroke))
 }
 
 fun getTextBackgroundColor(activity: MainActivity): Color {
@@ -72,6 +75,7 @@ fun getTextBackByStyle(activity: MainActivity, styleId: Style) = when (styleId) 
     Style.MADRE_ROJA -> Color(activity.getColor(R.color.madreRojaTextBack))
     Style.VAULT_21 -> Color(activity.getColor(R.color.vault21TextBack))
     Style.VAULT_22 -> Color(activity.getColor(R.color.vault22TextBack))
+    Style.ENCLAVE -> Color(activity.getColor(R.color.enclaveTextBack))
 }
 
 fun getSelectionColor(activity: MainActivity): Color {
@@ -89,6 +93,7 @@ fun getSelectionColorByStyle(activity: MainActivity, styleId: Style) = when (sty
     Style.MADRE_ROJA -> Color(activity.getColor(R.color.madreRojaAccent))
     Style.VAULT_21 -> Color(activity.getColor(R.color.vault21Accent))
     Style.VAULT_22 -> Color(activity.getColor(R.color.vault22Stroke))
+    Style.ENCLAVE -> Color(activity.getColor(R.color.enclaveAccent))
 }
 
 fun getMusicPanelColor(activity: MainActivity): Color {
@@ -106,6 +111,7 @@ fun getMusicPanelColorByStyle(activity: MainActivity, styleId: Style) = when (st
     Style.MADRE_ROJA -> Color(activity.getColor(R.color.madreRojaAccent))
     Style.VAULT_21 -> Color(activity.getColor(R.color.vault21Accent))
     Style.VAULT_22 -> Color(activity.getColor(R.color.vault22Accent))
+    Style.ENCLAVE -> Color(activity.getColor(R.color.enclaveText))
 }
 
 fun getMusicTextColor(activity: MainActivity): Color {
@@ -120,6 +126,7 @@ fun getMusicTextColor(activity: MainActivity): Color {
         Style.MADRE_ROJA -> Color(activity.getColor(R.color.madreRojaText))
         Style.VAULT_21 -> Color(activity.getColor(R.color.vault21Text))
         Style.VAULT_22 -> Color(activity.getColor(R.color.vault22Text))
+        Style.ENCLAVE -> Color(activity.getColor(R.color.enclaveStroke))
     }
 }
 
@@ -135,6 +142,7 @@ fun getDialogBackground(activity: MainActivity): Color {
         Style.MADRE_ROJA -> Color(activity.getColor(R.color.madreRojaAccent))
         Style.VAULT_21 -> Color(activity.getColor(R.color.vault21Accent))
         Style.VAULT_22 -> Color(activity.getColor(R.color.vault22Accent))
+        Style.ENCLAVE -> Color(activity.getColor(R.color.enclaveTextBack))
     }
 }
 
@@ -166,6 +174,7 @@ fun getCheckBoxFillColor(activity: MainActivity): Color = when (activity.styleId
     Style.MADRE_ROJA -> Color(activity.getColor(R.color.madreRojaTextBack))
     Style.VAULT_21 -> Color(activity.getColor(R.color.vault21Stroke))
     Style.VAULT_22 -> Color(activity.getColor(R.color.vault22Accent))
+    Style.ENCLAVE -> Color(activity.getColor(R.color.enclaveStroke))
 }
 
 fun getTrackColor(activity: MainActivity): Color = getTextBackgroundColor(activity)
@@ -188,6 +197,7 @@ fun getSwitchThumbColor(activity: MainActivity): Color = when (activity.styleId)
     Style.MADRE_ROJA -> Color(activity.getColor(R.color.madreRojaText))
     Style.VAULT_21 -> Color(activity.getColor(R.color.vault21Text))
     Style.VAULT_22 -> Color(activity.getColor(R.color.vault22Stroke))
+    Style.ENCLAVE -> Color(activity.getColor(R.color.enclaveText))
 }
 
 fun getSliderTrackColor(activity: MainActivity): Color = getSwitchTrackColor(activity)

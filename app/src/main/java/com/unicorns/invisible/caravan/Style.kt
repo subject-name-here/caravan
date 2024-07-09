@@ -6,6 +6,7 @@ import androidx.compose.animation.core.TweenSpec
 import androidx.compose.animation.core.TwoWayConverter
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -57,6 +58,7 @@ import coil.size.Size
 import coil.size.pxOrElse
 import com.unicorns.invisible.caravan.Style.ALASKA_FRONTIER
 import com.unicorns.invisible.caravan.Style.DESERT
+import com.unicorns.invisible.caravan.Style.ENCLAVE
 import com.unicorns.invisible.caravan.Style.MADRE_ROJA
 import com.unicorns.invisible.caravan.Style.NEW_WORLD
 import com.unicorns.invisible.caravan.Style.OLD_WORLD
@@ -93,7 +95,8 @@ enum class Style(val styleNameId: Int, val price: Int) {
     SIERRA_MADRE(R.string.style_sierra_madre, 2000),
     MADRE_ROJA(R.string.style_madre_roja, 3000),
     VAULT_21(R.string.style_vault_21, 2100),
-    VAULT_22(R.string.style_vault_22, 2200);
+    VAULT_22(R.string.style_vault_22, 2200),
+    ENCLAVE(R.string.style_enclave, 1);
 }
 
 
@@ -112,6 +115,7 @@ fun Modifier.getTableBackground(style: Style): Modifier {
                 MADRE_ROJA -> R.drawable.table_green
                 VAULT_21 -> R.drawable.table_blue
                 VAULT_22 -> R.drawable.table_green
+                ENCLAVE -> R.drawable.table_black
             }
         ),
         contentScale = ContentScale.Crop,
@@ -390,7 +394,7 @@ fun BoxWithConstraintsScope.StylePicture(
             val painterLogo = rememberAsyncImagePainter(
                 ImageRequest.Builder(activity)
                     .size(512, 512)
-                    .data(prefix + "sierra_madre/logo1.png",)
+                    .data(prefix + "sierra_madre/logo1.png")
                     .build()
             )
             Row(
@@ -1126,6 +1130,83 @@ fun BoxWithConstraintsScope.StylePicture(
                         }
                     }
                 }
+            }
+        }
+        ENCLAVE -> {
+            val flagPainter = rememberAsyncImagePainter(
+                ImageRequest.Builder(activity)
+                    .size(1000, 527)
+                    .data(prefix + "enclave/enclave_flag.webp")
+                    .build()
+            )
+            val posterPainter = if (height > width) {
+                rememberAsyncImagePainter(
+                    ImageRequest.Builder(activity)
+                        .size(195, 512)
+                        .data(prefix + "enclave/enclave_poster_v.webp")
+                        .build()
+                )
+            } else {
+                rememberAsyncImagePainter(
+                    ImageRequest.Builder(activity)
+                        .size(512, 256)
+                        .data(prefix + "enclave/enclave_poster_h.webp")
+                        .build()
+                )
+            }
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.CenterEnd)) {
+                Box(Modifier.weight(1f)) {}
+                Column(Modifier.weight(1f).fillMaxHeight(), verticalArrangement = Arrangement.Center) {
+                    Box(Modifier.fillMaxWidth().weight(1f)
+                        .padding(top = 48.dp, end = 8.dp), contentAlignment = Alignment.Center
+                    ) {
+                        Image(
+                            painter = flagPainter,
+                            contentDescription = "",
+                            modifier =
+                            Modifier.border(width = 4.dp, color = Color.White).padding(4.dp),
+                            contentScale = ContentScale.Inside,
+                            alignment = Alignment.Center
+                        )
+                    }
+
+                    Spacer(Modifier.height(16.dp))
+                    Image(
+                        painter = posterPainter,
+                        contentDescription = "",
+                        modifier = Modifier.fillMaxWidth().weight(1f)
+                            .padding(end = 8.dp, bottom = 60.dp),
+                        contentScale = ContentScale.Inside,
+                        alignment = Alignment.TopCenter
+                    )
+                }
+            }
+
+
+            val painterSeal = rememberAsyncImagePainter(
+                ImageRequest.Builder(activity)
+                    .size(400, 400)
+                    .data(prefix + "enclave/enclave_seal.webp")
+                    .build()
+            )
+            Box(
+                Modifier
+                    .fillMaxSize()
+                    .padding(bottom = 60.dp),
+                contentAlignment = Alignment.BottomCenter
+            ) {
+                Image(
+                    painter = painterSeal,
+                    contentDescription = "",
+                    Modifier
+                        .height(80.dp)
+                        .width(80.dp),
+                    alignment = Alignment.BottomCenter,
+                    contentScale = ContentScale.Inside
+                )
             }
         }
     }

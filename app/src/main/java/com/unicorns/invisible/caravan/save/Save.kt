@@ -280,4 +280,6 @@ class Save {
     var towerLevel: Int = 0
     @EncodeDefault
     var isTowerFree: Boolean = false
+    @EncodeDefault
+    var isEnclaveThemeAvailable: Boolean = false
 }

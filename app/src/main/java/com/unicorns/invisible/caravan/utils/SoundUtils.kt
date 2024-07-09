@@ -1,6 +1,7 @@
 package com.unicorns.invisible.caravan.utils
 
 import android.media.MediaPlayer
+import androidx.compose.animation.core.infiniteRepeatable
 import com.unicorns.invisible.caravan.MainActivity
 import com.unicorns.invisible.caravan.R
 import com.unicorns.invisible.caravan.Style
@@ -298,4 +299,29 @@ fun setRadioVolume(volume: Float) {
     radioLock.withLock {
         radioPlayers.forEach { it.setVolume(volume, volume) }
     }
+}
+
+fun startLevel11Theme(activity: MainActivity) {
+    radioLock.withLock {
+        radioPlayers.forEach {
+            it.stop()
+            radioPlayers.remove(it)
+            it.release()
+        }
+    }
+    val vol = activity.save?.radioVolume ?: 1f
+    MediaPlayer.create(activity, R.raw.frank_theme)
+        .apply {
+            prepare()
+            setVolume(vol, vol)
+            radioLock.withLock {
+                radioPlayers.add(this)
+                if (!isRadioPausedByLeavingActivity) {
+                    start()
+                }
+            }
+            setOnCompletionListener {
+                startLevel11Theme(activity)
+            }
+        }
 }

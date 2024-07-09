@@ -62,4 +62,11 @@
     <color name="vault22Accent">#57552D</color>
     <color name="vault22Stroke">#00dd00</color>
 
+    <color name="enclaveBack">#002868</color>
+    <color name="enclaveTextBack">#ce1126</color>
+    <color name="enclaveText">#ffffff</color>
+    <color name="enclaveAccent">#ebe769</color>
+    <color name="enclaveStroke">#000000</color>
+
+
 </resources>
