@@ -315,9 +315,10 @@
     <string name="you_have_a_match">Матч!</string>
     <string name="q_pinging_message">Вам назначена комната #%1$s. Поспешите, чтобы быть ее создателем и получить право первого хода! Идите в \"Играть с человеком\", введите номер комнаты и нажмите \"Войти в Номер\"!</string>
 
-    <string name="lucky_38">Казино Lucky 38</string>
+    <string name="lucky_38_blitz">Казино Lucky 38: БЛИЦ</string>
+    <string name="lucky_38_tower">БАШНЯ</string>
 
-    <string name="place_your_bets">Делайте ваши ставки!\n(У вас нак счету %1$s крышечек.)</string>
+    <string name="place_your_bets">Делайте ваши ставки!\n(У вас на счету %1$s крышечек.)</string>
     <string name="time_s">Время: %1$s с</string>
     <string name="seconds">%1$s с</string>
     <string name="bet_caps">Ставка: %1$s крышечек</string>
@@ -338,9 +339,6 @@
 
     <string name="blitz_rules">Правила БЛИЦа</string>
     <string name="blitz_rules_body">Правила Каравана не меняются, но есть таймер (20 или 30 секунд), который стремится к нулю и не останавливается. Каждый ваш ход добавляет +1 секунду к таймеру; когда таймер достигнет 0, вы автоматически проигрываете.</string>
-
-    <string name="tower_rules">Правила БАШНи</string>
-    <string name="tower_rules_body">Десять соперников, одна попытка, чтобы победить их всех. Скоро (нет).</string>
 
     <string name="roguelike_rules">Правила РОГАЛИКа</string>
     <string name="roguelike_rules_body">Три жизни, бесконечное количество врагов, сборные колоды. Скоро (вообще нет).</string>
@@ -386,7 +384,9 @@
     <string name="do_not_play_kings">Не играйте Короли.</string>
     <string name="do_not_play_hearts_or_diamonds">Не играйте Черви и Буби. (Дебют не считается!)</string>
     <string name="do_not_play_clubs_or_spades">Не играйте Пики и Крести. (Дебют не считается!)</string>
-    <string name="claim_caps">Забрать крышки</string>
+    <string name="claim_caps">Забрать крышки (50) </string>
     <string name="claim_tickets">Забрать билеты</string>
+
+    <string name="missions">Квесты!</string>
 
 </resources>

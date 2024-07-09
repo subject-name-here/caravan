@@ -313,13 +313,14 @@ class MainActivity : SaveDataActivity() {
     fun Screen() {
         var deckSelection by rememberSaveable { mutableStateOf(false) }
         var showPvP by rememberSaveable { mutableStateOf(false) }
-        var showHouse by rememberSaveable { mutableStateOf(false) }
+        var showHouseBlitz by rememberSaveable { mutableStateOf(false) }
+        var showHouseTower by rememberSaveable { mutableStateOf(false) }
+        var showHouseRoguelike by rememberSaveable { mutableStateOf(false) }
         var showAbout by rememberSaveable { mutableStateOf(false) }
         var showGameStats by rememberSaveable { mutableStateOf(false) }
         var showTutorial by rememberSaveable { mutableStateOf(false) }
         var showRules by rememberSaveable { mutableStateOf(false) }
         var showSettings by rememberSaveable { mutableStateOf(false) }
-        var showStock by rememberSaveable { mutableStateOf(false) }
         var showDailys by rememberSaveable { mutableStateOf(false) }
 
         var showVision by rememberSaveable { mutableStateOf(false) }
@@ -871,14 +872,20 @@ class MainActivity : SaveDataActivity() {
                         ShowAbout(activity = this@MainActivity) { showAbout = false }
                     }
 
-                    showHouse -> {
-                        ShowHouse(
+                    showHouseBlitz -> {
+                        BlitzScreen(
                             activity = this@MainActivity,
                             selectedDeck = { selectedDeck },
                             ::showAlertDialog
-                        ) { showHouse = false }
+                        ) { showHouseBlitz = false }
                     }
 
+                    showHouseTower -> {
+                        TowerScreen(
+                            activity = this@MainActivity,
+                            ::showAlertDialog
+                        ) { showHouseTower = false }
+                    }
 
                     showGameStats -> {
                         ShowPvE(
@@ -928,10 +935,6 @@ class MainActivity : SaveDataActivity() {
                         ) { showSettings = false }
                     }
 
-                    showStock -> {
-                        StockMarket(this@MainActivity) { showStock = false }
-                    }
-
                     showDailys -> {
                         ShowDailys(this@MainActivity) { showDailys = false }
                     }
@@ -944,15 +947,14 @@ class MainActivity : SaveDataActivity() {
                                 { deckSelection = true },
                                 { showAbout = true },
                                 { showGameStats = true },
-                                { showHouse = true },
+                                { showHouseBlitz = true },
+                                { showHouseTower = true },
                                 { showPvP = true },
                                 { showTutorial = true },
                                 { showRules = true },
                                 { showVision = true },
                                 { showSettings = true },
                                 { showDailys = true },
-                                { showStock = true },
-                                ::showAlertDialog,
                             )
                             StylePicture(this@MainActivity, styleId, userId.hashCode(), width, height)
                         }
@@ -968,15 +970,14 @@ class MainActivity : SaveDataActivity() {
         showDeckSelection: () -> Unit,
         showAbout: () -> Unit,
         showPvE: () -> Unit,
-        showHouse: () -> Unit,
+        showHouseBlitz: () -> Unit,
+        showHouseTower: () -> Unit,
         showPvP: () -> Unit,
         showTutorial: () -> Unit,
         showRules: () -> Unit,
         showVision: () -> Unit,
         showSettings: () -> Unit,
         showDailys: () -> Unit,
-        showStock: () -> Unit,
-        showAlertDialog: (String, String) -> Unit,
     ) {
         Spacer(Modifier.height(32.dp))
         Column(
@@ -1144,11 +1145,11 @@ class MainActivity : SaveDataActivity() {
                         Spacer(Modifier.height(32.dp))
                         MenuItem(stringResource(R.string.menu_pve), showPvE)
                         Spacer(modifier = Modifier.height(20.dp))
-                        MenuItem(stringResource(R.string.lucky_38), showHouse)
+                        MenuItem(stringResource(R.string.lucky_38_blitz), showHouseBlitz)
+                        Spacer(modifier = Modifier.height(20.dp))
+                        MenuItem(stringResource(R.string.lucky_38_tower), showHouseTower)
                         Spacer(modifier = Modifier.height(20.dp))
                         MenuItem(stringResource(R.string.menu_pvp), showPvP)
-//                        Spacer(modifier = Modifier.height(20.dp))
-//                        MenuItem(stringResource(R.string.q_pinging), showQ)
                         Spacer(modifier = Modifier.height(20.dp))
                         MenuItem(stringResource(R.string.menu_tutorial), showTutorial)
                         Spacer(modifier = Modifier.height(20.dp))
@@ -1157,8 +1158,6 @@ class MainActivity : SaveDataActivity() {
                         MenuItem(stringResource(R.string.menu_deck), showDeckSelection)
                         Spacer(modifier = Modifier.height(20.dp))
                         MenuItem(stringResource(R.string.missions), showDailys)
-//                        Spacer(modifier = Modifier.height(20.dp))
-//                        MenuItem(stringResource(R.string.stack_market), showStock)
                         Spacer(modifier = Modifier.height(32.dp))
                     }
                 }

@@ -1,6 +1,7 @@
 package com.unicorns.invisible.caravan.save
 
 import com.unicorns.invisible.caravan.AnimationSpeed
+import com.unicorns.invisible.caravan.Payment
 import com.unicorns.invisible.caravan.Style
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.challenge.Challenge
@@ -274,4 +275,9 @@ class Save {
 
         return challenges
     }
+
+    @EncodeDefault
+    var towerLevel: Int = 0
+    @EncodeDefault
+    var isTowerFree: Boolean = false
 }

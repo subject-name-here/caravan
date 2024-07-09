@@ -46,16 +46,16 @@ class ChallengeBeatEnemies(private val enemies: List<Enemy>, private val code: I
                 listOf(activity.getString(R.string.mr_house))
             }
             4 -> {
-                listOf(activity.getString(R.string.pve_enemy_38), activity.getString(R.string.pve_enemy_38))
+                listOf(activity.getString(R.string.pve_enemy_better), activity.getString(R.string.pve_enemy_38))
             }
             5 -> {
-                listOf(activity.getString(R.string.pve_enemy_medium), activity.getString(R.string.no_bark))
+                listOf(activity.getString(R.string.no_bark), activity.getString(R.string.pve_enemy_medium))
             }
             6 -> {
-                listOf(activity.getString(R.string.pve_enemy_easy), activity.getString(R.string.johnson_nash))
+                listOf(activity.getString(R.string.johnson_nash), activity.getString(R.string.pve_enemy_easy))
             }
             7 -> {
-                listOf(activity.getString(R.string.pve_enemy_hard), activity.getString(R.string.pve_enemy_queen), activity.getString(R.string.benny))
+                listOf(activity.getString(R.string.pve_enemy_hard), activity.getString(R.string.benny), activity.getString(R.string.pve_enemy_queen))
             }
             else -> listOf()
         }
@@ -63,7 +63,7 @@ class ChallengeBeatEnemies(private val enemies: List<Enemy>, private val code: I
     }
 
     override fun getProgress(): String {
-        return "${isBeaten.count { it }} / ${isBeaten.size}"
+        return isBeaten.joinToString { if (it) "+" else "-" }
     }
 
     override fun isCompleted(): Boolean {

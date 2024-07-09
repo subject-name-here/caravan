@@ -308,7 +308,8 @@
     <string name="nah_i_ll_pass">Nah, I\'ll pass.</string>
     <string name="you_have_a_match">You have a match!</string>
     <string name="q_pinging_message">You have been assigned room #%1$s. Hurry up to have the first move! Go to Multiplayer, enter given room number and press Join!</string>
-    <string name="lucky_38">Lucky 38</string>
+    <string name="lucky_38_blitz">Lucky 38: BLITZ</string>
+    <string name="lucky_38_tower">TOWER</string>
     <string name="place_your_bets">Place your bets!\n(You have %1$s caps.)</string>
     <string name="time_s">Time: %1$s s</string>
     <string name="seconds">%1$s s</string>
@@ -329,9 +330,6 @@
     <string name="what_tired_of_losing">What, tired of losing?</string>
     <string name="blitz_rules">BLITZ Rules</string>
     <string name="blitz_rules_body">The game rules are the same, but now there is a timer (20 or 30 seconds) that ticks down to zero and never stops. Each your move adds +1 second to the timer; when timer reaches 0, you automatically lose.</string>
-
-    <string name="tower_rules">TOWER Rules</string>
-    <string name="tower_rules_body">Ten enemies, one attempt to defeat them all. Coming (not) soon.</string>
 
     <string name="roguelike_rules">ROGUELIKE Rules</string>
     <string name="roguelike_rules_body">Infinite enemies, custom decks. Coming (definitely not) soon.</string>
@@ -376,8 +374,9 @@
     <string name="do_not_play_kings">Do not play Kings.</string>
     <string name="do_not_play_hearts_or_diamonds">Do not play Hearts or Diamonds. (Init stage is not counted.)</string>
     <string name="do_not_play_clubs_or_spades">Do not play Clubs or Spades. (Init stage is not counted.)</string>
-    <string name="claim_caps">Claim Caps</string>
-    <string name="claim_tickets">Claim Tickets</string>
+    <string name="claim_caps">Claim 50 Caps</string>
+    <string name="claim_tickets">Claim 1 Ticket</string>
+
     <string name="missions">Missions!</string>
 
 

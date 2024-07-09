@@ -4,6 +4,10 @@ import android.media.MediaPlayer
 import com.unicorns.invisible.caravan.MainActivity
 import com.unicorns.invisible.caravan.R
 import com.unicorns.invisible.caravan.Style
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import okio.withLock
 import java.util.concurrent.locks.ReentrantLock
 
@@ -78,7 +82,14 @@ fun playLoseSound(activity: MainActivity) {
     playEffectPlayerSound(activity, listOf(R.raw.lose1, R.raw.lose3, R.raw.any).random(), 2)
 }
 fun playWinSound(activity: MainActivity) {
-    playEffectPlayerSound(activity, listOf(R.raw.win1, R.raw.win2, R.raw.any).random(), 2)
+    CoroutineScope(Dispatchers.Unconfined).launch {
+        playEffectPlayerSound(activity, R.raw.win_caps, 2)
+        delay(760L)
+        playEffectPlayerSound(activity, listOf(R.raw.win1, R.raw.win2).random(), 2)
+    }
+}
+fun playCashSound(activity: MainActivity) {
+    playEffectPlayerSound(activity, R.raw.win_caps, 2)
 }
 
 fun playJokerReceivedSounds(activity: MainActivity) =

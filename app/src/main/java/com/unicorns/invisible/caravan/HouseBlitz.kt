@@ -83,7 +83,6 @@ fun BlitzScreen(
     activity: MainActivity,
     selectedDeck: () -> Pair<CardBack, Boolean>,
     showAlertDialog: (String, String) -> Unit,
-    nextMode: () -> Unit,
     goBack: () -> Unit,
 ) {
     var showGameBetter by rememberSaveable { mutableStateOf(false) }
@@ -216,21 +215,6 @@ fun BlitzScreen(
                             TextAlign.Center
                         )
                     }
-                    TextFallout(
-                        ">>>",
-                        getTextColor(activity),
-                        getTextStrokeColor(activity),
-                        24.sp,
-                        Alignment.CenterEnd,
-                        Modifier
-                            .align(Alignment.CenterEnd)
-                            .background(getTextBackgroundColor(activity))
-                            .clickableOk(activity) {
-                                nextMode()
-                            }
-                            .padding(4.dp),
-                        TextAlign.End
-                    )
                 }
 
                 Spacer(modifier = Modifier.height(8.dp))
@@ -529,7 +513,7 @@ fun StartBlitz(
             activity.save?.let { save ->
                 val reward = (onBet * getTimeMult(time) * getEnemyMult(enemy)).toInt()
                 message += activity.getString(R.string.you_have_earned_caps, reward)
-                save.caps += reward
+                save.caps += reward + onBet
                 saveOnGD(activity)
             }
             showAlertDialog(activity.getString(R.string.result), message)
