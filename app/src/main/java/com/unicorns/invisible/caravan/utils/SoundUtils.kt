@@ -93,11 +93,15 @@ fun playCashSound(activity: MainActivity) {
     playEffectPlayerSound(activity, R.raw.win_caps, 2)
 }
 
-fun playJokerReceivedSounds(activity: MainActivity) =
+fun playJokerReceivedSounds(activity: MainActivity) {
+    if (frankStopsRadio) return
     playEffectPlayerSound(activity, R.raw.mus_mysteriousstranger_a_01, 2)
+}
 
-fun playJokerSounds(activity: MainActivity) =
+fun playJokerSounds(activity: MainActivity) {
+    if (frankStopsRadio) return
     playEffectPlayerSound(activity, R.raw.mus_mysteriousstranger_a_02, 2)
+}
 
 fun playCloseSound(activity: MainActivity) = playEffectPlayerSound(activity, R.raw.ui_menu_cancel)
 fun playClickSound(activity: MainActivity) = playEffectPlayerSound(activity, R.raw.ui_menu_ok)
@@ -110,6 +114,8 @@ fun playNoCardAlarm(activity: MainActivity) = playEffectPlayerSound(activity, R.
 fun playYesBeep(activity: MainActivity) = playEffectPlayerSound(activity, R.raw.beep_a)
 fun playNoBeep(activity: MainActivity) = playEffectPlayerSound(activity, R.raw.beep_b)
 fun playFanfares(activity: MainActivity) = playEffectPlayerSound(activity, R.raw.fanfares)
+fun playTowerCompleted(activity: MainActivity) = playEffectPlayerSound(activity, R.raw.endgame)
+fun playTowerFailed(activity: MainActivity) = playEffectPlayerSound(activity, R.raw.death)
 
 val ambientPlayers = HashSet<MediaPlayer>()
 val ambientPlayersLock = ReentrantLock()
@@ -127,6 +133,9 @@ fun setAmbientVolume(volume: Float) {
 }
 
 fun startAmbient(activity: MainActivity) {
+    if (frankStopsRadio) {
+        return
+    }
     val vol = (activity.save?.ambientVolume ?: 1f) / 2
     MediaPlayer
         .create(
