@@ -43,10 +43,14 @@ import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.challenge.Challenge
 import com.unicorns.invisible.caravan.model.enemy.Enemy
+import com.unicorns.invisible.caravan.model.enemy.EnemyCliff
+import com.unicorns.invisible.caravan.model.enemy.EnemyCrocker
 import com.unicorns.invisible.caravan.model.enemy.EnemyHouse
+import com.unicorns.invisible.caravan.model.enemy.EnemyKing
 import com.unicorns.invisible.caravan.model.enemy.EnemyRingo
 import com.unicorns.invisible.caravan.model.enemy.EnemySunny
 import com.unicorns.invisible.caravan.model.enemy.EnemySwank
+import com.unicorns.invisible.caravan.model.enemy.EnemyYesMan
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.Caravan
 import com.unicorns.invisible.caravan.model.primitives.CustomDeck
@@ -168,13 +172,13 @@ fun TowerScreen(
             return
         }
         showGameLevel3 -> {
-            showTower(EnemyRingo) {
+            showTower(EnemyCliff) {
                 showGameLevel3 = false
             }
             return
         }
         showGameLevel4 -> {
-            showTower(EnemyRingo) {
+            showTower(EnemyYesMan) {
                 showGameLevel4 = false
             }
             return
@@ -186,13 +190,13 @@ fun TowerScreen(
             return
         }
         showGameLevel6 -> {
-            showTower(EnemyRingo) {
+            showTower(EnemyCrocker) {
                 showGameLevel6 = false
             }
             return
         }
         showGameLevel7 -> {
-            showTower(EnemyRingo) {
+            showTower(EnemyKing) {
                 showGameLevel7 = false
             }
             return
@@ -537,34 +541,45 @@ fun TowerScreen(
                     @Composable
                     fun showTowerCard(enemyName: String) {
                         Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-                            TextFallout(
-                                "Level: $level",
-                                getTextColor(activity),
-                                getTextStrokeColor(activity),
-                                24.sp,
-                                Alignment.Center,
-                                Modifier,
-                                TextAlign.Center
-                            )
-
-                            TextFallout(
-                                "Currently in bank: $inBank caps",
-                                getTextColor(activity),
-                                getTextStrokeColor(activity),
-                                24.sp,
-                                Alignment.Center,
-                                Modifier,
-                                TextAlign.Center
-                            )
-                            TextFallout(
-                                "Enemy: $enemyName",
-                                getTextColor(activity),
-                                getTextStrokeColor(activity),
-                                24.sp,
-                                Alignment.Center,
-                                Modifier,
-                                TextAlign.Center
-                            )
+                            if (!(level == 11 && !isGameRigged)) {
+                                TextFallout(
+                                    "Level: $level / 10",
+                                    getTextColor(activity),
+                                    getTextStrokeColor(activity),
+                                    24.sp,
+                                    Alignment.Center,
+                                    Modifier,
+                                    TextAlign.Center
+                                )
+                                TextFallout(
+                                    "Currently in bank: $inBank caps",
+                                    getTextColor(activity),
+                                    getTextStrokeColor(activity),
+                                    24.sp,
+                                    Alignment.Center,
+                                    Modifier,
+                                    TextAlign.Center
+                                )
+                                TextFallout(
+                                    "Enemy: $enemyName",
+                                    getTextColor(activity),
+                                    getTextStrokeColor(activity),
+                                    24.sp,
+                                    Alignment.Center,
+                                    Modifier,
+                                    TextAlign.Center
+                                )
+                            } else {
+                                TextFallout(
+                                    "Your reward: $inBank caps",
+                                    getTextColor(activity),
+                                    getTextStrokeColor(activity),
+                                    24.sp,
+                                    Alignment.Center,
+                                    Modifier,
+                                    TextAlign.Center
+                                )
+                            }
                         }
                     }
                     when (level) {
@@ -602,7 +617,7 @@ fun TowerScreen(
                             if (isGameRigged) {
                                 showTowerCard("Frank Horrigan")
                             } else {
-                                showTowerCard("no enemy")
+                                showTowerCard("")
                             }
                         }
                     }
@@ -843,6 +858,11 @@ fun StartTowerGame(
             onWin()
             if (frankStopsRadio) {
                 showFrankOutro = true
+            } else {
+                showAlertDialog(
+                    activity.getString(R.string.result),
+                    activity.getString(R.string.you_win)
+                )
             }
         }
         it.onLose = {
