@@ -19,7 +19,6 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -37,37 +36,48 @@ import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.challenge.Challenge
 import com.unicorns.invisible.caravan.model.enemy.Enemy
-import com.unicorns.invisible.caravan.model.enemy.EnemyEasy
 import com.unicorns.invisible.caravan.model.enemy.EnemyHouse
+import com.unicorns.invisible.caravan.model.enemy.EnemyRingo
+import com.unicorns.invisible.caravan.model.enemy.EnemySunny
+import com.unicorns.invisible.caravan.model.enemy.EnemySwank
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.Caravan
 import com.unicorns.invisible.caravan.model.primitives.CustomDeck
 import com.unicorns.invisible.caravan.model.primitives.Rank
 import com.unicorns.invisible.caravan.save.saveOnGD
+import com.unicorns.invisible.caravan.utils.TextClassic
 import com.unicorns.invisible.caravan.utils.TextFallout
 import com.unicorns.invisible.caravan.utils.clickableCancel
 import com.unicorns.invisible.caravan.utils.clickableOk
+import com.unicorns.invisible.caravan.utils.clickableSelect
+import com.unicorns.invisible.caravan.utils.frankStopsRadio
 import com.unicorns.invisible.caravan.utils.getBackgroundColor
 import com.unicorns.invisible.caravan.utils.getKnobColor
 import com.unicorns.invisible.caravan.utils.getSelectionColor
+import com.unicorns.invisible.caravan.utils.getStrokeColorByStyle
+import com.unicorns.invisible.caravan.utils.getTextBackByStyle
 import com.unicorns.invisible.caravan.utils.getTextBackgroundColor
 import com.unicorns.invisible.caravan.utils.getTextColor
+import com.unicorns.invisible.caravan.utils.getTextColorByStyle
 import com.unicorns.invisible.caravan.utils.getTextStrokeColor
 import com.unicorns.invisible.caravan.utils.getTrackColor
 import com.unicorns.invisible.caravan.utils.playCardFlipSound
 import com.unicorns.invisible.caravan.utils.playCashSound
 import com.unicorns.invisible.caravan.utils.playCloseSound
+import com.unicorns.invisible.caravan.utils.playFrankPhrase
 import com.unicorns.invisible.caravan.utils.playJokerSounds
 import com.unicorns.invisible.caravan.utils.playLoseSound
 import com.unicorns.invisible.caravan.utils.playSelectSound
 import com.unicorns.invisible.caravan.utils.playVatsReady
 import com.unicorns.invisible.caravan.utils.playWinSound
-import com.unicorns.invisible.caravan.utils.playYesBeep
+import com.unicorns.invisible.caravan.utils.radioLock
+import com.unicorns.invisible.caravan.utils.radioPlayers
 import com.unicorns.invisible.caravan.utils.scrollbar
 import com.unicorns.invisible.caravan.utils.startLevel11Theme
+import com.unicorns.invisible.caravan.utils.startRadio
 import com.unicorns.invisible.caravan.utils.stopAmbient
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.isActive
+import okio.withLock
 
 
 enum class Payment {
@@ -85,6 +95,12 @@ fun TowerScreen(
 ) {
     var payment by remember { mutableStateOf<Payment?>(null) }
     var level by remember { mutableIntStateOf(activity.save?.towerLevel ?: 0) }
+    var isGameRigged by remember { mutableStateOf(activity.save?.isGameRigged ?: false) }
+    var startFrank by remember { mutableStateOf(false) }
+    if (startFrank) {
+        ShowFrank(activity) { startFrank = false }
+        return
+    }
 
     var showGameLevel1 by remember { mutableStateOf(false) }
     var showGameLevel2 by remember { mutableStateOf(false) }
@@ -98,12 +114,96 @@ fun TowerScreen(
     var showGameLevel10 by remember { mutableStateOf(false) }
     var showGameLevel11 by remember { mutableStateOf(false) }
 
-
     var levelMemory by rememberSaveable { mutableIntStateOf(0) }
+    @Composable
+    fun showTower(enemy: Enemy, goBack: () -> Unit) {
+        StartTowerGame(activity, enemy, showAlertDialog, {
+            levelMemory = level
+            level = 0
+            activity.save?.let {
+                it.towerLevel = 0
+                saveOnGD(activity)
+            }
+        }, {
+            level = levelMemory + 1
+            activity.save?.let {
+                it.towerLevel = levelMemory + 1
+                saveOnGD(activity)
+            }
+        }, {
+            level = 0
+            activity.save?.let {
+                it.towerLevel = 0
+                saveOnGD(activity)
+            }
+        }, goBack)
+    }
     when {
         showGameLevel1 -> {
-            StartTowerGame(activity, EnemyEasy, showAlertDialog, {
-                startLevel11Theme(activity)
+            showTower(EnemySunny) {
+                showGameLevel1 = false
+            }
+            return
+        }
+        showGameLevel2 -> {
+            showTower(EnemyRingo) {
+                showGameLevel2 = false
+            }
+            return
+        }
+        showGameLevel3 -> {
+            showTower(EnemyRingo) {
+                showGameLevel3 = false
+            }
+            return
+        }
+        showGameLevel4 -> {
+            showTower(EnemyRingo) {
+                showGameLevel4 = false
+            }
+            return
+        }
+        showGameLevel5 -> {
+            showTower(EnemySwank) {
+                showGameLevel5 = false
+            }
+            return
+        }
+        showGameLevel6 -> {
+            showTower(EnemyRingo) {
+                showGameLevel6 = false
+            }
+            return
+        }
+        showGameLevel7 -> {
+            showTower(EnemyRingo) {
+                showGameLevel7 = false
+            }
+            return
+        }
+        showGameLevel8 -> {
+            showTower(EnemyHouse) {
+                showGameLevel8 = false
+            }
+            return
+        }
+        showGameLevel9 -> {
+            showTower(EnemyRingo) {
+                showGameLevel9 = false
+            }
+            return
+        }
+
+        showGameLevel10 -> {
+            showTower(EnemyRingo) {
+                showGameLevel10 = false
+            }
+            return
+        }
+
+        showGameLevel11 -> {
+            startLevel11Theme(activity)
+            StartTowerGame(activity, EnemyRingo, showAlertDialog, {
                 levelMemory = level
                 level = 0
                 activity.save?.let {
@@ -114,6 +214,7 @@ fun TowerScreen(
                 level = levelMemory + 1
                 activity.save?.let {
                     it.towerLevel = levelMemory + 1
+                    it.isEnclaveThemeAvailable = true
                     saveOnGD(activity)
                 }
             }, {
@@ -123,7 +224,14 @@ fun TowerScreen(
                     saveOnGD(activity)
                 }
             }) {
-                showGameLevel1 = false
+                showGameLevel11 = false
+                frankStopsRadio = false
+                isGameRigged = false
+                activity.save?.let {
+                    it.isGameRigged = false
+                    saveOnGD(activity)
+                }
+                startRadio(activity)
             }
             return
         }
@@ -357,7 +465,19 @@ fun TowerScreen(
                     )
                 } else {
                     val inBank = if (activity.save?.isTowerFree == false) {
-                        1 shl (level - 1)
+                        when (level) {
+                            1 -> 1
+                            2 -> 5
+                            3 -> 10
+                            4 -> 25
+                            5 -> 50
+                            6 -> 101
+                            7 -> 166
+                            8 -> 222
+                            9 -> 333
+                            10 -> 444
+                            else -> 555
+                        }
                     } else {
                         0
                     }
@@ -426,11 +546,15 @@ fun TowerScreen(
                             showTowerCard("Caesar")
                         }
                         11 -> {
-                            showTowerCard("Frank Horrigan")
+                            if (isGameRigged) {
+                                showTowerCard("Frank Horrigan")
+                            } else {
+                                showTowerCard("no enemy")
+                            }
                         }
                     }
                     Spacer(Modifier.height(16.dp))
-                    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
+                    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly, verticalAlignment = Alignment.CenterVertically) {
                         TextFallout(
                             "Take the cash!",
                             getTextColor(activity),
@@ -439,6 +563,15 @@ fun TowerScreen(
                             Alignment.Center,
                             modifier = Modifier
                                 .clickableOk(activity) {
+                                    if (isGameRigged) {
+                                        isGameRigged = false
+                                        frankStopsRadio = false
+                                        startRadio(activity)
+                                        activity.save?.let {
+                                            it.isGameRigged = false
+                                            saveOnGD(activity)
+                                        }
+                                    }
                                     level = 0
                                     payment = null
                                     activity.save?.let {
@@ -453,33 +586,55 @@ fun TowerScreen(
                                 .padding(horizontal = 8.dp, vertical = 4.dp),
                             TextAlign.Center
                         )
-                        TextFallout(
-                            "En garde!",
-                            getTextColor(activity),
-                            getTextStrokeColor(activity),
-                            24.sp,
-                            Alignment.Center,
-                            modifier = Modifier
-                                .clickableOk(activity) {
-                                    when (level) {
-                                        1 -> { showGameLevel1 = true }
-                                        2 -> { showGameLevel2 = true }
-                                        3 -> { showGameLevel3 = true }
-                                        4 -> { showGameLevel4 = true }
-                                        5 -> { showGameLevel5 = true }
-                                        6 -> { showGameLevel6 = true }
-                                        7 -> { showGameLevel7 = true }
-                                        8 -> { showGameLevel8 = true }
-                                        9 -> { showGameLevel9 = true }
-                                        10 -> { showGameLevel10 = true }
-                                        11 -> { showGameLevel11 = true }
-                                        else -> {}
+                        if (!(level == 11 && !isGameRigged)) {
+                            TextFallout(
+                                "En garde!",
+                                getTextColor(activity),
+                                getTextStrokeColor(activity),
+                                24.sp,
+                                Alignment.Center,
+                                modifier = Modifier
+                                    .clickableOk(activity) {
+                                        when (level) {
+                                            1 -> { showGameLevel1 = true }
+                                            2 -> { showGameLevel2 = true }
+                                            3 -> { showGameLevel3 = true }
+                                            4 -> { showGameLevel4 = true }
+                                            5 -> { showGameLevel5 = true }
+                                            6 -> { showGameLevel6 = true }
+                                            7 -> { showGameLevel7 = true }
+                                            8 -> { showGameLevel8 = true }
+                                            9 -> { showGameLevel9 = true }
+                                            10 -> { showGameLevel10 = true }
+                                            11 -> { showGameLevel11 = true }
+                                            else -> {}
+                                        }
                                     }
-                                }
-                                .background(getTextBackgroundColor(activity))
-                                .padding(horizontal = 8.dp, vertical = 4.dp),
-                            TextAlign.Center
-                        )
+                                    .background(getTextBackgroundColor(activity))
+                                    .padding(horizontal = 8.dp, vertical = 4.dp),
+                                TextAlign.Center
+                            )
+                        } else {
+                            TextClassic(
+                                "Rig the game",
+                                getTextColorByStyle(activity, Style.PIP_BOY),
+                                getStrokeColorByStyle(activity, Style.PIP_BOY),
+                                18.sp,
+                                Alignment.Center,
+                                modifier = Modifier
+                                    .clickableSelect(activity) {
+                                        isGameRigged = true
+                                        activity.save?.let {
+                                            it.isGameRigged = true
+                                            startFrank = true
+                                            saveOnGD(activity)
+                                        }
+                                    }
+                                    .background(getTextBackByStyle(activity, Style.PIP_BOY))
+                                    .padding(horizontal = 8.dp, vertical = 4.dp),
+                                TextAlign.Center
+                            )
+                        }
                     }
                 }
             }
@@ -491,7 +646,7 @@ fun TowerScreen(
             24.sp,
             Alignment.Center,
             modifier = Modifier
-                .clickableCancel(activity) { goBack() }
+                .clickableCancel(activity) { if (!isGameRigged) goBack() }
                 .background(getTextBackgroundColor(activity))
                 .padding(8.dp),
             TextAlign.Center
@@ -695,4 +850,24 @@ fun StartTowerGame(
         ::dropCaravan,
         enemyHandKey
     )
+}
+
+@Composable
+fun ShowFrank(activity: MainActivity, goBack: () -> Unit) {
+    LaunchedEffect(Unit) {
+        radioLock.withLock {
+            radioPlayers.forEach {
+                it.stop()
+                radioPlayers.remove(it)
+                it.release()
+            }
+            frankStopsRadio = true
+        }
+        playFrankPhrase(activity, R.raw.frank_on_welcome)
+        delay(15000L)
+        goBack()
+    }
+    Box(Modifier.fillMaxSize().background(Color.Black)) {
+
+    }
 }

@@ -301,6 +301,7 @@ fun setRadioVolume(volume: Float) {
     }
 }
 
+var frankStopsRadio = false
 fun startLevel11Theme(activity: MainActivity) {
     radioLock.withLock {
         radioPlayers.forEach {
@@ -312,7 +313,7 @@ fun startLevel11Theme(activity: MainActivity) {
     val vol = activity.save?.radioVolume ?: 1f
     MediaPlayer.create(activity, R.raw.frank_theme)
         .apply {
-            prepare()
+            isLooping = true
             setVolume(vol, vol)
             radioLock.withLock {
                 radioPlayers.add(this)
@@ -321,7 +322,34 @@ fun startLevel11Theme(activity: MainActivity) {
                 }
             }
             setOnCompletionListener {
-                startLevel11Theme(activity)
+                radioLock.withLock {
+                    it.stop()
+                    radioPlayers.remove(it)
+                    it.release()
+                }
+            }
+        }
+}
+
+fun playFrankPhrase(activity: MainActivity, phraseId: Int) {
+    val vol = (activity.save?.soundVolume ?: 1f) / 2
+    MediaPlayer
+        .create(activity, phraseId)
+        .apply {
+            if (this == null) {
+                return
+            }
+            setVolume(vol, vol)
+            setOnCompletionListener {
+                effectPlayersLock.withLock {
+                    effectPlayers.remove(this)
+                    release()
+                }
+            }
+            effectPlayersLock.withLock {
+                effectPlayers.forEach { if (it.isPlaying) it.stop() }
+                effectPlayers.add(this)
+                start()
             }
         }
 }

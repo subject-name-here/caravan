@@ -281,5 +281,7 @@ class Save {
     @EncodeDefault
     var isTowerFree: Boolean = false
     @EncodeDefault
+    var isGameRigged: Boolean = false
+    @EncodeDefault
     var isEnclaveThemeAvailable: Boolean = false
 }

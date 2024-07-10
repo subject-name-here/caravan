@@ -472,6 +472,47 @@ fun TextFallout(
     }
 }
 
+
+@Composable
+fun TextClassic(
+    text: String,
+    textColor: Color,
+    strokeColor: Color,
+    textSize: TextUnit,
+    contentAlignment: Alignment,
+    modifier: Modifier,
+    textAlign: TextAlign,
+) {
+    val strokeWidth = getStrokeWidth(textSize)
+    Box(modifier, contentAlignment = contentAlignment) {
+        Text(
+            text = text, color = textColor,
+            fontFamily = FontFamily(Font(R.font.classic)),
+            style = TextStyle(
+                color = textColor,
+                fontSize = textSize,
+                fontWeight = FontWeight.Light,
+                drawStyle = Fill
+            ),
+            textAlign = textAlign
+        )
+        if (textColor.toArgb() == strokeColor.toArgb()) {
+            return@Box
+        }
+        Text(
+            text = text, color = strokeColor,
+            fontFamily = FontFamily(Font(R.font.classic)),
+            style = TextStyle(
+                color = strokeColor,
+                fontSize = textSize,
+                fontWeight = FontWeight.Normal,
+                drawStyle = Stroke(width = strokeWidth)
+            ),
+            textAlign = textAlign
+        )
+    }
+}
+
 @Composable
 fun Modifier.clickableCancel(activity: MainActivity, block: () -> Unit): Modifier {
     return this.clickable { playCloseSound(activity); block() }

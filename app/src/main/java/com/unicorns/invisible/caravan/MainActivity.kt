@@ -77,6 +77,7 @@ import com.unicorns.invisible.caravan.utils.clickableOk
 import com.unicorns.invisible.caravan.utils.dpToPx
 import com.unicorns.invisible.caravan.utils.effectPlayers
 import com.unicorns.invisible.caravan.utils.effectPlayersLock
+import com.unicorns.invisible.caravan.utils.frankStopsRadio
 import com.unicorns.invisible.caravan.utils.getBackgroundColor
 import com.unicorns.invisible.caravan.utils.getDialogBackground
 import com.unicorns.invisible.caravan.utils.getDialogTextColor
@@ -797,7 +798,7 @@ class MainActivity : SaveDataActivity() {
                                 .weight(1f)
                                 .wrapContentWidth()
                                 .clickableOk(this@MainActivity) {
-                                    if (!isPaused) {
+                                    if (!isPaused && !frankStopsRadio) {
                                         nextSong(this@MainActivity)
                                     }
                                 }
@@ -816,6 +817,9 @@ class MainActivity : SaveDataActivity() {
                                 .weight(1f)
                                 .wrapContentWidth()
                                 .clickableOk(this@MainActivity) {
+                                    if (frankStopsRadio) {
+                                        return@clickableOk
+                                    }
                                     if (isPaused) {
                                         isRadioStopped = false
                                         resume(byButton = true)
@@ -881,10 +885,18 @@ class MainActivity : SaveDataActivity() {
                     }
 
                     showHouseTower -> {
-                        TowerScreen(
-                            activity = this@MainActivity,
-                            ::showAlertDialog
-                        ) { showHouseTower = false }
+                        if (!checkIfCustomDeckCanBeUsedInGame(CResources(save?.getCustomDeckCopy() ?: CustomDeck()))) {
+                            showAlertDialog(
+                                stringResource(R.string.custom_deck_is_too_small),
+                                stringResource(R.string.custom_deck_is_too_small_message)
+                            )
+                            showHouseTower = false
+                        } else {
+                            TowerScreen(
+                                activity = this@MainActivity,
+                                ::showAlertDialog
+                            ) { showHouseTower = false }
+                        }
                     }
 
                     showGameStats -> {
