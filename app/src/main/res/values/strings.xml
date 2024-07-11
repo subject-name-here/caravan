@@ -381,6 +381,10 @@
     <string name="claim_tickets">Claim 1 Ticket</string>
 
     <string name="missions">Missions!</string>
+    <string name="deck_o_54_only">(Deck o\' 54 only!)</string>
+    <string name="custom_deck_only">(Custom deck only!)</string>
+    <string name="you_can_change_custom_deck_between_games">(You can change custom deck between games.)</string>
+    <string name="progress_is_saved_between_sessions">(Progress is saved between sessions!).</string>
 
 
 </resources>

@@ -112,6 +112,7 @@ fun TowerScreen(
     var level by rememberSaveable { mutableIntStateOf(activity.save?.towerLevel ?: 0) }
     var isGameRigged by rememberSaveable { mutableStateOf(activity.save?.isGameRigged ?: false) }
     var startFrank by rememberSaveable { mutableStateOf(false) }
+    var timesClicked by rememberSaveable { mutableIntStateOf(0) }
     if (startFrank) {
         ShowFrank(activity) { startFrank = false }
         return
@@ -310,7 +311,7 @@ fun TowerScreen(
                 ) {
                     if (isGameRigged) {
                         TextFallout(
-                            "(Deck o' 54 only!)",
+                            stringResource(R.string.deck_o_54_only),
                             getTextColor(activity),
                             getTextStrokeColor(activity),
                             24.sp,
@@ -320,7 +321,7 @@ fun TowerScreen(
                         )
                     } else {
                         TextFallout(
-                            "(Custom deck only!)",
+                            stringResource(R.string.custom_deck_only),
                             getTextColor(activity),
                             getTextStrokeColor(activity),
                             24.sp,
@@ -329,7 +330,7 @@ fun TowerScreen(
                             TextAlign.Center
                         )
                         TextFallout(
-                            "(You can change custom deck between games.)",
+                            stringResource(R.string.you_can_change_custom_deck_between_games),
                             getTextColor(activity),
                             getTextStrokeColor(activity),
                             16.sp,
@@ -340,7 +341,7 @@ fun TowerScreen(
                     }
                     Spacer(Modifier.height(8.dp))
                     TextFallout(
-                        "(Progress is saved between sessions!).",
+                        stringResource(R.string.progress_is_saved_between_sessions),
                         getTextColor(activity),
                         getTextStrokeColor(activity),
                         24.sp,
@@ -463,16 +464,24 @@ fun TowerScreen(
                                 when (payment) {
                                     Payment.ONE_HUNDRED_CAPS -> {
                                         if ((activity.save?.caps ?: 0) < 100) {
-                                            showAlertDialog("HEY!", "You don't have enough cash, kid.")
+                                            showAlertDialog(
+                                                "HEY!",
+                                                "You don't have enough cash, kid."
+                                            )
                                             return@clickableOk
                                         }
                                     }
+
                                     Payment.TICKET -> {
                                         if ((activity.save?.tickets ?: 0) < 1) {
-                                            showAlertDialog("HEY!", "You don't have a ticket on you.")
+                                            showAlertDialog(
+                                                "HEY!",
+                                                "You don't have a ticket on you."
+                                            )
                                             return@clickableOk
                                         }
                                     }
+
                                     else -> {}
                                 }
 
@@ -485,10 +494,12 @@ fun TowerScreen(
                                             it.isTowerFree = false
                                             it.caps -= 100
                                         }
+
                                         Payment.TICKET -> {
                                             it.isTowerFree = false
                                             it.tickets--
                                         }
+
                                         else -> {
                                             it.isTowerFree = true
                                         }
@@ -613,7 +624,10 @@ fun TowerScreen(
                                     modifier = Modifier
                                         .clickableOk(activity) {
                                             if ((activity.save?.caps ?: 0) < cost) {
-                                                showAlertDialog("HEY!", "You don't have enough cash, kid.")
+                                                showAlertDialog(
+                                                    "HEY!",
+                                                    "You don't have enough cash, kid."
+                                                )
                                                 return@clickableOk
                                             }
 
@@ -647,7 +661,10 @@ fun TowerScreen(
                                                 saveOnGD(activity)
                                             }
                                             playCashSound(activity)
-                                            showAlertDialog("Congratulations!", "You have earned $inBank caps!")
+                                            showAlertDialog(
+                                                "Congratulations!",
+                                                "You have earned $inBank caps!"
+                                            )
                                         }
                                         .background(getTextBackgroundColor(activity))
                                         .padding(horizontal = 8.dp, vertical = 4.dp),
@@ -665,17 +682,50 @@ fun TowerScreen(
                                 modifier = Modifier
                                     .clickableOk(activity) {
                                         when (level) {
-                                            1 -> { showGameLevel1 = true }
-                                            2 -> { showGameLevel2 = true }
-                                            3 -> { showGameLevel3 = true }
-                                            4 -> { showGameLevel4 = true }
-                                            5 -> { showGameLevel5 = true }
-                                            6 -> { showGameLevel6 = true }
-                                            7 -> { showGameLevel7 = true }
-                                            8 -> { showGameLevel8 = true }
-                                            9 -> { showGameLevel9 = true }
-                                            10 -> { showGameLevel10 = true }
-                                            11 -> { showGameLevel11 = true }
+                                            1 -> {
+                                                showGameLevel1 = true
+                                            }
+
+                                            2 -> {
+                                                showGameLevel2 = true
+                                            }
+
+                                            3 -> {
+                                                showGameLevel3 = true
+                                            }
+
+                                            4 -> {
+                                                showGameLevel4 = true
+                                            }
+
+                                            5 -> {
+                                                showGameLevel5 = true
+                                            }
+
+                                            6 -> {
+                                                showGameLevel6 = true
+                                            }
+
+                                            7 -> {
+                                                showGameLevel7 = true
+                                            }
+
+                                            8 -> {
+                                                showGameLevel8 = true
+                                            }
+
+                                            9 -> {
+                                                showGameLevel9 = true
+                                            }
+
+                                            10 -> {
+                                                showGameLevel10 = true
+                                            }
+
+                                            11 -> {
+                                                showGameLevel11 = true
+                                            }
+
                                             else -> {}
                                         }
                                     }
@@ -684,7 +734,6 @@ fun TowerScreen(
                                 TextAlign.Center
                             )
                         } else if (level != 12) {
-                            var timesClicked by rememberSaveable { mutableIntStateOf(0) }
                             TextClassic(
                                 when (timesClicked) {
                                     0 -> "Rig the game"
@@ -761,7 +810,7 @@ fun StartTowerGame(
                     18.sp, Alignment.Center,
                     Modifier
                         .background(Color(activity.getColor(R.color.colorText)))
-                        .clickableCancel(activity) { showIntro = false}
+                        .clickableCancel(activity) { showIntro = false }
                         .padding(4.dp),
                     TextAlign.Center
                 )
@@ -803,7 +852,9 @@ fun StartTowerGame(
                     18.sp, Alignment.Center,
                     Modifier
                         .background(Color(activity.getColor(R.color.colorText)))
-                        .clickableCancel(activity) { showFrankOutro = false; activity.goBack?.invoke() }
+                        .clickableCancel(activity) {
+                            showFrankOutro = false; activity.goBack?.invoke()
+                        }
                         .padding(4.dp),
                     TextAlign.Center
                 )
@@ -1060,16 +1111,21 @@ fun ShowFrank(activity: MainActivity, goBack: () -> Unit) {
         }
     }
 
-    Box(Modifier.fillMaxSize().background(Color.Black)) {
+    Box(
+        Modifier
+            .fillMaxSize()
+            .background(Color.Black)) {
         if (showFrankFlag) {
             Column {
                 Box(
                     Modifier
                         .fillMaxWidth()
                         .padding(8.dp)
-                        .paint(painterResource(
-                            id = R.drawable.frank_head
-                        )))
+                        .paint(
+                            painterResource(
+                                id = R.drawable.frank_head
+                            )
+                        ))
 
                 Box(Modifier.fillMaxWidth()) {
                     TextClassic(
@@ -1089,13 +1145,15 @@ fun ShowFrank(activity: MainActivity, goBack: () -> Unit) {
                     Spacer(Modifier.height(32.dp))
                     val state = rememberLazyListState()
                     LazyColumn(
-                        Modifier.fillMaxSize().scrollbar(
-                            state,
-                            alignEnd = false,
-                            knobColor = getTextColorByStyle(activity, Style.PIP_BOY),
-                            trackColor = getStrokeColorByStyle(activity, Style.PIP_BOY),
-                            horizontal = false
-                        ),
+                        Modifier
+                            .fillMaxSize()
+                            .scrollbar(
+                                state,
+                                alignEnd = false,
+                                knobColor = getTextColorByStyle(activity, Style.PIP_BOY),
+                                trackColor = getStrokeColorByStyle(activity, Style.PIP_BOY),
+                                horizontal = false
+                            ),
                         state = state
                     ) {
                         @Composable

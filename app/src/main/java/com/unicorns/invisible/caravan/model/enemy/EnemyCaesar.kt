@@ -25,7 +25,7 @@ data object EnemyCaesar : Enemy() {
                     listOf(Suit.SPADES).forEach { suit ->
                         add(Card(rank, suit, back, false))
                     }
-                } else if (rank != Rank.QUEEN) {
+                } else if (rank.isFace() && rank != Rank.QUEEN) {
                     Suit.entries.forEach { suit ->
                         add(Card(rank, suit, back, false))
                     }
