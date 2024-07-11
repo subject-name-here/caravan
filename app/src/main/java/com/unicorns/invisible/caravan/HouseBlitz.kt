@@ -544,7 +544,7 @@ fun StartBlitz(
         }
     }
 
-    activity.goBack = { stopAmbient(); goBack() }
+    activity.goBack = { stopAmbient(); goBack(); activity.goBack = null }
 
 
     var selectedCard by remember { mutableStateOf<Int?>(null) }
@@ -682,7 +682,6 @@ fun StartBlitz(
         {
             if (game.isOver()) {
                 activity.goBack?.invoke()
-                activity.goBack = null
                 return@ShowGameRaw
             }
 

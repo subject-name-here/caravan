@@ -9,6 +9,7 @@ import com.unicorns.invisible.caravan.model.enemy.Enemy
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.Caravan
 import com.unicorns.invisible.caravan.model.primitives.Card
+import com.unicorns.invisible.caravan.model.primitives.CardWithModifier
 import com.unicorns.invisible.caravan.model.primitives.Rank
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -41,6 +42,9 @@ class Game(
 
     @Transient
     var jokerPlayedSound: () -> Unit = {}
+
+    @Transient
+    var nukeBlownSound: () -> Unit = {}
 
     var isGameOver = 0
         private set(value) {
@@ -80,7 +84,7 @@ class Game(
     fun processField(): Boolean {
         val caravans = playerCaravans + enemyCaravans
         val cards = caravans.flatMap { it.cards }
-        if (cards.any { it.hasJacks() || it.hasActiveJoker }) {
+        if (cards.any { it.hasJacks() || it.hasActiveJoker || it.hasBomb }) {
             processJacks()
             processJoker()
 
@@ -221,22 +225,31 @@ class Game(
     fun processJoker() {
         (playerCaravans + enemyCaravans).forEach { caravan ->
             caravan.cards.filter {
-                it.hasActiveJoker
+                it.hasActiveJoker || it.hasBomb
             }.forEach {
-                putJokerOntoCard(it.card)
+                putJokerOntoCard(it)
                 it.deactivateJoker()
             }
         }
     }
 
-    private fun putJokerOntoCard(card: Card) {
-        if (card.rank == Rank.ACE) {
+    private fun putJokerOntoCard(cardWithModifier: CardWithModifier) {
+        if (cardWithModifier.hasBomb) {
             (playerCaravans + enemyCaravans).forEach { caravan ->
-                caravan.jokerRemoveAllSuits(card)
+                if (cardWithModifier !in caravan.cards) {
+                    caravan.dropCaravan()
+                }
             }
         } else {
-            (playerCaravans + enemyCaravans).forEach { caravan ->
-                caravan.jokerRemoveAllRanks(card)
+            val card = cardWithModifier.card
+            if (card.rank == Rank.ACE) {
+                (playerCaravans + enemyCaravans).forEach { caravan ->
+                    caravan.jokerRemoveAllSuits(card)
+                }
+            } else {
+                (playerCaravans + enemyCaravans).forEach { caravan ->
+                    caravan.jokerRemoveAllRanks(card)
+                }
             }
         }
     }

@@ -59,6 +59,7 @@ import com.unicorns.invisible.caravan.utils.playClickSound
 import com.unicorns.invisible.caravan.utils.playCloseSound
 import com.unicorns.invisible.caravan.utils.playJokerSounds
 import com.unicorns.invisible.caravan.utils.playLoseSound
+import com.unicorns.invisible.caravan.utils.playNukeBlownSound
 import com.unicorns.invisible.caravan.utils.playVatsEnter
 import com.unicorns.invisible.caravan.utils.playWinSound
 import com.unicorns.invisible.caravan.utils.scrollbar
@@ -557,12 +558,12 @@ fun StartGame(
             }
         }
         it.jokerPlayedSound = { playJokerSounds(activity) }
+        it.nukeBlownSound = { playNukeBlownSound(activity) }
     }
-    activity.goBack = { stopAmbient(); goBack() }
+    activity.goBack = { stopAmbient(); goBack(); activity.goBack = null }
     ShowGame(activity, game) {
         if (game.isOver()) {
             activity.goBack?.invoke()
-            activity.goBack = null
             return@ShowGame
         }
 

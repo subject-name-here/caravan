@@ -11,7 +11,11 @@ class CardWithModifier(val card: Card) {
         modifiers.add(card)
         card.caravanAnimationMark = Card.AnimationMark.MOVING_IN
         if (card.rank == Rank.JOKER) {
-            hasActiveJoker = true
+            if (card.suit == Suit.SPADES) {
+                hasBomb = true
+            } else {
+                hasActiveJoker = true
+            }
         }
     }
 
@@ -21,9 +25,12 @@ class CardWithModifier(val card: Card) {
 
     var hasActiveJoker: Boolean = false
         private set
+    var hasBomb: Boolean = false
+        private set
 
     fun deactivateJoker() {
         hasActiveJoker = false
+        hasBomb = false
     }
 
     fun isQueenReversingSequence() = modifiers.count { it.rank == Rank.QUEEN } % 2 == 1

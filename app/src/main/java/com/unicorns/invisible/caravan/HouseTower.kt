@@ -43,10 +43,13 @@ import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.challenge.Challenge
 import com.unicorns.invisible.caravan.model.enemy.Enemy
+import com.unicorns.invisible.caravan.model.enemy.EnemyCaesar
 import com.unicorns.invisible.caravan.model.enemy.EnemyCliff
 import com.unicorns.invisible.caravan.model.enemy.EnemyCrocker
+import com.unicorns.invisible.caravan.model.enemy.EnemyFrank
 import com.unicorns.invisible.caravan.model.enemy.EnemyHouse
 import com.unicorns.invisible.caravan.model.enemy.EnemyKing
+import com.unicorns.invisible.caravan.model.enemy.EnemyOliver
 import com.unicorns.invisible.caravan.model.enemy.EnemyRingo
 import com.unicorns.invisible.caravan.model.enemy.EnemySunny
 import com.unicorns.invisible.caravan.model.enemy.EnemySwank
@@ -82,6 +85,7 @@ import com.unicorns.invisible.caravan.utils.playFrankPhrase
 import com.unicorns.invisible.caravan.utils.playJokerSounds
 import com.unicorns.invisible.caravan.utils.playLoseSound
 import com.unicorns.invisible.caravan.utils.playNotificationSound
+import com.unicorns.invisible.caravan.utils.playNukeBlownSound
 import com.unicorns.invisible.caravan.utils.playSelectSound
 import com.unicorns.invisible.caravan.utils.playTowerCompleted
 import com.unicorns.invisible.caravan.utils.playTowerFailed
@@ -208,21 +212,21 @@ fun TowerScreen(
             return
         }
         showGameLevel9 -> {
-            showTower(EnemyRingo) {
+            showTower(EnemyOliver) {
                 showGameLevel9 = false
             }
             return
         }
 
         showGameLevel10 -> {
-            showTower(EnemyRingo) {
+            showTower(EnemyCaesar) {
                 showGameLevel10 = false
             }
             return
         }
 
         showGameLevel11 -> {
-            StartTowerGame(activity, EnemyRingo, showAlertDialog, {
+            StartTowerGame(activity, EnemyFrank, showAlertDialog, {
                 startLevel11Theme(activity)
                 playFrankPhrase(activity, R.raw.frank_on_game_start)
                 levelMemory = level
@@ -624,37 +628,62 @@ fun TowerScreen(
                     Spacer(Modifier.height(16.dp))
                     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly, verticalAlignment = Alignment.CenterVertically) {
                         if (!isGameRigged) {
-                            TextFallout(
-                                "Take the cash!",
-                                getTextColor(activity),
-                                getTextStrokeColor(activity),
-                                24.sp,
-                                Alignment.Center,
-                                modifier = Modifier
-                                    .clickableOk(activity) {
-                                        if (isGameRigged) {
-                                            isGameRigged = false
-                                            frankStopsRadio = false
-                                            startRadio(activity)
+                            if (level <= 5) {
+                                val cost = inBank * 10
+                                TextFallout(
+                                    "Skip for $cost caps",
+                                    getTextColor(activity),
+                                    getTextStrokeColor(activity),
+                                    24.sp,
+                                    Alignment.Center,
+                                    modifier = Modifier
+                                        .clickableOk(activity) {
+                                            level++
                                             activity.save?.let {
-                                                it.isGameRigged = false
+                                                it.towerLevel++
+                                                it.caps -= cost
                                                 saveOnGD(activity)
                                             }
+                                            playCashSound(activity)
+                                            showAlertDialog("Skipped!", "You've paid $cost caps!")
                                         }
-                                        level = 0
-                                        payment = null
-                                        activity.save?.let {
-                                            it.towerLevel = 0
-                                            it.caps += inBank
-                                            saveOnGD(activity)
+                                        .background(getTextBackgroundColor(activity))
+                                        .padding(horizontal = 8.dp, vertical = 4.dp),
+                                    TextAlign.Center
+                                )
+                            } else {
+                                TextFallout(
+                                    "Take the cash!",
+                                    getTextColor(activity),
+                                    getTextStrokeColor(activity),
+                                    24.sp,
+                                    Alignment.Center,
+                                    modifier = Modifier
+                                        .clickableOk(activity) {
+                                            if (isGameRigged) {
+                                                isGameRigged = false
+                                                frankStopsRadio = false
+                                                startRadio(activity)
+                                                activity.save?.let {
+                                                    it.isGameRigged = false
+                                                    saveOnGD(activity)
+                                                }
+                                            }
+                                            level = 0
+                                            payment = null
+                                            activity.save?.let {
+                                                it.towerLevel = 0
+                                                it.caps += inBank
+                                                saveOnGD(activity)
+                                            }
+                                            playCashSound(activity)
+                                            showAlertDialog("Congratulations!", "You have earned $inBank caps!")
                                         }
-                                        playCashSound(activity)
-                                        showAlertDialog("Congratulations!", "You have earned $inBank caps!")
-                                    }
-                                    .background(getTextBackgroundColor(activity))
-                                    .padding(horizontal = 8.dp, vertical = 4.dp),
-                                TextAlign.Center
-                            )
+                                        .background(getTextBackgroundColor(activity))
+                                        .padding(horizontal = 8.dp, vertical = 4.dp),
+                                    TextAlign.Center
+                                )
+                            }
                         }
                         if (!(level == 11 && !isGameRigged) && level != 12) {
                             TextFallout(
@@ -804,7 +833,7 @@ fun StartTowerGame(
                     18.sp, Alignment.Center,
                     Modifier
                         .background(Color(activity.getColor(R.color.colorText)))
-                        .clickableCancel(activity) { showFrankOutro = false; goBack() }
+                        .clickableCancel(activity) { showFrankOutro = false; activity.goBack?.invoke() }
                         .padding(4.dp),
                     TextAlign.Center
                 )
@@ -874,9 +903,10 @@ fun StartTowerGame(
             )
         }
         it.jokerPlayedSound = { playJokerSounds(activity) }
+        it.nukeBlownSound = { playNukeBlownSound(activity) }
     }
 
-    activity.goBack = { stopAmbient(); goBack() }
+    activity.goBack = { stopAmbient(); goBack(); activity.goBack = null }
 
     var selectedCard by remember { mutableStateOf<Int?>(null) }
     var selectedCaravan by remember { mutableIntStateOf(-1) }
@@ -1014,7 +1044,6 @@ fun StartTowerGame(
         {
             if (game.isOver()) {
                 activity.goBack?.invoke()
-                activity.goBack = null
                 return@ShowGameRaw
             }
 

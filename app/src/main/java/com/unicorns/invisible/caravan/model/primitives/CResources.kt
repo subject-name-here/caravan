@@ -13,7 +13,14 @@ class CResources(private val deck: CustomDeck) {
     val hand
         get() = handMutable.toList()
 
-    fun getTopHand() = deck.toList().take(8)
+    fun getTopHand(): List<Card> {
+        val cards = deck.toList()
+        return if (cards.any { it.rank == Rank.JOKER && it.suit == Suit.SPADES }) {
+            cards.take(7) + cards.find { it.rank == Rank.JOKER && it.suit == Suit.SPADES }!!
+        } else {
+            cards.take(8)
+        }
+    }
     fun initHand(toPutInHand: List<Card>) {
         deck.removeAll(toPutInHand)
         toPutInHand.forEach { it.handAnimationMark = Card.AnimationMark.MOVING_IN }

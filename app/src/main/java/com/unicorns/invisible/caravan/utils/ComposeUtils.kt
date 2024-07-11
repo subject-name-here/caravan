@@ -47,6 +47,8 @@ import com.unicorns.invisible.caravan.MainActivity
 import com.unicorns.invisible.caravan.R
 import com.unicorns.invisible.caravan.model.getCardName
 import com.unicorns.invisible.caravan.model.primitives.Card
+import com.unicorns.invisible.caravan.model.primitives.Rank
+import com.unicorns.invisible.caravan.model.primitives.Suit
 
 
 @Composable
@@ -59,10 +61,15 @@ fun Dp.dpToPx() = with(LocalDensity.current) { this@dpToPx.toPx() }
 @Composable
 fun ShowCard(activity: MainActivity, card: Card, modifier: Modifier, toModify: Boolean = true) {
     val cardName = getCardName(card, card.isAlt)
+    val uri = if (card.rank == Rank.JOKER && card.suit == Suit.SPADES) {
+        "file:///android_asset/nuclear/front.png"
+    } else {
+        "file:///android_asset/caravan_cards/$cardName"
+    }
     val painter = rememberAsyncImagePainter(
         ImageRequest.Builder(activity)
             .size(183, 256)
-            .data("file:///android_asset/caravan_cards/$cardName")
+            .data(uri)
             .decoderFactory(SvgDecoder.Factory())
             .build()
     )
@@ -76,10 +83,16 @@ fun ShowCard(activity: MainActivity, card: Card, modifier: Modifier, toModify: B
 
 @Composable
 fun ShowCardBack(activity: MainActivity, card: Card, modifier: Modifier) {
+    // TODO: make it separate deck!
+    val uri = if (card.rank == Rank.JOKER && card.suit == Suit.SPADES) {
+        "file:///android_asset/nuclear/back.png"
+    } else {
+        "file:///android_asset/caravan_cards_back/${if (card.isAlt) card.back.getCardBackAltAsset() else card.back.getCardBackAsset()}"
+    }
     val painter2 = rememberAsyncImagePainter(
         ImageRequest.Builder(activity)
             .size(183, 256)
-            .data("file:///android_asset/caravan_cards_back/${if (card.isAlt) card.back.getCardBackAltAsset() else card.back.getCardBackAsset()}")
+            .data(uri)
             .decoderFactory(SvgDecoder.Factory())
             .build()
     )

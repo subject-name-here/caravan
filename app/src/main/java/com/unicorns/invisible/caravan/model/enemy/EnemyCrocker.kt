@@ -21,7 +21,7 @@ data object EnemyCrocker : Enemy() {
                 if (rank == Rank.JOKER) {
                     add(Card(Rank.JOKER, Suit.HEARTS, back, true))
                     add(Card(Rank.JOKER, Suit.CLUBS, back, true))
-                } else {
+                } else if (rank.value > 3) {
                     Suit.entries.forEach { suit ->
                         add(Card(rank, suit, back, true))
                     }
@@ -43,7 +43,7 @@ data object EnemyCrocker : Enemy() {
             return
         }
 
-        hand.withIndex().shuffled().sortedByDescending {
+        hand.withIndex().sortedByDescending {
             if (playersReadyCaravans.isNotEmpty()) {
                 when (it.value.rank) {
                     Rank.JOKER -> 38

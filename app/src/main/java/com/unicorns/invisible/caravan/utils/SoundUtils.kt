@@ -116,6 +116,9 @@ fun playNoBeep(activity: MainActivity) = playEffectPlayerSound(activity, R.raw.b
 fun playFanfares(activity: MainActivity) = playEffectPlayerSound(activity, R.raw.fanfares)
 fun playTowerCompleted(activity: MainActivity) = playEffectPlayerSound(activity, R.raw.endgame)
 fun playTowerFailed(activity: MainActivity) = playEffectPlayerSound(activity, R.raw.death)
+fun playDailyCompleted(activity: MainActivity) = playEffectPlayerSound(activity, R.raw.ui_levelup)
+fun playNukeBlownSound(activity: MainActivity) = playEffectPlayerSound(activity, R.raw.nuke_big)
+fun playWWSound(activity: MainActivity) = playEffectPlayerSound(activity, R.raw.ui_wildwasteland)
 
 val ambientPlayers = HashSet<MediaPlayer>()
 val ambientPlayersLock = ReentrantLock()

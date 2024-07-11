@@ -25,6 +25,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.unicorns.invisible.caravan.model.challenge.Challenge
+import com.unicorns.invisible.caravan.save.Save
 import com.unicorns.invisible.caravan.save.saveOnGD
 import com.unicorns.invisible.caravan.utils.TextFallout
 import com.unicorns.invisible.caravan.utils.clickableCancel
@@ -35,6 +36,7 @@ import com.unicorns.invisible.caravan.utils.getTextBackgroundColor
 import com.unicorns.invisible.caravan.utils.getTextColor
 import com.unicorns.invisible.caravan.utils.getTextStrokeColor
 import com.unicorns.invisible.caravan.utils.getTrackColor
+import com.unicorns.invisible.caravan.utils.playDailyCompleted
 import com.unicorns.invisible.caravan.utils.scrollbar
 
 
@@ -139,6 +141,12 @@ fun ShowChallenge(activity: MainActivity, challenge: Challenge, isCompleted: Boo
         )
 
         if (isCompleted) {
+            fun dailyCompleted(save: Save) {
+                save.challenges.remove(challenge)
+                saveOnGD(activity)
+                playDailyCompleted(activity)
+                updater()
+            }
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
                 TextFallout(
                     activity.getString(R.string.claim_tickets),
@@ -151,9 +159,7 @@ fun ShowChallenge(activity: MainActivity, challenge: Challenge, isCompleted: Boo
                         .clickableOk(activity) {
                             activity.save?.let { save ->
                                 save.tickets++
-                                save.challenges.remove(challenge)
-                                saveOnGD(activity)
-                                updater()
+                                dailyCompleted(save)
                             }
                         }
                         .padding(8.dp),
@@ -170,9 +176,7 @@ fun ShowChallenge(activity: MainActivity, challenge: Challenge, isCompleted: Boo
                         .clickableOk(activity) {
                             activity.save?.let { save ->
                                 save.caps += 50
-                                save.challenges.remove(challenge)
-                                saveOnGD(activity)
-                                updater()
+                                dailyCompleted(save)
                             }
                         }
                         .padding(8.dp),

@@ -3,6 +3,7 @@ package com.unicorns.invisible.caravan.model.enemy.strategy
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.primitives.CardWithModifier
 import com.unicorns.invisible.caravan.model.primitives.Rank
+import com.unicorns.invisible.caravan.model.primitives.Suit
 import com.unicorns.invisible.caravan.save.json
 import kotlinx.serialization.encodeToString
 
@@ -10,7 +11,7 @@ object StrategyJokerSimple : Strategy {
     override fun move(game: Game): Boolean {
         val hand = game.enemyCResources.hand
 
-        val joker = hand.withIndex().find { it.value.rank == Rank.JOKER }
+        val joker = hand.withIndex().find { it.value.rank == Rank.JOKER && it.value.suit != Suit.SPADES }
         val overWeightCaravans = game.enemyCaravans.filter { it.getValue() > 26 }
         val perfectCaravans = game.enemyCaravans.filter { it.getValue() in 21..26 }
         val playersOverWeightCaravans = game.playerCaravans.filter { it.getValue() > 26 }
