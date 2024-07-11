@@ -1157,20 +1157,20 @@ class MainActivity : SaveDataActivity() {
                             )
                         }
                         Spacer(Modifier.height(32.dp))
-                        MenuItem(stringResource(R.string.menu_pve), showPvE)
-                        Spacer(modifier = Modifier.height(20.dp))
-                        MenuItem(stringResource(R.string.lucky_38_blitz), showHouseBlitz)
-                        Spacer(modifier = Modifier.height(20.dp))
                         MenuItem(stringResource(R.string.lucky_38_tower), showHouseTower)
-                        Spacer(modifier = Modifier.height(20.dp))
+                        Spacer(modifier = Modifier.height(16.dp))
+                        MenuItem(stringResource(R.string.menu_pve), showPvE)
+                        Spacer(modifier = Modifier.height(16.dp))
+                        MenuItem(stringResource(R.string.lucky_38_blitz), showHouseBlitz)
+                        Spacer(modifier = Modifier.height(16.dp))
                         MenuItem(stringResource(R.string.menu_pvp), showPvP)
-                        Spacer(modifier = Modifier.height(20.dp))
+                        Spacer(modifier = Modifier.height(16.dp))
                         MenuItem(stringResource(R.string.menu_tutorial), showTutorial)
-                        Spacer(modifier = Modifier.height(20.dp))
+                        Spacer(modifier = Modifier.height(16.dp))
                         MenuItem(stringResource(R.string.menu_rules), showRules)
-                        Spacer(modifier = Modifier.height(20.dp))
+                        Spacer(modifier = Modifier.height(16.dp))
                         MenuItem(stringResource(R.string.menu_deck), showDeckSelection)
-                        Spacer(modifier = Modifier.height(20.dp))
+                        Spacer(modifier = Modifier.height(16.dp))
                         MenuItem(stringResource(R.string.missions), showDailys)
                         Spacer(modifier = Modifier.height(32.dp))
                     }
@@ -1263,10 +1263,6 @@ class MainActivity : SaveDataActivity() {
         LaunchedEffect(Unit) {
             if (save?.updateSoldCards() == true) {
                 saveOnGD(this@MainActivity)
-//                showAlertDialog(
-//                    getString(R.string.card_prices_update),
-//                    getString(R.string.some_cards_are_now_more_expensive)
-//                )
             }
             save?.updateChallenges()
         }

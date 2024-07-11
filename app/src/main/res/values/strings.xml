@@ -33,7 +33,7 @@
 
     <string name="standard_deck_owners">other players</string>
 
-    <string name="menu_pve">Single player</string>
+    <string name="menu_pve">Single player (+5)</string>
     <string name="menu_pvp">Multiplayer</string>
     <string name="menu_tutorial">Tutorial</string>
     <string name="menu_rules">Rules</string>
@@ -55,6 +55,7 @@
 
     <string name="pve_select_enemy">Select the Opponent</string>
     <string name="pve_select_enemy_2">Cheesy Ones</string>
+    <string name="pve_select_enemy_3">Tower Enemies</string>
     <string name="pve_enemy_easy">Ultra-Luxe visitor</string>
     <string name="pve_enemy_medium">Thug from Gomorrah</string>
     <string name="pve_enemy_hard">The Tops Promoter</string>
@@ -381,10 +382,52 @@
     <string name="claim_tickets">Claim 1 Ticket</string>
 
     <string name="missions">Missions!</string>
+
     <string name="deck_o_54_only">(Deck o\' 54 only!)</string>
     <string name="custom_deck_only">(Custom deck only!)</string>
     <string name="you_can_change_custom_deck_between_games">(You can change custom deck between games.)</string>
     <string name="progress_is_saved_between_sessions">(Progress is saved between sessions!).</string>
+    <string name="tickets_please_you_have_tickets_caps">Tickets, please!\n(You have tickets: %1$s;\ncaps: %2$s.)</string>
+    <string name="play_for_free_no_jackpot">Play for free (NO JACKPOT!)</string>
+    <string name="pay_1_ticket">Pay 1 ticket</string>
+    <string name="pay_100_caps">Pay 100 caps</string>
+    <string name="hey">HEY!</string>
+    <string name="tower_progress_will_be_lost">Tower progress will be lost!</string>
+    <string name="select_payment_method">Select payment method.</string>
+    <string name="you_don_t_have_enough_cash_kid">You don\'t have enough cash, kid.</string>
+    <string name="you_don_t_have_a_ticket_on_you">You don\'t have a ticket on you.</string>
+    <string name="level_10">Level: %1$s / 10</string>
+    <string name="currently_in_bank_caps">Currently in bank: %1$s caps</string>
+    <string name="enemy">Enemy: %1$s</string>
+    <string name="your_reward_caps">Your reward: %1$s caps</string>
+    <string name="sunny_smiles">Sunny Smiles</string>
+    <string name="ringo">Ringo</string>
+    <string name="cliff_briscoe">Cliff Briscoe</string>
+    <string name="yes_man">Yes Man</string>
+    <string name="ambassador_crocker">Ambassador Crocker</string>
+    <string name="the_king">The King</string>
+    <string name="general_lee_oliver">General Lee Oliver</string>
+    <string name="caesar">Caesar</string>
+    <string name="frank_horrigan">Frank Horrigan</string>
+    <string name="skip_for_caps">Skip for %1$s caps</string>
+    <string name="skipped">Skipped!</string>
+    <string name="you_ve_paid_caps">You\'ve paid %1$s caps!</string>
+    <string name="take_the_cash">Take the cash!</string>
+    <string name="congratulations">Congratulations!</string>
+    <string name="en_garde">En garde!</string>
+    <string name="you_re_not_a_hero_you_re_just_a_walking_corpse">You\'re not a hero. You\'re just a walking corpse.</string>
+    <string name="now_playing_loyalty_to_your_people_neon_light_man">Now playing: Loyalty to Your People - Neon Light Man.</string>
+    <string name="finish">[FINISH]</string>
+    <string name="frank_final_words">The work will go on. You didn\'t do nothing here, \'cept seal your own death warrants. Duty, (cough) honor… courage… Semper Fiiiii……</string>
+    <string name="frank_welcome">You\'ve gotten a lot farther than you should have, but then you haven\'t met Frank Horrigan either. Your ride\'s over, mutie. Time to die.</string>
+    <string name="frank_who">Frank who?</string>
+    <string name="frank_horrigan_that_s_who">Frank Horrigan, that\'s who. United States Secret Service. You aren\'t going anywhere from here.</string>
+    <string name="wait_let_s_talk">Wait, let\'s talk!</string>
+    <string name="we_just_did_time_for_talking_s_over">We just did. Time for talking\'s over.</string>
+    <string name="you_don_t_even_know_who_i_am">You don\'t even know who I am.</string>
+    <string name="you_re_just_another_mutant_that_needs_to_be_put_down">You\'re just another mutant that needs to be put down.</string>
+    <string name="i_challenge_you_to_the_game_of_caravan">I challenge you to the game of Caravan!</string>
+    <string name="you_mutant_scum">You mutant scum! Just like you to try a trick like that. It won\'t help you though, nothing will…</string>
 
 
 </resources>

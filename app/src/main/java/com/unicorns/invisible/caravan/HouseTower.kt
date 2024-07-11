@@ -354,7 +354,11 @@ fun TowerScreen(
 
                 if (level == 0) {
                     TextFallout(
-                        "Tickets, please!\n(You have tickets: ${activity.save?.tickets ?: 0};\ncaps: ${activity.save?.caps ?: 0}.)",
+                        stringResource(
+                            R.string.tickets_please_you_have_tickets_caps,
+                            activity.save?.tickets ?: 0,
+                            activity.save?.caps ?: 0
+                        ),
                         getTextColor(activity),
                         getTextStrokeColor(activity),
                         20.sp,
@@ -365,7 +369,7 @@ fun TowerScreen(
                     Spacer(modifier = Modifier.height(16.dp))
                     Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.SpaceEvenly) {
                         TextFallout(
-                            "Play for free (NO JACKPOT!)",
+                            stringResource(R.string.play_for_free_no_jackpot),
                             getTextColor(activity),
                             getTextStrokeColor(activity),
                             20.sp,
@@ -392,7 +396,7 @@ fun TowerScreen(
                             TextAlign.Center
                         )
                         TextFallout(
-                            "Pay 1 ticket",
+                            stringResource(R.string.pay_1_ticket),
                             getTextColor(activity),
                             getTextStrokeColor(activity),
                             20.sp,
@@ -419,7 +423,7 @@ fun TowerScreen(
                             TextAlign.Center
                         )
                         TextFallout(
-                            "Pay 100 caps",
+                            stringResource(R.string.pay_100_caps),
                             getTextColor(activity),
                             getTextStrokeColor(activity),
                             20.sp,
@@ -457,7 +461,10 @@ fun TowerScreen(
                         modifier = Modifier
                             .clickableOk(activity) {
                                 if (payment == null) {
-                                    showAlertDialog("HEY!", "Select payment method.")
+                                    showAlertDialog(
+                                        activity.getString(R.string.hey),
+                                        activity.getString(R.string.select_payment_method)
+                                    )
                                     return@clickableOk
                                 }
 
@@ -465,8 +472,8 @@ fun TowerScreen(
                                     Payment.ONE_HUNDRED_CAPS -> {
                                         if ((activity.save?.caps ?: 0) < 100) {
                                             showAlertDialog(
-                                                "HEY!",
-                                                "You don't have enough cash, kid."
+                                                activity.getString(R.string.hey),
+                                                activity.getString(R.string.you_don_t_have_enough_cash_kid)
                                             )
                                             return@clickableOk
                                         }
@@ -475,8 +482,8 @@ fun TowerScreen(
                                     Payment.TICKET -> {
                                         if ((activity.save?.tickets ?: 0) < 1) {
                                             showAlertDialog(
-                                                "HEY!",
-                                                "You don't have a ticket on you."
+                                                activity.getString(R.string.hey),
+                                                activity.getString(R.string.you_don_t_have_a_ticket_on_you)
                                             )
                                             return@clickableOk
                                         }
@@ -536,7 +543,7 @@ fun TowerScreen(
                         Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
                             if (!(level == 11 && !isGameRigged)) {
                                 TextFallout(
-                                    "Level: $level / 10",
+                                    stringResource(R.string.level_10, level),
                                     getTextColor(activity),
                                     getTextStrokeColor(activity),
                                     24.sp,
@@ -545,7 +552,7 @@ fun TowerScreen(
                                     TextAlign.Center
                                 )
                                 TextFallout(
-                                    "Currently in bank: $inBank caps",
+                                    stringResource(R.string.currently_in_bank_caps, inBank),
                                     getTextColor(activity),
                                     getTextStrokeColor(activity),
                                     24.sp,
@@ -554,7 +561,7 @@ fun TowerScreen(
                                     TextAlign.Center
                                 )
                                 TextFallout(
-                                    "Enemy: $enemyName",
+                                    stringResource(R.string.enemy, enemyName),
                                     getTextColor(activity),
                                     getTextStrokeColor(activity),
                                     24.sp,
@@ -564,7 +571,7 @@ fun TowerScreen(
                                 )
                             } else {
                                 TextFallout(
-                                    "Your reward: $inBank caps",
+                                    stringResource(R.string.your_reward_caps, inBank),
                                     getTextColor(activity),
                                     getTextStrokeColor(activity),
                                     24.sp,
@@ -577,37 +584,37 @@ fun TowerScreen(
                     }
                     when (level) {
                         1 -> {
-                            showTowerCard("Sunny Smiles")
+                            showTowerCard(stringResource(R.string.sunny_smiles))
                         }
                         2 -> {
-                            showTowerCard("Ringo")
+                            showTowerCard(stringResource(R.string.ringo))
                         }
                         3 -> {
-                            showTowerCard("Cliff Briscoe")
+                            showTowerCard(stringResource(R.string.cliff_briscoe))
                         }
                         4 -> {
-                            showTowerCard("Yes Man")
+                            showTowerCard(stringResource(R.string.yes_man))
                         }
                         5 -> {
                             showTowerCard(stringResource(R.string.pve_enemy_queen))
                         }
                         6 -> {
-                            showTowerCard("Ambassador Crocker")
+                            showTowerCard(stringResource(R.string.ambassador_crocker))
                         }
                         7 -> {
-                            showTowerCard("The King")
+                            showTowerCard(stringResource(R.string.the_king))
                         }
                         8 -> {
                             showTowerCard(stringResource(R.string.mr_house))
                         }
                         9 -> {
-                            showTowerCard("General Lee Oliver")
+                            showTowerCard(stringResource(R.string.general_lee_oliver))
                         }
                         10 -> {
-                            showTowerCard("Caesar")
+                            showTowerCard(stringResource(R.string.caesar))
                         }
                         11 -> {
-                            showTowerCard("Frank Horrigan")
+                            showTowerCard(stringResource(R.string.frank_horrigan))
                         }
                     }
                     Spacer(Modifier.height(16.dp))
@@ -616,7 +623,7 @@ fun TowerScreen(
                             if (level <= 5) {
                                 val cost = inBank * 10
                                 TextFallout(
-                                    "Skip for $cost caps",
+                                    stringResource(R.string.skip_for_caps, cost),
                                     getTextColor(activity),
                                     getTextStrokeColor(activity),
                                     24.sp,
@@ -625,8 +632,8 @@ fun TowerScreen(
                                         .clickableOk(activity) {
                                             if ((activity.save?.caps ?: 0) < cost) {
                                                 showAlertDialog(
-                                                    "HEY!",
-                                                    "You don't have enough cash, kid."
+                                                    activity.getString(R.string.hey),
+                                                    activity.getString(R.string.you_don_t_have_enough_cash_kid)
                                                 )
                                                 return@clickableOk
                                             }
@@ -638,7 +645,13 @@ fun TowerScreen(
                                                 saveOnGD(activity)
                                             }
                                             playCashSound(activity)
-                                            showAlertDialog("Skipped!", "You've paid $cost caps!")
+                                            showAlertDialog(
+                                                activity.getString(R.string.skipped),
+                                                activity.getString(
+                                                    R.string.you_ve_paid_caps,
+                                                    cost.toString()
+                                                )
+                                            )
                                         }
                                         .background(getTextBackgroundColor(activity))
                                         .padding(horizontal = 8.dp, vertical = 4.dp),
@@ -646,7 +659,7 @@ fun TowerScreen(
                                 )
                             } else {
                                 TextFallout(
-                                    "Take the cash!",
+                                    stringResource(R.string.take_the_cash),
                                     getTextColor(activity),
                                     getTextStrokeColor(activity),
                                     24.sp,
@@ -662,8 +675,11 @@ fun TowerScreen(
                                             }
                                             playCashSound(activity)
                                             showAlertDialog(
-                                                "Congratulations!",
-                                                "You have earned $inBank caps!"
+                                                activity.getString(R.string.congratulations),
+                                                activity.getString(
+                                                    R.string.you_have_earned_caps,
+                                                    inBank.toString()
+                                                )
                                             )
                                         }
                                         .background(getTextBackgroundColor(activity))
@@ -674,7 +690,7 @@ fun TowerScreen(
                         }
                         if (!(level == 11 && !isGameRigged) && level != 12) {
                             TextFallout(
-                                "En garde!",
+                                stringResource(R.string.en_garde),
                                 getTextColor(activity),
                                 getTextStrokeColor(activity),
                                 24.sp,
@@ -817,7 +833,7 @@ fun StartTowerGame(
             },
             title = {
                 TextClassic(
-                    "You're not a hero. You're just a walking corpse.",
+                    stringResource(R.string.you_re_not_a_hero_you_re_just_a_walking_corpse),
                     Color(activity.getColor(R.color.colorText)),
                     Color(activity.getColor(R.color.colorText)),
                     24.sp, Alignment.CenterStart, Modifier,
@@ -826,7 +842,7 @@ fun StartTowerGame(
             },
             text = {
                 TextClassic(
-                    "Now playing: Loyalty to Your People - Neon Light Man.",
+                    stringResource(R.string.now_playing_loyalty_to_your_people_neon_light_man),
                     Color(activity.getColor(R.color.colorText)),
                     Color(activity.getColor(R.color.colorText)),
                     16.sp, Alignment.CenterStart, Modifier,
@@ -846,7 +862,7 @@ fun StartTowerGame(
             onDismissRequest = { showFrankOutro = false; goBack() },
             confirmButton = {
                 TextClassic(
-                    "[FINISH]",
+                    stringResource(R.string.finish),
                     Color(activity.getColor(R.color.colorTextBack)),
                     Color(activity.getColor(R.color.colorTextBack)),
                     18.sp, Alignment.Center,
@@ -870,7 +886,7 @@ fun StartTowerGame(
             },
             text = {
                 TextClassic(
-                    "The work will go on. You didn't do nothing here, 'cept seal your own death warrants. Duty, (cough) honor… courage… Semper Fiiiii……",
+                    stringResource(R.string.frank_final_words),
                     Color(activity.getColor(R.color.colorText)),
                     Color(activity.getColor(R.color.colorText)),
                     16.sp, Alignment.CenterStart, Modifier,
@@ -1068,7 +1084,8 @@ fun StartTowerGame(
                 return@ShowGameRaw
             }
 
-            showAlertDialog(activity.getString(R.string.check_back_to_menu), "Tower progress will be lost!")
+            showAlertDialog(activity.getString(R.string.check_back_to_menu),
+                activity.getString(R.string.tower_progress_will_be_lost))
         },
         animationSpeed,
         { "" },
@@ -1103,7 +1120,7 @@ fun ShowFrank(activity: MainActivity, goBack: () -> Unit) {
             stopRadio()
             isFrankSequence = true
             playFrankPhrase(activity, R.raw.frank_on_welcome)
-            text = "You've gotten a lot farther than you should have, but then you haven't met Frank Horrigan either. Your ride's over, mutie. Time to die."
+            text = activity.getString(R.string.frank_welcome)
             delay(3000L)
             showFrankFlag = true
             delay(10000L)
@@ -1176,34 +1193,34 @@ fun ShowFrank(activity: MainActivity, goBack: () -> Unit) {
                         }
                         item {
                             if (!whoAreYouAsked && !letsTalkAsked && !iChallengeYou) {
-                                DialogLine("Frank who?") {
+                                DialogLine(stringResource(R.string.frank_who)) {
                                     whoAreYouAsked = true
-                                    text = "Frank Horrigan, that's who. United States Secret Service. You aren't going anywhere from here."
+                                    text = activity.getString(R.string.frank_horrigan_that_s_who)
                                     playFrankPhrase(activity, R.raw.frank_who_are_you)
                                 }
                             }
                             if (!letsTalkAsked && !iChallengeYou) {
-                                DialogLine("Wait, let's talk!") {
+                                DialogLine(stringResource(R.string.wait_let_s_talk)) {
                                     letsTalkAsked = true
-                                    text = "We just did. Time for talking's over."
+                                    text = activity.getString(R.string.we_just_did_time_for_talking_s_over)
                                     playFrankPhrase(activity, R.raw.frank_lets_talk)
                                 }
                             }
                             if (!whoIAmAsked && !letsTalkAsked && !iChallengeYou) {
-                                DialogLine("You don't even know who I am.") {
+                                DialogLine(stringResource(R.string.you_don_t_even_know_who_i_am)) {
                                     whoIAmAsked = true
-                                    text = "You're just another mutant that needs to be put down."
+                                    text = activity.getString(R.string.you_re_just_another_mutant_that_needs_to_be_put_down)
                                     playFrankPhrase(activity, R.raw.frank_you_dont_even_know_who_i_am)
                                 }
                             }
                             if (!iChallengeYou) {
-                                DialogLine("I challenge you to the game of Caravan!") {
+                                DialogLine(stringResource(R.string.i_challenge_you_to_the_game_of_caravan)) {
                                     iChallengeYou = true
-                                    text = "You mutant scum! Just like you to try a trick like that. It won't help you though, nothing will..."
+                                    text = activity.getString(R.string.you_mutant_scum)
                                     playFrankPhrase(activity, R.raw.frank_i_challenge_you)
                                 }
                             } else {
-                                DialogLine("[FINISH]") {
+                                DialogLine(stringResource(R.string.finish)) {
                                     goBack()
                                 }
                             }

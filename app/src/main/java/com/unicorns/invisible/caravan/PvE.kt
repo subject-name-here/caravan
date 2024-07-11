@@ -31,14 +31,19 @@ import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.enemy.Enemy
 import com.unicorns.invisible.caravan.model.enemy.EnemyBestest
 import com.unicorns.invisible.caravan.model.enemy.EnemyBetter
+import com.unicorns.invisible.caravan.model.enemy.EnemyCaesar
 import com.unicorns.invisible.caravan.model.enemy.EnemyEasy
 import com.unicorns.invisible.caravan.model.enemy.EnemyHard
+import com.unicorns.invisible.caravan.model.enemy.EnemyKing
 import com.unicorns.invisible.caravan.model.enemy.EnemyMedium
 import com.unicorns.invisible.caravan.model.enemy.EnemyNash
 import com.unicorns.invisible.caravan.model.enemy.EnemyNoBark
+import com.unicorns.invisible.caravan.model.enemy.EnemyOliver
+import com.unicorns.invisible.caravan.model.enemy.EnemyRingo
 import com.unicorns.invisible.caravan.model.enemy.EnemySecuritron38
 import com.unicorns.invisible.caravan.model.enemy.EnemySix
 import com.unicorns.invisible.caravan.model.enemy.EnemySwank
+import com.unicorns.invisible.caravan.model.enemy.EnemyYesMan
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.Card
 import com.unicorns.invisible.caravan.model.primitives.CustomDeck
@@ -65,7 +70,6 @@ import com.unicorns.invisible.caravan.utils.playWinSound
 import com.unicorns.invisible.caravan.utils.scrollbar
 import com.unicorns.invisible.caravan.utils.stopAmbient
 import java.util.Locale
-import kotlin.math.max
 
 
 @Composable
@@ -85,7 +89,13 @@ fun ShowPvE(
     var showGameCheater by rememberSaveable { mutableStateOf(false) }
     var showGameQueen by rememberSaveable { mutableStateOf(false) }
     var showGameNash by rememberSaveable { mutableStateOf(false) }
-    var showGameBest by rememberSaveable { mutableStateOf(false) }
+    var showGameNoBark by rememberSaveable { mutableStateOf(false) }
+
+    var showGameRingo by rememberSaveable { mutableStateOf(false) }
+    var showGameYesMan by rememberSaveable { mutableStateOf(false) }
+    var showGameKing by rememberSaveable { mutableStateOf(false) }
+    var showGameOliver by rememberSaveable { mutableStateOf(false) }
+    var showGameCaesar by rememberSaveable { mutableStateOf(false) }
 
     var checkedCustomDeck by rememberSaveable {
         mutableStateOf(
@@ -166,7 +176,7 @@ fun ShowPvE(
             showGameNash = false
         }
         return
-    } else if (showGameBest) {
+    } else if (showGameNoBark) {
         StartGame(
             activity = activity,
             playerCResources = getPlayerDeck(),
@@ -174,7 +184,7 @@ fun ShowPvE(
             enemy = EnemyNoBark,
             showAlertDialog = showAlertDialog
         ) {
-            showGameBest = false
+            showGameNoBark = false
         }
         return
     } else if (showGameHard) {
@@ -208,6 +218,61 @@ fun ShowPvE(
             showAlertDialog = showAlertDialog
         ) {
             showGameUlysses = false
+        }
+        return
+    } else if (showGameRingo) {
+        StartGame(
+            activity = activity,
+            playerCResources = getPlayerDeck(),
+            isCustom = checkedCustomDeck,
+            enemy = EnemyRingo,
+            showAlertDialog = showAlertDialog
+        ) {
+            showGameRingo = false
+        }
+        return
+    } else if (showGameYesMan) {
+        StartGame(
+            activity = activity,
+            playerCResources = getPlayerDeck(),
+            isCustom = checkedCustomDeck,
+            enemy = EnemyYesMan,
+            showAlertDialog = showAlertDialog
+        ) {
+            showGameYesMan = false
+        }
+        return
+    } else if (showGameKing) {
+        StartGame(
+            activity = activity,
+            playerCResources = getPlayerDeck(),
+            isCustom = checkedCustomDeck,
+            enemy = EnemyKing,
+            showAlertDialog = showAlertDialog
+        ) {
+            showGameKing = false
+        }
+        return
+    } else if (showGameOliver) {
+        StartGame(
+            activity = activity,
+            playerCResources = getPlayerDeck(),
+            isCustom = checkedCustomDeck,
+            enemy = EnemyOliver,
+            showAlertDialog = showAlertDialog
+        ) {
+            showGameOliver = false
+        }
+        return
+    } else if (showGameCaesar) {
+        StartGame(
+            activity = activity,
+            playerCResources = getPlayerDeck(),
+            isCustom = checkedCustomDeck,
+            enemy = EnemyCaesar,
+            showAlertDialog = showAlertDialog
+        ) {
+            showGameCaesar = false
         }
         return
     }
@@ -294,13 +359,33 @@ fun ShowPvE(
                 Spacer(modifier = Modifier.height(16.dp))
                 OpponentItem(stringResource(R.string.pve_enemy_queen)) { playVatsEnter(activity); showGameQueen = true }
                 Spacer(modifier = Modifier.height(10.dp))
-                OpponentItem(stringResource(R.string.no_bark)) { playVatsEnter(activity); showGameBest = true }
+                OpponentItem(stringResource(R.string.no_bark)) { playVatsEnter(activity); showGameNoBark = true }
                 Spacer(modifier = Modifier.height(10.dp))
                 OpponentItem(stringResource(R.string.johnson_nash)) { playVatsEnter(activity); showGameNash = true }
                 Spacer(modifier = Modifier.height(10.dp))
                 OpponentItem(stringResource(R.string.pve_enemy_38)) { playVatsEnter(activity); showGame38 = true }
                 Spacer(modifier = Modifier.height(10.dp))
                 OpponentItem(stringResource(R.string.pve_enemy_cheater)) { playVatsEnter(activity); showGameCheater = true }
+                Spacer(modifier = Modifier.height(16.dp))
+                TextFallout(
+                    stringResource(R.string.pve_select_enemy_3),
+                    getTextColor(activity),
+                    getTextStrokeColor(activity),
+                    22.sp,
+                    Alignment.Center,
+                    Modifier,
+                    TextAlign.Center
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                OpponentItem(stringResource(R.string.ringo)) { playVatsEnter(activity); showGameRingo = true }
+                Spacer(modifier = Modifier.height(10.dp))
+                OpponentItem(stringResource(R.string.yes_man)) { playVatsEnter(activity); showGameYesMan = true }
+                Spacer(modifier = Modifier.height(10.dp))
+                OpponentItem(stringResource(R.string.the_king)) { playVatsEnter(activity); showGameKing = true }
+                Spacer(modifier = Modifier.height(10.dp))
+                OpponentItem(stringResource(R.string.general_lee_oliver)) { playVatsEnter(activity); showGameOliver = true }
+                Spacer(modifier = Modifier.height(10.dp))
+                OpponentItem(stringResource(R.string.caesar)) { playVatsEnter(activity); showGameCaesar = true }
                 Spacer(modifier = Modifier.height(16.dp))
             }
         }
@@ -528,6 +613,9 @@ fun StartGame(
                         }
                         message += winCard(activity, save, back, 1, isAlt = true, isCustom)
                     }
+                } ?: {
+                    save.caps += 30
+                    message += activity.getString(R.string.you_have_earned_caps, 30.toString())
                 }
                 save.gamesFinished++
                 save.wins++
@@ -592,8 +680,8 @@ fun winCard(
     val deckOld = deckList.filter { !checkCard(it) }
     val deckNew = deckList - deckOld.toSet()
     val prob = when {
-        isCustom -> if (numberOfCards == 1) 50 else 40
-        else -> if (numberOfCards == 1) 70 else 60
+        isCustom -> if (numberOfCards == 1) 45 else 35
+        else -> if (numberOfCards == 1) 60 else 50
     }
     val reward = run {
         val probs = (0 until numberOfCards).map {
@@ -637,7 +725,7 @@ fun winCard(
     }
     if (capsEarned > 0) {
         activity.save!!.caps += capsEarned
-        result += activity.getString(R.string.caps_earned, capsEarned)
+        result += activity.getString(R.string.caps_earned, capsEarned.toString())
     }
 
     return result
