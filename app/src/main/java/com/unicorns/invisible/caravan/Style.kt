@@ -1132,6 +1132,7 @@ fun BoxWithConstraintsScope.StylePicture(
                 }
             }
         }
+
         ENCLAVE -> {
             val flagPainter = rememberAsyncImagePainter(
                 ImageRequest.Builder(activity)

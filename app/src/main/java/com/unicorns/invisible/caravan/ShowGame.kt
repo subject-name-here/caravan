@@ -67,7 +67,6 @@ import com.unicorns.invisible.caravan.utils.TextSymbola
 import com.unicorns.invisible.caravan.utils.clickableCancel
 import com.unicorns.invisible.caravan.utils.clickableOk
 import com.unicorns.invisible.caravan.utils.dpToPx
-import com.unicorns.invisible.caravan.utils.frankStopsRadio
 import com.unicorns.invisible.caravan.utils.getBackgroundColor
 import com.unicorns.invisible.caravan.utils.getGameDividerColor
 import com.unicorns.invisible.caravan.utils.getGameScoreColor

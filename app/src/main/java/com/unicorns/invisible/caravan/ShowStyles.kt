@@ -43,7 +43,7 @@ import com.unicorns.invisible.caravan.utils.scrollbar
 
 
 @Composable
-fun ShowSettings(
+fun ShowStyles(
     activity: MainActivity,
     getStyle: () -> Style,
     selectStyle: (Int) -> Unit,
@@ -59,9 +59,8 @@ fun ShowSettings(
         modifier = Modifier
             .fillMaxSize()
             .background(getBackgroundColor(activity))
-            .padding(horizontal = 16.dp)
+            .padding(16.dp)
     ) {
-        Spacer(Modifier.height(16.dp))
         LazyColumn(
             Modifier
                 .fillMaxSize()
@@ -99,17 +98,7 @@ fun ShowSettings(
                                 Modifier.fillMaxWidth(),
                                 TextAlign.Center
                             )
-                            TextFallout(
-                                stringResource(R.string.get_more_by_earning_cards_you_already_have),
-                                getTextColor(activity),
-                                getTextStrokeColor(activity),
-                                14.sp,
-                                Alignment.Center,
-                                Modifier.fillMaxWidth(),
-                                TextAlign.Center
-                            )
                         }
-
                     }
 
                     Style.entries.forEach { style ->
@@ -167,7 +156,6 @@ fun ShowSettings(
                 )
             }
         }
-        Spacer(Modifier.height(16.dp))
     }
 }
 
@@ -200,9 +188,11 @@ fun ShowStyle(
             TextAlign.Start
         )
         TextFallout(
-            if (isStyleBought) (if (isStyleUsed) "OK" else stringResource(R.string.select)) else stringResource(
-                R.string.buy
-            ),
+            when {
+                !isStyleBought -> stringResource(R.string.buy)
+                !isStyleUsed -> stringResource(R.string.select)
+                else -> "OK"
+            },
             getTextColorByStyle(activity, style),
             getTextColorByStyle(activity, style),
             22.sp,

@@ -64,7 +64,6 @@ import com.unicorns.invisible.caravan.utils.TextFallout
 import com.unicorns.invisible.caravan.utils.clickableCancel
 import com.unicorns.invisible.caravan.utils.clickableOk
 import com.unicorns.invisible.caravan.utils.clickableSelect
-import com.unicorns.invisible.caravan.utils.frankStopsRadio
 import com.unicorns.invisible.caravan.utils.getBackgroundColor
 import com.unicorns.invisible.caravan.utils.getDialogBackground
 import com.unicorns.invisible.caravan.utils.getDialogTextColor
@@ -97,6 +96,7 @@ import com.unicorns.invisible.caravan.utils.scrollbar
 import com.unicorns.invisible.caravan.utils.startLevel11Theme
 import com.unicorns.invisible.caravan.utils.startRadio
 import com.unicorns.invisible.caravan.utils.stopAmbient
+import com.unicorns.invisible.caravan.utils.stopRadio
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -242,13 +242,7 @@ fun TowerScreen(
                     it.isEnclaveThemeAvailable = true
                     saveOnGD(activity)
                 }
-                radioLock.withLock {
-                    radioPlayers.forEach {
-                        it.stop()
-                        radioPlayers.remove(it)
-                        it.release()
-                    }
-                }
+                stopRadio()
                 playFrankPhrase(activity, R.raw.frank_on_defeat)
             }, {
                 level = 0
@@ -256,16 +250,10 @@ fun TowerScreen(
                     it.towerLevel = 0
                     saveOnGD(activity)
                 }
-                radioLock.withLock {
-                    radioPlayers.forEach {
-                        it.stop()
-                        radioPlayers.remove(it)
-                        it.release()
-                    }
-                }
+                stopRadio()
             }) {
                 showGameLevel11 = false
-                frankStopsRadio = false
+                isFrankSequence = false
                 isGameRigged = false
                 activity.save?.let {
                     it.isGameRigged = false
@@ -662,7 +650,7 @@ fun TowerScreen(
                                         .clickableOk(activity) {
                                             if (isGameRigged) {
                                                 isGameRigged = false
-                                                frankStopsRadio = false
+                                                isFrankSequence = false
                                                 startRadio(activity)
                                                 activity.save?.let {
                                                     it.isGameRigged = false
@@ -862,13 +850,13 @@ fun StartTowerGame(
         )
     }
 
-    val playerCResources = if (frankStopsRadio) {
+    val playerCResources = if (isFrankSequence) {
         CResources(CustomDeck(CardBack.STANDARD, false))
     } else {
         CResources(activity.save?.getCustomDeckCopy() ?: CustomDeck(CardBack.STANDARD, false))
     }
     val game = rememberScoped {
-        if (frankStopsRadio) {
+        if (isFrankSequence) {
             showIntro = true
         }
         Game(
@@ -885,7 +873,7 @@ fun StartTowerGame(
             activity.processChallengesGameOver(it)
             playWinSound(activity)
             onWin()
-            if (frankStopsRadio) {
+            if (isFrankSequence) {
                 showFrankOutro = true
             } else {
                 showAlertDialog(
@@ -1079,14 +1067,8 @@ fun ShowFrank(activity: MainActivity, goBack: () -> Unit) {
 
     LaunchedEffect(Unit) {
         if (!showDialogs) {
-            radioLock.withLock {
-                radioPlayers.forEach {
-                    it.stop()
-                    radioPlayers.remove(it)
-                    it.release()
-                }
-                frankStopsRadio = true
-            }
+            stopRadio()
+            isFrankSequence = true
             playFrankPhrase(activity, R.raw.frank_on_welcome)
             text = "You've gotten a lot farther than you should have, but then you haven't met Frank Horrigan either. Your ride's over, mutie. Time to die."
             delay(3000L)

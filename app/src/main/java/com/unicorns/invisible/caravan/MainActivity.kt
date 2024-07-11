@@ -77,7 +77,6 @@ import com.unicorns.invisible.caravan.utils.clickableOk
 import com.unicorns.invisible.caravan.utils.dpToPx
 import com.unicorns.invisible.caravan.utils.effectPlayers
 import com.unicorns.invisible.caravan.utils.effectPlayersLock
-import com.unicorns.invisible.caravan.utils.frankStopsRadio
 import com.unicorns.invisible.caravan.utils.getBackgroundColor
 import com.unicorns.invisible.caravan.utils.getDialogBackground
 import com.unicorns.invisible.caravan.utils.getDialogTextColor
@@ -121,6 +120,8 @@ var userId = ""
 private var readyFlag = MutableLiveData(false)
 
 var isQPinging = MutableLiveData(false)
+
+var isFrankSequence = false
 
 @Suppress("MoveLambdaOutsideParentheses")
 class MainActivity : SaveDataActivity() {
@@ -798,7 +799,7 @@ class MainActivity : SaveDataActivity() {
                                 .weight(1f)
                                 .wrapContentWidth()
                                 .clickableOk(this@MainActivity) {
-                                    if (!isPaused && !frankStopsRadio) {
+                                    if (!isPaused && !isFrankSequence) {
                                         nextSong(this@MainActivity)
                                     }
                                 }
@@ -817,7 +818,7 @@ class MainActivity : SaveDataActivity() {
                                 .weight(1f)
                                 .wrapContentWidth()
                                 .clickableOk(this@MainActivity) {
-                                    if (frankStopsRadio) {
+                                    if (isFrankSequence) {
                                         return@clickableOk
                                     }
                                     if (isPaused) {
@@ -925,7 +926,7 @@ class MainActivity : SaveDataActivity() {
                     }
 
                     showVision -> {
-                        ShowSettings(activity = this@MainActivity, { styleId }, {
+                        ShowStyles(activity = this@MainActivity, { styleId }, {
                             styleId = Style.entries[it]
                             styleIdForTop = styleId
                             save?.let { s ->
