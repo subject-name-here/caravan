@@ -392,34 +392,7 @@ fun TextFallout(
     modifier: Modifier,
     textAlign: TextAlign,
 ) {
-    val strokeWidth = getStrokeWidth(textSize)
-    Box(modifier, contentAlignment = contentAlignment) {
-        Text(
-            text = text, color = textColor,
-            fontFamily = FontFamily(Font(R.font.monofont)),
-            style = TextStyle(
-                color = textColor,
-                fontSize = textSize,
-                fontWeight = FontWeight.Light,
-                drawStyle = Fill
-            ),
-            textAlign = textAlign
-        )
-        if (textColor.toArgb() == strokeColor.toArgb()) {
-            return@Box
-        }
-        Text(
-            text = text, color = strokeColor,
-            fontFamily = FontFamily(Font(R.font.monofont)),
-            style = TextStyle(
-                color = strokeColor,
-                fontSize = textSize,
-                fontWeight = FontWeight.Normal,
-                drawStyle = Stroke(width = strokeWidth)
-            ),
-            textAlign = textAlign
-        )
-    }
+    TextCustom(text, Font(R.font.monofont), textColor, strokeColor, textSize, contentAlignment, modifier, textAlign)
 }
 
 @Composable
@@ -496,11 +469,25 @@ fun TextClassic(
     modifier: Modifier,
     textAlign: TextAlign,
 ) {
+    TextCustom(text, Font(R.font.classic), textColor, strokeColor, textSize, contentAlignment, modifier, textAlign)
+}
+
+@Composable
+fun TextCustom(
+    text: String,
+    font: Font,
+    textColor: Color,
+    strokeColor: Color,
+    textSize: TextUnit,
+    contentAlignment: Alignment,
+    modifier: Modifier,
+    textAlign: TextAlign,
+) {
     val strokeWidth = getStrokeWidth(textSize)
     Box(modifier, contentAlignment = contentAlignment) {
         Text(
             text = text, color = textColor,
-            fontFamily = FontFamily(Font(R.font.classic)),
+            fontFamily = FontFamily(font),
             style = TextStyle(
                 color = textColor,
                 fontSize = textSize,
@@ -514,7 +501,7 @@ fun TextClassic(
         }
         Text(
             text = text, color = strokeColor,
-            fontFamily = FontFamily(Font(R.font.classic)),
+            fontFamily = FontFamily(font),
             style = TextStyle(
                 color = strokeColor,
                 fontSize = textSize,

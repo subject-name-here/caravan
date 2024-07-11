@@ -28,7 +28,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.paint
-import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.painterResource
@@ -36,8 +35,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil.compose.rememberAsyncImagePainter
-import coil.request.ImageRequest
 import com.sebaslogen.resaca.rememberScoped
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
@@ -65,8 +62,6 @@ import com.unicorns.invisible.caravan.utils.clickableCancel
 import com.unicorns.invisible.caravan.utils.clickableOk
 import com.unicorns.invisible.caravan.utils.clickableSelect
 import com.unicorns.invisible.caravan.utils.getBackgroundColor
-import com.unicorns.invisible.caravan.utils.getDialogBackground
-import com.unicorns.invisible.caravan.utils.getDialogTextColor
 import com.unicorns.invisible.caravan.utils.getKnobColor
 import com.unicorns.invisible.caravan.utils.getSelectionColor
 import com.unicorns.invisible.caravan.utils.getStrokeColorByStyle
@@ -90,18 +85,14 @@ import com.unicorns.invisible.caravan.utils.playTowerCompleted
 import com.unicorns.invisible.caravan.utils.playTowerFailed
 import com.unicorns.invisible.caravan.utils.playVatsReady
 import com.unicorns.invisible.caravan.utils.playWinSound
-import com.unicorns.invisible.caravan.utils.radioLock
-import com.unicorns.invisible.caravan.utils.radioPlayers
 import com.unicorns.invisible.caravan.utils.scrollbar
 import com.unicorns.invisible.caravan.utils.startLevel11Theme
-import com.unicorns.invisible.caravan.utils.startRadio
 import com.unicorns.invisible.caravan.utils.stopAmbient
 import com.unicorns.invisible.caravan.utils.stopRadio
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import okio.withLock
 
 
 enum class Payment {
@@ -217,7 +208,6 @@ fun TowerScreen(
             }
             return
         }
-
         showGameLevel10 -> {
             showTower(EnemyCaesar) {
                 showGameLevel10 = false
@@ -266,7 +256,7 @@ fun TowerScreen(
                     } else {
                         playTowerCompleted(activity)
                     }
-                    delay(15000L)
+                    delay(14000L)
                     nextSong(activity)
                 }
             }
@@ -318,7 +308,17 @@ fun TowerScreen(
                     Modifier.fillMaxWidth(),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    if (!isGameRigged) {
+                    if (isGameRigged) {
+                        TextFallout(
+                            "(Deck o' 54 only!)",
+                            getTextColor(activity),
+                            getTextStrokeColor(activity),
+                            24.sp,
+                            Alignment.Center,
+                            Modifier,
+                            TextAlign.Center
+                        )
+                    } else {
                         TextFallout(
                             "(Custom deck only!)",
                             getTextColor(activity),
@@ -333,16 +333,6 @@ fun TowerScreen(
                             getTextColor(activity),
                             getTextStrokeColor(activity),
                             16.sp,
-                            Alignment.Center,
-                            Modifier,
-                            TextAlign.Center
-                        )
-                    } else {
-                        TextFallout(
-                            "(Deck o' 54 only!)",
-                            getTextColor(activity),
-                            getTextStrokeColor(activity),
-                            24.sp,
                             Alignment.Center,
                             Modifier,
                             TextAlign.Center
@@ -606,11 +596,7 @@ fun TowerScreen(
                             showTowerCard("Caesar")
                         }
                         11 -> {
-                            if (isGameRigged) {
-                                showTowerCard("Frank Horrigan")
-                            } else {
-                                showTowerCard("")
-                            }
+                            showTowerCard("Frank Horrigan")
                         }
                     }
                     Spacer(Modifier.height(16.dp))
@@ -626,6 +612,11 @@ fun TowerScreen(
                                     Alignment.Center,
                                     modifier = Modifier
                                         .clickableOk(activity) {
+                                            if ((activity.save?.caps ?: 0) < cost) {
+                                                showAlertDialog("HEY!", "You don't have enough cash, kid.")
+                                                return@clickableOk
+                                            }
+
                                             level++
                                             activity.save?.let {
                                                 it.towerLevel++
@@ -648,15 +639,6 @@ fun TowerScreen(
                                     Alignment.Center,
                                     modifier = Modifier
                                         .clickableOk(activity) {
-                                            if (isGameRigged) {
-                                                isGameRigged = false
-                                                isFrankSequence = false
-                                                startRadio(activity)
-                                                activity.save?.let {
-                                                    it.isGameRigged = false
-                                                    saveOnGD(activity)
-                                                }
-                                            }
                                             level = 0
                                             payment = null
                                             activity.save?.let {
@@ -723,9 +705,9 @@ fun TowerScreen(
                                         timesClicked++
                                         if (timesClicked >= 7) {
                                             isGameRigged = true
+                                            startFrank = true
                                             activity.save?.let {
                                                 it.isGameRigged = true
-                                                startFrank = true
                                                 saveOnGD(activity)
                                             }
                                         }
@@ -1116,96 +1098,56 @@ fun ShowFrank(activity: MainActivity, goBack: () -> Unit) {
                         ),
                         state = state
                     ) {
+                        @Composable
+                        fun DialogLine(line: String, onClick: () -> Unit) {
+                            TextClassic(
+                                line,
+                                getTextColorByStyle(activity, Style.PIP_BOY),
+                                getStrokeColorByStyle(activity, Style.PIP_BOY),
+                                18.sp,
+                                Alignment.CenterStart,
+                                modifier = Modifier
+                                    .clickableSelect(activity) {
+                                        onClick()
+                                    }
+                                    .background(getTextBackByStyle(activity, Style.PIP_BOY))
+                                    .padding(horizontal = 8.dp, vertical = 4.dp),
+                                TextAlign.Start
+                            )
+                            Spacer(Modifier.height(12.dp))
+                        }
                         item {
                             if (!whoAreYouAsked && !letsTalkAsked && !iChallengeYou) {
-                                TextClassic(
-                                    "Frank who?",
-                                    getTextColorByStyle(activity, Style.PIP_BOY),
-                                    getStrokeColorByStyle(activity, Style.PIP_BOY),
-                                    18.sp,
-                                    Alignment.CenterStart,
-                                    modifier = Modifier
-                                        .clickableSelect(activity) {
-                                            whoAreYouAsked = true
-                                            text = "Frank Horrigan, that's who. United States Secret Service. You aren't going anywhere from here."
-                                            playFrankPhrase(activity, R.raw.frank_who_are_you)
-                                        }
-                                        .background(getTextBackByStyle(activity, Style.PIP_BOY))
-                                        .padding(horizontal = 8.dp, vertical = 4.dp),
-                                    TextAlign.Start
-                                )
-                                Spacer(Modifier.height(12.dp))
+                                DialogLine("Frank who?") {
+                                    whoAreYouAsked = true
+                                    text = "Frank Horrigan, that's who. United States Secret Service. You aren't going anywhere from here."
+                                    playFrankPhrase(activity, R.raw.frank_who_are_you)
+                                }
                             }
                             if (!letsTalkAsked && !iChallengeYou) {
-                                TextClassic(
-                                    "Wait, let's talk!",
-                                    getTextColorByStyle(activity, Style.PIP_BOY),
-                                    getStrokeColorByStyle(activity, Style.PIP_BOY),
-                                    18.sp,
-                                    Alignment.CenterStart,
-                                    modifier = Modifier
-                                        .clickableSelect(activity) {
-                                            letsTalkAsked = true
-                                            text = "We just did. Time for talking's over."
-                                            playFrankPhrase(activity, R.raw.frank_lets_talk)
-                                        }
-                                        .background(getTextBackByStyle(activity, Style.PIP_BOY))
-                                        .padding(horizontal = 8.dp, vertical = 4.dp),
-                                    TextAlign.Start
-                                )
-                                Spacer(Modifier.height(12.dp))
+                                DialogLine("Wait, let's talk!") {
+                                    letsTalkAsked = true
+                                    text = "We just did. Time for talking's over."
+                                    playFrankPhrase(activity, R.raw.frank_lets_talk)
+                                }
                             }
                             if (!whoIAmAsked && !letsTalkAsked && !iChallengeYou) {
-                                TextClassic(
-                                    "You don't even know who I am.",
-                                    getTextColorByStyle(activity, Style.PIP_BOY),
-                                    getStrokeColorByStyle(activity, Style.PIP_BOY),
-                                    18.sp,
-                                    Alignment.CenterStart,
-                                    modifier = Modifier
-                                        .clickableSelect(activity) {
-                                            whoIAmAsked = true
-                                            text = "You're just another mutant that needs to be put down."
-                                            playFrankPhrase(activity, R.raw.frank_you_dont_even_know_who_i_am)
-                                        }
-                                        .background(getTextBackByStyle(activity, Style.PIP_BOY))
-                                        .padding(horizontal = 8.dp, vertical = 4.dp),
-                                    TextAlign.Start
-                                )
-                                Spacer(Modifier.height(12.dp))
+                                DialogLine("You don't even know who I am.") {
+                                    whoIAmAsked = true
+                                    text = "You're just another mutant that needs to be put down."
+                                    playFrankPhrase(activity, R.raw.frank_you_dont_even_know_who_i_am)
+                                }
                             }
                             if (!iChallengeYou) {
-                                TextClassic(
-                                    "I challenge you to the game of Caravan!",
-                                    getTextColorByStyle(activity, Style.PIP_BOY),
-                                    getStrokeColorByStyle(activity, Style.PIP_BOY),
-                                    18.sp,
-                                    Alignment.CenterStart,
-                                    modifier = Modifier
-                                        .clickableSelect(activity) {
-                                            iChallengeYou = true
-                                            text = "You mutant scum! Just like you to try a trick like that. It won't help you though, nothing will..."
-                                            playFrankPhrase(activity, R.raw.frank_i_challenge_you)
-                                        }
-                                        .background(getTextBackByStyle(activity, Style.PIP_BOY))
-                                        .padding(horizontal = 8.dp, vertical = 4.dp),
-                                    TextAlign.Start
-                                )
+                                DialogLine("I challenge you to the game of Caravan!") {
+                                    iChallengeYou = true
+                                    text = "You mutant scum! Just like you to try a trick like that. It won't help you though, nothing will..."
+                                    playFrankPhrase(activity, R.raw.frank_i_challenge_you)
+                                }
                             } else {
-                                TextClassic(
-                                    "[FINISH]",
-                                    getTextColorByStyle(activity, Style.PIP_BOY),
-                                    getStrokeColorByStyle(activity, Style.PIP_BOY),
-                                    18.sp,
-                                    Alignment.CenterStart,
-                                    modifier = Modifier
-                                        .clickableSelect(activity) {
-                                            goBack()
-                                        }
-                                        .background(getTextBackByStyle(activity, Style.PIP_BOY))
-                                        .padding(horizontal = 8.dp, vertical = 4.dp),
-                                    TextAlign.Start
-                                )
+                                DialogLine("[FINISH]") {
+                                    goBack()
+                                }
                             }
                         }
                     }

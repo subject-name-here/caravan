@@ -8,8 +8,9 @@ import org.json.JSONObject
 import java.nio.ByteBuffer
 
 
-abstract class MyUrlRequestCallback(var delegate: OnFinishRequest<JSONObject>) :
-    UrlRequest.Callback() {
+abstract class MyUrlRequestCallback(
+    private var delegate: OnFinishRequest<JSONObject>
+) : UrlRequest.Callback() {
     private var redirectionCounter = 10
 
     override fun onRedirectReceived(
@@ -66,7 +67,6 @@ abstract class MyUrlRequestCallback(var delegate: OnFinishRequest<JSONObject>) :
             e.printStackTrace()
         }
 
-        //Send to OnFinishRequest which we will override in activity to read results gotten.
         delegate.onFinishRequest(results)
     }
 

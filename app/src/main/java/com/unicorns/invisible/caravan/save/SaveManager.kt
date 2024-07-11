@@ -7,6 +7,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.io.File
@@ -34,12 +35,20 @@ fun getSaveFile(activity: MainActivity): File {
     return activity.filesDir.resolve("save")
 }
 
-fun saveOnGD(activity: MainActivity): Deferred<Boolean> {
+fun saveOnGDAsync(activity: MainActivity): Deferred<Boolean> {
     if (snapshotsClient == null)
         return CoroutineScope(Dispatchers.Unconfined).async { false }
 
     val bytes = json.encodeToString(saveGlobal).toByteArray(StandardCharsets.UTF_8)
     return CoroutineScope(Dispatchers.IO).async { activity.uploadDataToDrive(bytes) }
+}
+
+fun saveOnGD(activity: MainActivity) {
+    if (snapshotsClient == null)
+        return
+
+    val bytes = json.encodeToString(saveGlobal).toByteArray(StandardCharsets.UTF_8)
+    CoroutineScope(Dispatchers.IO).launch { activity.uploadDataToDrive(bytes) }
 }
 
 suspend fun loadFromGD(activity: MainActivity) {

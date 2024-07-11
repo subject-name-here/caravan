@@ -7,12 +7,33 @@ import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJoker
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyRush
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyTime
 import com.unicorns.invisible.caravan.model.primitives.CResources
+import com.unicorns.invisible.caravan.model.primitives.Card
+import com.unicorns.invisible.caravan.model.primitives.CustomDeck
+import com.unicorns.invisible.caravan.model.primitives.Rank
+import com.unicorns.invisible.caravan.model.primitives.Suit
 import kotlinx.serialization.Serializable
 
 
 @Serializable
 data object EnemyOliver : Enemy() {
-    override fun createDeck(): CResources = CResources(CardBack.VAULT_21, true)
+    override fun createDeck(): CResources = CResources(CustomDeck().apply {
+        CardBack.entries.forEach { back ->
+            Rank.entries.forEach { rank ->
+                if (rank == Rank.JOKER) {
+                    add(Card(Rank.JOKER, Suit.HEARTS, back, false))
+                    add(Card(Rank.JOKER, Suit.CLUBS, back, false))
+                } else if (!rank.isFace()) {
+                    listOf(Suit.HEARTS).forEach { suit ->
+                        add(Card(rank, suit, back, false))
+                    }
+                } else if (rank != Rank.QUEEN) {
+                    Suit.entries.forEach { suit ->
+                        add(Card(rank, suit, back, false))
+                    }
+                }
+            }
+        }
+    })
     override fun getRewardBack() = null
 
     override fun makeMove(game: Game) {

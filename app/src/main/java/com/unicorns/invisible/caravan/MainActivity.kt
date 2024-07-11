@@ -68,6 +68,7 @@ import com.unicorns.invisible.caravan.save.json
 import com.unicorns.invisible.caravan.save.loadFromGD
 import com.unicorns.invisible.caravan.save.loadLocalSave
 import com.unicorns.invisible.caravan.save.saveOnGD
+import com.unicorns.invisible.caravan.save.saveOnGDAsync
 import com.unicorns.invisible.caravan.utils.CheckboxCustom
 import com.unicorns.invisible.caravan.utils.SliderCustom
 import com.unicorns.invisible.caravan.utils.SwitchCustom
@@ -167,7 +168,7 @@ class MainActivity : SaveDataActivity() {
                 } else {
                     Save()
                 }
-                if (saveOnGD(this@MainActivity).await()) {
+                if (saveOnGDAsync(this@MainActivity).await()) {
                     if (saveFile.exists()) {
                         saveFile.delete()
                     }

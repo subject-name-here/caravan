@@ -231,8 +231,8 @@ fun startRadio(activity: MainActivity) {
     }
 }
 
-val radioPlayers = HashSet<MediaPlayer>()
-val radioLock = ReentrantLock()
+private val radioPlayers = HashSet<MediaPlayer>()
+private val radioLock = ReentrantLock()
 var isRadioStopped = false
 var isRadioPausedByLeavingActivity = false
 private fun playSongFromRadio(activity: MainActivity, songName: String) {
