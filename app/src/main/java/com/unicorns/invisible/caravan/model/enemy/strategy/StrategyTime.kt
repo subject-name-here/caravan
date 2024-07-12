@@ -14,7 +14,7 @@ object StrategyTime : Strategy {
             return true
         }
 
-        hand.withIndex().sortedBy { it.value.rank.value }.forEach { (cardIndex, card) ->
+        hand.withIndex().filter { !it.value.isSpecial() }.sortedBy { it.value.rank.value }.forEach { (cardIndex, card) ->
             if (card.rank == Rank.QUEEN) {
                 val possibleQueenCaravans = game.enemyCaravans
                     .filter { c ->

@@ -30,6 +30,9 @@
     <string name="ultra_luxe_deck_name">Ultra-Luxe deck</string>
     <string name="gomorrah_deck_name">Gomorrah deck</string>
     <string name="vault_21_deck_name">Vault 21 deck</string>
+    <string name="deck_13_deck_name">Deck 13</string>
+    <string name="deck_13_deck_alt_name">Madness deck</string>
+    <string name="other_deck_name" translatable="false">[NOT PLAYABLE]</string>
 
     <string name="standard_deck_owners">other players</string>
 
@@ -67,6 +70,10 @@
     <string name="no_bark">No-bark Noonan</string>
     <string name="pve_enemy_38">Securitron P373</string>
     <string name="pve_enemy_cheater">Courier Six</string>
+
+    <string name="no_one">no one</string>
+    <string name="questions" translatable="false">\???</string>
+    <string name="priest">Madness Priest</string>
 
     <string name="pve_use_custom_deck">Use Custom Deck</string>
     <string name="pve_stats">Stats</string>
@@ -254,7 +261,7 @@
     <string name="intro_tip_13">While not so popular as 10-K-6 tactic, 9-K-8 sometimes can be more flexible.</string>
     <string name="intro_tip_14">If you have Jokers in your custom deck, think about throwing there a couple of Aces.</string>
     <string name="intro_tip_15">Discarding a caravan might give you a valuable advantage in a long game: you have one card more in your deck.</string>
-    <string name="intro_tip_16">There are legends about mysterious card deck 13. The rumours are that it has cards unscathed by the war, like the ones from Vault 21.</string>
+    <string name="intro_tip_16">There are legends about mysterious card Deck 13. The rumours are that it has cards unscathed by the war, like the ones from Vault 21.</string>
     <string name="intro_tip_17">The more you sell cards with the same back, the less they cost.</string>
 
     <string name="intro_tip_vault">Did you know that there are 122 vaults in the Fallout world? Only 17 of them were not experimenting on their inhabitants.</string>
@@ -262,7 +269,6 @@
 
 
     <string name="tap_to_play">Tap to Play</string>
-    <string name="no_one">no one</string>
 
     <string name="caps_earned">\nCaps earned: %1$s.\n</string>
     <string name="caps">CAPS: %1$s</string>

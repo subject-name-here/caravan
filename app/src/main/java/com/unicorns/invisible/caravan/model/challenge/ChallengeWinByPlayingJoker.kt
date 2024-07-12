@@ -14,7 +14,8 @@ class ChallengeWinByPlayingJoker : Challenge {
     private var wasLastMoveJoker = false
     private var completedFlag = false
     override fun processMove(move: Challenge.Move, game: Game) {
-        wasLastMoveJoker = move.moveCode == 4 && move.handCard?.rank == Rank.JOKER
+        wasLastMoveJoker = move.moveCode == 4 &&
+                (move.handCard?.let { it.rank == Rank.JOKER && !it.isSpecial() } ?: false)
     }
 
     override fun processGameResult(game: Game) {

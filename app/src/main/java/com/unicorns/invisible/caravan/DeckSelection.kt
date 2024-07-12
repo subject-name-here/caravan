@@ -213,7 +213,23 @@ fun DeckSelection(
                         modifier = getModifier(CardBack.LUCKY_38, true).clip(RoundedCornerShape(6f))
                     )
                 }
-                Spacer(modifier = Modifier.height(24.dp))
+                if (activity.save?.storyModeCompleted == true) {
+                    Spacer(modifier = Modifier.height(12.dp))
+                    Row(horizontalArrangement = Arrangement.Center) {
+                        AsyncImage(
+                            model = "file:///android_asset/caravan_cards_back/" + CardBack.DECK_13.getCardBackAsset(),
+                            contentDescription = "",
+                            modifier = getModifier(CardBack.DECK_13, false).clip(RoundedCornerShape(6f))
+                        )
+                        Spacer(modifier = Modifier.width(12.dp))
+                        AsyncImage(
+                            model = "file:///android_asset/caravan_cards_back/" + CardBack.DECK_13.getCardBackAltAsset(),
+                            contentDescription = "",
+                            modifier = getModifier(CardBack.DECK_13, true).clip(RoundedCornerShape(6f))
+                        )
+                    }
+                }
+                Spacer(modifier = Modifier.height(12.dp))
             }
         }
 

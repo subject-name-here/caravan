@@ -52,6 +52,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.challenge.Challenge
 import com.unicorns.invisible.caravan.model.primitives.CResources
@@ -82,8 +83,10 @@ import com.unicorns.invisible.caravan.utils.playCloseSound
 import com.unicorns.invisible.caravan.utils.playJokerReceivedSounds
 import com.unicorns.invisible.caravan.utils.playJokerSounds
 import com.unicorns.invisible.caravan.utils.playNoCardAlarm
+import com.unicorns.invisible.caravan.utils.playNukeBlownSound
 import com.unicorns.invisible.caravan.utils.playSelectSound
 import com.unicorns.invisible.caravan.utils.playVatsReady
+import com.unicorns.invisible.caravan.utils.playWWSound
 import com.unicorns.invisible.caravan.utils.pxToDp
 import com.unicorns.invisible.caravan.utils.scrollbar
 import com.unicorns.invisible.caravan.utils.startAmbient
@@ -193,6 +196,11 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
                     playCardFlipSound(activity)
                     if (card.rank == Rank.JOKER) {
                         playJokerSounds(activity)
+                    }
+                    if (card.back == CardBack.WILD_WASTELAND && !card.isAlt) {
+                        playWWSound(activity)
+                    } else if (card.isAlt && card.isSpecial()) {
+                        playNukeBlownSound(activity)
                     }
 
                     activity.processChallengesMove(Challenge.Move(

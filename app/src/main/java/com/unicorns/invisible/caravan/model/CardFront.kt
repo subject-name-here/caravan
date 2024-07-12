@@ -13,7 +13,14 @@ fun getCardName(card: Card, isAlt: Boolean): String {
         CardBack.TOPS -> getTopsName(card)
         CardBack.ULTRA_LUXE -> getUltraLuxeName(card)
         CardBack.LUCKY_38 -> if (isAlt) getLucky38AltName(card) else getLucky38Name(card)
+        CardBack.DECK_13 -> if (isAlt) getStandardName(card) else getStandardName(card) // TODO
+        CardBack.UNPLAYABLE -> if (isAlt) getStandardName(card) else getStandardName(card) // TODO
+        CardBack.WILD_WASTELAND -> if (isAlt) getWildWastelandAltCard() else getStandardName(card) // TODO
     }
+}
+
+private fun getWildWastelandAltCard(): String {
+    return "wild/nuclear_front.png"
 }
 
 private fun getGomorrahName(card: Card): String {

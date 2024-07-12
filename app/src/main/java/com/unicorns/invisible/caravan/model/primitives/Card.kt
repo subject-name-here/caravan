@@ -9,7 +9,8 @@ class Card(val rank: Rank, val suit: Suit, val back: CardBack, val isAlt: Boolea
     var handAnimationMark = AnimationMark.STABLE
     var caravanAnimationMark = AnimationMark.STABLE
 
-    fun isFace() = rank.isFace()
+    fun isFace() = rank.isFace() || isSpecial()
+    fun isSpecial() = back.isSpecialCard(isAlt)
 
     override fun toString(): String {
         return "${this.hashCode()}; ${this.rank.ordinal}; ${this.suit.ordinal}; ${this.back.ordinal}; ${this.isAlt};"

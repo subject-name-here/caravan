@@ -9,7 +9,7 @@ object StrategyDestructive : Strategy {
     override fun move(game: Game): Boolean {
         val hand = game.enemyCResources.hand
 
-        val king = hand.withIndex().find { it.value.rank == Rank.KING }
+        val king = hand.withIndex().find { !it.value.isSpecial() && it.value.rank == Rank.KING }
         if (king != null) {
             val caravan = game.playerCaravans.filter { it.getValue() in (21..26) }
                 .maxByOrNull { it.getValue() }
@@ -32,7 +32,7 @@ object StrategyDestructive : Strategy {
             }
         }
 
-        val jack = hand.withIndex().find { it.value.rank == Rank.JACK }
+        val jack = hand.withIndex().find { !it.value.isSpecial() && it.value.rank == Rank.JACK }
         if (jack != null) {
             val caravan = game.playerCaravans.filter { !it.isEmpty() && it.getValue() <= 26 }
                 .maxByOrNull { it.getValue() }

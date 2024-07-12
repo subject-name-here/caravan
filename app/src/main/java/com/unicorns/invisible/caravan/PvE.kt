@@ -593,29 +593,30 @@ fun StartGame(
             playWinSound(activity)
             var message = activity.getString(R.string.you_win)
             activity.save?.let { save ->
-                enemy.getRewardBack()?.let { back ->
-                    if (!enemy.isAlt()) {
-                        if (save.availableDecks[back] != true) {
-                            save.availableDecks[back] = true
-                            message += activity.getString(
-                                R.string.you_have_unlocked_deck,
-                                activity.getString(back.getDeckName())
-                            )
-                        }
-                        message += winCard(activity, save, back, 3, isAlt = false, isCustom)
-                    } else {
-                        if (save.availableDecksAlt[back] != true) {
-                            save.availableDecksAlt[back] = true
-                            message += activity.getString(
-                                R.string.you_have_unlocked_deck_alt,
-                                activity.getString(back.getDeckName())
-                            )
-                        }
-                        message += winCard(activity, save, back, 1, isAlt = true, isCustom)
-                    }
-                } ?: {
+                val rewardBack = enemy.getRewardBack()
+                if (rewardBack == null || rewardBack == CardBack.WILD_WASTELAND || rewardBack == CardBack.UNPLAYABLE) {
                     save.caps += 30
                     message += activity.getString(R.string.you_have_earned_caps, 30.toString())
+                } else {
+                    if (!enemy.isAlt()) {
+                        if (save.availableDecks[rewardBack] != true) {
+                            save.availableDecks[rewardBack] = true
+                            message += activity.getString(
+                                R.string.you_have_unlocked_deck,
+                                activity.getString(rewardBack.getDeckName())
+                            )
+                        }
+                        message += winCard(activity, save, rewardBack, 3, isAlt = false, isCustom)
+                    } else {
+                        if (save.availableDecksAlt[rewardBack] != true) {
+                            save.availableDecksAlt[rewardBack] = true
+                            message += activity.getString(
+                                R.string.you_have_unlocked_deck_alt,
+                                activity.getString(rewardBack.getDeckName())
+                            )
+                        }
+                        message += winCard(activity, save, rewardBack, 1, isAlt = true, isCustom)
+                    }
                 }
                 save.gamesFinished++
                 save.wins++
@@ -696,6 +697,8 @@ fun winCard(
     reward.forEach { card ->
         val deckName = if (card.back == CardBack.STANDARD && isAlt) {
             activity.getString(card.back.getSierraMadreDeckName())
+        } else if (card.back == CardBack.DECK_13 && isAlt) {
+            activity.getString(card.back.getMadnessDeckName())
         } else {
             activity.getString(card.back.getDeckName())
         }
@@ -706,7 +709,7 @@ fun winCard(
         }
         result += if (checkCard(card)) {
             save.availableCards.add(card)
-            if (isAlt && card.back != CardBack.STANDARD) {
+            if (isAlt && !(card.back == CardBack.STANDARD || card.back == CardBack.DECK_13)) {
                 activity.getString(R.string.new_card_alt, cardName)
             } else {
                 activity.getString(R.string.new_card, cardName)
@@ -716,7 +719,7 @@ fun winCard(
             activity.save?.let {
                 it.soldCards[card.back to isAlt] = (it.soldCards[card.back to isAlt] ?: 0) + 1
             }
-            if (isAlt && card.back != CardBack.STANDARD) {
+            if (isAlt && !(card.back == CardBack.STANDARD || card.back == CardBack.DECK_13)) {
                 activity.getString(R.string.old_card_alt, cardName)
             } else {
                 activity.getString(R.string.old_card, cardName)

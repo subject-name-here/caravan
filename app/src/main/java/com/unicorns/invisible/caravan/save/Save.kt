@@ -1,7 +1,6 @@
 package com.unicorns.invisible.caravan.save
 
 import com.unicorns.invisible.caravan.AnimationSpeed
-import com.unicorns.invisible.caravan.Payment
 import com.unicorns.invisible.caravan.Style
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.challenge.Challenge
@@ -115,7 +114,7 @@ class Save {
             return false
         }
         var flag = false
-        CardBack.entries.forEach { back ->
+        CardBack.playableBacks.forEach { back ->
             val cardBought = (3..15).random()
             val cardBoughtAlt = (2..11).random()
             if (back to true in soldCards) {
@@ -170,6 +169,19 @@ class Save {
                     in (50..59) -> 3
                     else -> 1
                 }
+
+                CardBack.DECK_13 -> when (soldAlready) {
+                    in (0..9) -> 10
+                    in (10..19) -> 9
+                    in (20..29) -> 8
+                    in (30..39) -> 7
+                    in (40..49) -> 5
+                    in (50..59) -> 4
+                    in (60..69) -> 3
+                    else -> 1
+                }
+                CardBack.UNPLAYABLE -> 0
+                CardBack.WILD_WASTELAND -> 0
             }
         } else {
             when (card.back) {
@@ -206,7 +218,10 @@ class Save {
                     else -> 1
                 }
 
-                CardBack.LUCKY_38, CardBack.VAULT_21 -> (30 - soldAlready / 5).coerceAtLeast(1)
+                CardBack.UNPLAYABLE -> 0
+                CardBack.WILD_WASTELAND -> 0
+
+                CardBack.LUCKY_38, CardBack.VAULT_21, CardBack.DECK_13 -> (30 - soldAlready / 5).coerceAtLeast(1)
             }
         }
     }
@@ -284,4 +299,7 @@ class Save {
     var isGameRigged: Boolean = false
     @EncodeDefault
     var isEnclaveThemeAvailable: Boolean = false
+
+    @EncodeDefault
+    var storyModeCompleted: Boolean = false
 }

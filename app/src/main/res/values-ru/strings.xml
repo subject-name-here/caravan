@@ -29,6 +29,8 @@
     <string name="ultra_luxe_deck_name">колода казино Ультра-Люкс</string>
     <string name="gomorrah_deck_name">колода казино Гоморра</string>
     <string name="vault_21_deck_name">колода Убежища 21</string>
+    <string name="deck_13_deck_name">Колода 13</string>
+    <string name="deck_13_deck_alt_name">колода Madness</string>
 
     <string name="standard_deck_owners">другие люди</string>
 
@@ -66,6 +68,9 @@
     <string name="no_bark">Нелай Нунан</string>
     <string name="pve_enemy_38">Секьюритрон P373</string>
     <string name="pve_enemy_cheater">Курьер Шесть</string>
+
+    <string name="no_one">никого</string>
+    <string name="priest">Жрец Безумия</string>
 
     <string name="pve_use_custom_deck">Использовать сборную колоду</string>
     <string name="pve_stats">Статистика</string>
@@ -260,7 +265,7 @@
     <string name="intro_tip_13">Не такая популярная как 10-K-6 стратегия, 9-K-8 иногда может быть более гибкой.</string>
     <string name="intro_tip_14">Если у вас есть Джокеры в колоде, подумайте о добавлении пары тузов.</string>
     <string name="intro_tip_15">Сброс каравана может дать вам преимущество ближе к концу игры: в колоде у вас будет на одну карту больше.</string>
-    <string name="intro_tip_16">Ходят легенды о таинственной колоде 13. По слухам, карты из этой колоды не пострадали от войны, как, например, карты Убежища 21.</string>
+    <string name="intro_tip_16">Ходят легенды о таинственной Колоде 13. По слухам, карты из этой колоды не пострадали от войны, в отличие от, например, карт казино.</string>
     <string name="intro_tip_17">Чем больше карт одной рубашки вы продадите, тем меньше они будут стоить.</string>
 
     <string name="intro_tip_vault">Знали ли вы, что в мире Fallout 122 убежища? Всего 17 из них не были экспериментами над постояльцами..</string>
@@ -268,7 +273,6 @@
 
 
     <string name="tap_to_play">Нажмите, чтобы играть</string>
-    <string name="no_one">никого</string>
 
     <string name="caps_earned">\nКрышычек получено: %1$s.\n</string>
     <string name="caps">КРЫШКИ: %1$s</string>

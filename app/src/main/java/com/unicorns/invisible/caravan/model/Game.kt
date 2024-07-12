@@ -1,14 +1,9 @@
 package com.unicorns.invisible.caravan.model
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import com.unicorns.invisible.caravan.AnimationSpeed
 import com.unicorns.invisible.caravan.model.enemy.Enemy
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.Caravan
-import com.unicorns.invisible.caravan.model.primitives.Card
 import com.unicorns.invisible.caravan.model.primitives.CardWithModifier
 import com.unicorns.invisible.caravan.model.primitives.Rank
 import kotlinx.coroutines.CoroutineScope
@@ -42,7 +37,6 @@ class Game(
 
     @Transient
     var jokerPlayedSound: () -> Unit = {}
-
     @Transient
     var nukeBlownSound: () -> Unit = {}
 
@@ -84,12 +78,21 @@ class Game(
     fun processField(): Boolean {
         val caravans = playerCaravans + enemyCaravans
         val cards = caravans.flatMap { it.cards }
-        if (cards.any { it.hasJacks() || it.hasActiveJoker || it.hasBomb }) {
+
+        cards.forEach {
+            if (it.hasBomb) {
+                processBomb(it)
+                return true
+            }
+        }
+
+        if (cards.any { it.hasJacks() || it.hasActiveJoker }) {
             processJacks()
             processJoker()
 
             return true
         }
+
         return false
     }
 
@@ -162,12 +165,6 @@ class Game(
         }
     }
 
-    private fun processJacks() {
-        (playerCaravans + enemyCaravans).forEach { caravan ->
-            caravan.removeAllJackedCards()
-        }
-    }
-
     @Transient
     var specialGameOverCondition: () -> Int = { 0 }
     fun checkOnGameOver(): Boolean {
@@ -222,10 +219,25 @@ class Game(
         return false
     }
 
+    private fun processJacks() {
+        (playerCaravans + enemyCaravans).forEach { caravan ->
+            caravan.removeAllJackedCards()
+        }
+    }
+
+    private fun processBomb(bombOwner: CardWithModifier) {
+        (playerCaravans + enemyCaravans).forEach {
+            if (bombOwner !in it.cards) {
+                it.dropCaravan()
+            }
+        }
+        bombOwner.deactivateBomb()
+    }
+
     fun processJoker() {
         (playerCaravans + enemyCaravans).forEach { caravan ->
             caravan.cards.filter {
-                it.hasActiveJoker || it.hasBomb
+                it.hasActiveJoker
             }.forEach {
                 putJokerOntoCard(it)
                 it.deactivateJoker()
@@ -234,22 +246,14 @@ class Game(
     }
 
     private fun putJokerOntoCard(cardWithModifier: CardWithModifier) {
-        if (cardWithModifier.hasBomb) {
+        val card = cardWithModifier.card
+        if (card.rank == Rank.ACE) {
             (playerCaravans + enemyCaravans).forEach { caravan ->
-                if (cardWithModifier !in caravan.cards) {
-                    caravan.dropCaravan()
-                }
+                caravan.jokerRemoveAllSuits(card)
             }
         } else {
-            val card = cardWithModifier.card
-            if (card.rank == Rank.ACE) {
-                (playerCaravans + enemyCaravans).forEach { caravan ->
-                    caravan.jokerRemoveAllSuits(card)
-                }
-            } else {
-                (playerCaravans + enemyCaravans).forEach { caravan ->
-                    caravan.jokerRemoveAllRanks(card)
-                }
+            (playerCaravans + enemyCaravans).forEach { caravan ->
+                caravan.jokerRemoveAllRanks(card)
             }
         }
     }

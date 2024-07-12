@@ -6,7 +6,7 @@ import com.unicorns.invisible.caravan.model.primitives.Rank
 object StrategyKingRuiner : Strategy {
     override fun move(game: Game): Boolean {
         val hand = game.enemyCResources.hand
-        val kings = hand.withIndex().filter { it.value.rank == Rank.KING }
+        val kings = hand.withIndex().filter { !it.value.isSpecial() && it.value.rank == Rank.KING }
         if (kings.isEmpty()) {
             return false
         }

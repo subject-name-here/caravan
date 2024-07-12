@@ -15,9 +15,9 @@ class CResources(private val deck: CustomDeck) {
 
     fun getTopHand(): List<Card> {
         val cards = deck.toList()
-        return if (cards.any { it.rank == Rank.JOKER && it.suit == Suit.SPADES }) {
-            val card = cards.find { it.rank == Rank.JOKER && it.suit == Suit.SPADES }!!
-            (cards - card).take(7) + card
+        val bomb = cards.find { (it.back == CardBack.WILD_WASTELAND || it.back == CardBack.UNPLAYABLE) && it.isAlt }
+        return if (bomb != null) {
+            (cards - bomb).take(7) + bomb
         } else {
             cards.take(8)
         }

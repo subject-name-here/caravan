@@ -11,7 +11,7 @@ object StrategyJoker : Strategy {
     override fun move(game: Game): Boolean {
         val hand = game.enemyCResources.hand
 
-        val joker = hand.withIndex().find { it.value.rank == Rank.JOKER && it.value.suit != Suit.SPADES }
+        val joker = hand.withIndex().find { !it.value.isSpecial() && it.value.rank == Rank.JOKER }
         val overWeightCaravans = game.enemyCaravans.filter { it.getValue() > 26 }
         val perfectCaravans = game.enemyCaravans.filter { it.getValue() in 21..26 }
         val playersReadyCaravans = game.playerCaravans.filter { it.getValue() in (21..26) }

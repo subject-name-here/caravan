@@ -17,7 +17,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data object EnemyOliver : Enemy() {
     override fun createDeck(): CResources = CResources(CustomDeck().apply {
-        CardBack.entries.forEach { back ->
+        CardBack.classicDecks.forEach { back ->
             Rank.entries.forEach { rank ->
                 if (rank == Rank.JOKER) {
                     add(Card(Rank.JOKER, Suit.HEARTS, back, false))

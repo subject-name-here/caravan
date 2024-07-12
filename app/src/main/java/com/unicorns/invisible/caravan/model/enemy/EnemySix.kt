@@ -16,7 +16,7 @@ import kotlin.random.Random
 @Serializable
 data object EnemySix : Enemy() {
     override fun createDeck(): CResources = CResources(CustomDeck().apply {
-        CardBack.entries.forEach { back ->
+        CardBack.classicDecks.forEach { back ->
             Suit.entries.forEach { suit ->
                 add(Card(Rank.SIX, suit, back, true))
                 add(Card(Rank.TEN, suit, back, true))

@@ -32,7 +32,7 @@ class ChallengePlayCard(val rank: Rank) : Challenge {
     override fun processMove(move: Challenge.Move, game: Game) {
         if (move.moveCode == 3 || move.moveCode == 4) {
             val cardFromHand = move.handCard ?: return
-            if (cardFromHand.rank == rank) {
+            if (cardFromHand.rank == rank && !cardFromHand.isSpecial()) {
                 counter++
             }
         }
@@ -62,7 +62,7 @@ class ChallengePlayCard(val rank: Rank) : Challenge {
     override fun getDescription(activity: MainActivity): String {
         return activity.getString(
             R.string.play_cards_of_rank,
-            target,
+            target.toString(),
             activity.getString(rank.nameId)
         )
     }

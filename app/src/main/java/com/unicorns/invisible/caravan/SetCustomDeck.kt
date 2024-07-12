@@ -119,7 +119,11 @@ fun SetCustomDeck(
             mainState
         ) {
             item {
-                CardBack.entries.forEach { back ->
+                CardBack.playableBacks.forEach { back ->
+                    if (back == CardBack.DECK_13 && activity.save?.storyModeCompleted != true) {
+                        return@forEach
+                    }
+
                     var rowTabShow by remember { mutableStateOf(false) }
                     var check by rememberSaveable {
                         mutableStateOf(
@@ -136,10 +140,11 @@ fun SetCustomDeck(
                         ) {
                             TextFallout(
                                 stringResource(
-                                    if (back == CardBack.STANDARD && check)
-                                        back.getSierraMadreDeckName()
-                                    else
-                                        back.getDeckName()
+                                    when {
+                                        back == CardBack.STANDARD && check -> back.getSierraMadreDeckName()
+                                        back == CardBack.DECK_13 && check -> back.getMadnessDeckName()
+                                        else -> back.getDeckName()
+                                    }
                                 ),
                                 getTextColor(activity),
                                 getTextStrokeColor(activity),

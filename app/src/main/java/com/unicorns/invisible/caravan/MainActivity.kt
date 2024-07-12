@@ -319,6 +319,7 @@ class MainActivity : SaveDataActivity() {
         var showHouseBlitz by rememberSaveable { mutableStateOf(false) }
         var showHouseTower by rememberSaveable { mutableStateOf(false) }
         var showHouseRoguelike by rememberSaveable { mutableStateOf(false) }
+        var showWildWasteland by rememberSaveable { mutableStateOf(false) }
         var showAbout by rememberSaveable { mutableStateOf(false) }
         var showGameStats by rememberSaveable { mutableStateOf(false) }
         var showTutorial by rememberSaveable { mutableStateOf(false) }

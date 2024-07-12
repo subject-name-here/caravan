@@ -15,9 +15,9 @@ import kotlin.math.max
 @Serializable
 data object EnemyFrank : Enemy() {
     override fun createDeck(): CResources = CResources(CustomDeck(CardBack.STANDARD, false).apply {
-        add(Card(Rank.JOKER, Suit.SPADES, CardBack.TOPS, false))
-        add(Card(Rank.JOKER, Suit.SPADES, CardBack.ULTRA_LUXE, false))
-        add(Card(Rank.JOKER, Suit.SPADES, CardBack.GOMORRAH, false))
+        add(Card(Rank.ACE, Suit.HEARTS, CardBack.WILD_WASTELAND, true))
+        add(Card(Rank.ACE, Suit.CLUBS, CardBack.WILD_WASTELAND, true))
+        add(Card(Rank.ACE, Suit.DIAMONDS, CardBack.WILD_WASTELAND, true))
     })
     override fun getRewardBack() = null
 
@@ -27,7 +27,7 @@ data object EnemyFrank : Enemy() {
         val hand = game.enemyCResources.hand
 
         if (game.isInitStage()) {
-            val card = hand.filter { !it.isFace() }.minBy { it.rank.value }
+            val card = hand.filter { !it.isSpecial() }.filter { !it.isFace() }.minBy { it.rank.value }
             val caravan = game.enemyCaravans.filter { it.isEmpty() }.random()
             caravan.putCardOnTop(game.enemyCResources.removeFromHand(hand.indexOf(card)))
             return
@@ -40,7 +40,7 @@ data object EnemyFrank : Enemy() {
             val lowerBound = max(21, rivalCaravanValue + 1)
             if (isWinningMovePossible) {
                 // If caravan is overweight, check on Jacks
-                val jack = hand.withIndex().find { card -> card.value.rank == Rank.JACK }
+                val jack = hand.withIndex().filter { !it.value.isSpecial() }.find { card -> card.value.rank == Rank.JACK }
                 if (jack != null) {
                     it.value.cards
                         .filter { card -> card.canAddModifier(jack.value) }
@@ -64,7 +64,7 @@ data object EnemyFrank : Enemy() {
                 }
 
                 // If caravan is underweight, check on Kings
-                val king = hand.withIndex().find { card -> card.value.rank == Rank.KING }
+                val king = hand.withIndex().filter { !it.value.isSpecial() }.find { card -> card.value.rank == Rank.KING }
                 if (king != null) {
                     it.value.cards
                         .filter { card -> card.canAddModifier(king.value) }
@@ -89,6 +89,7 @@ data object EnemyFrank : Enemy() {
 
                 // Put a card on top!
                 hand.withIndex()
+                    .filter { !it.value.isSpecial() }
                     .filter { card -> !card.value.isFace() }
                     .forEach { (cardIndex, card) ->
                         if (it.value.getValue() + card.rank.value in (lowerBound..26) && it.value.canPutCardOnTop(card)) {
@@ -112,7 +113,7 @@ data object EnemyFrank : Enemy() {
             val isLosing = checkMoveOnDefeat(game, caravanIndex) || checkMoveOnShouldYouDoSmth(game, caravanIndex)
             if (isLosing) {
                 hand.withIndex()
-                    .filter { it.value.rank == Rank.JOKER && it.value.suit == Suit.SPADES }
+                    .filter { it.value.isSpecial() }
                     .forEach { (bombIndex, bomb) ->
                         val caravans = game.enemyCaravans.withIndex().reversed()
                         val caravanToSave = if (caravans.all { it.value.getValue() > 26 }) {
@@ -132,6 +133,7 @@ data object EnemyFrank : Enemy() {
                     }
 
                 hand.withIndex()
+                    .filter { !it.value.isSpecial() }
                     .filter { it.value.rank == Rank.KING }
                     .forEach { (kingIndex, king) ->
                         game.playerCaravans
@@ -151,6 +153,7 @@ data object EnemyFrank : Enemy() {
                     }
 
                 hand.withIndex()
+                    .filter { !it.value.isSpecial() }
                     .filter { it.value.rank == Rank.JACK }
                     .forEach { (jackIndex, jack) ->
                         game.playerCaravans
@@ -182,6 +185,7 @@ data object EnemyFrank : Enemy() {
 
                 // Try creating a draw!
                 hand.withIndex()
+                    .filter { !it.value.isSpecial() }
                     .filter { !it.value.isFace()  }
                     .sortedByDescending { it.value.rank.value }
                     .forEach { (cardIndex, card) ->
@@ -211,7 +215,7 @@ data object EnemyFrank : Enemy() {
 
                 // 2.75) Maybe try a Queen!
                 val playerCaravan = game.playerCaravans[caravanIndex]
-                hand.withIndex().filter { it.value.rank == Rank.QUEEN }.forEach { (cardIndex, card) ->
+                hand.withIndex().filter { !it.value.isSpecial() }.filter { it.value.rank == Rank.QUEEN }.forEach { (cardIndex, card) ->
                     if (playerCaravan.size >= 2) {
                         val last = playerCaravan.cards.last().card.rank.value
                         val preLast = playerCaravan.cards[playerCaravan.cards.lastIndex - 1].card.rank.value
@@ -275,8 +279,8 @@ data object EnemyFrank : Enemy() {
                 } else {
                     -1
                 }
-                hand.withIndex().filter { !it.value.isFace() || it.value.rank == Rank.QUEEN }
-                    .sortedBy { if (it.value.rank == Rank.QUEEN) 5 * mult else it.value.rank.value * mult }
+                hand.withIndex().filter { !it.value.isSpecial() }.filter { !it.value.isFace() }
+                    .sortedBy { it.value.rank.value * mult }
                     .forEach { (cardIndex, card) ->
                         if (caravan.getValue() + card.rank.value <= 26 &&
                             caravan.canPutCardOnTop(card) &&
@@ -291,7 +295,7 @@ data object EnemyFrank : Enemy() {
 
 
         // 3) Try king on underweightCaravans and jacks on overweightCaravans.
-        val jack = hand.withIndex().find { it.value.rank == Rank.JACK }
+        val jack = hand.withIndex().filter { !it.value.isSpecial() }.find { it.value.rank == Rank.JACK }
         if (jack != null) {
             overWeightCaravans.withIndex().sortedBy { it.value.getValue() }.forEach {
                 it.value.cards
@@ -310,7 +314,7 @@ data object EnemyFrank : Enemy() {
             }
         }
 
-        val king = hand.withIndex().find { it.value.rank == Rank.KING }
+        val king = hand.withIndex().filter { !it.value.isSpecial() }.find { it.value.rank == Rank.KING }
         if (king != null) {
             underWeightCaravans.withIndex().filter { it.value.getValue() > 10 }.sortedByDescending { it.value.getValue() }.forEach {
                 it.value.cards
@@ -330,7 +334,7 @@ data object EnemyFrank : Enemy() {
         }
 
         // 4.5) Queen.
-        hand.withIndex().filter { it.value.rank == Rank.QUEEN }.forEach { (cardIndex, card) ->
+        hand.withIndex().filter { !it.value.isSpecial() }.filter { it.value.rank == Rank.QUEEN }.forEach { (cardIndex, card) ->
             val possibleQueenCaravans = game.enemyCaravans.withIndex()
                 .filter { ci ->
                     val c = ci.value
@@ -362,7 +366,9 @@ data object EnemyFrank : Enemy() {
         }
 
         game.enemyCResources.dropCardFromHand(hand.withIndex().minByOrNull { (_, cardInHand) ->
-            when (cardInHand.rank) {
+            if (cardInHand.isSpecial())
+                15
+            else when (cardInHand.rank) {
                 Rank.ACE -> 4
                 Rank.TWO -> 3
                 Rank.THREE -> 3

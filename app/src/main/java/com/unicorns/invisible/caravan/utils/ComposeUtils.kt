@@ -61,15 +61,10 @@ fun Dp.dpToPx() = with(LocalDensity.current) { this@dpToPx.toPx() }
 @Composable
 fun ShowCard(activity: MainActivity, card: Card, modifier: Modifier, toModify: Boolean = true) {
     val cardName = getCardName(card, card.isAlt)
-    val uri = if (card.rank == Rank.JOKER && card.suit == Suit.SPADES) {
-        "file:///android_asset/nuclear/front.png"
-    } else {
-        "file:///android_asset/caravan_cards/$cardName"
-    }
     val painter = rememberAsyncImagePainter(
         ImageRequest.Builder(activity)
             .size(183, 256)
-            .data(uri)
+            .data("file:///android_asset/caravan_cards/$cardName")
             .decoderFactory(SvgDecoder.Factory())
             .build()
     )
@@ -83,16 +78,12 @@ fun ShowCard(activity: MainActivity, card: Card, modifier: Modifier, toModify: B
 
 @Composable
 fun ShowCardBack(activity: MainActivity, card: Card, modifier: Modifier) {
-    // TODO: make it separate deck!
-    val uri = if (card.rank == Rank.JOKER && card.suit == Suit.SPADES) {
-        "file:///android_asset/nuclear/back.png"
-    } else {
-        "file:///android_asset/caravan_cards_back/${if (card.isAlt) card.back.getCardBackAltAsset() else card.back.getCardBackAsset()}"
-    }
     val painter2 = rememberAsyncImagePainter(
         ImageRequest.Builder(activity)
             .size(183, 256)
-            .data(uri)
+            .data("file:///android_asset/caravan_cards_back/${
+                if (card.isAlt) card.back.getCardBackAltAsset() else card.back.getCardBackAsset()
+            }")
             .decoderFactory(SvgDecoder.Factory())
             .build()
     )

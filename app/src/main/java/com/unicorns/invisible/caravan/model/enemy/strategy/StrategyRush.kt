@@ -10,37 +10,19 @@ object StrategyRush : Strategy {
         val hand = game.enemyCResources.hand
         val overWeightCaravans = game.enemyCaravans.filter { it.getValue() > 26 }
 
-        hand.withIndex().sortedByDescending { it.value.rank.value }.forEach { (cardIndex, card) ->
-            if (card.rank == Rank.KING) {
-                game.enemyCaravans.forEach { enemyCaravan ->
-                    enemyCaravan.cards.sortedByDescending { it.card.rank.value }
-                        .forEach { caravanCard ->
-                            if (enemyCaravan.getValue() + caravanCard.getValue() in (21..26) && caravanCard.canAddModifier(
-                                    card
-                                )
-                            ) {
-                                caravanCard.addModifier(
-                                    game.enemyCResources.removeFromHand(
-                                        cardIndex
+        hand.withIndex()
+            .filter { !it.value.isSpecial() }
+            .sortedByDescending { it.value.rank.value }
+            .forEach { (cardIndex, card) ->
+                if (card.rank == Rank.KING) {
+                    game.enemyCaravans.forEach { enemyCaravan ->
+                        enemyCaravan.cards.sortedByDescending { it.card.rank.value }
+                            .forEach { caravanCard ->
+                                if (enemyCaravan.getValue() + caravanCard.getValue() in (21..26) && caravanCard.canAddModifier(
+                                        card
                                     )
-                                )
-                                return true
-                            }
-                        }
-                }
-            }
-
-            if (!card.rank.isFace()) {
-                game.enemyCaravans.withIndex().sortedByDescending { it.value.getValue() }
-                    .forEach { (caravanIndex, caravan) ->
-                        if (caravan.getValue() + card.rank.value <= 26) {
-                            if (caravan.canPutCardOnTop(card)) {
-                                if (!(checkMoveOnDefeat(
-                                        game,
-                                        caravanIndex
-                                    ) && caravan.getValue() + card.rank.value in (21..26))
                                 ) {
-                                    caravan.putCardOnTop(
+                                    caravanCard.addModifier(
                                         game.enemyCResources.removeFromHand(
                                             cardIndex
                                         )
@@ -48,10 +30,31 @@ object StrategyRush : Strategy {
                                     return true
                                 }
                             }
-                        }
                     }
+                }
+
+                if (!card.rank.isFace()) {
+                    game.enemyCaravans.withIndex().sortedByDescending { it.value.getValue() }
+                        .forEach { (caravanIndex, caravan) ->
+                            if (caravan.getValue() + card.rank.value <= 26) {
+                                if (caravan.canPutCardOnTop(card)) {
+                                    if (!(checkMoveOnDefeat(
+                                            game,
+                                            caravanIndex
+                                        ) && caravan.getValue() + card.rank.value in (21..26))
+                                    ) {
+                                        caravan.putCardOnTop(
+                                            game.enemyCResources.removeFromHand(
+                                                cardIndex
+                                            )
+                                        )
+                                        return true
+                                    }
+                                }
+                            }
+                        }
+                }
             }
-        }
 
         if (overWeightCaravans.isNotEmpty()) {
             overWeightCaravans.maxBy { it.getValue() }.dropCaravan()

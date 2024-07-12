@@ -15,7 +15,15 @@ enum class CardBack {
 
     @OptIn(ExperimentalSerializationApi::class)
     @JsonNames("SIERRA_MADRE", "VAULT_21")
-    VAULT_21;
+    VAULT_21,
+
+    DECK_13,
+    UNPLAYABLE,
+    WILD_WASTELAND;
+
+    fun isSpecialCard(isAlt: Boolean): Boolean {
+        return this == WILD_WASTELAND || isAlt && this == UNPLAYABLE
+    }
 
     fun getCardBackAsset(): String {
         return when (this) {
@@ -25,6 +33,9 @@ enum class CardBack {
             GOMORRAH -> "FNV_Caravan_card_back_-_Gomorrah.webp"
             LUCKY_38 -> "FNV_Caravan_card_back_-_Lucky_38.webp"
             VAULT_21 -> "standard_alt.webp"
+            DECK_13 -> "sm_clean.png"
+            UNPLAYABLE -> "chinese_back.jpg"
+            WILD_WASTELAND -> "wild_wasteland.jpg"
         }
     }
 
@@ -36,6 +47,9 @@ enum class CardBack {
             GOMORRAH -> "gomorrah_alt.webp"
             LUCKY_38 -> "lucky_38_alt.webp"
             VAULT_21 -> "sm_alt.webp"
+            DECK_13 -> "deck_13_alt.jpg"
+            UNPLAYABLE -> "chinese_alt_back.jpg"
+            WILD_WASTELAND -> "nuclear_back.png"
         }
     }
 
@@ -46,9 +60,12 @@ enum class CardBack {
         GOMORRAH -> R.string.gomorrah_deck_name
         LUCKY_38 -> R.string.lucky_38_deck_name
         VAULT_21 -> R.string.vault_21_deck_name
+        DECK_13 -> R.string.deck_13_deck_name
+        else -> R.string.other_deck_name
     }
 
     fun getSierraMadreDeckName(): Int = R.string.standard_deck_alt_name
+    fun getMadnessDeckName(): Int = R.string.deck_13_deck_alt_name
 
     fun getOwners(): List<Int> = when (this) {
         STANDARD -> listOf(R.string.no_one, R.string.standard_deck_owners)
@@ -57,6 +74,8 @@ enum class CardBack {
         GOMORRAH -> listOf(R.string.pve_enemy_medium, R.string.no_bark)
         LUCKY_38 -> listOf(R.string.pve_enemy_better, R.string.pve_enemy_38)
         VAULT_21 -> listOf(R.string.pve_enemy_best, R.string.pve_enemy_cheater)
+        DECK_13 -> listOf(R.string.questions, R.string.priest)
+        else -> listOf(R.string.no_one, R.string.no_one)
     }
 
     fun getFilter(isAlt: Boolean): ColorFilter {
@@ -64,7 +83,6 @@ enum class CardBack {
             return ColorFilter.colorMatrix(ColorMatrix())
         }
         return when (this) {
-            STANDARD, LUCKY_38, VAULT_21 -> ColorFilter.colorMatrix(ColorMatrix())
             TOPS -> ColorFilter.colorMatrix(ColorMatrix().apply {
                 timesAssign(
                     ColorMatrix(
@@ -173,6 +191,27 @@ enum class CardBack {
                     )
                 )
             })
+            else -> ColorFilter.colorMatrix(ColorMatrix())
         }
+    }
+
+    companion object {
+        val playableBacks = listOf(
+            STANDARD,
+            TOPS,
+            ULTRA_LUXE,
+            GOMORRAH,
+            LUCKY_38,
+            VAULT_21,
+            DECK_13
+        )
+        val classicDecks = listOf(
+            STANDARD,
+            TOPS,
+            ULTRA_LUXE,
+            GOMORRAH,
+            LUCKY_38,
+            VAULT_21
+        )
     }
 }

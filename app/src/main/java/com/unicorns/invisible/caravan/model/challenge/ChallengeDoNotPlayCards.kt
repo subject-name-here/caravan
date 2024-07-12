@@ -19,22 +19,22 @@ class ChallengeDoNotPlayCards(private val code: Int) : Challenge {
                 val playedCard = move.handCard ?: return
                 val predicate: () -> Boolean = when (code) {
                     1 -> {
-                        { playedCard.rank in listOf(Rank.TWO, Rank.FOUR, Rank.SIX, Rank.EIGHT, Rank.TEN) }
+                        { !playedCard.isSpecial() && playedCard.rank in listOf(Rank.TWO, Rank.FOUR, Rank.SIX, Rank.EIGHT, Rank.TEN) }
                     }
                     2 -> {
-                        { playedCard.rank in listOf(Rank.THREE, Rank.FIVE, Rank.SEVEN, Rank.NINE) }
+                        { !playedCard.isSpecial() && playedCard.rank in listOf(Rank.THREE, Rank.FIVE, Rank.SEVEN, Rank.NINE) }
                     }
                     3 -> {
-                        { playedCard.rank == Rank.JACK }
+                        { !playedCard.isSpecial() && playedCard.rank == Rank.JACK }
                     }
                     4 -> {
-                        { playedCard.rank == Rank.KING }
+                        { !playedCard.isSpecial() && playedCard.rank == Rank.KING }
                     }
                     5 -> {
-                        { playedCard.rank != Rank.JOKER && (playedCard.suit == Suit.HEARTS || playedCard.suit == Suit.DIAMONDS) }
+                        { !playedCard.isSpecial() && playedCard.rank != Rank.JOKER && (playedCard.suit == Suit.HEARTS || playedCard.suit == Suit.DIAMONDS) }
                     }
                     6 -> {
-                        { playedCard.rank != Rank.JOKER && (playedCard.suit == Suit.SPADES || playedCard.suit == Suit.CLUBS) }
+                        { !playedCard.isSpecial() && playedCard.rank != Rank.JOKER && (playedCard.suit == Suit.SPADES || playedCard.suit == Suit.CLUBS) }
                     }
                     else -> {
                         { true }
