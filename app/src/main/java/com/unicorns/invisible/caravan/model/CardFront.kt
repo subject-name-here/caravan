@@ -13,14 +13,21 @@ fun getCardName(card: Card, isAlt: Boolean): String {
         CardBack.TOPS -> getTopsName(card)
         CardBack.ULTRA_LUXE -> getUltraLuxeName(card)
         CardBack.LUCKY_38 -> if (isAlt) getLucky38AltName(card) else getLucky38Name(card)
-        CardBack.DECK_13 -> if (isAlt) getStandardName(card) else getStandardName(card) // TODO
-        CardBack.UNPLAYABLE -> if (isAlt) getStandardName(card) else getStandardName(card) // TODO
-        CardBack.WILD_WASTELAND -> if (isAlt) getWildWastelandAltCard() else getStandardName(card) // TODO
+        CardBack.DECK_13 -> if (isAlt) "TODO" else getDeck13Name(card)
+        CardBack.UNPLAYABLE -> if (isAlt) getCcpAltCard() else "TODO"
+        CardBack.WILD_WASTELAND -> if (isAlt) getWildWastelandAltCard() else getWildWastelandName(card)
     }
 }
 
 private fun getWildWastelandAltCard(): String {
-    return "wild/nuclear_front.png"
+    return "wild/nuclear_front.webp"
+}
+private fun getCcpAltCard(): String {
+    return "wild/ccp_nuclear_front.webp"
+}
+
+private fun getDeck13Name(card: Card): String {
+    return "sm_clean/${getStandardName(card)}"
 }
 
 private fun getGomorrahName(card: Card): String {
@@ -238,4 +245,21 @@ private fun getVault21Name(card: Card): String {
     }
     val suit = card.suit.name.first()
     return "vault21/$letter$suit.svg"
+}
+
+private fun getWildWastelandName(card: Card): String {
+    val prefix = "ww_deck"
+    if (card.rank.value <= 10) {
+        return "$prefix/${card.rank.value}_${card.suit.name.first().uppercase()}.webp"
+    }
+
+    return "$prefix/" + when (card.getWildWastelandCardType()) {
+        Card.WildWastelandCardType.CAZADOR -> "cazador.webp"
+        Card.WildWastelandCardType.DIFFICULT_PETE -> "difficult_pete.webp"
+        Card.WildWastelandCardType.FEV -> "fev.webp"
+        Card.WildWastelandCardType.MUGGY -> "muggy.webp"
+        Card.WildWastelandCardType.UFO -> "ufo.webp"
+        Card.WildWastelandCardType.YES_MAN -> "yes_man.webp"
+        null -> ""
+    }
 }

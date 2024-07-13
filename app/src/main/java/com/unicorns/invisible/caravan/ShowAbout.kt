@@ -156,6 +156,49 @@ fun ShowAbout(activity: MainActivity, goBack: () -> Unit) {
             )
 
             Spacer(modifier = Modifier.height(16.dp))
+            val annotatedString3 = buildAnnotatedString {
+                append(stringResource(R.string.about_8))
+                withLink(
+                    link = LinkAnnotation.Url(
+                        url = "https://www.youtube.com/@ithracael",
+                        styles = TextLinkStyles(
+                            style = SpanStyle(
+                                color = getTextColor(activity),
+                                fontFamily = FontFamily(Font(R.font.monofont)),
+                                textDecoration = TextDecoration.Underline
+                            )
+                        )
+                    ),
+                ) {
+                    append("Ithracael")
+                }
+                append(", ")
+                withLink(
+                    link = LinkAnnotation.Url(
+                        url = "https://www.youtube.com/@churchofmadness",
+                        styles = TextLinkStyles(
+                            style = SpanStyle(
+                                color = getTextColor(activity),
+                                fontFamily = FontFamily(Font(R.font.monofont)),
+                                textDecoration = TextDecoration.Underline
+                            )
+                        )
+                    ),
+                ) {
+                    append("Sobek")
+                }
+            }
+            TextFallout(
+                annotatedString3,
+                getTextColor(activity),
+                getTextStrokeColor(activity),
+                20.sp,
+                Alignment.Center,
+                Modifier,
+                TextAlign.Center
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
             TextFallout(
                 stringResource(R.string.about_7),
                 getTextColor(activity),

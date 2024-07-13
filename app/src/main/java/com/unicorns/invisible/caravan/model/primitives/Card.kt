@@ -10,7 +10,7 @@ class Card(val rank: Rank, val suit: Suit, val back: CardBack, val isAlt: Boolea
     var caravanAnimationMark = AnimationMark.STABLE
 
     fun isFace() = rank.isFace() || isSpecial()
-    fun isSpecial() = back.isSpecialCard(isAlt)
+    fun isSpecial() = back.isSpecialCard(isAlt) && !(back == CardBack.WILD_WASTELAND && !isAlt && rank.value <= 10)
 
     override fun toString(): String {
         return "${this.hashCode()}; ${this.rank.ordinal}; ${this.suit.ordinal}; ${this.back.ordinal}; ${this.isAlt};"
@@ -22,5 +22,30 @@ class Card(val rank: Rank, val suit: Suit, val back: CardBack, val isAlt: Boolea
         MOVING_IN_WIP,
         MOVING_OUT,
         MOVING_OUT_WIP,
+    }
+
+    fun getWildWastelandCardType(): WildWastelandCardType? {
+        if (this.rank == Rank.QUEEN) {
+            return WildWastelandCardType.CAZADOR
+        }
+        if (this.rank == Rank.JACK) {
+            return WildWastelandCardType.UFO
+        }
+        return when (this.rank to this.suit) {
+            Rank.KING to Suit.HEARTS -> WildWastelandCardType.MUGGY
+            Rank.KING to Suit.SPADES -> WildWastelandCardType.DIFFICULT_PETE
+            Rank.KING to Suit.DIAMONDS -> WildWastelandCardType.YES_MAN
+            Rank.KING to Suit.CLUBS -> WildWastelandCardType.FEV
+            else -> null
+        }
+    }
+
+    enum class WildWastelandCardType {
+        CAZADOR,
+        DIFFICULT_PETE,
+        FEV,
+        MUGGY,
+        UFO,
+        YES_MAN
     }
 }

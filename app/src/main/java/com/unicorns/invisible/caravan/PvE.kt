@@ -66,6 +66,7 @@ import com.unicorns.invisible.caravan.utils.playJokerSounds
 import com.unicorns.invisible.caravan.utils.playLoseSound
 import com.unicorns.invisible.caravan.utils.playNukeBlownSound
 import com.unicorns.invisible.caravan.utils.playVatsEnter
+import com.unicorns.invisible.caravan.utils.playWWSound
 import com.unicorns.invisible.caravan.utils.playWinSound
 import com.unicorns.invisible.caravan.utils.scrollbar
 import com.unicorns.invisible.caravan.utils.stopAmbient
@@ -648,6 +649,7 @@ fun StartGame(
         }
         it.jokerPlayedSound = { playJokerSounds(activity) }
         it.nukeBlownSound = { playNukeBlownSound(activity) }
+        it.wildWastelandSound = { playWWSound(activity) }
     }
     activity.goBack = { stopAmbient(); goBack(); activity.goBack = null }
     ShowGame(activity, game) {

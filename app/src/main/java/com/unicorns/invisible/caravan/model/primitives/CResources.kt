@@ -14,7 +14,9 @@ class CResources(private val deck: CustomDeck) {
         get() = handMutable.toList()
 
     fun getTopHand(): List<Card> {
-        val cards = deck.toList()
+        val cards = deck.toList().toMutableList()
+        cards.removeAll { it.back == CardBack.WILD_WASTELAND && !it.isAlt && it.getWildWastelandCardType() != null }
+
         val bomb = cards.find { (it.back == CardBack.WILD_WASTELAND || it.back == CardBack.UNPLAYABLE) && it.isAlt }
         return if (bomb != null) {
             (cards - bomb).take(7) + bomb
@@ -33,6 +35,7 @@ class CResources(private val deck: CustomDeck) {
             val card = deck.removeFirst()
             card.handAnimationMark = Card.AnimationMark.MOVING_IN
             handMutable.add(card)
+            processHandAddedCard(card)
         }
     }
 
@@ -52,6 +55,19 @@ class CResources(private val deck: CustomDeck) {
         }
         card.handAnimationMark = Card.AnimationMark.MOVING_IN
         handMutable.add(card)
+        processHandAddedCard(card)
+    }
+
+    private fun processHandAddedCard(card: Card) {
+        if (card.back == CardBack.WILD_WASTELAND && !card.isAlt) {
+            if (card.getWildWastelandCardType() == Card.WildWastelandCardType.CAZADOR) {
+                val notSpecial = handMutable.count { !it.isSpecial() }
+                handMutable.removeAll { !it.isSpecial() }
+                repeat(notSpecial) {
+                    handMutable.add(Card(Rank.QUEEN, Suit.HEARTS, CardBack.WILD_WASTELAND, false))
+                }
+            }
+        }
     }
 
     @Transient
@@ -79,4 +95,12 @@ class CResources(private val deck: CustomDeck) {
 
     val numOfNumbers: Int
         get() = deck.count { !it.isFace() }
+
+    fun mutateFev(card: Card) {
+        val cards = handMutable.size
+        handMutable.clear()
+        repeat(cards) {
+            handMutable.add(Card(card.rank, card.suit, CardBack.WILD_WASTELAND, false))
+        }
+    }
 }

@@ -320,6 +320,7 @@ class MainActivity : SaveDataActivity() {
         var showHouseTower by rememberSaveable { mutableStateOf(false) }
         var showHouseRoguelike by rememberSaveable { mutableStateOf(false) }
         var showWildWasteland by rememberSaveable { mutableStateOf(false) }
+        var showStoryMode by rememberSaveable { mutableStateOf(false) }
         var showAbout by rememberSaveable { mutableStateOf(false) }
         var showGameStats by rememberSaveable { mutableStateOf(false) }
         var showTutorial by rememberSaveable { mutableStateOf(false) }
@@ -954,6 +955,23 @@ class MainActivity : SaveDataActivity() {
                         ShowDailys(this@MainActivity) { showDailys = false }
                     }
 
+                    showStoryMode -> {
+                        // TODO
+                        showAlertDialog("TODO", "TODO")
+                    }
+
+                    showWildWasteland -> {
+                        ShowWildWasteland(this@MainActivity, ::showAlertDialog) {
+                            showWildWasteland = false
+                        }
+                    }
+
+                    showHouseRoguelike -> {
+                        // TODO
+                        showAlertDialog("TODO", "TODO")
+                    }
+
+
                     else -> {
                         BoxWithConstraints {
                             val width = maxWidth.dpToPx().toInt()
@@ -970,6 +988,9 @@ class MainActivity : SaveDataActivity() {
                                 { showVision = true },
                                 { showSettings = true },
                                 { showDailys = true },
+                                { showStoryMode = true },
+                                { showWildWasteland = true },
+                                { showHouseRoguelike = true },
                             )
                             StylePicture(this@MainActivity, styleId, userId.hashCode(), width, height)
                         }
@@ -993,8 +1014,10 @@ class MainActivity : SaveDataActivity() {
         showVision: () -> Unit,
         showSettings: () -> Unit,
         showDailys: () -> Unit,
+        showStory: () -> Unit,
+        showWildWasteland: () -> Unit,
+        showRoguelike: () -> Unit,
     ) {
-        Spacer(Modifier.height(32.dp))
         Column(
             Modifier
                 .fillMaxSize()
@@ -1118,14 +1141,14 @@ class MainActivity : SaveDataActivity() {
                 }
             }
 
-
             val state = rememberLazyListState()
             LazyColumn(
                 horizontalAlignment = Alignment.Start,
                 verticalArrangement = Arrangement.Center,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .fillMaxHeight(0.8f)
+                    .fillMaxHeight()
+                    .padding(bottom = 48.dp)
                     .scrollbar(
                         state,
                         alignEnd = false,
@@ -1158,11 +1181,22 @@ class MainActivity : SaveDataActivity() {
                             )
                         }
                         Spacer(Modifier.height(32.dp))
+                        MenuItem(stringResource(R.string.menu_story), showStory)
+                        Spacer(modifier = Modifier.height(16.dp))
                         MenuItem(stringResource(R.string.lucky_38_tower), showHouseTower)
                         Spacer(modifier = Modifier.height(16.dp))
                         MenuItem(stringResource(R.string.menu_pve), showPvE)
                         Spacer(modifier = Modifier.height(16.dp))
+                        // TODO: hide!
+//                        if (save?.let { it.storyModeCompleted || it.snufflesUnlocked } == true) {
+//                            MenuItem(stringResource(R.string.menu_wild_wastealnd), showWildWasteland)
+//                            Spacer(modifier = Modifier.height(16.dp))
+//                        }
+                        MenuItem(stringResource(R.string.menu_wild_wastealnd), showWildWasteland)
+                        Spacer(modifier = Modifier.height(16.dp))
                         MenuItem(stringResource(R.string.lucky_38_blitz), showHouseBlitz)
+                        Spacer(modifier = Modifier.height(16.dp))
+                        MenuItem(stringResource(R.string.menu_roguelike), showRoguelike)
                         Spacer(modifier = Modifier.height(16.dp))
                         MenuItem(stringResource(R.string.menu_pvp), showPvP)
                         Spacer(modifier = Modifier.height(16.dp))
@@ -1177,86 +1211,86 @@ class MainActivity : SaveDataActivity() {
                     }
                 }
             }
+        }
 
-            BoxWithConstraints(Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
+        BoxWithConstraints(Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .height(48.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceAround
+            ) {
                 Row(
                     Modifier
-                        .fillMaxWidth()
-                        .height(48.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceAround
+                        .fillMaxSize()
+                        .padding(horizontal = 12.dp)
+                        .padding(bottom = 4.dp)
+                        .drawBehind {
+                            drawPath(
+                                Path().apply {
+                                    moveTo(0f, 0f)
+                                    lineTo(0f, size.height * 3 / 4)
+                                    lineTo(size.width, size.height * 3 / 4)
+                                    lineTo(size.width, 0f)
+                                },
+                                color = getDividerColor(this@MainActivity),
+                                style = Stroke(width = 8f),
+                            )
+                        },
+                    horizontalArrangement = Arrangement.SpaceEvenly,
+                    verticalAlignment = Alignment.Bottom
                 ) {
-                    Row(
+                    TextFallout(
+                        getString(R.string.menu_vision),
+                        getTextColor(this@MainActivity),
+                        getTextStrokeColor(this@MainActivity),
+                        18.sp,
+                        Alignment.Center,
                         Modifier
-                            .fillMaxSize()
-                            .padding(horizontal = 12.dp)
-                            .padding(bottom = 4.dp)
-                            .drawBehind {
-                                drawPath(
-                                    Path().apply {
-                                        moveTo(0f, 0f)
-                                        lineTo(0f, size.height * 3 / 4)
-                                        lineTo(size.width, size.height * 3 / 4)
-                                        lineTo(size.width, 0f)
-                                    },
-                                    color = getDividerColor(this@MainActivity),
-                                    style = Stroke(width = 8f),
-                                )
-                            },
-                        horizontalArrangement = Arrangement.SpaceEvenly,
-                        verticalAlignment = Alignment.Bottom
-                    ) {
-                        TextFallout(
-                            getString(R.string.menu_vision),
-                            getTextColor(this@MainActivity),
-                            getTextStrokeColor(this@MainActivity),
-                            18.sp,
-                            Alignment.Center,
-                            Modifier
-                                .background(getBackgroundColor(this@MainActivity))
-                                .padding(horizontal = 4.dp)
-                                .background(getTextBackgroundColor(this@MainActivity))
-                                .clickableOk(this@MainActivity) {
-                                    showVision()
-                                }
-                                .padding(4.dp),
-                            TextAlign.Center
-                        )
+                            .background(getBackgroundColor(this@MainActivity))
+                            .padding(horizontal = 4.dp)
+                            .background(getTextBackgroundColor(this@MainActivity))
+                            .clickableOk(this@MainActivity) {
+                                showVision()
+                            }
+                            .padding(4.dp),
+                        TextAlign.Center
+                    )
 
-                        TextFallout(
-                            getString(R.string.menu_settings),
-                            getTextColor(this@MainActivity),
-                            getTextStrokeColor(this@MainActivity),
-                            18.sp,
-                            Alignment.Center,
-                            Modifier
-                                .background(getBackgroundColor(this@MainActivity))
-                                .padding(horizontal = 4.dp)
-                                .clickableOk(this@MainActivity) {
-                                    showSettings()
-                                }
-                                .background(getTextBackgroundColor(this@MainActivity))
-                                .padding(4.dp),
-                            TextAlign.Center
-                        )
+                    TextFallout(
+                        getString(R.string.menu_settings),
+                        getTextColor(this@MainActivity),
+                        getTextStrokeColor(this@MainActivity),
+                        18.sp,
+                        Alignment.Center,
+                        Modifier
+                            .background(getBackgroundColor(this@MainActivity))
+                            .padding(horizontal = 4.dp)
+                            .clickableOk(this@MainActivity) {
+                                showSettings()
+                            }
+                            .background(getTextBackgroundColor(this@MainActivity))
+                            .padding(4.dp),
+                        TextAlign.Center
+                    )
 
-                        TextFallout(
-                            getString(R.string.menu_about),
-                            getTextColor(this@MainActivity),
-                            getTextStrokeColor(this@MainActivity),
-                            18.sp,
-                            Alignment.Center,
-                            Modifier
-                                .background(getBackgroundColor(this@MainActivity))
-                                .padding(horizontal = 4.dp)
-                                .clickableOk(this@MainActivity) {
-                                    showAbout()
-                                }
-                                .background(getTextBackgroundColor(this@MainActivity))
-                                .padding(4.dp),
-                            TextAlign.Center
-                        )
-                    }
+                    TextFallout(
+                        getString(R.string.menu_about),
+                        getTextColor(this@MainActivity),
+                        getTextStrokeColor(this@MainActivity),
+                        18.sp,
+                        Alignment.Center,
+                        Modifier
+                            .background(getBackgroundColor(this@MainActivity))
+                            .padding(horizontal = 4.dp)
+                            .clickableOk(this@MainActivity) {
+                                showAbout()
+                            }
+                            .background(getTextBackgroundColor(this@MainActivity))
+                            .padding(4.dp),
+                        TextAlign.Center
+                    )
                 }
             }
         }

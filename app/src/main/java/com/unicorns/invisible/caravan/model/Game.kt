@@ -4,6 +4,7 @@ import com.unicorns.invisible.caravan.AnimationSpeed
 import com.unicorns.invisible.caravan.model.enemy.Enemy
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.Caravan
+import com.unicorns.invisible.caravan.model.primitives.Card
 import com.unicorns.invisible.caravan.model.primitives.CardWithModifier
 import com.unicorns.invisible.caravan.model.primitives.Rank
 import kotlinx.coroutines.CoroutineScope
@@ -13,6 +14,7 @@ import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import java.util.UUID
+import kotlin.random.Random
 
 
 @Serializable
@@ -39,6 +41,8 @@ class Game(
     var jokerPlayedSound: () -> Unit = {}
     @Transient
     var nukeBlownSound: () -> Unit = {}
+    @Transient
+    var wildWastelandSound: () -> Unit = {}
 
     var isGameOver = 0
         private set(value) {
@@ -78,11 +82,12 @@ class Game(
     fun processField(): Boolean {
         val caravans = playerCaravans + enemyCaravans
         val cards = caravans.flatMap { it.cards }
+        var flag = false
 
         cards.forEach {
             if (it.hasBomb) {
                 processBomb(it)
-                return true
+                flag = true
             }
         }
 
@@ -90,10 +95,39 @@ class Game(
             processJacks()
             processJoker()
 
-            return true
+            flag = true
         }
 
-        return false
+        if (cards.any { it.hasActiveFev || it.hasActiveUfo || it.hasActivePete }) {
+            processFev()
+            processUfo()
+            processPete()
+            flag = true
+        }
+
+        caravans.forEach {
+            val mods = it.cards.flatMap { card -> card.modifiersCopy() }
+            val isMuggyHere = mods.any { mod ->
+                !mod.isAlt &&
+                        mod.back == CardBack.WILD_WASTELAND &&
+                        mod.getWildWastelandCardType() == Card.WildWastelandCardType.MUGGY
+            }
+            it.cards.forEach { card ->
+                card.isProtectedByMuggy = isMuggyHere
+            }
+
+            val isCazadorOnCaravan = mods.any { mod ->
+                !mod.isAlt &&
+                        mod.back == CardBack.WILD_WASTELAND &&
+                        mod.getWildWastelandCardType() == Card.WildWastelandCardType.CAZADOR
+            }
+            if (isCazadorOnCaravan && (isPlayerTurn && it in playerCaravans || !isPlayerTurn && it in enemyCaravans)) {
+                it.getCazadorPoison()
+                flag = true
+            }
+        }
+
+        return flag
     }
 
     fun processHand(cResources: CResources): Boolean {
@@ -227,11 +261,54 @@ class Game(
 
     private fun processBomb(bombOwner: CardWithModifier) {
         (playerCaravans + enemyCaravans).forEach {
-            if (bombOwner !in it.cards) {
+            if (bombOwner !in it.cards && !(it.cards.any { card -> card.isProtectedByMuggy })) {
                 it.dropCaravan()
             }
         }
         bombOwner.deactivateBomb()
+    }
+
+    private fun processFev() {
+        playerCaravans.forEach { caravan ->
+            caravan.cards.filter {
+                it.hasActiveFev
+            }.forEach {
+                playerCResources.mutateFev(it.card)
+                it.deactivateFev()
+            }
+        }
+        enemyCaravans.forEach { caravan ->
+            caravan.cards.filter {
+                it.hasActiveFev
+            }.forEach {
+                enemyCResources.mutateFev(it.card)
+                it.deactivateFev()
+            }
+        }
+    }
+    private fun processUfo() {
+        (playerCaravans + enemyCaravans).forEach { caravan ->
+            caravan.cards.filter {
+                it.hasActiveUfo
+            }.forEach { card ->
+                (playerCaravans + enemyCaravans).forEach { caravan ->
+                    caravan.getUfo()
+                }
+                card.deactivateUfo()
+            }
+        }
+    }
+    private fun processPete() {
+        (playerCaravans + enemyCaravans).forEach { caravan ->
+            caravan.cards.filter {
+                it.hasActivePete
+            }.forEach { card ->
+                (playerCaravans + enemyCaravans).forEach {
+                    it.getPetePower()
+                }
+                card.deactivatePete()
+            }
+        }
     }
 
     fun processJoker() {

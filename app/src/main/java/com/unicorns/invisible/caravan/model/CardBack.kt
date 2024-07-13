@@ -33,9 +33,9 @@ enum class CardBack {
             GOMORRAH -> "FNV_Caravan_card_back_-_Gomorrah.webp"
             LUCKY_38 -> "FNV_Caravan_card_back_-_Lucky_38.webp"
             VAULT_21 -> "standard_alt.webp"
-            DECK_13 -> "sm_clean.png"
-            UNPLAYABLE -> "chinese_back.jpg"
-            WILD_WASTELAND -> "wild_wasteland.jpg"
+            DECK_13 -> "sm_clean.webp"
+            UNPLAYABLE -> "ccp_back.webp"
+            WILD_WASTELAND -> "ww_back.webp"
         }
     }
 
@@ -47,9 +47,9 @@ enum class CardBack {
             GOMORRAH -> "gomorrah_alt.webp"
             LUCKY_38 -> "lucky_38_alt.webp"
             VAULT_21 -> "sm_alt.webp"
-            DECK_13 -> "deck_13_alt.jpg"
-            UNPLAYABLE -> "chinese_alt_back.jpg"
-            WILD_WASTELAND -> "nuclear_back.png"
+            DECK_13 -> "madness_back.webp"
+            UNPLAYABLE -> "ccp_alt_back.webp"
+            WILD_WASTELAND -> "nuclear_back.webp"
         }
     }
 
@@ -74,7 +74,7 @@ enum class CardBack {
         GOMORRAH -> listOf(R.string.pve_enemy_medium, R.string.no_bark)
         LUCKY_38 -> listOf(R.string.pve_enemy_better, R.string.pve_enemy_38)
         VAULT_21 -> listOf(R.string.pve_enemy_best, R.string.pve_enemy_cheater)
-        DECK_13 -> listOf(R.string.questions, R.string.priest)
+        DECK_13 -> listOf(R.string.no_one, R.string.priest)
         else -> listOf(R.string.no_one, R.string.no_one)
     }
 

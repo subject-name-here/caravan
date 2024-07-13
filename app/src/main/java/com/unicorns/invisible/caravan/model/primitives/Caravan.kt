@@ -1,6 +1,8 @@
 package com.unicorns.invisible.caravan.model.primitives
 
+import com.unicorns.invisible.caravan.model.CardBack
 import kotlinx.serialization.Serializable
+import kotlin.random.Random
 
 
 @Serializable
@@ -46,7 +48,47 @@ class Caravan {
         cardsMutable.removeAll { it.card.suit == card.suit && !it.hasActiveJoker }
     }
 
+    fun getCazadorPoison() {
+        cardsMutable.removeAll {
+            it.card.rank.ordinal <= 1
+        }
+        val copy = cardsMutable.toList()
+        cardsMutable.clear()
+        copy.forEach {
+            val mods = it.modifiersCopy()
+            cardsMutable.add(CardWithModifier(
+                Card(Rank.entries[it.card.rank.ordinal - 2], it.card.suit, CardBack.WILD_WASTELAND, false)
+            ).apply {
+                copyModifiersFrom(mods)
+            })
+        }
+    }
+    fun getPetePower() {
+        val copy = cardsMutable.toList()
+        cardsMutable.clear()
+        copy.forEach {
+            val mods = it.modifiersCopy()
+            cardsMutable.add(CardWithModifier(
+                Card(Rank.TEN, it.card.suit, CardBack.WILD_WASTELAND, false)
+            ).apply {
+                copyModifiersFrom(mods)
+            })
+        }
+    }
+    fun getUfo() {
+        cardsMutable.removeAll { Random.nextBoolean() && !it.hasActiveUfo }
+    }
+
     fun getValue(): Int {
+        if (cards.any {
+            it.modifiersCopy().any {
+                mod -> mod.back == CardBack.WILD_WASTELAND &&
+                        !mod.isAlt &&
+                        mod.getWildWastelandCardType() == Card.WildWastelandCardType.YES_MAN
+            }
+        }) {
+            return 26
+        }
         return cards.sumOf { it.getValue() }
     }
 

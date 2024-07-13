@@ -302,4 +302,6 @@ class Save {
 
     @EncodeDefault
     var storyModeCompleted: Boolean = false
+    @EncodeDefault
+    var snufflesUnlocked: Boolean = false
 }
