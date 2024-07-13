@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.sp
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.enemy.EnemyEasy
 import com.unicorns.invisible.caravan.model.enemy.EnemyMedium
+import com.unicorns.invisible.caravan.model.enemy.EnemyPriestess
 import com.unicorns.invisible.caravan.model.enemy.EnemySnuffles
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.Card
@@ -86,7 +87,7 @@ fun ShowWildWasteland(
             activity = activity,
             playerCResources = getPlayerDeck(),
             isCustom = true,
-            enemy = EnemySnuffles, // TODO
+            enemy = EnemyPriestess,
             showAlertDialog = showAlertDialog
         ) {
             showGamePriestess = false

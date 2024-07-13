@@ -37,7 +37,7 @@ object StrategyDestructive : Strategy {
             val caravan = game.playerCaravans.filter { !it.isEmpty() && it.getValue() <= 26 }
                 .maxByOrNull { it.getValue() }
             val cardToJack =
-                caravan?.cards?.filter { it.canAddModifier(jack.value) }?.maxBy { it.getValue() }
+                caravan?.cards?.filter { it.canAddModifier(jack.value) }?.maxByOrNull { it.getValue() }
             if (cardToJack != null) {
                 val futureValue = caravan.getValue() - cardToJack.getValue()
                 val enemyValue = game.enemyCaravans[game.playerCaravans.indexOf(caravan)].getValue()

@@ -49,15 +49,13 @@ class Caravan {
     }
 
     fun getCazadorPoison() {
-        cardsMutable.removeAll {
-            it.card.rank.ordinal <= 1
-        }
+        cardsMutable.removeAll { it.card.rank.ordinal == 0 }
         val copy = cardsMutable.toList()
         cardsMutable.clear()
         copy.forEach {
             val mods = it.modifiersCopy()
             cardsMutable.add(CardWithModifier(
-                Card(Rank.entries[it.card.rank.ordinal - 2], it.card.suit, CardBack.WILD_WASTELAND, false)
+                Card(Rank.entries[it.card.rank.ordinal - 1], it.card.suit, CardBack.WILD_WASTELAND, false)
             ).apply {
                 copyModifiersFrom(mods)
             })

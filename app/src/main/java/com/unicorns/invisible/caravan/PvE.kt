@@ -598,6 +598,15 @@ fun StartGame(
                 if (rewardBack == null || rewardBack == CardBack.WILD_WASTELAND || rewardBack == CardBack.UNPLAYABLE) {
                     save.caps += 30
                     message += activity.getString(R.string.you_have_earned_caps, 30.toString())
+                } else if (rewardBack == CardBack.DECK_13 && enemy.isAlt()) {
+                    if (save.availableDecksAlt[rewardBack] != true) {
+                        save.availableDecksAlt[rewardBack] = true
+                        message += activity.getString(
+                            R.string.you_have_unlocked_deck,
+                            activity.getString(rewardBack.getMadnessDeckName())
+                        )
+                    }
+                    message += winCard(activity, save, rewardBack, 3, isAlt = true, isCustom)
                 } else {
                     if (!enemy.isAlt()) {
                         if (save.availableDecks[rewardBack] != true) {

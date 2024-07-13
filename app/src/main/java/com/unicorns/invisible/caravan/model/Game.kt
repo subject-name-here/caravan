@@ -121,7 +121,7 @@ class Game(
                         mod.back == CardBack.WILD_WASTELAND &&
                         mod.getWildWastelandCardType() == Card.WildWastelandCardType.CAZADOR
             }
-            if (isCazadorOnCaravan && (isPlayerTurn && it in playerCaravans || !isPlayerTurn && it in enemyCaravans)) {
+            if (isCazadorOnCaravan) {
                 it.getCazadorPoison()
                 flag = true
             }
@@ -261,8 +261,14 @@ class Game(
 
     private fun processBomb(bombOwner: CardWithModifier) {
         (playerCaravans + enemyCaravans).forEach {
-            if (bombOwner !in it.cards && !(it.cards.any { card -> card.isProtectedByMuggy })) {
-                it.dropCaravan()
+            if (bombOwner.modifiersCopy().any { it.back == CardBack.UNPLAYABLE && it.isAlt }) {
+                if (bombOwner !in it.cards) {
+                    it.dropCaravan()
+                }
+            } else {
+                if (bombOwner !in it.cards && !(it.cards.any { card -> card.isProtectedByMuggy })) {
+                    it.dropCaravan()
+                }
             }
         }
         bombOwner.deactivateBomb()

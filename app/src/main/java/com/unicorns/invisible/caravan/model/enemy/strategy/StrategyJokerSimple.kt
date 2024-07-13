@@ -3,9 +3,9 @@ package com.unicorns.invisible.caravan.model.enemy.strategy
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.primitives.CardWithModifier
 import com.unicorns.invisible.caravan.model.primitives.Rank
-import com.unicorns.invisible.caravan.model.primitives.Suit
 import com.unicorns.invisible.caravan.save.json
 import kotlinx.serialization.encodeToString
+
 
 object StrategyJokerSimple : Strategy {
     override fun move(game: Game): Boolean {
@@ -69,10 +69,10 @@ object StrategyJokerSimple : Strategy {
                 return 0
             }
 
-            val jokerApplicant = cards.maxBy { potentialCardToJoker ->
+            val jokerApplicant = cards.maxByOrNull { potentialCardToJoker ->
                 joke(potentialCardToJoker)
             }
-            if (joke(jokerApplicant) > 0) {
+            if (jokerApplicant != null && joke(jokerApplicant) > 0) {
                 jokerApplicant.addModifier(game.enemyCResources.removeFromHand(joker.index))
                 return true
             }
