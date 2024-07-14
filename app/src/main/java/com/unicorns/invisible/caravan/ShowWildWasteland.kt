@@ -25,9 +25,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.unicorns.invisible.caravan.model.CardBack
-import com.unicorns.invisible.caravan.model.enemy.EnemyEasy
 import com.unicorns.invisible.caravan.model.enemy.EnemyFinalBoss
-import com.unicorns.invisible.caravan.model.enemy.EnemyMedium
 import com.unicorns.invisible.caravan.model.enemy.EnemyPriestess
 import com.unicorns.invisible.caravan.model.enemy.EnemySnuffles
 import com.unicorns.invisible.caravan.model.primitives.CResources
@@ -58,26 +56,37 @@ fun ShowWildWasteland(
     var showGamePriestess by rememberSaveable { mutableStateOf(false) }
     var showGameFinalBoss by rememberSaveable { mutableStateOf(false) }
 
-    fun getPlayerDeck(): CResources {
+    fun getPlayerDeck(isFinalBoss: Boolean): CResources {
         val deck = activity.save?.getCustomDeckCopy() ?: CustomDeck(CardBack.STANDARD, false)
-        deck.apply {
-            add(Card(Rank.ACE, Suit.HEARTS, CardBack.WILD_WASTELAND, true))
-            add(Card(Rank.ACE, Suit.CLUBS, CardBack.WILD_WASTELAND, true))
-            add(Card(Rank.ACE, Suit.DIAMONDS, CardBack.WILD_WASTELAND, true))
-            add(Card(Rank.KING, Suit.HEARTS, CardBack.WILD_WASTELAND, false))
-            add(Card(Rank.KING, Suit.CLUBS, CardBack.WILD_WASTELAND, false))
-            add(Card(Rank.KING, Suit.DIAMONDS, CardBack.WILD_WASTELAND, false))
-            add(Card(Rank.KING, Suit.SPADES, CardBack.WILD_WASTELAND, false))
-            add(Card(Rank.JACK, Suit.HEARTS, CardBack.WILD_WASTELAND, false))
-            add(Card(Rank.QUEEN, Suit.HEARTS, CardBack.WILD_WASTELAND, false))
+        if (isFinalBoss) {
+            deck.apply {
+                add(Card(Rank.ACE, Suit.HEARTS, CardBack.WILD_WASTELAND, true))
+                add(Card(Rank.ACE, Suit.CLUBS, CardBack.WILD_WASTELAND, true))
+                add(Card(Rank.ACE, Suit.DIAMONDS, CardBack.WILD_WASTELAND, true))
+                add(Card(Rank.ACE, Suit.SPADES, CardBack.WILD_WASTELAND, true))
+                add(Card(Rank.KING, Suit.HEARTS, CardBack.WILD_WASTELAND, false))
+            }
+        } else {
+            deck.apply {
+                add(Card(Rank.ACE, Suit.HEARTS, CardBack.WILD_WASTELAND, true))
+                add(Card(Rank.ACE, Suit.CLUBS, CardBack.WILD_WASTELAND, true))
+                add(Card(Rank.ACE, Suit.DIAMONDS, CardBack.WILD_WASTELAND, true))
+                add(Card(Rank.KING, Suit.HEARTS, CardBack.WILD_WASTELAND, false))
+                add(Card(Rank.KING, Suit.CLUBS, CardBack.WILD_WASTELAND, false))
+                add(Card(Rank.KING, Suit.DIAMONDS, CardBack.WILD_WASTELAND, false))
+                add(Card(Rank.KING, Suit.SPADES, CardBack.WILD_WASTELAND, false))
+                add(Card(Rank.JACK, Suit.HEARTS, CardBack.WILD_WASTELAND, false))
+                add(Card(Rank.QUEEN, Suit.HEARTS, CardBack.WILD_WASTELAND, false))
+            }
         }
+
         return CResources(deck)
     }
 
     if (showGameSnuffles) {
         StartGame(
             activity = activity,
-            playerCResources = getPlayerDeck(),
+            playerCResources = getPlayerDeck(isFinalBoss = false),
             isCustom = true,
             enemy = EnemySnuffles,
             showAlertDialog = showAlertDialog
@@ -88,7 +97,7 @@ fun ShowWildWasteland(
     } else if (showGamePriestess) {
         StartGame(
             activity = activity,
-            playerCResources = getPlayerDeck(),
+            playerCResources = getPlayerDeck(isFinalBoss = false),
             isCustom = true,
             enemy = EnemyPriestess,
             showAlertDialog = showAlertDialog
@@ -99,9 +108,15 @@ fun ShowWildWasteland(
     } else if (showGameFinalBoss) {
         StartGame(
             activity = activity,
-            playerCResources = getPlayerDeck(),
+            playerCResources = getPlayerDeck(isFinalBoss = true),
             isCustom = true,
-            enemy = EnemyFinalBoss().apply { playAlarm = { playNoCardAlarm(activity) } },
+            enemy = EnemyFinalBoss().apply {
+                playAlarm = {
+                    repeat(3) {
+                        playNoCardAlarm(activity)
+                    }
+                }
+            },
             showAlertDialog = showAlertDialog
         ) {
             showGameFinalBoss = false

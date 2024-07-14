@@ -110,4 +110,8 @@ class CResources(private val deck: CustomDeck) {
         }
         shuffleDeck()
     }
+    fun addCardOnTopOfDeck(card: Card) {
+        deck.removeFirst()
+        deck.addOnTop(card)
+    }
 }

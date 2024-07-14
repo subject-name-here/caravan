@@ -27,6 +27,7 @@ class CustomDeck() {
     fun takeRandom(n: Int) = cards.shuffled().take(n)
 
     fun add(element: Card) = if (!contains(element)) cards.add(element) else false
+    fun addOnTop(element: Card) = cards.add(0, element)
     operator fun get(index: Int) = cards[index]
 
     fun count(predicate: (Card) -> Boolean) = cards.count(predicate)

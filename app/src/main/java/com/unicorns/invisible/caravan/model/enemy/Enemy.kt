@@ -63,7 +63,11 @@ sealed class Enemy {
         otherCaravansIndices.forEach {
             check(game.playerCaravans[it].getValue(), game.enemyCaravans[it].getValue())
         }
-        return score == 2 && game.playerCaravans[caravanIndex].getValue() >= 11
+        return score == 2 && (
+                game.playerCaravans[caravanIndex].getValue() >= 11 ||
+                        game.playerCResources.hand
+                            .any { it.back == CardBack.WILD_WASTELAND && !it.isAlt }
+        )
     }
 
 

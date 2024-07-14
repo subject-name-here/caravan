@@ -120,12 +120,11 @@ fun ShowPvP(
     activity: MainActivity,
     selectedDeck: () -> Pair<CardBack, Boolean>,
     showAlertDialog: (String, String) -> Unit,
-    roomNumberInt: Int? = null,
     goBack: () -> Unit
 ) {
-    var roomNumber by rememberSaveable { mutableStateOf(roomNumberInt?.toString() ?: "") }
+    var roomNumber by rememberSaveable { mutableStateOf("") }
     var checkedCustomDeck by rememberSaveable { mutableStateOf(true) }
-    var checkedPrivate by rememberSaveable { mutableStateOf(false) }
+    var checkedWild by rememberSaveable { mutableStateOf(false) }
     var isRoomCreated by rememberSaveable { mutableIntStateOf(0) }
     var isCreator by rememberSaveable { mutableStateOf(false) }
 
@@ -184,6 +183,7 @@ fun ShowPvP(
 
         if (!isCreator) {
             checkedCustomDeck = (response[0] shr 55) and 1UL == 1UL
+            checkedWild = (response[8] != 0UL)
         }
 
         enemyDeck = CustomDeck().also { customDeck ->
@@ -229,7 +229,9 @@ fun ShowPvP(
         sendRequest(
             "$crvnUrl/crvn/create?is_custom=${checkedCustomDeck.toPythonBool()}" +
                     "&room=${isRoomCreated}" +
-                    "&is_private=${checkedPrivate.toPythonBool()}" +
+                    "&is_private=True" +
+                    "&is_new=True" +
+                    "&is_wild=${checkedWild.toPythonBool()}" +
                     "&cid=${userId}" +
                     "&deck0=${deckCodes[0]}" +
                     "&deck1=${deckCodes[1]}" +
@@ -238,8 +240,8 @@ fun ShowPvP(
                     "&deck4=${deckCodes[4]}" +
                     "&deck5=${deckCodes[5]}" +
                     "&deck6=${deckCodes[6]}" +
-                    "&deck7=${deckCodes[7]}" +
-                    "&deck8=${deckCodes[8]}"
+                    "&deck7=0" +
+                    "&deck8=${if (checkedWild) (1UL shl 61) else 0}"
         ) { result ->
             val response = result.toString()
             if (response.contains("exists")) {
@@ -254,6 +256,10 @@ fun ShowPvP(
     fun joinRoom() {
         if (isRoomCreated != 0) {
             return
+        }
+        if (roomNumber.toIntOrNull() == 32768) {
+            activity.save?.secretMode = true
+            saveOnGD(activity)
         }
         if (isRoomNumberIncorrect(roomNumber)) {
             showIncorrectRoomNumber()
@@ -273,8 +279,8 @@ fun ShowPvP(
                     "&deck4=${deckCodes[4]}" +
                     "&deck5=${deckCodes[5]}" +
                     "&deck6=${deckCodes[6]}" +
-                    "&deck7=${deckCodes[7]}" +
-                    "&deck8=${deckCodes[8]}"
+                    "&deck7=0" +
+                    "&deck8=0"
         ) { result ->
             val responseIfCreator = try {
                 json.decodeFromString<Int>(result.getString("body"))
@@ -299,41 +305,31 @@ fun ShowPvP(
         }
     }
 
-    fun updateAvailableRoom(isCustom: Boolean) {
-        if (isRoomCreated != 0) {
-            return
-        }
-        isRoomCreated = 1
-        val link = "$crvnUrl/crvn/get_free_room?is_custom=${isCustom.toPythonBool()}"
-        val link2 = "$crvnUrl/crvn/get_free_room?is_custom=${(!isCustom).toPythonBool()}"
-        sendRequest(link) { result ->
-            val res = result.getString("body").toIntOrNull()
-            if (res == null) {
-                sendRequest(link2) { result2 ->
-                    val res2 = result2.getString("body").toIntOrNull()
-                    isRoomCreated = 0
-                    if (res2 != null) {
-                        roomNumber = res2.toString()
-                        joinRoom()
-                    } else {
-                        showFailure(activity.getString(R.string.no_room_to_join))
-                    }
-                }
-            } else {
-                isRoomCreated = 0
-                roomNumber = res.toString()
-                joinRoom()
-            }
-        }
-    }
-
     if (enemyDeck.size >= MainActivity.MIN_DECK_SIZE) {
         StartPvP(
             activity = activity,
-            playerCResources = if (checkedCustomDeck)
-                CResources(activity.save!!.getCustomDeckCopy())
-            else
-                CResources(selectedDeck().first, selectedDeck().second),
+            playerCResources = run {
+                val deck = if (checkedCustomDeck)
+                    activity.save?.getCustomDeckCopy() ?: CustomDeck(CardBack.STANDARD, false)
+                else
+                    CustomDeck(selectedDeck().first, selectedDeck().second)
+
+                if (checkedWild) {
+                    deck.apply {
+                        add(Card(Rank.ACE, Suit.HEARTS, CardBack.WILD_WASTELAND, true))
+                        add(Card(Rank.ACE, Suit.CLUBS, CardBack.WILD_WASTELAND, true))
+                        add(Card(Rank.ACE, Suit.DIAMONDS, CardBack.WILD_WASTELAND, true))
+                        add(Card(Rank.KING, Suit.HEARTS, CardBack.WILD_WASTELAND, false))
+                        add(Card(Rank.KING, Suit.CLUBS, CardBack.WILD_WASTELAND, false))
+                        add(Card(Rank.KING, Suit.DIAMONDS, CardBack.WILD_WASTELAND, false))
+                        add(Card(Rank.KING, Suit.SPADES, CardBack.WILD_WASTELAND, false))
+                        add(Card(Rank.JACK, Suit.HEARTS, CardBack.WILD_WASTELAND, false))
+                        add(Card(Rank.QUEEN, Suit.HEARTS, CardBack.WILD_WASTELAND, false))
+                    }
+                }
+
+                CResources(deck)
+            },
             enemyStartDeck = run {
                 val deck = CustomDeck()
                 repeat(enemyDeck.size) {
@@ -370,23 +366,6 @@ fun ShowPvP(
                 Modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                TextFallout(
-                    stringResource(R.string.find),
-                    getTextColor(activity),
-                    getTextStrokeColor(activity),
-                    18.sp,
-                    Alignment.Center,
-                    Modifier
-                        .clickableOk(activity) {
-                            updateAvailableRoom(checkedCustomDeck)
-                        }
-                        .fillMaxWidth()
-                        .wrapContentHeight()
-                        .padding(horizontal = 8.dp, vertical = 16.dp)
-                        .background(getTextBackgroundColor(activity))
-                        .padding(8.dp),
-                    TextAlign.Center
-                )
                 Row(
                     modifier = Modifier.height(96.dp),
                     verticalAlignment = Alignment.CenterVertically,
@@ -493,35 +472,38 @@ fun ShowPvP(
                             { isRoomCreated == 0 }
                         )
                     }
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(48.dp),
-                        horizontalArrangement = Arrangement.Center,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        TextFallout(
-                            stringResource(R.string.private_room),
-                            getTextColor(activity),
-                            getTextStrokeColor(activity),
-                            14.sp,
-                            Alignment.CenterStart,
-                            Modifier.fillMaxWidth(0.7f),
-                            TextAlign.Start
-                        )
-                        CheckboxCustom(
-                            activity,
-                            { checkedPrivate },
-                            {
-                                checkedPrivate = !checkedPrivate
-                                if (checkedPrivate) {
-                                    playClickSound(activity)
-                                } else {
-                                    playCloseSound(activity)
-                                }
-                            },
-                            { isRoomCreated == 0 }
-                        )
+
+                    if (activity.save?.secretMode == true) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(48.dp),
+                            horizontalArrangement = Arrangement.Center,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            TextFallout(
+                                stringResource(R.string.menu_wild_wastealnd),
+                                getTextColor(activity),
+                                getTextStrokeColor(activity),
+                                14.sp,
+                                Alignment.CenterStart,
+                                Modifier.fillMaxWidth(0.7f),
+                                TextAlign.Start
+                            )
+                            CheckboxCustom(
+                                activity,
+                                { checkedWild },
+                                {
+                                    checkedWild = !checkedWild
+                                    if (checkedWild) {
+                                        playClickSound(activity)
+                                    } else {
+                                        playCloseSound(activity)
+                                    }
+                                },
+                                { isRoomCreated == 0 }
+                            )
+                        }
                     }
                 }
             }

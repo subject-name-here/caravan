@@ -19,6 +19,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.challenge.Challenge
 import com.unicorns.invisible.caravan.model.enemy.EnemyPlayer
@@ -30,11 +31,14 @@ import com.unicorns.invisible.caravan.utils.TextFallout
 import com.unicorns.invisible.caravan.utils.getTextBackgroundColor
 import com.unicorns.invisible.caravan.utils.getTextColor
 import com.unicorns.invisible.caravan.utils.getTextStrokeColor
+import com.unicorns.invisible.caravan.utils.playCardFlipSound
 import com.unicorns.invisible.caravan.utils.playCloseSound
 import com.unicorns.invisible.caravan.utils.playJokerSounds
 import com.unicorns.invisible.caravan.utils.playNoBeep
+import com.unicorns.invisible.caravan.utils.playNukeBlownSound
 import com.unicorns.invisible.caravan.utils.playSelectSound
 import com.unicorns.invisible.caravan.utils.playVatsReady
+import com.unicorns.invisible.caravan.utils.playWWSound
 import com.unicorns.invisible.caravan.utils.sendRequest
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -371,6 +375,7 @@ fun ShowGamePvP(
                 in 1..10 -> {
                     if (position == caravan.cards.size && !isEnemy) {
                         if (caravan.canPutCardOnTop(card)) {
+                            playCardFlipSound(activity)
                             activity.processChallengesMove(Challenge.Move(
                                 moveCode = 3,
                                 handCard = card
@@ -388,8 +393,14 @@ fun ShowGamePvP(
                             card
                         )
                     ) {
-                        if (card.rank == Rank.JOKER) {
+                        playCardFlipSound(activity)
+                        if (!card.isSpecial() && card.rank == Rank.JOKER) {
                             playJokerSounds(activity)
+                        }
+                        if (card.back == CardBack.WILD_WASTELAND && !card.isAlt) {
+                            playWWSound(activity)
+                        } else if (card.isAlt && card.isSpecial()) {
+                            playNukeBlownSound(activity)
                         }
                         activity.processChallengesMove(Challenge.Move(
                             moveCode = 4,

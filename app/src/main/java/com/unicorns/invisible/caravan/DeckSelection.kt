@@ -213,7 +213,7 @@ fun DeckSelection(
                         modifier = getModifier(CardBack.LUCKY_38, true).clip(RoundedCornerShape(6f))
                     )
                 }
-                if (activity.save?.deck13Unlocked == true) {
+                if (activity.save?.secretMode == true) {
                     Spacer(modifier = Modifier.height(12.dp))
                     Row(horizontalArrangement = Arrangement.Center) {
                         AsyncImage(

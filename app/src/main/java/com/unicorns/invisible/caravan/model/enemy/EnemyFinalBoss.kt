@@ -15,16 +15,10 @@ import kotlin.math.max
 
 @Serializable
 class EnemyFinalBoss : Enemy() {
-    private fun createNewDeck() = CustomDeck(CardBack.UNPLAYABLE, false).apply {
-        add(Card(Rank.ACE, Suit.HEARTS, CardBack.UNPLAYABLE, true))
-        add(Card(Rank.ACE, Suit.CLUBS, CardBack.UNPLAYABLE, true))
-        add(Card(Rank.ACE, Suit.DIAMONDS, CardBack.UNPLAYABLE, true))
-    }
+    private fun createNewDeck() = CustomDeck(CardBack.UNPLAYABLE, false)
 
     override fun createDeck(): CResources = CResources(createNewDeck())
     override fun getRewardBack() = null
-
-    var phasesCnt = 5
 
     @Transient
     var playAlarm: () -> Unit = {}
@@ -41,10 +35,12 @@ class EnemyFinalBoss : Enemy() {
 
         makeMoveInner(game)
 
-        if (game.enemyCResources.deckSize == 0 && phasesCnt > 0) {
-            phasesCnt--
+        if (game.enemyCResources.deckSize == 0) {
             playAlarm()
             game.enemyCResources.addNewDeck(createNewDeck())
+        } else if (game.enemyCResources.deckSize % 13 == 6) {
+            playAlarm()
+            game.enemyCResources.addCardOnTopOfDeck(Card(Rank.ACE, Suit.HEARTS, CardBack.UNPLAYABLE, true))
         }
     }
 
@@ -60,7 +56,7 @@ class EnemyFinalBoss : Enemy() {
             val lowerBound = max(21, rivalCaravanValue + 1)
             if (isWinningMovePossible) {
                 // If caravan is overweight, check on Jacks
-                val jack = hand.withIndex().filter { !it.value.isSpecial() }.find { card -> card.value.rank == Rank.JACK }
+                val jack = hand.withIndex().filter { card -> !card.value.isSpecial() }.find { card -> card.value.rank == Rank.JACK }
                 if (jack != null) {
                     it.value.cards
                         .filter { card -> card.canAddModifier(jack.value) }
@@ -84,7 +80,7 @@ class EnemyFinalBoss : Enemy() {
                 }
 
                 // If caravan is underweight, check on Kings
-                val king = hand.withIndex().filter { !it.value.isSpecial() }.find { card -> card.value.rank == Rank.KING }
+                val king = hand.withIndex().filter { card -> !card.value.isSpecial() }.find { card -> card.value.rank == Rank.KING }
                 if (king != null) {
                     it.value.cards
                         .filter { card -> card.canAddModifier(king.value) }
@@ -109,7 +105,7 @@ class EnemyFinalBoss : Enemy() {
 
                 // Put a card on top!
                 hand.withIndex()
-                    .filter { !it.value.isSpecial() }
+                    .filter { card -> !card.value.isSpecial() }
                     .filter { card -> !card.value.isFace() }
                     .forEach { (cardIndex, card) ->
                         if (it.value.getValue() + card.rank.value in (lowerBound..26) && it.value.canPutCardOnTop(card)) {

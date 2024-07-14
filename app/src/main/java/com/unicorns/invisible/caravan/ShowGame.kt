@@ -194,7 +194,7 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
             if (card.isFace()) {
                 if (position in caravan.cards.indices && caravan.cards[position].canAddModifier(card)) {
                     playCardFlipSound(activity)
-                    if (card.rank == Rank.JOKER) {
+                    if (!card.isSpecial() && card.rank == Rank.JOKER) {
                         playJokerSounds(activity)
                     }
                     if (card.back == CardBack.WILD_WASTELAND && !card.isAlt) {
