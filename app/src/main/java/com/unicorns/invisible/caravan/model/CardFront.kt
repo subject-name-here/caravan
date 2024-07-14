@@ -14,7 +14,7 @@ fun getCardName(card: Card, isAlt: Boolean): String {
         CardBack.ULTRA_LUXE -> getUltraLuxeName(card)
         CardBack.LUCKY_38 -> if (isAlt) getLucky38AltName(card) else getLucky38Name(card)
         CardBack.DECK_13 -> if (isAlt) getMadnessName(card) else getDeck13Name(card)
-        CardBack.UNPLAYABLE -> if (isAlt) getCcpAltCard() else "TODO"
+        CardBack.UNPLAYABLE -> if (isAlt) getCcpAltCard() else getChineseName(card)
         CardBack.WILD_WASTELAND -> if (isAlt) getWildWastelandAltCard() else getWildWastelandName(card)
     }
 }
@@ -279,4 +279,21 @@ private fun getMadnessName(card: Card): String {
     }
     val suit = card.suit.name.first()
     return "madness/${letter}_$suit.webp"
+}
+
+private fun getChineseName(card: Card): String {
+    if (card.rank == Rank.JOKER) {
+        return if (card.suit == Suit.HEARTS) {
+            "chinese/Joker_1.webp"
+        } else {
+            "chinese/Joker_2.webp"
+        }
+    }
+
+    val letter = when (card.rank.value) {
+        in (1..10) -> card.rank.value.toString()
+        else -> card.rank.name.first().toString()
+    }
+    val suit = card.suit.name.first()
+    return "chinese/${letter}_$suit.webp"
 }

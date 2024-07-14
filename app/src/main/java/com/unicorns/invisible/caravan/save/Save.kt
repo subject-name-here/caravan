@@ -301,7 +301,5 @@ class Save {
     var isEnclaveThemeAvailable: Boolean = false
 
     @EncodeDefault
-    var deck13Unlocked: Boolean = false
-    @EncodeDefault
-    var snufflesUnlocked: Boolean = false
+    var secretMode: Boolean = false
 }

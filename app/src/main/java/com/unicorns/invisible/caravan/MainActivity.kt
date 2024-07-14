@@ -1181,23 +1181,20 @@ class MainActivity : SaveDataActivity() {
                             )
                         }
                         Spacer(Modifier.height(32.dp))
-                        MenuItem(stringResource(R.string.menu_story), showStory)
-                        Spacer(modifier = Modifier.height(16.dp))
+//                        MenuItem(stringResource(R.string.menu_story), showStory)
+//                        Spacer(modifier = Modifier.height(16.dp))
                         MenuItem(stringResource(R.string.lucky_38_tower), showHouseTower)
                         Spacer(modifier = Modifier.height(16.dp))
                         MenuItem(stringResource(R.string.menu_pve), showPvE)
                         Spacer(modifier = Modifier.height(16.dp))
-                        // TODO: hide!
-//                        if (save?.let { it.storyModeCompleted || it.snufflesUnlocked } == true) {
-//                            MenuItem(stringResource(R.string.menu_wild_wastealnd), showWildWasteland)
-//                            Spacer(modifier = Modifier.height(16.dp))
-//                        }
-                        MenuItem(stringResource(R.string.menu_wild_wastealnd), showWildWasteland)
-                        Spacer(modifier = Modifier.height(16.dp))
+                        if (save?.secretMode == true) {
+                            MenuItem(stringResource(R.string.menu_wild_wastealnd), showWildWasteland)
+                            Spacer(modifier = Modifier.height(16.dp))
+                        }
                         MenuItem(stringResource(R.string.lucky_38_blitz), showHouseBlitz)
                         Spacer(modifier = Modifier.height(16.dp))
-                        MenuItem(stringResource(R.string.menu_roguelike), showRoguelike)
-                        Spacer(modifier = Modifier.height(16.dp))
+//                        MenuItem(stringResource(R.string.menu_roguelike), showRoguelike)
+//                        Spacer(modifier = Modifier.height(16.dp))
                         MenuItem(stringResource(R.string.menu_pvp), showPvP)
                         Spacer(modifier = Modifier.height(16.dp))
                         MenuItem(stringResource(R.string.menu_tutorial), showTutorial)

@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.enemy.EnemyEasy
+import com.unicorns.invisible.caravan.model.enemy.EnemyFinalBoss
 import com.unicorns.invisible.caravan.model.enemy.EnemyMedium
 import com.unicorns.invisible.caravan.model.enemy.EnemyPriestess
 import com.unicorns.invisible.caravan.model.enemy.EnemySnuffles
@@ -42,6 +43,7 @@ import com.unicorns.invisible.caravan.utils.getTextBackgroundColor
 import com.unicorns.invisible.caravan.utils.getTextColor
 import com.unicorns.invisible.caravan.utils.getTextStrokeColor
 import com.unicorns.invisible.caravan.utils.getTrackColor
+import com.unicorns.invisible.caravan.utils.playNoCardAlarm
 import com.unicorns.invisible.caravan.utils.playVatsEnter
 import com.unicorns.invisible.caravan.utils.scrollbar
 
@@ -54,6 +56,7 @@ fun ShowWildWasteland(
 ) {
     var showGameSnuffles by rememberSaveable { mutableStateOf(false) }
     var showGamePriestess by rememberSaveable { mutableStateOf(false) }
+    var showGameFinalBoss by rememberSaveable { mutableStateOf(false) }
 
     fun getPlayerDeck(): CResources {
         val deck = activity.save?.getCustomDeckCopy() ?: CustomDeck(CardBack.STANDARD, false)
@@ -91,6 +94,17 @@ fun ShowWildWasteland(
             showAlertDialog = showAlertDialog
         ) {
             showGamePriestess = false
+        }
+        return
+    } else if (showGameFinalBoss) {
+        StartGame(
+            activity = activity,
+            playerCResources = getPlayerDeck(),
+            isCustom = true,
+            enemy = EnemyFinalBoss().apply { playAlarm = { playNoCardAlarm(activity) } },
+            showAlertDialog = showAlertDialog
+        ) {
+            showGameFinalBoss = false
         }
         return
     }
@@ -165,6 +179,8 @@ fun ShowWildWasteland(
                 OpponentItem(stringResource(R.string.snuffles)) { playVatsEnter(activity); showGameSnuffles = true }
                 Spacer(modifier = Modifier.height(10.dp))
                 OpponentItem(stringResource(R.string.priest)) { playVatsEnter(activity); showGamePriestess = true }
+                Spacer(modifier = Modifier.height(10.dp))
+                OpponentItem(stringResource(R.string.final_boss)) { playVatsEnter(activity); showGameFinalBoss = true }
                 Spacer(modifier = Modifier.height(16.dp))
             }
         }

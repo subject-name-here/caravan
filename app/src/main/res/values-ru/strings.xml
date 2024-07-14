@@ -75,6 +75,7 @@
     <string name="no_one">никого</string>
     <string name="priest">Жрица Безумия</string>
     <string name="snuffles">Нюхач</string>
+    <string name="final_boss">Верховный Лидер</string>
 
     <string name="pve_use_custom_deck">Использовать сборную колоду</string>
     <string name="pve_stats">Статистика</string>

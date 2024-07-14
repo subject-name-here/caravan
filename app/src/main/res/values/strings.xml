@@ -78,6 +78,7 @@
     <string name="questions" translatable="false">\???</string>
     <string name="priest">Madness Priestess</string>
     <string name="snuffles">Snuffles</string>
+    <string name="final_boss">Supreme Leader</string>
 
     <string name="pve_use_custom_deck">Use Custom Deck</string>
     <string name="pve_stats">Stats</string>

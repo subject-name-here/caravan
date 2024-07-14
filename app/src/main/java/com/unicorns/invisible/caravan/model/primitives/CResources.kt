@@ -103,4 +103,11 @@ class CResources(private val deck: CustomDeck) {
             handMutable.add(Card(card.rank, card.suit, CardBack.WILD_WASTELAND, false))
         }
     }
+
+    fun addNewDeck(newDeck: CustomDeck) {
+        newDeck.toList().forEach {
+            deck.add(it)
+        }
+        shuffleDeck()
+    }
 }
