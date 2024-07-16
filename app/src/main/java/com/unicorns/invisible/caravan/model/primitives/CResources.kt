@@ -88,7 +88,10 @@ class CResources(private val deck: CustomDeck) {
     }
 
     fun getDeckBack() = deck.firstOrNull()?.run { this.back to this.isAlt }
-    fun shuffleDeck() = deck.shuffle()
+    var canBeShuffled = true
+    fun shuffleDeck() {
+        if (canBeShuffled) deck.shuffle()
+    }
 
     val deckSize: Int
         get() = deck.size
@@ -108,10 +111,8 @@ class CResources(private val deck: CustomDeck) {
         newDeck.toList().forEach {
             deck.add(it)
         }
-        shuffleDeck()
     }
-    fun addCardOnTopOfDeck(card: Card) {
-        deck.removeFirst()
+    fun addOnTop(card: Card) {
         deck.addOnTop(card)
     }
 }

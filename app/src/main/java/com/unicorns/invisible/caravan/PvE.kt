@@ -33,6 +33,7 @@ import com.unicorns.invisible.caravan.model.enemy.EnemyBestest
 import com.unicorns.invisible.caravan.model.enemy.EnemyBetter
 import com.unicorns.invisible.caravan.model.enemy.EnemyCaesar
 import com.unicorns.invisible.caravan.model.enemy.EnemyEasy
+import com.unicorns.invisible.caravan.model.enemy.EnemyFinalBoss
 import com.unicorns.invisible.caravan.model.enemy.EnemyHard
 import com.unicorns.invisible.caravan.model.enemy.EnemyKing
 import com.unicorns.invisible.caravan.model.enemy.EnemyMedium
@@ -69,6 +70,7 @@ import com.unicorns.invisible.caravan.utils.playVatsEnter
 import com.unicorns.invisible.caravan.utils.playWWSound
 import com.unicorns.invisible.caravan.utils.playWinSound
 import com.unicorns.invisible.caravan.utils.scrollbar
+import com.unicorns.invisible.caravan.utils.startFinalBossTheme
 import com.unicorns.invisible.caravan.utils.stopAmbient
 import java.util.Locale
 
@@ -565,7 +567,22 @@ fun StartGame(
     isCustom: Boolean,
     enemy: Enemy,
     showAlertDialog: (String, String) -> Unit,
-    game: Game = rememberScoped {
+    goBack: () -> Unit,
+) {
+    if (!activity.checkIfCustomDeckCanBeUsedInGame(playerCResources)) {
+        showAlertDialog(
+            stringResource(R.string.custom_deck_is_too_small),
+            stringResource(R.string.custom_deck_is_too_small_message)
+        )
+        goBack()
+        return
+    }
+
+    val game: Game = rememberScoped {
+        if (enemy is EnemyFinalBoss) {
+            isFinalBossSequence = true
+            startFinalBossTheme(activity)
+        }
         Game(
             playerCResources,
             enemy
@@ -576,16 +593,6 @@ fun StartGame(
             }
             it.startGame()
         }
-    },
-    goBack: () -> Unit,
-) {
-    if (!activity.checkIfCustomDeckCanBeUsedInGame(playerCResources)) {
-        showAlertDialog(
-            stringResource(R.string.custom_deck_is_too_small),
-            stringResource(R.string.custom_deck_is_too_small_message)
-        )
-        goBack()
-        return
     }
 
     game.also {

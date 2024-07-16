@@ -7,6 +7,7 @@ import com.unicorns.invisible.caravan.model.primitives.Caravan
 import com.unicorns.invisible.caravan.model.primitives.Card
 import com.unicorns.invisible.caravan.model.primitives.CardWithModifier
 import com.unicorns.invisible.caravan.model.primitives.Rank
+import com.unicorns.invisible.caravan.model.primitives.Suit
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -261,9 +262,67 @@ class Game(
 
     private fun processBomb(bombOwner: CardWithModifier) {
         (playerCaravans + enemyCaravans).forEach {
-            if (bombOwner.modifiersCopy().any { it.back == CardBack.UNPLAYABLE && it.isAlt }) {
+            if (bombOwner.modifiersCopy().any { mod -> mod.back == CardBack.UNPLAYABLE && mod.isAlt }) {
+                val value = it.getValue()
                 if (bombOwner !in it.cards) {
                     it.dropCaravan()
+                }
+                if (it in playerCaravans) {
+                    when (value) {
+                        in (1..2) -> {
+                            playerCResources.addOnTop(Card(Rank.ACE, Suit.entries.random(), CardBack.WILD_WASTELAND, false))
+                        }
+                        in (3..4) -> {
+                            playerCResources.addOnTop(Card(Rank.TWO, Suit.entries.random(), CardBack.WILD_WASTELAND, false))
+                        }
+                        in (5..6) -> {
+                            playerCResources.addOnTop(Card(Rank.THREE, Suit.entries.random(), CardBack.WILD_WASTELAND, false))
+                        }
+                        in (7..8) -> {
+                            playerCResources.addOnTop(Card(Rank.FOUR, Suit.entries.random(), CardBack.WILD_WASTELAND, false))
+                        }
+                        in (9..10) -> {
+                            playerCResources.addOnTop(Card(Rank.FIVE, Suit.entries.random(), CardBack.WILD_WASTELAND, false))
+                        }
+                        in (11..12) -> {
+                            playerCResources.addOnTop(Card(Rank.SIX, Suit.entries.random(), CardBack.WILD_WASTELAND, false))
+                        }
+                        in (13..14) -> {
+                            playerCResources.addOnTop(Card(Rank.SEVEN, Suit.entries.random(), CardBack.WILD_WASTELAND, false))
+                        }
+                        in (15..16) -> {
+                            playerCResources.addOnTop(Card(Rank.EIGHT, Suit.entries.random(), CardBack.WILD_WASTELAND, false))
+                        }
+                        in (17..18) -> {
+                            playerCResources.addOnTop(Card(Rank.NINE, Suit.entries.random(), CardBack.WILD_WASTELAND, false))
+                        }
+                        in (19..20) -> {
+                            playerCResources.addOnTop(Card(Rank.TEN, Suit.entries.random(), CardBack.WILD_WASTELAND, false))
+                        }
+                        in (21..22) -> {
+                            if (Random.nextBoolean()) {
+                                playerCResources.addOnTop(Card(Rank.SEVEN, Suit.entries.random(), CardBack.WILD_WASTELAND, false))
+                                playerCResources.addOnTop(Card(Rank.ACE, Suit.entries.random(), CardBack.WILD_WASTELAND, false))
+                            } else {
+                                playerCResources.addOnTop(Card(Rank.SIX, Suit.entries.random(), CardBack.WILD_WASTELAND, false))
+                                playerCResources.addOnTop(Card(Rank.TWO, Suit.entries.random(), CardBack.WILD_WASTELAND, false))
+                            }
+                        }
+                        in (23..24) -> {
+                            if (Random.nextBoolean()) {
+                                playerCResources.addOnTop(Card(Rank.NINE, Suit.entries.random(), CardBack.WILD_WASTELAND, false))
+                                playerCResources.addOnTop(Card(Rank.THREE, Suit.entries.random(), CardBack.WILD_WASTELAND, false))
+                            } else {
+                                playerCResources.addOnTop(Card(Rank.EIGHT, Suit.entries.random(), CardBack.WILD_WASTELAND, false))
+                                playerCResources.addOnTop(Card(Rank.FOUR, Suit.entries.random(), CardBack.WILD_WASTELAND, false))
+                            }
+
+                        }
+                        in (25..26) -> {
+                            playerCResources.addOnTop(Card(Rank.TEN, Suit.entries.random(), CardBack.WILD_WASTELAND, false))
+                            playerCResources.addOnTop(Card(Rank.FIVE, Suit.entries.random(), CardBack.WILD_WASTELAND, false))
+                        }
+                    }
                 }
             } else {
                 if (bombOwner !in it.cards && !(it.cards.any { card -> card.isProtectedByMuggy })) {
@@ -297,8 +356,9 @@ class Game(
             caravan.cards.filter {
                 it.hasActiveUfo
             }.forEach { card ->
+                val seed = card.card.rank.ordinal + card.card.suit.ordinal
                 (playerCaravans + enemyCaravans).forEach { caravan ->
-                    caravan.getUfo()
+                    caravan.getUfo(seed)
                 }
                 card.deactivateUfo()
             }

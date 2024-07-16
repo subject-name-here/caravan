@@ -115,6 +115,7 @@ var userId = ""
 private var readyFlag = MutableLiveData(false)
 
 var isFrankSequence = false
+var isFinalBossSequence = false
 
 @Suppress("MoveLambdaOutsideParentheses")
 class MainActivity : SaveDataActivity() {
@@ -569,7 +570,7 @@ class MainActivity : SaveDataActivity() {
                                 .weight(1f)
                                 .wrapContentWidth()
                                 .clickableOk(this@MainActivity) {
-                                    if (!isPaused && !isFrankSequence) {
+                                    if (!isPaused && !isFrankSequence && !isFinalBossSequence) {
                                         nextSong(this@MainActivity)
                                     }
                                 }
@@ -588,7 +589,7 @@ class MainActivity : SaveDataActivity() {
                                 .weight(1f)
                                 .wrapContentWidth()
                                 .clickableOk(this@MainActivity) {
-                                    if (isFrankSequence) {
+                                    if (isFrankSequence || isFinalBossSequence) {
                                         return@clickableOk
                                     }
                                     if (isPaused) {

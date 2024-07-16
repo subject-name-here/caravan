@@ -371,50 +371,46 @@ fun ShowGamePvP(
         val cardIndex = selectedCard
         val card = cardIndex?.let { game.playerCResources.hand[cardIndex] }
         if (card != null && game.isPlayerTurn && !game.isOver() && (!game.isInitStage() || !card.isFace())) {
-            when (card.rank.value) {
-                in 1..10 -> {
-                    if (position == caravan.cards.size && !isEnemy) {
-                        if (caravan.canPutCardOnTop(card)) {
-                            playCardFlipSound(activity)
-                            activity.processChallengesMove(Challenge.Move(
-                                moveCode = 3,
-                                handCard = card
-                            ), game)
-                            caravan.putCardOnTop(game.playerCResources.removeFromHand(cardIndex))
-                            onCaravanCardInserted(
-                                cardIndex, caravanIndex, null,
-                            )
-                        }
-                    }
-                }
-
-                Rank.JACK.value, Rank.QUEEN.value, Rank.KING.value, Rank.JOKER.value -> {
-                    if (position in caravan.cards.indices && caravan.cards[position].canAddModifier(
-                            card
-                        )
-                    ) {
+            if (!card.isFace()) {
+                if (position == caravan.cards.size && !isEnemy) {
+                    if (caravan.canPutCardOnTop(card)) {
                         playCardFlipSound(activity)
-                        if (!card.isSpecial() && card.rank == Rank.JOKER) {
-                            playJokerSounds(activity)
-                        }
-                        if (card.back == CardBack.WILD_WASTELAND && !card.isAlt) {
-                            playWWSound(activity)
-                        } else if (card.isAlt && card.isSpecial()) {
-                            playNukeBlownSound(activity)
-                        }
                         activity.processChallengesMove(Challenge.Move(
-                            moveCode = 4,
+                            moveCode = 3,
                             handCard = card
                         ), game)
-                        caravan.cards[position].addModifier(
-                            game.playerCResources.removeFromHand(
-                                cardIndex
-                            )
-                        )
+                        caravan.putCardOnTop(game.playerCResources.removeFromHand(cardIndex))
                         onCaravanCardInserted(
-                            cardIndex, caravanIndex, position
+                            cardIndex, caravanIndex, null,
                         )
                     }
+                }
+            } else {
+                if (position in caravan.cards.indices && caravan.cards[position].canAddModifier(
+                        card
+                    )
+                ) {
+                    playCardFlipSound(activity)
+                    if (!card.isSpecial() && card.rank == Rank.JOKER) {
+                        playJokerSounds(activity)
+                    }
+                    if (card.back == CardBack.WILD_WASTELAND && !card.isAlt) {
+                        playWWSound(activity)
+                    } else if (card.isAlt && card.isSpecial()) {
+                        playNukeBlownSound(activity)
+                    }
+                    activity.processChallengesMove(Challenge.Move(
+                        moveCode = 4,
+                        handCard = card
+                    ), game)
+                    caravan.cards[position].addModifier(
+                        game.playerCResources.removeFromHand(
+                            cardIndex
+                        )
+                    )
+                    onCaravanCardInserted(
+                        cardIndex, caravanIndex, position
+                    )
                 }
             }
         }

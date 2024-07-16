@@ -5,6 +5,7 @@ import androidx.compose.animation.core.infiniteRepeatable
 import com.unicorns.invisible.caravan.MainActivity
 import com.unicorns.invisible.caravan.R
 import com.unicorns.invisible.caravan.Style
+import com.unicorns.invisible.caravan.isFinalBossSequence
 import com.unicorns.invisible.caravan.isFrankSequence
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -95,12 +96,12 @@ fun playCashSound(activity: MainActivity) {
 }
 
 fun playJokerReceivedSounds(activity: MainActivity) {
-    if (isFrankSequence) return
+    if (isFrankSequence || isFinalBossSequence) return
     playEffectPlayerSound(activity, R.raw.mus_mysteriousstranger_a_01, 2)
 }
 
 fun playJokerSounds(activity: MainActivity) {
-    if (isFrankSequence) return
+    if (isFrankSequence || isFinalBossSequence) return
     playEffectPlayerSound(activity, R.raw.mus_mysteriousstranger_a_02, 2)
 }
 
@@ -137,7 +138,7 @@ fun setAmbientVolume(volume: Float) {
 }
 
 fun startAmbient(activity: MainActivity) {
-    if (isFrankSequence) {
+    if (isFrankSequence || isFinalBossSequence) {
         return
     }
     val vol = (activity.save?.ambientVolume ?: 1f) / 2
@@ -327,6 +328,35 @@ fun startLevel11Theme(activity: MainActivity) {
     }
     val vol = activity.save?.radioVolume ?: 1f
     MediaPlayer.create(activity, R.raw.frank_theme)
+        .apply {
+            isLooping = true
+            setVolume(vol, vol)
+            radioLock.withLock {
+                radioPlayers.add(this)
+                if (!isRadioPausedByLeavingActivity) {
+                    start()
+                }
+            }
+            setOnCompletionListener {
+                radioLock.withLock {
+                    it.stop()
+                    radioPlayers.remove(it)
+                    it.release()
+                }
+            }
+        }
+}
+
+fun startFinalBossTheme(activity: MainActivity) {
+    radioLock.withLock {
+        radioPlayers.forEach {
+            it.stop()
+            radioPlayers.remove(it)
+            it.release()
+        }
+    }
+    val vol = activity.save?.radioVolume ?: 1f
+    MediaPlayer.create(activity, R.raw.final_boss)
         .apply {
             isLooping = true
             setVolume(vol, vol)

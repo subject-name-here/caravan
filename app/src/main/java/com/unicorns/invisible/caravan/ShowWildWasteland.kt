@@ -41,9 +41,11 @@ import com.unicorns.invisible.caravan.utils.getTextBackgroundColor
 import com.unicorns.invisible.caravan.utils.getTextColor
 import com.unicorns.invisible.caravan.utils.getTextStrokeColor
 import com.unicorns.invisible.caravan.utils.getTrackColor
+import com.unicorns.invisible.caravan.utils.nextSong
 import com.unicorns.invisible.caravan.utils.playNoCardAlarm
 import com.unicorns.invisible.caravan.utils.playVatsEnter
 import com.unicorns.invisible.caravan.utils.scrollbar
+import com.unicorns.invisible.caravan.utils.startFinalBossTheme
 
 
 @Composable
@@ -55,18 +57,66 @@ fun ShowWildWasteland(
     var showGameSnuffles by rememberSaveable { mutableStateOf(false) }
     var showGamePriestess by rememberSaveable { mutableStateOf(false) }
     var showGameFinalBoss by rememberSaveable { mutableStateOf(false) }
+    var showGameFinalBossWild by rememberSaveable { mutableStateOf(false) }
 
-    fun getPlayerDeck(isFinalBoss: Boolean): CResources {
-        val deck = activity.save?.getCustomDeckCopy() ?: CustomDeck(CardBack.STANDARD, false)
+    fun getPlayerDeck(isFinalBoss: Boolean, isFinalBossWild: Boolean = false): CResources {
         if (isFinalBoss) {
-            deck.apply {
-                add(Card(Rank.ACE, Suit.HEARTS, CardBack.WILD_WASTELAND, true))
-                add(Card(Rank.ACE, Suit.CLUBS, CardBack.WILD_WASTELAND, true))
-                add(Card(Rank.ACE, Suit.DIAMONDS, CardBack.WILD_WASTELAND, true))
-                add(Card(Rank.ACE, Suit.SPADES, CardBack.WILD_WASTELAND, true))
-                add(Card(Rank.KING, Suit.HEARTS, CardBack.WILD_WASTELAND, false))
+            val deck = CustomDeck()
+            deck.add(Card(Rank.KING, Suit.HEARTS, CardBack.DECK_13, false))
+            deck.add(Card(Rank.KING, Suit.CLUBS, CardBack.DECK_13, false))
+            deck.add(Card(Rank.KING, Suit.DIAMONDS, CardBack.DECK_13, false))
+            deck.add(Card(Rank.KING, Suit.SPADES, CardBack.DECK_13, false))
+            deck.add(Card(Rank.KING, Suit.HEARTS, CardBack.STANDARD, false))
+            deck.add(Card(Rank.KING, Suit.CLUBS, CardBack.STANDARD, false))
+            deck.add(Card(Rank.KING, Suit.DIAMONDS, CardBack.STANDARD, false))
+            deck.add(Card(Rank.KING, Suit.SPADES, CardBack.STANDARD, false))
+            deck.add(Card(Rank.KING, Suit.HEARTS, CardBack.ULTRA_LUXE, false))
+            deck.add(Card(Rank.KING, Suit.CLUBS, CardBack.ULTRA_LUXE, false))
+            deck.add(Card(Rank.KING, Suit.DIAMONDS, CardBack.ULTRA_LUXE, false))
+            deck.add(Card(Rank.KING, Suit.SPADES, CardBack.ULTRA_LUXE, false))
+            deck.add(Card(Rank.KING, Suit.CLUBS, CardBack.TOPS, true))
+            deck.add(Card(Rank.KING, Suit.DIAMONDS, CardBack.GOMORRAH, true))
+            deck.add(Card(Rank.KING, Suit.SPADES, CardBack.LUCKY_38, true))
+
+            deck.add(Card(Rank.TEN, Suit.HEARTS, CardBack.DECK_13, false))
+            deck.add(Card(Rank.TEN, Suit.DIAMONDS, CardBack.DECK_13, false))
+            deck.add(Card(Rank.TEN, Suit.CLUBS, CardBack.DECK_13, false))
+            deck.add(Card(Rank.TEN, Suit.SPADES, CardBack.DECK_13, false))
+
+            deck.add(Card(Rank.SIX, Suit.HEARTS, CardBack.DECK_13, false))
+            deck.add(Card(Rank.SIX, Suit.DIAMONDS, CardBack.DECK_13, false))
+            deck.add(Card(Rank.SIX, Suit.CLUBS, CardBack.DECK_13, false))
+            deck.add(Card(Rank.SIX, Suit.SPADES, CardBack.DECK_13, false))
+
+            deck.add(Card(Rank.FIVE, Suit.HEARTS, CardBack.DECK_13, false))
+            deck.add(Card(Rank.FIVE, Suit.DIAMONDS, CardBack.DECK_13, false))
+            deck.add(Card(Rank.FIVE, Suit.CLUBS, CardBack.DECK_13, false))
+            deck.add(Card(Rank.FIVE, Suit.SPADES, CardBack.DECK_13, false))
+
+            deck.add(Card(Rank.ACE, Suit.HEARTS, CardBack.DECK_13, false))
+            deck.add(Card(Rank.ACE, Suit.DIAMONDS, CardBack.DECK_13, false))
+            deck.add(Card(Rank.ACE, Suit.CLUBS, CardBack.DECK_13, false))
+
+            if (isFinalBossWild) {
+                deck.apply {
+                    add(Card(Rank.ACE, Suit.HEARTS, CardBack.WILD_WASTELAND, true))
+                    add(Card(Rank.ACE, Suit.CLUBS, CardBack.WILD_WASTELAND, true))
+                    add(Card(Rank.ACE, Suit.DIAMONDS, CardBack.WILD_WASTELAND, true))
+                    add(Card(Rank.KING, Suit.HEARTS, CardBack.WILD_WASTELAND, false))
+                    add(Card(Rank.KING, Suit.CLUBS, CardBack.WILD_WASTELAND, false))
+                    add(Card(Rank.KING, Suit.DIAMONDS, CardBack.WILD_WASTELAND, false))
+                    add(Card(Rank.KING, Suit.SPADES, CardBack.WILD_WASTELAND, false))
+                    add(Card(Rank.JACK, Suit.HEARTS, CardBack.WILD_WASTELAND, false))
+                    add(Card(Rank.QUEEN, Suit.HEARTS, CardBack.WILD_WASTELAND, false))
+                }
+            } else {
+                deck.apply {
+                    add(Card(Rank.ACE, Suit.HEARTS, CardBack.WILD_WASTELAND, true))
+                }
             }
+            return CResources(deck)
         } else {
+            val deck = activity.save?.getCustomDeckCopy() ?: CustomDeck(CardBack.STANDARD, false)
             deck.apply {
                 add(Card(Rank.ACE, Suit.HEARTS, CardBack.WILD_WASTELAND, true))
                 add(Card(Rank.ACE, Suit.CLUBS, CardBack.WILD_WASTELAND, true))
@@ -78,9 +128,8 @@ fun ShowWildWasteland(
                 add(Card(Rank.JACK, Suit.HEARTS, CardBack.WILD_WASTELAND, false))
                 add(Card(Rank.QUEEN, Suit.HEARTS, CardBack.WILD_WASTELAND, false))
             }
+            return CResources(deck)
         }
-
-        return CResources(deck)
     }
 
     if (showGameSnuffles) {
@@ -116,10 +165,33 @@ fun ShowWildWasteland(
                         playNoCardAlarm(activity)
                     }
                 }
+                sayThing = showAlertDialog
             },
             showAlertDialog = showAlertDialog
         ) {
+            nextSong(activity)
+            isFinalBossSequence = false
             showGameFinalBoss = false
+        }
+        return
+    } else if (showGameFinalBossWild) {
+        StartGame(
+            activity = activity,
+            playerCResources = getPlayerDeck(isFinalBoss = true, isFinalBossWild = true),
+            isCustom = true,
+            enemy = EnemyFinalBoss().apply {
+                playAlarm = {
+                    repeat(3) {
+                        playNoCardAlarm(activity)
+                    }
+                }
+                sayThing = showAlertDialog
+            },
+            showAlertDialog = showAlertDialog
+        ) {
+            nextSong(activity)
+            isFinalBossSequence = false
+            showGameFinalBossWild = false
         }
         return
     }
@@ -196,6 +268,8 @@ fun ShowWildWasteland(
                 OpponentItem(stringResource(R.string.priest)) { playVatsEnter(activity); showGamePriestess = true }
                 Spacer(modifier = Modifier.height(10.dp))
                 OpponentItem(stringResource(R.string.final_boss)) { playVatsEnter(activity); showGameFinalBoss = true }
+                Spacer(modifier = Modifier.height(16.dp))
+                OpponentItem(stringResource(R.string.final_boss) + " WILD") { playVatsEnter(activity); showGameFinalBossWild = true }
                 Spacer(modifier = Modifier.height(16.dp))
             }
         }

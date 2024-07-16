@@ -73,8 +73,9 @@ class Caravan {
             })
         }
     }
-    fun getUfo() {
-        cardsMutable.removeAll { Random.nextBoolean() && !it.hasActiveUfo }
+    fun getUfo(seed: Int) {
+        val rand = Random(seed)
+        cardsMutable.removeAll { rand.nextBoolean() && !it.hasActiveUfo }
     }
 
     fun getValue(): Int {
