@@ -11,6 +11,7 @@ import com.unicorns.invisible.caravan.model.primitives.Rank
 import com.unicorns.invisible.caravan.model.primitives.Suit
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
+import kotlin.math.max
 
 
 @Serializable
@@ -18,37 +19,38 @@ class EnemyFinalBoss : Enemy() {
     private var update = 0
     private fun createCustomDeck(update: Int): CustomDeck {
         val deck = CustomDeck(CardBack.UNPLAYABLE, false)
-        return when {
-            update == 0 -> {
-                deck.removeAll(deck.toList().filter { it.rank.value !in listOf(1, 3, 4, 5, 6, 7) || it.rank == Rank.SEVEN && it.suit.ordinal < 2 })
+        return when (update) {
+            0 -> {
+                deck.removeAll(deck.toList().filter { it.rank.value !in listOf(1, 2, 3, 4, 5, 6) })
                 deck.addOnTop(Card(Rank.ACE, Suit.DIAMONDS, CardBack.UNPLAYABLE, true))
                 deck.shuffle()
                 deck.addOnTop(Card(Rank.ACE, Suit.HEARTS, CardBack.UNPLAYABLE, true))
                 deck
             }
-            update == 1 -> {
-                deck.removeAll(deck.toList().filter { it.rank.value in listOf(1, 8, 9, 10, 12, 14) })
-                deck.addOnTop(Card(Rank.ACE, Suit.CLUBS, CardBack.UNPLAYABLE, true))
-                deck.shuffle()
-                deck.addOnTop(Card(Rank.ACE, Suit.HEARTS, CardBack.UNPLAYABLE, true))
-                deck
-            }
-            update == 2 -> {
+            1 -> {
                 deck.removeAll(deck.toList().filter { it.rank.value in listOf(9, 10, 12, 14) })
                 deck.addOnTop(Card(Rank.ACE, Suit.CLUBS, CardBack.UNPLAYABLE, true))
                 deck.shuffle()
                 deck.addOnTop(Card(Rank.ACE, Suit.HEARTS, CardBack.UNPLAYABLE, true))
                 deck
             }
-            update == 3 -> {
-                deck.removeAll(deck.toList().filter { it.rank == Rank.QUEEN || it.rank == Rank.TEN })
+            2 -> {
+                deck.removeAll(deck.toList().filter { it.rank.value in listOf(12, 14) })
+                deck.addOnTop(Card(Rank.ACE, Suit.CLUBS, CardBack.UNPLAYABLE, true))
+                deck.shuffle()
+                deck.addOnTop(Card(Rank.ACE, Suit.HEARTS, CardBack.UNPLAYABLE, true))
+                deck
+            }
+            3 -> {
+                deck.removeAll(deck.toList().filter { it.rank == Rank.QUEEN })
                 deck.addOnTop(Card(Rank.ACE, Suit.SPADES, CardBack.UNPLAYABLE, true))
                 deck.addOnTop(Card(Rank.ACE, Suit.DIAMONDS, CardBack.UNPLAYABLE, true))
                 deck.shuffle()
                 deck.addOnTop(Card(Rank.ACE, Suit.HEARTS, CardBack.UNPLAYABLE, true))
                 deck
             }
-            update < 8 -> {
+            in (4..6) -> {
+                deck.removeAll(deck.toList().filter { it.rank == Rank.QUEEN })
                 deck.addOnTop(Card(Rank.ACE, Suit.HEARTS, CardBack.UNPLAYABLE, true))
                 deck.shuffle()
                 deck.addOnTop(Card(Rank.ACE, Suit.CLUBS, CardBack.UNPLAYABLE, true))
@@ -56,9 +58,24 @@ class EnemyFinalBoss : Enemy() {
                 deck.addOnTop(Card(Rank.ACE, Suit.SPADES, CardBack.UNPLAYABLE, true))
                 deck
             }
-            update == 8 -> {
-                deck.shuffle()
+            7 -> {
+                deck.addOnTop(Card(Rank.ACE, Suit.HEARTS, CardBack.UNPLAYABLE, true))
                 deck.addOnTop(Card(Rank.ACE, Suit.CLUBS, CardBack.UNPLAYABLE, true))
+                deck.addOnTop(Card(Rank.ACE, Suit.DIAMONDS, CardBack.UNPLAYABLE, true))
+                deck.addOnTop(Card(Rank.ACE, Suit.SPADES, CardBack.UNPLAYABLE, true))
+                deck.shuffle()
+                deck.addOnTop(Card(Rank.TWO, Suit.CLUBS, CardBack.UNPLAYABLE, true))
+                deck.addOnTop(Card(Rank.TWO, Suit.DIAMONDS, CardBack.UNPLAYABLE, true))
+                deck.addOnTop(Card(Rank.TWO, Suit.SPADES, CardBack.UNPLAYABLE, true))
+                deck
+            }
+            8 -> {
+                deck.addOnTop(Card(Rank.ACE, Suit.HEARTS, CardBack.UNPLAYABLE, true))
+                deck.addOnTop(Card(Rank.ACE, Suit.CLUBS, CardBack.UNPLAYABLE, true))
+                deck.addOnTop(Card(Rank.ACE, Suit.DIAMONDS, CardBack.UNPLAYABLE, true))
+                deck.addOnTop(Card(Rank.ACE, Suit.SPADES, CardBack.UNPLAYABLE, true))
+                deck.shuffle()
+                deck.addOnTop(Card(Rank.TWO, Suit.CLUBS, CardBack.UNPLAYABLE, true))
                 deck
             }
             else -> {
@@ -75,7 +92,7 @@ class EnemyFinalBoss : Enemy() {
     @Transient
     var playAlarm: () -> Unit = {}
     @Transient
-    var sayThing: (String, String) -> Unit = { _ ,_ -> }
+    var sayThing: (String) -> Unit = {}
 
     override fun makeMove(game: Game) {
         val hand = game.enemyCResources.hand
@@ -93,28 +110,24 @@ class EnemyFinalBoss : Enemy() {
             playAlarm()
             game.enemyCResources.addNewDeck(createCustomDeck(++update))
             when (update) {
-                1 -> sayThing("Supreme Leader says", "I am satisfied. I have seen enough. Now you can quit.")
-                2 -> sayThing("Supreme Leader says", "Don't you see how futile it is?")
-                3 -> sayThing("Supreme Leader says", "Give up.")
-                4 -> sayThing("Supreme Leader says", "Give up now.")
-                5 -> sayThing("Supreme Leader says", "You nasty pest.")
-                6 -> sayThing("Supreme Leader says", "GIVE UP!")
-                7 -> sayThing("Supreme Leader says", "I am tired of you. Time to get serious.")
-                8 -> sayThing("Supreme Leader says", "No! I can't believe I'm out of bombs!")
-                9 -> sayThing("Supreme Leader says", "No, what? I can't lose! I am supreme!")
+                1 -> sayThing("I am satisfied. I have seen enough. Now you can quit.")
+                2 -> sayThing("Don't you see how futile it is?")
+                3 -> sayThing("Give up.")
+                4 -> sayThing("Give up now.")
+                5 -> sayThing("You nasty pest.")
+                6 -> sayThing("GIVE UP!")
+                7 -> sayThing("I am tired of you. Time to get serious.")
+                8 -> sayThing("Games are over.")
+                9 -> sayThing("No, what? I can't lose! I am supreme!")
             }
         } else if (game.enemyCResources.getDeckBack()?.second == true) {
             playAlarm()
         }
 
         if (game.playerCResources.deckSize == 0 && update == 0) {
-            sayThing("Supreme Leader says", "No-no-no, you won't get away this easily.")
+            sayThing("No-no-no, I am not done with you. Here, have some cards.")
             CardBack.classicDecks.forEach { back ->
-                game.playerCResources.addNewDeck(CustomDeck(back, false).apply {
-                    add(Card(Rank.ACE, Suit.HEARTS, CardBack.WILD_WASTELAND, true))
-                    add(Card(Rank.ACE, Suit.CLUBS, CardBack.WILD_WASTELAND, true))
-                    add(Card(Rank.ACE, Suit.DIAMONDS, CardBack.WILD_WASTELAND, true))
-                })
+                game.playerCResources.addNewDeck(CustomDeck(back, false))
             }
             game.playerCResources.shuffleDeck()
         }
@@ -125,7 +138,7 @@ class EnemyFinalBoss : Enemy() {
             game.nukeBlownSound()
             card.addModifier(game.enemyCResources.removeFromHand(bombIndex))
 
-            if (game.enemyCResources.hand.none { it.isSpecial() } && update < 8) {
+            if (game.enemyCResources.hand.none { it.isSpecial() } && update < 9) {
                 game.enemyCResources.addOnTop(Card(Rank.ACE, Suit.HEARTS, CardBack.UNPLAYABLE, true))
             }
         }
@@ -158,8 +171,72 @@ class EnemyFinalBoss : Enemy() {
                 }
         }
 
-        game.enemyCaravans.withIndex().forEach { (caravanIndex, _) ->
-            val isLosing = checkMoveOnDefeat(game, caravanIndex) || checkMoveOnShouldYouDoSmth(game, caravanIndex)
+        if (update >= 7) {
+            game.enemyCaravans.withIndex().forEach {
+                val isWinningMovePossible = checkMoveOnPossibleVictory(game, it.index)
+                val rivalCaravanValue = game.playerCaravans[it.index].getValue()
+                val lowerBound = max(21, rivalCaravanValue + 1)
+                if (isWinningMovePossible) {
+                    val jack = hand.withIndex().find { card -> card.value.rank == Rank.JACK }
+                    if (jack != null) {
+                        it.value.cards
+                            .filter { card -> card.canAddModifier(jack.value) }
+                            .sortedBy { card -> card.getValue() }
+                            .forEach { card ->
+                                if (it.value.getValue() - card.getValue() in (lowerBound..26)) {
+                                    card.addModifier(game.enemyCResources.removeFromHand(jack.index))
+                                    return
+                                }
+                            }
+                        if (checkMoveOnImminentVictory(game, it.index) && rivalCaravanValue > 26 || it.value.getValue() == rivalCaravanValue) {
+                            game.playerCaravans.forEach { playerCaravan ->
+                                playerCaravan.cards.forEach { card ->
+                                    if (playerCaravan.getValue() - card.getValue() < 21) {
+                                        card.addModifier(game.enemyCResources.removeFromHand(jack.index))
+                                        return
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    val king = hand.withIndex().find { card -> card.value.rank == Rank.KING }
+                    if (king != null) {
+                        it.value.cards
+                            .filter { card -> card.canAddModifier(king.value) }
+                            .sortedBy { card -> card.getValue() }
+                            .forEach { card ->
+                                if (it.value.getValue() + card.getValue() in (lowerBound..26)) {
+                                    card.addModifier(game.enemyCResources.removeFromHand(king.index))
+                                    return
+                                }
+                            }
+                        if (checkMoveOnImminentVictory(game, it.index) && rivalCaravanValue < 21) {
+                            game.playerCaravans.forEach { playerCaravan ->
+                                playerCaravan.cards.forEach { card ->
+                                    if (playerCaravan.getValue() + card.getValue() > 26 || it.value.getValue() == rivalCaravanValue) {
+                                        card.addModifier(game.enemyCResources.removeFromHand(king.index))
+                                        return
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    hand.withIndex()
+                        .filter { card -> !card.value.isFace() }
+                        .forEach { (cardIndex, card) ->
+                            if (it.value.getValue() + card.rank.value in (lowerBound..26) && it.value.canPutCardOnTop(card)) {
+                                it.value.putCardOnTop(game.enemyCResources.removeFromHand(cardIndex))
+                                return
+                            }
+                        }
+                    if (rivalCaravanValue == it.value.getValue() && checkMoveOnImminentVictory(game, it.index)) {
+                        it.value.dropCaravan()
+                        return
+                    }
+                }
+            }
+
+            val isLosing = (0..2).count { game.playerCaravans[it].getValue() >= 11 } >= 1
             if (isLosing) {
                 hand.withIndex()
                     .filter { it.value.isSpecial() }

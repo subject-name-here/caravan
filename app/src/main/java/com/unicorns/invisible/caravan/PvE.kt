@@ -579,14 +579,16 @@ fun StartGame(
     }
 
     val game: Game = rememberScoped {
-        if (enemy is EnemyFinalBoss) {
-            isFinalBossSequence = true
-            startFinalBossTheme(activity)
-        }
         Game(
             playerCResources,
             enemy
         ).also {
+            if (enemy is EnemyFinalBoss) {
+                isFinalBossSequence = true
+                startFinalBossTheme(activity)
+                it.playerCaravans.forEach { caravan -> caravan.canBeDisbanded = false }
+                enemy.sayThing("You cannot disband caravans. I will do that for you.")
+            }
             activity.save?.let { save ->
                 save.gamesStarted++
                 saveOnGD(activity)

@@ -63,7 +63,9 @@ import com.unicorns.invisible.caravan.utils.playClickSound
 import com.unicorns.invisible.caravan.utils.playCloseSound
 import com.unicorns.invisible.caravan.utils.playJokerSounds
 import com.unicorns.invisible.caravan.utils.playLoseSound
+import com.unicorns.invisible.caravan.utils.playNukeBlownSound
 import com.unicorns.invisible.caravan.utils.playQuitMultiplayer
+import com.unicorns.invisible.caravan.utils.playWWSound
 import com.unicorns.invisible.caravan.utils.playWinSound
 import com.unicorns.invisible.caravan.utils.scrollbar
 import com.unicorns.invisible.caravan.utils.sendRequest
@@ -603,6 +605,8 @@ fun StartPvP(
             )
         }
         it.jokerPlayedSound = { playJokerSounds(activity) }
+        it.nukeBlownSound = { playNukeBlownSound(activity) }
+        it.wildWastelandSound = { playWWSound(activity) }
     }
     activity.goBack = {
         if (!game.isOver() && game.isPlayerTurn) {

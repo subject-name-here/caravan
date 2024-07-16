@@ -61,9 +61,10 @@ class CResources(private val deck: CustomDeck) {
     private fun processHandAddedCard(card: Card) {
         if (card.back == CardBack.WILD_WASTELAND && !card.isAlt) {
             if (card.getWildWastelandCardType() == Card.WildWastelandCardType.CAZADOR) {
-                val notSpecial = handMutable.count { !it.isSpecial() }
-                handMutable.removeAll { !it.isSpecial() }
-                repeat(notSpecial) {
+                val notSpecial = handMutable.filter { !it.isSpecial() }
+                notSpecial.forEach { it.handAnimationMark = Card.AnimationMark.MOVING_OUT }
+                handMutable.removeAll(notSpecial)
+                repeat(notSpecial.size) {
                     handMutable.add(Card(Rank.QUEEN, Suit.HEARTS, CardBack.WILD_WASTELAND, false))
                 }
             }
@@ -101,6 +102,7 @@ class CResources(private val deck: CustomDeck) {
 
     fun mutateFev(card: Card) {
         val cards = handMutable.size
+        handMutable.forEach { it.handAnimationMark = Card.AnimationMark.MOVING_OUT }
         handMutable.clear()
         repeat(cards) {
             handMutable.add(Card(card.rank, card.suit, CardBack.WILD_WASTELAND, false))
@@ -109,7 +111,7 @@ class CResources(private val deck: CustomDeck) {
 
     fun addNewDeck(newDeck: CustomDeck) {
         newDeck.toList().forEach {
-            deck.add(it)
+            deck.addOnTop(it)
         }
     }
     fun addOnTop(card: Card) {

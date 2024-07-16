@@ -107,7 +107,8 @@ class Game(
         }
 
         caravans.forEach {
-            val mods = it.cards.flatMap { card -> card.modifiersCopy() }
+            val caravanCards = it.cards
+            val mods = caravanCards.flatMap { card -> card.modifiersCopy() }
             val isMuggyHere = mods.any { mod ->
                 !mod.isAlt &&
                         mod.back == CardBack.WILD_WASTELAND &&
@@ -117,13 +118,16 @@ class Game(
                 card.isProtectedByMuggy = isMuggyHere
             }
 
-            val isCazadorOnCaravan = mods.any { mod ->
+            val cazadorCards = mods.filter { mod ->
                 !mod.isAlt &&
                         mod.back == CardBack.WILD_WASTELAND &&
                         mod.getWildWastelandCardType() == Card.WildWastelandCardType.CAZADOR
             }
-            if (isCazadorOnCaravan) {
-                it.getCazadorPoison()
+            val cazadorOwners = cazadorCards.mapNotNull { cazador -> caravanCards.find { card -> cazador in card.modifiersCopy() } }
+            val queensAffected = cazadorOwners.sumOf { owner -> owner.modifiersCopy().count { m -> m.rank == Rank.QUEEN && !m.isSpecial() } }
+
+            if (cazadorCards.isNotEmpty()) {
+                it.getCazadorPoison(queensAffected % 2 == 1)
                 flag = true
             }
         }
@@ -269,7 +273,7 @@ class Game(
                 }
                 if (it in playerCaravans) {
                     when (value) {
-                        in (1..2) -> {
+                        2 -> {
                             playerCResources.addOnTop(Card(Rank.ACE, Suit.entries.random(), CardBack.WILD_WASTELAND, false))
                         }
                         in (3..4) -> {

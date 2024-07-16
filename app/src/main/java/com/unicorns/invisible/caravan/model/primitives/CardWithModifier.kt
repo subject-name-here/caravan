@@ -84,8 +84,4 @@ class CardWithModifier(val card: Card) {
     fun getTopSuit(): Suit {
         return modifiers.findLast { !it.isSpecial() && it.rank == Rank.QUEEN }?.suit ?: card.suit
     }
-
-    fun abductModifiers() {
-        modifiers.removeAll { !(it.isSpecial() && it.getWildWastelandCardType() == Card.WildWastelandCardType.UFO) }
-    }
 }
