@@ -723,8 +723,9 @@ class MainActivity : SaveDataActivity() {
                     }
 
                     showStoryMode -> {
-                        // TODO
-                        showAlertDialog("TODO", "TODO")
+                        ShowStoryList(this@MainActivity, ::showAlertDialog) {
+                            showStoryMode = false
+                        }
                     }
 
                     showWildWasteland -> {
@@ -948,8 +949,8 @@ class MainActivity : SaveDataActivity() {
                             )
                         }
                         Spacer(Modifier.height(32.dp))
-//                        MenuItem(stringResource(R.string.menu_story), showStory)
-//                        Spacer(modifier = Modifier.height(16.dp))
+                        MenuItem(stringResource(R.string.menu_story), showStory)
+                        Spacer(modifier = Modifier.height(16.dp))
                         MenuItem(stringResource(R.string.lucky_38_tower), showHouseTower)
                         Spacer(modifier = Modifier.height(16.dp))
                         MenuItem(stringResource(R.string.menu_pve), showPvE)

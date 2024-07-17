@@ -125,7 +125,7 @@ class EnemyFinalBoss : Enemy() {
         }
 
         if (game.playerCResources.deckSize == 0 && update == 0) {
-            sayThing("No-no-no, I am not done with you. Here, have some cards.")
+            sayThing("No-no-no, I am not done with you yet. Here, have some cards.")
             CardBack.classicDecks.forEach { back ->
                 game.playerCResources.addNewDeck(CustomDeck(back, false))
             }
@@ -139,7 +139,7 @@ class EnemyFinalBoss : Enemy() {
             card.addModifier(game.enemyCResources.removeFromHand(bombIndex))
 
             if (game.enemyCResources.hand.none { it.isSpecial() } && update < 9) {
-                game.enemyCResources.addOnTop(Card(Rank.ACE, Suit.HEARTS, CardBack.UNPLAYABLE, true))
+                game.enemyCResources.addOnTop(Card(Rank.THREE, Suit.HEARTS, CardBack.UNPLAYABLE, true))
             }
         }
 
@@ -174,8 +174,7 @@ class EnemyFinalBoss : Enemy() {
         if (update >= 7) {
             game.enemyCaravans.withIndex().forEach {
                 val isWinningMovePossible = checkMoveOnPossibleVictory(game, it.index)
-                val rivalCaravanValue = game.playerCaravans[it.index].getValue()
-                val lowerBound = max(21, rivalCaravanValue + 1)
+                val lowerBound = 21
                 if (isWinningMovePossible) {
                     val jack = hand.withIndex().find { card -> card.value.rank == Rank.JACK }
                     if (jack != null) {
@@ -188,16 +187,6 @@ class EnemyFinalBoss : Enemy() {
                                     return
                                 }
                             }
-                        if (checkMoveOnImminentVictory(game, it.index) && rivalCaravanValue > 26 || it.value.getValue() == rivalCaravanValue) {
-                            game.playerCaravans.forEach { playerCaravan ->
-                                playerCaravan.cards.forEach { card ->
-                                    if (playerCaravan.getValue() - card.getValue() < 21) {
-                                        card.addModifier(game.enemyCResources.removeFromHand(jack.index))
-                                        return
-                                    }
-                                }
-                            }
-                        }
                     }
                     val king = hand.withIndex().find { card -> card.value.rank == Rank.KING }
                     if (king != null) {
@@ -210,16 +199,6 @@ class EnemyFinalBoss : Enemy() {
                                     return
                                 }
                             }
-                        if (checkMoveOnImminentVictory(game, it.index) && rivalCaravanValue < 21) {
-                            game.playerCaravans.forEach { playerCaravan ->
-                                playerCaravan.cards.forEach { card ->
-                                    if (playerCaravan.getValue() + card.getValue() > 26 || it.value.getValue() == rivalCaravanValue) {
-                                        card.addModifier(game.enemyCResources.removeFromHand(king.index))
-                                        return
-                                    }
-                                }
-                            }
-                        }
                     }
                     hand.withIndex()
                         .filter { card -> !card.value.isFace() }
@@ -229,10 +208,6 @@ class EnemyFinalBoss : Enemy() {
                                 return
                             }
                         }
-                    if (rivalCaravanValue == it.value.getValue() && checkMoveOnImminentVictory(game, it.index)) {
-                        it.value.dropCaravan()
-                        return
-                    }
                 }
             }
 
@@ -312,7 +287,6 @@ class EnemyFinalBoss : Enemy() {
         }
 
         hand.withIndex()
-            .filter { !it.value.isSpecial() }
             .filter { !it.value.isFace() }
             .forEach { (cardIndex, card) ->
                 game.enemyCaravans.shuffled().forEach { caravan ->

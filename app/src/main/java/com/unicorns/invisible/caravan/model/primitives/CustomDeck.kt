@@ -28,7 +28,6 @@ class CustomDeck() {
 
     fun add(element: Card) = if (!contains(element)) cards.add(element) else false
     fun addOnTop(element: Card) = cards.add(0, element)
-    fun addToBottom(element: Card) = cards.add(element)
     operator fun get(index: Int) = cards[index]
 
     fun count(predicate: (Card) -> Boolean) = cards.count(predicate)

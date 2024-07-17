@@ -123,7 +123,7 @@ class Game(
                         mod.back == CardBack.WILD_WASTELAND &&
                         mod.getWildWastelandCardType() == Card.WildWastelandCardType.CAZADOR
             }
-            val cazadorOwners = cazadorCards.mapNotNull { cazador -> caravanCards.find { card -> cazador in card.modifiersCopy() } }
+            val cazadorOwners = cazadorCards.mapNotNull { cazador -> caravanCards.find { card -> cazador in card.modifiersCopy() } }.toSet()
             val queensAffected = cazadorOwners.sumOf { owner -> owner.modifiersCopy().count { m -> m.rank == Rank.QUEEN && !m.isSpecial() } }
 
             if (cazadorCards.isNotEmpty()) {
