@@ -6,6 +6,7 @@ import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.CustomDeck
 import com.unicorns.invisible.caravan.model.primitives.Rank
 import kotlinx.serialization.Serializable
+import kotlin.random.Random
 
 
 @Serializable
@@ -31,7 +32,7 @@ data object EnemyStory1 : Enemy() {
             return
         }
 
-        hand.withIndex().sortedBy { it.value.rank.value }.forEach { (cardIndex, card) ->
+        hand.withIndex().filter { Random.nextBoolean() }.forEach { (cardIndex, card) ->
             if (!card.rank.isFace()) {
                 game.enemyCaravans.shuffled().forEach { caravan ->
                     if (caravan.getValue() + card.rank.value <= 26) {

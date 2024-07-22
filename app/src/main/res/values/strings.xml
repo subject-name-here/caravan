@@ -400,7 +400,7 @@
     <string name="pay_1_ticket">Pay 1 ticket</string>
     <string name="pay_100_caps">Pay 100 caps</string>
     <string name="hey">HEY!</string>
-    <string name="tower_progress_will_be_lost">Tower progress will be lost!</string>
+    <string name="tower_progress_will_be_lost">All progress will be lost!</string>
     <string name="select_payment_method">Select payment method.</string>
     <string name="you_don_t_have_enough_cash_kid">You don\'t have enough cash, kid.</string>
     <string name="you_don_t_have_a_ticket_on_you">You don\'t have a ticket on you.</string>

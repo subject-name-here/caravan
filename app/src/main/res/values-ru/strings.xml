@@ -408,7 +408,7 @@
     <string name="pay_1_ticket">Заплатить 1 билет</string>
     <string name="pay_100_caps">Заплатить 100 крышечек</string>
     <string name="hey">ЭЙ!</string>
-    <string name="tower_progress_will_be_lost">Прогресс в БАШНЕ будет потерян!</string>
+    <string name="tower_progress_will_be_lost">Прогресс будет потерян!</string>
     <string name="select_payment_method">Выберите метод оплаты.</string>
     <string name="you_don_t_have_enough_cash_kid">Недостаточно денег.</string>
     <string name="you_don_t_have_a_ticket_on_you">Нет билета.</string>

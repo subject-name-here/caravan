@@ -9,8 +9,10 @@ import kotlinx.serialization.Serializable
 
 
 @Serializable
-data object EnemyStory3 : Enemy() {
-    override fun createDeck(): CResources = CResources(CustomDeck(CardBack.TOPS, false))
+data object EnemyStory4 : Enemy() {
+    override fun createDeck(): CResources = CResources(CustomDeck(CardBack.LUCKY_38, true).apply {
+        removeAll(toList().filter { it.rank.value < 6 || it.rank == Rank.QUEEN })
+    })
     override fun getRewardBack() = null
 
     override fun makeMove(game: Game) {
@@ -78,21 +80,6 @@ data object EnemyStory3 : Enemy() {
                 }
             }
 
-            if (card.rank == Rank.QUEEN) {
-                val possibleQueenCaravans = game.enemyCaravans
-                    .filter { c ->
-                        c.size >= 2 && hand.all { !c.canPutCardOnTop(it) } && c.cards.last().canAddModifier(card)
-                    }
-                if (possibleQueenCaravans.isNotEmpty()) {
-                    possibleQueenCaravans
-                        .random()
-                        .cards
-                        .last()
-                        .addModifier(game.enemyCResources.removeFromHand(cardIndex))
-                    return
-                }
-            }
-
             if (card.rank == Rank.JOKER) {
                 val cards = (game.playerCaravans + game.enemyCaravans).flatMap { it.cards }.groupBy { it.card.rank }
                 val maxRank = cards.entries.maxBy { it.value.size }
@@ -114,6 +101,6 @@ data object EnemyStory3 : Enemy() {
             return
         }
 
-        game.enemyCResources.dropCardFromHand(hand.indices.random())
+        game.enemyCResources.dropCardFromHand(hand.withIndex().minBy { it.value.rank.value }.index)
     }
 }
