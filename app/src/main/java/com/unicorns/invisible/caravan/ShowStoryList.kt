@@ -424,7 +424,7 @@ fun ShowStoryChapter2(
                         text = "And yet, he was stopped by the border patrol of the NCR."
 
                     }
-                    3 -> DialogLine("-_-") {
+                    3 -> DialogLine("Oh.") {
                         lineNumber = 4
                         text = "The guard didn't allow the Prospector to leave, yet the Prospector was not planning on giving up. " +
                                 "He attempted to sneak past the guards..."

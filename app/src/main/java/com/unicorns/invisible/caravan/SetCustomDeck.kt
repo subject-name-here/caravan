@@ -120,7 +120,7 @@ fun SetCustomDeck(
         ) {
             item {
                 CardBack.playableBacks.forEach { back ->
-                    if (back == CardBack.DECK_13 && activity.save?.secretMode != true) {
+                    if (back == CardBack.DECK_13 && activity.save?.availableDecks?.get(CardBack.DECK_13) != true) {
                         return@forEach
                     }
 

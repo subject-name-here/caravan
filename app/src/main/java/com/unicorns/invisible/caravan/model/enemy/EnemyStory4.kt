@@ -3,15 +3,20 @@ package com.unicorns.invisible.caravan.model.enemy
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.primitives.CResources
+import com.unicorns.invisible.caravan.model.primitives.Card
 import com.unicorns.invisible.caravan.model.primitives.CustomDeck
 import com.unicorns.invisible.caravan.model.primitives.Rank
+import com.unicorns.invisible.caravan.model.primitives.Suit
 import kotlinx.serialization.Serializable
 
 
 @Serializable
 data object EnemyStory4 : Enemy() {
-    override fun createDeck(): CResources = CResources(CustomDeck(CardBack.LUCKY_38, true).apply {
+    override fun createDeck(): CResources = CResources(CustomDeck(CardBack.GOMORRAH, false).apply {
         removeAll(toList().filter { it.rank.value < 6 || it.rank == Rank.QUEEN })
+        add(Card(Rank.JACK, Suit.SPADES, CardBack.GOMORRAH, true))
+        add(Card(Rank.KING, Suit.SPADES, CardBack.GOMORRAH, true))
+        add(Card(Rank.ACE, Suit.SPADES, CardBack.GOMORRAH, true))
     })
     override fun getRewardBack() = null
 

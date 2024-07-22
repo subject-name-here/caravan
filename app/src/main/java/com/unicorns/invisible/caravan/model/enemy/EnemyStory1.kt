@@ -11,9 +11,7 @@ import kotlin.random.Random
 
 @Serializable
 data object EnemyStory1 : Enemy() {
-    override fun createDeck(): CResources = CResources(CustomDeck(CardBack.STANDARD, true).apply {
-        removeAll(toList().filter { it.rank == Rank.QUEEN || it.rank == Rank.JOKER })
-    })
+    override fun createDeck(): CResources = CResources(CustomDeck(CardBack.DECK_13, false))
     override fun getRewardBack() = null
 
     override fun makeMove(game: Game) {
