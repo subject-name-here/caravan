@@ -11,23 +11,51 @@ import kotlinx.serialization.Serializable
 
 
 @Serializable
-data object EnemyStory4 : Enemy() {
+class EnemyStory4(val showMessage: (Int) -> Unit) : Enemy() {
     override fun createDeck(): CResources = CResources(CustomDeck(CardBack.GOMORRAH, false).apply {
-        removeAll(toList().filter { it.rank.value < 6 || it.rank == Rank.QUEEN })
+        removeAll(toList().filter { it.rank.value < 5 || it.rank == Rank.QUEEN })
         add(Card(Rank.JACK, Suit.SPADES, CardBack.GOMORRAH, true))
         add(Card(Rank.KING, Suit.SPADES, CardBack.GOMORRAH, true))
         add(Card(Rank.ACE, Suit.SPADES, CardBack.GOMORRAH, true))
     })
     override fun getRewardBack() = null
 
+    private var shownMessage = false
     override fun makeMove(game: Game) {
         val hand = game.enemyCResources.hand
 
         if (game.isInitStage()) {
+            when (hand.size) {
+                8 -> {
+                    game.playerCResources.addCardToHandPvP(Card(Rank.TWO, Suit.HEARTS, CardBack.STANDARD, false))
+                    showMessage(1)
+                }
+                7 -> {
+                    game.playerCResources.addCardToHandPvP(Card(Rank.TWO, Suit.HEARTS, CardBack.LUCKY_38, true))
+                    game.playerCResources.addCardToHandPvP(Card(Rank.TWO, Suit.HEARTS, CardBack.VAULT_21, false))
+                    showMessage(2)
+                }
+                6 -> {
+                    game.playerCResources.addCardToHandPvP(Card(Rank.TWO, Suit.HEARTS, CardBack.GOMORRAH, false))
+                    game.playerCResources.addCardToHandPvP(Card(Rank.TWO, Suit.HEARTS, CardBack.VAULT_21, true))
+                    showMessage(3)
+                }
+            }
+
             val cardIndex = hand.withIndex().filter { !it.value.isFace() }.random().index
             val caravan = game.enemyCaravans.filter { it.isEmpty() }.random()
             caravan.putCardOnTop(game.enemyCResources.removeFromHand(cardIndex))
             return
+        }
+
+        if (!shownMessage) {
+            shownMessage = true
+            showMessage(4)
+            game.playerCResources.addNewDeck(CustomDeck(CardBack.STANDARD, false).apply {
+                removeAll(toList().filter { it.rank.value < 5 || it.rank == Rank.QUEEN })
+            })
+            game.playerCResources.addCardToHandPvP(Card(Rank.KING, Suit.HEARTS, CardBack.STANDARD, true))
+            game.playerCResources.shuffleDeck()
         }
 
         hand.withIndex().sortedBy { it.value.rank.value }.forEach { (cardIndex, card) ->
