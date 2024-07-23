@@ -219,7 +219,7 @@ data object EnemyPriestess : Enemy() {
                 val caravan = game.playerCaravans.minBy { abs(26 - it.getValue()) }
                 val caravanIndex = game.playerCaravans.indexOf(caravan)
                 val cardToKing = caravan.cards
-                    .filter { caravan.getValue() + it.getValue() !in (21..26) }
+                    .filter { caravan.getValue() + it.getValue() > 26 }
                     .maxByOrNull { it.getValue() }
 
                 if (cardToKing != null && cardToKing.canAddModifier(card)) {

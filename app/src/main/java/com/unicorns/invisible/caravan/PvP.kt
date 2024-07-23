@@ -259,10 +259,6 @@ fun ShowPvP(
         if (isRoomCreated != 0) {
             return
         }
-        if (roomNumber.toIntOrNull() == 32768) {
-            activity.save?.secretMode = true
-            saveOnGD(activity)
-        }
         if (isRoomNumberIncorrect(roomNumber)) {
             showIncorrectRoomNumber()
             return

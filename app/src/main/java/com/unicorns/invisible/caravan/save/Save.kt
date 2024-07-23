@@ -302,11 +302,6 @@ class Save {
 
     @EncodeDefault
     var secretMode: Boolean = false
-        set(value) {
-            field = value
-            availableDecks[CardBack.DECK_13] = true
-            availableCards.addAll(CustomDeck(CardBack.DECK_13, false).toList())
-        }
 
     @EncodeDefault
     var storyChaptersProgress = 0

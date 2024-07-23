@@ -38,6 +38,7 @@ import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.challenge.Challenge
 import com.unicorns.invisible.caravan.model.enemy.Enemy
+import com.unicorns.invisible.caravan.model.enemy.EnemyPriestess
 import com.unicorns.invisible.caravan.model.enemy.EnemyStory1
 import com.unicorns.invisible.caravan.model.enemy.EnemyStory2
 import com.unicorns.invisible.caravan.model.enemy.EnemyStory3
@@ -119,6 +120,17 @@ fun ShowStoryList(activity: MainActivity, showAlertDialog: (String, String) -> U
             ShowStoryChapter4(activity, showAlertDialog, {
                 activity.save?.let {
                     it.storyChaptersProgress = maxOf(it.storyChaptersProgress, 4)
+                    saveOnGD(activity)
+                }
+            }) { showChapter = null }
+            return
+        }
+        4 -> {
+            ShowStoryChapter5(activity, showAlertDialog, {
+                activity.save?.let {
+                    it.storyChaptersProgress = maxOf(it.storyChaptersProgress, 5)
+                    it.secretMode = true
+                    it.availableDecksAlt[CardBack.DECK_13] = true
                     saveOnGD(activity)
                 }
             }) { showChapter = null }
@@ -572,7 +584,7 @@ fun ShowStoryChapter3(
                                 "and the power was off, only emergency lights were shimmering. " +
                                 "He found it odd, yet proceeded anyways."
                     }
-                    2 -> DialogLine("Ermm, maybe we shouldn't go inside...") {
+                    2 -> DialogLine("Ermm, maybe he shouldn't go inside...") {
                         lineNumber = 3
                         text = "Deep within the halls of the vault, he found multiple dismembered and " +
                                 "chewed on corpses, maimed beyond recognition. He decided to not " +
@@ -591,7 +603,6 @@ fun ShowStoryChapter3(
         }
     }
 }
-
 
 @Composable
 fun ShowStoryChapter4(
@@ -763,6 +774,135 @@ fun ShowStoryChapter4(
                         text = "After a few days, the rain ended, and the Prospector could continue his way..."
                     }
                     -3 -> DialogLine("[FINISH]") { isFinalBossSequence = false; nextSong(activity); goBack() }
+                    else -> {
+                        DialogLine("[FINISH]") { isGame = true; gameResult = -1 }
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+
+@Composable
+fun ShowStoryChapter5(
+    activity: MainActivity,
+    showAlertDialog: (String, String) -> Unit,
+    advanceChapter: () -> Unit,
+    goBack: () -> Unit,
+) {
+    var text by rememberSaveable { mutableStateOf("Weeks, maybe months passed… " +
+            "The Prospector reached the northern territories of the former Canada, where it borders with Alaska.") }
+    var lineNumber by rememberSaveable { mutableIntStateOf(0) }
+    var isGame by rememberSaveable { mutableStateOf(false) }
+    var gameResult by rememberSaveable { mutableIntStateOf(0) }
+    if (isGame) {
+        StartStoryGame(
+            activity,
+            EnemyPriestess,
+            CResources(activity.save?.getCustomDeckCopy() ?: CustomDeck(CardBack.STANDARD, false)),
+            showAlertDialog,
+            {},
+            { gameResult = 1; advanceChapter() },
+            { gameResult = -1; advanceChapter() },
+            { isGame = false }
+        )
+        return
+    }
+
+    Box(
+        Modifier
+            .fillMaxSize()
+            .background(Color.Black)) {
+        Column {
+            Box(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp)
+                    .paint(
+                        painterResource(
+                            id = R.drawable.frank_head
+                        )
+                    ))
+
+            @Composable
+            fun DialogLine(line: String, onClick: () -> Unit) {
+                TextClassic(
+                    line,
+                    getTextColorByStyle(activity, Style.PIP_BOY),
+                    getStrokeColorByStyle(activity, Style.PIP_BOY),
+                    18.sp,
+                    Alignment.CenterStart,
+                    modifier = Modifier
+                        .clickableSelect(activity) {
+                            onClick()
+                        }
+                        .background(getTextBackByStyle(activity, Style.PIP_BOY))
+                        .padding(horizontal = 8.dp, vertical = 4.dp),
+                    TextAlign.Start
+                )
+                Spacer(Modifier.height(12.dp))
+            }
+
+            Column(Modifier.fillMaxWidth()) {
+                TextClassic(
+                    text,
+                    getTextColorByStyle(activity, Style.PIP_BOY),
+                    getStrokeColorByStyle(activity, Style.PIP_BOY),
+                    16.sp,
+                    Alignment.CenterStart,
+                    modifier = Modifier
+                        .background(getTextBackByStyle(activity, Style.PIP_BOY))
+                        .padding(horizontal = 8.dp, vertical = 4.dp),
+                    TextAlign.Start
+                )
+
+                Spacer(Modifier.height(16.dp))
+
+                when (gameResult) {
+                    1, -1 -> {
+                        text = "The Madness Priestess was joyous. She liked the match a lot, and " +
+                                "awarded the Prospector with a deck that once belonged to one of her flock."
+                        lineNumber = -1
+                    }
+                    else -> {}
+                }
+
+                when (lineNumber) {
+                    0 -> DialogLine("Well, he's not far from Oasis.") {
+                        lineNumber = 1
+                        text =
+                            "To his surprise, a bizarre scene unfolded before him: a gigantic wall of trash, " +
+                                    "tens of meters high. He attempted to traverse around them, but to no avail – the wall had no end."
+                    }
+                    1 -> DialogLine("Wall of trash? Who put it here?") {
+                        lineNumber = 2
+                        text = "Yet it was not the end of his adventure, for he was discovered by a woman " +
+                                "who was fixing the wall with the trash she brought from afar."
+                    }
+                    2 -> DialogLine("A woman? Why would she do that?") {
+                        lineNumber = 3
+                        text = "She explained " +
+                                "that the wall is meant to keep the people safe from what lays beyond, " +
+                                "elaborating on which she refused."
+                    }
+                    3 -> DialogLine("So, how did Prospector proceed?") {
+                        lineNumber = 4
+                        text = "He didn't. Turned back and returned home."
+                    }
+                    4 -> DialogLine("Very funny.") {
+                        lineNumber = 5
+                        text = "Okay, she agreed to assist the Prospector and lead him through the secret passage, " +
+                                "be he to entertain her in the friendly game of Caravan…"
+                    }
+                    -1 -> DialogLine("Yeah, but the Prospector arrived not to play Caravan...") {
+                        lineNumber = -2
+                        gameResult = 0
+                        text = "The Prospector was lead beyond the wall. Yet what he saw there astonished " +
+                                "him, and not in a good way…"
+                    }
+                    -2 -> DialogLine("[FINISH]") { goBack() }
                     else -> {
                         DialogLine("[FINISH]") { isGame = true; gameResult = -1 }
                     }
