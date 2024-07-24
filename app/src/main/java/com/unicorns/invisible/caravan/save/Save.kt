@@ -305,4 +305,6 @@ class Save {
 
     @EncodeDefault
     var storyChaptersProgress = 0
+    @EncodeDefault
+    var altStoryChaptersProgress = 0
 }

@@ -19,8 +19,6 @@ import kotlin.random.Random
 @Serializable
 data object EnemyPriestess : Enemy() {
     override fun createDeck(): CResources = CResources(CustomDeck(CardBack.DECK_13, true).apply {
-        add(Card(Rank.ACE, Suit.HEARTS, CardBack.UNPLAYABLE, true))
-
         add(Card(Rank.ACE, Suit.HEARTS, CardBack.WILD_WASTELAND, true))
         add(Card(Rank.ACE, Suit.CLUBS, CardBack.WILD_WASTELAND, true))
 

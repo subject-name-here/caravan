@@ -43,6 +43,8 @@ import com.unicorns.invisible.caravan.model.enemy.EnemyStory1
 import com.unicorns.invisible.caravan.model.enemy.EnemyStory2
 import com.unicorns.invisible.caravan.model.enemy.EnemyStory3
 import com.unicorns.invisible.caravan.model.enemy.EnemyStory4
+import com.unicorns.invisible.caravan.model.enemy.EnemyStory6
+import com.unicorns.invisible.caravan.model.enemy.EnemyStory7
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.Caravan
 import com.unicorns.invisible.caravan.model.primitives.Card
@@ -78,6 +80,7 @@ import com.unicorns.invisible.caravan.utils.playWinSound
 import com.unicorns.invisible.caravan.utils.scrollbar
 import com.unicorns.invisible.caravan.utils.stopAmbient
 import com.unicorns.invisible.caravan.utils.stopRadio
+import kotlinx.coroutines.delay
 
 
 @Composable
@@ -136,6 +139,24 @@ fun ShowStoryList(activity: MainActivity, showAlertDialog: (String, String) -> U
             }) { showChapter = null }
             return
         }
+        5 -> {
+            ShowStoryChapter6(activity, showAlertDialog, {
+                activity.save?.let {
+                    it.storyChaptersProgress = maxOf(it.storyChaptersProgress, 6)
+                    saveOnGD(activity)
+                }
+            }) { showChapter = null }
+            return
+        }
+        6 -> {
+            ShowStoryChapter7(activity, showAlertDialog, {
+                activity.save?.let {
+                    it.storyChaptersProgress = maxOf(it.storyChaptersProgress, 7)
+                    saveOnGD(activity)
+                }
+            }) { showChapter = null }
+            return
+        }
         else -> {}
     }
 
@@ -183,12 +204,14 @@ fun ShowStoryList(activity: MainActivity, showAlertDialog: (String, String) -> U
                         1 -> "Chapter 2: Patrolling the Mojave..."
                         2 -> "Chapter 3: Shake Hands With Danger."
                         3 -> "Chapter 4: Can't Play Dead."
-                        4 -> "Chapter 5: Look What You Mad Me Do."
+                        4 -> "Chapter 5: It's a Mad, Mad, Mad, Mad World."
                         5 -> "Chapter 6: Paradise Lost."
                         6 -> "Chapter 7: Jailhouse Rock."
                         7 -> "Chapter 8: The Day He Didn't Die?"
                         8 -> "Chapter 9: Duel of the Fates."
                         9 -> "The End Slides."
+                        10 -> "Chapter 9A: Duel of the Fates."
+                        11 -> "Future Built Upon Graveyard."
                         else -> "???"
                     }
                     TextFallout(
@@ -218,6 +241,10 @@ fun ShowStoryList(activity: MainActivity, showAlertDialog: (String, String) -> U
                 }
                 repeat(chaptersRevealed) {
                     Chapter(it) { playSelectSound(activity); showChapter = it }
+                    Spacer(modifier = Modifier.height(10.dp))
+                }
+                repeat(activity.save?.altStoryChaptersProgress ?: 0) {
+                    Chapter(it + 10) { playSelectSound(activity); showChapter = it }
                     Spacer(modifier = Modifier.height(10.dp))
                 }
             }
@@ -462,7 +489,7 @@ fun ShowStoryChapter2(
                     }
                     2 -> DialogLine("Finally, adventure begins!") {
                         lineNumber = 3
-                        text = "And yet, he was stopped by the border patrol of the NCR."
+                        text = "And yet, on his way through Mojave he was stopped by the border patrol of the NCR."
 
                     }
                     3 -> DialogLine("Oh.") {
@@ -903,6 +930,348 @@ fun ShowStoryChapter5(
                                 "him, and not in a good way…"
                     }
                     -2 -> DialogLine("[FINISH]") { goBack() }
+                    else -> {
+                        DialogLine("[FINISH]") { isGame = true; gameResult = -1 }
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+
+@Composable
+fun ShowStoryChapter6(
+    activity: MainActivity,
+    showAlertDialog: (String, String) -> Unit,
+    advanceChapter: () -> Unit,
+    goBack: () -> Unit,
+) {
+    var text by rememberSaveable { mutableStateOf("Ships. Lots and lots of ships were docked to the shore base " +
+            "which was the Prospector’s destination. The steam ships were unloading lots and lots of boxes.") }
+    var lineNumber by rememberSaveable { mutableIntStateOf(0) }
+    var isGame by rememberSaveable { mutableStateOf(false) }
+    var gameResult by rememberSaveable { mutableIntStateOf(0) }
+
+
+    var messageNumber by rememberSaveable { mutableIntStateOf(-1) }
+    if (messageNumber > 0) {
+        LaunchedEffect(Unit) { playNotificationSound(activity) {} }
+        AlertDialog(
+            modifier = Modifier.border(width = 4.dp, color = Color(activity.getColor(R.color.colorText))),
+            onDismissRequest = { messageNumber = -1 },
+            confirmButton = {
+                TextClassic(
+                    when (messageNumber) {
+                        1 -> "..."
+                        2 -> "..."
+                        else -> "Hell 2 U!"
+                    },
+                    Color(activity.getColor(R.color.colorTextBack)),
+                    Color(activity.getColor(R.color.colorTextBack)),
+                    18.sp, Alignment.Center,
+                    Modifier
+                        .background(Color(activity.getColor(R.color.colorText)))
+                        .clickableCancel(activity) { messageNumber = -1 }
+                        .padding(4.dp),
+                    TextAlign.Center
+                )
+            },
+            title = {
+                TextClassic(
+                    "Chinese soldier says out loud:",
+                    Color(activity.getColor(R.color.colorText)),
+                    Color(activity.getColor(R.color.colorText)),
+                    24.sp, Alignment.CenterStart, Modifier,
+                    TextAlign.Start
+                )
+            },
+            text = {
+                TextClassic(
+                    when (messageNumber) {
+                        1 -> "Put your hands in the air! Do not try to attack!"
+                        2 -> "Last warning! Stay dormant and do nothing suspicious!"
+                        else -> "That's it! You're going down!"
+                    },
+                    Color(activity.getColor(R.color.colorText)),
+                    Color(activity.getColor(R.color.colorText)),
+                    16.sp, Alignment.CenterStart, Modifier,
+                    TextAlign.Start
+                )
+            },
+            containerColor = Color.Black,
+            textContentColor = Color(activity.getColor(R.color.colorText)),
+            shape = RectangleShape,
+        )
+    }
+
+    if (isGame) {
+        val enemy = EnemyStory6 { messageNumber = it }
+        StartTowerGame(
+            activity,
+            enemy,
+            showAlertDialog,
+            {},
+            { gameResult = 2 },
+            {
+                if (enemy.shownMessage) {
+                    gameResult = -1
+                } else {
+                    gameResult = 1
+                    advanceChapter()
+                }
+            },
+            { isGame = false }
+        )
+        return
+    }
+
+    Box(
+        Modifier
+            .fillMaxSize()
+            .background(Color.Black)) {
+        Column {
+            Box(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp)
+                    .paint(
+                        painterResource(
+                            id = R.drawable.frank_head
+                        )
+                    ))
+
+            @Composable
+            fun DialogLine(line: String, onClick: () -> Unit) {
+                TextClassic(
+                    line,
+                    getTextColorByStyle(activity, Style.PIP_BOY),
+                    getStrokeColorByStyle(activity, Style.PIP_BOY),
+                    18.sp,
+                    Alignment.CenterStart,
+                    modifier = Modifier
+                        .clickableSelect(activity) {
+                            onClick()
+                        }
+                        .background(getTextBackByStyle(activity, Style.PIP_BOY))
+                        .padding(horizontal = 8.dp, vertical = 4.dp),
+                    TextAlign.Start
+                )
+                Spacer(Modifier.height(12.dp))
+            }
+
+            Column(Modifier.fillMaxWidth()) {
+                TextClassic(
+                    text,
+                    getTextColorByStyle(activity, Style.PIP_BOY),
+                    getStrokeColorByStyle(activity, Style.PIP_BOY),
+                    16.sp,
+                    Alignment.CenterStart,
+                    modifier = Modifier
+                        .background(getTextBackByStyle(activity, Style.PIP_BOY))
+                        .padding(horizontal = 8.dp, vertical = 4.dp),
+                    TextAlign.Start
+                )
+
+                Spacer(Modifier.height(16.dp))
+
+                when (gameResult) {
+                    1 -> {
+                        text = "Since the Prospector didn't resist, he was arrested and put in one of the ships. " +
+                                "Little did his captors know it was the plan all along..."
+                        lineNumber = -1
+                    }
+                    -1 -> {
+                        LaunchedEffect(Unit) { playTowerFailed(activity) }
+                        text = "Since the Prospector resisted, he was killed in place."
+                        lineNumber = -1
+                    }
+                    2 -> {
+                        LaunchedEffect(Unit) {
+                            playNukeBlownSound(activity)
+                            delay(10000L)
+                            playTowerFailed(activity)
+                        }
+                        text = "Prospector did it. He defeated everyone. Then he heard a whistle. Nuclear bomb was coming his way. " +
+                                "Then - hot breath of the air, then... nothing."
+                        lineNumber = -1
+                    }
+                    else -> {}
+                }
+
+                when (lineNumber) {
+                    0 -> {
+                        DialogLine("What was in the boxes?") {
+                            lineNumber = 1
+                            text =
+                                "Most of them had the Caravan card decks, some of them artificially aged. " +
+                                        "The Prospector understood everything: of course, how " +
+                                        "could the food and such unnecessary and quick to decay things as cards " +
+                                        "could be found in the wastes, if they were not dropped out by the Chinese?"
+                        }
+                        DialogLine("Wait, Chinese?") {
+                            lineNumber = 3
+                            text =
+                                "Yes. The Chinese. And lots of them. Most ghoulified, but plenty of them pure. " +
+                                        "They have turned the Oasis into their base of operations on the North American continent."
+                        }
+                    }
+                    1 -> {
+                        DialogLine("[INT 6/8] But why flooding America with food and stuff?") {
+                            lineNumber = 2
+                            text = "You'll understand in time."
+                        }
+                        DialogLine("Wait, Chinese?") {
+                            lineNumber = 3
+                            text =
+                                "Yes. The Chinese. And lots of them. Most ghoulified, but plenty of them pure. " +
+                                        "They have turned the Oasis into their base of operations on the North American continent."
+                        }
+                    }
+                    2 -> DialogLine("Wait, Chinese?") {
+                        lineNumber = 3
+                        text =
+                            "Yes. The Chinese. And lots of them. Most ghoulified, but plenty of them pure. " +
+                                    "They have turned the Oasis into their base of operations on the North American continent."
+                    }
+                    3 -> DialogLine("What did the Prospector do? Has he killed everyone and saved the world?") {
+                        lineNumber = 4
+                        text = "Not quite. The Prospector had thought it was too late to go back, and so he decided " +
+                                "to wait for the dark and sneak onto one of the returning cargo ships."
+                    }
+                    4 -> DialogLine("[Sneak 69/70] Yay, ninja time!") {
+                        lineNumber = 5
+                        text = "Unfortunately, the Prospector was noticed by one of the guards, who has alerted EVERYONE around."
+                    }
+                    5 -> DialogLine("And then he defeated everyone?") {
+                        lineNumber = 6
+                        text = "See for yourself."
+                    }
+                    -1 -> DialogLine("[FINISH]") { goBack() }
+                    else -> {
+                        DialogLine("[FINISH]") { isGame = true; gameResult = -1 }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun ShowStoryChapter7(
+    activity: MainActivity,
+    showAlertDialog: (String, String) -> Unit,
+    advanceChapter: () -> Unit,
+    goBack: () -> Unit,
+) {
+    var text by rememberSaveable { mutableStateOf("Turns out China was barely damaged during the Great War. " +
+            "Or maybe it was, but the cities were rebuilt. Either way, the pre-war civilization did not only remain here, but thrived.") }
+    var lineNumber by rememberSaveable { mutableIntStateOf(0) }
+    var isGame by rememberSaveable { mutableStateOf(false) }
+    var gameResult by rememberSaveable { mutableIntStateOf(0) }
+    if (isGame) {
+        StartTowerGame(
+            activity,
+            EnemyStory7,
+            showAlertDialog,
+            {},
+            { gameResult = 1; advanceChapter() },
+            { gameResult = -1 },
+            { isGame = false }
+        )
+        return
+    }
+
+    Box(
+        Modifier
+            .fillMaxSize()
+            .background(Color.Black)) {
+        Column {
+            Box(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp)
+                    .paint(
+                        painterResource(
+                            id = R.drawable.frank_head
+                        )
+                    ))
+
+            @Composable
+            fun DialogLine(line: String, onClick: () -> Unit) {
+                TextClassic(
+                    line,
+                    getTextColorByStyle(activity, Style.PIP_BOY),
+                    getStrokeColorByStyle(activity, Style.PIP_BOY),
+                    18.sp,
+                    Alignment.CenterStart,
+                    modifier = Modifier
+                        .clickableSelect(activity) {
+                            onClick()
+                        }
+                        .background(getTextBackByStyle(activity, Style.PIP_BOY))
+                        .padding(horizontal = 8.dp, vertical = 4.dp),
+                    TextAlign.Start
+                )
+                Spacer(Modifier.height(12.dp))
+            }
+
+            Column(Modifier.fillMaxWidth()) {
+                TextClassic(
+                    text,
+                    getTextColorByStyle(activity, Style.PIP_BOY),
+                    getStrokeColorByStyle(activity, Style.PIP_BOY),
+                    16.sp,
+                    Alignment.CenterStart,
+                    modifier = Modifier
+                        .background(getTextBackByStyle(activity, Style.PIP_BOY))
+                        .padding(horizontal = 8.dp, vertical = 4.dp),
+                    TextAlign.Start
+                )
+
+                Spacer(Modifier.height(16.dp))
+
+                when (gameResult) {
+                    1 -> {
+                        text = "As they talked during the game, the Prospector learnt more about his cellmate."
+                        lineNumber = -2
+                        gameResult = 0
+                    }
+                    -1 -> {
+                        LaunchedEffect(Unit) { playTowerFailed(activity) }
+                        text = "Cellmate, disappointed in the Prospector, decided not to open up. " +
+                                "Eventually, they both perished in the prison."
+                        lineNumber = -1
+                    }
+                    else -> {}
+                }
+
+                when (lineNumber) {
+                    0 -> DialogLine("What about the Prospector?") {
+                        lineNumber = 1
+                        text =
+                            "The guards lead the Prospector to one of the city prisons, where he was interrogated. " +
+                                    "Initially, they believed that he was one of the spies from " +
+                                    "the many \"savage tribes\" that inhabited the fallen America, but once they were " +
+                                    "proven wrong, their interest in the Prospector died."
+                    }
+                    1 -> DialogLine("So, did they let him go?") {
+                        lineNumber = 2
+                        text = "No, for the time being he was left in a cell with another convict, " +
+                                "where they would wait for whatever comes their way. " +
+                                "The inmate offered a friendly game of caravan to kill time…"
+                    }
+                    -1 -> DialogLine("[FINISH]") { goBack() }
+                    -2 -> DialogLine("So, who is he?") {
+                        lineNumber = -1
+                        text = "The Prospector learnt that the fellow inmate " +
+                                "is a Brotherhood of Steel paladin who was sent to explore the Oasis but got " +
+                                "captured by the Chinese. In truth, the capture was orchestrated – the " +
+                                "paladin wished to get into the Chinese mainland in order to collect as much " +
+                                "data and blueprints of technology as possible. He made a secret tunnel that " +
+                                "lead outside, yet he wished not to escape. Paladin told the Prospector the shocking truth..."
+                    }
                     else -> {
                         DialogLine("[FINISH]") { isGame = true; gameResult = -1 }
                     }
