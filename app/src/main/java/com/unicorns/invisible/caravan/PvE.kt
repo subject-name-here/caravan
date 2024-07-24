@@ -747,7 +747,7 @@ fun winCard(
         }
     }
     if (capsEarned > 0) {
-        activity.save!!.caps += capsEarned
+        activity.save?.let { it.caps += capsEarned }
         result += activity.getString(R.string.caps_earned, capsEarned.toString())
     }
 

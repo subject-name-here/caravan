@@ -45,6 +45,7 @@ import com.unicorns.invisible.caravan.model.enemy.EnemyStory3
 import com.unicorns.invisible.caravan.model.enemy.EnemyStory4
 import com.unicorns.invisible.caravan.model.enemy.EnemyStory6
 import com.unicorns.invisible.caravan.model.enemy.EnemyStory7
+import com.unicorns.invisible.caravan.model.enemy.EnemyStory8
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.Caravan
 import com.unicorns.invisible.caravan.model.primitives.Card
@@ -68,6 +69,7 @@ import com.unicorns.invisible.caravan.utils.getTrackColor
 import com.unicorns.invisible.caravan.utils.nextSong
 import com.unicorns.invisible.caravan.utils.playCardFlipSound
 import com.unicorns.invisible.caravan.utils.playCloseSound
+import com.unicorns.invisible.caravan.utils.playHeartbeatSound
 import com.unicorns.invisible.caravan.utils.playJokerSounds
 import com.unicorns.invisible.caravan.utils.playLoseSound
 import com.unicorns.invisible.caravan.utils.playNotificationSound
@@ -157,6 +159,20 @@ fun ShowStoryList(activity: MainActivity, showAlertDialog: (String, String) -> U
             }) { showChapter = null }
             return
         }
+        7 -> {
+            ShowStoryChapter8(activity, showAlertDialog, {
+                activity.save?.let {
+                    it.storyChaptersProgress = maxOf(it.storyChaptersProgress, 8)
+                    saveOnGD(activity)
+                }
+            }, {
+                activity.save?.let {
+                    it.altStoryChaptersProgress = maxOf(it.altStoryChaptersProgress, 1)
+                    saveOnGD(activity)
+                }
+            }) { showChapter = null }
+            return
+        }
         else -> {}
     }
 
@@ -195,9 +211,9 @@ fun ShowStoryList(activity: MainActivity, showAlertDialog: (String, String) -> U
                 Spacer(modifier = Modifier.height(16.dp))
 
                 @Composable
-                fun Chapter(number: Int, onClick: () -> Unit) {
+                fun Chapter(number: Int, isAlt: Boolean = false, onClick: () -> Unit) {
                     val isAvailable = number <= (activity.save?.storyChaptersProgress ?: 0)
-                    val text = if (!isAvailable) {
+                    val text = if (!isAvailable && !isAlt) {
                         "???"
                     } else when (number) {
                         0 -> "Chapter 1: Humble Beginnings."
@@ -220,7 +236,7 @@ fun ShowStoryList(activity: MainActivity, showAlertDialog: (String, String) -> U
                         getTextStrokeColor(activity),
                         16.sp,
                         Alignment.Center,
-                        if (isAvailable) {
+                        if (isAvailable || isAlt) {
                             Modifier
                                 .clickable { onClick() }
                                 .background(getTextBackgroundColor(activity))
@@ -244,7 +260,7 @@ fun ShowStoryList(activity: MainActivity, showAlertDialog: (String, String) -> U
                     Spacer(modifier = Modifier.height(10.dp))
                 }
                 repeat(activity.save?.altStoryChaptersProgress ?: 0) {
-                    Chapter(it + 10) { playSelectSound(activity); showChapter = it }
+                    Chapter(it + 10, isAlt = true) { playSelectSound(activity); showChapter = it + 10 }
                     Spacer(modifier = Modifier.height(10.dp))
                 }
             }
@@ -650,7 +666,21 @@ fun ShowStoryChapter4(
 
     var messageNumber by rememberSaveable { mutableIntStateOf(-1) }
     if (messageNumber > 0) {
-        LaunchedEffect(Unit) { playNotificationSound(activity) {} }
+        LaunchedEffect(Unit) {
+            playHeartbeatSound(activity)
+            when (messageNumber) {
+                2, 3 -> {
+                    delay(500L)
+                    playHeartbeatSound(activity)
+                }
+                4 -> {
+                    repeat(3) {
+                        delay(500L)
+                        playHeartbeatSound(activity)
+                    }
+                }
+            }
+        }
         AlertDialog(
             modifier = Modifier.border(width = 4.dp, color = Color(activity.getColor(R.color.colorText))),
             onDismissRequest = { messageNumber = -1 },
@@ -1272,6 +1302,169 @@ fun ShowStoryChapter7(
                                 "data and blueprints of technology as possible. He made a secret tunnel that " +
                                 "lead outside, yet he wished not to escape. Paladin told the Prospector the shocking truth..."
                     }
+                    else -> {
+                        DialogLine("[FINISH]") { isGame = true; gameResult = -1 }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun ShowStoryChapter8(
+    activity: MainActivity,
+    showAlertDialog: (String, String) -> Unit,
+    advanceChapter: () -> Unit,
+    advanceAltChapter: () -> Unit,
+    goBack: () -> Unit,
+) {
+    var text by rememberSaveable { mutableStateOf("Here is what paladin told to the Prospector: the Chinese " +
+            "leadership consists of a singular entity – the Supreme Leader, who is a " +
+            "network of many brains and supercomputers fused together.") }
+    var lineNumber by rememberSaveable { mutableIntStateOf(0) }
+    var isGame by rememberSaveable { mutableStateOf(false) }
+    var gameResult by rememberSaveable { mutableIntStateOf(0) }
+    if (isGame) {
+        val enemy by rememberScoped { mutableStateOf(EnemyStory8()) }
+        StartTowerGame(
+            activity,
+            enemy,
+            showAlertDialog,
+            {},
+            { gameResult = 1; advanceChapter() },
+            {
+                if (enemy.resisted) {
+                    gameResult = -1
+                } else {
+                    gameResult = 2
+                    advanceAltChapter()
+                }
+            },
+            { isGame = false }
+        )
+        return
+    }
+
+    Box(
+        Modifier
+            .fillMaxSize()
+            .background(Color.Black)) {
+        Column {
+            Box(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp)
+                    .paint(
+                        painterResource(
+                            id = R.drawable.frank_head
+                        )
+                    ))
+
+            @Composable
+            fun DialogLine(line: String, onClick: () -> Unit) {
+                TextClassic(
+                    line,
+                    getTextColorByStyle(activity, Style.PIP_BOY),
+                    getStrokeColorByStyle(activity, Style.PIP_BOY),
+                    18.sp,
+                    Alignment.CenterStart,
+                    modifier = Modifier
+                        .clickableSelect(activity) {
+                            onClick()
+                        }
+                        .background(getTextBackByStyle(activity, Style.PIP_BOY))
+                        .padding(horizontal = 8.dp, vertical = 4.dp),
+                    TextAlign.Start
+                )
+                Spacer(Modifier.height(12.dp))
+            }
+
+            Column(Modifier.fillMaxWidth()) {
+                TextClassic(
+                    text,
+                    getTextColorByStyle(activity, Style.PIP_BOY),
+                    getStrokeColorByStyle(activity, Style.PIP_BOY),
+                    16.sp,
+                    Alignment.CenterStart,
+                    modifier = Modifier
+                        .background(getTextBackByStyle(activity, Style.PIP_BOY))
+                        .padding(horizontal = 8.dp, vertical = 4.dp),
+                    TextAlign.Start
+                )
+
+                Spacer(Modifier.height(16.dp))
+
+                when (gameResult) {
+                    1 -> {
+                        text = "The Prospector had not much time. He took the officer’s keycard and rushed out, " +
+                                "towards the residence of the Supreme Leader. A gigantic complex, or rather… " +
+                                "a palace, which housed a myriad of brains." +
+                                "\n\n" +
+                                "Little did he know that he would be brought exactly there anyways…"
+                        lineNumber = -1
+                    }
+                    -1 -> {
+                        LaunchedEffect(Unit) { playTowerFailed(activity) }
+                        text = "CCP officer gladly took troublesome outsider's life. The Prospector was no more."
+                        lineNumber = -1
+                    }
+                    2 -> {
+                        text = "The Prospector showed no sign of resistance whatsoever. " +
+                                "CCP officer, seeing this, took the Prospector straight to Supreme Leader."
+                        lineNumber = -1
+                        gameResult = 0
+                    }
+                    else -> {}
+                }
+
+                when (lineNumber) {
+                    0 -> {
+                        DialogLine("So, is he the ruler of China?") {
+                            lineNumber = 1
+                            text = "Much more than that. The Supreme Leader had overseen the rapid reconstruction of China and its nuclear " +
+                                    "arsenal – now China is the only force on the entire planet that could " +
+                                    "unleash the horrors of the Great War upon the Earth once again. And turns " +
+                                    "out, it has already been planned."
+                        }
+                    }
+                    1 -> DialogLine("You mean... It wants to destroy America again?!") {
+                        lineNumber = 2
+                        text = "Yes. Supreme Leader is planning to eradicate " +
+                                "the remaining major powers in all parts of the world and conserve his " +
+                                "nation for the time until the radiation levels drop once again, and then he " +
+                                "would colonize the entirety of Earth, turning it into a single nation of humankind."
+                    }
+                    2 -> {
+                        DialogLine("It's horrible!") {
+                            lineNumber = 3
+                            text = "Indeed. Imagine how many innocent people would die in bombings."
+                        }
+                        DialogLine("So, no more war? No more raiders, no Legion-NCR battles. Actually, sounds good.") {
+                            lineNumber = 3
+                            text = "What? You cannot be serious. No more raiders, " +
+                                    "but no more good factions, like Followers of the Apocalypse. Besides, " +
+                                    "Supreme Leader plans to unite humankind under the Communist banner, " +
+                                    "which means no freedom of choice, little of rights and lots of problems with government. " +
+                                    "Is this the future you look for?"
+                        }
+                    }
+                    3 -> DialogLine("Anyways... What does paladin want to do?") {
+                        lineNumber = 4
+                        text = "The paladin was waiting for somebody all the time, " +
+                                "in order to perform a suicidal mission in attempt to stop Supreme Leader, together…"
+                    }
+                    4 -> DialogLine("I think I know where the story goes...") {
+                        lineNumber = 5
+                        text = "One day, the Prospector was taken to a CCP officer’s quarters. " +
+                                "The purpose was to record him say how he regrets standing in " +
+                                "the way of prosperity of China and how he regrets being a capitalist swine."
+                    }
+                    5 -> DialogLine("But the Prospector came prepared.") {
+                        lineNumber = 6
+                        text = "Yes. He came with a hidden shiv and a mission in his mind..."
+                    }
+                    -1 -> DialogLine("[FINISH]") { goBack() }
                     else -> {
                         DialogLine("[FINISH]") { isGame = true; gameResult = -1 }
                     }

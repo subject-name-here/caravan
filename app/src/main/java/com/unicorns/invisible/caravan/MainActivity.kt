@@ -145,10 +145,6 @@ class MainActivity : SaveDataActivity() {
         resume()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-    }
-
     override fun onSnapshotClientInitialized() {
         CoroutineScope(Dispatchers.Default).launch {
             val savedOnGDData = fetchDataFromDrive()
@@ -1017,7 +1013,9 @@ class MainActivity : SaveDataActivity() {
                             .padding(horizontal = 4.dp)
                             .background(getTextBackgroundColor(this@MainActivity))
                             .clickableOk(this@MainActivity) {
-                                showVision()
+                                if (save != null) {
+                                    showVision()
+                                }
                             }
                             .padding(4.dp),
                         TextAlign.Center
