@@ -14,6 +14,7 @@ class ChallengeBeatEnemies(private val enemies: List<Enemy>, private val code: I
 
     override fun processGameResult(game: Game) {
         if (game.isGameOver == 1) {
+            // TODO: what if enemy is not object but class?!!
             val index = enemies.indexOf(game.enemy)
             if (index != -1) {
                 isBeaten[index] = true

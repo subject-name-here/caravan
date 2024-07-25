@@ -1,7 +1,6 @@
 package com.unicorns.invisible.caravan
 
 import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.core.animateIntOffsetAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -1801,7 +1800,7 @@ fun ShowStoryChapter10(
             "future for the people living on its territory.") }
     var lineNumber by rememberSaveable { mutableIntStateOf(0) }
 
-    val offsetX = remember { Animatable(800f) }
+    val offsetX = remember { Animatable(0f) }
     val scope = rememberCoroutineScope()
     fun slide() {
         playSlideSound(activity)
@@ -1810,7 +1809,7 @@ fun ShowStoryChapter10(
             offsetX.animateTo(0f, animationSpec = tween(durationMillis = 1000))
         }
     }
-    LaunchedEffect(Unit) { offsetX.animateTo(0f, animationSpec = tween(durationMillis = 1000)) }
+    LaunchedEffect(Unit) { slide() }
 
     Box(
         Modifier

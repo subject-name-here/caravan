@@ -19,28 +19,28 @@ class ChallengeDoNotPlayCards(private val code: Int) : Challenge {
                 val playedCard = move.handCard ?: return
                 val predicate: () -> Boolean = when (code) {
                     1 -> {
-                        { !playedCard.isSpecial() && playedCard.rank in listOf(Rank.TWO, Rank.FOUR, Rank.SIX, Rank.EIGHT, Rank.TEN) }
+                        { playedCard.rank in listOf(Rank.TWO, Rank.FOUR, Rank.SIX, Rank.EIGHT, Rank.TEN) }
                     }
                     2 -> {
-                        { !playedCard.isSpecial() && playedCard.rank in listOf(Rank.THREE, Rank.FIVE, Rank.SEVEN, Rank.NINE) }
+                        { playedCard.rank in listOf(Rank.THREE, Rank.FIVE, Rank.SEVEN, Rank.NINE) }
                     }
                     3 -> {
-                        { !playedCard.isSpecial() && playedCard.rank == Rank.JACK }
+                        { playedCard.rank == Rank.JACK }
                     }
                     4 -> {
-                        { !playedCard.isSpecial() && playedCard.rank == Rank.KING }
+                        { playedCard.rank == Rank.KING }
                     }
                     5 -> {
-                        { !playedCard.isSpecial() && playedCard.rank != Rank.JOKER && (playedCard.suit == Suit.HEARTS || playedCard.suit == Suit.DIAMONDS) }
+                        { playedCard.suit == Suit.HEARTS || playedCard.suit == Suit.DIAMONDS }
                     }
                     6 -> {
-                        { !playedCard.isSpecial() && playedCard.rank != Rank.JOKER && (playedCard.suit == Suit.SPADES || playedCard.suit == Suit.CLUBS) }
+                        { playedCard.suit == Suit.SPADES || playedCard.suit == Suit.CLUBS }
                     }
                     else -> {
                         { true }
                     }
                 }
-                if (predicate()) {
+                if (!playedCard.isSpecial() && playedCard.rank != Rank.JOKER && predicate()) {
                     notPlayed = false
                 }
             }

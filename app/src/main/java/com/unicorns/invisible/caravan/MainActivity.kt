@@ -62,7 +62,7 @@ import com.unicorns.invisible.caravan.model.challenge.Challenge
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.CustomDeck
 import com.unicorns.invisible.caravan.save.Save
-import com.unicorns.invisible.caravan.save.getSaveFile
+import com.unicorns.invisible.caravan.save.deleteLocalFile
 import com.unicorns.invisible.caravan.save.loadFromGD
 import com.unicorns.invisible.caravan.save.loadLocalSave
 import com.unicorns.invisible.caravan.save.saveOnGD
@@ -97,6 +97,7 @@ import com.unicorns.invisible.caravan.utils.scrollbar
 import com.unicorns.invisible.caravan.utils.setAmbientVolume
 import com.unicorns.invisible.caravan.utils.setRadioVolume
 import com.unicorns.invisible.caravan.utils.startRadio
+import com.unicorns.invisible.caravan.utils.updateSoldCards
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -149,16 +150,9 @@ class MainActivity : SaveDataActivity() {
         CoroutineScope(Dispatchers.Default).launch {
             val savedOnGDData = fetchDataFromDrive()
             if (savedOnGDData == null || savedOnGDData.isEmpty()) {
-                val saveFile = getSaveFile(this@MainActivity)
-                saveGlobal = if (saveFile.exists()) {
-                    loadLocalSave(this@MainActivity) ?: Save()
-                } else {
-                    Save()
-                }
+                saveGlobal = loadLocalSave(this@MainActivity) ?: Save()
                 if (saveOnGDAsync(this@MainActivity).await()) {
-                    if (saveFile.exists()) {
-                        saveFile.delete()
-                    }
+                    deleteLocalFile(this@MainActivity)
                 }
             }
             loadFromGD(this@MainActivity)

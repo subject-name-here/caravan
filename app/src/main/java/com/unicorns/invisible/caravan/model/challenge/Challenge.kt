@@ -6,6 +6,7 @@ import com.unicorns.invisible.caravan.model.primitives.Card
 import kotlinx.serialization.Serializable
 
 
+// TODO: maybe more challenges?
 @Serializable
 sealed interface Challenge {
     fun processMove(move: Move, game: Game)
