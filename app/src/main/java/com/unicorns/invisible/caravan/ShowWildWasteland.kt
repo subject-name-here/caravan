@@ -50,7 +50,6 @@ import com.unicorns.invisible.caravan.utils.nextSong
 import com.unicorns.invisible.caravan.utils.playNoCardAlarm
 import com.unicorns.invisible.caravan.utils.playVatsEnter
 import com.unicorns.invisible.caravan.utils.scrollbar
-import com.unicorns.invisible.caravan.utils.startFinalBossTheme
 
 
 @Composable
@@ -315,10 +314,12 @@ fun ShowWildWasteland(
                 OpponentItem(stringResource(R.string.snuffles)) { playVatsEnter(activity); showGameSnuffles = true }
                 Spacer(modifier = Modifier.height(10.dp))
                 OpponentItem(stringResource(R.string.priest)) { playVatsEnter(activity); showGamePriestess = true }
-                Spacer(modifier = Modifier.height(10.dp))
-                OpponentItem(stringResource(R.string.final_boss)) { playVatsEnter(activity); showGameFinalBoss = true }
-                Spacer(modifier = Modifier.height(16.dp))
-                OpponentItem(stringResource(R.string.final_boss) + " WILD") { playVatsEnter(activity); showGameFinalBossWild = true }
+                if ((activity.save?.storyChaptersProgress ?: 0) >= 9) {
+                    Spacer(modifier = Modifier.height(10.dp))
+                    OpponentItem(stringResource(R.string.final_boss) + " BETA") { playVatsEnter(activity); showGameFinalBoss = true }
+                    Spacer(modifier = Modifier.height(10.dp))
+                    OpponentItem(stringResource(R.string.final_boss) + " WILD") { playVatsEnter(activity); showGameFinalBossWild = true }
+                }
                 Spacer(modifier = Modifier.height(16.dp))
             }
         }

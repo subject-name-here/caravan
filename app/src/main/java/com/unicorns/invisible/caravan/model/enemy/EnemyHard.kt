@@ -166,7 +166,9 @@ data object EnemyHard : Enemy() {
         }
 
         game.enemyCResources.dropCardFromHand(hand.withIndex().minBy {
-            when (it.value.rank) {
+            if (it.value.isSpecial()) {
+                15
+            } else when (it.value.rank) {
                 Rank.QUEEN -> 0
                 else -> it.value.rank.value
             }

@@ -320,13 +320,7 @@ fun setRadioVolume(volume: Float) {
 }
 
 fun startLevel11Theme(activity: MainActivity) {
-    radioLock.withLock {
-        radioPlayers.forEach {
-            it.stop()
-            radioPlayers.remove(it)
-            it.release()
-        }
-    }
+    stopRadio()
     val vol = activity.save?.radioVolume ?: 1f
     MediaPlayer.create(activity, R.raw.frank_theme)
         .apply {
@@ -349,13 +343,7 @@ fun startLevel11Theme(activity: MainActivity) {
 }
 
 fun startFinalBossTheme(activity: MainActivity) {
-    radioLock.withLock {
-        radioPlayers.forEach {
-            it.stop()
-            radioPlayers.remove(it)
-            it.release()
-        }
-    }
+    stopRadio()
     val vol = activity.save?.radioVolume ?: 1f
     MediaPlayer.create(activity, R.raw.final_boss)
         .apply {
