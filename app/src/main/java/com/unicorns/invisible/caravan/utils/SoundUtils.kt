@@ -122,6 +122,7 @@ fun playDailyCompleted(activity: MainActivity) = playEffectPlayerSound(activity,
 fun playNukeBlownSound(activity: MainActivity) = playEffectPlayerSound(activity, R.raw.nuke_big)
 fun playWWSound(activity: MainActivity) = playEffectPlayerSound(activity, R.raw.ui_wildwasteland)
 fun playHeartbeatSound(activity: MainActivity) = playEffectPlayerSound(activity, R.raw.sfx_heartbeat)
+fun playSlideSound(activity: MainActivity) = playEffectPlayerSound(activity, R.raw.slide)
 
 private val ambientPlayers = HashSet<MediaPlayer>()
 private val ambientPlayersLock = ReentrantLock()

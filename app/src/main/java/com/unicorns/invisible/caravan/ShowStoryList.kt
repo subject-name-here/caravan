@@ -1,5 +1,8 @@
 package com.unicorns.invisible.caravan
 
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.animateIntOffsetAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -11,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -21,16 +25,19 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.paint
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sebaslogen.resaca.rememberScoped
@@ -80,6 +87,7 @@ import com.unicorns.invisible.caravan.utils.playNoCardAlarm
 import com.unicorns.invisible.caravan.utils.playNotificationSound
 import com.unicorns.invisible.caravan.utils.playNukeBlownSound
 import com.unicorns.invisible.caravan.utils.playSelectSound
+import com.unicorns.invisible.caravan.utils.playSlideSound
 import com.unicorns.invisible.caravan.utils.playTowerCompleted
 import com.unicorns.invisible.caravan.utils.playTowerFailed
 import com.unicorns.invisible.caravan.utils.playVatsReady
@@ -90,6 +98,7 @@ import com.unicorns.invisible.caravan.utils.startFinalBossTheme
 import com.unicorns.invisible.caravan.utils.stopAmbient
 import com.unicorns.invisible.caravan.utils.stopRadio
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 
 @Composable
@@ -307,17 +316,25 @@ fun ShowStoryList(activity: MainActivity, showAlertDialog: (String, String) -> U
 }
 
 @Composable
-fun DialogLine(activity: MainActivity, line: String, alignment: Alignment = Alignment.CenterStart, onClick: () -> Unit) {
+fun DialogLine(activity: MainActivity, line: String, isSelect: Boolean = true, onClick: () -> Unit) {
+    val modifier = if (isSelect) {
+        Modifier
+            .clickableSelect(activity) {
+                onClick()
+            }
+    } else {
+        Modifier
+            .clickable {
+                onClick()
+            }
+    }
     TextClassic(
         line,
         getTextColorByStyle(activity, Style.PIP_BOY),
         getStrokeColorByStyle(activity, Style.PIP_BOY),
         18.sp,
-        alignment,
-        modifier = Modifier
-            .clickableSelect(activity) {
-                onClick()
-            }
+        Alignment.CenterStart,
+        modifier = modifier
             .background(getTextBackByStyle(activity, Style.PIP_BOY))
             .padding(horizontal = 8.dp, vertical = 4.dp),
         TextAlign.Start
@@ -1784,6 +1801,17 @@ fun ShowStoryChapter10(
             "future for the people living on its territory.") }
     var lineNumber by rememberSaveable { mutableIntStateOf(0) }
 
+    val offsetX = remember { Animatable(800f) }
+    val scope = rememberCoroutineScope()
+    fun slide() {
+        playSlideSound(activity)
+        scope.launch {
+            offsetX.snapTo(800f)
+            offsetX.animateTo(0f, animationSpec = tween(durationMillis = 1000))
+        }
+    }
+    LaunchedEffect(Unit) { offsetX.animateTo(0f, animationSpec = tween(durationMillis = 1000)) }
+
     Box(
         Modifier
             .fillMaxSize()
@@ -1806,12 +1834,16 @@ fun ShowStoryChapter10(
             Box(
                 Modifier
                     .fillMaxWidth()
+                    .align(Alignment.Center)
+                    .offset { IntOffset(offsetX.value.toInt(), 0) }
+                    .alpha((800f - offsetX.value) / 800f)
                     .padding(8.dp)
                     .paint(
                         painterResource(
                             id = R.drawable.frank_head
                         )
-                    ))
+                    )
+            )
 
             Column(Modifier.fillMaxWidth()) {
                 TextClassic(
@@ -1828,63 +1860,73 @@ fun ShowStoryChapter10(
 
                 Spacer(Modifier.height(16.dp))
 
-                when (lineNumber) {
-                    0 -> DialogLine(activity, "[NEXT SLIDE]", alignment = Alignment.CenterEnd) {
-                        lineNumber = 1
-                        text = "However, two centuries since the Great War, a nomad savage known as the " +
-                                "Prospector had decided that prosperity of a group of people must not come " +
-                                "at the cost of the prosperity of the other groups of people, let alone their lives."
+                Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.CenterEnd) {
+                    when (lineNumber) {
+                        0 -> DialogLine(activity, "[NEXT SLIDE]", isSelect = false) {
+                            slide()
+                            lineNumber = 1
+                            text = "However, two centuries since the Great War, a nomad savage known as the " +
+                                    "Prospector had decided that prosperity of a group of people must not come " +
+                                    "at the cost of the prosperity of the other groups of people, let alone their lives."
+                        }
+                        1 -> DialogLine(activity, "[NEXT SLIDE]", isSelect = false) {
+                            slide()
+                            lineNumber = 2
+                            text = "The Supreme Leader was slain, and the state apparatus built around the " +
+                                    "singular entity that gave direct commands to literally every party officer, " +
+                                    "every soldier, every producer and even social workers, from cooks to " +
+                                    "doctors, collapsed without its ultimate dictator."
+                        }
+                        2 -> DialogLine(activity, "[NEXT SLIDE]", isSelect = false) {
+                            slide()
+                            lineNumber = 3
+                            text = "Production stopped, and the paladin fled, to return with his comrades from " +
+                                    "the Brotherhood of Steel, who quickly took over most of the production " +
+                                    "complexes of the former Greater China. Most of the provinces, left without " +
+                                    "interest of the Brotherhood due to lack of tech factories, fell prey to a " +
+                                    "myriad of warlords."
+                        }
+                        3 -> DialogLine(activity, "[NEXT SLIDE]", isSelect = false) {
+                            slide()
+                            lineNumber = 4
+                            text = "The Prospector’s sacrifice was not in vain – countless American lives owe " +
+                                    "him their thanks, although they will never know of it."
+                        }
+                        4 -> DialogLine(activity, "[NEXT SLIDE]", isSelect = false) {
+                            slide()
+                            lineNumber = 5
+                            text = "And millions of the " +
+                                    "Chinese, now mobilized to the cannibalistic and ruthless armies of the " +
+                                    "crazed separatist militaries – they also owe the Prospector a gesture of " +
+                                    "gratitude. Although, as their lives got worse, they do not rush to make " +
+                                    "memorials in his name."
+                        }
+                        5 -> DialogLine(activity, "[NEXT SLIDE]", isSelect = false) {
+                            slide()
+                            lineNumber = 6
+                            text = "They left to wonder: perhaps, stability is better than freedom?.."
+                        }
+                        6 -> DialogLine(activity, "[NEXT SLIDE]", isSelect = false) {
+                            slide()
+                            lineNumber = 7
+                            text = "...is it even freedom that the Prospector unleashed upon the world, now " +
+                                    "that the Chinese are suffering and the Brotherhood of Steel has unlimited " +
+                                    "control over the most advanced technologies of the world, as well as " +
+                                    "nuclear arsenal?"
+                        }
+                        7 -> DialogLine(activity, "[NEXT SLIDE]", isSelect = false) {
+                            slide()
+                            playTowerCompleted(activity)
+                            lineNumber = 8
+                            text = "This was the story of the Prospector, who has killed one monster, but from its blood, a legion of " +
+                                    "monsters was born. And they are at each other’s throats, raging war."
+                        }
+                        8 -> DialogLine(activity, "And war...") {
+                            lineNumber = -1
+                            text = "War never changes."
+                        }
+                        -1 -> DialogLine(activity, "[END.]") { goBack() }
                     }
-                    1 -> DialogLine(activity, "[NEXT SLIDE]", alignment = Alignment.CenterEnd) {
-                        lineNumber = 2
-                        text = "The Supreme Leader was slain, and the state apparatus built around the " +
-                                "singular entity that gave direct commands to literally every party officer, " +
-                                "every soldier, every producer and even social workers, from cooks to " +
-                                "doctors, collapsed without its ultimate dictator."
-                    }
-                    2 -> DialogLine(activity, "[NEXT SLIDE]", alignment = Alignment.CenterEnd) {
-                        lineNumber = 3
-                        text = "Production stopped, and the paladin fled, to return with his comrades from " +
-                                "the Brotherhood of Steel, who quickly took over most of the production " +
-                                "complexes of the former Greater China. Most of the provinces, left without " +
-                                "interest of the Brotherhood due to lack of tech factories, fell prey to a " +
-                                "myriad of warlords."
-                    }
-                    3 -> DialogLine(activity, "[NEXT SLIDE]", alignment = Alignment.CenterEnd) {
-                        lineNumber = 4
-                        text = "The Prospector’s sacrifice was not in vain – countless American lives owe " +
-                                "him their thanks, although they will never know of it."
-                    }
-                    4 -> DialogLine(activity, "[NEXT SLIDE]", alignment = Alignment.CenterEnd) {
-                        lineNumber = 5
-                        text = "And millions of the " +
-                                "Chinese, now mobilized to the cannibalistic and ruthless armies of the " +
-                                "crazed separatist militaries – they also owe the Prospector a gesture of " +
-                                "gratitude. Although, as their lives got worse, they do not rush to make " +
-                                "memorials in his name."
-                    }
-                    5 -> DialogLine(activity, "[NEXT SLIDE]", alignment = Alignment.CenterEnd) {
-                        lineNumber = 6
-                        text = "They left to wonder: perhaps, stability is better than freedom?.."
-                    }
-                    6 -> DialogLine(activity, "[NEXT SLIDE]", alignment = Alignment.CenterEnd) {
-                        lineNumber = 7
-                        text = "...is it even freedom that the Prospector unleashed upon the world, now " +
-                                "that the Chinese are suffering and the Brotherhood of Steel has unlimited " +
-                                "control over the most advanced technologies of the world, as well as " +
-                                "nuclear arsenal?"
-                    }
-                    7 -> DialogLine(activity, "[NEXT SLIDE]", alignment = Alignment.CenterEnd) {
-                        playTowerCompleted(activity)
-                        lineNumber = 8
-                        text = "This was the story of the Prospector, who has killed one monster, but from its blood, a legion of " +
-                                "monsters was born. And they are at each other’s throats, raging war."
-                    }
-                    8 -> DialogLine(activity, "And war...", alignment = Alignment.CenterEnd) {
-                        lineNumber = -1
-                        text = "War never changes."
-                    }
-                    -1 -> DialogLine(activity, "[END.]") { goBack() }
                 }
             }
         } }
