@@ -125,6 +125,7 @@ class MainActivity : SaveDataActivity() {
 
     var styleId: Style = Style.PIP_BOY
 
+    // TODO: remove it
     var animationSpeed = MutableLiveData(AnimationSpeed.NORMAL)
 
     fun checkIfCustomDeckCanBeUsedInGame(playerCResources: CResources): Boolean {

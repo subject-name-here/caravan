@@ -3,12 +3,21 @@ package com.unicorns.invisible.caravan.utils
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxColors
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderColors
 import androidx.compose.material3.Switch
@@ -30,6 +39,7 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
@@ -515,4 +525,47 @@ fun Modifier.clickableOk(activity: MainActivity, block: () -> Unit): Modifier {
 @Composable
 fun Modifier.clickableSelect(activity: MainActivity, block: () -> Unit): Modifier {
     return this.clickable { playSelectSound(activity); block() }
+}
+
+
+@Composable
+fun MenuItemOpen(
+    activity: MainActivity,
+    name: String, back: String,
+    goBack: () -> Unit,
+    mainBlock: @Composable () -> Unit
+) {
+
+    Scaffold(bottomBar = {
+        Box(Modifier.fillMaxWidth().background(getBackgroundColor(activity)).padding(horizontal = 8.dp)) {
+            TextFallout(
+                name,
+                getTextColor(activity),
+                getTextStrokeColor(activity),
+                24.sp,
+                Alignment.Center,
+                Modifier.align(Alignment.Center).padding(8.dp),
+                TextAlign.Center
+            )
+            TextFallout(
+                back,
+                getTextColor(activity),
+                getTextStrokeColor(activity),
+                24.sp,
+                Alignment.CenterStart,
+                Modifier
+                    .align(Alignment.CenterStart)
+                    .background(getTextBackgroundColor(activity))
+                    .clickableCancel(activity) {
+                        goBack()
+                    }
+                    .padding(8.dp),
+                TextAlign.Start
+            )
+        }
+    }) { innerPadding ->
+        Box(Modifier.padding(innerPadding)) {
+            mainBlock()
+        }
+    }
 }
