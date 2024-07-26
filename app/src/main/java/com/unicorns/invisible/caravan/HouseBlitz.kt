@@ -512,7 +512,7 @@ fun StartBlitz(
             var message = activity.getString(R.string.you_win)
             activity.save?.let { save ->
                 val reward = (onBet * getTimeMult(time) * getEnemyMult(enemy)).toInt()
-                message += activity.getString(R.string.you_have_earned_caps, reward)
+                message += activity.getString(R.string.you_have_earned_caps, reward.toString())
                 save.caps += reward + onBet
                 saveOnGD(activity)
             }
@@ -546,162 +546,18 @@ fun StartBlitz(
 
     activity.goBack = { stopAmbient(); goBack(); activity.goBack = null }
 
-
-    var selectedCard by remember { mutableStateOf<Int?>(null) }
-    var selectedCaravan by remember { mutableIntStateOf(-1) }
-
-    var caravansKey by rememberSaveable { mutableStateOf(true) }
-    var enemyHandKey by rememberSaveable { mutableIntStateOf(0) }
-
-    fun onCardClicked(index: Int) {
+    ShowGame(activity, game, isBlitz = true, ::onMove) {
         if (game.isOver()) {
-            return
+            activity.goBack?.invoke()
+            return@ShowGame
         }
-        selectedCard = if (index == selectedCard || index !in game.playerCResources.hand.indices) {
-            null
+
+        if (game.enemy is EnemyHouse) {
+            showAlertDialog(activity.getString(R.string.what_tired_of_losing), "")
         } else {
-            index
-        }
-        if (selectedCard == null) {
-            playCloseSound(activity)
-        } else {
-            playSelectSound(activity)
-        }
-        selectedCaravan = -1
-    }
-
-    fun onCaravanClicked(index: Int) {
-        if (game.isOver()) {
-            return
-        }
-        selectedCaravan = index
-        if (selectedCaravan == -1) {
-            playCloseSound(activity)
-        } else {
-            playSelectSound(activity)
-        }
-        selectedCard = null
-        caravansKey = !caravansKey
-    }
-
-    fun updateCaravans() {
-        caravansKey = !caravansKey
-    }
-
-    fun updateEnemyHand() {
-        enemyHandKey = when (enemyHandKey) {
-            -2 -> 0
-            -1 -> -2
-            else -> (1 - enemyHandKey).coerceIn(0, 1)
+            showAlertDialog(activity.getString(R.string.check_back_to_menu), "")
         }
     }
-
-    fun resetSelected() {
-        selectedCaravan = -1
-        selectedCard = null
-    }
-
-    fun dropCardFromHand() {
-        val selectedCardNN = selectedCard ?: return
-        playVatsReady(activity)
-        game.playerCResources.removeFromHand(selectedCardNN)
-        resetSelected()
-        onMove()
-        game.afterPlayerMove(
-            { updateEnemyHand(); updateCaravans() },
-            AnimationSpeed.NONE
-        )
-    }
-
-    fun dropCaravan() {
-        val selectedCaravanNN = selectedCaravan
-        if (selectedCaravanNN == -1) return
-        playVatsReady(activity)
-        activity.processChallengesMove(Challenge.Move(moveCode = 1), game)
-        game.playerCaravans[selectedCaravanNN].dropCaravan()
-        resetSelected()
-        onMove()
-        game.afterPlayerMove(
-            { updateEnemyHand(); updateCaravans() },
-            AnimationSpeed.NONE
-        )
-    }
-
-    fun addCardToCaravan(caravan: Caravan, position: Int, isEnemy: Boolean) {
-        fun onCaravanCardInserted() {
-            resetSelected()
-            onMove()
-            game.afterPlayerMove(
-                { updateEnemyHand(); updateCaravans() },
-                AnimationSpeed.NONE
-            )
-        }
-
-        val cardIndex = selectedCard
-        val card = cardIndex?.let { game.playerCResources.hand[cardIndex] }
-        if (card != null && game.isPlayerTurn && !game.isOver() && !(game.isInitStage() && card.isFace())) {
-            if (card.isFace()) {
-                if (position in caravan.cards.indices && caravan.cards[position].canAddModifier(card)) {
-                    playCardFlipSound(activity)
-                    if (card.rank == Rank.JOKER) {
-                        playJokerSounds(activity)
-                    }
-                    activity.processChallengesMove(Challenge.Move(
-                        moveCode = 4,
-                        handCard = card
-                    ), game)
-                    caravan.cards[position].addModifier(
-                        game.playerCResources.removeFromHand(
-                            cardIndex
-                        )
-                    )
-                    onCaravanCardInserted()
-                }
-            } else {
-                if (position == caravan.cards.size && !isEnemy) {
-                    if (caravan.canPutCardOnTop(card)) {
-                        playCardFlipSound(activity)
-                        activity.processChallengesMove(Challenge.Move(
-                            moveCode = 3,
-                            handCard = card
-                        ), game)
-                        caravan.putCardOnTop(game.playerCResources.removeFromHand(cardIndex))
-                        onCaravanCardInserted()
-                    }
-                }
-            }
-        }
-    }
-
-    ShowGameRaw(
-        activity,
-        false,
-        game,
-        {
-            if (game.isOver()) {
-                activity.goBack?.invoke()
-                return@ShowGameRaw
-            }
-
-            if (game.enemy is EnemyHouse) {
-                showAlertDialog(activity.getString(R.string.what_tired_of_losing), "")
-            } else {
-                showAlertDialog(activity.getString(R.string.check_back_to_menu), "")
-            }
-        },
-        AnimationSpeed.NONE,
-        { "" },
-        { "" },
-        {},
-        ::onCardClicked,
-        selectedCard,
-        getSelectedCaravan = { selectedCaravan },
-        setSelectedCaravan = ::onCaravanClicked,
-        { a1, _, a3, a4 -> addCardToCaravan(a1, a3, a4) },
-        ::dropCardFromHand,
-        ::dropCaravan,
-        enemyHandKey
-    )
 
     key(timeOnTimer) {
         Box(

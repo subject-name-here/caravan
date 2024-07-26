@@ -55,7 +55,6 @@ import androidx.compose.ui.unit.sp
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.challenge.Challenge
-import com.unicorns.invisible.caravan.model.enemy.EnemyFinalBoss
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.Caravan
 import com.unicorns.invisible.caravan.model.primitives.Card
@@ -99,12 +98,16 @@ import kotlin.math.min
 
 
 @Composable
-fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
+fun ShowGame(activity: MainActivity, game: Game, isBlitz: Boolean = false, onMove: () -> Unit = {}, goBack: () -> Unit) {
     var selectedCard by remember { mutableStateOf<Int?>(null) }
     var selectedCaravan by remember { mutableIntStateOf(-1) }
 
     var caravansKey by rememberSaveable { mutableStateOf(true) }
     var enemyHandKey by rememberSaveable { mutableIntStateOf(0) }
+
+    val animationSpeed by rememberSaveable { mutableStateOf(
+        if (isBlitz) AnimationSpeed.NONE else activity.animationSpeed.value ?: AnimationSpeed.NORMAL
+    ) }
 
     fun onCardClicked(index: Int) {
         if (game.isOver()) {
@@ -142,11 +145,7 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
     }
 
     fun updateEnemyHand() {
-        enemyHandKey = when (enemyHandKey) {
-            -2 -> 0
-            -1 -> -2
-            else -> (1 - enemyHandKey).coerceIn(0, 1)
-        }
+        enemyHandKey = 1 - enemyHandKey
     }
 
     fun resetSelected() {
@@ -159,9 +158,10 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
         playVatsReady(activity)
         game.playerCResources.removeFromHand(selectedCardNN)
         resetSelected()
+        onMove()
         game.afterPlayerMove(
             { updateEnemyHand(); updateCaravans() },
-            activity.animationSpeed.value ?: AnimationSpeed.NORMAL
+            animationSpeed
         )
     }
 
@@ -172,18 +172,20 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
         activity.processChallengesMove(Challenge.Move(moveCode = 1), game)
         game.playerCaravans[selectedCaravanNN].dropCaravan()
         resetSelected()
+        onMove()
         game.afterPlayerMove(
             { updateEnemyHand(); updateCaravans() },
-            activity.animationSpeed.value ?: AnimationSpeed.NORMAL
+            animationSpeed
         )
     }
 
     fun addCardToCaravan(caravan: Caravan, position: Int, isEnemy: Boolean) {
         fun onCaravanCardInserted() {
             resetSelected()
+            onMove()
             game.afterPlayerMove(
                 { updateEnemyHand(); updateCaravans() },
-                activity.animationSpeed.value ?: AnimationSpeed.NORMAL
+                animationSpeed
             )
         }
 
@@ -234,7 +236,7 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
         false,
         game,
         goBack,
-        activity.animationSpeed.value ?: AnimationSpeed.NORMAL,
+        animationSpeed,
         { "" },
         { "" },
         {},
@@ -651,7 +653,7 @@ fun Hand(
                     itemVerticalOffsetMovingOut.animateTo(target, TweenSpec(animationSpeed.delay.toInt())) {
                         recomposeKey = !recomposeKey
                     }
-                    memCards.removeIf { it.handAnimationMark in listOf(Card.AnimationMark.MOVED_OUT, Card.AnimationMark.MOVING_OUT, Card.AnimationMark.MOVING_OUT_WIP, Card.AnimationMark.MOVING_OUT_ALT, Card.AnimationMark.MOVING_OUT_ALT_WIP,) }
+                    memCards.removeIf { it.handAnimationMark in listOf(Card.AnimationMark.MOVED_OUT, Card.AnimationMark.MOVING_OUT, Card.AnimationMark.MOVING_OUT_WIP, Card.AnimationMark.MOVING_OUT_ALT, Card.AnimationMark.MOVING_OUT_ALT_WIP) }
                     recomposeKey = !recomposeKey
                 }
             }
