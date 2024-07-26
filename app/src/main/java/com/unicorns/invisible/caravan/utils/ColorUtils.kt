@@ -47,14 +47,14 @@ fun getTextStrokeColor(activity: MainActivity): Color {
 }
 
 fun getStrokeColorByStyle(activity: MainActivity, styleId: Style) = when (styleId) {
-    Style.DESERT -> getTextColor(activity)
+    Style.DESERT -> getTextColorByStyle(activity, styleId)
     Style.PIP_BOY -> Color(activity.getColor(R.color.colorTextStroke))
-    Style.ALASKA_FRONTIER -> getTextColor(activity)
-    Style.PIP_GIRL -> getTextColor(activity)
-    Style.OLD_WORLD -> getTextColor(activity)
+    Style.ALASKA_FRONTIER -> getTextColorByStyle(activity, styleId)
+    Style.PIP_GIRL -> getTextColorByStyle(activity, styleId)
+    Style.OLD_WORLD -> getTextColorByStyle(activity, styleId)
     Style.NEW_WORLD -> Color(activity.getColor(R.color.newWorldStroke))
-    Style.SIERRA_MADRE -> getTextColor(activity)
-    Style.MADRE_ROJA -> getTextColor(activity)
+    Style.SIERRA_MADRE -> getTextColorByStyle(activity, styleId)
+    Style.MADRE_ROJA -> getTextColorByStyle(activity, styleId)
     Style.VAULT_21 -> Color(activity.getColor(R.color.vault21Stroke))
     Style.VAULT_22 -> Color(activity.getColor(R.color.vault22Stroke))
     Style.ENCLAVE -> Color(activity.getColor(R.color.enclaveStroke))

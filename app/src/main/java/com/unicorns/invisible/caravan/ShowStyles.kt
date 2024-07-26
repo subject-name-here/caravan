@@ -2,16 +2,15 @@ package com.unicorns.invisible.caravan
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -53,53 +52,59 @@ fun ShowStyles(
     var styleInt by rememberSaveable { mutableStateOf(getStyle()) }
     val mainState = rememberLazyListState()
     LaunchedEffect(styleInt) {}
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
-        modifier = Modifier
-            .fillMaxSize()
-            .background(getBackgroundColor(activity))
-            .padding(16.dp)
-    ) {
-        LazyColumn(
-            Modifier
-                .fillMaxSize()
-                .scrollbar(
-                    mainState,
-                    horizontal = false,
-                    knobColor = getKnobColor(activity),
-                    trackColor = getTrackColor(activity)
-                ),
-            mainState,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            item {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                        TextFallout(
-                            stringResource(R.string.themes),
-                            getTextColor(activity),
-                            getTextStrokeColor(activity),
-                            32.sp,
-                            Alignment.Center,
-                            Modifier.fillMaxWidth(0.5f),
-                            TextAlign.Center
-                        )
-                        Column(Modifier.fillMaxWidth()) {
-                            TextFallout(
-                                stringResource(R.string.caps, activity.save?.caps ?: 0),
-                                getTextColor(activity),
-                                getTextStrokeColor(activity),
-                                24.sp,
-                                Alignment.Center,
-                                Modifier.fillMaxWidth(),
-                                TextAlign.Center
-                            )
-                        }
+
+    Scaffold(bottomBar = {
+        Box(Modifier.fillMaxWidth().background(getBackgroundColor(activity)).padding(horizontal = 8.dp)) {
+            TextFallout(
+                stringResource(R.string.themes),
+                getTextColor(activity),
+                getTextStrokeColor(activity),
+                24.sp,
+                Alignment.Center,
+                Modifier.align(Alignment.Center).padding(8.dp),
+                TextAlign.Center
+            )
+            TextFallout(
+                "<-",
+                getTextColor(activity),
+                getTextStrokeColor(activity),
+                24.sp,
+                Alignment.CenterStart,
+                Modifier
+                    .align(Alignment.CenterStart)
+                    .background(getTextBackgroundColor(activity))
+                    .clickableCancel(activity) {
+                        goBack()
                     }
+                    .padding(8.dp),
+                TextAlign.Start
+            )
+        }
+    }) { innerPadding ->
+        Box(Modifier.padding(innerPadding).background(getBackgroundColor(activity))) {
+            LazyColumn(
+                Modifier
+                    .fillMaxSize()
+                    .scrollbar(
+                        mainState,
+                        horizontal = false,
+                        knobColor = getKnobColor(activity),
+                        trackColor = getTrackColor(activity)
+                    ),
+                mainState,
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                item {
+                    TextFallout(
+                        stringResource(R.string.caps, activity.save?.caps ?: 0),
+                        getTextColor(activity),
+                        getTextStrokeColor(activity),
+                        24.sp,
+                        Alignment.Center,
+                        Modifier.fillMaxWidth().padding(top = 8.dp),
+                        TextAlign.Center
+                    )
 
                     Style.entries.forEach { style ->
                         if (style == Style.ENCLAVE && activity.save?.isEnclaveThemeAvailable != true) {
@@ -139,21 +144,6 @@ fun ShowStyles(
                         }
                     }
                 }
-
-                TextFallout(
-                    stringResource(R.string.menu_back),
-                    getTextColor(activity),
-                    getTextStrokeColor(activity),
-                    24.sp,
-                    Alignment.Center,
-                    Modifier
-                        .background(getTextBackgroundColor(activity))
-                        .clickableCancel(activity) {
-                            goBack()
-                        }
-                        .padding(8.dp),
-                    TextAlign.Center
-                )
             }
         }
     }
@@ -171,7 +161,7 @@ fun ShowStyle(
         Modifier
             .fillMaxWidth()
             .defaultMinSize(minHeight = 48.dp)
-            .padding(horizontal = 4.dp, vertical = 8.dp),
+            .padding(horizontal = 8.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         TextFallout(
@@ -179,13 +169,13 @@ fun ShowStyle(
             getTextColorByStyle(activity, style),
             getStrokeColorByStyle(activity, style),
             18.sp,
-            Alignment.CenterStart,
+            Alignment.Center,
             Modifier
                 .fillMaxWidth(0.5f)
                 .padding(horizontal = 4.dp)
                 .background(getBackByStyle(activity, style))
                 .padding(4.dp),
-            TextAlign.Start
+            TextAlign.Center
         )
         TextFallout(
             when {

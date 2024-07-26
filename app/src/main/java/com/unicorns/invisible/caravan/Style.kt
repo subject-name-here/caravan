@@ -926,7 +926,7 @@ fun BoxWithConstraintsScope.StylePicture(
                         Modifier.fillMaxWidth(),
                         TextAlign.Center,
                     )
-                    Spacer(Modifier.height(12.dp))
+                    Spacer(Modifier.height(4.dp))
                     TextFallout(
                         "$cnt / $numberOfRounds",
                         getTextColor(activity),
@@ -936,6 +936,7 @@ fun BoxWithConstraintsScope.StylePicture(
                         Modifier.fillMaxWidth(),
                         TextAlign.Center,
                     )
+                    Spacer(Modifier.height(4.dp))
                     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
                         TextFallout(
                             stringResource(R.string.heads),

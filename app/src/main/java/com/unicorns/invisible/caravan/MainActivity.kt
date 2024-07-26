@@ -444,7 +444,6 @@ class MainActivity : SaveDataActivity() {
                                 save?.ambientVolume ?: 1f
                             )
                         }
-                        var intro by remember { mutableStateOf(save?.useCaravanIntro ?: true) }
                         Column {
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 TextFallout(
@@ -497,33 +496,6 @@ class MainActivity : SaveDataActivity() {
                                 SliderCustom(this@MainActivity, { soundVolume }, {
                                     soundVolume = it; save?.soundVolume = it
                                 }, { playNotificationSound(this@MainActivity) {} })
-                            }
-                            Row(
-                                horizontalArrangement = Arrangement.Center,
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                TextFallout(
-                                    stringResource(R.string.intro_music),
-                                    getDialogTextColor(this@MainActivity),
-                                    getDialogTextColor(this@MainActivity),
-                                    20.sp,
-                                    Alignment.CenterStart,
-                                    Modifier.fillMaxWidth(0.66f),
-                                    TextAlign.Start
-                                )
-                                Spacer(modifier = Modifier.width(16.dp))
-                                SwitchCustom(this@MainActivity, { intro }) {
-                                    intro = !intro
-                                    save?.let {
-                                        it.useCaravanIntro = !it.useCaravanIntro
-                                        if (it.useCaravanIntro) {
-                                            playClickSound(this@MainActivity)
-                                        } else {
-                                            playCloseSound(this@MainActivity)
-                                        }
-                                        saveOnGD(this@MainActivity)
-                                    }
-                                }
                             }
                         }
                     },
@@ -725,10 +697,18 @@ class MainActivity : SaveDataActivity() {
 
 
                     else -> {
+                        LaunchedEffect(Unit) {
+                            if (save?.updateSoldCards() == true) {
+                                saveOnGD(this@MainActivity)
+                            }
+                            save?.updateChallenges()
+                        }
+
                         BoxWithConstraints {
                             val width = maxWidth.dpToPx().toInt()
                             val height = maxHeight.dpToPx().toInt()
                             MainMenu(
+                                { StylePicture(this@MainActivity, styleId, userId.hashCode(), width, height) },
                                 { deckSelection = true },
                                 { showAbout = true },
                                 { showGameStats = true },
@@ -744,8 +724,6 @@ class MainActivity : SaveDataActivity() {
                                 { showWildWasteland = true },
                                 { showHouseRoguelike = true },
                             )
-                            // TODO: things should be behind menu items
-                            StylePicture(this@MainActivity, styleId, userId.hashCode(), width, height)
                         }
                     }
                 }
@@ -755,6 +733,7 @@ class MainActivity : SaveDataActivity() {
 
     @Composable
     fun MainMenu(
+        showStyledMenu: @Composable () -> Unit,
         showDeckSelection: () -> Unit,
         showAbout: () -> Unit,
         showPvE: () -> Unit,
@@ -770,7 +749,7 @@ class MainActivity : SaveDataActivity() {
         showWildWasteland: () -> Unit,
         showRoguelike: () -> Unit,
     ) {
-        Column(
+        Box(
             Modifier
                 .fillMaxSize()
                 .background(getBackgroundColor(this))
@@ -893,14 +872,100 @@ class MainActivity : SaveDataActivity() {
                 }
             }
 
+            BoxWithConstraints(Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .height(48.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceAround
+                ) {
+                    Row(
+                        Modifier
+                            .fillMaxSize()
+                            .padding(horizontal = 12.dp)
+                            .padding(bottom = 4.dp)
+                            .drawBehind {
+                                drawPath(
+                                    Path().apply {
+                                        moveTo(0f, 0f)
+                                        lineTo(0f, size.height * 3 / 4)
+                                        lineTo(size.width, size.height * 3 / 4)
+                                        lineTo(size.width, 0f)
+                                    },
+                                    color = getDividerColor(this@MainActivity),
+                                    style = Stroke(width = 8f),
+                                )
+                            },
+                        horizontalArrangement = Arrangement.SpaceEvenly,
+                        verticalAlignment = Alignment.Bottom
+                    ) {
+                        TextFallout(
+                            getString(R.string.menu_vision),
+                            getTextColor(this@MainActivity),
+                            getTextStrokeColor(this@MainActivity),
+                            18.sp,
+                            Alignment.Center,
+                            Modifier
+                                .background(getBackgroundColor(this@MainActivity))
+                                .padding(horizontal = 4.dp)
+                                .background(getTextBackgroundColor(this@MainActivity))
+                                .clickableOk(this@MainActivity) {
+                                    if (save != null) {
+                                        showVision()
+                                    }
+                                }
+                                .padding(4.dp),
+                            TextAlign.Center
+                        )
+
+                        TextFallout(
+                            getString(R.string.menu_settings),
+                            getTextColor(this@MainActivity),
+                            getTextStrokeColor(this@MainActivity),
+                            18.sp,
+                            Alignment.Center,
+                            Modifier
+                                .background(getBackgroundColor(this@MainActivity))
+                                .padding(horizontal = 4.dp)
+                                .clickableOk(this@MainActivity) {
+                                    showSettings()
+                                }
+                                .background(getTextBackgroundColor(this@MainActivity))
+                                .padding(4.dp),
+                            TextAlign.Center
+                        )
+
+                        TextFallout(
+                            getString(R.string.menu_about),
+                            getTextColor(this@MainActivity),
+                            getTextStrokeColor(this@MainActivity),
+                            18.sp,
+                            Alignment.Center,
+                            Modifier
+                                .background(getBackgroundColor(this@MainActivity))
+                                .padding(horizontal = 4.dp)
+                                .clickableOk(this@MainActivity) {
+                                    showAbout()
+                                }
+                                .background(getTextBackgroundColor(this@MainActivity))
+                                .padding(4.dp),
+                            TextAlign.Center
+                        )
+                    }
+                }
+            }
+
+            showStyledMenu()
+
             val state = rememberLazyListState()
             LazyColumn(
                 horizontalAlignment = Alignment.Start,
                 verticalArrangement = Arrangement.Center,
                 modifier = Modifier
-                    .fillMaxWidth()
+                    .fillMaxWidth(0.5f)
                     .fillMaxHeight()
-                    .padding(bottom = 48.dp)
+                    .padding(bottom = 48.dp, top = 32.dp)
                     .scrollbar(
                         state,
                         alignEnd = false,
@@ -960,97 +1025,6 @@ class MainActivity : SaveDataActivity() {
                     }
                 }
             }
-        }
-
-        BoxWithConstraints(Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
-            Row(
-                Modifier
-                    .fillMaxWidth()
-                    .height(48.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceAround
-            ) {
-                Row(
-                    Modifier
-                        .fillMaxSize()
-                        .padding(horizontal = 12.dp)
-                        .padding(bottom = 4.dp)
-                        .drawBehind {
-                            drawPath(
-                                Path().apply {
-                                    moveTo(0f, 0f)
-                                    lineTo(0f, size.height * 3 / 4)
-                                    lineTo(size.width, size.height * 3 / 4)
-                                    lineTo(size.width, 0f)
-                                },
-                                color = getDividerColor(this@MainActivity),
-                                style = Stroke(width = 8f),
-                            )
-                        },
-                    horizontalArrangement = Arrangement.SpaceEvenly,
-                    verticalAlignment = Alignment.Bottom
-                ) {
-                    TextFallout(
-                        getString(R.string.menu_vision),
-                        getTextColor(this@MainActivity),
-                        getTextStrokeColor(this@MainActivity),
-                        18.sp,
-                        Alignment.Center,
-                        Modifier
-                            .background(getBackgroundColor(this@MainActivity))
-                            .padding(horizontal = 4.dp)
-                            .background(getTextBackgroundColor(this@MainActivity))
-                            .clickableOk(this@MainActivity) {
-                                if (save != null) {
-                                    showVision()
-                                }
-                            }
-                            .padding(4.dp),
-                        TextAlign.Center
-                    )
-
-                    TextFallout(
-                        getString(R.string.menu_settings),
-                        getTextColor(this@MainActivity),
-                        getTextStrokeColor(this@MainActivity),
-                        18.sp,
-                        Alignment.Center,
-                        Modifier
-                            .background(getBackgroundColor(this@MainActivity))
-                            .padding(horizontal = 4.dp)
-                            .clickableOk(this@MainActivity) {
-                                showSettings()
-                            }
-                            .background(getTextBackgroundColor(this@MainActivity))
-                            .padding(4.dp),
-                        TextAlign.Center
-                    )
-
-                    TextFallout(
-                        getString(R.string.menu_about),
-                        getTextColor(this@MainActivity),
-                        getTextStrokeColor(this@MainActivity),
-                        18.sp,
-                        Alignment.Center,
-                        Modifier
-                            .background(getBackgroundColor(this@MainActivity))
-                            .padding(horizontal = 4.dp)
-                            .clickableOk(this@MainActivity) {
-                                showAbout()
-                            }
-                            .background(getTextBackgroundColor(this@MainActivity))
-                            .padding(4.dp),
-                        TextAlign.Center
-                    )
-                }
-            }
-        }
-
-        LaunchedEffect(Unit) {
-            if (save?.updateSoldCards() == true) {
-                saveOnGD(this@MainActivity)
-            }
-            save?.updateChallenges()
         }
     }
 
