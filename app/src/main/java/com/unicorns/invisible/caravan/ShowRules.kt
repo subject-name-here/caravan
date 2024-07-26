@@ -62,8 +62,7 @@ fun ShowRules(activity: MainActivity, goBack: () -> Unit) {
                 )
             }
         }
-
-        Spacer(modifier = Modifier.fillMaxHeight(0.2f))
+        // TODO: replace "BAck to Menu buttons with back to menu symbols at the top.
         TextFallout(
             stringResource(R.string.menu_back),
             getTextColor(activity),

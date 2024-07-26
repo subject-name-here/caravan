@@ -508,12 +508,10 @@ fun TextCustom(
 fun Modifier.clickableCancel(activity: MainActivity, block: () -> Unit): Modifier {
     return this.clickable { playCloseSound(activity); block() }
 }
-
 @Composable
 fun Modifier.clickableOk(activity: MainActivity, block: () -> Unit): Modifier {
     return this.clickable { playClickSound(activity); block() }
 }
-
 @Composable
 fun Modifier.clickableSelect(activity: MainActivity, block: () -> Unit): Modifier {
     return this.clickable { playSelectSound(activity); block() }

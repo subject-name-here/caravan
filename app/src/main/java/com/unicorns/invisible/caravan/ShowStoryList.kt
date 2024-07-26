@@ -137,14 +137,14 @@ fun ShowStoryList(activity: MainActivity, showAlertDialog: (String, String) -> U
             3 -> {
                 LaunchedEffect(Unit) {
                     stopRadio()
-                    isFinalBossSequence = true
+                    isSoundEffectsReduced = true
                 }
                 ShowStoryChapter4(activity, showAlertDialog, {
                     activity.save?.let {
                         it.storyChaptersProgress = maxOf(it.storyChaptersProgress, 4)
                         saveOnGD(activity)
                     }
-                }) { showChapter = null; isFinalBossSequence = false; nextSong(activity);  }
+                }) { showChapter = null; isSoundEffectsReduced = false; nextSong(activity);  }
             }
             4 -> {
                 ShowStoryChapter5(activity, showAlertDialog, {
@@ -188,21 +188,21 @@ fun ShowStoryList(activity: MainActivity, showAlertDialog: (String, String) -> U
             8 -> {
                 LaunchedEffect(Unit) {
                     stopRadio()
-                    isFinalBossSequence = true
+                    isSoundEffectsReduced = true
                 }
                 ShowStoryChapter9(activity, showAlertDialog, {
                     activity.save?.let {
                         it.storyChaptersProgress = maxOf(it.storyChaptersProgress, 9)
                         saveOnGD(activity)
                     }
-                }) { showChapter = null; isFinalBossSequence = false; nextSong(activity) }
+                }) { showChapter = null; isSoundEffectsReduced = false; nextSong(activity) }
             }
             9 -> {
                 LaunchedEffect(Unit) {
                     stopRadio()
-                    isFinalBossSequence = true
+                    isSoundEffectsReduced = true
                 }
-                ShowStoryChapter10(activity) { showChapter = null; isFinalBossSequence = false; nextSong(activity) }
+                ShowStoryChapter10(activity) { showChapter = null; isSoundEffectsReduced = false; nextSong(activity) }
             }
             else -> {
                 ShowStoryChapter9A(activity, showAlertDialog) { showChapter = null }
@@ -2040,7 +2040,7 @@ fun ShowStoryChapter9A(
                     }
                     2 -> DialogLine(activity, "............") {
                         stopRadio()
-                        isFinalBossSequence = true
+                        isSoundEffectsReduced = true
                         lineNumber = 3
                         text = "The Prospector is now one with the Supreme Leader. " +
                                 "He IS the Supreme Leader… And so, so much more. And now, he knows more than his own experience."
@@ -2062,12 +2062,12 @@ fun ShowStoryChapter9A(
                         lineNumber = 6
                         text = "Yes, dealing with the paladin. The spy, who stood between him and the bright future of unification of the mankind…"
                     }
-                    -1 -> DialogLine(activity, "[FINISH]") { goBack(); isFinalBossSequence = true; nextSong(activity) }
+                    -1 -> DialogLine(activity, "[FINISH]") { goBack(); isSoundEffectsReduced = false; nextSong(activity) }
                     -2 -> DialogLine(activity, "NOW WE ARE TRULY UNITED. WELCOME, THE PROSPECTOR.") {
                         lineNumber = -3
                         text = "The Prospector… The Supreme Leader - together they will bring peace to the entire planet."
                     }
-                    -3 -> DialogLine(activity, "[END.]") { goBack(); isFinalBossSequence = true; nextSong(activity) }
+                    -3 -> DialogLine(activity, "[END.]") { goBack(); isSoundEffectsReduced = false; nextSong(activity) }
                     else -> {
                         DialogLine(activity, "[FINISH]") { isGame = true; gameResult = -1 }
                     }
@@ -2131,8 +2131,6 @@ fun StartStoryGame(
     var enemyHandKey by rememberSaveable { mutableIntStateOf(0) }
 
     val animationSpeed = activity.animationSpeed.value ?: AnimationSpeed.NORMAL
-
-    game.enemyCResources.onDropCardFromHand = { enemyHandKey = -1 }
 
     fun onCardClicked(index: Int) {
         if (game.isOver()) {

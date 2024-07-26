@@ -37,23 +37,6 @@ import com.unicorns.invisible.caravan.utils.stopAmbient
 @Composable
 fun Tutorial(
     activity: MainActivity,
-    game: Game = rememberScoped {
-        Game(
-            CResources(CustomDeck().apply {
-                add(Card(Rank.JACK, Suit.HEARTS, CardBack.STANDARD))
-                add(Card(Rank.QUEEN, Suit.CLUBS, CardBack.STANDARD))
-                add(Card(Rank.KING, Suit.DIAMONDS, CardBack.STANDARD))
-                add(Card(Rank.JOKER, Suit.HEARTS, CardBack.STANDARD))
-                add(Card(Rank.TWO, Suit.HEARTS, CardBack.STANDARD))
-                add(Card(Rank.TWO, Suit.DIAMONDS, CardBack.STANDARD))
-                add(Card(Rank.TWO, Suit.CLUBS, CardBack.STANDARD))
-                add(Card(Rank.THREE, Suit.HEARTS, CardBack.STANDARD))
-                add(Card(Rank.FOUR, Suit.DIAMONDS, CardBack.STANDARD))
-                add(Card(Rank.ACE, Suit.DIAMONDS, CardBack.STANDARD))
-            }),
-            EnemyTutorial
-        ).also { it.startGame(maxNumOfFaces = 4) }
-    },
     goBack: () -> Unit
 ) {
     var tutorialKey by rememberSaveable { mutableIntStateOf(0) }
@@ -74,8 +57,24 @@ fun Tutorial(
     }
 
     var updater by remember { mutableStateOf(false) }
-    game.enemyCResources.onRemoveFromHand = {
-        updater = !updater
+    val game: Game = rememberScoped {
+        Game(
+            CResources(CustomDeck().apply {
+                add(Card(Rank.JACK, Suit.HEARTS, CardBack.STANDARD))
+                add(Card(Rank.QUEEN, Suit.CLUBS, CardBack.STANDARD))
+                add(Card(Rank.KING, Suit.DIAMONDS, CardBack.STANDARD))
+                add(Card(Rank.JOKER, Suit.HEARTS, CardBack.STANDARD))
+                add(Card(Rank.TWO, Suit.HEARTS, CardBack.STANDARD))
+                add(Card(Rank.TWO, Suit.DIAMONDS, CardBack.STANDARD))
+                add(Card(Rank.TWO, Suit.CLUBS, CardBack.STANDARD))
+                add(Card(Rank.THREE, Suit.HEARTS, CardBack.STANDARD))
+                add(Card(Rank.FOUR, Suit.DIAMONDS, CardBack.STANDARD))
+                add(Card(Rank.ACE, Suit.DIAMONDS, CardBack.STANDARD))
+            }),
+            EnemyTutorial().apply {
+                onRemoveFromHand = { updater = !updater }
+            }
+        ).also { it.startGame(maxNumOfFaces = 4) }
     }
 
     ShowGame(activity = activity, game = game) { stopAmbient(); goBack() }

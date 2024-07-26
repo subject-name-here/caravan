@@ -27,17 +27,17 @@ class EnemyStory4(val showMessage: (Int) -> Unit) : Enemy() {
         if (game.isInitStage()) {
             when (hand.size) {
                 8 -> {
-                    game.playerCResources.addCardToHandPvP(Card(Rank.TWO, Suit.HEARTS, CardBack.STANDARD, false))
+                    game.playerCResources.addCardToHandDirect(Card(Rank.TWO, Suit.HEARTS, CardBack.STANDARD, false))
                     showMessage(1)
                 }
                 7 -> {
-                    game.playerCResources.addCardToHandPvP(Card(Rank.TWO, Suit.HEARTS, CardBack.LUCKY_38, true))
-                    game.playerCResources.addCardToHandPvP(Card(Rank.TWO, Suit.HEARTS, CardBack.VAULT_21, false))
+                    game.playerCResources.addCardToHandDirect(Card(Rank.TWO, Suit.HEARTS, CardBack.LUCKY_38, true))
+                    game.playerCResources.addCardToHandDirect(Card(Rank.TWO, Suit.HEARTS, CardBack.VAULT_21, false))
                     showMessage(2)
                 }
                 6 -> {
-                    game.playerCResources.addCardToHandPvP(Card(Rank.TWO, Suit.HEARTS, CardBack.GOMORRAH, false))
-                    game.playerCResources.addCardToHandPvP(Card(Rank.TWO, Suit.HEARTS, CardBack.VAULT_21, true))
+                    game.playerCResources.addCardToHandDirect(Card(Rank.TWO, Suit.HEARTS, CardBack.GOMORRAH, false))
+                    game.playerCResources.addCardToHandDirect(Card(Rank.TWO, Suit.HEARTS, CardBack.VAULT_21, true))
                     showMessage(3)
                 }
             }
@@ -54,7 +54,7 @@ class EnemyStory4(val showMessage: (Int) -> Unit) : Enemy() {
             game.playerCResources.addNewDeck(CustomDeck(CardBack.STANDARD, false).apply {
                 removeAll(toList().filter { it.rank.value < 5 || it.rank == Rank.QUEEN })
             })
-            game.playerCResources.addCardToHandPvP(Card(Rank.KING, Suit.HEARTS, CardBack.STANDARD, true))
+            game.playerCResources.addCardToHandDirect(Card(Rank.KING, Suit.HEARTS, CardBack.STANDARD, true))
             game.playerCResources.shuffleDeck()
         }
 

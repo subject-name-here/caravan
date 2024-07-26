@@ -172,6 +172,7 @@ fun getStyleCities(style: Style): List<String> {
         MADRE_ROJA -> listOf("YOU", "CAN", "NEVER", "LEAVE", "SIERRA", "MADRE")
         VAULT_21 -> listOf("LONG 15", "PRIMM", "NOVAK", "188", "NEW VEGAS", "HOOVER DAM")
         VAULT_22 -> listOf("GRRRRR", "BRRRR", "VRRR", "MRR", "HRRRRRRR", "DRRRRRR")
+        ENCLAVE -> listOf("NAVARRO", "AUSTIN", "WASHINGTON", "SEATTLE", "CHICAGO", "NEW YORK")
         else -> listOf("BONEYARD", "REDDING", "VAULT CITY", "DAYGLOW", "NEW RENO", "THE HUB")
     }
 }

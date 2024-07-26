@@ -15,7 +15,7 @@ import kotlin.math.abs
 @Serializable
 data object EnemyNoBark : Enemy() {
     override fun createDeck(): CResources = CResources(CustomDeck(CardBack.STANDARD, false).apply {
-        toList().filter { it.rank.value < 5 }.forEach { remove(it) }
+        removeAll(toList().filter { it.rank.value < 5 })
         listOf(CardBack.GOMORRAH).forEach { back ->
             Suit.entries.forEach { suit ->
                 add(Card(Rank.JACK, suit, back, true))

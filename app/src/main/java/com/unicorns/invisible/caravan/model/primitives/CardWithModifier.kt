@@ -12,10 +12,9 @@ class CardWithModifier(val card: Card) {
         modifiers.add(card)
         card.caravanAnimationMark = Card.AnimationMark.MOVING_IN
         if (card.isSpecial()) {
-            if (card.isAlt && (card.back == CardBack.WILD_WASTELAND || card.back == CardBack.UNPLAYABLE)) {
+            if (card.isAlt) {
                 hasBomb = true
-            }
-            if (!card.isAlt && card.isSpecial()) {
+            } else {
                 when (card.getWildWastelandCardType()) {
                     Card.WildWastelandCardType.DIFFICULT_PETE -> hasActivePete = true
                     Card.WildWastelandCardType.FEV -> hasActiveFev = true

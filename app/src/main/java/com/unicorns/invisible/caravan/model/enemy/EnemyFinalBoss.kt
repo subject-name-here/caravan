@@ -11,7 +11,6 @@ import com.unicorns.invisible.caravan.model.primitives.Rank
 import com.unicorns.invisible.caravan.model.primitives.Suit
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
-import kotlin.math.max
 
 
 @Serializable

@@ -17,65 +17,48 @@ class Caravan {
     fun isFull() = size >= 10
     var canBeDisbanded = true
 
+    private fun removeAll(predicate: (CardWithModifier) -> Boolean) {
+        val toRemove = cardsMutable.filter(predicate)
+        toRemove.forEach {
+            it.card.caravanAnimationMark = Card.AnimationMark.MOVING_OUT
+        }
+        cardsMutable.removeAll(toRemove)
+    }
+
     fun dropCaravan() {
-        cardsMutable.forEach { it.card.caravanAnimationMark = Card.AnimationMark.MOVING_OUT }
-        cardsMutable.clear()
+        removeAll { true }
     }
-
     fun removeAllJackedCards() {
-        cardsMutable.forEach {
-            if (it.hasJacks()) {
-                it.card.caravanAnimationMark = Card.AnimationMark.MOVING_OUT
-            }
-        }
-        cardsMutable.removeAll { it.hasJacks() }
+        removeAll { it.hasJacks() }
     }
-
     fun jokerRemoveAllRanks(card: Card) {
-        cardsMutable.forEach {
-            if (it.card.rank == card.rank && !it.hasActiveJoker) {
-                it.card.caravanAnimationMark = Card.AnimationMark.MOVING_OUT
-            }
-        }
-        cardsMutable.removeAll { it.card.rank == card.rank && !it.hasActiveJoker }
+        removeAll { it.card.rank == card.rank && !it.hasActiveJoker }
     }
-
     fun jokerRemoveAllSuits(card: Card) {
-        cardsMutable.forEach {
-            if (it.card.suit == card.suit && !it.hasActiveJoker) {
-                it.card.caravanAnimationMark = Card.AnimationMark.MOVING_OUT
-            }
-        }
-        cardsMutable.removeAll { it.card.suit == card.suit && !it.hasActiveJoker }
+        removeAll { it.card.suit == card.suit && !it.hasActiveJoker }
     }
 
     fun getCazadorPoison(isReversed: Boolean = false) {
-        cardsMutable.forEach { it.card.caravanAnimationMark = Card.AnimationMark.MOVING_OUT }
-        cardsMutable.removeAll { it.card.rank.ordinal == 0 }
+        if (!isReversed) {
+            removeAll { it.card.rank.ordinal == 0 }
+        }
+
+        cardsMutable.forEach { it.card.caravanAnimationMark = Card.AnimationMark.MOVED_OUT }
         val copy = cardsMutable.toList()
         cardsMutable.clear()
-        if (isReversed) {
-            copy.forEach {
-                val mods = it.modifiersCopy()
-                cardsMutable.add(CardWithModifier(
-                    Card(Rank.entries[(it.card.rank.ordinal + 1).coerceAtMost(9)], it.card.suit, CardBack.WILD_WASTELAND, false)
-                ).apply {
-                    copyModifiersFrom(mods)
-                })
-            }
-        } else {
-            copy.forEach {
-                val mods = it.modifiersCopy()
-                cardsMutable.add(CardWithModifier(
-                    Card(Rank.entries[(it.card.rank.ordinal - 1).coerceAtLeast(0)], it.card.suit, CardBack.WILD_WASTELAND, false)
-                ).apply {
-                    copyModifiersFrom(mods)
-                })
-            }
+        val changeOrdinal: (Int) -> Int = if (isReversed) Int::inc else Int::dec
+        copy.forEach {
+            val mods = it.modifiersCopy()
+            val newOrdinal = (changeOrdinal(it.card.rank.ordinal)).coerceIn(0, 9)
+            cardsMutable.add(CardWithModifier(
+                Card(Rank.entries[newOrdinal], it.card.suit, CardBack.WILD_WASTELAND, false)
+            ).apply {
+                copyModifiersFrom(mods)
+            })
         }
     }
     fun getPetePower() {
-        cardsMutable.forEach { it.card.caravanAnimationMark = Card.AnimationMark.MOVING_OUT }
+        cardsMutable.forEach { it.card.caravanAnimationMark = Card.AnimationMark.MOVED_OUT }
         val copy = cardsMutable.toList()
         cardsMutable.clear()
         copy.forEach {
@@ -89,17 +72,13 @@ class Caravan {
     }
     fun getUfo(seed: Int) {
         val rand = Random(seed)
-        val toRemove = cardsMutable.filter { rand.nextBoolean() && !it.hasActiveUfo }
-        toRemove.forEach { it.card.caravanAnimationMark = Card.AnimationMark.MOVING_OUT }
-        cardsMutable.removeAll(toRemove)
+        removeAll { rand.nextBoolean() && !it.hasActiveUfo }
     }
 
     fun getValue(): Int {
         if (cards.any {
             it.modifiersCopy().any {
-                mod -> mod.back == CardBack.WILD_WASTELAND &&
-                        !mod.isAlt &&
-                        mod.getWildWastelandCardType() == Card.WildWastelandCardType.YES_MAN
+                mod -> mod.getWildWastelandCardType() == Card.WildWastelandCardType.YES_MAN
             }
         }) {
             return 26

@@ -73,8 +73,6 @@ import com.unicorns.invisible.caravan.utils.TextFallout
 import com.unicorns.invisible.caravan.utils.clickableCancel
 import com.unicorns.invisible.caravan.utils.clickableOk
 import com.unicorns.invisible.caravan.utils.dpToPx
-import com.unicorns.invisible.caravan.utils.effectPlayers
-import com.unicorns.invisible.caravan.utils.effectPlayersLock
 import com.unicorns.invisible.caravan.utils.getBackgroundColor
 import com.unicorns.invisible.caravan.utils.getDialogBackground
 import com.unicorns.invisible.caravan.utils.getDialogTextColor
@@ -86,23 +84,24 @@ import com.unicorns.invisible.caravan.utils.getTextBackgroundColor
 import com.unicorns.invisible.caravan.utils.getTextColor
 import com.unicorns.invisible.caravan.utils.getTextStrokeColor
 import com.unicorns.invisible.caravan.utils.getTrackColor
-import com.unicorns.invisible.caravan.utils.isRadioStopped
 import com.unicorns.invisible.caravan.utils.nextSong
-import com.unicorns.invisible.caravan.utils.pause
+import com.unicorns.invisible.caravan.utils.pauseActivitySound
+import com.unicorns.invisible.caravan.utils.pauseRadio
 import com.unicorns.invisible.caravan.utils.playClickSound
 import com.unicorns.invisible.caravan.utils.playCloseSound
 import com.unicorns.invisible.caravan.utils.playNotificationSound
-import com.unicorns.invisible.caravan.utils.resume
+import com.unicorns.invisible.caravan.utils.resumeActivitySound
+import com.unicorns.invisible.caravan.utils.resumeRadio
 import com.unicorns.invisible.caravan.utils.scrollbar
 import com.unicorns.invisible.caravan.utils.setAmbientVolume
 import com.unicorns.invisible.caravan.utils.setRadioVolume
 import com.unicorns.invisible.caravan.utils.startRadio
+import com.unicorns.invisible.caravan.utils.stopSoundEffects
 import com.unicorns.invisible.caravan.utils.updateSoldCards
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import okio.withLock
 import org.chromium.net.CronetEngine
 import java.util.UUID
 
@@ -115,8 +114,7 @@ var userId = ""
 
 private var readyFlag = MutableLiveData(false)
 
-var isFrankSequence = false
-var isFinalBossSequence = false
+var isSoundEffectsReduced = false
 
 @Suppress("MoveLambdaOutsideParentheses")
 class MainActivity : SaveDataActivity() {
@@ -135,15 +133,13 @@ class MainActivity : SaveDataActivity() {
 
     override fun onPause() {
         super.onPause()
-        pause()
-        effectPlayersLock.withLock {
-            effectPlayers.forEach { if (it.isPlaying) it.stop() }
-        }
+        pauseActivitySound()
+        stopSoundEffects()
     }
 
     override fun onResume() {
         super.onResume()
-        resume()
+        resumeActivitySound()
     }
 
     override fun onSnapshotClientInitialized() {
@@ -560,7 +556,7 @@ class MainActivity : SaveDataActivity() {
                                 .weight(1f)
                                 .wrapContentWidth()
                                 .clickableOk(this@MainActivity) {
-                                    if (!isPaused && !isFrankSequence && !isFinalBossSequence) {
+                                    if (!isPaused && !isSoundEffectsReduced) {
                                         nextSong(this@MainActivity)
                                     }
                                 }
@@ -579,16 +575,14 @@ class MainActivity : SaveDataActivity() {
                                 .weight(1f)
                                 .wrapContentWidth()
                                 .clickableOk(this@MainActivity) {
-                                    if (isFrankSequence || isFinalBossSequence) {
+                                    if (isSoundEffectsReduced) {
                                         return@clickableOk
                                     }
                                     if (isPaused) {
-                                        isRadioStopped = false
-                                        resume(byButton = true)
+                                        resumeRadio()
                                         isPaused = false
                                     } else {
-                                        isRadioStopped = true
-                                        pause(byButton = true)
+                                        pauseRadio()
                                         isPaused = true
                                     }
                                 }
@@ -750,13 +744,13 @@ class MainActivity : SaveDataActivity() {
                                 { showWildWasteland = true },
                                 { showHouseRoguelike = true },
                             )
+                            // TODO: things should be behind menu items
                             StylePicture(this@MainActivity, styleId, userId.hashCode(), width, height)
                         }
                     }
                 }
             }
         }
-
     }
 
     @Composable

@@ -55,6 +55,7 @@ import com.unicorns.invisible.caravan.utils.CheckboxCustom
 import com.unicorns.invisible.caravan.utils.TextFallout
 import com.unicorns.invisible.caravan.utils.clickableCancel
 import com.unicorns.invisible.caravan.utils.getBackgroundColor
+import com.unicorns.invisible.caravan.utils.getCardPrice
 import com.unicorns.invisible.caravan.utils.getDividerColor
 import com.unicorns.invisible.caravan.utils.getKnobColor
 import com.unicorns.invisible.caravan.utils.getTextBackgroundColor
@@ -584,7 +585,7 @@ fun StartGame(
             enemy
         ).also {
             if (enemy is EnemyFinalBoss) {
-                isFinalBossSequence = true
+                isSoundEffectsReduced = true
                 startFinalBossTheme(activity)
                 it.playerCaravans.forEach { caravan -> caravan.canBeDisbanded = false }
                 enemy.sayThing("You cannot disband caravans. I will do that for you.")

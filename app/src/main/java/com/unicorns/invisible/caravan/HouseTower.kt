@@ -244,7 +244,7 @@ fun TowerScreen(
                 stopRadio()
             }) {
                 showGameLevel11 = false
-                isFrankSequence = false
+                isSoundEffectsReduced = false
                 isGameRigged = false
                 activity.save?.let {
                     it.isGameRigged = false
@@ -811,6 +811,7 @@ fun StartTowerGame(
     onLose: () -> Unit,
     goBack: () -> Unit,
 ) {
+    val isFrankSequence = enemy is EnemyFrank
     var showIntro by rememberSaveable { mutableStateOf(false) }
     var showFrankOutro by rememberSaveable { mutableStateOf(false) }
     if (showIntro) {
@@ -952,8 +953,6 @@ fun StartTowerGame(
     var enemyHandKey by rememberSaveable { mutableIntStateOf(0) }
 
     val animationSpeed = activity.animationSpeed.value ?: AnimationSpeed.NORMAL
-
-    game.enemyCResources.onDropCardFromHand = { enemyHandKey = -1 }
 
     fun onCardClicked(index: Int) {
         if (game.isOver()) {
@@ -1118,7 +1117,7 @@ fun ShowFrank(activity: MainActivity, goBack: () -> Unit) {
     LaunchedEffect(Unit) {
         if (!showDialogs) {
             stopRadio()
-            isFrankSequence = true
+            isSoundEffectsReduced = true
             playFrankPhrase(activity, R.raw.frank_on_welcome)
             text = activity.getString(R.string.frank_welcome)
             delay(3000L)

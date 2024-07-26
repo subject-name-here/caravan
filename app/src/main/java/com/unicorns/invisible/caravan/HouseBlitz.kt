@@ -553,8 +553,6 @@ fun StartBlitz(
     var caravansKey by rememberSaveable { mutableStateOf(true) }
     var enemyHandKey by rememberSaveable { mutableIntStateOf(0) }
 
-    game.enemyCResources.onDropCardFromHand = { enemyHandKey = -1 }
-
     fun onCardClicked(index: Int) {
         if (game.isOver()) {
             return

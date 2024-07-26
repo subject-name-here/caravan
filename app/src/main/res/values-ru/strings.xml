@@ -34,7 +34,7 @@
 
     <string name="standard_deck_owners">другие люди</string>
 
-    <string name="menu_pve">Играть с ИИ (+5)</string>
+    <string name="menu_pve">Играть с ИИ</string>
     <string name="menu_pvp">Играть с человеком</string>
     <string name="menu_tutorial">Обучение</string>
     <string name="menu_rules">Правила</string>

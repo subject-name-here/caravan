@@ -1,7 +1,9 @@
 package com.unicorns.invisible.caravan.model.enemy.strategy
 
 import com.unicorns.invisible.caravan.model.Game
+import com.unicorns.invisible.caravan.model.enemy.Enemy
 import com.unicorns.invisible.caravan.model.enemy.EnemyTutorial
+import com.unicorns.invisible.caravan.model.enemy.EnemyYesMan
 import com.unicorns.invisible.caravan.model.primitives.Rank
 
 object StrategyTime : Strategy {
@@ -37,7 +39,7 @@ object StrategyTime : Strategy {
                     if (caravan.getValue() + card.rank.value <= 26) {
                         if (caravan.canPutCardOnTop(card)) {
                             val caravanIndex = game.enemyCaravans.indexOf(caravan)
-                            if (!EnemyTutorial.checkMoveOnDefeat(
+                            if (!EnemyYesMan.checkMoveOnDefeat(
                                     game,
                                     caravanIndex
                                 ) && caravan.getValue() + card.rank.value > game.playerCaravans[caravanIndex].getValue()

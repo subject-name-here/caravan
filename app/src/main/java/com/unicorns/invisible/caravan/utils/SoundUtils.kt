@@ -1,12 +1,10 @@
 package com.unicorns.invisible.caravan.utils
 
 import android.media.MediaPlayer
-import androidx.compose.animation.core.infiniteRepeatable
 import com.unicorns.invisible.caravan.MainActivity
 import com.unicorns.invisible.caravan.R
 import com.unicorns.invisible.caravan.Style
-import com.unicorns.invisible.caravan.isFinalBossSequence
-import com.unicorns.invisible.caravan.isFrankSequence
+import com.unicorns.invisible.caravan.isSoundEffectsReduced
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -15,8 +13,14 @@ import okio.withLock
 import java.util.concurrent.locks.ReentrantLock
 
 
-val effectPlayers = HashSet<MediaPlayer>()
-val effectPlayersLock = ReentrantLock()
+private val effectPlayers = HashSet<MediaPlayer>()
+private val effectPlayersLock = ReentrantLock()
+fun stopSoundEffects() {
+    effectPlayersLock.withLock {
+        effectPlayers.forEach { if (it.isPlaying) it.stop() }
+    }
+}
+
 fun playNotificationSound(activity: MainActivity, onPrepared: () -> Unit) {
     val volume = activity.save?.soundVolume ?: 1f
     MediaPlayer
@@ -81,27 +85,32 @@ fun getRandomCardFlipSound(): Int {
     ).random()
 }
 
+
 fun playLoseSound(activity: MainActivity) {
     playEffectPlayerSound(activity, listOf(R.raw.lose1, R.raw.lose3, R.raw.any).random(), 2)
 }
-fun playWinSound(activity: MainActivity) {
-    CoroutineScope(Dispatchers.Unconfined).launch {
-        playEffectPlayerSound(activity, R.raw.win_caps, 2)
-        delay(760L)
-        playEffectPlayerSound(activity, listOf(R.raw.win1, R.raw.win2).random(), 2)
-    }
+fun playWinSoundAlone(activity: MainActivity) {
+    playEffectPlayerSound(activity, listOf(R.raw.win1, R.raw.win2).random(), 2)
 }
 fun playCashSound(activity: MainActivity) {
     playEffectPlayerSound(activity, R.raw.win_caps, 2)
 }
 
+fun playWinSound(activity: MainActivity) {
+    CoroutineScope(Dispatchers.Unconfined).launch {
+        playCashSound(activity)
+        delay(760L)
+        playWinSoundAlone(activity)
+    }
+}
+
 fun playJokerReceivedSounds(activity: MainActivity) {
-    if (isFrankSequence || isFinalBossSequence) return
+    if (isSoundEffectsReduced) return
     playEffectPlayerSound(activity, R.raw.mus_mysteriousstranger_a_01, 2)
 }
 
 fun playJokerSounds(activity: MainActivity) {
-    if (isFrankSequence || isFinalBossSequence) return
+    if (isSoundEffectsReduced) return
     playEffectPlayerSound(activity, R.raw.mus_mysteriousstranger_a_02, 2)
 }
 
@@ -140,9 +149,8 @@ fun setAmbientVolume(volume: Float) {
 }
 
 fun startAmbient(activity: MainActivity) {
-    if (isFrankSequence || isFinalBossSequence) {
-        return
-    }
+    if (isSoundEffectsReduced) return
+
     val vol = (activity.save?.ambientVolume ?: 1f) / 2
     MediaPlayer
         .create(
@@ -234,10 +242,15 @@ fun startRadio(activity: MainActivity) {
     }
 }
 
+enum class RadioState {
+    PLAYING,
+    PAUSED_BY_BUTTON,
+    PAUSED_BY_LEAVING_ACTIVITY,
+}
+
 private val radioPlayers = HashSet<MediaPlayer>()
 private val radioLock = ReentrantLock()
-var isRadioStopped = false
-var isRadioPausedByLeavingActivity = false
+private var radioState = RadioState.PLAYING
 private fun playSongFromRadio(activity: MainActivity, songName: String) {
     val vol = activity.save?.radioVolume ?: 1f
     MediaPlayer()
@@ -251,7 +264,7 @@ private fun playSongFromRadio(activity: MainActivity, songName: String) {
             setVolume(vol, vol)
             radioLock.withLock {
                 radioPlayers.add(this)
-                if (!isRadioPausedByLeavingActivity) {
+                if (radioState == RadioState.PLAYING) {
                     start()
                 }
             }
@@ -279,16 +292,13 @@ fun nextSong(activity: MainActivity) {
     pointer = (songList.indices - usedIndices.toSet()).randomOrNull() ?: -1
 }
 
-fun resume(byButton: Boolean = false) {
-    if (!isRadioStopped) {
+fun resumeActivitySound() {
+    if (radioState == RadioState.PAUSED_BY_LEAVING_ACTIVITY) {
         radioLock.withLock {
             radioPlayers.forEach { it.start() }
-            if (!byButton) {
-                isRadioPausedByLeavingActivity = false
-            }
+            radioState = RadioState.PLAYING
         }
     }
-    if (byButton) return
     ambientPlayersLock.withLock {
         ambientPlayers.forEach {
             it.start()
@@ -296,14 +306,21 @@ fun resume(byButton: Boolean = false) {
         wasAmbientPaused = false
     }
 }
-fun pause(byButton: Boolean = false) {
-    radioLock.withLock {
-        radioPlayers.forEach { it.pause() }
-        if (!byButton) {
-            isRadioPausedByLeavingActivity = true
+fun resumeRadio() {
+    if (radioState == RadioState.PAUSED_BY_BUTTON) {
+        radioLock.withLock {
+            radioPlayers.forEach { it.start() }
+            radioState = RadioState.PLAYING
         }
     }
-    if (byButton) return
+}
+fun pauseActivitySound() {
+    if (radioState == RadioState.PLAYING) {
+        radioLock.withLock {
+            radioPlayers.forEach { it.pause() }
+            radioState = RadioState.PAUSED_BY_LEAVING_ACTIVITY
+        }
+    }
     ambientPlayersLock.withLock {
         ambientPlayers.forEach {
             if (it.isPlaying) {
@@ -313,6 +330,14 @@ fun pause(byButton: Boolean = false) {
         wasAmbientPaused = true
     }
 }
+fun pauseRadio() {
+    if (radioState == RadioState.PLAYING) {
+        radioLock.withLock {
+            radioPlayers.forEach { it.pause() }
+            radioState = RadioState.PAUSED_BY_BUTTON
+        }
+    }
+}
 
 fun setRadioVolume(volume: Float) {
     radioLock.withLock {
@@ -320,16 +345,16 @@ fun setRadioVolume(volume: Float) {
     }
 }
 
-fun startLevel11Theme(activity: MainActivity) {
+fun playTheme(activity: MainActivity, themeId: Int) {
     stopRadio()
     val vol = activity.save?.radioVolume ?: 1f
-    MediaPlayer.create(activity, R.raw.frank_theme)
+    MediaPlayer.create(activity, themeId)
         .apply {
             isLooping = true
             setVolume(vol, vol)
             radioLock.withLock {
                 radioPlayers.add(this)
-                if (!isRadioPausedByLeavingActivity) {
+                if (radioState != RadioState.PAUSED_BY_LEAVING_ACTIVITY) {
                     start()
                 }
             }
@@ -342,28 +367,11 @@ fun startLevel11Theme(activity: MainActivity) {
             }
         }
 }
-
+fun startLevel11Theme(activity: MainActivity) {
+    playTheme(activity, R.raw.frank_theme)
+}
 fun startFinalBossTheme(activity: MainActivity) {
-    stopRadio()
-    val vol = activity.save?.radioVolume ?: 1f
-    MediaPlayer.create(activity, R.raw.final_boss)
-        .apply {
-            isLooping = true
-            setVolume(vol, vol)
-            radioLock.withLock {
-                radioPlayers.add(this)
-                if (!isRadioPausedByLeavingActivity) {
-                    start()
-                }
-            }
-            setOnCompletionListener {
-                radioLock.withLock {
-                    it.stop()
-                    radioPlayers.remove(it)
-                    it.release()
-                }
-            }
-        }
+    playTheme(activity, R.raw.final_boss)
 }
 
 fun playFrankPhrase(activity: MainActivity, phraseId: Int) {
@@ -382,7 +390,7 @@ fun playFrankPhrase(activity: MainActivity, phraseId: Int) {
                 }
             }
             effectPlayersLock.withLock {
-                effectPlayers.forEach { if (it.isPlaying) it.stop() }
+                stopSoundEffects()
                 effectPlayers.add(this)
                 start()
             }

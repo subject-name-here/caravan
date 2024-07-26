@@ -64,15 +64,7 @@ class Game(
     }
 
     fun initDeck(cResources: CResources, maxNumOfFaces: Int, initHand: Boolean = true) {
-        cResources.shuffleDeck()
-        var tmpHand = cResources.getTopHand()
-        while (tmpHand.count { it.isFace() } > maxNumOfFaces) {
-            cResources.shuffleDeck()
-            tmpHand = cResources.getTopHand()
-        }
-        if (initHand) {
-            cResources.initHand(tmpHand)
-        }
+        cResources.initResources(maxNumOfFaces, initHand)
     }
 
     fun startGame(maxNumOfFaces: Int = 5) {
@@ -110,21 +102,21 @@ class Game(
             val caravanCards = it.cards
             val mods = caravanCards.flatMap { card -> card.modifiersCopy() }
             val isMuggyHere = mods.any { mod ->
-                !mod.isAlt &&
-                        mod.back == CardBack.WILD_WASTELAND &&
-                        mod.getWildWastelandCardType() == Card.WildWastelandCardType.MUGGY
+                mod.getWildWastelandCardType() == Card.WildWastelandCardType.MUGGY
             }
             it.cards.forEach { card ->
                 card.isProtectedByMuggy = isMuggyHere
             }
 
             val cazadorCards = mods.filter { mod ->
-                !mod.isAlt &&
-                        mod.back == CardBack.WILD_WASTELAND &&
-                        mod.getWildWastelandCardType() == Card.WildWastelandCardType.CAZADOR
+                mod.getWildWastelandCardType() == Card.WildWastelandCardType.CAZADOR
             }
-            val cazadorOwners = cazadorCards.mapNotNull { cazador -> caravanCards.find { card -> cazador in card.modifiersCopy() } }.toSet()
-            val queensAffected = cazadorOwners.sumOf { owner -> owner.modifiersCopy().count { m -> m.rank == Rank.QUEEN && !m.isSpecial() } }
+            val cazadorOwners = caravanCards.filter {
+                card -> card.modifiersCopy().any { mod -> mod in cazadorCards }
+            }
+            val queensAffected = cazadorOwners.sumOf {
+                owner -> owner.modifiersCopy().count { m -> m.rank == Rank.QUEEN && !m.isSpecial() }
+            }
 
             if (cazadorCards.isNotEmpty()) {
                 it.getCazadorPoison(queensAffected % 2 == 1)
@@ -144,25 +136,30 @@ class Game(
     }
 
     fun afterPlayerMove(updateView: () -> Unit, speed: AnimationSpeed) {
-        CoroutineScope(Dispatchers.Default).launch {
+        suspend fun processMove(resources: CResources) {
             if (speed.delay != 0L) {
                 delay(speed.delay * 3) // Move card from hand; move card ontoField
             } else {
-                delay(380L)
+                delay(285L)
             }
-            isPlayerTurn = false
+
             if (processField()) { // Remove cards; move cards within caravan
                 updateView()
                 if (speed.delay != 0L) {
                     delay(speed.delay * 2)
                 }
             }
-            if (processHand(playerCResources)) { // Take card into hand
+            if (processHand(resources)) { // Take card into hand
                 updateView()
                 if (speed.delay != 0L) {
                     delay(speed.delay)
                 }
             }
+        }
+
+        CoroutineScope(Dispatchers.Default).launch {
+            processMove(playerCResources)
+            isPlayerTurn = false
 
             if (checkOnGameOver()) {
                 updateView()
@@ -172,34 +169,16 @@ class Game(
             if (speed.delay != 0L) {
                 delay(speed.delay * 2) // Just break.
             } else {
-                delay(380L)
+                delay(285L)
             }
 
             enemy.makeMove(this@Game)
             updateView()
-            if (speed.delay != 0L) {
-                delay(speed.delay * 3) // Move card from hand; move card ontoField
-            } else {
-                delay(380L)
-            }
-            if (processField()) { // Remove cards; move cards within caravan
-                updateView()
-                if (speed.delay != 0L) {
-                    delay(speed.delay * 2)
-                }
-            }
-            if (processHand(enemyCResources)) { // Take card into hand
-                updateView()
-                if (speed.delay != 0L) {
-                    delay(speed.delay)
-                }
-            }
 
+            processMove(enemyCResources)
             isPlayerTurn = true
+
             checkOnGameOver()
-            if (speed.delay != 0L) {
-                delay(speed.delay * 2) // Just break.
-            }
             updateView()
         }
     }
@@ -266,75 +245,81 @@ class Game(
 
     private fun processBomb(bombOwner: CardWithModifier) {
         (playerCaravans + enemyCaravans).forEach {
-            if (bombOwner.modifiersCopy().any { mod -> mod.back == CardBack.UNPLAYABLE && mod.isAlt }) {
-                val value = it.getValue()
-                if (bombOwner !in it.cards) {
-                    it.dropCaravan()
-                }
-                if (it in playerCaravans) {
-                    when (value) {
-                        2 -> {
-                            playerCResources.addOnTop(Card(Rank.ACE, Suit.entries.random(), CardBack.WILD_WASTELAND, false))
-                        }
-                        in (3..4) -> {
-                            playerCResources.addOnTop(Card(Rank.TWO, Suit.entries.random(), CardBack.WILD_WASTELAND, false))
-                        }
-                        in (5..6) -> {
-                            playerCResources.addOnTop(Card(Rank.THREE, Suit.entries.random(), CardBack.WILD_WASTELAND, false))
-                        }
-                        in (7..8) -> {
-                            playerCResources.addOnTop(Card(Rank.FOUR, Suit.entries.random(), CardBack.WILD_WASTELAND, false))
-                        }
-                        in (9..10) -> {
-                            playerCResources.addOnTop(Card(Rank.FIVE, Suit.entries.random(), CardBack.WILD_WASTELAND, false))
-                        }
-                        in (11..12) -> {
-                            playerCResources.addOnTop(Card(Rank.SIX, Suit.entries.random(), CardBack.WILD_WASTELAND, false))
-                        }
-                        in (13..14) -> {
-                            playerCResources.addOnTop(Card(Rank.SEVEN, Suit.entries.random(), CardBack.WILD_WASTELAND, false))
-                        }
-                        in (15..16) -> {
-                            playerCResources.addOnTop(Card(Rank.EIGHT, Suit.entries.random(), CardBack.WILD_WASTELAND, false))
-                        }
-                        in (17..18) -> {
-                            playerCResources.addOnTop(Card(Rank.NINE, Suit.entries.random(), CardBack.WILD_WASTELAND, false))
-                        }
-                        in (19..20) -> {
-                            playerCResources.addOnTop(Card(Rank.TEN, Suit.entries.random(), CardBack.WILD_WASTELAND, false))
-                        }
-                        in (21..22) -> {
-                            if (Random.nextBoolean()) {
-                                playerCResources.addOnTop(Card(Rank.SEVEN, Suit.entries.random(), CardBack.WILD_WASTELAND, false))
-                                playerCResources.addOnTop(Card(Rank.ACE, Suit.entries.random(), CardBack.WILD_WASTELAND, false))
-                            } else {
-                                playerCResources.addOnTop(Card(Rank.SIX, Suit.entries.random(), CardBack.WILD_WASTELAND, false))
-                                playerCResources.addOnTop(Card(Rank.TWO, Suit.entries.random(), CardBack.WILD_WASTELAND, false))
-                            }
-                        }
-                        in (23..24) -> {
-                            if (Random.nextBoolean()) {
-                                playerCResources.addOnTop(Card(Rank.NINE, Suit.entries.random(), CardBack.WILD_WASTELAND, false))
-                                playerCResources.addOnTop(Card(Rank.THREE, Suit.entries.random(), CardBack.WILD_WASTELAND, false))
-                            } else {
-                                playerCResources.addOnTop(Card(Rank.EIGHT, Suit.entries.random(), CardBack.WILD_WASTELAND, false))
-                                playerCResources.addOnTop(Card(Rank.FOUR, Suit.entries.random(), CardBack.WILD_WASTELAND, false))
-                            }
+            // TODO: it should work differently
+            val isFBomb = bombOwner.modifiersCopy().lastOrNull()?.back == CardBack.UNPLAYABLE
+            val isThisCaravan = bombOwner in it.cards
+            val isMuggyOnCaravan = it.cards.any { card -> card.isProtectedByMuggy }
 
-                        }
-                        in (25..26) -> {
-                            playerCResources.addOnTop(Card(Rank.TEN, Suit.entries.random(), CardBack.WILD_WASTELAND, false))
-                            playerCResources.addOnTop(Card(Rank.FIVE, Suit.entries.random(), CardBack.WILD_WASTELAND, false))
-                        }
+            if (!isThisCaravan) {
+                if (isFBomb) {
+                    val value = it.getValue()
+                    it.dropCaravan()
+                    if (it in playerCaravans) {
+                        addFBombCard(value)
                     }
-                }
-            } else {
-                if (bombOwner !in it.cards && !(it.cards.any { card -> card.isProtectedByMuggy })) {
+                } else if (!isMuggyOnCaravan) {
                     it.dropCaravan()
                 }
             }
         }
         bombOwner.deactivateBomb()
+    }
+
+    private fun addFBombCard(value: Int) {
+        when (value) {
+            3 -> {
+                playerCResources.addOnTop(Card(Rank.ACE, Suit.entries.random(), CardBack.WILD_WASTELAND, false))
+            }
+            4 -> {
+                playerCResources.addOnTop(Card(Rank.TWO, Suit.entries.random(), CardBack.WILD_WASTELAND, false))
+            }
+            in (5..6) -> {
+                playerCResources.addOnTop(Card(Rank.THREE, Suit.entries.random(), CardBack.WILD_WASTELAND, false))
+            }
+            in (7..8) -> {
+                playerCResources.addOnTop(Card(Rank.FOUR, Suit.entries.random(), CardBack.WILD_WASTELAND, false))
+            }
+            in (9..10) -> {
+                playerCResources.addOnTop(Card(Rank.FIVE, Suit.entries.random(), CardBack.WILD_WASTELAND, false))
+            }
+            in (11..12) -> {
+                playerCResources.addOnTop(Card(Rank.SIX, Suit.entries.random(), CardBack.WILD_WASTELAND, false))
+            }
+            in (13..14) -> {
+                playerCResources.addOnTop(Card(Rank.SEVEN, Suit.entries.random(), CardBack.WILD_WASTELAND, false))
+            }
+            in (15..16) -> {
+                playerCResources.addOnTop(Card(Rank.EIGHT, Suit.entries.random(), CardBack.WILD_WASTELAND, false))
+            }
+            in (17..18) -> {
+                playerCResources.addOnTop(Card(Rank.NINE, Suit.entries.random(), CardBack.WILD_WASTELAND, false))
+            }
+            in (19..20) -> {
+                playerCResources.addOnTop(Card(Rank.TEN, Suit.entries.random(), CardBack.WILD_WASTELAND, false))
+            }
+            in (21..22) -> {
+                if (Random.nextBoolean()) {
+                    playerCResources.addOnTop(Card(Rank.SEVEN, Suit.entries.random(), CardBack.WILD_WASTELAND, false))
+                    playerCResources.addOnTop(Card(Rank.ACE, Suit.entries.random(), CardBack.WILD_WASTELAND, false))
+                } else {
+                    playerCResources.addOnTop(Card(Rank.SIX, Suit.entries.random(), CardBack.WILD_WASTELAND, false))
+                    playerCResources.addOnTop(Card(Rank.TWO, Suit.entries.random(), CardBack.WILD_WASTELAND, false))
+                }
+            }
+            in (23..24) -> {
+                if (Random.nextBoolean()) {
+                    playerCResources.addOnTop(Card(Rank.NINE, Suit.entries.random(), CardBack.WILD_WASTELAND, false))
+                    playerCResources.addOnTop(Card(Rank.THREE, Suit.entries.random(), CardBack.WILD_WASTELAND, false))
+                } else {
+                    playerCResources.addOnTop(Card(Rank.EIGHT, Suit.entries.random(), CardBack.WILD_WASTELAND, false))
+                    playerCResources.addOnTop(Card(Rank.FOUR, Suit.entries.random(), CardBack.WILD_WASTELAND, false))
+                }
+            }
+            in (25..26) -> {
+                playerCResources.addOnTop(Card(Rank.TEN, Suit.entries.random(), CardBack.WILD_WASTELAND, false))
+                playerCResources.addOnTop(Card(Rank.FIVE, Suit.entries.random(), CardBack.WILD_WASTELAND, false))
+            }
+        }
     }
 
     private fun processFev() {
@@ -360,7 +345,7 @@ class Game(
             caravan.cards.filter {
                 it.hasActiveUfo
             }.forEach { card ->
-                val seed = card.card.rank.ordinal + card.card.suit.ordinal
+                val seed = card.card.rank.ordinal * 4 + card.card.suit.ordinal
                 (playerCaravans + enemyCaravans).forEach { caravan ->
                     caravan.getUfo(seed)
                 }

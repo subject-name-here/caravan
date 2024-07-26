@@ -2,7 +2,6 @@ package com.unicorns.invisible.caravan.model.primitives
 
 import com.unicorns.invisible.caravan.model.CardBack
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.Transient
 
 
 @Serializable
@@ -13,7 +12,12 @@ class CResources(private val deck: CustomDeck) {
     val hand
         get() = handMutable.toList()
 
-    fun getTopHand(): List<Card> {
+    /**
+     * Two conditions on starting hand:
+     * 1) no Wild Wasteland cards in the hand
+     * 2) if there is a bomb in a deck, there should be one in the hand
+     */
+    private fun getTopHand(): List<Card> {
         val cards = deck.toList().toMutableList()
         cards.removeAll { it.back == CardBack.WILD_WASTELAND && !it.isAlt && it.getWildWastelandCardType() != null }
 
@@ -24,37 +28,59 @@ class CResources(private val deck: CustomDeck) {
             cards.take(8)
         }
     }
-    fun initHand(toPutInHand: List<Card>) {
-        deck.removeAll(toPutInHand)
-        toPutInHand.forEach { it.handAnimationMark = Card.AnimationMark.MOVING_IN }
-        handMutable.addAll(toPutInHand)
-    }
+    fun initResources(maxNumOfFaces: Int, initHand: Boolean = true) {
+        shuffleDeck()
+        if (initHand) {
+            var tmpHand = getTopHand()
+            while (tmpHand.count { it.isFace() } > maxNumOfFaces) {
+                shuffleDeck()
+                tmpHand = getTopHand()
+            }
 
-    fun addToHand() {
-        if (deck.size > 0) {
-            val card = deck.removeFirst()
-            card.handAnimationMark = Card.AnimationMark.MOVING_IN
-            handMutable.add(card)
-            processHandAddedCard(card)
+            deck.removeAll(tmpHand)
+            tmpHand.forEach { it.handAnimationMark = Card.AnimationMark.MOVING_IN }
+            handMutable.addAll(tmpHand)
+        } else {
+            var tmpHand = deck.toList().take(8)
+            while (
+                tmpHand.count { it.isFace() } > maxNumOfFaces ||
+                tmpHand.any { it.isSpecial() && !it.isAlt }
+            ) {
+                shuffleDeck()
+                tmpHand = deck.toList().take(8)
+            }
         }
     }
 
-    fun addToHandR(): Card? {
+    private fun addCardToHand(card: Card) {
+        card.handAnimationMark = Card.AnimationMark.MOVING_IN
+        handMutable.add(card)
+    }
+
+    fun addToHand() {
+        if (deck.size == 0) {
+            return
+        }
+        val card = deck.removeFirst()
+        addCardToHand(card)
+        processHandAddedCard(card)
+    }
+
+    fun addCardToHandPvPInit(): Card? {
         if (deck.size == 0) {
             return null
         }
         val card = deck.removeFirst()
-        card.handAnimationMark = Card.AnimationMark.MOVING_IN
-        handMutable.add(card)
+        addCardToHand(card)
         return card
     }
 
-    fun addCardToHandPvP(card: Card) {
-        if (deck.size > 0) {
-            deck.removeFirst()
+    fun addCardToHandDirect(card: Card) {
+        if (deck.size == 0) {
+            return
         }
-        card.handAnimationMark = Card.AnimationMark.MOVING_IN
-        handMutable.add(card)
+        deck.removeFirst()
+        addCardToHand(card)
         processHandAddedCard(card)
     }
 
@@ -71,24 +97,18 @@ class CResources(private val deck: CustomDeck) {
         }
     }
 
-    @Transient
-    var onRemoveFromHand: () -> Unit = {}
     fun removeFromHand(index: Int): Card {
-        onRemoveFromHand()
         handMutable[index].handAnimationMark = Card.AnimationMark.MOVING_OUT
         return handMutable.removeAt(index)
     }
 
-    @Transient
-    var onDropCardFromHand: () -> Unit = {}
     fun dropCardFromHand(index: Int) {
-        onRemoveFromHand()
-        onDropCardFromHand()
-        handMutable[index].handAnimationMark = Card.AnimationMark.MOVING_OUT
+        handMutable[index].handAnimationMark = Card.AnimationMark.MOVING_OUT_ALT
         handMutable.removeAt(index)
     }
 
     fun getDeckBack() = deck.firstOrNull()?.run { this.back to this.isAlt }
+
     var canBeShuffled = true
     fun shuffleDeck() {
         if (canBeShuffled) deck.shuffle()
@@ -98,11 +118,11 @@ class CResources(private val deck: CustomDeck) {
         get() = deck.size
 
     val numOfNumbers: Int
-        get() = deck.count { !it.isFace() }
+        get() = deck.count { !it.rank.isFace() }
 
     fun mutateFev(card: Card) {
         val cards = handMutable.size
-        handMutable.forEach { it.handAnimationMark = Card.AnimationMark.MOVING_OUT }
+        handMutable.forEach { it.handAnimationMark = Card.AnimationMark.MOVED_OUT }
         handMutable.clear()
         repeat(cards) {
             handMutable.add(Card(card.rank, card.suit, CardBack.WILD_WASTELAND, false))

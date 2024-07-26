@@ -3,6 +3,7 @@ package com.unicorns.invisible.caravan.model.enemy
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJokerSimple
+import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyQueen
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.Rank
 import kotlinx.serialization.Serializable
@@ -302,26 +303,8 @@ data object EnemyBestest : Enemy() {
             }
         }
 
-        // 4.5) Queen.
-        hand.withIndex().filter { it.value.rank == Rank.QUEEN }.forEach { (cardIndex, card) ->
-            val possibleQueenCaravans = game.enemyCaravans.withIndex()
-                .filter { ci ->
-                    val c = ci.value
-                    c.size >= 2 && c.getValue() < 26 && hand.all { !c.canPutCardOnTop(it) } && c.cards.last().canAddModifier(card)
-                }
-            val caravan = possibleQueenCaravans.maxByOrNull { (caravanIndex, caravan) ->
-                if (caravan.getValue() > game.playerCaravans[caravanIndex].getValue() && caravan.getValue() in (21..26)) {
-                    0
-                } else if (caravan.getValue() in (21..26)) {
-                    13
-                } else {
-                    caravan.getValue()
-                }
-            }
-            if (caravan != null) {
-                caravan.value.cards.last().addModifier(game.enemyCResources.removeFromHand(cardIndex))
-                return
-            }
+        if (StrategyQueen.move(game)) {
+            return
         }
 
         if (StrategyJokerSimple.move(game)) {

@@ -26,20 +26,24 @@ class CustomDeck() {
 
     fun takeRandom(n: Int) = cards.shuffled().take(n)
 
-    fun add(element: Card) = if (!contains(element)) cards.add(element) else false
+    fun add(element: Card) = cards.add(element)
     fun addOnTop(element: Card) = cards.add(0, element)
     operator fun get(index: Int) = cards[index]
 
     fun count(predicate: (Card) -> Boolean) = cards.count(predicate)
     fun firstOrNull() = cards.firstOrNull()
     fun removeFirst() = cards.removeFirst()
-    fun remove(card: Card) =
-        cards.removeAll { it.suit == card.suit && it.back == card.back && it.rank == card.rank && it.isAlt == card.isAlt }
 
-    fun removeAll(elements: Collection<Card>) = elements.forEach { remove(it) }
+    private fun getEqPredicate(it: Card): (Card) -> Boolean = { c ->
+        it.suit == c.suit && it.back == c.back && it.rank == c.rank && it.isAlt == c.isAlt
+    }
+
+    fun removeAll(elements: Collection<Card>) = elements.forEach { cardToRemove ->
+        cards.removeAll(getEqPredicate(cardToRemove))
+    }
 
     operator fun contains(card: Card): Boolean {
-        return cards.any { it.suit == card.suit && it.back == card.back && it.rank == card.rank && it.isAlt == card.isAlt }
+        return cards.any(getEqPredicate(card))
     }
 
     fun toList() = cards.toList()

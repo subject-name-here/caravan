@@ -106,8 +106,6 @@ fun ShowGame(activity: MainActivity, game: Game, goBack: () -> Unit) {
     var caravansKey by rememberSaveable { mutableStateOf(true) }
     var enemyHandKey by rememberSaveable { mutableIntStateOf(0) }
 
-    game.enemyCResources.onDropCardFromHand = { enemyHandKey = -1 }
-
     fun onCardClicked(index: Int) {
         if (game.isOver()) {
             return
@@ -380,7 +378,6 @@ fun ShowGameRaw(
                         .getTableBackground(activity.styleId)) {}
             }
             BoxWithConstraints(Modifier.padding(innerPadding)) {
-                var wasCardDropped by remember { mutableStateOf(false) }
                 if (maxWidth > maxHeight) {
                     Row(Modifier.fillMaxSize()) {
                         Column(
@@ -397,11 +394,7 @@ fun ShowGameRaw(
                                 fillHeight = 0.45f,
                                 enemyHandKey
                             )
-                            PlayerSide(activity, animationSpeed, isPvP, game, {
-                                val res = wasCardDropped
-                                wasCardDropped = false
-                                res
-                            }, selectedCard, onCardClicked, getMySymbol, setMySymbol)
+                            PlayerSide(activity, animationSpeed, isPvP, game, selectedCard, onCardClicked, getMySymbol, setMySymbol)
                         }
                         Caravans(
                             activity,
@@ -419,7 +412,7 @@ fun ShowGameRaw(
                             state3Player,
                             ::addCardToPlayerCaravan,
                             ::addCardToEnemyCaravan,
-                            { wasCardDropped = true; dropCardFromHand() },
+                            { dropCardFromHand() },
                             dropCaravan,
                             ::isInitStage,
                             { game.isPlayerTurn },
@@ -460,7 +453,7 @@ fun ShowGameRaw(
                             state3Player,
                             ::addCardToPlayerCaravan,
                             ::addCardToEnemyCaravan,
-                            { wasCardDropped = true; dropCardFromHand() },
+                            { dropCardFromHand() },
                             dropCaravan,
                             ::isInitStage,
                             { game.isPlayerTurn },
@@ -469,11 +462,7 @@ fun ShowGameRaw(
                             { num -> game.playerCaravans[num] },
                             { num -> game.enemyCaravans[num] },
                         )
-                        PlayerSide(activity, animationSpeed, isPvP, game, {
-                            val res = wasCardDropped
-                            wasCardDropped = false
-                            res
-                        }, selectedCard, onCardClicked, getMySymbol, setMySymbol)
+                        PlayerSide(activity, animationSpeed, isPvP, game, selectedCard, onCardClicked, getMySymbol, setMySymbol)
                     }
                 }
             }
@@ -497,7 +486,7 @@ fun EnemySide(
             .fillMaxHeight(fillHeight)
             .padding(vertical = 4.dp),
     ) {
-        RowOfEnemyCards(activity, animationSpeed, game.enemyCResources.hand, enemyHandKey < 0)
+        RowOfEnemyCards(activity, animationSpeed, game.enemyCResources.hand)
         key(enemyHandKey) {
             Box(Modifier.fillMaxSize()) {
                 ShowDeck(game.enemyCResources, activity, isKnown = !isPvP)
@@ -529,7 +518,6 @@ fun PlayerSide(
     animationSpeed: AnimationSpeed,
     isPvP: Boolean,
     game: Game,
-    wasCardDropped: () -> Boolean,
     selectedCard: Int?,
     onCardClicked: (Int) -> Unit,
     getMySymbol: () -> String, setMySymbol: () -> Unit
@@ -542,7 +530,6 @@ fun PlayerSide(
             activity,
             animationSpeed,
             game.playerCResources.hand,
-            wasCardDropped(),
             selectedCard,
             selectedCardColor,
             onCardClicked
@@ -579,17 +566,16 @@ fun PlayerCards(
     activity: MainActivity,
     animationSpeed: AnimationSpeed,
     cards: List<Card>,
-    wasCardDropped: Boolean,
     selectedCard: Int?,
     selectedCardColor: Color,
     onClick: (Int) -> Unit
 ) {
-    Hand(activity, animationSpeed, false, cards, wasCardDropped, selectedCard, selectedCardColor, onClick)
+    Hand(activity, animationSpeed, false, cards, selectedCard, selectedCardColor, onClick)
 }
 
 @Composable
-fun RowOfEnemyCards(activity: MainActivity, animationSpeed: AnimationSpeed, cards: List<Card>, wasCardDropped: Boolean = false) {
-    Hand(activity, animationSpeed, true, cards, wasCardDropped, -1, Color.Transparent) {}
+fun RowOfEnemyCards(activity: MainActivity, animationSpeed: AnimationSpeed, cards: List<Card>) {
+    Hand(activity, animationSpeed, true, cards, -1, Color.Transparent) {}
 }
 
 
@@ -599,7 +585,6 @@ fun Hand(
     animationSpeed: AnimationSpeed,
     isEnemy: Boolean,
     cards: List<Card>,
-    wasCardDropped: Boolean,
     selectedCard: Int?, selectedCardColor: Color, onClick: (Int) -> Unit
 ) {
     val enemyMult = if (isEnemy) -1f else 1f
@@ -625,7 +610,7 @@ fun Hand(
         LaunchedEffect(recomposeKey) { }
 
         val isAnyMovingIn = memCards.any { it.handAnimationMark == Card.AnimationMark.MOVING_IN || it.handAnimationMark == Card.AnimationMark.MOVING_IN_WIP }
-        val isAnyMovingOut = memCards.any { it.handAnimationMark == Card.AnimationMark.MOVING_OUT || it.handAnimationMark == Card.AnimationMark.MOVING_OUT_WIP }
+        val isAnyMovingOut = memCards.any { it.handAnimationMark in listOf(Card.AnimationMark.MOVED_OUT, Card.AnimationMark.MOVING_OUT, Card.AnimationMark.MOVING_OUT_WIP, Card.AnimationMark.MOVING_OUT_ALT, Card.AnimationMark.MOVING_OUT_ALT_WIP) }
 
         if (animationSpeed.delay != 0L) {
             LaunchedEffect(isAnyMovingIn) {
@@ -652,17 +637,21 @@ fun Hand(
             LaunchedEffect(isAnyMovingOut) {
                 if (isAnyMovingOut) {
                     playCardFlipSound(activity)
-                    val target = (if (wasCardDropped) 2.5f else -2.5f) * enemyMult
+                    val isDropping = memCards.any { it.handAnimationMark in listOf(Card.AnimationMark.MOVING_OUT_ALT, Card.AnimationMark.MOVING_OUT_ALT_WIP) }
+                    val target = (if (isDropping) 2.5f else -2.5f) * enemyMult
                     itemVerticalOffsetMovingOut.snapTo(0f)
                     memCards.forEach {
                         if (it.handAnimationMark == Card.AnimationMark.MOVING_OUT) {
                             it.handAnimationMark = Card.AnimationMark.MOVING_OUT_WIP
                         }
+                        if (it.handAnimationMark == Card.AnimationMark.MOVING_OUT_ALT) {
+                            it.handAnimationMark = Card.AnimationMark.MOVING_OUT_ALT_WIP
+                        }
                     }
                     itemVerticalOffsetMovingOut.animateTo(target, TweenSpec(animationSpeed.delay.toInt())) {
                         recomposeKey = !recomposeKey
                     }
-                    memCards.removeIf { it.handAnimationMark == Card.AnimationMark.MOVING_OUT || it.handAnimationMark == Card.AnimationMark.MOVING_OUT_WIP }
+                    memCards.removeIf { it.handAnimationMark in listOf(Card.AnimationMark.MOVED_OUT, Card.AnimationMark.MOVING_OUT, Card.AnimationMark.MOVING_OUT_WIP, Card.AnimationMark.MOVING_OUT_ALT, Card.AnimationMark.MOVING_OUT_ALT_WIP,) }
                     recomposeKey = !recomposeKey
                 }
             }
@@ -907,7 +896,8 @@ fun RowScope.CaravanOnField(
                                     }
                         }
                         val isAnyMovingOut = memCards.any { it.card.caravanAnimationMark == Card.AnimationMark.MOVING_OUT
-                                || it.card.caravanAnimationMark == Card.AnimationMark.MOVING_OUT_WIP }
+                                || it.card.caravanAnimationMark == Card.AnimationMark.MOVING_OUT_WIP
+                                || it.card.caravanAnimationMark == Card.AnimationMark.MOVED_OUT }
                         LaunchedEffect(isAnyMovingIn) {
                             if (isAnyMovingIn) {
                                 playCardFlipSound(activity)
@@ -952,7 +942,7 @@ fun RowScope.CaravanOnField(
                                 animationOut.animateTo(2f, TweenSpec(animationSpeed.delay.toInt(), animationSpeed.delay.toInt() * 2)) {
                                     recomposeKey = !recomposeKey
                                 }
-                                memCards.removeIf { it.card.caravanAnimationMark == Card.AnimationMark.MOVING_OUT_WIP }
+                                memCards.removeIf { it.card.caravanAnimationMark == Card.AnimationMark.MOVING_OUT_WIP || it.card.caravanAnimationMark == Card.AnimationMark.MOVED_OUT }
                                 recomposeKey = !recomposeKey
                             }
                         }

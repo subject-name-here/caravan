@@ -651,7 +651,7 @@ fun StartPvP(
                     CardBack.entries[move.newCardInHandBack],
                     isAlt = move.isNewCardAlt
                 )
-                game.enemyCResources.addCardToHandPvP(cardReceived)
+                game.enemyCResources.addCardToHandDirect(cardReceived)
                 updateEnemyHand()
 
                 if (game.playerCResources.hand.size < 8) {
@@ -679,7 +679,12 @@ fun StartPvP(
     }
 
     fun sendHandCard() {
-        val card = game.playerCResources.addToHandR() ?: return
+        val card = game.playerCResources.addCardToHandPvPInit()
+        if (card == null) {
+            game.isCorrupted = true
+            return
+        }
+
         val link = "$crvnUrl/crvn/move?room=$roomNumber" +
                 "&is_creators_move=${isCreator.toPythonBool()}" +
                 "&move_code=0" +

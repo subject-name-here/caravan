@@ -15,18 +15,15 @@ object StrategyRush : Strategy {
             .sortedByDescending { it.value.rank.value }
             .forEach { (cardIndex, card) ->
                 if (card.rank == Rank.KING) {
-                    game.enemyCaravans.forEach { enemyCaravan ->
+                    game.enemyCaravans.forEachIndexed { caravanIndex, enemyCaravan ->
                         enemyCaravan.cards.sortedByDescending { it.card.rank.value }
                             .forEach { caravanCard ->
-                                if (enemyCaravan.getValue() + caravanCard.getValue() in (21..26) && caravanCard.canAddModifier(
-                                        card
-                                    )
+                                if (
+                                    enemyCaravan.getValue() + caravanCard.getValue() in (21..26) &&
+                                    caravanCard.canAddModifier(card) &&
+                                    !checkMoveOnDefeat(game, caravanIndex)
                                 ) {
-                                    caravanCard.addModifier(
-                                        game.enemyCResources.removeFromHand(
-                                            cardIndex
-                                        )
-                                    )
+                                    caravanCard.addModifier(game.enemyCResources.removeFromHand(cardIndex))
                                     return true
                                 }
                             }
@@ -36,20 +33,10 @@ object StrategyRush : Strategy {
                 if (!card.rank.isFace()) {
                     game.enemyCaravans.withIndex().sortedByDescending { it.value.getValue() }
                         .forEach { (caravanIndex, caravan) ->
-                            if (caravan.getValue() + card.rank.value <= 26) {
-                                if (caravan.canPutCardOnTop(card)) {
-                                    if (!(checkMoveOnDefeat(
-                                            game,
-                                            caravanIndex
-                                        ) && caravan.getValue() + card.rank.value in (21..26))
-                                    ) {
-                                        caravan.putCardOnTop(
-                                            game.enemyCResources.removeFromHand(
-                                                cardIndex
-                                            )
-                                        )
-                                        return true
-                                    }
+                            if (caravan.getValue() + card.rank.value <= 26 && caravan.canPutCardOnTop(card)) {
+                                if (!(checkMoveOnDefeat(game, caravanIndex) && caravan.getValue() + card.rank.value in (21..26))) {
+                                    caravan.putCardOnTop(game.enemyCResources.removeFromHand(cardIndex))
+                                    return true
                                 }
                             }
                         }

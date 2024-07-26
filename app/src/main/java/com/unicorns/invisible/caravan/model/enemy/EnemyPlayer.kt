@@ -96,7 +96,7 @@ class EnemyPlayer(
         }
 
         if (move.newCardInHandBack != -1) {
-            game.enemyCResources.addCardToHandPvP(
+            game.enemyCResources.addCardToHandDirect(
                 Card(
                     Rank.entries[move.newCardInHandRank],
                     Suit.entries[move.newCardInHandSuit],

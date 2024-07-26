@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
@@ -100,7 +101,7 @@ fun DeckSelection(
                     horizontal = false
                 )
                 .fillMaxWidth()
-                .fillMaxHeight(0.5f),
+                .fillMaxHeight(0.55f),
             state = state,
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
@@ -117,6 +118,8 @@ fun DeckSelection(
                     TextAlign.Center
                 )
                 Spacer(modifier = Modifier.height(12.dp))
+
+                // TODO: horizontal gallery!!!
                 Row {
                     AsyncImage(
                         model = "file:///android_asset/caravan_cards_back/" + CardBack.STANDARD.getCardBackAsset(),
@@ -230,33 +233,6 @@ fun DeckSelection(
                     }
                 }
                 Spacer(modifier = Modifier.height(12.dp))
-            }
-        }
-
-        val state2 = rememberLazyListState()
-        LazyColumn(
-            modifier = Modifier
-                .scrollbar(
-                    state2,
-                    knobColor = getKnobColor(activity),
-                    trackColor = getTrackColor(activity),
-                    horizontal = false
-                )
-                .fillMaxSize(),
-            state = state2,
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
-        ) {
-            item {
-                TextFallout(
-                    stringResource(R.string.deck_select_about),
-                    getTextColor(activity),
-                    getTextStrokeColor(activity),
-                    16.sp,
-                    Alignment.Center,
-                    Modifier.padding(12.dp),
-                    textAlign = TextAlign.Start
-                )
 
                 HorizontalDivider(color = getDividerColor(activity))
                 Spacer(modifier = Modifier.height(20.dp))
@@ -275,18 +251,7 @@ fun DeckSelection(
                     TextAlign.Center
                 )
 
-                Spacer(modifier = Modifier.height(12.dp))
-
-                TextFallout(
-                    stringResource(R.string.deck_custom_about),
-                    getTextColor(activity),
-                    getTextStrokeColor(activity),
-                    14.sp,
-                    Alignment.Center,
-                    Modifier.padding(12.dp),
-                    textAlign = TextAlign.Center
-                )
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(20.dp))
                 HorizontalDivider(color = getDividerColor(activity))
                 Spacer(modifier = Modifier.height(24.dp))
                 TextFallout(

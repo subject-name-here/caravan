@@ -20,10 +20,9 @@ object StrategyDestructive : Strategy {
                     val futureValue = caravan.getValue() + cardToKing.getValue()
                     val enemyValue =
                         game.enemyCaravans[game.playerCaravans.indexOf(caravan)].getValue()
-                    if (!(checkMoveOnDefeat(
-                            game,
-                            game.playerCaravans.indexOf(caravan)
-                        ) && enemyValue in (21..26) && (enemyValue > futureValue || futureValue > 26))
+                    if (!(checkMoveOnDefeat(game, game.playerCaravans.indexOf(caravan)) &&
+                                enemyValue in (21..26) &&
+                                (enemyValue > futureValue || futureValue > 26))
                     ) {
                         cardToKing.addModifier(game.enemyCResources.removeFromHand(king.index))
                         return true

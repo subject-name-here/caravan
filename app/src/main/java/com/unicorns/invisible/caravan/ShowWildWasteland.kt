@@ -218,7 +218,7 @@ fun ShowWildWasteland(
             showAlertDialog = showAlertDialog
         ) {
             nextSong(activity)
-            isFinalBossSequence = false
+            isSoundEffectsReduced = false
             showGameFinalBoss = false
         }
         return
@@ -238,7 +238,7 @@ fun ShowWildWasteland(
             showAlertDialog = showAlertDialog
         ) {
             nextSong(activity)
-            isFinalBossSequence = false
+            isSoundEffectsReduced = false
             showGameFinalBossWild = false
         }
         return
@@ -318,7 +318,7 @@ fun ShowWildWasteland(
                     Spacer(modifier = Modifier.height(10.dp))
                     OpponentItem(stringResource(R.string.final_boss) + " BETA") { playVatsEnter(activity); showGameFinalBoss = true }
                     Spacer(modifier = Modifier.height(10.dp))
-                    OpponentItem(stringResource(R.string.final_boss) + " WILD") { playVatsEnter(activity); showGameFinalBossWild = true }
+                    OpponentItem(stringResource(R.string.final_boss) + " BETA WILD") { playVatsEnter(activity); showGameFinalBossWild = true }
                 }
                 Spacer(modifier = Modifier.height(16.dp))
             }

@@ -36,7 +36,7 @@
 
     <string name="standard_deck_owners">other players</string>
 
-    <string name="menu_pve">Single player (+5)</string>
+    <string name="menu_pve">Single player</string>
     <string name="menu_pvp">Multiplayer</string>
     <string name="menu_tutorial">Tutorial</string>
     <string name="menu_rules">Rules</string>
