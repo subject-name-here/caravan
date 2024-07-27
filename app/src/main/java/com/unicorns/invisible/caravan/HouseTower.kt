@@ -52,6 +52,7 @@ import com.unicorns.invisible.caravan.model.enemy.EnemyYesMan
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.CustomDeck
 import com.unicorns.invisible.caravan.save.saveOnGD
+import com.unicorns.invisible.caravan.utils.MenuItemOpen
 import com.unicorns.invisible.caravan.utils.TextClassic
 import com.unicorns.invisible.caravan.utils.TextFallout
 import com.unicorns.invisible.caravan.utils.clickableCancel
@@ -258,18 +259,14 @@ fun TowerScreen(
         }
     }
 
-    Column(
-        Modifier
-            .fillMaxSize()
-            .background(getBackgroundColor(activity)),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
+    MenuItemOpen(activity, stringResource(R.string.tower), "<-", {
+        if (!isGameRigged) goBack()
+    }) {
         val state2 = rememberLazyListState()
         LazyColumn(
             Modifier
-                .fillMaxHeight(0.8f)
-                .fillMaxWidth()
+                .fillMaxSize()
+                .background(getBackgroundColor(activity))
                 .padding(horizontal = 16.dp, vertical = 8.dp)
                 .scrollbar(
                     state2,
@@ -779,18 +776,6 @@ fun TowerScreen(
                 }
             }
         }
-        TextFallout(
-            stringResource(R.string.menu_back),
-            getTextColor(activity),
-            getTextStrokeColor(activity),
-            24.sp,
-            Alignment.Center,
-            modifier = Modifier
-                .clickableCancel(activity) { if (!isGameRigged) goBack() }
-                .background(getTextBackgroundColor(activity))
-                .padding(8.dp),
-            TextAlign.Center
-        )
     }
 }
 

@@ -59,6 +59,7 @@ import com.unicorns.invisible.caravan.model.primitives.CustomDeck
 import com.unicorns.invisible.caravan.model.primitives.Rank
 import com.unicorns.invisible.caravan.model.primitives.Suit
 import com.unicorns.invisible.caravan.save.saveOnGD
+import com.unicorns.invisible.caravan.utils.MenuItemOpen
 import com.unicorns.invisible.caravan.utils.TextClassic
 import com.unicorns.invisible.caravan.utils.TextFallout
 import com.unicorns.invisible.caravan.utils.clickableCancel
@@ -206,18 +207,12 @@ fun ShowStoryList(activity: MainActivity, showAlertDialog: (String, String) -> U
         return
     }
 
-    Column(
-        Modifier
-            .fillMaxSize()
-            .background(getBackgroundColor(activity)),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
+    MenuItemOpen(activity, stringResource(R.string.menu_story), "<-", goBack) {
         val state = rememberLazyListState()
         LazyColumn(
             Modifier
-                .fillMaxWidth()
-                .fillMaxHeight(0.85f)
+                .fillMaxSize()
+                .background(getBackgroundColor(activity))
                 .scrollbar(
                     state,
                     knobColor = getKnobColor(activity), trackColor = getTrackColor(activity),
@@ -246,6 +241,7 @@ fun ShowStoryList(activity: MainActivity, showAlertDialog: (String, String) -> U
                     val text = if (!isAvailable && !isAlt) {
                         "???"
                     } else when (number) {
+                        // TODO: translations!!!
                         0 -> "Chapter 1: Humble Beginnings."
                         1 -> "Chapter 2: Patrolling the Mojave..."
                         2 -> "Chapter 3: Shake Hands With Danger."
@@ -294,18 +290,6 @@ fun ShowStoryList(activity: MainActivity, showAlertDialog: (String, String) -> U
                 }
             }
         }
-        TextFallout(
-            stringResource(R.string.menu_back),
-            getTextColor(activity),
-            getTextStrokeColor(activity),
-            24.sp,
-            Alignment.Center,
-            modifier = Modifier
-                .clickableCancel(activity) { goBack() }
-                .background(getTextBackgroundColor(activity))
-                .padding(8.dp),
-            TextAlign.Center
-        )
     }
 }
 
