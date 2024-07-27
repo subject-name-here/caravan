@@ -42,7 +42,6 @@ import androidx.compose.ui.unit.sp
 import com.sebaslogen.resaca.rememberScoped
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
-import com.unicorns.invisible.caravan.model.challenge.Challenge
 import com.unicorns.invisible.caravan.model.enemy.Enemy
 import com.unicorns.invisible.caravan.model.enemy.EnemyFinalBossStory
 import com.unicorns.invisible.caravan.model.enemy.EnemyPriestess
@@ -55,7 +54,6 @@ import com.unicorns.invisible.caravan.model.enemy.EnemyStory7
 import com.unicorns.invisible.caravan.model.enemy.EnemyStory8
 import com.unicorns.invisible.caravan.model.enemy.EnemyStory9A
 import com.unicorns.invisible.caravan.model.primitives.CResources
-import com.unicorns.invisible.caravan.model.primitives.Caravan
 import com.unicorns.invisible.caravan.model.primitives.Card
 import com.unicorns.invisible.caravan.model.primitives.CustomDeck
 import com.unicorns.invisible.caravan.model.primitives.Rank
@@ -77,8 +75,6 @@ import com.unicorns.invisible.caravan.utils.getTextColorByStyle
 import com.unicorns.invisible.caravan.utils.getTextStrokeColor
 import com.unicorns.invisible.caravan.utils.getTrackColor
 import com.unicorns.invisible.caravan.utils.nextSong
-import com.unicorns.invisible.caravan.utils.playCardFlipSound
-import com.unicorns.invisible.caravan.utils.playCloseSound
 import com.unicorns.invisible.caravan.utils.playHeartbeatSound
 import com.unicorns.invisible.caravan.utils.playJokerSounds
 import com.unicorns.invisible.caravan.utils.playLoseSound
@@ -89,7 +85,6 @@ import com.unicorns.invisible.caravan.utils.playSelectSound
 import com.unicorns.invisible.caravan.utils.playSlideSound
 import com.unicorns.invisible.caravan.utils.playTowerCompleted
 import com.unicorns.invisible.caravan.utils.playTowerFailed
-import com.unicorns.invisible.caravan.utils.playVatsReady
 import com.unicorns.invisible.caravan.utils.playWWSound
 import com.unicorns.invisible.caravan.utils.playWinSound
 import com.unicorns.invisible.caravan.utils.scrollbar

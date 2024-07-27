@@ -4,10 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -36,6 +33,7 @@ import com.unicorns.invisible.caravan.model.primitives.Card
 import com.unicorns.invisible.caravan.model.primitives.CustomDeck
 import com.unicorns.invisible.caravan.model.primitives.Rank
 import com.unicorns.invisible.caravan.model.primitives.Suit
+import com.unicorns.invisible.caravan.utils.MenuItemOpen
 import com.unicorns.invisible.caravan.utils.TextFallout
 import com.unicorns.invisible.caravan.utils.clickableCancel
 import com.unicorns.invisible.caravan.utils.getBackgroundColor
@@ -110,42 +108,20 @@ fun ShowWildWasteland(
     fun getPlayerDeck(isFinalBoss: Boolean, isFinalBossWild: Boolean = false): CResources {
         if (isFinalBoss) {
             val deck = CustomDeck()
-            deck.add(Card(Rank.KING, Suit.HEARTS, CardBack.DECK_13, false))
-            deck.add(Card(Rank.KING, Suit.CLUBS, CardBack.DECK_13, false))
-            deck.add(Card(Rank.KING, Suit.DIAMONDS, CardBack.DECK_13, false))
-            deck.add(Card(Rank.KING, Suit.SPADES, CardBack.DECK_13, false))
-            deck.add(Card(Rank.KING, Suit.HEARTS, CardBack.STANDARD, false))
-            deck.add(Card(Rank.KING, Suit.CLUBS, CardBack.STANDARD, false))
-            deck.add(Card(Rank.KING, Suit.DIAMONDS, CardBack.STANDARD, false))
-            deck.add(Card(Rank.KING, Suit.SPADES, CardBack.STANDARD, false))
-            deck.add(Card(Rank.KING, Suit.HEARTS, CardBack.ULTRA_LUXE, false))
-            deck.add(Card(Rank.KING, Suit.CLUBS, CardBack.ULTRA_LUXE, false))
-            deck.add(Card(Rank.KING, Suit.DIAMONDS, CardBack.ULTRA_LUXE, false))
-            deck.add(Card(Rank.KING, Suit.SPADES, CardBack.ULTRA_LUXE, false))
-            deck.add(Card(Rank.KING, Suit.CLUBS, CardBack.TOPS, true))
-            deck.add(Card(Rank.KING, Suit.DIAMONDS, CardBack.GOMORRAH, true))
-            deck.add(Card(Rank.KING, Suit.SPADES, CardBack.LUCKY_38, true))
-
-            deck.add(Card(Rank.TEN, Suit.HEARTS, CardBack.DECK_13, false))
-            deck.add(Card(Rank.TEN, Suit.DIAMONDS, CardBack.DECK_13, false))
-            deck.add(Card(Rank.TEN, Suit.CLUBS, CardBack.DECK_13, false))
-            deck.add(Card(Rank.TEN, Suit.SPADES, CardBack.DECK_13, false))
-
-            deck.add(Card(Rank.SIX, Suit.HEARTS, CardBack.DECK_13, false))
-            deck.add(Card(Rank.SIX, Suit.DIAMONDS, CardBack.DECK_13, false))
-            deck.add(Card(Rank.SIX, Suit.CLUBS, CardBack.DECK_13, false))
-            deck.add(Card(Rank.SIX, Suit.SPADES, CardBack.DECK_13, false))
-
-            deck.add(Card(Rank.FIVE, Suit.HEARTS, CardBack.DECK_13, false))
-            deck.add(Card(Rank.FIVE, Suit.DIAMONDS, CardBack.DECK_13, false))
-            deck.add(Card(Rank.FIVE, Suit.CLUBS, CardBack.DECK_13, false))
-            deck.add(Card(Rank.FIVE, Suit.SPADES, CardBack.DECK_13, false))
-
-            deck.add(Card(Rank.ACE, Suit.HEARTS, CardBack.DECK_13, false))
-            deck.add(Card(Rank.ACE, Suit.DIAMONDS, CardBack.DECK_13, false))
-            deck.add(Card(Rank.ACE, Suit.CLUBS, CardBack.DECK_13, false))
-
             if (isFinalBossWild) {
+                CardBack.playableBacks.forEach { back ->
+                    Rank.entries.forEach { rank ->
+                        if (rank == Rank.JOKER) {
+                            deck.add(Card(rank, Suit.HEARTS, back, true))
+                            deck.add(Card(rank, Suit.CLUBS, back, true))
+                        } else {
+                            Suit.entries.forEach { suit ->
+                                deck.add(Card(rank, suit, back, true))
+                            }
+                        }
+                    }
+                }
+
                 deck.apply {
                     add(Card(Rank.ACE, Suit.HEARTS, CardBack.WILD_WASTELAND, true))
                     add(Card(Rank.ACE, Suit.CLUBS, CardBack.WILD_WASTELAND, true))
@@ -158,9 +134,41 @@ fun ShowWildWasteland(
                     add(Card(Rank.QUEEN, Suit.HEARTS, CardBack.WILD_WASTELAND, false))
                 }
             } else {
-                deck.apply {
-                    add(Card(Rank.ACE, Suit.HEARTS, CardBack.WILD_WASTELAND, true))
-                }
+                deck.add(Card(Rank.KING, Suit.HEARTS, CardBack.DECK_13, false))
+                deck.add(Card(Rank.KING, Suit.CLUBS, CardBack.DECK_13, false))
+                deck.add(Card(Rank.KING, Suit.DIAMONDS, CardBack.DECK_13, false))
+                deck.add(Card(Rank.KING, Suit.SPADES, CardBack.DECK_13, false))
+                deck.add(Card(Rank.KING, Suit.HEARTS, CardBack.STANDARD, false))
+                deck.add(Card(Rank.KING, Suit.CLUBS, CardBack.STANDARD, false))
+                deck.add(Card(Rank.KING, Suit.DIAMONDS, CardBack.STANDARD, false))
+                deck.add(Card(Rank.KING, Suit.SPADES, CardBack.STANDARD, false))
+                deck.add(Card(Rank.KING, Suit.HEARTS, CardBack.ULTRA_LUXE, false))
+                deck.add(Card(Rank.KING, Suit.CLUBS, CardBack.ULTRA_LUXE, false))
+                deck.add(Card(Rank.KING, Suit.DIAMONDS, CardBack.ULTRA_LUXE, false))
+                deck.add(Card(Rank.KING, Suit.SPADES, CardBack.ULTRA_LUXE, false))
+                deck.add(Card(Rank.KING, Suit.CLUBS, CardBack.TOPS, true))
+                deck.add(Card(Rank.KING, Suit.DIAMONDS, CardBack.GOMORRAH, true))
+                deck.add(Card(Rank.KING, Suit.SPADES, CardBack.LUCKY_38, true))
+
+                deck.add(Card(Rank.TEN, Suit.HEARTS, CardBack.DECK_13, false))
+                deck.add(Card(Rank.TEN, Suit.DIAMONDS, CardBack.DECK_13, false))
+                deck.add(Card(Rank.TEN, Suit.CLUBS, CardBack.DECK_13, false))
+                deck.add(Card(Rank.TEN, Suit.SPADES, CardBack.DECK_13, false))
+
+                deck.add(Card(Rank.SIX, Suit.HEARTS, CardBack.DECK_13, false))
+                deck.add(Card(Rank.SIX, Suit.DIAMONDS, CardBack.DECK_13, false))
+                deck.add(Card(Rank.SIX, Suit.CLUBS, CardBack.DECK_13, false))
+                deck.add(Card(Rank.SIX, Suit.SPADES, CardBack.DECK_13, false))
+
+                deck.add(Card(Rank.FIVE, Suit.HEARTS, CardBack.DECK_13, false))
+                deck.add(Card(Rank.FIVE, Suit.DIAMONDS, CardBack.DECK_13, false))
+                deck.add(Card(Rank.FIVE, Suit.CLUBS, CardBack.DECK_13, false))
+                deck.add(Card(Rank.FIVE, Suit.SPADES, CardBack.DECK_13, false))
+
+                deck.add(Card(Rank.ACE, Suit.HEARTS, CardBack.DECK_13, false))
+                deck.add(Card(Rank.ACE, Suit.DIAMONDS, CardBack.DECK_13, false))
+                deck.add(Card(Rank.ACE, Suit.CLUBS, CardBack.DECK_13, false))
+                deck.add(Card(Rank.ACE, Suit.HEARTS, CardBack.WILD_WASTELAND, true))
             }
             return CResources(deck)
         } else {
@@ -244,35 +252,12 @@ fun ShowWildWasteland(
         return
     }
 
-    Column(
-        Modifier
-            .fillMaxSize()
-            .background(getBackgroundColor(activity)),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
+    MenuItemOpen(activity, stringResource(R.string.menu_wild_wastealnd), "<-", goBack) {
         val state = rememberLazyListState()
-        Row(
-            modifier = Modifier
-                .height(48.dp)
-                .padding(8.dp),
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            TextFallout(
-                stringResource(R.string.custom_deck_only),
-                getTextColor(activity),
-                getTextStrokeColor(activity),
-                28.sp,
-                Alignment.Center,
-                Modifier.fillMaxWidth(0.7f),
-                TextAlign.Center
-            )
-        }
         LazyColumn(
             Modifier
-                .fillMaxWidth()
-                .fillMaxHeight(0.8f)
+                .fillMaxSize()
+                .background(getBackgroundColor(activity))
                 .scrollbar(
                     state,
                     knobColor = getKnobColor(activity), trackColor = getTrackColor(activity),
@@ -285,12 +270,12 @@ fun ShowWildWasteland(
             item {
                 Spacer(modifier = Modifier.height(16.dp))
                 TextFallout(
-                    stringResource(R.string.pve_select_enemy),
+                    stringResource(R.string.custom_deck_only),
                     getTextColor(activity),
                     getTextStrokeColor(activity),
-                    22.sp,
+                    28.sp,
                     Alignment.Center,
-                    Modifier,
+                    Modifier.fillMaxWidth(0.7f),
                     TextAlign.Center
                 )
                 Spacer(modifier = Modifier.height(16.dp))
@@ -323,17 +308,5 @@ fun ShowWildWasteland(
                 Spacer(modifier = Modifier.height(16.dp))
             }
         }
-        TextFallout(
-            stringResource(R.string.menu_back),
-            getTextColor(activity),
-            getTextStrokeColor(activity),
-            24.sp,
-            Alignment.Center,
-            modifier = Modifier
-                .clickableCancel(activity) { goBack() }
-                .background(getTextBackgroundColor(activity))
-                .padding(8.dp),
-            TextAlign.Center
-        )
     }
 }

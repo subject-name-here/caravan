@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -29,7 +28,6 @@ import com.unicorns.invisible.caravan.save.Save
 import com.unicorns.invisible.caravan.save.saveOnGD
 import com.unicorns.invisible.caravan.utils.MenuItemOpen
 import com.unicorns.invisible.caravan.utils.TextFallout
-import com.unicorns.invisible.caravan.utils.clickableCancel
 import com.unicorns.invisible.caravan.utils.clickableOk
 import com.unicorns.invisible.caravan.utils.getBackgroundColor
 import com.unicorns.invisible.caravan.utils.getKnobColor

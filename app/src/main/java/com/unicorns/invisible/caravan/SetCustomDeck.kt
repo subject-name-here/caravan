@@ -6,7 +6,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -41,11 +40,9 @@ import com.unicorns.invisible.caravan.utils.MenuItemOpen
 import com.unicorns.invisible.caravan.utils.ShowCard
 import com.unicorns.invisible.caravan.utils.ShowCardBack
 import com.unicorns.invisible.caravan.utils.TextFallout
-import com.unicorns.invisible.caravan.utils.clickableCancel
 import com.unicorns.invisible.caravan.utils.getBackgroundColor
 import com.unicorns.invisible.caravan.utils.getKnobColor
 import com.unicorns.invisible.caravan.utils.getSelectionColor
-import com.unicorns.invisible.caravan.utils.getTextBackgroundColor
 import com.unicorns.invisible.caravan.utils.getTextColor
 import com.unicorns.invisible.caravan.utils.getTextStrokeColor
 import com.unicorns.invisible.caravan.utils.getTrackColor

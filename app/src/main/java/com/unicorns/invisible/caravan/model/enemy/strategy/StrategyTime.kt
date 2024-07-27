@@ -1,8 +1,6 @@
 package com.unicorns.invisible.caravan.model.enemy.strategy
 
 import com.unicorns.invisible.caravan.model.Game
-import com.unicorns.invisible.caravan.model.enemy.Enemy
-import com.unicorns.invisible.caravan.model.enemy.EnemyTutorial
 import com.unicorns.invisible.caravan.model.enemy.EnemyYesMan
 import com.unicorns.invisible.caravan.model.primitives.Rank
 

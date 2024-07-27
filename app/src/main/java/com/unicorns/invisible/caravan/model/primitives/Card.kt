@@ -24,7 +24,15 @@ class Card(val rank: Rank, val suit: Suit, val back: CardBack, val isAlt: Boolea
         MOVING_OUT_WIP,
         MOVING_OUT_ALT,
         MOVING_OUT_ALT_WIP,
-        MOVED_OUT,
+        MOVED_OUT;
+
+        fun isMovingIn(): Boolean {
+            return this in listOf(MOVING_IN, MOVING_IN_WIP)
+        }
+
+        fun isMovingOut(): Boolean {
+            return this !in listOf(STABLE, MOVING_IN, MOVING_IN_WIP)
+        }
     }
 
     fun getWildWastelandCardType(): WildWastelandCardType? {

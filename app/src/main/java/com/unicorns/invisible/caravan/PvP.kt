@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -49,8 +48,8 @@ import com.unicorns.invisible.caravan.multiplayer.decodeMove
 import com.unicorns.invisible.caravan.save.json
 import com.unicorns.invisible.caravan.save.saveOnGD
 import com.unicorns.invisible.caravan.utils.CheckboxCustom
+import com.unicorns.invisible.caravan.utils.MenuItemOpen
 import com.unicorns.invisible.caravan.utils.TextFallout
-import com.unicorns.invisible.caravan.utils.clickableCancel
 import com.unicorns.invisible.caravan.utils.clickableOk
 import com.unicorns.invisible.caravan.utils.getBackgroundColor
 import com.unicorns.invisible.caravan.utils.getDividerColor
@@ -127,6 +126,7 @@ fun ShowPvP(
     var roomNumber by rememberSaveable { mutableStateOf("") }
     var checkedCustomDeck by rememberSaveable { mutableStateOf(true) }
     var checkedWild by rememberSaveable { mutableStateOf(false) }
+    var checkedPrivateRoom by rememberSaveable { mutableStateOf(true) }
     var isRoomCreated by rememberSaveable { mutableIntStateOf(0) }
     var isCreator by rememberSaveable { mutableStateOf(false) }
 
@@ -231,7 +231,7 @@ fun ShowPvP(
         sendRequest(
             "$crvnUrl/crvn/create?is_custom=${checkedCustomDeck.toPythonBool()}" +
                     "&room=${isRoomCreated}" +
-                    "&is_private=True" +
+                    "&is_private=${checkedPrivateRoom.toPythonBool()}" +
                     "&is_new=True" +
                     "&is_wild=${checkedWild.toPythonBool()}" +
                     "&cid=${userId}" +
@@ -345,133 +345,105 @@ fun ShowPvP(
         return
     }
 
-    val state = rememberLazyListState()
-    LazyColumn(
-        state = state,
-        modifier = Modifier
-            .fillMaxSize()
-            .background(getBackgroundColor(activity))
-            .scrollbar(
-                state,
-                knobColor = getKnobColor(activity), trackColor = getTrackColor(activity),
-                horizontal = false
-            ),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        item {
-            Column(
-                Modifier.fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Row(
-                    modifier = Modifier.height(96.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    TextFallout(
-                        text = when (isRoomCreated) {
-                            0 -> stringResource(R.string.create_room)
-                            1 -> stringResource(R.string.pool)
-                            2 -> stringResource(R.string.failure)
-                            4 -> stringResource(R.string.incorrect_room_number)
-                            else -> stringResource(R.string.your_room_is, isRoomCreated)
-                        },
-                        getTextColor(activity),
-                        getTextStrokeColor(activity),
-                        14.sp,
-                        Alignment.Center,
-                        modifier = Modifier
-                            .fillMaxWidth(0.33f)
-                            .padding(horizontal = 8.dp)
-                            .clickableOk(activity) { createRoom() }
-                            .background(getTextBackgroundColor(activity))
-                            .padding(4.dp),
-                        textAlign = TextAlign.Center,
-                    )
-                    TextField(
-                        modifier = Modifier.fillMaxWidth(0.5f),
-                        singleLine = true,
-                        enabled = isRoomCreated == 0,
-                        value = roomNumber,
-                        onValueChange = { roomNumber = it },
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                        textStyle = TextStyle(
-                            fontSize = 14.sp,
-                            color = getTextColor(activity),
-                            fontFamily = FontFamily(Font(R.font.monofont))
-                        ),
-                        label = {
-                            TextFallout(
-                                text = stringResource(R.string.room_number),
-                                getTextColor(activity),
-                                getTextStrokeColor(activity),
-                                11.sp,
-                                Alignment.Center,
-                                Modifier,
-                                TextAlign.Center
-                            )
-                        },
-                        colors = TextFieldDefaults.colors().copy(
-                            cursorColor = getTextColor(activity),
-                            focusedContainerColor = getTextBackgroundColor(activity),
-                            unfocusedContainerColor = getTextBackgroundColor(activity),
-                            disabledContainerColor = getBackgroundColor(activity),
-                        )
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    TextFallout(
-                        text = stringResource(R.string.join),
-                        getTextColor(activity),
-                        getTextStrokeColor(activity),
-                        14.sp,
-                        Alignment.Center,
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 8.dp)
-                            .clickableOk(activity) { joinRoom() }
-                            .background(getTextBackgroundColor(activity))
-                            .padding(4.dp),
-                        textAlign = TextAlign.Center,
-                    )
-                }
+    MenuItemOpen(activity, stringResource(R.string.menu_pvp), "<-", {
+        if (isRoomCreated == 0) {
+            goBack()
+        }
+    }) {
+        val state = rememberLazyListState()
+        LazyColumn(
+            state = state,
+            modifier = Modifier
+                .fillMaxSize()
+                .background(getBackgroundColor(activity))
+                .scrollbar(
+                    state,
+                    knobColor = getKnobColor(activity), trackColor = getTrackColor(activity),
+                    horizontal = false
+                ),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            item {
                 Column(
-                    Modifier
-                        .padding(horizontal = 8.dp)
-                        .wrapContentHeight()
+                    Modifier.fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(48.dp),
-                        horizontalArrangement = Arrangement.Center,
-                        verticalAlignment = Alignment.CenterVertically
+                        modifier = Modifier.height(96.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center
                     ) {
                         TextFallout(
-                            stringResource(R.string.pve_use_custom_deck),
+                            text = when (isRoomCreated) {
+                                0 -> stringResource(R.string.create_room)
+                                1 -> stringResource(R.string.pool)
+                                2 -> stringResource(R.string.failure)
+                                4 -> stringResource(R.string.incorrect_room_number)
+                                else -> stringResource(R.string.your_room_is, isRoomCreated)
+                            },
                             getTextColor(activity),
                             getTextStrokeColor(activity),
                             14.sp,
-                            Alignment.CenterStart,
-                            Modifier.fillMaxWidth(0.7f),
-                            TextAlign.Start
+                            Alignment.Center,
+                            modifier = Modifier
+                                .fillMaxWidth(0.33f)
+                                .padding(horizontal = 8.dp)
+                                .clickableOk(activity) { createRoom() }
+                                .background(getTextBackgroundColor(activity))
+                                .padding(4.dp),
+                            textAlign = TextAlign.Center,
                         )
-                        CheckboxCustom(
-                            activity,
-                            { checkedCustomDeck },
-                            {
-                                checkedCustomDeck = !checkedCustomDeck
-                                if (checkedCustomDeck) {
-                                    playClickSound(activity)
-                                } else {
-                                    playCloseSound(activity)
-                                }
+                        TextField(
+                            modifier = Modifier.fillMaxWidth(0.5f),
+                            singleLine = true,
+                            enabled = isRoomCreated == 0,
+                            value = roomNumber,
+                            onValueChange = { roomNumber = it },
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                            textStyle = TextStyle(
+                                fontSize = 14.sp,
+                                color = getTextColor(activity),
+                                fontFamily = FontFamily(Font(R.font.monofont))
+                            ),
+                            label = {
+                                TextFallout(
+                                    text = stringResource(R.string.room_number),
+                                    getTextColor(activity),
+                                    getTextStrokeColor(activity),
+                                    11.sp,
+                                    Alignment.Center,
+                                    Modifier,
+                                    TextAlign.Center
+                                )
                             },
-                            { isRoomCreated == 0 }
+                            colors = TextFieldDefaults.colors().copy(
+                                cursorColor = getTextColor(activity),
+                                focusedContainerColor = getTextBackgroundColor(activity),
+                                unfocusedContainerColor = getTextBackgroundColor(activity),
+                                disabledContainerColor = getBackgroundColor(activity),
+                            )
+                        )
+                        TextFallout(
+                            text = stringResource(R.string.join),
+                            getTextColor(activity),
+                            getTextStrokeColor(activity),
+                            14.sp,
+                            Alignment.Center,
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 8.dp)
+                                .clickableOk(activity) { joinRoom() }
+                                .background(getTextBackgroundColor(activity))
+                                .padding(4.dp),
+                            textAlign = TextAlign.Center,
                         )
                     }
-
-                    if (activity.save?.secretMode == true) {
+                    Column(
+                        Modifier
+                            .padding(horizontal = 8.dp)
+                            .wrapContentHeight()
+                    ) {
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -480,7 +452,7 @@ fun ShowPvP(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             TextFallout(
-                                stringResource(R.string.menu_wild_wastealnd),
+                                stringResource(R.string.pve_use_custom_deck),
                                 getTextColor(activity),
                                 getTextStrokeColor(activity),
                                 14.sp,
@@ -490,10 +462,10 @@ fun ShowPvP(
                             )
                             CheckboxCustom(
                                 activity,
-                                { checkedWild },
+                                { checkedCustomDeck },
                                 {
-                                    checkedWild = !checkedWild
-                                    if (checkedWild) {
+                                    checkedCustomDeck = !checkedCustomDeck
+                                    if (checkedCustomDeck) {
                                         playClickSound(activity)
                                     } else {
                                         playCloseSound(activity)
@@ -502,55 +474,91 @@ fun ShowPvP(
                                 { isRoomCreated == 0 }
                             )
                         }
-                    }
-                }
-            }
-            Spacer(modifier = Modifier.height(16.dp))
-            HorizontalDivider(color = getDividerColor(activity))
-            Spacer(modifier = Modifier.height(16.dp))
-            Column(
-                Modifier.fillMaxSize(0.75f),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                TextFallout(
-                    stringResource(R.string.no_stats_here),
-                    getTextColor(activity),
-                    getTextStrokeColor(activity),
-                    20.sp,
-                    Alignment.Center,
-                    Modifier.padding(horizontal = 16.dp),
-                    TextAlign.Center
-                )
-                Spacer(modifier = Modifier.height(12.dp))
-                TextFallout(
-                    stringResource(R.string.pvp_piece),
-                    getTextColor(activity),
-                    getTextStrokeColor(activity),
-                    13.sp,
-                    Alignment.Center,
-                    Modifier.padding(horizontal = 16.dp),
-                    TextAlign.Start
-                )
-            }
-            Spacer(modifier = Modifier.height(32.dp))
-            TextFallout(
-                text = stringResource(R.string.menu_back),
-                getTextColor(activity),
-                getTextStrokeColor(activity),
-                24.sp,
-                Alignment.Center,
-                Modifier
-                    .clickableCancel(activity) {
-                        if (isRoomCreated == 0) {
-                            goBack()
+
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(48.dp),
+                            horizontalArrangement = Arrangement.Center,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            TextFallout(
+                                stringResource(R.string.private_room),
+                                getTextColor(activity),
+                                getTextStrokeColor(activity),
+                                14.sp,
+                                Alignment.CenterStart,
+                                Modifier.fillMaxWidth(0.7f),
+                                TextAlign.Start
+                            )
+                            CheckboxCustom(
+                                activity,
+                                { checkedPrivateRoom },
+                                {
+                                    checkedPrivateRoom = !checkedPrivateRoom
+                                    if (checkedPrivateRoom) {
+                                        playClickSound(activity)
+                                    } else {
+                                        playCloseSound(activity)
+                                    }
+                                },
+                                { isRoomCreated == 0 }
+                            )
+                        }
+
+                        if (activity.save?.secretMode == true) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(48.dp),
+                                horizontalArrangement = Arrangement.Center,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                TextFallout(
+                                    stringResource(R.string.menu_wild_wastealnd),
+                                    getTextColor(activity),
+                                    getTextStrokeColor(activity),
+                                    14.sp,
+                                    Alignment.CenterStart,
+                                    Modifier.fillMaxWidth(0.7f),
+                                    TextAlign.Start
+                                )
+                                CheckboxCustom(
+                                    activity,
+                                    { checkedWild },
+                                    {
+                                        checkedWild = !checkedWild
+                                        if (checkedWild) {
+                                            playClickSound(activity)
+                                        } else {
+                                            playCloseSound(activity)
+                                        }
+                                    },
+                                    { isRoomCreated == 0 }
+                                )
+                            }
                         }
                     }
-                    .background(getTextBackgroundColor(activity))
-                    .padding(8.dp),
-                TextAlign.Center
-            )
-            Spacer(modifier = Modifier.height(32.dp))
+                }
+                Spacer(modifier = Modifier.height(16.dp))
+                HorizontalDivider(color = getDividerColor(activity))
+                Spacer(modifier = Modifier.height(16.dp))
+                Column(
+                    Modifier.fillMaxSize().padding(16.dp),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    TextFallout(
+                        stringResource(R.string.pvp_piece),
+                        getTextColor(activity),
+                        getTextStrokeColor(activity),
+                        13.sp,
+                        Alignment.Center,
+                        Modifier.padding(horizontal = 16.dp),
+                        TextAlign.Start
+                    )
+                }
+            }
         }
     }
 }

@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -24,7 +23,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -37,22 +35,19 @@ import androidx.compose.ui.unit.sp
 import com.sebaslogen.resaca.rememberScoped
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
-import com.unicorns.invisible.caravan.model.challenge.Challenge
 import com.unicorns.invisible.caravan.model.enemy.Enemy
 import com.unicorns.invisible.caravan.model.enemy.EnemyBenny
 import com.unicorns.invisible.caravan.model.enemy.EnemyBetter
 import com.unicorns.invisible.caravan.model.enemy.EnemyHouse
 import com.unicorns.invisible.caravan.model.enemy.EnemySecuritron38
 import com.unicorns.invisible.caravan.model.primitives.CResources
-import com.unicorns.invisible.caravan.model.primitives.Caravan
 import com.unicorns.invisible.caravan.model.primitives.CustomDeck
-import com.unicorns.invisible.caravan.model.primitives.Rank
 import com.unicorns.invisible.caravan.save.saveOnGD
 import com.unicorns.invisible.caravan.utils.CheckboxCustom
+import com.unicorns.invisible.caravan.utils.MenuItemOpen
 import com.unicorns.invisible.caravan.utils.SliderValueRangeCustom
 import com.unicorns.invisible.caravan.utils.SwitchCustomUsualBackground
 import com.unicorns.invisible.caravan.utils.TextFallout
-import com.unicorns.invisible.caravan.utils.clickableCancel
 import com.unicorns.invisible.caravan.utils.clickableOk
 import com.unicorns.invisible.caravan.utils.getBackgroundColor
 import com.unicorns.invisible.caravan.utils.getDividerColor
@@ -62,13 +57,11 @@ import com.unicorns.invisible.caravan.utils.getTextBackgroundColor
 import com.unicorns.invisible.caravan.utils.getTextColor
 import com.unicorns.invisible.caravan.utils.getTextStrokeColor
 import com.unicorns.invisible.caravan.utils.getTrackColor
-import com.unicorns.invisible.caravan.utils.playCardFlipSound
 import com.unicorns.invisible.caravan.utils.playClickSound
 import com.unicorns.invisible.caravan.utils.playCloseSound
 import com.unicorns.invisible.caravan.utils.playJokerSounds
 import com.unicorns.invisible.caravan.utils.playLoseSound
 import com.unicorns.invisible.caravan.utils.playSelectSound
-import com.unicorns.invisible.caravan.utils.playVatsReady
 import com.unicorns.invisible.caravan.utils.playWinSound
 import com.unicorns.invisible.caravan.utils.playYesBeep
 import com.unicorns.invisible.caravan.utils.scrollbar
@@ -162,19 +155,12 @@ fun BlitzScreen(
         return
     }
 
-
-    Column(
-        Modifier
-            .fillMaxSize()
-            .background(getBackgroundColor(activity)),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
+    MenuItemOpen(activity, stringResource(R.string.blitz), "<-", goBack) {
         val state = rememberLazyListState()
         LazyColumn(
             Modifier
-                .fillMaxWidth()
-                .fillMaxHeight(0.3f)
+                .fillMaxSize()
+                .background(getBackgroundColor(activity))
                 .scrollbar(
                     state,
                     knobColor = getKnobColor(activity), trackColor = getTrackColor(activity),
@@ -326,62 +312,47 @@ fun BlitzScreen(
                         .padding(horizontal = 8.dp, vertical = 4.dp),
                     TextAlign.Center
                 )
-            }
-        }
-        HorizontalDivider(color = getDividerColor(activity))
+                Spacer(Modifier.height(16.dp))
 
-        Row(
-            modifier = Modifier
-                .height(56.dp)
-                .padding(8.dp),
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            TextFallout(
-                stringResource(R.string.pve_use_custom_deck),
-                getTextColor(activity),
-                getTextStrokeColor(activity),
-                14.sp,
-                Alignment.CenterStart,
-                Modifier.fillMaxWidth(0.7f),
-                TextAlign.Start
-            )
-            CheckboxCustom(
-                activity,
-                { checkedCustomDeck },
-                {
-                    checkedCustomDeck = !checkedCustomDeck
-                    if (checkedCustomDeck) {
-                        playClickSound(activity)
-                    } else {
-                        playCloseSound(activity)
-                    }
-                    activity.save?.let {
-                        it.useCustomDeck = checkedCustomDeck
-                        saveOnGD(activity)
-                    }
-                },
-                { true }
-            )
-        }
+                HorizontalDivider(color = getDividerColor(activity))
+                Row(
+                    modifier = Modifier
+                        .height(56.dp)
+                        .padding(8.dp),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    TextFallout(
+                        stringResource(R.string.pve_use_custom_deck),
+                        getTextColor(activity),
+                        getTextStrokeColor(activity),
+                        14.sp,
+                        Alignment.CenterStart,
+                        Modifier.fillMaxWidth(0.7f),
+                        TextAlign.Start
+                    )
+                    CheckboxCustom(
+                        activity,
+                        { checkedCustomDeck },
+                        {
+                            checkedCustomDeck = !checkedCustomDeck
+                            if (checkedCustomDeck) {
+                                playClickSound(activity)
+                            } else {
+                                playCloseSound(activity)
+                            }
+                            activity.save?.let {
+                                it.useCustomDeck = checkedCustomDeck
+                                saveOnGD(activity)
+                            }
+                        },
+                        { true }
+                    )
+                }
+                HorizontalDivider(color = getDividerColor(activity))
+                Spacer(Modifier.height(16.dp))
 
-        HorizontalDivider(color = getDividerColor(activity))
-        val state2 = rememberLazyListState()
-        LazyColumn(
-            Modifier
-                .fillMaxHeight(0.75f)
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 8.dp)
-                .scrollbar(
-                    state2,
-                    knobColor = getKnobColor(activity), trackColor = getTrackColor(activity),
-                    horizontal = false,
-                ),
-            state = state2,
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            item {
+
                 TextFallout(
                     stringResource(R.string.place_your_bets, activity.save?.caps ?: 0),
                     getTextColor(activity),
@@ -392,7 +363,7 @@ fun BlitzScreen(
                     TextAlign.Center
                 )
                 Spacer(modifier = Modifier.height(16.dp))
-                Row(verticalAlignment = Alignment.CenterVertically) {
+                Row(Modifier.fillMaxWidth().padding(horizontal = 4.dp), verticalAlignment = Alignment.CenterVertically) {
                     TextFallout(
                         stringResource(R.string.time_s, BlitzTime.FAST.time),
                         getTextColor(activity),
@@ -423,14 +394,14 @@ fun BlitzScreen(
                     )
                 }
                 Spacer(modifier = Modifier.height(16.dp))
-                Row(verticalAlignment = Alignment.CenterVertically) {
+                Row(Modifier.fillMaxWidth().padding(horizontal = 8.dp), verticalAlignment = Alignment.CenterVertically) {
                     TextFallout(
                         stringResource(R.string.bet_caps, bet),
                         getTextColor(activity),
                         getTextStrokeColor(activity),
                         16.sp,
                         Alignment.CenterStart,
-                        modifier = Modifier.fillMaxWidth(0.5f),
+                        modifier = Modifier.fillMaxWidth(0.5f).padding(start = 8.dp),
                         TextAlign.Start,
                     )
 
@@ -442,7 +413,7 @@ fun BlitzScreen(
                     )
                 }
                 Spacer(modifier = Modifier.height(16.dp))
-                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
+                Row(Modifier.fillMaxWidth().padding(horizontal = 4.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
                     val timeMult = getTimeMult(time)
                     val enemyMult = when (selectedEnemy) {
                         0, 1 -> 1.5
@@ -463,18 +434,6 @@ fun BlitzScreen(
                 }
             }
         }
-        TextFallout(
-            stringResource(R.string.menu_back),
-            getTextColor(activity),
-            getTextStrokeColor(activity),
-            24.sp,
-            Alignment.Center,
-            modifier = Modifier
-                .clickableCancel(activity) { goBack() }
-                .background(getTextBackgroundColor(activity))
-                .padding(8.dp),
-            TextAlign.Center
-        )
     }
 }
 

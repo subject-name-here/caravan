@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
@@ -68,7 +67,6 @@ import com.unicorns.invisible.caravan.save.loadLocalSave
 import com.unicorns.invisible.caravan.save.saveOnGD
 import com.unicorns.invisible.caravan.save.saveOnGDAsync
 import com.unicorns.invisible.caravan.utils.SliderCustom
-import com.unicorns.invisible.caravan.utils.SwitchCustom
 import com.unicorns.invisible.caravan.utils.TextFallout
 import com.unicorns.invisible.caravan.utils.clickableCancel
 import com.unicorns.invisible.caravan.utils.clickableOk
@@ -87,8 +85,6 @@ import com.unicorns.invisible.caravan.utils.getTrackColor
 import com.unicorns.invisible.caravan.utils.nextSong
 import com.unicorns.invisible.caravan.utils.pauseActivitySound
 import com.unicorns.invisible.caravan.utils.pauseRadio
-import com.unicorns.invisible.caravan.utils.playClickSound
-import com.unicorns.invisible.caravan.utils.playCloseSound
 import com.unicorns.invisible.caravan.utils.playNotificationSound
 import com.unicorns.invisible.caravan.utils.resumeActivitySound
 import com.unicorns.invisible.caravan.utils.resumeRadio

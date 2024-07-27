@@ -22,7 +22,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -38,7 +37,6 @@ import androidx.compose.ui.unit.sp
 import com.sebaslogen.resaca.rememberScoped
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
-import com.unicorns.invisible.caravan.model.challenge.Challenge
 import com.unicorns.invisible.caravan.model.enemy.Enemy
 import com.unicorns.invisible.caravan.model.enemy.EnemyCaesar
 import com.unicorns.invisible.caravan.model.enemy.EnemyCliff
@@ -52,9 +50,7 @@ import com.unicorns.invisible.caravan.model.enemy.EnemySunny
 import com.unicorns.invisible.caravan.model.enemy.EnemySwank
 import com.unicorns.invisible.caravan.model.enemy.EnemyYesMan
 import com.unicorns.invisible.caravan.model.primitives.CResources
-import com.unicorns.invisible.caravan.model.primitives.Caravan
 import com.unicorns.invisible.caravan.model.primitives.CustomDeck
-import com.unicorns.invisible.caravan.model.primitives.Rank
 import com.unicorns.invisible.caravan.save.saveOnGD
 import com.unicorns.invisible.caravan.utils.TextClassic
 import com.unicorns.invisible.caravan.utils.TextFallout
@@ -72,7 +68,6 @@ import com.unicorns.invisible.caravan.utils.getTextColorByStyle
 import com.unicorns.invisible.caravan.utils.getTextStrokeColor
 import com.unicorns.invisible.caravan.utils.getTrackColor
 import com.unicorns.invisible.caravan.utils.nextSong
-import com.unicorns.invisible.caravan.utils.playCardFlipSound
 import com.unicorns.invisible.caravan.utils.playCashSound
 import com.unicorns.invisible.caravan.utils.playCloseSound
 import com.unicorns.invisible.caravan.utils.playFrankPhrase
@@ -83,7 +78,6 @@ import com.unicorns.invisible.caravan.utils.playNukeBlownSound
 import com.unicorns.invisible.caravan.utils.playSelectSound
 import com.unicorns.invisible.caravan.utils.playTowerCompleted
 import com.unicorns.invisible.caravan.utils.playTowerFailed
-import com.unicorns.invisible.caravan.utils.playVatsReady
 import com.unicorns.invisible.caravan.utils.playWinSound
 import com.unicorns.invisible.caravan.utils.scrollbar
 import com.unicorns.invisible.caravan.utils.startLevel11Theme

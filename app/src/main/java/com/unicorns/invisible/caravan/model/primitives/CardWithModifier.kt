@@ -1,6 +1,5 @@
 package com.unicorns.invisible.caravan.model.primitives
 
-import com.unicorns.invisible.caravan.model.CardBack
 import kotlinx.serialization.Serializable
 import kotlin.math.pow
 

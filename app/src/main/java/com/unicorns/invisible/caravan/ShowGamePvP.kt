@@ -255,7 +255,7 @@ fun ShowGamePvP(
         if (game.isExchangingCards) return
         val selectedCardNN = selectedCard ?: return
         playVatsReady(activity)
-        game.playerCResources.removeFromHand(selectedCardNN)
+        game.playerCResources.dropCardFromHand(selectedCardNN)
         resetSelected()
         afterPlayerMove(game, speed, roomNumber, isCreator = isCreator, MoveResponse(
             moveCode = 2,
