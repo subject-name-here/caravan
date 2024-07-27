@@ -118,6 +118,7 @@ fun ShowChallenge(activity: MainActivity, challenge: Challenge, isCompleted: Boo
                 playDailyCompleted(activity)
                 updater()
             }
+            Spacer(Modifier.height(8.dp))
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
                 TextFallout(
                     activity.getString(R.string.claim_tickets),

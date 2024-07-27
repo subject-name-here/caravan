@@ -23,6 +23,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.unicorns.invisible.caravan.utils.MenuItemOpen
 import com.unicorns.invisible.caravan.utils.TextFallout
 import com.unicorns.invisible.caravan.utils.clickableCancel
 import com.unicorns.invisible.caravan.utils.clickableOk
@@ -53,94 +54,66 @@ fun ShowStyles(
     val mainState = rememberLazyListState()
     LaunchedEffect(styleInt) {}
 
-    Scaffold(bottomBar = {
-        Box(Modifier.fillMaxWidth().background(getBackgroundColor(activity)).padding(horizontal = 8.dp)) {
-            TextFallout(
-                stringResource(R.string.themes),
-                getTextColor(activity),
-                getTextStrokeColor(activity),
-                24.sp,
-                Alignment.Center,
-                Modifier.align(Alignment.Center).padding(8.dp),
-                TextAlign.Center
-            )
-            TextFallout(
-                "<-",
-                getTextColor(activity),
-                getTextStrokeColor(activity),
-                24.sp,
-                Alignment.CenterStart,
-                Modifier
-                    .align(Alignment.CenterStart)
-                    .background(getTextBackgroundColor(activity))
-                    .clickableCancel(activity) {
-                        goBack()
-                    }
-                    .padding(8.dp),
-                TextAlign.Start
-            )
-        }
-    }) { innerPadding ->
-        Box(Modifier.padding(innerPadding).background(getBackgroundColor(activity))) {
-            LazyColumn(
-                Modifier
-                    .fillMaxSize()
-                    .scrollbar(
-                        mainState,
-                        horizontal = false,
-                        knobColor = getKnobColor(activity),
-                        trackColor = getTrackColor(activity)
-                    ),
-                mainState,
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) {
-                item {
-                    TextFallout(
-                        stringResource(R.string.caps, activity.save?.caps ?: 0),
-                        getTextColor(activity),
-                        getTextStrokeColor(activity),
-                        24.sp,
-                        Alignment.Center,
-                        Modifier.fillMaxWidth().padding(top = 8.dp),
-                        TextAlign.Center
-                    )
+    MenuItemOpen(activity, stringResource(R.string.themes), "<-", goBack) {
+        LazyColumn(
+            Modifier
+                .fillMaxSize()
+                .background(getBackgroundColor(activity))
+                .scrollbar(
+                    mainState,
+                    horizontal = false,
+                    knobColor = getKnobColor(activity),
+                    trackColor = getTrackColor(activity)
+                ),
+            mainState,
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            item {
+                TextFallout(
+                    stringResource(R.string.caps, activity.save?.caps ?: 0),
+                    getTextColor(activity),
+                    getTextStrokeColor(activity),
+                    24.sp,
+                    Alignment.Center,
+                    Modifier.fillMaxWidth().padding(top = 8.dp),
+                    TextAlign.Center
+                )
 
-                    Style.entries.forEach { style ->
-                        if (style == Style.ENCLAVE && activity.save?.isEnclaveThemeAvailable != true) {
-                            return@forEach
-                        }
-                        ShowStyle(
-                            activity, style,
-                            style in activity.save!!.ownedStyles,
-                            style.ordinal == activity.save!!.styleId
-                        ) {
-                            if (style !in activity.save!!.ownedStyles) {
-                                if (activity.save!!.caps >= style.price) {
-                                    activity.save!!.ownedStyles.add(style)
-                                    activity.save!!.caps -= style.price
-                                    styleInt = style
-                                    selectStyle(style.ordinal)
-                                    showAlertDialog(
-                                        activity.getString(R.string.transaction_succeeded),
-                                        activity.getString(
-                                            R.string.you_have_bought_style,
-                                            activity.getString(style.styleNameId)
-                                        )
-                                    )
-                                    playPimpBoySound(activity)
-                                } else {
-                                    showAlertDialog(
-                                        activity.getString(R.string.transaction_failed),
-                                        activity.getString(
-                                            R.string.not_enough_caps
-                                        )
-                                    )
-                                }
-                            } else if (style.ordinal != activity.save!!.styleId) {
+                Style.entries.forEach { style ->
+                    if (style == Style.ENCLAVE && activity.save?.isEnclaveThemeAvailable != true) {
+                        return@forEach
+                    }
+                    ShowStyle(
+                        activity, style,
+                        style in activity.save!!.ownedStyles,
+                        style.ordinal == activity.save!!.styleId
+                    ) {
+                        if (style !in activity.save!!.ownedStyles) {
+                            if (activity.save!!.caps >= style.price) {
+                                activity.save!!.ownedStyles.add(style)
+                                activity.save!!.caps -= style.price
                                 styleInt = style
                                 selectStyle(style.ordinal)
+                                showAlertDialog(
+                                    activity.getString(R.string.transaction_succeeded),
+                                    activity.getString(
+                                        R.string.you_have_bought_style,
+                                        activity.getString(style.styleNameId)
+                                    )
+                                )
+                                playPimpBoySound(activity)
+                            } else {
+                                showAlertDialog(
+                                    activity.getString(R.string.transaction_failed),
+                                    activity.getString(
+                                        R.string.not_enough_caps
+                                    )
+                                )
                             }
+                        } else if (style.ordinal != activity.save!!.styleId) {
+                            styleInt = style
+                            selectStyle(style.ordinal)
                         }
                     }
                 }

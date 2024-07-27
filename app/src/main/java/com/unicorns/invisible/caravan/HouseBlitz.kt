@@ -175,14 +175,15 @@ fun BlitzScreen(
                 Box(Modifier.fillMaxWidth()) {
                     Row(Modifier.align(Alignment.Center), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
                         TextFallout(
-                            stringResource(R.string.blitz),
+                            stringResource(R.string.pve_select_enemy),
                             getTextColor(activity),
                             getTextStrokeColor(activity),
-                            32.sp,
+                            22.sp,
                             Alignment.Center,
                             Modifier,
                             TextAlign.Center
                         )
+                        Spacer(modifier = Modifier.width(8.dp))
                         TextFallout(
                             "(?)",
                             getTextColor(activity),
@@ -202,19 +203,7 @@ fun BlitzScreen(
                         )
                     }
                 }
-
                 Spacer(modifier = Modifier.height(8.dp))
-                TextFallout(
-                    stringResource(R.string.pve_select_enemy),
-                    getTextColor(activity),
-                    getTextStrokeColor(activity),
-                    22.sp,
-                    Alignment.Center,
-                    Modifier,
-                    TextAlign.Center
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-
                 @Composable
                 fun OpponentItem(name: String, index: Int) {
                     TextFallout(
@@ -287,11 +276,9 @@ fun BlitzScreen(
                                 0 -> {
                                     showGameBetter = true
                                 }
-
                                 1 -> {
                                     showGame38 = true
                                 }
-
                                 2 -> {
                                     if (checkedCustomDeck) {
                                         showAlertDialog(
@@ -302,7 +289,6 @@ fun BlitzScreen(
                                         showGameBenny = true
                                     }
                                 }
-
                                 3 -> {
                                     showGameHouse = true
                                 }

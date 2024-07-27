@@ -95,7 +95,6 @@ enum class Payment {
     TICKET
 }
 
-
 @Composable
 fun TowerScreen(
     activity: MainActivity,

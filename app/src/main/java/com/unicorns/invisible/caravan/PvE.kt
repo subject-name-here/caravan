@@ -52,6 +52,7 @@ import com.unicorns.invisible.caravan.model.primitives.Rank
 import com.unicorns.invisible.caravan.save.Save
 import com.unicorns.invisible.caravan.save.saveOnGD
 import com.unicorns.invisible.caravan.utils.CheckboxCustom
+import com.unicorns.invisible.caravan.utils.MenuItemOpen
 import com.unicorns.invisible.caravan.utils.TextFallout
 import com.unicorns.invisible.caravan.utils.clickableCancel
 import com.unicorns.invisible.caravan.utils.getBackgroundColor
@@ -281,283 +282,272 @@ fun ShowPvE(
         return
     }
 
-    Column(
-        Modifier
-            .fillMaxSize()
-            .background(getBackgroundColor(activity)),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        val state = rememberLazyListState()
-        LazyColumn(
+    MenuItemOpen(activity, stringResource(R.string.menu_pve), "<-", goBack) {
+        Column(
             Modifier
-                .fillMaxWidth()
-                .fillMaxHeight(0.4f)
-                .scrollbar(
-                    state,
-                    knobColor = getKnobColor(activity), trackColor = getTrackColor(activity),
-                    horizontal = false,
-                ),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally,
-            state = state
-        ) {
-            item {
-                Spacer(modifier = Modifier.height(16.dp))
-                TextFallout(
-                    stringResource(R.string.pve_select_enemy),
-                    getTextColor(activity),
-                    getTextStrokeColor(activity),
-                    22.sp,
-                    Alignment.Center,
-                    Modifier,
-                    TextAlign.Center
-                )
-                Spacer(modifier = Modifier.height(16.dp))
-
-                @Composable
-                fun OpponentItem(name: String, onClick: () -> Unit) {
-                    TextFallout(
-                        name,
-                        getTextColor(activity),
-                        getTextStrokeColor(activity),
-                        16.sp,
-                        Alignment.Center,
-                        Modifier
-                            .clickable { onClick() }
-                            .background(getTextBackgroundColor(activity))
-                            .padding(4.dp),
-                        TextAlign.Center
-                    )
-                }
-
-                OpponentItem(stringResource(R.string.pve_enemy_easy)) { playVatsEnter(activity); showGameEasy = true }
-                Spacer(modifier = Modifier.height(10.dp))
-                OpponentItem(stringResource(R.string.pve_enemy_medium)) { playVatsEnter(activity); showGameMedium = true }
-                Spacer(modifier = Modifier.height(10.dp))
-                OpponentItem(stringResource(R.string.pve_enemy_hard)) { playVatsEnter(activity); showGameHard = true }
-                Spacer(modifier = Modifier.height(10.dp))
-                OpponentItem(stringResource(R.string.pve_enemy_better)) { playVatsEnter(activity); showGameBetter = true }
-                Spacer(modifier = Modifier.height(10.dp))
-                OpponentItem(stringResource(R.string.pve_enemy_best)) {
-                    if (checkedCustomDeck) {
-                        showAlertDialog(
-                            activity.getString(R.string.ulysses_fair_fight_header),
-                            activity.getString(R.string.ulysses_fair_fight_body)
-                        )
-                    } else {
-                        playVatsEnter(activity)
-                        showGameUlysses = true
-                    }
-                }
-                Spacer(modifier = Modifier.height(16.dp))
-                TextFallout(
-                    stringResource(R.string.pve_select_enemy_2),
-                    getTextColor(activity),
-                    getTextStrokeColor(activity),
-                    22.sp,
-                    Alignment.Center,
-                    Modifier,
-                    TextAlign.Center
-                )
-                Spacer(modifier = Modifier.height(16.dp))
-                OpponentItem(stringResource(R.string.pve_enemy_queen)) { playVatsEnter(activity); showGameQueen = true }
-                Spacer(modifier = Modifier.height(10.dp))
-                OpponentItem(stringResource(R.string.no_bark)) { playVatsEnter(activity); showGameNoBark = true }
-                Spacer(modifier = Modifier.height(10.dp))
-                OpponentItem(stringResource(R.string.johnson_nash)) { playVatsEnter(activity); showGameNash = true }
-                Spacer(modifier = Modifier.height(10.dp))
-                OpponentItem(stringResource(R.string.pve_enemy_38)) { playVatsEnter(activity); showGame38 = true }
-                Spacer(modifier = Modifier.height(10.dp))
-                OpponentItem(stringResource(R.string.pve_enemy_cheater)) { playVatsEnter(activity); showGameCheater = true }
-                Spacer(modifier = Modifier.height(16.dp))
-                TextFallout(
-                    stringResource(R.string.pve_select_enemy_3),
-                    getTextColor(activity),
-                    getTextStrokeColor(activity),
-                    22.sp,
-                    Alignment.Center,
-                    Modifier,
-                    TextAlign.Center
-                )
-                Spacer(modifier = Modifier.height(16.dp))
-                OpponentItem(stringResource(R.string.ringo)) { playVatsEnter(activity); showGameRingo = true }
-                Spacer(modifier = Modifier.height(10.dp))
-                OpponentItem(stringResource(R.string.yes_man)) { playVatsEnter(activity); showGameYesMan = true }
-                Spacer(modifier = Modifier.height(10.dp))
-                OpponentItem(stringResource(R.string.the_king)) { playVatsEnter(activity); showGameKing = true }
-                Spacer(modifier = Modifier.height(10.dp))
-                OpponentItem(stringResource(R.string.general_lee_oliver)) { playVatsEnter(activity); showGameOliver = true }
-                Spacer(modifier = Modifier.height(10.dp))
-                OpponentItem(stringResource(R.string.caesar)) { playVatsEnter(activity); showGameCaesar = true }
-                Spacer(modifier = Modifier.height(16.dp))
-            }
-        }
-        HorizontalDivider(color = getDividerColor(activity))
-
-        Row(
-            modifier = Modifier
-                .height(56.dp)
-                .padding(8.dp),
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            TextFallout(
-                stringResource(R.string.pve_use_custom_deck),
-                getTextColor(activity),
-                getTextStrokeColor(activity),
-                14.sp,
-                Alignment.CenterStart,
-                Modifier.fillMaxWidth(0.7f),
-                TextAlign.Start
-            )
-            CheckboxCustom(
-                activity,
-                { checkedCustomDeck },
-                {
-                    checkedCustomDeck = !checkedCustomDeck
-                    if (checkedCustomDeck) {
-                        playClickSound(activity)
-                    } else {
-                        playCloseSound(activity)
-                    }
-                    activity.save?.let {
-                        it.useCustomDeck = checkedCustomDeck
-                        saveOnGD(activity)
-                    }
-                },
-                { true }
-            )
-        }
-
-        HorizontalDivider(color = getDividerColor(activity))
-        val started = activity.save?.gamesStarted ?: 0
-        val finished = activity.save?.gamesFinished ?: 0
-        val won = activity.save?.wins ?: 0
-        val loss = finished - won
-        val state2 = rememberLazyListState()
-        LazyColumn(
-            Modifier
-                .fillMaxHeight(0.75f)
-                .fillMaxWidth()
-                .padding(16.dp)
-                .scrollbar(
-                    state2,
-                    knobColor = getKnobColor(activity), trackColor = getTrackColor(activity),
-                    horizontal = false,
-                ),
-            state = state2,
+                .fillMaxSize()
+                .background(getBackgroundColor(activity)),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            item {
-                TextFallout(
-                    stringResource(R.string.pve_stats),
-                    getTextColor(activity),
-                    getTextStrokeColor(activity),
-                    20.sp,
-                    Alignment.Center,
-                    Modifier,
-                    TextAlign.Center
-                )
-                Spacer(modifier = Modifier.height(16.dp))
-                @Composable
-                fun StatsItem(text: String) {
+            val state = rememberLazyListState()
+            LazyColumn(
+                Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight(0.5f)
+                    .scrollbar(
+                        state,
+                        knobColor = getKnobColor(activity), trackColor = getTrackColor(activity),
+                        horizontal = false,
+                    ),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally,
+                state = state
+            ) {
+                item {
+                    Spacer(modifier = Modifier.height(16.dp))
                     TextFallout(
-                        text,
+                        stringResource(R.string.pve_select_enemy),
                         getTextColor(activity),
                         getTextStrokeColor(activity),
-                        14.sp,
+                        22.sp,
                         Alignment.Center,
                         Modifier,
-                        TextAlign.Center,
+                        TextAlign.Center
                     )
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    @Composable
+                    fun OpponentItem(name: String, onClick: () -> Unit) {
+                        TextFallout(
+                            name,
+                            getTextColor(activity),
+                            getTextStrokeColor(activity),
+                            16.sp,
+                            Alignment.Center,
+                            Modifier
+                                .clickable { onClick() }
+                                .background(getTextBackgroundColor(activity))
+                                .padding(4.dp),
+                            TextAlign.Center
+                        )
+                    }
+
+                    OpponentItem(stringResource(R.string.pve_enemy_easy)) { playVatsEnter(activity); showGameEasy = true }
+                    Spacer(modifier = Modifier.height(10.dp))
+                    OpponentItem(stringResource(R.string.pve_enemy_medium)) { playVatsEnter(activity); showGameMedium = true }
+                    Spacer(modifier = Modifier.height(10.dp))
+                    OpponentItem(stringResource(R.string.pve_enemy_hard)) { playVatsEnter(activity); showGameHard = true }
+                    Spacer(modifier = Modifier.height(10.dp))
+                    OpponentItem(stringResource(R.string.pve_enemy_better)) { playVatsEnter(activity); showGameBetter = true }
+                    Spacer(modifier = Modifier.height(10.dp))
+                    OpponentItem(stringResource(R.string.pve_enemy_best)) {
+                        if (checkedCustomDeck) {
+                            showAlertDialog(
+                                activity.getString(R.string.ulysses_fair_fight_header),
+                                activity.getString(R.string.ulysses_fair_fight_body)
+                            )
+                        } else {
+                            playVatsEnter(activity)
+                            showGameUlysses = true
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(16.dp))
+                    TextFallout(
+                        stringResource(R.string.pve_select_enemy_2),
+                        getTextColor(activity),
+                        getTextStrokeColor(activity),
+                        22.sp,
+                        Alignment.Center,
+                        Modifier,
+                        TextAlign.Center
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+                    OpponentItem(stringResource(R.string.pve_enemy_queen)) { playVatsEnter(activity); showGameQueen = true }
+                    Spacer(modifier = Modifier.height(10.dp))
+                    OpponentItem(stringResource(R.string.no_bark)) { playVatsEnter(activity); showGameNoBark = true }
+                    Spacer(modifier = Modifier.height(10.dp))
+                    OpponentItem(stringResource(R.string.johnson_nash)) { playVatsEnter(activity); showGameNash = true }
+                    Spacer(modifier = Modifier.height(10.dp))
+                    OpponentItem(stringResource(R.string.pve_enemy_38)) { playVatsEnter(activity); showGame38 = true }
+                    Spacer(modifier = Modifier.height(10.dp))
+                    OpponentItem(stringResource(R.string.pve_enemy_cheater)) { playVatsEnter(activity); showGameCheater = true }
+                    Spacer(modifier = Modifier.height(16.dp))
+                    TextFallout(
+                        stringResource(R.string.pve_select_enemy_3),
+                        getTextColor(activity),
+                        getTextStrokeColor(activity),
+                        22.sp,
+                        Alignment.Center,
+                        Modifier,
+                        TextAlign.Center
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+                    OpponentItem(stringResource(R.string.ringo)) { playVatsEnter(activity); showGameRingo = true }
+                    Spacer(modifier = Modifier.height(10.dp))
+                    OpponentItem(stringResource(R.string.yes_man)) { playVatsEnter(activity); showGameYesMan = true }
+                    Spacer(modifier = Modifier.height(10.dp))
+                    OpponentItem(stringResource(R.string.the_king)) { playVatsEnter(activity); showGameKing = true }
+                    Spacer(modifier = Modifier.height(10.dp))
+                    OpponentItem(stringResource(R.string.general_lee_oliver)) { playVatsEnter(activity); showGameOliver = true }
+                    Spacer(modifier = Modifier.height(10.dp))
+                    OpponentItem(stringResource(R.string.caesar)) { playVatsEnter(activity); showGameCaesar = true }
+                    Spacer(modifier = Modifier.height(16.dp))
                 }
-                StatsItem(
-                    text = stringResource(
-                        R.string.pve_games_started,
-                        started
-                    )
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                StatsItem(
-                    text = stringResource(
-                        R.string.pve_games_finished,
-                        finished
-                    ),
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                StatsItem(
-                    text = stringResource(R.string.pve_games_won, won),
-                )
-                Spacer(modifier = Modifier.height(16.dp))
+            }
+            HorizontalDivider(color = getDividerColor(activity))
+
+            Row(
+                modifier = Modifier
+                    .height(56.dp)
+                    .padding(8.dp),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 TextFallout(
-                    stringResource(R.string.pve_percentiles),
+                    stringResource(R.string.pve_use_custom_deck),
                     getTextColor(activity),
                     getTextStrokeColor(activity),
-                    20.sp,
-                    Alignment.Center,
-                    Modifier,
-                    TextAlign.Center
+                    14.sp,
+                    Alignment.CenterStart,
+                    Modifier.fillMaxWidth(0.7f),
+                    TextAlign.Start
                 )
-                Spacer(modifier = Modifier.height(16.dp))
-                StatsItem(
-                    text = stringResource(
-                        R.string.pve_w_to_l,
-                        if (loss == 0) "-" else String.format(
-                            Locale.UK,
-                            "%.3f",
-                            won.toDouble() / loss
-                        )
-                    ),
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                StatsItem(
-                    text = stringResource(
-                        R.string.pve_w_to_finished,
-                        if (finished == 0) "-" else String.format(
-                            Locale.UK,
-                            "%.2f",
-                            (won.toDouble() / finished) * 100
-                        )
-                    ),
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                StatsItem(
-                    text = stringResource(
-                        R.string.pve_w_to_started,
-                        if (started == 0) "-" else String.format(
-                            Locale.UK,
-                            "%.2f",
-                            won.toDouble() / started * 100.0
-                        )
-                    ),
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                StatsItem(
-                    text = stringResource(
-                        R.string.pve_finished_to_started,
-                        if (started == 0) "-" else String.format(
-                            Locale.UK,
-                            "%.1f",
-                            finished.toDouble() / started * 100.0
-                        )
-                    ),
+                CheckboxCustom(
+                    activity,
+                    { checkedCustomDeck },
+                    {
+                        checkedCustomDeck = !checkedCustomDeck
+                        if (checkedCustomDeck) {
+                            playClickSound(activity)
+                        } else {
+                            playCloseSound(activity)
+                        }
+                        activity.save?.let {
+                            it.useCustomDeck = checkedCustomDeck
+                            saveOnGD(activity)
+                        }
+                    },
+                    { true }
                 )
             }
+
+            HorizontalDivider(color = getDividerColor(activity))
+            val started = activity.save?.gamesStarted ?: 0
+            val finished = activity.save?.gamesFinished ?: 0
+            val won = activity.save?.wins ?: 0
+            val loss = finished - won
+            val state2 = rememberLazyListState()
+            LazyColumn(
+                Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 16.dp, vertical = 12.dp)
+                    .scrollbar(
+                        state2,
+                        knobColor = getKnobColor(activity), trackColor = getTrackColor(activity),
+                        horizontal = false,
+                    ),
+                state = state2,
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                item {
+                    TextFallout(
+                        stringResource(R.string.pve_stats),
+                        getTextColor(activity),
+                        getTextStrokeColor(activity),
+                        20.sp,
+                        Alignment.Center,
+                        Modifier,
+                        TextAlign.Center
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+                    @Composable
+                    fun StatsItem(text: String) {
+                        TextFallout(
+                            text,
+                            getTextColor(activity),
+                            getTextStrokeColor(activity),
+                            14.sp,
+                            Alignment.Center,
+                            Modifier,
+                            TextAlign.Center,
+                        )
+                    }
+                    StatsItem(
+                        text = stringResource(
+                            R.string.pve_games_started,
+                            started
+                        )
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    StatsItem(
+                        text = stringResource(
+                            R.string.pve_games_finished,
+                            finished
+                        ),
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    StatsItem(
+                        text = stringResource(R.string.pve_games_won, won),
+                    )
+                    Spacer(modifier = Modifier.height(12.dp))
+                    TextFallout(
+                        stringResource(R.string.pve_percentiles),
+                        getTextColor(activity),
+                        getTextStrokeColor(activity),
+                        20.sp,
+                        Alignment.Center,
+                        Modifier,
+                        TextAlign.Center
+                    )
+                    Spacer(modifier = Modifier.height(12.dp))
+                    StatsItem(
+                        text = stringResource(
+                            R.string.pve_w_to_l,
+                            if (loss == 0) "-" else String.format(
+                                Locale.UK,
+                                "%.3f",
+                                won.toDouble() / loss
+                            )
+                        ),
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    StatsItem(
+                        text = stringResource(
+                            R.string.pve_w_to_finished,
+                            if (finished == 0) "-" else String.format(
+                                Locale.UK,
+                                "%.2f",
+                                (won.toDouble() / finished) * 100
+                            )
+                        ),
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    StatsItem(
+                        text = stringResource(
+                            R.string.pve_w_to_started,
+                            if (started == 0) "-" else String.format(
+                                Locale.UK,
+                                "%.2f",
+                                won.toDouble() / started * 100.0
+                            )
+                        ),
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    StatsItem(
+                        text = stringResource(
+                            R.string.pve_finished_to_started,
+                            if (started == 0) "-" else String.format(
+                                Locale.UK,
+                                "%.1f",
+                                finished.toDouble() / started * 100.0
+                            )
+                        ),
+                    )
+                }
+            }
         }
-        TextFallout(
-            stringResource(R.string.menu_back),
-            getTextColor(activity),
-            getTextStrokeColor(activity),
-            24.sp,
-            Alignment.Center,
-            modifier = Modifier
-                .clickableCancel(activity) { goBack() }
-                .background(getTextBackgroundColor(activity))
-                .padding(8.dp),
-            TextAlign.Center
-        )
     }
 }
 

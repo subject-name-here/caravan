@@ -6,7 +6,9 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -23,11 +25,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.toArgb
@@ -529,16 +533,12 @@ fun MenuItemOpen(
 ) {
 
     Scaffold(bottomBar = {
-        Box(Modifier.fillMaxWidth().background(getBackgroundColor(activity)).padding(horizontal = 8.dp)) {
-            TextFallout(
-                name,
-                getTextColor(activity),
-                getTextStrokeColor(activity),
-                24.sp,
-                Alignment.Center,
-                Modifier.align(Alignment.Center).padding(8.dp),
-                TextAlign.Center
-            )
+        Row(Modifier
+            .fillMaxWidth()
+            .height(48.dp)
+            .background(getBackgroundColor(activity))
+            .padding(start = 12.dp))
+        {
             TextFallout(
                 back,
                 getTextColor(activity),
@@ -546,7 +546,6 @@ fun MenuItemOpen(
                 24.sp,
                 Alignment.CenterStart,
                 Modifier
-                    .align(Alignment.CenterStart)
                     .background(getTextBackgroundColor(activity))
                     .clickableCancel(activity) {
                         goBack()
@@ -554,6 +553,36 @@ fun MenuItemOpen(
                     .padding(8.dp),
                 TextAlign.Start
             )
+            Box(
+                Modifier.fillMaxWidth()
+                    .background(getBackgroundColor(activity))
+                    .padding(start = 8.dp, end = 12.dp)
+                    .drawBehind {
+                        drawPath(
+                            Path().apply {
+                                moveTo(0f, size.height / 2)
+                                lineTo(size.width, size.height / 2)
+                                lineTo(size.width, 0f)
+                                lineTo(size.width, size.height)
+                            },
+                            color = getDividerColor(activity),
+                            style = Stroke(width = 8f),
+                        )
+                    }
+            ) {
+                TextFallout(
+                    name,
+                    getTextColor(activity),
+                    getTextStrokeColor(activity),
+                    24.sp,
+                    Alignment.Center,
+                    Modifier
+                        .align(Alignment.Center)
+                        .background(getBackgroundColor(activity))
+                        .padding(8.dp),
+                    TextAlign.Center
+                )
+            }
         }
     }) { innerPadding ->
         Box(Modifier.padding(innerPadding)) {
