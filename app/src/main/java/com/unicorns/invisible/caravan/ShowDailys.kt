@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.sp
 import com.unicorns.invisible.caravan.model.challenge.Challenge
 import com.unicorns.invisible.caravan.save.Save
 import com.unicorns.invisible.caravan.save.saveOnGD
+import com.unicorns.invisible.caravan.utils.MenuItemOpen
 import com.unicorns.invisible.caravan.utils.TextFallout
 import com.unicorns.invisible.caravan.utils.clickableCancel
 import com.unicorns.invisible.caravan.utils.clickableOk
@@ -48,18 +49,13 @@ fun ShowDailys(
     val mainState = rememberLazyListState()
     var updateKey by remember { mutableStateOf(false) }
     LaunchedEffect(updateKey) {}
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
-        modifier = Modifier
-            .fillMaxSize()
-            .background(getBackgroundColor(activity))
-            .padding(horizontal = 16.dp)
-    ) {
-        Spacer(Modifier.height(16.dp))
+
+    MenuItemOpen(activity, stringResource(R.string.missions), "<-", goBack) {
         LazyColumn(
             Modifier
-                .fillMaxWidth().fillMaxHeight(0.8f)
+                .fillMaxSize()
+                .background(getBackgroundColor(activity))
+                .padding(horizontal = 16.dp)
                 .scrollbar(
                     mainState,
                     horizontal = false,
@@ -70,16 +66,7 @@ fun ShowDailys(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             item {
-                TextFallout(
-                    "Daily missions!",
-                    getTextColor(activity),
-                    getTextStrokeColor(activity),
-                    32.sp,
-                    Alignment.Center,
-                    Modifier.fillMaxWidth(),
-                    TextAlign.Center
-                )
-
+                Spacer(Modifier.height(16.dp))
                 activity.save?.challenges?.forEach { challenge ->
                     ShowChallenge(activity, challenge, challenge.isCompleted()) {
                         updateKey = !updateKey
@@ -88,20 +75,6 @@ fun ShowDailys(
                 }
             }
         }
-        TextFallout(
-            stringResource(R.string.menu_back),
-            getTextColor(activity),
-            getTextStrokeColor(activity),
-            24.sp,
-            Alignment.Center,
-            Modifier
-                .background(getTextBackgroundColor(activity))
-                .clickableCancel(activity) {
-                    goBack()
-                }
-                .padding(8.dp),
-            TextAlign.Center
-        )
     }
 }
 

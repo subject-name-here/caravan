@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">Караван</string>
 
     <string name="ace_name">Туз</string>
@@ -48,7 +48,7 @@
 
     <string name="menu_back">Назад</string>
 
-    <string name="deck_select">Выбор колоды</string>
+    <string name="deck_select">Выбор стандартной колоды</string>
     <string name="deck_select_about">Получайте новые рубашки, играя против ИИ! (ALT рубашка открывается при сражении с нечестными игроками.)</string>
     <string name="deck_custom">Настроить сборную колоду</string>
     <string name="deck_custom_about">Выигрывайте карты для сборной колоды, сражаясь в быстрой игре:\n1 ALT карта при игре с нечестными игроками,\n3 карты против обычных соперников.\nШанс получения _новой_ карты, правда, не 100%; для сборной колоды шанс меньше.</string>
@@ -137,7 +137,7 @@
     <string name="tutorial_7">В полной колоде 54 карты.</string>
     <string name="tutorial_8_1">Смотри: у каждого игрока три каравана (левый, центральный, правый).\n</string>
     <string name="tutorial_9_1">В начале игры мы берем 8 карт в руку.\n</string>
-    <string name="tutorial_9_2">Нам нужно начать наши караваны, поместив одну младшую карту (туз или 2–10) на вершину каждого каравана.</string>
+    <string name="tutorial_9_2" tools:ignore="TypographyDashes">Нам нужно начать наши караваны, поместив одну младшую карту (туз или 2-10) на вершину каждого каравана.</string>
     <string name="tutorial_10">Чтобы сделать это, выбери карту в своей руке и нажми на коричневый прямоугольник с желтой обводкой.</string>
     <string name="tutorial_11">Начни свои караваны.</string>
     <string name="tutorial_12">Хорошо.</string>
@@ -189,7 +189,7 @@
     <string name="tutorial_8_2">Караваны в одной колонке соревнуются друг с другом.</string>
     <string name="tutorial_49_1">"Цель игры - продать два или три каравана по суммарной ценности больше, "</string>
     <string name="tutorial_49_2">чем соревнующийся караван.</string>
-    <string name="tutorial_50">Караван считается проданным, если его ценность лежит в промежутке 21–26.</string>
+    <string name="tutorial_50" tools:ignore="TypographyDashes">Караван считается проданным, если его ценность лежит в промежутке 21-26.</string>
     <string name="tutorial_51">Игра заканчивается, когда в каждой из пар соперничающих караванов один из караванов продан по строго большей ценности.</string>
     <string name="tutorial_52">Если два каравана проданы с одинаковой ценностью, игра продолжается, пока один из караванов не будет продан с большей ценностью (но не более 26).</string>
     <string name="tutorial_53">Вот и всё. Я не буду раскрывать все свои карты - исследуй игру в своем темпе.</string>
@@ -388,13 +388,13 @@
     <string name="french_revolution">Французская революция</string>
     <string name="put_it_all_on_black">Всё на черное!</string>
     <string name="put_it_all_on_red">Всё на красное!</string>
-    <string name="do_not_play_even_number_cards_2_4_6_8_10">Не играйте чётные карты (2, 4, 6, 8, 10). (Дебют не считается!)</string>
-    <string name="do_not_play_odd_number_cards_3_5_7_9">Не играйте нечётные карты (3, 5, 7, 9). (Дебют не считается!)</string>
-    <string name="do_not_play_jacks">Не играйте Валеты.</string>
-    <string name="do_not_play_kings">Не играйте Короли.</string>
-    <string name="do_not_play_hearts_or_diamonds">Не играйте Черви и Буби. (Дебют не считается!)</string>
-    <string name="do_not_play_clubs_or_spades">Не играйте Пики и Крести. (Дебют не считается!)</string>
-    <string name="claim_caps">Забрать крышки (50) </string>
+    <string name="do_not_play_even_number_cards_2_4_6_8_10">Выиграйте, не играя чётные карты (2, 4, 6, 8, 10). (Дебют не считается!)</string>
+    <string name="do_not_play_odd_number_cards_3_5_7_9">Выиграйте, не играя нечётные карты (3, 5, 7, 9). (Дебют не считается!)</string>
+    <string name="do_not_play_jacks">Выиграйте, не играя Валеты.</string>
+    <string name="do_not_play_kings">Выиграйте, не играя Короли.</string>
+    <string name="do_not_play_hearts_or_diamonds">Выиграйте, не играя Черви и Буби. (Дебют не считается!)</string>
+    <string name="do_not_play_clubs_or_spades">Выиграйте, не играя Пики и Крести. (Дебют не считается!)</string>
+    <string name="claim_caps">Забрать крышки (50)</string>
     <string name="claim_tickets">Забрать билеты</string>
 
     <string name="missions">Квесты!</string>
@@ -444,5 +444,7 @@
     <string name="you_re_just_another_mutant_that_needs_to_be_put_down">Ты очередной мутант, которого нужно поставить на место.</string>
     <string name="i_challenge_you_to_the_game_of_caravan">Я вызываю тебя на дуэль в Караван!</string>
     <string name="you_mutant_scum">Ах ты мутантское отродье! В вашем духе попробовать что-то такое. Это тебе, впрочем, не поможет, ничто тебе не поможет…</string>
+
+    <string name="select_the_chapter">Выберите главу</string>
 
 </resources>

@@ -901,13 +901,13 @@ fun BoxWithConstraintsScope.StylePicture(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) {
-                    val numberOfRounds = 20
+                    val numberOfRounds = 10
                     var cnt by rememberSaveable { mutableIntStateOf(0) }
                     if (cnt == numberOfRounds) {
                         LaunchedEffect(Unit) {
                             playFanfares(activity)
                             activity.save?.let {
-                                it.caps += 22229
+                                it.caps += 777
                                 saveOnGD(activity)
                             }
                             delay(25000L)

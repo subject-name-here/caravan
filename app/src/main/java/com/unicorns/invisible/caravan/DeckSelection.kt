@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.save.saveOnGD
+import com.unicorns.invisible.caravan.utils.MenuItemOpen
 import com.unicorns.invisible.caravan.utils.TextFallout
 import com.unicorns.invisible.caravan.utils.clickableCancel
 import com.unicorns.invisible.caravan.utils.clickableOk
@@ -87,26 +88,43 @@ fun DeckSelection(
         return
     }
 
-    Column(
-        Modifier
-            .fillMaxSize()
-            .background(getBackgroundColor(activity))) {
+    MenuItemOpen(activity, stringResource(R.string.menu_deck), "<-", goBack) {
         val state = rememberLazyListState()
         LazyColumn(
             modifier = Modifier
+                .fillMaxSize()
+                .background(getBackgroundColor(activity))
                 .scrollbar(
                     state,
                     knobColor = getKnobColor(activity),
                     trackColor = getTrackColor(activity),
                     horizontal = false
-                )
-                .fillMaxWidth()
-                .fillMaxHeight(0.55f),
+                ),
             state = state,
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
         ) {
             item {
+                Spacer(modifier = Modifier.height(20.dp))
+                TextFallout(
+                    stringResource(R.string.deck_custom),
+                    getTextColor(activity),
+                    getTextStrokeColor(activity),
+                    20.sp,
+                    Alignment.Center,
+                    Modifier
+                        .background(getTextBackgroundColor(activity))
+                        .clickableOk(activity) {
+                            setCustomDeck = true
+                        }
+                        .padding(8.dp),
+                    TextAlign.Center
+                )
+
+                Spacer(modifier = Modifier.height(20.dp))
+
+                HorizontalDivider(color = getDividerColor(activity))
+
                 Spacer(modifier = Modifier.height(12.dp))
                 TextFallout(
                     stringResource(R.string.deck_select),
@@ -118,8 +136,6 @@ fun DeckSelection(
                     TextAlign.Center
                 )
                 Spacer(modifier = Modifier.height(12.dp))
-
-                // TODO: horizontal gallery!!!
                 Row {
                     AsyncImage(
                         model = "file:///android_asset/caravan_cards_back/" + CardBack.STANDARD.getCardBackAsset(),
@@ -222,53 +238,25 @@ fun DeckSelection(
                         AsyncImage(
                             model = "file:///android_asset/caravan_cards_back/" + CardBack.DECK_13.getCardBackAsset(),
                             contentDescription = "",
-                            modifier = getModifier(CardBack.DECK_13, false).clip(RoundedCornerShape(6f))
+                            modifier = getModifier(CardBack.DECK_13, false).clip(
+                                RoundedCornerShape(
+                                    6f
+                                )
+                            )
                         )
                         Spacer(modifier = Modifier.width(12.dp))
                         AsyncImage(
                             model = "file:///android_asset/caravan_cards_back/" + CardBack.DECK_13.getCardBackAltAsset(),
                             contentDescription = "",
-                            modifier = getModifier(CardBack.DECK_13, true).clip(RoundedCornerShape(6f))
+                            modifier = getModifier(CardBack.DECK_13, true).clip(
+                                RoundedCornerShape(
+                                    6f
+                                )
+                            )
                         )
                     }
                 }
                 Spacer(modifier = Modifier.height(12.dp))
-
-                HorizontalDivider(color = getDividerColor(activity))
-                Spacer(modifier = Modifier.height(20.dp))
-                TextFallout(
-                    stringResource(R.string.deck_custom),
-                    getTextColor(activity),
-                    getTextStrokeColor(activity),
-                    20.sp,
-                    Alignment.Center,
-                    Modifier
-                        .background(getTextBackgroundColor(activity))
-                        .clickableOk(activity) {
-                            setCustomDeck = true
-                        }
-                        .padding(8.dp),
-                    TextAlign.Center
-                )
-
-                Spacer(modifier = Modifier.height(20.dp))
-                HorizontalDivider(color = getDividerColor(activity))
-                Spacer(modifier = Modifier.height(24.dp))
-                TextFallout(
-                    stringResource(R.string.menu_back),
-                    getTextColor(activity),
-                    getTextStrokeColor(activity),
-                    24.sp,
-                    Alignment.Center,
-                    Modifier
-                        .background(getTextBackgroundColor(activity))
-                        .clickableCancel(activity) {
-                            goBack()
-                        }
-                        .padding(8.dp),
-                    textAlign = TextAlign.Center
-                )
-                Spacer(modifier = Modifier.height(24.dp))
             }
         }
     }

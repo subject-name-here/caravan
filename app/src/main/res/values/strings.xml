@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="game_services_project_id" translatable="false">948191030462</string>
 
     <string name="app_name">Caravan</string>
@@ -51,7 +51,7 @@
 
     <string name="menu_back">Back to menu</string>
 
-    <string name="deck_select">Select the Deck</string>
+    <string name="deck_select">Select the Deck o\' 54</string>
     <string name="deck_select_about">Win new decks by defeating enemies! (ALT decks are opened by fighting cheesy opponents.)</string>
     <string name="deck_custom">Set Custom Deck</string>
     <string name="deck_custom_about">Win cards for custom deck by fighting opponents:\n1 ALT card when playing against cheesy enemies,\n3 cards when playing against usual opponents.\nThe chance of winning _new_ card, however, is not 100%; custom deck gives lower chance.</string>
@@ -124,7 +124,7 @@
     <string name="about_7">Classic Fallout font was taken from Sasabmeg. Go find their GitHub and give them a star.</string>
     <string name="about_8">"Madness deck created by two incredibly talented people: "</string>
 
-    <string name="rules">ORIGINAL RULES\nCaravan is played with two players building three opposing piles (or \"caravans\") of numbered cards. The goal is to outbid your opponent\'s caravan with the highest value of numbered cards without being too light (under 21) or overburdened (over 26).\n\nThe game begins with each player taking eight cards from their deck and placing either one numerical card or ace on each caravan. Players may not discard during this initial round.\n\nOnce both players have started their three caravans, each player may do ONE of the following on their turn:\n1. Play one card and draw a new card from his or her deck to their hand.\n2. Discard one card from their hand and draw a new card from his or her deck.\n3. Disband one of their three caravans by removing all cards from that pile.\n\nCaravans have a direction, either ascending or descending numerically, and a suit. The suit is determined with the first card placed on a caravan, the direction by the second. All subsequent cards must continue the numerical direction or match the suit of the previous card. Cards of the same numerical value cannot be played in sequence, regardless of suit. Face cards can be attached to numeric cards in any caravan and affects them in various ways.\n\nCARD VALUES\nJoker: Played against ace, 2\–10. Effects change based on whether it\'s an ace or a numbered card (see below). Multiple jokers may be played on the same card.\n\nAce: Value of 1. Jokers played on aces remove all other non–face cards of the ace\'s suit from the table. E.g. a joker played on an Ace of Spades removes all spades (except face cards and that card, specifically) from the table.\n\n2\–10: Listed value. Jokers played on these cards remove all other cards of this value from the table. E.g. a joker played on a 4 of Hearts removes all 4s (other than that card, specifically) from the table.\n\nJack: Played against ace, 2\–10. Removes that card, along with any face cards attached to it.\n\nQueen: Played against ace, 2\–10. Reverses the current direction of the hand and changes the current suit of the hand. Multiple queens may be played on the same card.\n\nKing: Played against ace, 2\–10. Adds the value of that card again. E.g. a king played on a 9 adds 9 to that hand. Multiple kings may be played on the same card for multiplicative effects. E.g. 4+ king = 8. 4 + 2 kings = 16.\n\nWINNING\nA player\'s caravan is considered sold when the value of its cards is over 20 and under 27. The other player may still outbid by increasing the value of their opposing pile while staying within the 21–26 range. When each of the three competing caravans has sold, the game is over. In the event that one of the three caravan values are tied between players, the game continues until all three caravans have sold. The player with two or more sales wins the pot.</string>
+    <string name="rules" tools:ignore="TypographyDashes">ORIGINAL RULES\nCaravan is played with two players building three opposing piles (or \"caravans\") of numbered cards. The goal is to outbid your opponent\'s caravan with the highest value of numbered cards without being too light (under 21) or overburdened (over 26).\n\nThe game begins with each player taking eight cards from their deck and placing either one numerical card or ace on each caravan. Players may not discard during this initial round.\n\nOnce both players have started their three caravans, each player may do ONE of the following on their turn:\n1. Play one card and draw a new card from his or her deck to their hand.\n2. Discard one card from their hand and draw a new card from his or her deck.\n3. Disband one of their three caravans by removing all cards from that pile.\n\nCaravans have a direction, either ascending or descending numerically, and a suit. The suit is determined with the first card placed on a caravan, the direction by the second. All subsequent cards must continue the numerical direction or match the suit of the previous card. Cards of the same numerical value cannot be played in sequence, regardless of suit. Face cards can be attached to numeric cards in any caravan and affects them in various ways.\n\nCARD VALUES\nJoker: Played against ace, 2-10. Effects change based on whether it\'s an ace or a numbered card (see below). Multiple jokers may be played on the same card.\n\nAce: Value of 1. Jokers played on aces remove all other non-face cards of the ace\'s suit from the table. E.g. a joker played on an Ace of Spades removes all spades (except face cards and that card, specifically) from the table.\n\n2-10: Listed value. Jokers played on these cards remove all other cards of this value from the table. E.g. a joker played on a 4 of Hearts removes all 4s (other than that card, specifically) from the table.\n\nJack: Played against ace, 2\-10. Removes that card, along with any face cards attached to it.\n\nQueen: Played against ace, 2\-10. Reverses the current direction of the hand and changes the current suit of the hand. Multiple queens may be played on the same card.\n\nKing: Played against ace, 2\-10. Adds the value of that card again. E.g. a king played on a 9 adds 9 to that hand. Multiple kings may be played on the same card for multiplicative effects. E.g. 4+ king = 8. 4 + 2 kings = 16.\n\nWINNING\nA player\'s caravan is considered sold when the value of its cards is over 20 and under 27. The other player may still outbid by increasing the value of their opposing pile while staying within the 21-26 range. When each of the three competing caravans has sold, the game is over. In the event that one of the three caravan values are tied between players, the game continues until all three caravans have sold. The player with two or more sales wins the pot.</string>
     <string name="kyle">Kyle says:</string>
     <string name="tutorial_1_1">Howdy! Fine hot day for a Sarsaparilla, ain\'t it?\n</string>
     <string name="tutorial_1_2">Days like this are the reason why I ain\'t leaving Mojave, not for anything.</string>
@@ -141,7 +141,7 @@
     <string name="tutorial_10">To place a card on top of a caravan, select it in your hand and then click the brown rectangle with yellow border.</string>
     <string name="tutorial_11">Now start your caravans.</string>
     <string name="tutorial_12">Good job.</string>
-    <string name="tutorial_13">You might ask: \'What if all 8 cards are, let\'s say, Jacks and Kings, and no aces or 2\–10?\'</string>
+    <string name="tutorial_13">You might ask: \'What if all 8 cards are, let\'s say, Jacks and Kings, and no aces or 2\-10?\'</string>
     <string name="tutorial_14">Well, if you play with someone else, you\'d have to reshuffle your deck.\nMe though, I never had that.</string>
     <string name="tutorial_15_1">Sometimes there is a rule that you can discard the card during the opening phase.\n</string>
     <string name="tutorial_15_2">If you ask me, it seems like a huge advantage, so we ain\'t.</string>
@@ -154,7 +154,7 @@
     <string name="tutorial_20_2">However, it is like travelling to Vegas through the north - may break the game, difficult and not worth it ;)</string>
     <string name="tutorial_21_1">"Nice. Have you noticed that a card was added in your hand? "</string>
     <string name="tutorial_21_2">There are always 5 cards in your hand, unless your deck is empty.</string>
-    <string name="tutorial_22">Now let\'s talk about how to build a caravan. You do it with aces or 2\–10 cards.</string>
+    <string name="tutorial_22">Now let\'s talk about how to build a caravan. You do it with aces or 2\-10 cards.</string>
     <string name="tutorial_23">Each of those cards has a value: 1 for ace, 2 for 2,… 10 for 10.</string>
     <string name="tutorial_24">However, you cannot just put any card. You can\'t put on top of a caravan the card of the same rank as the caravan\'s current top card.</string>
     <string name="tutorial_25">Also, you have to follow one of two rules:</string>
@@ -179,7 +179,7 @@
     <string name="tutorial_39">Queen reverses the current numerical direction of the caravan, and changes the suit of the caravan to that of the Queen.</string>
     <string name="tutorial_40">Finally, Joker. It is like Jack, but way more powerful.</string>
     <string name="tutorial_41">If you put Joker onto an ace of some suit, all other number cards from all caravans that share the same suit of the ace are removed.</string>
-    <string name="tutorial_42">If you put Joker onto a 2\–10 card, all other number cards of the same rank from all caravans are removed.</string>
+    <string name="tutorial_42">If you put Joker onto a 2\-10 card, all other number cards of the same rank from all caravans are removed.</string>
     <string name="tutorial_43">The card you have put Joker onto is safe for now. However, if any other Joker is played, that card can be removed.</string>
     <string name="tutorial_44">Hard, I know. But it is the hardest part - remembering what face cards do.</string>
     <string name="tutorial_45">Now get rid of all cards from your hand. Use face cards on my cards.</string>
@@ -189,7 +189,7 @@
     <string name="tutorial_8_2">Caravans in the same column - opposing - are competing with each other.</string>
     <string name="tutorial_49_1">"The game\'s target is to sell two or three of your caravans at a higher sum, or \"bid\", "</string>
     <string name="tutorial_49_2">than the opposing caravan. The bid is determined by the cards in the caravan.</string>
-    <string name="tutorial_50">A caravan is considered sold when its bid is within 21\–26 range; any bid that is higher or lower is not a sold caravan.</string>
+    <string name="tutorial_50">A caravan is considered sold when its bid is within 21\-26 range; any bid that is higher or lower is not a sold caravan.</string>
     <string name="tutorial_51">Usually, the game is over when in each of the opposing caravan pairs one of the caravans is sold at the higher bid.</string>
     <string name="tutorial_52">If two caravans are sold with the same bid, the game continues until one of the caravans has a higher bid, but no more than 26.</string>
     <string name="tutorial_53">That\'s it. I am not going to tell all my tricks, you should figure the game out yourself.</string>
@@ -380,12 +380,12 @@
     <string name="french_revolution">French Revolution</string>
     <string name="put_it_all_on_black">Put It All On Black!</string>
     <string name="put_it_all_on_red">Put It All On Red!</string>
-    <string name="do_not_play_even_number_cards_2_4_6_8_10">Do not play even number cards (2, 4, 6, 8, 10). (Init stage is not counted.)</string>
-    <string name="do_not_play_odd_number_cards_3_5_7_9">Do not play odd number cards (3, 5, 7, 9). (Init stage is not counted.)</string>
-    <string name="do_not_play_jacks">Do not play Jacks.</string>
-    <string name="do_not_play_kings">Do not play Kings.</string>
-    <string name="do_not_play_hearts_or_diamonds">Do not play Hearts or Diamonds. (Init stage is not counted.)</string>
-    <string name="do_not_play_clubs_or_spades">Do not play Clubs or Spades. (Init stage is not counted.)</string>
+    <string name="do_not_play_even_number_cards_2_4_6_8_10">Win a game without playing even number cards (2, 4, 6, 8, 10). (Init stage is not counted.)</string>
+    <string name="do_not_play_odd_number_cards_3_5_7_9">Win a game without playing odd number cards (3, 5, 7, 9). (Init stage is not counted.)</string>
+    <string name="do_not_play_jacks">Win a game without playing Jacks.</string>
+    <string name="do_not_play_kings">Win a game without playing Kings.</string>
+    <string name="do_not_play_hearts_or_diamonds">Win a game without playing Hearts or Diamonds. (Init stage is not counted.)</string>
+    <string name="do_not_play_clubs_or_spades">Win a game without playing Clubs or Spades. (Init stage is not counted.)</string>
     <string name="claim_caps">Claim 50 Caps</string>
     <string name="claim_tickets">Claim 1 Ticket</string>
 
