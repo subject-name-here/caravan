@@ -293,7 +293,6 @@ class MainActivity : SaveDataActivity() {
         var showPvP by rememberSaveable { mutableStateOf(false) }
         var showHouseBlitz by rememberSaveable { mutableStateOf(false) }
         var showHouseTower by rememberSaveable { mutableStateOf(false) }
-        var showHouseRoguelike by rememberSaveable { mutableStateOf(false) }
         var showWildWasteland by rememberSaveable { mutableStateOf(false) }
         var showStoryMode by rememberSaveable { mutableStateOf(false) }
         var showAbout by rememberSaveable { mutableStateOf(false) }
@@ -695,12 +694,6 @@ class MainActivity : SaveDataActivity() {
                         }
                     }
 
-                    showHouseRoguelike -> {
-                        // TODO
-                        showAlertDialog("TODO", "TODO")
-                    }
-
-
                     else -> {
                         LaunchedEffect(Unit) {
                             if (save?.updateSoldCards() == true) {
@@ -727,7 +720,6 @@ class MainActivity : SaveDataActivity() {
                                 { showDailys = true },
                                 { showStoryMode = true },
                                 { showWildWasteland = true },
-                                { showHouseRoguelike = true },
                             )
                         }
                     }
@@ -752,7 +744,6 @@ class MainActivity : SaveDataActivity() {
         showDailys: () -> Unit,
         showStory: () -> Unit,
         showWildWasteland: () -> Unit,
-        showRoguelike: () -> Unit,
     ) {
         Box(
             Modifier

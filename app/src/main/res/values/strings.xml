@@ -46,15 +46,18 @@
     <string name="menu_discord" translatable="false">Discord!</string>
     <string name="menu_settings">Settings</string>
     <string name="menu_story">Story</string>
-    <string name="menu_roguelike">Roguelike!</string>
     <string name="menu_wild_wastealnd">Wild Wasteland</string>
+    <string name="missions">Missions!</string>
+
+    <string name="none" translatable="false">[NONE]</string>
+    <string name="next_song">NXT SONG</string>
+    <string name="resume_radio">RESUME RADIO</string>
+    <string name="pause_radio">PAUSE RADIO</string>
 
     <string name="menu_back">Back to menu</string>
 
     <string name="deck_select">Select the Deck o\' 54</string>
-    <string name="deck_select_about">Win new decks by defeating enemies! (ALT decks are opened by fighting cheesy opponents.)</string>
     <string name="deck_custom">Set Custom Deck</string>
-    <string name="deck_custom_about">Win cards for custom deck by fighting opponents:\n1 ALT card when playing against cheesy enemies,\n3 cards when playing against usual opponents.\nThe chance of winning _new_ card, however, is not 100%; custom deck gives lower chance.</string>
 
     <string name="custom_deck_size">Deck size: %1$s\n(must be at least %2$s)</string>
     <string name="custom_deck_non_faces">Number of non-face cards: %1$s\n(must be at least %2$s)</string>
@@ -74,8 +77,20 @@
     <string name="pve_enemy_38">Securitron P373</string>
     <string name="pve_enemy_cheater">Courier Six</string>
 
+    <string name="benny">Benny</string>
+    <string name="mr_house">Mr. House</string>
+
+    <string name="sunny_smiles">Sunny Smiles</string>
+    <string name="ringo">Ringo</string>
+    <string name="cliff_briscoe">Cliff Briscoe</string>
+    <string name="yes_man">Yes Man</string>
+    <string name="ambassador_crocker">Ambassador Crocker</string>
+    <string name="the_king">The King</string>
+    <string name="general_lee_oliver">General Lee Oliver</string>
+    <string name="caesar">Caesar</string>
+    <string name="frank_horrigan">Frank Horrigan</string>
+
     <string name="no_one">no one</string>
-    <string name="questions" translatable="false">\???</string>
     <string name="priest">Madness Priestess</string>
     <string name="snuffles">Snuffles</string>
     <string name="final_boss">Supreme Leader</string>
@@ -227,7 +242,6 @@
 
     <string name="close">Close</string>
 
-    <string name="ulysses_predict">I predict your defeat.</string>
     <string name="ulysses_victory">The luck was on my side.</string>
     <string name="check_back_to_menu">Are you sure you want to quit?</string>
     <string name="check_back_to_menu_ulysses">Running away from your mistakes?</string>
@@ -241,12 +255,7 @@
     <string name="ambient">AMBient</string>
     <string name="sfx">SFX</string>
 
-    <string name="interface_type">Pip-Boy</string>
     <string name="intro_music">Same Radio Intro</string>
-    <string name="feels_like_i_am_losing">Feels like I am losing…</string>
-    <string name="i_predict_your_certain_doom_next_in_two_moves">I predict your certain doom next in two moves.</string>
-    <string name="recovering">[RECOVERING]</string>
-    <string name="ulysses_will_return">Ulysses will return.</string>
 
     <string name="intro_tip_1">Did you know that \"Caravan game\" is an acronym? It stands for \"Cards And Reclamation Approved by Vault-Tec And NCR\" game?\n\n(no, it\'s not)</string>
     <string name="intro_tip_2">Unlike chess, Queens are not so useful in Caravan. However, you can have fun by sabotaging enemy\'s caravan with them.</string>
@@ -269,7 +278,6 @@
     <string name="intro_tip_vault">Did you know that there are 122 vaults in the Fallout world? Only 17 of them were not experimenting on their inhabitants.</string>
     <string name="intro_tip_desert">Cazadors can easily tear down a deathclaw or two. Imagine what they can do to your puny fragile body.</string>
 
-
     <string name="tap_to_play">Tap to Play</string>
 
     <string name="caps_earned">\nCaps earned: %1$s.\n</string>
@@ -278,13 +286,8 @@
     <string name="you_have_bought_style">You have bought %1$s style!</string>
     <string name="transaction_failed">Transaction failed!</string>
     <string name="not_enough_caps">Not enough caps!</string>
-    <string name="card_prices">CARD PRICES!!!</string>
-    <string name="updates_every_midnight">(updates every midnight.)</string>
     <string name="cost_caps">" caps"</string>
     <string name="animation_length">Animation Length</string>
-    <string name="stack_market">Stack Market</string>
-    <string name="card_prices_update">Card prices update!</string>
-    <string name="some_cards_are_now_more_expensive">Some cards are now more expensive! Go check Stack Market.</string>
     <string name="themes">Styles</string>
     <string name="room_exists_already">Room exists already!!!</string>
     <string name="select">SELECT</string>
@@ -294,9 +297,6 @@
     <string name="failure_2">Failure!</string>
     <string name="no_room_to_join">No room to join! Create your own room!</string>
     <string name="failed_to_start_the_game">Failed to start the game!</string>
-    <string name="pip_boy_main_screen">Device #50724: Luck-o-Meter.</string>
-    <string name="heads">HEADS</string>
-    <string name="tails">TAILS</string>
 
     <string name="style_desert">Desert</string>
     <string name="style_pip_boy">Pip-Boy</string>
@@ -310,16 +310,10 @@
     <string name="style_vault_22">Vault 22</string>
     <string name="style_enclave">Enclave</string>
 
-    <string name="get_more_by_earning_cards_you_already_have">(Get more by earning cards you already have!)</string>
+    <string name="pip_boy_main_screen">Device #50724: Luck-o-Meter.</string>
+    <string name="heads">HEADS</string>
+    <string name="tails">TAILS</string>
 
-    <string name="q_pinging" translatable="false">Q-pinging</string>
-    <string name="q_pinging_warning">Warning: when you receive message about match, Q-pinging stops automatically.</string>
-    <string name="q_pinging_explanation">When Q-pinging is launched, server is checked for some other players, who are also Q-pinging. If someone else is found, you two are assigned a private multiplayer room to play.</string>
-    <string name="q_pinging_switch">Q-pinging switch</string>
-    <string name="i_ll_join">I\'ll join!</string>
-    <string name="nah_i_ll_pass">Nah, I\'ll pass.</string>
-    <string name="you_have_a_match">You have a match!</string>
-    <string name="q_pinging_message">You have been assigned room #%1$s. Hurry up to have the first move! Go to Multiplayer, enter given room number and press Join!</string>
     <string name="lucky_38_blitz">BLITZ</string>
     <string name="lucky_38_tower">TOWER</string>
     <string name="place_your_bets">Place your bets!\n(You have %1$s caps.)</string>
@@ -330,9 +324,6 @@
     <string name="you_have_earned_caps">\nYou have earned %1$s caps!</string>
     <string name="blitz">BLITZ!</string>
     <string name="tower">TOWER!</string>
-    <string name="roguelike">ROGUELIKE!</string>
-    <string name="benny">Benny</string>
-    <string name="mr_house">Mr. House</string>
     <string name="start">START!</string>
     <string name="not_enough_caps_warning">Not enough caps!</string>
     <string name="please_lower_your_bet_to_play">Please, lower your bet to play.</string>
@@ -342,9 +333,6 @@
     <string name="what_tired_of_losing">What, tired of losing?</string>
     <string name="blitz_rules">BLITZ Rules</string>
     <string name="blitz_rules_body">The game rules are the same, but now there is a timer (20 or 30 seconds) that ticks down to zero and never stops. Each your move adds +1 second to the timer; when timer reaches 0, you automatically lose.</string>
-
-    <string name="roguelike_rules">ROGUELIKE Rules</string>
-    <string name="roguelike_rules_body">Infinite enemies, custom decks. Coming (definitely not) soon.</string>
 
     <string name="play_cards_of_rank">Play %1$s cards of rank %2$s.</string>
 
@@ -389,8 +377,6 @@
     <string name="claim_caps">Claim 50 Caps</string>
     <string name="claim_tickets">Claim 1 Ticket</string>
 
-    <string name="missions">Missions!</string>
-
     <string name="deck_o_54_only">(Deck o\' 54 only!)</string>
     <string name="custom_deck_only">(Custom deck only!)</string>
     <string name="you_can_change_custom_deck_between_games">(You can change custom deck between games.)</string>
@@ -408,24 +394,18 @@
     <string name="currently_in_bank_caps">Currently in bank: %1$s caps</string>
     <string name="enemy">Enemy: %1$s</string>
     <string name="your_reward_caps">Your reward: %1$s caps</string>
-    <string name="sunny_smiles">Sunny Smiles</string>
-    <string name="ringo">Ringo</string>
-    <string name="cliff_briscoe">Cliff Briscoe</string>
-    <string name="yes_man">Yes Man</string>
-    <string name="ambassador_crocker">Ambassador Crocker</string>
-    <string name="the_king">The King</string>
-    <string name="general_lee_oliver">General Lee Oliver</string>
-    <string name="caesar">Caesar</string>
-    <string name="frank_horrigan">Frank Horrigan</string>
+
     <string name="skip_for_caps">Skip for %1$s caps</string>
     <string name="skipped">Skipped!</string>
     <string name="you_ve_paid_caps">You\'ve paid %1$s caps!</string>
     <string name="take_the_cash">Take the cash!</string>
     <string name="congratulations">Congratulations!</string>
     <string name="en_garde">En garde!</string>
+
+    <string name="finish">[FINISH]</string>
+
     <string name="you_re_not_a_hero_you_re_just_a_walking_corpse">You\'re not a hero. You\'re just a walking corpse.</string>
     <string name="now_playing_loyalty_to_your_people_neon_light_man">Now playing: Loyalty to Your People - Neon Light Man.</string>
-    <string name="finish">[FINISH]</string>
     <string name="frank_final_words">The work will go on. You didn\'t do nothing here, \'cept seal your own death warrants. Duty, (cough) honor… courage… Semper Fiiiii……</string>
     <string name="frank_welcome">You\'ve gotten a lot farther than you should have, but then you haven\'t met Frank Horrigan either. Your ride\'s over, mutie. Time to die.</string>
     <string name="frank_who">Frank who?</string>
@@ -436,12 +416,8 @@
     <string name="you_re_just_another_mutant_that_needs_to_be_put_down">You\'re just another mutant that needs to be put down.</string>
     <string name="i_challenge_you_to_the_game_of_caravan">I challenge you to the game of Caravan!</string>
     <string name="you_mutant_scum">You mutant scum! Just like you to try a trick like that. It won\'t help you though, nothing will…</string>
-    <string name="select_the_chapter">Select the chapter</string>
 
-    <string name="none" translatable="false">[NONE]</string>
-    <string name="next_song">NXT SONG</string>
-    <string name="resume_radio">RESUME RADIO</string>
-    <string name="pause_radio">PAUSE RADIO</string>
+    <string name="select_the_chapter">Select the chapter</string>
 
 
 </resources>
