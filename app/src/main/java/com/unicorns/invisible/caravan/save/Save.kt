@@ -32,7 +32,7 @@ import java.util.Date
 import java.util.Locale
 import kotlin.random.Random
 
-// TODO: maybe remove all functions??!
+
 @OptIn(ExperimentalSerializationApi::class)
 @Serializable
 class Save {

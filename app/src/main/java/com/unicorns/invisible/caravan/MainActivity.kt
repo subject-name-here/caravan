@@ -111,6 +111,11 @@ var userId = ""
 private var readyFlag = MutableLiveData(false)
 
 var isSoundEffectsReduced = false
+    set(value) {
+        field = value
+        isSoundEffectsReducedData.value = value
+    }
+private var isSoundEffectsReducedData = MutableLiveData(false)
 
 @Suppress("MoveLambdaOutsideParentheses")
 class MainActivity : SaveDataActivity() {
@@ -120,9 +125,6 @@ class MainActivity : SaveDataActivity() {
     var goBack: (() -> Unit)? = null
 
     var styleId: Style = Style.PIP_BOY
-
-    // TODO: remove it
-    var animationSpeed = MutableLiveData(AnimationSpeed.NORMAL)
 
     fun checkIfCustomDeckCanBeUsedInGame(playerCResources: CResources): Boolean {
         return playerCResources.deckSize >= MIN_DECK_SIZE && playerCResources.numOfNumbers >= MIN_NUM_OF_NUMBERS
@@ -210,7 +212,6 @@ class MainActivity : SaveDataActivity() {
             }
 
             styleId = Style.entries[save?.styleId ?: 1]
-            animationSpeed.value = save?.animationSpeed ?: AnimationSpeed.NORMAL
             val (textColor, backgroundColor, strokeColor) = getColors()
             val modifier = if (k == true) {
                 Modifier
@@ -506,6 +507,7 @@ class MainActivity : SaveDataActivity() {
         Scaffold(
             topBar = {
                 var isPaused by remember { mutableStateOf(false) }
+                val soundReduced by isSoundEffectsReducedData.observeAsState()
                 key(styleIdForTop) {
                     Row(
                         Modifier
@@ -516,7 +518,10 @@ class MainActivity : SaveDataActivity() {
                         horizontalArrangement = Arrangement.SpaceAround
                     ) {
                         TextFallout(
-                            if (isPaused) "NONE" else ">|",
+                            if (soundReduced != true && !isPaused)
+                                stringResource(R.string.next_song)
+                            else
+                                stringResource(R.string.none),
                             getMusicTextColor(this@MainActivity),
                             getMusicTextColor(this@MainActivity),
                             18.sp,
@@ -525,7 +530,7 @@ class MainActivity : SaveDataActivity() {
                                 .weight(1f)
                                 .wrapContentWidth()
                                 .clickableOk(this@MainActivity) {
-                                    if (!isPaused && !isSoundEffectsReduced) {
+                                    if (!isPaused && soundReduced != true) {
                                         nextSong(this@MainActivity)
                                     }
                                 }
@@ -535,7 +540,11 @@ class MainActivity : SaveDataActivity() {
                         )
 
                         TextFallout(
-                            if (isPaused) "|>" else "||",
+                            when {
+                                soundReduced == true -> stringResource(R.string.none)
+                                isPaused -> stringResource(R.string.resume_radio)
+                                else -> stringResource(R.string.pause_radio)
+                            },
                             getMusicTextColor(this@MainActivity),
                             getMusicTextColor(this@MainActivity),
                             18.sp,
@@ -544,7 +553,7 @@ class MainActivity : SaveDataActivity() {
                                 .weight(1f)
                                 .wrapContentWidth()
                                 .clickableOk(this@MainActivity) {
-                                    if (isSoundEffectsReduced) {
+                                    if (soundReduced == true) {
                                         return@clickableOk
                                     }
                                     if (isPaused) {
@@ -662,10 +671,9 @@ class MainActivity : SaveDataActivity() {
                     showSettings -> {
                         ShowTrueSettings(
                             this@MainActivity,
-                            { animationSpeed.value!! },
+                            { save?.animationSpeed ?: AnimationSpeed.NORMAL },
                             {
-                                animationSpeed.value = it
-                                save!!.animationSpeed = it
+                                save?.animationSpeed = it
                                 saveOnGD(this@MainActivity)
                             }
                         ) { showSettings = false }

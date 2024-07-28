@@ -245,7 +245,6 @@ class Game(
 
     private fun processBomb(bombOwner: CardWithModifier) {
         (playerCaravans + enemyCaravans).forEach {
-            // TODO: it should work differently
             val isFBomb = bombOwner.modifiersCopy().lastOrNull()?.back == CardBack.UNPLAYABLE
             val isThisCaravan = bombOwner in it.cards
             val isMuggyOnCaravan = it.cards.any { card -> card.isProtectedByMuggy }

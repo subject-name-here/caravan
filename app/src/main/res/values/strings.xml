@@ -438,5 +438,10 @@
     <string name="you_mutant_scum">You mutant scum! Just like you to try a trick like that. It won\'t help you though, nothing will…</string>
     <string name="select_the_chapter">Select the chapter</string>
 
+    <string name="none" translatable="false">[NONE]</string>
+    <string name="next_song">NXT SONG</string>
+    <string name="resume_radio">RESUME RADIO</string>
+    <string name="pause_radio">PAUSE RADIO</string>
+
 
 </resources>

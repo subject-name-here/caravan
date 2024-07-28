@@ -195,7 +195,7 @@ fun ShowGamePvP(
     updateCaravans: () -> Unit,
     goBack: () -> Unit,
 ) {
-    val speed = activity.animationSpeed.value ?: AnimationSpeed.NORMAL
+    val speed = activity.save?.animationSpeed ?: AnimationSpeed.NORMAL
     var selectedCard by remember { mutableStateOf<Int?>(null) }
 
     var selectedCaravan by remember { mutableIntStateOf(-1) }

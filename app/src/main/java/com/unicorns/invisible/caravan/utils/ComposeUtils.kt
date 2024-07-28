@@ -313,34 +313,6 @@ fun SliderValueRangeCustom(
 }
 
 @Composable
-fun SwitchCustom(
-    activity: MainActivity,
-    checked: () -> Boolean,
-    onCheckedChange: (Boolean) -> Unit
-) {
-    Switch(
-        checked = checked(), onCheckedChange = onCheckedChange, colors = SwitchColors(
-            checkedThumbColor = getSwitchThumbColor(activity),
-            checkedTrackColor = getSwitchTrackColor(activity),
-            checkedBorderColor = Color.Transparent,
-            checkedIconColor = Color.Transparent,
-            uncheckedThumbColor = getSwitchThumbColor(activity),
-            uncheckedTrackColor = getSwitchTrackColor(activity),
-            uncheckedBorderColor = Color.Transparent,
-            uncheckedIconColor = Color.Transparent,
-            disabledCheckedThumbColor = colorResource(R.color.red),
-            disabledCheckedTrackColor = colorResource(R.color.white),
-            disabledCheckedBorderColor = Color.Transparent,
-            disabledCheckedIconColor = Color.Transparent,
-            disabledUncheckedThumbColor = colorResource(R.color.red),
-            disabledUncheckedTrackColor = colorResource(R.color.white),
-            disabledUncheckedBorderColor = Color.Transparent,
-            disabledUncheckedIconColor = Color.Transparent,
-        )
-    )
-}
-
-@Composable
 fun SwitchCustomUsualBackground(
     activity: MainActivity,
     checked: () -> Boolean,

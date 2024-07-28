@@ -447,4 +447,8 @@
 
     <string name="select_the_chapter">Выберите главу</string>
 
+    <string name="next_song">СЛЕД ПЕСНЯ</string>
+    <string name="resume_radio">РАДИО ПУСК</string>
+    <string name="pause_radio">РАДИО СТОП</string>
+
 </resources>

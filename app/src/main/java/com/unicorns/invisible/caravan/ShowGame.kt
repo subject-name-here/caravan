@@ -106,7 +106,7 @@ fun ShowGame(activity: MainActivity, game: Game, isBlitz: Boolean = false, onMov
     var enemyHandKey by rememberSaveable { mutableIntStateOf(0) }
 
     val animationSpeed by rememberSaveable { mutableStateOf(
-        if (isBlitz) AnimationSpeed.NONE else activity.animationSpeed.value ?: AnimationSpeed.NORMAL
+        if (isBlitz) AnimationSpeed.NONE else activity.save?.animationSpeed ?: AnimationSpeed.NORMAL
     ) }
 
     fun onCardClicked(index: Int) {

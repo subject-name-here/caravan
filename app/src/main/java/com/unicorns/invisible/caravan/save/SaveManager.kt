@@ -61,7 +61,6 @@ fun saveOnGD(activity: MainActivity) {
 suspend fun loadFromGD(activity: MainActivity) {
     val data = activity.fetchDataFromDrive()?.toString(StandardCharsets.UTF_8)
     if (data != null && data != "") {
-        // TODO: try/catch?
         saveGlobal = json.decodeFromString<Save>(data)
     }
 }
