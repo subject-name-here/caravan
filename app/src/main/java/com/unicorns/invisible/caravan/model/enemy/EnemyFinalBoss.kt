@@ -109,6 +109,7 @@ class EnemyFinalBoss : Enemy() {
             playAlarm()
             game.enemyCResources.addNewDeck(createCustomDeck(++update))
             when (update) {
+                // TODO: translate this
                 1 -> sayThing("I am satisfied. I have seen enough. Now you can quit.")
                 2 -> sayThing("Don't you see how futile it is?")
                 3 -> sayThing("Give up.")
@@ -124,6 +125,7 @@ class EnemyFinalBoss : Enemy() {
         }
 
         if (game.playerCResources.deckSize == 0 && update == 0) {
+            // TODO: translate this too
             sayThing("No-no-no, I am not done with you yet. Here, have some cards.")
             CardBack.classicDecks.forEach { back ->
                 game.playerCResources.addNewDeck(CustomDeck(back, false))

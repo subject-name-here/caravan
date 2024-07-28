@@ -63,6 +63,7 @@
     <string name="custom_deck_non_faces">Number of non-face cards: %1$s\n(must be at least %2$s)</string>
 
     <string name="pve_select_enemy">Select the Opponent</string>
+    <string name="pve_select_enemy_1">Fair Opponents</string>
     <string name="pve_select_enemy_2">Cheesy Ones</string>
     <string name="pve_select_enemy_3">Tower Enemies</string>
     <string name="pve_enemy_easy">Ultra-Luxe visitor</string>
@@ -105,27 +106,31 @@
     <string name="pve_w_to_finished">Win rate (W/Finished): %1$s \%%</string>
     <string name="pve_w_to_started">Win-No-Quit rate (W/Started): %1$s \%%</string>
     <string name="pve_finished_to_started">No-Quit rate (Finished/Started): %1$s \%%</string>
+
     <string name="custom_deck_is_too_small">Custom deck is too small!</string>
     <string name="custom_deck_is_too_small_message">Deck has less than 30 cards or less than 15 numbered cards!</string>
+
     <string name="you_win">You win!</string>
     <string name="result">Result</string>
     <string name="result_ulysses">You\'ve got lucky this time, Courier.</string>
     <string name="you_lose">You lose!</string>
+
+    <string name="benny_custom_deck_header">Babe, I ain\'t good enough already.</string>
+    <string name="benny_custom_deck_body">Now how about you leave that custom deck in your deep pocket?</string>
+    <string name="what_tired_of_losing">What, tired of losing?</string>
+
     <string name="you_have_unlocked_deck">\nYou have unlocked the %1$s!</string>
     <string name="you_have_unlocked_deck_alt">\nYou have unlocked the ALT of %1$s!</string>
-    <string name="you_must_unlock_deck">\nTo have a chance of winning cards from the %1$s, you must defeat the enemy w/o custom deck!</string>
     <string name="your_prize_cards_from">\nYour reward:\n</string>
 
     <string name="new_card">New: %1$s.\n</string>
     <string name="old_card">Old: %1$s.\n</string>
-
     <string name="new_card_alt">New: %1$s (ALT).\n</string>
     <string name="old_card_alt">Old: %1$s (ALT).\n</string>
 
     <string name="discard_card">DISCARD CARD</string>
     <string name="drop_caravan">DISBAND CARAVAN #%1$s</string>
     <string name="back_to_menu">Back to Menu</string>
-    <string name="back_to_main_menu">Back to Main Menu</string>
 
     <string name="about_1">Caravan is the card game from video game \"Fallout: New Vegas\", created by Obsidian and Bethesda.</string>
     <string name="about_2">This port is created by subject_name_here (it\'s a username, not a bug!), who is in no way affiliated with the creators of the original game. Additional thanks for help with design go to Kat.</string>
@@ -215,11 +220,8 @@
     <string name="incorrect_room_number">Incorrect room number!</string>
     <string name="your_room_is">Your Room is %1$s. Awaiting the Opponent.....</string>
     <string name="private_room">Private room</string>
-    <string name="find">Join any Room!!!</string>
-    <string name="pool">Requesting room…</string>
     <string name="join">Join Room</string>
     <string name="room_number">Room</string>
-    <string name="no_stats_here">No stats here: the game\'s for fun, not for numbers!</string>
     <string name="pvp_piece">
         To create room:\n
         - enter room number (if one number fails, try another),\n
@@ -249,6 +251,7 @@
     <string name="get_cards_from">Get cards from:\n</string>
     <string name="ulysses_fair_fight_header">It\'s an honest fight.</string>
     <string name="ulysses_fair_fight_body">You cannot use custom deck against this enemy.</string>
+
     <string name="sound">Sound!</string>
     <string name="save">Save</string>
     <string name="radio">RADio</string>
@@ -328,9 +331,6 @@
     <string name="not_enough_caps_warning">Not enough caps!</string>
     <string name="please_lower_your_bet_to_play">Please, lower your bet to play.</string>
     <string name="select_your_opponent">Select your opponent!</string>
-    <string name="benny_custom_deck_header">Babe, I ain\'t good enough already.</string>
-    <string name="benny_custom_deck_body">Now how about you leave that custom deck in your deep pocket?</string>
-    <string name="what_tired_of_losing">What, tired of losing?</string>
     <string name="blitz_rules">BLITZ Rules</string>
     <string name="blitz_rules_body">The game rules are the same, but now there is a timer (20 or 30 seconds) that ticks down to zero and never stops. Each your move adds +1 second to the timer; when timer reaches 0, you automatically lose.</string>
 
@@ -417,7 +417,54 @@
     <string name="i_challenge_you_to_the_game_of_caravan">I challenge you to the game of Caravan!</string>
     <string name="you_mutant_scum">You mutant scum! Just like you to try a trick like that. It won\'t help you though, nothing will…</string>
 
-    <string name="select_the_chapter">Select the chapter</string>
 
+    <string name="select_the_chapter">Select the chapter</string>
+    <string name="chapter_1_name">Chapter 1: I Can\'t Begin to Tell You.</string>
+    <string name="chapter_2_name">Chapter 2: Patrolling the Mojave…</string>
+    <string name="chapter_3_name">Chapter 3: Into Each Life Some Rain Must Fall.</string>
+    <string name="chapter_4_name">Chapter 4: Can\'t Play Dead.</string>
+    <string name="chapter_5_name">Chapter 5: The Wall.</string>
+    <string name="chapter_6_name">Chapter 6: Paradise Lost.</string>
+    <string name="chapter_7_name">Chapter 7: Jailhouse Rock.</string>
+    <string name="chapter_8_name">Chapter 8: Blues For You.</string>
+    <string name="chapter_9_name">Chapter 9: Duel of the Fates.</string>
+    <string name="chapter_9a_name">Chapter 9A: The Man Who Sold The World.</string>
+    <string name="chapter_the_end_slides">The End Slides.</string>
+
+    <string name="chapter_1_text_1">It is a story of the Prospector. A child of the Mojave Wasteland, hardened by the harsh life in the desert and teased by the luxuries of the neon lights of New Vegas, doors of which are closed to ones of his kind.</string>
+    <string name="chapter_1_q_1">Ooh, poor guy! What did he do?</string>
+    <string name="chapter_1_text_2">To change his life for good, the Prospector had become a vulture for the rotting parts of the Old World, seeking to salvage, repair and sell off to whoever might find them a better use.</string>
+    <string name="chapter_1_q_2">Huh, where did he go, I wonder?</string>
+    <string name="chapter_1_text_3">Naturally, the first place that captivated him was the Sierra Madre casino, of which so many legends reached his ears.</string>
+    <string name="chapter_1_q_3">Sierra Madre? I thought the place is off limits.</string>
+    <string name="chapter_1_text_4">Since the legendary Courier Six cleared the Sierra Madre villa, countless gangs and punks took everything of value to a primitive mind: water, food, weapons, clothing, medical supplies. Sierra Madre chips and bottle caps were gone, yet the technology remained untouched.</string>
+    <string name="chapter_1_q_4">So what did the Prospector find?</string>
+    <string name="chapter_1_text_5">One of the working RobCo terminals, so promising to be informative, was protected by a hologuard, who was not aggressive and offered the Prospector a challenge in the friendly game of Caravan, wagering the information he preserves.</string>
+    <string name="chapter_1_on_win">Defeated, the hologuard shrugged his shoulders and vanished, leaving behind brand new Sierra Madre Deck!</string>
+    <string name="chapter_1_on_lose">Trying to find anything useful in Sierra Madre, the Prospector gets lost in Cloud and die. His body is never found.</string>
+
+    <string name="ch_2_t_1">After hologuard disappeared, The Prospector was able to proceed to the terminal.</string>
+    <string name="ch2_q1">So, what was there?</string>
+    <string name="ch2_t2">On it, lots of secret documents regarding constructed vaults were located. But one of them caught the Prospector\'s attention the most — a document regarding a place called \"Oasis\", located in Alaska. A small valley surrounded by rocks, equipped with water purifiers, GECKs, anti-missile systems and lots of robotic staff to take care of the area.</string>
+    <string name="ch2_q2">Huh, sounds good. What did the Prospector do?</string>
+    <string name="ch2_t3">The Prospector had realized that the safety the secret treasure of Alaska can provide would be the best experience in his entire life. And so, the Prospector set his mind to the north…</string>
+    <string name="ch2_q3">Finally, adventure begins!</string>
+    <string name="ch2_t4">And yet, on his way through Mojave he was stopped by the border patrol of the NCR.</string>
+    <string name="ch2_q4">Oh.</string>
+    <string name="ch2_t5">The guard didn\'t allow the Prospector to leave, yet the Prospector was not planning on giving up. He attempted to sneak past the guards…</string>
+    <string name="ch2_win">…almost caught, the Prospector sneaked by the guards, venturing into the vast unknown of the North.</string>
+    <string name="ch2_lose">…caught by guards, the Prospector was thrown into prison, where he died of some nasty disease.</string>
+
+    <string name="c3_t1">The road north was eerily silent, which made the Prospector feel odd. He wondered why, and soon he received his answer. A massive radioactive rain storm was approaching…</string>
+    <string name="c3_q1">Oh no! Run, Prospector, run!</string>
+    <string name="c3_q2">Finally, safe heaven!</string>
+    <string name="c3_q3">Ermm, maybe he shouldn\'t go inside…</string>
+    <string name="c3_q4">Oh no. No-no-no-no-no-no!</string>
+    <string name="c3_t2">As the Prospector was nearly lost to the chaotic will of the approaching disaster, an entry to a vault showed on the horizon.</string>
+    <string name="c3_t3">Upon the entry, the Prospector discovered that the gates were open, and the power was off, only emergency lights were shimmering. He found it odd, yet proceeded anyways.</string>
+    <string name="c3_t4">Deep within the halls of the vault, he found multiple dismembered and chewed on corpses, maimed beyond recognition. He decided to not venture further, to not find the cause of death of these people…</string>
+    <string name="c3_t5">…however the cause found him on its own. A swarm of Cazadors appeared!</string>
+    <string name="c3_win">The Prospector managed to fend off most of the Cazadores, trapping them within the halls of the vault. Yet, he was stung a lot. The poison started kicking in, and consciousness was fading.\n\nIt seems that the Prospector has found his end, dying infamously in the vault…</string>
+    <string name="c3_lose">The Prospector failed to overcome the danger. His body, full of poison, fell on the floor, unable to move. Soon the Prospector became food for the insects.</string>
 
 </resources>

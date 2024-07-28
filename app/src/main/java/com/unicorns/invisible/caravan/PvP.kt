@@ -377,7 +377,6 @@ fun ShowPvP(
                         TextFallout(
                             text = when (isRoomCreated) {
                                 0 -> stringResource(R.string.create_room)
-                                1 -> stringResource(R.string.pool)
                                 2 -> stringResource(R.string.failure)
                                 4 -> stringResource(R.string.incorrect_room_number)
                                 else -> stringResource(R.string.your_room_is, isRoomCreated)

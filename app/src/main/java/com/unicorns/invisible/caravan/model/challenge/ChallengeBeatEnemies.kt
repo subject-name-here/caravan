@@ -4,18 +4,55 @@ import com.unicorns.invisible.caravan.MainActivity
 import com.unicorns.invisible.caravan.R
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.enemy.Enemy
+import com.unicorns.invisible.caravan.model.enemy.EnemyBenny
+import com.unicorns.invisible.caravan.model.enemy.EnemyBestest
+import com.unicorns.invisible.caravan.model.enemy.EnemyBetter
+import com.unicorns.invisible.caravan.model.enemy.EnemyEasy
+import com.unicorns.invisible.caravan.model.enemy.EnemyHard
+import com.unicorns.invisible.caravan.model.enemy.EnemyHouse
+import com.unicorns.invisible.caravan.model.enemy.EnemyMedium
+import com.unicorns.invisible.caravan.model.enemy.EnemyNash
+import com.unicorns.invisible.caravan.model.enemy.EnemyNoBark
+import com.unicorns.invisible.caravan.model.enemy.EnemySecuritron38
+import com.unicorns.invisible.caravan.model.enemy.EnemySix
+import com.unicorns.invisible.caravan.model.enemy.EnemySwank
 import kotlinx.serialization.Serializable
 
 
 @Serializable
-class ChallengeBeatEnemies(private val enemies: List<Enemy>, private val code: Int) : Challenge {
+class ChallengeBeatEnemies(private val code: Int) : Challenge {
+    private val enemies: List<Enemy>
+        get() = when (code) {
+            1 -> {
+                listOf(EnemyBestest)
+            }
+            2 -> {
+                listOf(EnemySix)
+            }
+            3 -> {
+                listOf(EnemyHouse)
+            }
+            4 -> {
+                listOf(EnemyBetter, EnemySecuritron38)
+            }
+            5 -> {
+                listOf(EnemyNoBark, EnemyMedium)
+            }
+            6 -> {
+                listOf(EnemyNash, EnemyEasy)
+            }
+            7 -> {
+                listOf(EnemyHard, EnemyBenny, EnemySwank)
+            }
+            else -> listOf()
+        }
+
     private val isBeaten = Array(enemies.size) { false }
     override fun processMove(move: Challenge.Move, game: Game) {}
 
     override fun processGameResult(game: Game) {
         if (game.isGameOver == 1) {
-            // TODO: what if enemy is not object but class?!!
-            val index = enemies.indexOf(game.enemy)
+            val index = enemies.indexOfFirst { it.javaClass == game.enemy.javaClass }
             if (index != -1) {
                 isBeaten[index] = true
             }

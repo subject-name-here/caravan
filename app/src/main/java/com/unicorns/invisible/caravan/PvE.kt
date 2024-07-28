@@ -307,7 +307,7 @@ fun ShowPvE(
                 item {
                     Spacer(modifier = Modifier.height(16.dp))
                     TextFallout(
-                        stringResource(R.string.pve_select_enemy),
+                        stringResource(R.string.pve_select_enemy_1),
                         getTextColor(activity),
                         getTextStrokeColor(activity),
                         22.sp,
@@ -578,6 +578,7 @@ fun StartGame(
                 isSoundEffectsReduced = true
                 startFinalBossTheme(activity)
                 it.playerCaravans.forEach { caravan -> caravan.canBeDisbanded = false }
+                // TODO: translate this
                 enemy.sayThing("You cannot disband caravans. I will do that for you.")
             }
             activity.save?.let { save ->

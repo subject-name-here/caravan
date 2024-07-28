@@ -54,6 +54,7 @@
     <string name="custom_deck_non_faces">Количество младших карт: %1$s\n(нужно хотя бы %2$s)</string>
 
     <string name="pve_select_enemy">Выбор соперника</string>
+    <string name="pve_select_enemy_1">Честные соперники</string>
     <string name="pve_select_enemy_2">Нечестные игроки</string>
     <string name="pve_select_enemy_3">Соперники из Башни</string>
     <string name="pve_enemy_easy">Посетитель Ультра-Люкс</string>
@@ -91,19 +92,16 @@
     <string name="you_lose">Поражение!</string>
     <string name="you_have_unlocked_deck">\nРазблокирована %1$s!</string>
     <string name="you_have_unlocked_deck_alt">\nРазблокирована ALT %1$s!</string>
-    <string name="you_must_unlock_deck">\nВам недоступны карты из ###%1$s###! Нужно сначала победить этого соперника без сборной колоды!</string>
     <string name="your_prize_cards_from">\nВаш приз:\n</string>
 
     <string name="new_card">Новая: %1$s.\n</string>
     <string name="old_card">Старая: %1$s.\n</string>
-
     <string name="new_card_alt">Новая: %1$s (ALT).\n</string>
     <string name="old_card_alt">Старая: %1$s (ALT).\n</string>
 
     <string name="discard_card">СБРОСИТЬ КАРТУ</string>
     <string name="drop_caravan">СБРОСИТЬ КАРАВАН №%1$s</string>
     <string name="back_to_menu">Назад</string>
-    <string name="back_to_main_menu">В главное меню</string>
 
     <string name="about_1">Караван - карточная игра из компьютерной игры \"Fallout: New Vegas\", созданной Obsidian и Bethesda.</string>
     <string name="about_2">Этот порт создан subject_name_here (это такой ник, это не баг!), который никак не связан с создателями оригинала. Также спасибо Kat за помощь с дизайном.</string>
@@ -196,11 +194,8 @@
     <string name="incorrect_room_number">Некорректный Номер!</string>
     <string name="your_room_is">Ваш Номер - %1$s. Ожидаем соперника.....</string>
     <string name="private_room">Приватный номер</string>
-    <string name="find">Найти любой Номер!!!</string>
-    <string name="pool">Ищем Номер…</string>
     <string name="join">Войти в Номер</string>
     <string name="room_number">Номер</string>
-    <string name="no_stats_here">Никакой статистики: игра для веселья, а не для циферок!</string>
     <string name="pvp_piece">
         Чтобы создать комнату:\n
         - введите в поле \"Номер\" число,\n
@@ -415,10 +410,58 @@
     <string name="i_challenge_you_to_the_game_of_caravan">Я вызываю тебя на дуэль в Караван!</string>
     <string name="you_mutant_scum">Ах ты мутантское отродье! В вашем духе попробовать что-то такое. Это тебе, впрочем, не поможет, ничто тебе не поможет…</string>
 
-    <string name="select_the_chapter">Выберите главу</string>
-
     <string name="next_song">СЛЕД ПЕСНЯ</string>
     <string name="resume_radio">РАДИО ПУСК</string>
     <string name="pause_radio">РАДИО СТОП</string>
+
+    <string name="select_the_chapter">Выберите главу</string>
+    <string name="chapter_1_name">Глава 1: Ветер странствий.</string>
+    <string name="chapter_2_name">Глава 2: Новый крестовый поход.</string>
+    <string name="chapter_3_name">Глава 3: Мёртвая зона.</string>
+    <string name="chapter_4_name">Глава 4: Дыханье тьмы.</string>
+    <string name="chapter_5_name">Глава 5: Безумие.</string>
+    <string name="chapter_6_name">Глава 6: Потерянный рай.</string>
+    <string name="chapter_7_name">Глава 7: Темная Башня.</string>
+    <string name="chapter_8_name">Глава 8: Палач.</string>
+    <string name="chapter_9_name">Глава 9: Битва.</string>
+    <string name="chapter_9a_name">Глава 9A: Я свободен!</string>
+    <string name="chapter_the_end_slides">Реквием.</string>
+
+    <string name="chapter_1_text_1">Это - история Старателя. Дитя пустоши Мохаве, он был закалён тяжелой жизнью в пустыне. Но его дразнили неоновые огни Нью-Вегаса, двери которого были закрыты для таких, как он.</string>
+    <string name="chapter_1_q_1">О, бедняга! Чем он тогда занимался?</string>
+    <string name="chapter_1_text_2">Чтобы изменить жизнь к лучшему, Старатель стал падальщиком, охотящимся за гниющими осколками Старого Мира. Он добывал, чинил, продавал тем, кто мог найти хламу лучшее применение.</string>
+    <string name="chapter_1_q_2">Интересно, куда он пошёл?</string>
+    <string name="chapter_1_text_3">Место, которое всегда влекло его, - казино Сьерра-Мадре, легенды о котором ходили по пустоши.</string>
+    <string name="chapter_1_q_3">Сьерра-Мадре? Я думал, туда не добраться.</string>
+    <string name="chapter_1_text_4">Когда Курьер зачистил Виллу Сьерра-Мадре, бандиты и рейдеры взяли то, что представляло ценность для них: вода, еда, оружие, одежда, медицинские припасы. Фишки Сьерра-Мадре исчезли, но технологии остались нетронутыми.</string>
+    <string name="chapter_1_q_4">Так что же Старатель нашёл?</string>
+    <string name="chapter_1_text_5">Один из рабочих терминалов, обещающий быть полезным, был защищен голограммой-охранником. Этот охранник не был агрессивен и предложил Старателю игру в Караван, ставя на кон информацию в терминале.</string>
+    <string name="chapter_1_on_win">Побежденный охранник пожал плечами и исчез, оставив позади абсолютно новую колоду карт казино Сьерра-Мадре!</string>
+    <string name="chapter_1_on_lose">Пытаясь найти что-то полезное в Сьерра-Мадре, Старатель затерялся в Облаке и умер. Его тело так и не нашли.</string>
+
+    <string name="ch_2_t_1">Когда охранник исчез, Старатель проследовал к терминалу.</string>
+    <string name="ch2_q1">И что там было?</string>
+    <string name="ch2_t2">В терминале хранилось множество документов о сооружении различных убежищ. Один из них заинтересовал Старателя особенно — документ о проекте \"Оазис\" на Аляске. Небольшая долина, окруженная скалами, набитая доверху водоочистителями, ГЭККами, ПВО и разного рода роботами.</string>
+    <string name="ch2_q2">Что ж, звучит хорошо. Что сделал Старатель?</string>
+    <string name="ch2_t3">Старатель осознал, что безопасность, которую предоставляет Оазис, может быть лучшим, что было в его жизни. Вот так, Старатель отправился на север…</string>
+    <string name="ch2_q3">Наконец, приключение начинается!</string>
+    <string name="ch2_t4">Однако, на пути через Мохаве он был остановлен пограничным патрулем НКР.</string>
+    <string name="ch2_q4">Мда уж.</string>
+    <string name="ch2_t5">Офицер не разрешил Старателю уйти, но Старатель не планировал сдаваться. Он решил пройти мимо охранников…</string>
+    <string name="ch2_win">…почти пойманный, Старатель прокрался мимо охранников и отправился в неизведанные дали севера.</string>
+    <string name="ch2_lose">…пойманный охранниками, Старателя бросили в тюрьму, где он умер от неизвестной болезни.</string>
+
+    <string name="c3_t1">Дорога на север была удивительно тихой. Старатель чувствовал, что что-то не так. Вскоре он понял: массивный радиоактивный дождевой шторм приближался…</string>
+    <string name="c3_q1">О нет! Беги, Старатель, беги!</string>
+    <string name="c3_q2">Наконец, спасение!</string>
+    <string name="c3_q3">Эммм, может, нам не стоит идти внутрь…</string>
+    <string name="c3_q4">о нет! нет-нет-нет-нет-нет-нет-нет-нет</string>
+    <string name="c3_t2">Когда уже Старатель почти оказался во власти бедствия, вход в убежище показался на горизонте.</string>
+    <string name="c3_t3">На входе Старатель обнаружил ворота открытыми, и электричества не было, не считая мерцающего экстренного источника энергии. Ему показалось это странным, но он пошел дальше.</string>
+    <string name="c3_t4">Глубоко в коридорах убежища он нашел множество пожёванных и обезображенных кем-то тел, изуродованных до неузнавания. Старатель решил не идти дальше, чтобы не найти причину смерти этих людей…</string>
+    <string name="c3_t5">…однако, причина нашла его сама. В коридорах появился рой Касадоров!</string>
+    <string name="c3_win">Старатель смог отбиться от большинства касадоров, загнав их в ловушку в коридорах убежища. Однако, он был очень сильно ранен. Яд начал действовать, и он терял сознание.\n\nПохоже, это конец истории Старателя - безвестная смерть в убежище…</string>
+    <string name="c3_lose">Старатель не смог отбиться от касадоров. Его тело, полное яда, упало на пол. Вскоре Старатель стал едой для насекомых.</string>
+
 
 </resources>

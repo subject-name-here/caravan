@@ -174,7 +174,6 @@ data object EnemyStory9A : Enemy() {
             }
         }
 
-
         EnemyCaesar.makeMove(game)
     }
 }

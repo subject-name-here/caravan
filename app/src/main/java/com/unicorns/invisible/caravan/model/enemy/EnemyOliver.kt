@@ -37,47 +37,6 @@ data object EnemyOliver : Enemy() {
     override fun getRewardBack() = null
 
     override fun makeMove(game: Game) {
-        val hand = game.enemyCResources.hand
-
-        if (game.isInitStage()) {
-            val card = hand.filter { !it.isFace() }.maxBy { it.rank.value }
-            val caravan = game.enemyCaravans.filter { it.isEmpty() }.random()
-            caravan.putCardOnTop(game.enemyCResources.removeFromHand(hand.indexOf(card)))
-            return
-        }
-
-        fun check(p0: Int, e0: Int): Float {
-            return when {
-                p0 in (21..26) && (p0 > e0 || e0 > 26) -> 2f
-                p0 > 11 && (e0 != 26 || e0 == p0) -> 0.5f
-                else -> 0f
-            }
-        }
-
-        val score = game.playerCaravans.indices.map {
-            check(
-                game.playerCaravans[it].getValue(),
-                game.enemyCaravans[it].getValue()
-            )
-        }
-        if (2f !in score) {
-            if (StrategyRush.move(game)) {
-                return
-            }
-        } else if (score.sum() > 2f) {
-            if (StrategyJoker.move(game)) {
-                game.jokerPlayedSound()
-                return
-            }
-            if (StrategyDestructive.move(game)) {
-                return
-            }
-        }
-
-        if (StrategyTime.move(game)) {
-            return
-        }
-
-        EnemyHard.makeMove(game)
+        EnemyBetter.makeMove(game)
     }
 }

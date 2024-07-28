@@ -79,6 +79,7 @@ fun ShowWildWasteland(
             },
             title = {
                 TextFallout(
+                    // TODO: translate this
                     "Supreme Leader says:",
                     getDialogTextColor(activity),
                     getDialogTextColor(activity),

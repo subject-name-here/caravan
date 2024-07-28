@@ -128,32 +128,7 @@ class Save {
         val rank = Rank.entries.random(rand)
         challenges.add(ChallengePlayCard(rank))
 
-        val code = (1..7).random(rand)
-        val enemies = when (code) {
-            1 -> {
-                listOf(EnemyBestest)
-            }
-            2 -> {
-                listOf(EnemySix)
-            }
-            3 -> {
-                listOf(EnemyHouse)
-            }
-            4 -> {
-                listOf(EnemyBetter, EnemySecuritron38)
-            }
-            5 -> {
-                listOf(EnemyNoBark, EnemyMedium)
-            }
-            6 -> {
-                listOf(EnemyNash, EnemyEasy)
-            }
-            7 -> {
-                listOf(EnemyHard, EnemyBenny, EnemySwank)
-            }
-            else -> listOf()
-        }
-        challenges.add(ChallengeBeatEnemies(enemies, code))
+        challenges.add(ChallengeBeatEnemies((1..7).random(rand)))
 
         val challenge = when (val code2 = (1..8).random(rand)) {
             8 -> ChallengeWinByDiscard()

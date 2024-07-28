@@ -36,12 +36,14 @@ class EnemyFinalBossStory(@Transient private var update: Int = 0) : Enemy() {
 
         if (game.enemyCResources.deckSize == 0) {
             playAlarm()
+            // TODO: rework update thing
             ++update
             if (update < 5) {
                 game.enemyCResources.addNewDeck(CustomDeck(CardBack.UNPLAYABLE, false))
                 game.enemyCResources.shuffleDeck()
             }
             when (update) {
+                // TODO: translate this!
                 1 -> sayThing("My resources are infinite. Yours - are not.")
                 2 -> sayThing("The whole China is against you. Don't you see how futile it is?")
                 3 -> sayThing("Resisting is illogical. You are fighting against the brighter future for humanity.")
