@@ -535,7 +535,6 @@ fun ShowStoryChapter2(
     }
 }
 
-// TODO: translate everything here!!!!
 @Composable
 fun ShowStoryChapter3(
     activity: MainActivity,
@@ -652,7 +651,7 @@ fun ShowStoryChapter4(
     advanceChapter: () -> Unit,
     goBack: () -> Unit,
 ) {
-    var text by rememberSaveable { mutableStateOf("Aarrghhhhhhhh… Uuuuuu… Mmmmmphhhhhhhh…") }
+    var text by rememberSaveable { mutableStateOf(activity.getString(R.string.c4_t1)) }
     var lineNumber by rememberSaveable { mutableIntStateOf(0) }
     var isGame by rememberSaveable { mutableStateOf(false) }
     var gameResult by rememberSaveable { mutableIntStateOf(0) }
@@ -680,10 +679,10 @@ fun ShowStoryChapter4(
             confirmButton = {
                 TextClassic(
                     when (messageNumber) {
-                        1 -> "yeah......"
-                        2 -> "Yeah..."
-                        3 -> "Yeah."
-                        else -> "Yeah!"
+                        1 -> stringResource(R.string.ch4_r1)
+                        2 -> stringResource(R.string.ch4_r2)
+                        3 -> stringResource(R.string.ch4_r3)
+                        else -> stringResource(R.string.ch4_r4)
                     },
                     Color(activity.getColor(R.color.colorTextBack)),
                     Color(activity.getColor(R.color.colorTextBack)),
@@ -697,7 +696,7 @@ fun ShowStoryChapter4(
             },
             title = {
                 TextClassic(
-                    "You feel the heartbeat...",
+                    stringResource(R.string.ch4_mh),
                     Color(activity.getColor(R.color.colorText)),
                     Color(activity.getColor(R.color.colorText)),
                     24.sp, Alignment.CenterStart, Modifier,
@@ -707,10 +706,10 @@ fun ShowStoryChapter4(
             text = {
                 TextClassic(
                     when (messageNumber) {
-                        1 -> "Can't be the end, can it?"
-                        2 -> "You are too strong to perish like this."
-                        3 -> "Now get up and fight. Fight!"
-                        else -> "You are not dying here today!"
+                        1 -> stringResource(R.string.ch4_m1)
+                        2 -> stringResource(R.string.ch4_m2)
+                        3 -> stringResource(R.string.ch4_m3)
+                        else -> stringResource(R.string.ch4_m4)
                     },
                     Color(activity.getColor(R.color.colorText)),
                     Color(activity.getColor(R.color.colorText)),
@@ -788,35 +787,30 @@ fun ShowStoryChapter4(
 
                 when (gameResult) {
                     1 -> {
-                        text = "The Prospector’s body had not succumbed to the poison. As his soul " +
-                                "wrestled the angel of death and reigned victorious, he earnt himself yet " +
-                                "another day to live."
+                        text = stringResource(R.string.ch4_w1)
                         lineNumber = -1
                     }
                     -1 -> {
                         LaunchedEffect(Unit) { playTowerFailed(activity) }
-                        text = "The Prospector’s body had succumbed to the poison. He is just another dead body in the cursed vault."
+                        text = stringResource(R.string.ch4_l1)
                         lineNumber = -3
                     }
                     else -> {}
                 }
 
                 when (lineNumber) {
-                    0 -> DialogLine(activity, "Someone's coming, Prospector.") {
+                    0 -> DialogLine(activity, stringResource(R.string.ch4_q1)) {
                         lineNumber = 1
-                        text = "(grim reaper approaches)"
+                        text = activity.getString(R.string.ch4_t2)
                     }
-                    -1 -> DialogLine(activity, "...") {
+                    -1 -> DialogLine(activity, stringResource(R.string.ch4_q2)) {
                         lineNumber = -2
                         gameResult = 0
-                        text = "Upon awakening, the Prospector remembered what happened, and broke " +
-                                "the door that leads to the deeper sections of the vault, making sure the " +
-                                "swarm would take no new lives. The Prospector made use of the remaining " +
-                                "available rooms, using them for recovery."
+                        text = activity.getString(R.string.ch4_t3)
                     }
-                    -2 -> DialogLine(activity, "You made me worry.") {
+                    -2 -> DialogLine(activity, stringResource(R.string.ch4_q3)) {
                         lineNumber = -3
-                        text = "After a few days, the rain ended, and the Prospector could continue his way..."
+                        text = activity.getString(R.string.ch4_t4)
                     }
                     -3 -> DialogLine(activity, activity.getString(R.string.finish)) { goBack() }
                     else -> {
@@ -828,8 +822,6 @@ fun ShowStoryChapter4(
     }
 }
 
-
-
 @Composable
 fun ShowStoryChapter5(
     activity: MainActivity,
@@ -837,7 +829,7 @@ fun ShowStoryChapter5(
     advanceChapter: () -> Unit,
     goBack: () -> Unit,
 ) {
-    var text by rememberSaveable { mutableStateOf("Weeks, maybe months passed… The Prospector reached the northern territories of the former Canada, where it borders with Alaska.") }
+    var text by rememberSaveable { mutableStateOf(activity.getString(R.string.c5_t1)) }
     var lineNumber by rememberSaveable { mutableIntStateOf(0) }
     var isGame by rememberSaveable { mutableStateOf(false) }
     var gameResult by rememberSaveable { mutableIntStateOf(0) }
@@ -901,48 +893,45 @@ fun ShowStoryChapter5(
 
                 when (gameResult) {
                     1, -1 -> {
-                        text = "The Madness Priestess was joyous. She liked the match a lot, and awarded the Prospector with a deck that once belonged to one of her flock."
+                        text = stringResource(R.string.c5_wl)
                         lineNumber = -1
                     }
                     else -> {}
                 }
 
                 when (lineNumber) {
-                    0 -> DialogLine(activity, "Well, he's not far from Oasis.") {
+                    0 -> DialogLine(activity, stringResource(R.string.c5_q1)) {
                         lineNumber = 1
-                        text =
-                            "To his surprise, a bizarre scene unfolded before him: a gigantic wall of trash, tens of meters high. He attempted to traverse around them, but to no avail – the wall had no end."
+                        text = activity.getString(R.string.c5_t2)
                     }
-                    1 -> DialogLine(activity, "Wall of trash? Who put it here?") {
+                    1 -> DialogLine(activity, stringResource(R.string.c5_q2)) {
                         lineNumber = 15
-                        text = "The Prospector was discovered by a woman who was fixing the wall with the trash she brought from afar."
+                        text = activity.getString(R.string.c5_t3)
                     }
                     15, 2 -> {
                         if (lineNumber == 15) {
-                            DialogLine(activity, "A woman? Who is she?") {
+                            DialogLine(activity, stringResource(R.string.c5_q3)) {
                                 lineNumber = 2
-                                text = "She is the priestess of Church of Madness, whatever that means. " +
-                                        "The Prospector didn't feel the need to get more information. " +
-                                        "He has seen enough freaks to understand that sometimes it's better not to know."
+                                text = activity.getString(R.string.c5_t4)
                             }
                         }
-                        DialogLine(activity, "Why would she reinforce the wall?") {
+                        DialogLine(activity, stringResource(R.string.c5_q4)) {
                             lineNumber = 3
-                            text = "She explained that the wall is meant to keep the people safe from what lays beyond, elaborating on which she refused."
+                            text = activity.getString(R.string.c5_t5)
                         }
                     }
-                    3 -> DialogLine(activity, "So, how did Prospector proceed?") {
+                    3 -> DialogLine(activity, stringResource(R.string.c5_q5)) {
                         lineNumber = 4
-                        text = "He didn't. Turned back and returned home."
+                        text = activity.getString(R.string.c5_t6)
                     }
-                    4 -> DialogLine(activity, "Very funny.") {
+                    4 -> DialogLine(activity, stringResource(R.string.c5_q6)) {
                         lineNumber = 5
-                        text = "Okay, she agreed to assist the Prospector and lead him through the secret passage, be he to entertain her in the friendly game of Caravan…"
+                        text = activity.getString(R.string.c5_t7)
                     }
-                    -1 -> DialogLine(activity, "Yeah, but the Prospector arrived not to play Caravan...") {
+                    -1 -> DialogLine(activity, stringResource(R.string.c5_q7)) {
                         lineNumber = -2
                         gameResult = 0
-                        text = "The Prospector was lead beyond the wall. Yet what he saw there astonished him, and not in a good way…"
+                        text = activity.getString(R.string.c5_t8)
                     }
                     -2 -> DialogLine(activity, activity.getString(R.string.finish)) { goBack() }
                     else -> {
@@ -954,6 +943,7 @@ fun ShowStoryChapter5(
     }
 }
 
+// TODO: translate everything here!!!!
 @Composable
 fun ShowStoryChapter6(
     activity: MainActivity,
@@ -1395,7 +1385,7 @@ fun ShowStoryChapter8(
                             lineNumber = 3
                             text = "Indeed. Imagine how many innocent people would die in bombings."
                         }
-                        DialogLine(activity, "[Boomer Friend] So, no more war? No more raiders, no Legion-NCR battles. Actually, sounds good.") {
+                        DialogLine(activity, "So, no more war? No more raiders, no Legion-NCR battles. Actually, sounds good.") {
                             lineNumber = 3
                             text = "What? You cannot be serious. No more raiders, " +
                                     "but no more good factions, like Followers of the Apocalypse. Besides, " +

@@ -467,4 +467,40 @@
     <string name="c3_win">The Prospector managed to fend off most of the Cazadores, trapping them within the halls of the vault. Yet, he was stung a lot. The poison started kicking in, and consciousness was fading.\n\nIt seems that the Prospector has found his end, dying infamously in the vault…</string>
     <string name="c3_lose">The Prospector failed to overcome the danger. His body, full of poison, fell on the floor, unable to move. Soon the Prospector became food for the insects.</string>
 
+    <string name="c4_t1">Aarrghhhhhhhh… Uuuuuu… Mmmmmphhhhhhhh…</string>
+    <string name="ch4_r1">yeah......</string>
+    <string name="ch4_r2" tools:ignore="TypographyEllipsis">Yeah...</string>
+    <string name="ch4_r3">Yeah.</string>
+    <string name="ch4_r4">Yeah!</string>
+    <string name="ch4_mh">You feel the heartbeat…</string>
+    <string name="ch4_m1">Can\'t be the end, can it?</string>
+    <string name="ch4_m2">You are too strong to perish like this.</string>
+    <string name="ch4_m3">Now get up and fight. Fight!</string>
+    <string name="ch4_m4">You are not dying here today!</string>
+    <string name="ch4_w1">The Prospector’s body had not succumbed to the poison. As his soul wrestled the angel of death and reigned victorious, he earnt himself yet another day to live.</string>
+    <string name="ch4_l1">The Prospector\'s body had succumbed to the poison. He is just another dead body in the cursed vault.</string>
+    <string name="ch4_q1">Someone\'s coming, Prospector.</string>
+    <string name="ch4_t2">(grim reaper approaches)</string>
+    <string name="ch4_q2" tools:ignore="TypographyEllipsis">...</string>
+    <string name="ch4_t3">Upon awakening, the Prospector remembered what happened, and broke the door that leads to the deeper sections of the vault, making sure the swarm would take no new lives. The Prospector made use of the remaining available rooms, using them for recovery.</string>
+    <string name="ch4_q3">You made me worry.</string>
+    <string name="ch4_t4">After a few days, the rain ended, and the Prospector could continue his way…</string>
+
+    <string name="c5_t1">Weeks, maybe months passed… The Prospector reached the northern territories of the former Canada, where it borders with Alaska.</string>
+    <string name="c5_wl">The Madness Priestess was joyous. She liked the match a lot, and awarded the Prospector with a deck that once belonged to one of her flock.</string>
+    <string name="c5_q1">Well, he\'s not far from Oasis.</string>
+    <string name="c5_t2">To his surprise, a bizarre scene unfolded before him: a gigantic wall of trash, tens of meters high. He attempted to traverse around them, but to no avail – the wall had no end.</string>
+    <string name="c5_q2">Wall of trash? Who put it here?</string>
+    <string name="c5_t3">The Prospector was discovered by a woman who was fixing the wall with the trash she brought from afar.</string>
+    <string name="c5_q3">A woman? Who is she?</string>
+    <string name="c5_t4">She is the priestess of Church of Madness, whatever that means. The Prospector didn\'t feel the need to get more information. He has seen enough freaks to understand that sometimes it\'s better not to know.</string>
+    <string name="c5_q4">Why would she reinforce the wall?</string>
+    <string name="c5_t5">She explained that the wall is meant to keep the people safe from what lays beyond, elaborating on which she refused.</string>
+    <string name="c5_q5">So, how did Prospector proceed?</string>
+    <string name="c5_t6">He didn\'t. Turned back and returned home.</string>
+    <string name="c5_q6">Very funny.</string>
+    <string name="c5_t7">Okay, she agreed to assist the Prospector and lead him through the secret passage, be he to entertain her in the friendly game of Caravan…</string>
+    <string name="c5_q7">Yeah, but the Prospector is here not to play Caravan…</string>
+    <string name="c5_t8">The Prospector was lead beyond the wall. Yet what he saw there astonished him, and not in a good way…</string>
+
 </resources>
