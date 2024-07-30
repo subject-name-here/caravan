@@ -503,4 +503,58 @@
     <string name="c5_q7">Yeah, but the Prospector is here not to play Caravan…</string>
     <string name="c5_t8">The Prospector was lead beyond the wall. Yet what he saw there astonished him, and not in a good way…</string>
 
+    <string name="ch6_r1" tools:ignore="TypographyEllipsis">...</string>
+    <string name="ch6_r2" tools:ignore="TypographyEllipsis">...</string>
+    <string name="ch6_r3">Hell 2 U!</string>
+    <string name="ch6_mh">Chinese soldier says out loud:</string>
+    <string name="ch6_m1">Put your hands in the air! Drop your weapons! Do not move!</string>
+    <string name="ch6_m2">Last warning! Drop whatever you have on your hands, no other moves are allowed!</string>
+    <string name="ch6_m3">That\'s it! You\'re going down!</string>
+    <string name="c6_t1">Ships. Lots and lots of ships were docked to the shore base which was the Prospector’s destination. The steam ships were unloading lots and lots of boxes.</string>
+    <string name="ch6_give_up">Since the Prospector didn\'t resist, he was arrested and put in one of the ships. Little did his captors know it was the plan all along…</string>
+    <string name="ch_6_lose">Since the Prospector resisted, he was killed in place.</string>
+    <string name="ch6_win">The Prospector did it. He defeated everyone. Then he heard a whistle. Nuclear bomb was coming his way. Then - hot breath of the air, then… nothing.</string>
+    <string name="ch6_q1">Wait, Chinese?</string>
+    <string name="ch6_t2">Yes. The Chinese. And lots of them. Most ghoulified, but plenty of them pure. They have turned the Oasis into their base of operations on the North American continent.</string>
+    <string name="ch6_q2">What was in the boxes?</string>
+    <string name="ch6_t3">Most of them had the Caravan card decks, some of them artificially aged. The Prospector understood everything: of course, how could the food and such unnecessary and quick to decay things as cards could be found in the wastes, if they were not dropped out by the Chinese?</string>
+    <string name="ch6_q3">[INT 6/8] But why flooding America with food and stuff?</string>
+    <string name="ch6_t4">Pfft, that\'s obvious. I am not even gonna explain it to you, that\'s how obvious it is.</string>
+    <string name="ch6_q4">What did the Prospector do? Has he killed everyone and saved the world?</string>
+    <string name="ch6_t5">Not quite. The Prospector had thought it was too late to go back, and so he decided to wait for the dark and sneak onto one of the returning cargo ships.</string>
+    <string name="ch6_q5">[Sneak 69/70] Yay, ninja time!</string>
+    <string name="ch6_t6">Unfortunately, the Prospector was noticed by one of the guards, who has alerted all the soldiers around.</string>
+    <string name="ch6_q6">And then he defeated everyone?</string>
+    <string name="ch6_t7">See for yourself.</string>
+
+    <string name="ch7_t1">Turns out China was barely damaged during the Great War. Or maybe it was, but the cities were rebuilt. Either way, the pre-war civilization did not only remain here, but thrived.</string>
+    <string name="ch7_win">As they talked during the game, the Prospector learnt more about his cellmate.</string>
+    <string name="ch7_lose">Cellmate, disappointed in the Prospector, decided not to open up. Eventually, they both perished in the prison.</string>
+    <string name="ch7_q1">What about the Prospector?</string>
+    <string name="ch7_t2">The guards lead the Prospector to one of the city prisons, where he was interrogated. Initially, they believed that he was one of the spies from the many \"savage tribes\" that inhabited the fallen America, but once they were proven wrong, their interest in the Prospector died.</string>
+    <string name="ch7_q2">So, did they let him go?</string>
+    <string name="ch7_t3">No, for the time being he was left in a cell with another convict, where they would wait for whatever comes their way. The inmate offered a friendly game of caravan to kill time…</string>
+    <string name="ch7_q3">So, who is he?</string>
+    <string name="ch7_t4">The Prospector learnt that the fellow inmate is a Brotherhood of Steel paladin who was sent to explore the Oasis but got captured by the Chinese. In truth, the capture was orchestrated - the paladin wished to get into the Chinese mainland in order to collect as much data and blueprints of technology as possible. He made a secret tunnel that lead outside, yet he wished not to escape. Paladin told the Prospector the shocking truth…</string>
+
+    <string name="ch8_t1">Here is what paladin told to the Prospector: the Chinese leadership consists of a singular entity – the Supreme Leader, who is a network of many brains and supercomputers fused together.</string>
+    <string name="ch8_q1">So, is he the ruler of China?</string>
+    <string name="ch8_win">The Prospector had not much time. He took the officer’s keycard and rushed out, towards the residence of the Supreme Leader. A gigantic complex, or rather… a palace, which housed a myriad of brains.\n\nLittle did he know that he would be brought exactly there anyways…</string>
+    <string name="ch8_lose">CCP officer gladly took troublesome outsider\'s life. The Prospector was no more.</string>
+    <string name="ch8_give_up">The Prospector showed no sign of resistance whatsoever. CCP officer, seeing this, took him straight to Supreme Leader.</string>
+    <string name="ch8_t2">Much more than that. The Supreme Leader had overseen the rapid reconstruction of China and its nuclear arsenal – now China is the only force on the entire planet that could unleash the horrors of the Great War upon the Earth once again. And turns out, it has already been planned.</string>
+    <string name="ch8_q2">You mean… It wants to destroy America again?!</string>
+    <string name="ch8_t3">Yes. Supreme Leader is planning to eradicate the remaining major powers in all parts of the world and conserve his nation for the time until the radiation levels drop once again, and then he would colonize the entirety of Earth, turning it into a single nation of humankind.</string>
+    <string name="ch8_q3">It\'s horrible!</string>
+    <string name="ch8_t4">Indeed. Imagine how many innocent people would die in bombings.</string>
+    <string name="ch8_q4">So, no more war? No more raiders, no Legion-NCR battles. Actually, sounds good.</string>
+    <string name="ch8_t5">What? You cannot be serious. No more raiders, but no more good factions, like Followers of the Apocalypse. Besides, Supreme Leader plans to unite humankind under the Communist banner, which means no freedom of choice, little of rights and lots of problems with government. Is this the future you look for?</string>
+    <string name="ch8_q5">Anyways… What does paladin want to do?</string>
+    <string name="ch8_t6">The paladin was waiting for somebody all the time, in order to perform a suicidal mission in attempt to stop Supreme Leader, together…</string>
+    <string name="ch8_q6">I think I know where the story goes…</string>
+    <string name="ch8_t7">One day, the Prospector was taken to a CCP officer’s quarters. The purpose was to record him say how he regrets standing in the way of prosperity of China and how he regrets being a capitalist swine.</string>
+    <string name="ch8_q7">But the Prospector arrived prepared.</string>
+    <string name="ch8_t8">Yes. He came with a hidden shiv and a mission in his mind…</string>
+
+
 </resources>

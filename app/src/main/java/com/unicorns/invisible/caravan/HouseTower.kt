@@ -610,6 +610,7 @@ fun TowerScreen(
                     Spacer(Modifier.height(16.dp))
                     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly, verticalAlignment = Alignment.CenterVertically) {
                         if (!isGameRigged) {
+                            // TODO: glitch with multiple presses!
                             if (level <= 5) {
                                 val cost = inBank * 10
                                 TextFallout(

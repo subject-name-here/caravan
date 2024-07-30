@@ -318,6 +318,7 @@ fun DialogLine(activity: MainActivity, line: String, isSelect: Boolean = true, o
     Spacer(Modifier.height(12.dp))
 }
 
+// TODO: screenshots!!!
 @Composable
 fun ShowStoryChapter1(
     activity: MainActivity,
@@ -367,7 +368,18 @@ fun ShowStoryChapter1(
                     .padding(8.dp)
                     .paint(
                         painterResource(
-                            id = R.drawable.frank_head
+                            id = if (gameResult == -1) {
+                                R.drawable.black_back
+                            } else {
+                                when (lineNumber) {
+                                    0 -> R.drawable.ch1_1
+                                    1 -> R.drawable.ch1_2
+                                    2 -> R.drawable.ch1_3
+                                    3 -> R.drawable.ch1_4
+                                    -1 -> R.drawable.ch1_6
+                                    else -> R.drawable.ch1_5
+                                }
+                            }
                         )
                     ))
 
@@ -943,7 +955,6 @@ fun ShowStoryChapter5(
     }
 }
 
-// TODO: translate everything here!!!!
 @Composable
 fun ShowStoryChapter6(
     activity: MainActivity,
@@ -951,8 +962,7 @@ fun ShowStoryChapter6(
     advanceChapter: () -> Unit,
     goBack: () -> Unit,
 ) {
-    var text by rememberSaveable { mutableStateOf("Ships. Lots and lots of ships were docked to the shore base " +
-            "which was the Prospector’s destination. The steam ships were unloading lots and lots of boxes.") }
+    var text by rememberSaveable { mutableStateOf(activity.getString(R.string.c6_t1)) }
     var lineNumber by rememberSaveable { mutableIntStateOf(0) }
     var isGame by rememberSaveable { mutableStateOf(false) }
     var gameResult by rememberSaveable { mutableIntStateOf(0) }
@@ -966,9 +976,9 @@ fun ShowStoryChapter6(
             confirmButton = {
                 TextClassic(
                     when (messageNumber) {
-                        1 -> "..."
-                        2 -> "..."
-                        else -> "Hell 2 U!"
+                        1 -> stringResource(R.string.ch6_r1)
+                        2 -> stringResource(R.string.ch6_r2)
+                        else -> stringResource(R.string.ch6_r3)
                     },
                     Color(activity.getColor(R.color.colorTextBack)),
                     Color(activity.getColor(R.color.colorTextBack)),
@@ -982,7 +992,7 @@ fun ShowStoryChapter6(
             },
             title = {
                 TextClassic(
-                    "Chinese soldier says out loud:",
+                    stringResource(R.string.ch6_mh),
                     Color(activity.getColor(R.color.colorText)),
                     Color(activity.getColor(R.color.colorText)),
                     24.sp, Alignment.CenterStart, Modifier,
@@ -992,9 +1002,9 @@ fun ShowStoryChapter6(
             text = {
                 TextClassic(
                     when (messageNumber) {
-                        1 -> "Put your hands in the air! Drop your weapons! Do not move!"
-                        2 -> "Last warning! Drop your weapons and do not move any more!"
-                        else -> "That's it! You're going down!"
+                        1 -> stringResource(R.string.ch6_m1)
+                        2 -> stringResource(R.string.ch6_m2)
+                        else -> stringResource(R.string.ch6_m3)
                     },
                     Color(activity.getColor(R.color.colorText)),
                     Color(activity.getColor(R.color.colorText)),
@@ -1075,13 +1085,12 @@ fun ShowStoryChapter6(
 
                 when (gameResult) {
                     1 -> {
-                        text = "Since the Prospector didn't resist, he was arrested and put in one of the ships. " +
-                                "Little did his captors know it was the plan all along..."
+                        text = stringResource(R.string.ch6_give_up)
                         lineNumber = -1
                     }
                     -1 -> {
                         LaunchedEffect(Unit) { playTowerFailed(activity) }
-                        text = "Since the Prospector resisted, he was killed in place."
+                        text = stringResource(R.string.ch_6_lose)
                         lineNumber = -1
                     }
                     2 -> {
@@ -1090,8 +1099,7 @@ fun ShowStoryChapter6(
                             delay(10000L)
                             playTowerFailed(activity)
                         }
-                        text = "Prospector did it. He defeated everyone. Then he heard a whistle. Nuclear bomb was coming his way. " +
-                                "Then - hot breath of the air, then... nothing."
+                        text = stringResource(R.string.ch6_win)
                         lineNumber = -1
                     }
                     else -> {}
@@ -1099,39 +1107,32 @@ fun ShowStoryChapter6(
 
                 when (lineNumber) {
                     0, 1, 2 -> {
-                        DialogLine(activity, "Wait, Chinese?") {
+                        DialogLine(activity, stringResource(R.string.ch6_q1)) {
                             lineNumber = 3
-                            text =
-                                "Yes. The Chinese. And lots of them. Most ghoulified, but plenty of them pure. " +
-                                        "They have turned the Oasis into their base of operations on the North American continent."
+                            text = activity.getString(R.string.ch6_t2)
                         }
                         when (lineNumber) {
-                            0 -> DialogLine(activity, "What was in the boxes?") {
+                            0 -> DialogLine(activity, stringResource(R.string.ch6_q2)) {
                                 lineNumber = 1
-                                text =
-                                    "Most of them had the Caravan card decks, some of them artificially aged. " +
-                                            "The Prospector understood everything: of course, how " +
-                                            "could the food and such unnecessary and quick to decay things as cards " +
-                                            "could be found in the wastes, if they were not dropped out by the Chinese?"
+                                text = activity.getString(R.string.ch6_t3)
                             }
-                            1 -> DialogLine(activity, "[INT 6/8] But why flooding America with food and stuff?") {
+                            1 -> DialogLine(activity, stringResource(R.string.ch6_q3)) {
                                 lineNumber = 2
-                                text = "Pfft, that's obvious. I am not even gonna explain it to you, that's how obvious it is."
+                                text = activity.getString(R.string.ch6_t4)
                             }
                         }
                     }
-                    3 -> DialogLine(activity, "What did the Prospector do? Has he killed everyone and saved the world?") {
+                    3 -> DialogLine(activity, stringResource(R.string.ch6_q4)) {
                         lineNumber = 4
-                        text = "Not quite. The Prospector had thought it was too late to go back, and so he decided " +
-                                "to wait for the dark and sneak onto one of the returning cargo ships."
+                        text = activity.getString(R.string.ch6_t5)
                     }
-                    4 -> DialogLine(activity, "[Sneak 69/70] Yay, ninja time!") {
+                    4 -> DialogLine(activity, stringResource(R.string.ch6_q5)) {
                         lineNumber = 5
-                        text = "Unfortunately, the Prospector was noticed by one of the guards, who has alerted EVERYONE around."
+                        text = activity.getString(R.string.ch6_t6)
                     }
-                    5 -> DialogLine(activity, "And then he defeated everyone?") {
+                    5 -> DialogLine(activity, stringResource(R.string.ch6_q6)) {
                         lineNumber = 6
-                        text = "See for yourself."
+                        text = activity.getString(R.string.ch6_t7)
                     }
                     -1 -> DialogLine(activity, activity.getString(R.string.finish)) { goBack() }
                     else -> {
@@ -1150,8 +1151,7 @@ fun ShowStoryChapter7(
     advanceChapter: () -> Unit,
     goBack: () -> Unit,
 ) {
-    var text by rememberSaveable { mutableStateOf("Turns out China was barely damaged during the Great War. " +
-            "Or maybe it was, but the cities were rebuilt. Either way, the pre-war civilization did not only remain here, but thrived.") }
+    var text by rememberSaveable { mutableStateOf(activity.getString(R.string.ch7_t1)) }
     var lineNumber by rememberSaveable { mutableIntStateOf(0) }
     var isGame by rememberSaveable { mutableStateOf(false) }
     var gameResult by rememberSaveable { mutableIntStateOf(0) }
@@ -1214,43 +1214,31 @@ fun ShowStoryChapter7(
 
                 when (gameResult) {
                     1 -> {
-                        text = "As they talked during the game, the Prospector learnt more about his cellmate."
+                        text = stringResource(R.string.ch7_win)
                         lineNumber = -2
                         gameResult = 0
                     }
                     -1 -> {
                         LaunchedEffect(Unit) { playTowerFailed(activity) }
-                        text = "Cellmate, disappointed in the Prospector, decided not to open up. " +
-                                "Eventually, they both perished in the prison."
+                        text = stringResource(R.string.ch7_lose)
                         lineNumber = -1
                     }
                     else -> {}
                 }
 
                 when (lineNumber) {
-                    0 -> DialogLine(activity, "What about the Prospector?") {
+                    0 -> DialogLine(activity, stringResource(R.string.ch7_q1)) {
                         lineNumber = 1
-                        text =
-                            "The guards lead the Prospector to one of the city prisons, where he was interrogated. " +
-                                    "Initially, they believed that he was one of the spies from " +
-                                    "the many \"savage tribes\" that inhabited the fallen America, but once they were " +
-                                    "proven wrong, their interest in the Prospector died."
+                        text = activity.getString(R.string.ch7_t2)
                     }
-                    1 -> DialogLine(activity, "So, did they let him go?") {
+                    1 -> DialogLine(activity, stringResource(R.string.ch7_q2)) {
                         lineNumber = 2
-                        text = "No, for the time being he was left in a cell with another convict, " +
-                                "where they would wait for whatever comes their way. " +
-                                "The inmate offered a friendly game of caravan to kill time…"
+                        text = activity.getString(R.string.ch7_t3)
                     }
                     -1 -> DialogLine(activity, activity.getString(R.string.finish)) { goBack() }
-                    -2 -> DialogLine(activity, "So, who is he?") {
+                    -2 -> DialogLine(activity, stringResource(R.string.ch7_q3)) {
                         lineNumber = -1
-                        text = "The Prospector learnt that the fellow inmate " +
-                                "is a Brotherhood of Steel paladin who was sent to explore the Oasis but got " +
-                                "captured by the Chinese. In truth, the capture was orchestrated - the " +
-                                "paladin wished to get into the Chinese mainland in order to collect as much " +
-                                "data and blueprints of technology as possible. He made a secret tunnel that " +
-                                "lead outside, yet he wished not to escape. Paladin told the Prospector the shocking truth..."
+                        text = activity.getString(R.string.ch7_t4)
                     }
                     else -> {
                         DialogLine(activity, activity.getString(R.string.finish)) { isGame = true; gameResult = -1 }
@@ -1269,9 +1257,7 @@ fun ShowStoryChapter8(
     advanceAltChapter: () -> Unit,
     goBack: () -> Unit,
 ) {
-    var text by rememberSaveable { mutableStateOf("Here is what paladin told to the Prospector: the Chinese " +
-            "leadership consists of a singular entity – the Supreme Leader, who is a " +
-            "network of many brains and supercomputers fused together.") }
+    var text by rememberSaveable { mutableStateOf(activity.getString(R.string.ch8_t1)) }
     var lineNumber by rememberSaveable { mutableIntStateOf(0) }
     var isGame by rememberSaveable { mutableStateOf(false) }
     var gameResult by rememberSaveable { mutableIntStateOf(0) }
@@ -1342,21 +1328,16 @@ fun ShowStoryChapter8(
 
                 when (gameResult) {
                     1 -> {
-                        text = "The Prospector had not much time. He took the officer’s keycard and rushed out, " +
-                                "towards the residence of the Supreme Leader. A gigantic complex, or rather… " +
-                                "a palace, which housed a myriad of brains." +
-                                "\n\n" +
-                                "Little did he know that he would be brought exactly there anyways…"
+                        text = stringResource(R.string.ch8_win)
                         lineNumber = -1
                     }
                     -1 -> {
                         LaunchedEffect(Unit) { playTowerFailed(activity) }
-                        text = "CCP officer gladly took troublesome outsider's life. The Prospector was no more."
+                        text = stringResource(R.string.ch8_lose)
                         lineNumber = -1
                     }
                     2 -> {
-                        text = "The Prospector showed no sign of resistance whatsoever. " +
-                                "CCP officer, seeing this, took the Prospector straight to Supreme Leader."
+                        text = stringResource(R.string.ch8_give_up)
                         lineNumber = -1
                         gameResult = 0
                     }
@@ -1365,49 +1346,36 @@ fun ShowStoryChapter8(
 
                 when (lineNumber) {
                     0 -> {
-                        DialogLine(activity, "So, is he the ruler of China?") {
+                        DialogLine(activity, stringResource(R.string.ch8_q1)) {
                             lineNumber = 1
-                            text = "Much more than that. The Supreme Leader had overseen the rapid reconstruction of China and its nuclear " +
-                                    "arsenal – now China is the only force on the entire planet that could " +
-                                    "unleash the horrors of the Great War upon the Earth once again. And turns " +
-                                    "out, it has already been planned."
+                            text = activity.getString(R.string.ch8_t2)
                         }
                     }
-                    1 -> DialogLine(activity, "You mean... It wants to destroy America again?!") {
+                    1 -> DialogLine(activity, stringResource(R.string.ch8_q2)) {
                         lineNumber = 2
-                        text = "Yes. Supreme Leader is planning to eradicate " +
-                                "the remaining major powers in all parts of the world and conserve his " +
-                                "nation for the time until the radiation levels drop once again, and then he " +
-                                "would colonize the entirety of Earth, turning it into a single nation of humankind."
+                        text = activity.getString(R.string.ch8_t3)
                     }
                     2 -> {
-                        DialogLine(activity, "It's horrible!") {
+                        DialogLine(activity, stringResource(R.string.ch8_q3)) {
                             lineNumber = 3
-                            text = "Indeed. Imagine how many innocent people would die in bombings."
+                            text = activity.getString(R.string.ch8_t4)
                         }
-                        DialogLine(activity, "So, no more war? No more raiders, no Legion-NCR battles. Actually, sounds good.") {
+                        DialogLine(activity, stringResource(R.string.ch8_q4)) {
                             lineNumber = 3
-                            text = "What? You cannot be serious. No more raiders, " +
-                                    "but no more good factions, like Followers of the Apocalypse. Besides, " +
-                                    "Supreme Leader plans to unite humankind under the Communist banner, " +
-                                    "which means no freedom of choice, little of rights and lots of problems with government. " +
-                                    "Is this the future you look for?"
+                            text = activity.getString(R.string.ch8_t5)
                         }
                     }
-                    3 -> DialogLine(activity, "Anyways... What does paladin want to do?") {
+                    3 -> DialogLine(activity, stringResource(R.string.ch8_q5)) {
                         lineNumber = 4
-                        text = "The paladin was waiting for somebody all the time, " +
-                                "in order to perform a suicidal mission in attempt to stop Supreme Leader, together…"
+                        text = activity.getString(R.string.ch8_t6)
                     }
-                    4 -> DialogLine(activity, "I think I know where the story goes...") {
+                    4 -> DialogLine(activity, stringResource(R.string.ch8_q6)) {
                         lineNumber = 5
-                        text = "One day, the Prospector was taken to a CCP officer’s quarters. " +
-                                "The purpose was to record him say how he regrets standing in " +
-                                "the way of prosperity of China and how he regrets being a capitalist swine."
+                        text = activity.getString(R.string.ch8_t7)
                     }
-                    5 -> DialogLine(activity, "But the Prospector arrived prepared.") {
+                    5 -> DialogLine(activity, stringResource(R.string.ch8_q7)) {
                         lineNumber = 6
-                        text = "Yes. He came with a hidden shiv and a mission in his mind..."
+                        text = activity.getString(R.string.ch8_t8)
                     }
                     -1 -> DialogLine(activity, activity.getString(R.string.finish)) { goBack() }
                     else -> {
@@ -1419,7 +1387,7 @@ fun ShowStoryChapter8(
     }
 }
 
-
+// TODO: translate everything here!!!!
 @Composable
 fun ShowStoryChapter9(
     activity: MainActivity,
@@ -1427,9 +1395,7 @@ fun ShowStoryChapter9(
     advanceChapter: () -> Unit,
     goBack: () -> Unit,
 ) {
-    var text by rememberSaveable { mutableStateOf("The dark halls of the palace played the same melody on repeat. " +
-            "There was nothing but circuits, flickering lights and lots, lots of brains in jars, " +
-            "connected to the circuits by electrodes and brain chips.") }
+    var text by rememberSaveable { mutableStateOf("The dark halls of the palace played the same melody on repeat. There was nothing but circuits, flickering lights and lots, lots of brains in jars, connected to the circuits by electrodes and brain chips.") }
     var lineNumber by rememberSaveable { mutableIntStateOf(0) }
     var isGame by rememberSaveable { mutableStateOf(false) }
     var gameResult by rememberSaveable { mutableIntStateOf(0) }
@@ -1553,8 +1519,7 @@ fun ShowStoryChapter9(
 
                 when (gameResult) {
                     1 -> {
-                        text = "With the help of paladin, who cut out important cables, The Prospector managed to outmaneuver the mechanical appendages of " +
-                                "the Supreme Leader, hitting the nuclear core of the facility. It initiated a chain reaction, which resulted in a blast."
+                        text = "With the help of paladin, who cut out important cables, The Prospector managed to outmaneuver the mechanical appendages of the Supreme Leader, hitting the nuclear core of the facility. It initiated a chain reaction, which resulted in a blast."
                         lineNumber = -1
                         gameResult = 0
                     }
@@ -1573,13 +1538,11 @@ fun ShowStoryChapter9(
                     }
                     1 -> DialogLine(activity, "And it spoke softly:") {
                         lineNumber = 2
-                        text = "\"Did you really think you would accomplish anything by killing one of my officers? " +
-                                "You were meant to be brought here, and here you are.\""
+                        text = "\"Did you really think you would accomplish anything by killing one of my officers? You were meant to be brought here, and here you are.\""
                     }
                     2 -> DialogLine(activity, "The Prospector was shaking.") {
                         lineNumber = 3
-                        text = "\"Do you know what I plan to do? I plan to harvest your brain and make you one with me. " +
-                                "After all you've been through, all you've done, you have proven your value to me - to us.\""
+                        text = "\"Do you know what I plan to do? I plan to harvest your brain and make you one with me. After all you've been through, all you've done, you have proven your value to me - to us.\""
                     }
                     3 -> DialogLine(activity, "The Prospector didn't move.") {
                         lineNumber = 4
@@ -1595,110 +1558,76 @@ fun ShowStoryChapter9(
                     }
                     6 -> DialogLine(activity, "Why would I want to join you?") {
                         lineNumber = 7
-                        text = "\"Do you feel the power of this complex? Did you see the prosperity and " +
-                                "brightness of the nation? Do you know that I have thousands of nuclear " +
-                                "rockets? All of it and more – it would, and it will, be yours.\""
+                        text = "\"Do you feel the power of this complex? Did you see the prosperity and brightness of the nation? Do you know that I have thousands of nuclear rockets? All of it and more – it would, and it will, be yours.\""
                     }
                     in (7..15) -> {
                         DialogLine(activity, "I submit.") {
                             lineNumber = 16
-                            text = "\"You traitor!\" The Prospector felt warmth inside the body. " +
-                                    "It was plasma pistol projectile melting all his organs together in a green goo. " +
-                                    "Paladin was killed by Leader's robots, but for the Prospector it was too late."
+                            text = "\"You traitor!\" The Prospector felt warmth inside the body. It was plasma pistol projectile melting all his organs together in a green goo. Paladin was killed by Leader's robots, but for the Prospector it was too late."
                         }
                         when (lineNumber) {
                             7 -> {
                                 DialogLine(activity, "[Speech 90] Okay, but what are you, exactly?") {
                                     isDistracted++
                                     lineNumber = 8
-                                    text = "\"The Chinese Communist Party knew of the coming Great War, and knew that it was unable to prevent it. " +
-                                            "The Americans went insane in their hunger for power, deciding to buy off nukes and launch them all over the world. " +
-                                            "The invasion of the mainland USA had proven futile, as the Americans put a fierce fight. " +
-                                            "And then, the brilliant minds of Chinese political science decided to not prevent the sickness, " +
-                                            "but to cure what survives. They made the Supreme Leader.\""
+                                    text = "\"The Chinese Communist Party knew of the coming Great War, and knew that it was unable to prevent it. The Americans went insane in their hunger for power, deciding to buy off nukes and launch them all over the world. The invasion of the mainland USA had proven futile, as the Americans put a fierce fight. And then, the brilliant minds of Chinese political science decided to not prevent the sickness, but to cure what survives. They made the Supreme Leader.\""
                                 }
                             }
                             8 -> {
                                 DialogLine(activity, "Go on.") {
                                     lineNumber = 9
-                                    text = "\"Supreme Leader is a network of bots " +
-                                            "that would identify all tribes and survivor groups of people all around the world after the Great War " +
-                                            "and collect their brains, connecting them, fusing memories and identities together. " +
-                                            "This way not a single personality is lost, but every person learns what the other side has gone through.\"" +
-                                            "\n\n" +
-                                            "Leader stopped for a second."
+                                    text = "\"Supreme Leader is a network of bots that would identify all tribes and survivor groups of people all around the world after the Great War and collect their brains, connecting them, fusing memories and identities together. This way not a single personality is lost, but every person learns what the other side has gone through.\"\n\nLeader stopped for a second."
                                 }
                             }
                             9 -> {
                                 DialogLine(activity, "[Speech 95] Is something wrong?") {
                                     isDistracted++
                                     lineNumber = 10
-                                    text = "Just imagine: all the love, pride, hate, fear. I have to deal with it. " +
-                                            "I may look like a machine, but I am as much capable of feeling as you. " +
-                                            "This is why what will happen to you will hurt me."
+                                    text = "Just imagine: all the love, pride, hate, fear. I have to deal with it. I may look like a machine, but I am as much capable of feeling as you. This is why what will happen to you will hurt me."
                                 }
                             }
                             10 -> {
                                 DialogLine(activity, "So, what will happen to me?") {
                                     lineNumber = 11
-                                    text = "You will lose your identity once you merge with me, and thus you will repay your debt " +
-                                            "towards China. My China. Our China. You cannot leave, you cannot die either. You " +
-                                            "can only submit. After all, you stand here, which proves you are " +
-                                            "resourceful, and China needs more and more resources every second…"
+                                    text = "You will lose your identity once you merge with me, and thus you will repay your debt towards China. My China. Our China. You cannot leave, you cannot die either. You can only submit. After all, you stand here, which proves you are resourceful, and China needs more and more resources every second…"
                                 }
                             }
                             11 -> {
                                 DialogLine(activity, "And why should the world be united by China, and not by, let's say, NCR?") {
                                     lineNumber = 12
-                                    text = "For hundreds of years, my automatic system was collecting people, " +
-                                            "forging such a leader who would perfectly understand all sides of all conflicts. " +
-                                            "Leader who experienced life under the entirety of political spectrum, " +
-                                            "leader who has gone through life of luxury and life of need. " +
-                                            "A leader, truly for the people, and truly of the people."
+                                    text = "For hundreds of years, my automatic system was collecting people, forging such a leader who would perfectly understand all sides of all conflicts. Leader who experienced life under the entirety of political spectrum, leader who has gone through life of luxury and life of need. A leader, truly for the people, and truly of the people."
                                 }
                             }
                             12 -> {
                                 DialogLine(activity, "And how are you gonna protect your utopia from, for example, Borhterhood of Steel?") {
                                     lineNumber = 13
-                                    text = "The CCP knew that there would be no nation remaining after the Great War, " +
-                                            "so they instructed the bots to create nuclear arsenal all anew, " +
-                                            "for they knew that an all-understanding leadership is just a bluff if it is not supported by the ultimate argument."
+                                    text = "The CCP knew that there would be no nation remaining after the Great War, so they instructed the bots to create nuclear arsenal all anew, for they knew that an all-understanding leadership is just a bluff if it is not supported by the ultimate argument."
                                 }
                             }
                             13 -> {
                                 DialogLine(activity, "[Speech 100] Last question: why drop food and cards all over America?") {
                                     isDistracted++
                                     lineNumber = 14
-                                    text = "To maintain people's life, of course. If not us, Americans outside the vaults would die of hunger and radiation. " +
-                                            "I, Supreme Leader, accept everyone into my fold, even Laowais such as you, if they prove useful and submissive."
+                                    text = "To maintain people's life, of course. If not us, Americans outside the vaults would die of hunger and radiation. I, Supreme Leader, accept everyone into my fold, even Laowais such as you, if they prove useful and submissive."
                                 }
                             }
                             14 -> {
                                 DialogLine(activity, "And cards? How blackjack or Caravan would help you?") {
                                     lineNumber = 15
-                                    text = "You underestimate the power of a card game. It develops your skills, " +
-                                            "while also giving you unique experience. Yes, people may lose fortune in blackjack, " +
-                                            "but understanding this feeling, this idea is valuable for me, for us.\n" +
-                                            "And Caravan is a good metaphor of life. You know it, don't you? " +
-                                            "I have seen you forging your path with it.\n\n" +
-                                            "After all, what is a game, if not a life in miniature? " +
-                                            "And what is our life, if not a complicated game?"
+                                    text = "You underestimate the power of a card game. It develops your skills, while also giving you unique experience. Yes, people may lose fortune in blackjack, but understanding this feeling, this idea is valuable for me, for us.\nAnd Caravan is a good metaphor of life. You know it, don't you? I have seen you forging your path with it.\n\nAfter all, what is a game, if not a life in miniature? And what is our life, if not a complicated game?"
                                 }
                             }
                         }
 
                         DialogLine(activity, "I will not submit.") {
                             lineNumber = 17
-                            text = "Scalpels reached towards the Prospector, " +
-                                    "brain-controlled robots and mini-nuke launchers showed up. " +
-                                    "The Prospector could not make a mistake…"
+                            text = "Scalpels reached towards the Prospector, brain-controlled robots and mini-nuke launchers showed up. The Prospector could not make a mistake…"
                         }
                     }
                     16 -> DialogLine(activity, "If only someone was there to stop him...") { playTowerFailed(activity); goBack() }
                     -1 -> DialogLine(activity, "Yes, we won! We-") {
                         lineNumber = -2
-                        text = "Unfortunately, the Prospector was locked out of escape route by Paladin.\n" +
-                                "\"I am sorry, my friend, but you know too much.\n\nYou have saved the world, but you have to die.\""
+                        text = "Unfortunately, the Prospector was locked out of escape route by Paladin.\n\"I am sorry, my friend, but you know too much.\n\nYou have saved the world, but you have to die.\""
                     }
                     -2 -> DialogLine(activity, "Son of a bi-") { playNukeBlownSound(activity); goBack() }
                     -3 -> DialogLine(activity, activity.getString(R.string.finish)) { goBack() }
@@ -1717,8 +1646,7 @@ fun ShowStoryChapter10(
     activity: MainActivity,
     goBack: () -> Unit,
 ) {
-    var text by rememberSaveable { mutableStateOf("Under the Supreme Leader’s rule, China not only resurrected from the ash, " +
-            "but captured all of Eurasia, creating peace, order and most importantly - future for the people living on its territory.") }
+    var text by rememberSaveable { mutableStateOf("Under the Supreme Leader’s rule, China not only resurrected from the ash, but captured all of Eurasia, creating peace, order and most importantly - future for the people living on its territory.") }
     var lineNumber by rememberSaveable { mutableIntStateOf(0) }
 
     val offsetX = remember { Animatable(0f) }
@@ -1785,41 +1713,27 @@ fun ShowStoryChapter10(
                         0 -> DialogLine(activity, "[NEXT SLIDE]", isSelect = false) {
                             slide()
                             lineNumber = 1
-                            text = "However, two centuries since the Great War, a nomad savage known as the " +
-                                    "Prospector had decided that prosperity of a group of people must not come " +
-                                    "at the cost of the prosperity of the other groups of people, let alone their lives."
+                            text = "However, two centuries since the Great War, a nomad savage known as the Prospector had decided that prosperity of a group of people must not come at the cost of the prosperity of the other groups of people, let alone their lives."
                         }
                         1 -> DialogLine(activity, "[NEXT SLIDE]", isSelect = false) {
                             slide()
                             lineNumber = 2
-                            text = "The Supreme Leader was slain, and the state apparatus built around the " +
-                                    "singular entity that gave direct commands to literally every party officer, " +
-                                    "every soldier, every producer and even social workers, from cooks to " +
-                                    "doctors, collapsed without its ultimate dictator."
+                            text = "The Supreme Leader was slain, and the state apparatus built around the singular entity that gave direct commands to literally every party officer, every soldier, every producer and even social workers, from cooks to doctors, collapsed without its ultimate dictator."
                         }
                         2 -> DialogLine(activity, "[NEXT SLIDE]", isSelect = false) {
                             slide()
                             lineNumber = 3
-                            text = "The paladin fled, to return with his comrades from " +
-                                    "the Brotherhood of Steel, who quickly took over most of the production " +
-                                    "complexes of the former Greater China. Most of the provinces, left without " +
-                                    "interest of the Brotherhood due to lack of tech factories, fell prey to a " +
-                                    "myriad of warlords."
+                            text = "The paladin fled, to return with his comrades from the Brotherhood of Steel, who quickly took over most of the production complexes of the former Greater China. Most of the provinces, left without interest of the Brotherhood due to lack of tech factories, fell prey to a myriad of warlords."
                         }
                         3 -> DialogLine(activity, "[NEXT SLIDE]", isSelect = false) {
                             slide()
                             lineNumber = 4
-                            text = "The Prospector’s sacrifice was not in vain – countless American lives owe " +
-                                    "him their thanks, although they will never know of it."
+                            text = "The Prospector’s sacrifice was not in vain – countless American lives owe him their thanks, although they will never know of it."
                         }
                         4 -> DialogLine(activity, "[NEXT SLIDE]", isSelect = false) {
                             slide()
                             lineNumber = 5
-                            text = "And millions of the " +
-                                    "Chinese, now mobilized to the cannibalistic and ruthless armies of the " +
-                                    "crazed separatist militaries – they also owe the Prospector a gesture of " +
-                                    "gratitude. Although, as their lives got worse, they do not rush to make " +
-                                    "memorials in his name."
+                            text = "And millions of the Chinese, now mobilized to the cannibalistic and ruthless armies of the crazed separatist militaries – they also owe the Prospector a gesture of gratitude. Although, as their lives got worse, they do not rush to make memorials in his name."
                         }
                         5 -> DialogLine(activity, "[NEXT SLIDE]", isSelect = false) {
                             slide()
@@ -1829,17 +1743,13 @@ fun ShowStoryChapter10(
                         6 -> DialogLine(activity, "[NEXT SLIDE]", isSelect = false) {
                             slide()
                             lineNumber = 7
-                            text = "...is it even freedom that the Prospector unleashed upon the world, now " +
-                                    "that the Chinese are suffering and the Brotherhood of Steel has unlimited " +
-                                    "control over the most advanced technologies of the world, as well as " +
-                                    "nuclear arsenal?"
+                            text = "...is it even freedom that the Prospector unleashed upon the world, now that the Chinese are suffering and the Brotherhood of Steel has unlimited control over the most advanced technologies of the world, as well as nuclear arsenal?"
                         }
                         7 -> DialogLine(activity, "[NEXT SLIDE]", isSelect = false) {
                             slide()
                             playTowerCompleted(activity)
                             lineNumber = 8
-                            text = "This was the story of the Prospector, who has killed one monster, but from its blood, a legion of " +
-                                    "monsters was born. And they are at each other’s throats, raging war."
+                            text = "This was the story of the Prospector, who has killed one monster, but from its blood, a legion of monsters was born. And they are at each other’s throats, raging war."
                         }
                         8 -> DialogLine(activity, "And war...") {
                             lineNumber = -1
@@ -1930,10 +1840,8 @@ fun ShowStoryChapter9A(
 
                 when (gameResult) {
                     1 -> {
-                        text = "And so, the last danger to the future of mankind was eradicated. " +
-                                "The Prospector felt proud of not falling for the lies of the paladin, " +
-                                "who simply wished to sabotage the plans of Supreme Leader " +
-                                "just for the sake of breaking the nation and stealing all the technology for the Brotherhood."
+                        text = "And so, the last danger to the future of mankind was eradicated. The Prospector felt proud of not falling for the lies of the paladin, who simply wished to sabotage the plans of Supreme Leader just for the sake of breaking the nation and stealing all the technology for the Brotherhood."
+                        gameResult = 0
                         lineNumber = -2
                     }
                     -1 -> {
@@ -1948,34 +1856,25 @@ fun ShowStoryChapter9A(
                     0 -> DialogLine(activity, "Wait... That's not how...") {
                         lineNumber = 1
                         text =
-                            "The Prospector asked what was Leader's plan, yet Leader wished not to answer, " +
-                                    "stating that the Prospector would learn everything in a moment."
+                            "The Prospector asked what was Leader's plan, yet Leader wished not to answer, stating that the Prospector would learn everything in a moment."
                     }
                     1 -> DialogLine(activity, "This is not how the story goes! He didn't...") {
                         lineNumber = 2
-                        text = "Many saws and cutters tore into his flesh, painkillers kept him conscious. " +
-                                "In an instant, his sight disappeared, his hearing disappeared, " +
-                                "he lost the sense of the body… He was only in his thoughts. But in a second, he could see… " +
-                                "through the cameras of the facility, hear through the intercoms and microphones. " +
-                                "He suddenly got memories of millions of people, Chinese and not…"
+                        text = "Many saws and cutters tore into his flesh, painkillers kept him conscious. In an instant, his sight disappeared, his hearing disappeared, he lost the sense of the body… He was only in his thoughts. But in a second, he could see… through the cameras of the facility, hear through the intercoms and microphones. He suddenly got memories of millions of people, Chinese and not…"
                     }
                     2 -> DialogLine(activity, "............") {
                         stopRadio()
                         isSoundEffectsReduced = true
                         lineNumber = 3
-                        text = "The Prospector is now one with the Supreme Leader. " +
-                                "He IS the Supreme Leader… And so, so much more. And now, he knows more than his own experience."
+                        text = "The Prospector is now one with the Supreme Leader. He IS the Supreme Leader… And so, so much more. And now, he knows more than his own experience."
                     }
                     3 -> DialogLine(activity, "YES. WE. ARE. ONE.") {
                         lineNumber = 4
-                        text = "He also knows better than his own experience. He feels no fear. He is… immortal. " +
-                                "He is within a myriad of computers. Even if it meant creation of a warlord community, " +
-                                "it would still mean immortality for the Prospector, which made him feel…"
+                        text = "He also knows better than his own experience. He feels no fear. He is… immortal. He is within a myriad of computers. Even if it meant creation of a warlord community, it would still mean immortality for the Prospector, which made him feel…"
                     }
                     4 -> DialogLine(activity, "PEACE.") {
                         lineNumber = 5
-                        text = "Finally, he needed not to kill to survive. He needed not to make choices. " +
-                                "He is an eternal being, whose decisions are no longer dictated by the needs of flesh and the time limit of mortality."
+                        text = "Finally, he needed not to kill to survive. He needed not to make choices. He is an eternal being, whose decisions are no longer dictated by the needs of flesh and the time limit of mortality."
                     }
                     5 -> DialogLine(activity, "ONE THING IS LEFT THOUGH.") {
                         lineNumber = 6
