@@ -610,53 +610,15 @@ fun TowerScreen(
                     Spacer(Modifier.height(16.dp))
                     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly, verticalAlignment = Alignment.CenterVertically) {
                         if (!isGameRigged) {
-                            // TODO: glitch with multiple presses!
-                            if (level <= 5) {
-                                val cost = inBank * 10
-                                TextFallout(
-                                    stringResource(R.string.skip_for_caps, cost),
-                                    getTextColor(activity),
-                                    getTextStrokeColor(activity),
-                                    24.sp,
-                                    Alignment.Center,
-                                    modifier = Modifier
-                                        .clickableOk(activity) {
-                                            if ((activity.save?.caps ?: 0) < cost) {
-                                                showAlertDialog(
-                                                    activity.getString(R.string.hey),
-                                                    activity.getString(R.string.you_don_t_have_enough_cash_kid)
-                                                )
-                                                return@clickableOk
-                                            }
-
-                                            level++
-                                            activity.save?.let {
-                                                it.towerLevel++
-                                                it.caps -= cost
-                                                saveOnGD(activity)
-                                            }
-                                            playCashSound(activity)
-                                            showAlertDialog(
-                                                activity.getString(R.string.skipped),
-                                                activity.getString(
-                                                    R.string.you_ve_paid_caps,
-                                                    cost.toString()
-                                                )
-                                            )
-                                        }
-                                        .background(getTextBackgroundColor(activity))
-                                        .padding(horizontal = 8.dp, vertical = 4.dp),
-                                    TextAlign.Center
-                                )
-                            } else {
-                                TextFallout(
-                                    stringResource(R.string.take_the_cash),
-                                    getTextColor(activity),
-                                    getTextStrokeColor(activity),
-                                    24.sp,
-                                    Alignment.Center,
-                                    modifier = Modifier
-                                        .clickableOk(activity) {
+                            TextFallout(
+                                stringResource(R.string.take_the_cash),
+                                getTextColor(activity),
+                                getTextStrokeColor(activity),
+                                24.sp,
+                                Alignment.Center,
+                                modifier = Modifier
+                                    .clickableOk(activity) {
+                                        if (level > 0) {
                                             level = 0
                                             payment = null
                                             activity.save?.let {
@@ -673,11 +635,11 @@ fun TowerScreen(
                                                 )
                                             )
                                         }
-                                        .background(getTextBackgroundColor(activity))
-                                        .padding(horizontal = 8.dp, vertical = 4.dp),
-                                    TextAlign.Center
-                                )
-                            }
+                                    }
+                                    .background(getTextBackgroundColor(activity))
+                                    .padding(horizontal = 8.dp, vertical = 4.dp),
+                                TextAlign.Center
+                            )
                         }
                         if (!(level == 11 && !isGameRigged) && level != 12) {
                             TextFallout(

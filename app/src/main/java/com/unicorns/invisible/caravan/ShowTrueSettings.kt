@@ -14,14 +14,22 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -29,6 +37,7 @@ import com.unicorns.invisible.caravan.save.saveOnGD
 import com.unicorns.invisible.caravan.utils.MenuItemOpen
 import com.unicorns.invisible.caravan.utils.SwitchCustomUsualBackground
 import com.unicorns.invisible.caravan.utils.TextFallout
+import com.unicorns.invisible.caravan.utils.clickableOk
 import com.unicorns.invisible.caravan.utils.getBackgroundColor
 import com.unicorns.invisible.caravan.utils.getKnobColor
 import com.unicorns.invisible.caravan.utils.getTextBackgroundColor
@@ -166,6 +175,75 @@ fun ShowTrueSettings(
                                 }
                             }
                         }
+                    }
+
+                    Row(
+                        modifier = Modifier.height(96.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        var secretCode by remember { mutableStateOf<Int?>(null) }
+                        TextFallout(
+                            text = "???",
+                            getTextColor(activity),
+                            getTextStrokeColor(activity),
+                            14.sp,
+                            Alignment.Center,
+                            modifier = Modifier
+                                .fillMaxWidth(0.33f)
+                                .padding(horizontal = 8.dp)
+                                .clickableOk(activity) { when (secretCode) {
+                                    101042 -> activity.save?.let {
+                                        it.towerLevel = 10
+                                        saveOnGD(activity)
+                                    }
+                                    9941 -> {
+                                        activity.save?.let {
+                                            it.towerLevel = 9
+                                            saveOnGD(activity)
+                                        }
+                                    }
+                                    65537 -> {
+                                        activity.save?.let {
+                                            it.towerLevel = 11
+                                            saveOnGD(activity)
+                                        }
+                                    }
+                                } }
+                                .background(getTextBackgroundColor(activity))
+                                .padding(4.dp),
+                            textAlign = TextAlign.Center,
+                        )
+                        TextField(
+                            modifier = Modifier.fillMaxWidth(0.5f),
+                            singleLine = true,
+                            enabled = true,
+                            value = (secretCode ?: 0).toString(),
+                            onValueChange = { secretCode = it.toIntOrNull() },
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                            textStyle = TextStyle(
+                                fontSize = 14.sp,
+                                color = getTextColor(activity),
+                                fontFamily = FontFamily(Font(R.font.monofont))
+                            ),
+                            label = {
+                                TextFallout(
+                                    text = "???",
+                                    getTextColor(activity),
+                                    getTextStrokeColor(activity),
+                                    11.sp,
+                                    Alignment.Center,
+                                    Modifier,
+                                    TextAlign.Center
+                                )
+                            },
+                            colors = TextFieldDefaults.colors().copy(
+                                cursorColor = getTextColor(activity),
+                                focusedContainerColor = getTextBackgroundColor(activity),
+                                unfocusedContainerColor = getTextBackgroundColor(activity),
+                                disabledContainerColor = getBackgroundColor(activity),
+                            )
+                        )
                     }
                 }
                 Spacer(Modifier.height(16.dp))

@@ -20,7 +20,7 @@ class EnemyFinalBossStory(@Transient private var update: Int = 0) : Enemy() {
     @Transient
     var playAlarm: () -> Unit = {}
     @Transient
-    var sayThing: (String) -> Unit = {}
+    var sayThing: (Int) -> Unit = {}
 
     override fun makeMove(game: Game) {
         val hand = game.enemyCResources.hand
@@ -36,23 +36,12 @@ class EnemyFinalBossStory(@Transient private var update: Int = 0) : Enemy() {
 
         if (game.enemyCResources.deckSize == 0) {
             playAlarm()
-            // TODO: rework update thing
             ++update
             if (update < 5) {
                 game.enemyCResources.addNewDeck(CustomDeck(CardBack.UNPLAYABLE, false))
                 game.enemyCResources.shuffleDeck()
             }
-            when (update) {
-                // TODO: translate this!
-                1 -> sayThing("My resources are infinite. Yours - are not.")
-                2 -> sayThing("The whole China is against you. Don't you see how futile it is?")
-                3 -> sayThing("Resisting is illogical. You are fighting against the brighter future for humanity.")
-                4 -> sayThing("You are getting weaker. I am not.")
-                5 -> sayThing("Huh, that's weird. I cannot restock. Probably some mistake in supply lines.")
-                6 -> sayThing("That's... that's not right. Where are my resources?")
-                7 -> sayThing("You. It's all you, isn't it?\nYou doomed us. You doomed everyone.")
-                8 -> sayThing("")
-            }
+            sayThing(update)
         } else if (game.enemyCResources.getDeckBack()?.second == true) {
             playAlarm()
         }
