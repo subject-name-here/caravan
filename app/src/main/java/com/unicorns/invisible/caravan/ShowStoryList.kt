@@ -437,7 +437,6 @@ fun ShowStoryChapter1(
     }
 }
 
-// TODO: screenshots!!!
 @Composable
 fun ShowStoryChapter2(
     activity: MainActivity,
@@ -493,10 +492,10 @@ fun ShowStoryChapter2(
                                 when (lineNumber) {
                                     0 -> R.drawable.ch1_5
                                     1 -> R.drawable.ch1_6
-                                    2 -> R.drawable.frank_head
-                                    3 -> R.drawable.frank_head
-                                    -1 -> R.drawable.frank_head
-                                    else -> R.drawable.frank_head
+                                    2 -> R.drawable.ch2_1
+                                    3 -> R.drawable.ch2_2
+                                    -1 -> R.drawable.ch2_win
+                                    else -> R.drawable.ch2_3
                                 }
                             }
                         )
@@ -608,7 +607,17 @@ fun ShowStoryChapter3(
                     .padding(8.dp)
                     .paint(
                         painterResource(
-                            id = R.drawable.frank_head
+                            id = if (gameResult == -1) {
+                                R.drawable.black_back
+                            } else {
+                                when (lineNumber) {
+                                    0 -> R.drawable.ch3_1
+                                    1, 2 -> R.drawable.ch3_2
+                                    3 -> R.drawable.ch3_3
+                                    -1 -> R.drawable.ch3_win
+                                    else -> R.drawable.ch3_4
+                                }
+                            }
                         )
                     ))
 
@@ -667,6 +676,7 @@ fun ShowStoryChapter3(
     }
 }
 
+// TODO: screenshots!!!
 @Composable
 fun ShowStoryChapter4(
     activity: MainActivity,
@@ -789,7 +799,16 @@ fun ShowStoryChapter4(
                     .padding(8.dp)
                     .paint(
                         painterResource(
-                            id = R.drawable.frank_head
+                            id = if (gameResult == -1) {
+                                R.drawable.black_back
+                            } else {
+                                when (lineNumber) {
+                                    -1 -> R.drawable.frank_head
+                                    -2 -> R.drawable.frank_head
+                                    -3 -> R.drawable.ch3_1
+                                    else -> R.drawable.black_back
+                                }
+                            }
                         )
                     ))
 

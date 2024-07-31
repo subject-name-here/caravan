@@ -14,6 +14,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.AlertDialog
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -27,6 +28,7 @@ import androidx.compose.ui.unit.sp
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.enemy.EnemyFinalBoss
 import com.unicorns.invisible.caravan.model.enemy.EnemyPriestess
+import com.unicorns.invisible.caravan.model.enemy.EnemySignificantOther
 import com.unicorns.invisible.caravan.model.enemy.EnemySnuffles
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.Card
@@ -57,12 +59,13 @@ fun ShowWildWasteland(
     goBack: () -> Unit
 ) {
     var showGameSnuffles by rememberSaveable { mutableStateOf(false) }
+    var showGameSignificantOther by rememberSaveable { mutableStateOf(false) }
     var showGamePriestess by rememberSaveable { mutableStateOf(false) }
     var showGameFinalBoss by rememberSaveable { mutableStateOf(false) }
     var showGameFinalBossWild by rememberSaveable { mutableStateOf(false) }
-    var dialogText by rememberSaveable { mutableStateOf("") }
+    var dialogText by rememberSaveable { mutableIntStateOf(-1) }
 
-    if (dialogText.isNotBlank()) {
+    if (dialogText != -1) {
         AlertDialog(
             modifier = Modifier.border(width = 4.dp, color = getTextColor(activity)),
             onDismissRequest = {},
@@ -73,14 +76,18 @@ fun ShowWildWasteland(
                     getDialogTextColor(activity),
                     14.sp,
                     Alignment.CenterEnd,
-                    Modifier.clickableCancel(activity) { dialogText = "" },
+                    Modifier.clickableCancel(activity) { dialogText = -1 },
                     TextAlign.End
                 )
             },
             title = {
                 TextFallout(
                     // TODO: translate this
-                    "Supreme Leader says:",
+                    if (dialogText in (1..11)) {
+                        "Supreme Leader says:"
+                    } else {
+                        "Your Significant Other says to you softly:"
+                    },
                     getDialogTextColor(activity),
                     getDialogTextColor(activity),
                     24.sp,
@@ -91,7 +98,21 @@ fun ShowWildWasteland(
             },
             text = {
                 TextFallout(
-                    dialogText,
+                    when (dialogText) {
+                        1 -> "I am satisfied. I have seen enough. Now you can quit."
+                        2 -> "Don't you see how futile it is?"
+                        3 -> "Give up."
+                        4 -> "Give up now."
+                        5 -> "You nasty pest."
+                        6 -> "GIVE UP!"
+                        7 -> "I am tired of you. Time to get serious."
+                        8 -> "Games are over."
+                        9 -> "No, what? I can't lose! I am supreme!"
+                        10 -> "No-no-no, I am not done with you yet. Here, have some cards."
+                        11 -> "You cannot disband caravans. I will do that for you."
+                        12 -> "I feel incomplete..."
+                        else -> ""
+                    },
                     getDialogTextColor(activity),
                     getDialogTextColor(activity),
                     18.sp,
@@ -249,6 +270,19 @@ fun ShowWildWasteland(
             nextSong(activity)
             isSoundEffectsReduced = false
             showGameFinalBossWild = false
+        }
+        return
+    } else if (showGameSignificantOther) {
+        val deck = activity.save?.getCustomDeckCopy() ?: CustomDeck(CardBack.STANDARD, false)
+        val playerCResources = CResources(deck)
+        StartGame(
+            activity = activity,
+            playerCResources = playerCResources,
+            isCustom = true,
+            enemy = EnemySignificantOther(playerCResources) { dialogText = it },
+            showAlertDialog = showAlertDialog
+        ) {
+            showGameSnuffles = false
         }
         return
     }

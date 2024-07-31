@@ -76,10 +76,9 @@ class CResources(private val deck: CustomDeck) {
     }
 
     fun addCardToHandDirect(card: Card) {
-        if (deck.size == 0) {
-            return
+        if (deck.size > 0) {
+            deck.removeFirst()
         }
-        deck.removeFirst()
         addCardToHand(card)
         processHandAddedCard(card)
     }

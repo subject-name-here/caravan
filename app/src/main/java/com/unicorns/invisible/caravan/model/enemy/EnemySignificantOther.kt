@@ -11,7 +11,7 @@ import com.unicorns.invisible.caravan.model.primitives.Suit
 
 class EnemySignificantOther(
     val playerCResources: CResources,
-    val speaker: (String, String) -> Unit
+    val speaker: (Int) -> Unit
 ) : Enemy() {
     override fun createDeck(): CResources = CResources(CustomDeck().apply {
         while (size < playerCResources.deckSize) {
@@ -21,5 +21,8 @@ class EnemySignificantOther(
 
     override fun makeMove(game: Game) {
         // TODO
+        /**
+         *
+         */
     }
 }

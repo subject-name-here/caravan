@@ -579,7 +579,7 @@ fun StartGame(
                 startFinalBossTheme(activity)
                 it.playerCaravans.forEach { caravan -> caravan.canBeDisbanded = false }
                 // TODO: translate this
-                enemy.sayThing("You cannot disband caravans. I will do that for you.")
+                enemy.sayThing(11)
             }
             activity.save?.let { save ->
                 save.gamesStarted++

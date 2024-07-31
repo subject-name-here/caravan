@@ -91,7 +91,7 @@ class EnemyFinalBoss : Enemy() {
     @Transient
     var playAlarm: () -> Unit = {}
     @Transient
-    var sayThing: (String) -> Unit = {}
+    var sayThing: (Int) -> Unit = {}
 
     override fun makeMove(game: Game) {
         val hand = game.enemyCResources.hand
@@ -108,25 +108,13 @@ class EnemyFinalBoss : Enemy() {
         if (game.enemyCResources.deckSize == 0) {
             playAlarm()
             game.enemyCResources.addNewDeck(createCustomDeck(++update))
-            when (update) {
-                // TODO: translate this
-                1 -> sayThing("I am satisfied. I have seen enough. Now you can quit.")
-                2 -> sayThing("Don't you see how futile it is?")
-                3 -> sayThing("Give up.")
-                4 -> sayThing("Give up now.")
-                5 -> sayThing("You nasty pest.")
-                6 -> sayThing("GIVE UP!")
-                7 -> sayThing("I am tired of you. Time to get serious.")
-                8 -> sayThing("Games are over.")
-                9 -> sayThing("No, what? I can't lose! I am supreme!")
-            }
+            sayThing(update)
         } else if (game.enemyCResources.getDeckBack()?.second == true) {
             playAlarm()
         }
 
         if (game.playerCResources.deckSize == 0 && update == 0) {
-            // TODO: translate this too
-            sayThing("No-no-no, I am not done with you yet. Here, have some cards.")
+            sayThing(10)
             CardBack.classicDecks.forEach { back ->
                 game.playerCResources.addNewDeck(CustomDeck(back, false))
             }
