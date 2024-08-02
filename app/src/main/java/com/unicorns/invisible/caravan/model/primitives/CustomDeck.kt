@@ -32,7 +32,7 @@ class CustomDeck() {
 
     fun count(predicate: (Card) -> Boolean) = cards.count(predicate)
     fun firstOrNull() = cards.firstOrNull()
-    fun removeFirst() = cards.removeFirst()
+    fun removeFirst() = cards.removeAt(0)
 
     private fun getEqPredicate(it: Card): (Card) -> Boolean = { c ->
         it.suit == c.suit && it.back == c.back && it.rank == c.rank && it.isAlt == c.isAlt
@@ -49,4 +49,12 @@ class CustomDeck() {
     fun toList() = cards.toList()
 
     fun shuffle() = cards.shuffle()
+
+    fun copy(): CustomDeck {
+        val res = CustomDeck()
+        for (card in cards) {
+            res.add(Card(card.rank, card.suit, card.back, card.isAlt))
+        }
+        return res
+    }
 }

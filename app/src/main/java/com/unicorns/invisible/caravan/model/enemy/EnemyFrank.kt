@@ -11,6 +11,7 @@ import com.unicorns.invisible.caravan.model.primitives.Rank
 import com.unicorns.invisible.caravan.model.primitives.Suit
 import kotlinx.serialization.Serializable
 import kotlin.math.max
+import kotlin.random.Random
 
 
 @Serializable
@@ -234,6 +235,23 @@ data object EnemyFrank : Enemy() {
                             }
                         }
                     }
+                }
+            }
+        }
+
+
+        if (game.playerCResources.deckSize >= game.enemyCResources.deckSize) {
+            if (overWeightCaravans.isNotEmpty()) {
+                overWeightCaravans.maxBy { it.getValue() }.dropCaravan()
+                return
+            }
+            val caravan = game.enemyCaravans
+                .filter { it.getValue() !in (21..26) && !it.isEmpty() }
+                .minByOrNull { it.getValue() }
+            if (caravan != null) {
+                if (game.enemyCResources.deckSize == 0 || caravan.getValue() < 11) {
+                    caravan.dropCaravan()
+                    return
                 }
             }
         }

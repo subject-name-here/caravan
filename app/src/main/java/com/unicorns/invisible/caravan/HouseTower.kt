@@ -216,8 +216,10 @@ fun TowerScreen(
                 playFrankPhrase(activity, R.raw.frank_on_game_start)
                 levelMemory = level
                 level = 0
+                isGameRigged = false
                 activity.save?.let {
                     it.towerLevel = 0
+                    it.isGameRigged = false
                     saveOnGD(activity)
                 }
             }, {
@@ -239,11 +241,6 @@ fun TowerScreen(
             }) {
                 showGameLevel11 = false
                 isSoundEffectsReduced = false
-                isGameRigged = false
-                activity.save?.let {
-                    it.isGameRigged = false
-                    saveOnGD(activity)
-                }
 
                 CoroutineScope(Dispatchers.Unconfined).launch {
                     if (level == 0) {

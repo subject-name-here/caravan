@@ -41,7 +41,9 @@ class EnemyFinalBossStory(@Transient private var update: Int = 0) : Enemy() {
                 game.enemyCResources.addNewDeck(CustomDeck(CardBack.UNPLAYABLE, false))
                 game.enemyCResources.shuffleDeck()
             }
-            sayThing(update)
+            if (update <= 8) {
+                sayThing(update)
+            }
         } else if (game.enemyCResources.getDeckBack()?.second == true) {
             playAlarm()
         }

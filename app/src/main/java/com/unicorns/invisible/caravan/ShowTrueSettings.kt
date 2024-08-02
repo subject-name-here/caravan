@@ -46,6 +46,7 @@ import com.unicorns.invisible.caravan.utils.getTextStrokeColor
 import com.unicorns.invisible.caravan.utils.getTrackColor
 import com.unicorns.invisible.caravan.utils.playClickSound
 import com.unicorns.invisible.caravan.utils.playCloseSound
+import com.unicorns.invisible.caravan.utils.playYesBeep
 import com.unicorns.invisible.caravan.utils.scrollbar
 
 
@@ -193,20 +194,32 @@ fun ShowTrueSettings(
                                 .fillMaxWidth(0.33f)
                                 .padding(horizontal = 8.dp)
                                 .clickableOk(activity) { when (secretCode) {
-                                    101042 -> activity.save?.let {
-                                        it.towerLevel = 10
-                                        saveOnGD(activity)
+                                    101042 -> {
+                                        activity.save?.let {
+                                            it.towerLevel = 10
+                                            saveOnGD(activity)
+                                            playYesBeep(activity)
+                                        }
                                     }
                                     9941 -> {
                                         activity.save?.let {
                                             it.towerLevel = 9
                                             saveOnGD(activity)
+                                            playYesBeep(activity)
                                         }
                                     }
                                     65537 -> {
                                         activity.save?.let {
                                             it.towerLevel = 11
                                             saveOnGD(activity)
+                                            playYesBeep(activity)
+                                        }
+                                    }
+                                    666 -> {
+                                        activity.save?.let {
+                                            it.soOpen = true
+                                            saveOnGD(activity)
+                                            playYesBeep(activity)
                                         }
                                     }
                                 } }

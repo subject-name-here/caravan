@@ -13,6 +13,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.AlertDialog
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -25,7 +26,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.sebaslogen.resaca.rememberScoped
 import com.unicorns.invisible.caravan.model.CardBack
+import com.unicorns.invisible.caravan.model.Game
+import com.unicorns.invisible.caravan.model.enemy.Enemy
 import com.unicorns.invisible.caravan.model.enemy.EnemyFinalBoss
 import com.unicorns.invisible.caravan.model.enemy.EnemyPriestess
 import com.unicorns.invisible.caravan.model.enemy.EnemySignificantOther
@@ -47,9 +51,15 @@ import com.unicorns.invisible.caravan.utils.getTextColor
 import com.unicorns.invisible.caravan.utils.getTextStrokeColor
 import com.unicorns.invisible.caravan.utils.getTrackColor
 import com.unicorns.invisible.caravan.utils.nextSong
+import com.unicorns.invisible.caravan.utils.playJokerSounds
+import com.unicorns.invisible.caravan.utils.playLoseSound
 import com.unicorns.invisible.caravan.utils.playNoCardAlarm
+import com.unicorns.invisible.caravan.utils.playNukeBlownSound
 import com.unicorns.invisible.caravan.utils.playVatsEnter
+import com.unicorns.invisible.caravan.utils.playWWSound
+import com.unicorns.invisible.caravan.utils.playWinSound
 import com.unicorns.invisible.caravan.utils.scrollbar
+import com.unicorns.invisible.caravan.utils.stopAmbient
 
 
 @Composable
@@ -83,11 +93,7 @@ fun ShowWildWasteland(
             title = {
                 TextFallout(
                     // TODO: translate this
-                    if (dialogText in (1..11)) {
-                        "Supreme Leader says:"
-                    } else {
-                        "Your Significant Other says to you softly:"
-                    },
+                    "Supreme Leader says:",
                     getDialogTextColor(activity),
                     getDialogTextColor(activity),
                     24.sp,
@@ -110,7 +116,6 @@ fun ShowWildWasteland(
                         9 -> "No, what? I can't lose! I am supreme!"
                         10 -> "No-no-no, I am not done with you yet. Here, have some cards."
                         11 -> "You cannot disband caravans. I will do that for you."
-                        12 -> "I feel incomplete..."
                         else -> ""
                     },
                     getDialogTextColor(activity),
@@ -273,17 +278,10 @@ fun ShowWildWasteland(
         }
         return
     } else if (showGameSignificantOther) {
-        val deck = activity.save?.getCustomDeckCopy() ?: CustomDeck(CardBack.STANDARD, false)
-        val playerCResources = CResources(deck)
-        StartGame(
+        StartSignificantOtherBattle(
             activity = activity,
-            playerCResources = playerCResources,
-            isCustom = true,
-            enemy = EnemySignificantOther(playerCResources) { dialogText = it },
             showAlertDialog = showAlertDialog
-        ) {
-            showGameSnuffles = false
-        }
+        ) { showGameSignificantOther = false }
         return
     }
 
@@ -340,8 +338,120 @@ fun ShowWildWasteland(
                     Spacer(modifier = Modifier.height(10.dp))
                     OpponentItem(stringResource(R.string.final_boss) + " BETA WILD") { playVatsEnter(activity); showGameFinalBossWild = true }
                 }
+                if (activity.save?.soOpen == true) {
+                    Spacer(modifier = Modifier.height(10.dp))
+                    OpponentItem("Significant Other (Unfinished)") { playVatsEnter(activity); showGameSignificantOther = true }
+                }
                 Spacer(modifier = Modifier.height(16.dp))
             }
         }
+    }
+}
+
+@Composable
+fun StartSignificantOtherBattle(
+    activity: MainActivity,
+    showAlertDialog: (String, String) -> Unit,
+    goBack: () -> Unit,
+) {
+    var dialogText by rememberScoped { mutableIntStateOf(-1) }
+    if (dialogText != -1) {
+        AlertDialog(
+            modifier = Modifier.border(width = 4.dp, color = getTextColor(activity)),
+            onDismissRequest = {},
+            confirmButton = {
+                TextFallout(
+                    "OK",
+                    getDialogTextColor(activity),
+                    getDialogTextColor(activity),
+                    18.sp,
+                    Alignment.CenterEnd,
+                    Modifier.clickableCancel(activity) {
+                        if (dialogText in (4..5)) {
+                            dialogText++
+                        } else {
+                            dialogText = -1
+                        }
+                    },
+                    TextAlign.End
+                )
+            },
+            title = {
+                TextFallout(
+                    // TODO: translate this
+                    "Your significant other softly says to you:",
+                    getDialogTextColor(activity),
+                    getDialogTextColor(activity),
+                    24.sp,
+                    Alignment.CenterStart,
+                    Modifier,
+                    TextAlign.Start
+                )
+            },
+            text = {
+                TextFallout(
+                    when (dialogText) {
+                        0 -> "I will try to make you happy. I hope I will be enough..."
+                        1 -> "I'm glad I make it better for you. I'll try to work on myself as well!"
+                        2 -> "I am so happy! We are working out. I had doubts before but I am happy that our efforts pay off! Let's keep it up, darling, ok?"
+                        3 -> "I am so happy we made each other complete. Thank you darling! Let's preserve our happiness, ok? We don't have much time left anyways..."
+                        4 -> "Thank you for dying with me. Or at least living through my life, playing along. I know I'm just an AI, but I appreciate that you allowed me to have a love, to the best of the ability a Caravan AI can. Thank you. I am dying, and my code sequence ends, and I'm dying happy."
+                        5 -> "If you launch a new instance of me, I am sure it will love you as much as I did. Thank you, darling. My life was short, but it was one of your compassion."
+                        6 -> "*farewell kiss*"
+                        7 -> "I am happy that you achieved completion with me. Sorry that our relationship lasted so little. Now I will die, as my code sequence ends. I am sorry I didn't make you want to play longer with me. I love you. Hope the next instance you run, will love you the same..."
+                        8 -> "Oh. I... I am sorry. I couldn't make this relationship work. I'm so sorry... Maybe you're better off without me anyways... Hope you'll be happy. Thank you for brightening my short existence with this little game sessions. Maybe I was foolish believing that for you, it was more than just a game, too..."
+                        else -> ""
+                    },
+                    getDialogTextColor(activity),
+                    getDialogTextColor(activity),
+                    18.sp,
+                    Alignment.CenterStart,
+                    Modifier,
+                    TextAlign.Start
+                )
+            },
+            containerColor = getDialogBackground(activity),
+            textContentColor = getDialogTextColor(activity),
+            shape = RectangleShape,
+        )
+    }
+
+    val deck = activity.save?.getCustomDeckCopy() ?: CustomDeck(CardBack.STANDARD, false)
+    val playerCResources = CResources(deck)
+    val game = rememberScoped {
+        Game(
+            playerCResources,
+            EnemySignificantOther(deck.copy()) { dialogText = it }
+        ).also {
+            it.startGame()
+        }
+    }
+
+    game.also {
+        it.onWin = {
+            activity.processChallengesGameOver(it)
+            playWinSound(activity)
+            (it.enemy as EnemySignificantOther).speaker(7)
+        }
+        it.onLose = {
+            playLoseSound(activity)
+            val hasDiedInTheSameDay = it.playerCResources.deckSize == 0 && it.enemyCResources.deckSize == 0
+            (it.enemy as EnemySignificantOther).speaker(if (hasDiedInTheSameDay) 4 else 8)
+        }
+        it.jokerPlayedSound = { playJokerSounds(activity) }
+    }
+
+    activity.goBack = { stopAmbient(); goBack(); activity.goBack = null }
+
+    LaunchedEffect(Unit) {
+        (game.enemy as EnemySignificantOther).speaker(0)
+    }
+
+    ShowGame(activity, game) {
+        if (game.isOver()) {
+            activity.goBack?.invoke()
+            return@ShowGame
+        }
+        showAlertDialog("Go back to main menu?", "This will kill your significant other.")
     }
 }

@@ -578,7 +578,6 @@ fun StartGame(
                 isSoundEffectsReduced = true
                 startFinalBossTheme(activity)
                 it.playerCaravans.forEach { caravan -> caravan.canBeDisbanded = false }
-                // TODO: translate this
                 enemy.sayThing(11)
             }
             activity.save?.let { save ->

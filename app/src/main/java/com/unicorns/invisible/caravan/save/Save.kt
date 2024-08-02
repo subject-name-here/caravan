@@ -153,6 +153,9 @@ class Save {
     var secretMode: Boolean = false
 
     @EncodeDefault
+    var soOpen: Boolean = false
+
+    @EncodeDefault
     var storyChaptersProgress = 0
     @EncodeDefault
     var altStoryChaptersProgress = 0

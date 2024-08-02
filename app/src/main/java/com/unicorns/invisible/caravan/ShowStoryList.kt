@@ -676,7 +676,6 @@ fun ShowStoryChapter3(
     }
 }
 
-// TODO: screenshots!!!
 @Composable
 fun ShowStoryChapter4(
     activity: MainActivity,
@@ -803,8 +802,8 @@ fun ShowStoryChapter4(
                                 R.drawable.black_back
                             } else {
                                 when (lineNumber) {
-                                    -1 -> R.drawable.frank_head
-                                    -2 -> R.drawable.frank_head
+                                    -1 -> R.drawable.ch4_1
+                                    -2 -> R.drawable.ch4_2
                                     -3 -> R.drawable.ch3_1
                                     else -> R.drawable.black_back
                                 }
@@ -914,7 +913,13 @@ fun ShowStoryChapter5(
                     .padding(8.dp)
                     .paint(
                         painterResource(
-                            id = R.drawable.frank_head
+                            id = when (lineNumber) {
+                                0 -> R.drawable.black_back
+                                1 -> R.drawable.ch5_2
+                                2, 3, 15, 5, -1 -> R.drawable.ch5_3
+                                -2 -> R.drawable.ch5_win
+                                else -> R.drawable.black_back
+                            }
                         )
                     ))
 
@@ -985,6 +990,7 @@ fun ShowStoryChapter5(
     }
 }
 
+// TODO: screenshots!!!
 @Composable
 fun ShowStoryChapter6(
     activity: MainActivity,
@@ -1432,7 +1438,7 @@ fun ShowStoryChapter9(
     var dialogText by rememberSaveable { mutableIntStateOf(-1) }
     var isDistracted by rememberScoped { mutableIntStateOf(0) }
 
-    if (dialogText != 0) {
+    if (dialogText != -1) {
         AlertDialog(
             modifier = Modifier.border(width = 4.dp, color = getTextColor(activity)),
             onDismissRequest = {},
@@ -1469,6 +1475,7 @@ fun ShowStoryChapter9(
                         5 -> stringResource(R.string.ch9_m5)
                         6 -> stringResource(R.string.ch9_m6)
                         7 -> stringResource(R.string.ch9_m7)
+                        8 -> stringResource(R.string.ch9_m8)
                         else -> ""
                     },
                     getDialogTextColor(activity),
@@ -1607,7 +1614,6 @@ fun ShowStoryChapter9(
                         when (lineNumber) {
                             7 -> {
                                 DialogLine(activity, stringResource(R.string.ch9_q9)) {
-                                    isDistracted++
                                     lineNumber = 8
                                     text = activity.getString(R.string.ch9_t10)
                                 }

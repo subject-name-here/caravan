@@ -276,7 +276,7 @@ fun SetCustomDeck(
 fun ShowCharacteristics(activity: MainActivity) {
     Row(
         Modifier
-            .padding(8.dp)
+            .padding(6.dp)
             .fillMaxWidth()
             .wrapContentHeight(),
         verticalAlignment = Alignment.CenterVertically
@@ -284,23 +284,25 @@ fun ShowCharacteristics(activity: MainActivity) {
         val deck = activity.save?.getCustomDeckCopy() ?: CustomDeck()
         val deckSizeMin = MainActivity.MIN_DECK_SIZE
         val color1 = if (deck.size < deckSizeMin) Color.Red else getTextColor(activity)
+        val color2 = if (deck.size < deckSizeMin) Color.Red else getTextStrokeColor(activity)
         TextFallout(
             text = stringResource(R.string.custom_deck_size, deck.size, deckSizeMin),
             color1,
-            getTextStrokeColor(activity),
-            12.sp,
+            color2,
+            14.sp,
             Alignment.Center,
             Modifier.fillMaxWidth(0.5f),
             TextAlign.Center
         )
         val nonFaces = deck.count { !it.isFace() }
         val nonFacesMin = MainActivity.MIN_NUM_OF_NUMBERS
-        val color2 = if (nonFaces < nonFacesMin) Color.Red else getTextColor(activity)
+        val color3 = if (nonFaces < nonFacesMin) Color.Red else getTextColor(activity)
+        val color4 = if (nonFaces < nonFacesMin) Color.Red else getTextStrokeColor(activity)
         TextFallout(
             text = stringResource(R.string.custom_deck_non_faces, nonFaces, nonFacesMin),
-            color2,
-            getTextStrokeColor(activity),
-            12.sp,
+            color3,
+            color4,
+            14.sp,
             Alignment.Center,
             Modifier.fillMaxWidth(),
             TextAlign.Center,
