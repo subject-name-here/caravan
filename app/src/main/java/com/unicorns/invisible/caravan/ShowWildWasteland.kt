@@ -459,28 +459,39 @@ fun StartSignificantOtherBattle(
         showAlertDialog("Go back to main menu?", "This will kill your significant other.")
     }
 
-    if (gameOver == 1) {
-        Box(Modifier.fillMaxSize().paint(painterResource(R.drawable.so_lose), contentScale = ContentScale.FillBounds)) {}
-        LaunchedEffect(Unit) {
-            delay(1000L)
-            gameOver = 0
-            (game.enemy as EnemySignificantOther).speaker(7)
+    val key by rememberScoped { mutableIntStateOf((0..99).random()) }
+    when (gameOver) {
+        1 -> {
+            if (key == 0) {
+                Box(Modifier.fillMaxSize().paint(painterResource(R.drawable.so_lose), contentScale = ContentScale.FillBounds)) {}
+            }
+            LaunchedEffect(Unit) {
+                delay(1000L)
+                gameOver = 0
+                (game.enemy as EnemySignificantOther).speaker(7)
+            }
         }
-    } else if (gameOver == -1) {
-        val hasDiedInTheSameDay = game.playerCResources.deckSize == 0 && game.enemyCResources.deckSize == 0
-        val back = if (hasDiedInTheSameDay) R.drawable.so_win else R.drawable.so_lose
-        Box(Modifier.fillMaxSize().paint(painterResource(back), contentScale = ContentScale.FillBounds)) {}
-        LaunchedEffect(Unit) {
-            delay(1000L)
-            gameOver = 0
-            (game.enemy as EnemySignificantOther).speaker(if (hasDiedInTheSameDay) 4 else 8)
+        -1 -> {
+            val hasDiedInTheSameDay = game.playerCResources.deckSize == 0 && game.enemyCResources.deckSize == 0
+            val back = if (hasDiedInTheSameDay) R.drawable.so_win else R.drawable.so_lose
+            if (key == 0) {
+                Box(Modifier.fillMaxSize().paint(painterResource(back), contentScale = ContentScale.FillBounds)) {}
+            }
+            LaunchedEffect(Unit) {
+                delay(1000L)
+                gameOver = 0
+                (game.enemy as EnemySignificantOther).speaker(if (hasDiedInTheSameDay) 4 else 8)
+            }
         }
-    } else if (gameOver == -2) {
-        Box(Modifier.fillMaxSize().paint(painterResource(R.drawable.so_lose), contentScale = ContentScale.FillBounds)) {}
-        LaunchedEffect(Unit) {
-            delay(1000L)
-            gameOver = 0
-            stopAmbient(); goBack(); activity.goBack = null
+        -2 -> {
+            if (key == 0) {
+                Box(Modifier.fillMaxSize().paint(painterResource(R.drawable.so_lose), contentScale = ContentScale.FillBounds)) {}
+            }
+            LaunchedEffect(Unit) {
+                delay(1000L)
+                gameOver = 0
+                stopAmbient(); goBack(); activity.goBack = null
+            }
         }
     }
 }
