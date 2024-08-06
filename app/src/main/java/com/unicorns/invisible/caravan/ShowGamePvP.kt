@@ -88,6 +88,7 @@ fun afterPlayerMove(
             move.newCardInHandBack = -1
         }
         game.checkOnGameOver()
+        updateView()
 
         sendRequest(
             "$crvnUrl/crvn/move?room=$roomNumber" +

@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -21,7 +22,10 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.paint
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -29,7 +33,6 @@ import androidx.compose.ui.unit.sp
 import com.sebaslogen.resaca.rememberScoped
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
-import com.unicorns.invisible.caravan.model.enemy.Enemy
 import com.unicorns.invisible.caravan.model.enemy.EnemyFinalBoss
 import com.unicorns.invisible.caravan.model.enemy.EnemyPriestess
 import com.unicorns.invisible.caravan.model.enemy.EnemySignificantOther
@@ -54,12 +57,11 @@ import com.unicorns.invisible.caravan.utils.nextSong
 import com.unicorns.invisible.caravan.utils.playJokerSounds
 import com.unicorns.invisible.caravan.utils.playLoseSound
 import com.unicorns.invisible.caravan.utils.playNoCardAlarm
-import com.unicorns.invisible.caravan.utils.playNukeBlownSound
 import com.unicorns.invisible.caravan.utils.playVatsEnter
-import com.unicorns.invisible.caravan.utils.playWWSound
 import com.unicorns.invisible.caravan.utils.playWinSound
 import com.unicorns.invisible.caravan.utils.scrollbar
 import com.unicorns.invisible.caravan.utils.stopAmbient
+import kotlinx.coroutines.delay
 
 
 @Composable
@@ -340,7 +342,8 @@ fun ShowWildWasteland(
                 }
                 if (activity.save?.soOpen == true) {
                     Spacer(modifier = Modifier.height(10.dp))
-                    OpponentItem("Significant Other (Unfinished)") { playVatsEnter(activity); showGameSignificantOther = true }
+                    // TODO: translate
+                    OpponentItem("EXPERIMENT #666: Significant Other") { playVatsEnter(activity); showGameSignificantOther = true }
                 }
                 Spacer(modifier = Modifier.height(16.dp))
             }
@@ -355,6 +358,7 @@ fun StartSignificantOtherBattle(
     goBack: () -> Unit,
 ) {
     var dialogText by rememberScoped { mutableIntStateOf(-1) }
+    var gameOver by rememberScoped { mutableIntStateOf(0) }
     if (dialogText != -1) {
         AlertDialog(
             modifier = Modifier.border(width = 4.dp, color = getTextColor(activity)),
@@ -416,7 +420,8 @@ fun StartSignificantOtherBattle(
         )
     }
 
-    val deck = activity.save?.getCustomDeckCopy() ?: CustomDeck(CardBack.STANDARD, false)
+    val selectedDeck = activity.save?.selectedDeck ?: (CardBack.STANDARD to false)
+    val deck = CustomDeck(selectedDeck.first, selectedDeck.second)
     val playerCResources = CResources(deck)
     val game = rememberScoped {
         Game(
@@ -431,17 +436,16 @@ fun StartSignificantOtherBattle(
         it.onWin = {
             activity.processChallengesGameOver(it)
             playWinSound(activity)
-            (it.enemy as EnemySignificantOther).speaker(7)
+            gameOver = 1
         }
         it.onLose = {
             playLoseSound(activity)
-            val hasDiedInTheSameDay = it.playerCResources.deckSize == 0 && it.enemyCResources.deckSize == 0
-            (it.enemy as EnemySignificantOther).speaker(if (hasDiedInTheSameDay) 4 else 8)
+            gameOver = -1
         }
         it.jokerPlayedSound = { playJokerSounds(activity) }
     }
 
-    activity.goBack = { stopAmbient(); goBack(); activity.goBack = null }
+    activity.goBack = { gameOver = -2 }
 
     LaunchedEffect(Unit) {
         (game.enemy as EnemySignificantOther).speaker(0)
@@ -449,9 +453,34 @@ fun StartSignificantOtherBattle(
 
     ShowGame(activity, game) {
         if (game.isOver()) {
-            activity.goBack?.invoke()
+            stopAmbient(); activity.goBack = null; goBack()
             return@ShowGame
         }
         showAlertDialog("Go back to main menu?", "This will kill your significant other.")
+    }
+
+    if (gameOver == 1) {
+        Box(Modifier.fillMaxSize().paint(painterResource(R.drawable.so_lose), contentScale = ContentScale.FillBounds)) {}
+        LaunchedEffect(Unit) {
+            delay(1000L)
+            gameOver = 0
+            (game.enemy as EnemySignificantOther).speaker(7)
+        }
+    } else if (gameOver == -1) {
+        val hasDiedInTheSameDay = game.playerCResources.deckSize == 0 && game.enemyCResources.deckSize == 0
+        val back = if (hasDiedInTheSameDay) R.drawable.so_win else R.drawable.so_lose
+        Box(Modifier.fillMaxSize().paint(painterResource(back), contentScale = ContentScale.FillBounds)) {}
+        LaunchedEffect(Unit) {
+            delay(1000L)
+            gameOver = 0
+            (game.enemy as EnemySignificantOther).speaker(if (hasDiedInTheSameDay) 4 else 8)
+        }
+    } else if (gameOver == -2) {
+        Box(Modifier.fillMaxSize().paint(painterResource(R.drawable.so_lose), contentScale = ContentScale.FillBounds)) {}
+        LaunchedEffect(Unit) {
+            delay(1000L)
+            gameOver = 0
+            stopAmbient(); goBack(); activity.goBack = null
+        }
     }
 }

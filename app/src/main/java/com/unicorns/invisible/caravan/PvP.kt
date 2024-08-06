@@ -333,6 +333,19 @@ fun ShowPvP(
                 repeat(enemyDeck.size) {
                     deck.add(enemyDeck[it])
                 }
+                if (checkedWild) {
+                    deck.apply {
+                        add(Card(Rank.ACE, Suit.HEARTS, CardBack.WILD_WASTELAND, true))
+                        add(Card(Rank.ACE, Suit.CLUBS, CardBack.WILD_WASTELAND, true))
+                        add(Card(Rank.ACE, Suit.DIAMONDS, CardBack.WILD_WASTELAND, true))
+                        add(Card(Rank.KING, Suit.HEARTS, CardBack.WILD_WASTELAND, false))
+                        add(Card(Rank.KING, Suit.CLUBS, CardBack.WILD_WASTELAND, false))
+                        add(Card(Rank.KING, Suit.DIAMONDS, CardBack.WILD_WASTELAND, false))
+                        add(Card(Rank.KING, Suit.SPADES, CardBack.WILD_WASTELAND, false))
+                        add(Card(Rank.JACK, Suit.HEARTS, CardBack.WILD_WASTELAND, false))
+                        add(Card(Rank.QUEEN, Suit.HEARTS, CardBack.WILD_WASTELAND, false))
+                    }
+                }
                 deck
             },
             roomNumber = isRoomCreated,
