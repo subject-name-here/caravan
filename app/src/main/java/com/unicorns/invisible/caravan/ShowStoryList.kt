@@ -990,7 +990,6 @@ fun ShowStoryChapter5(
     }
 }
 
-// TODO: screenshots!!!
 @Composable
 fun ShowStoryChapter6(
     activity: MainActivity,
@@ -1100,7 +1099,23 @@ fun ShowStoryChapter6(
                     .padding(8.dp)
                     .paint(
                         painterResource(
-                            id = R.drawable.frank_head
+                            id = when (gameResult) {
+                                in listOf(-1, 2) -> {
+                                    R.drawable.black_back
+                                }
+                                1 -> {
+                                    R.drawable.ch6_5
+                                }
+                                else -> {
+                                    when (lineNumber) {
+                                        0, 3 -> R.drawable.ch6_1
+                                        1, 2 -> R.drawable.ch6_2
+                                        4 -> R.drawable.ch6_3
+                                        5 -> R.drawable.ch6_4
+                                        else -> R.drawable.black_back
+                                    }
+                                }
+                            }
                         )
                     ))
 
@@ -1229,7 +1244,17 @@ fun ShowStoryChapter7(
                     .padding(8.dp)
                     .paint(
                         painterResource(
-                            id = R.drawable.frank_head
+                            id = if (gameResult == -1) {
+                                R.drawable.black_back
+                            } else {
+                                when (lineNumber) {
+                                    0 -> R.drawable.ch7_0
+                                    1 -> R.drawable.ch7_1
+                                    2, -2 -> R.drawable.ch7_2
+                                    -1 -> R.drawable.ch7_3
+                                    else -> R.drawable.black_back
+                                }
+                            }
                         )
                     ))
 
@@ -1343,7 +1368,19 @@ fun ShowStoryChapter8(
                     .padding(8.dp)
                     .paint(
                         painterResource(
-                            id = R.drawable.frank_head
+                            id = if (gameResult < 0) {
+                                R.drawable.black_back
+                            } else {
+                                when (lineNumber) {
+                                    0 -> R.drawable.ch8_0
+                                    1 -> R.drawable.ch7_0
+                                    2, 3 -> R.drawable.black_back
+                                    4 -> R.drawable.ch7_2
+                                    5, 6 -> R.drawable.ch8_1
+                                    -1 -> R.drawable.ch8_2
+                                    else -> R.drawable.black_back
+                                }
+                            }
                         )
                     ))
 
@@ -1544,7 +1581,21 @@ fun ShowStoryChapter9(
                     .padding(8.dp)
                     .paint(
                         painterResource(
-                            id = R.drawable.frank_head
+                            id = if (gameResult < 0) {
+                                R.drawable.black_back
+                            } else {
+                                when (lineNumber) {
+                                    0, 1, 2, 3 -> R.drawable.ch9_1
+                                    4, 5, 6 -> R.drawable.ch4_1
+                                    7, 8, 9 -> R.drawable.ch9_2
+                                    10, 11, 12 -> R.drawable.ch9_3
+                                    13, 14, 15 -> R.drawable.ch9_4
+                                    -1 -> R.drawable.ch9_win
+                                    -2 -> R.drawable.ch9_end
+                                    -3, 16, 17 -> R.drawable.black_back
+                                    else -> R.drawable.black_back
+                                }
+                            }
                         )
                     ))
 
@@ -1732,7 +1783,17 @@ fun ShowStoryChapter10(
                     .padding(8.dp)
                     .paint(
                         painterResource(
-                            id = R.drawable.frank_head
+                            when (lineNumber) {
+                                0 -> R.drawable.ch7_0
+                                1, 2 -> R.drawable.ch9_win
+                                3 -> R.drawable.ch7_2
+                                4, 5 -> R.drawable.black_back
+                                6 -> R.drawable.black_back
+                                7 -> R.drawable.ch7_3
+                                8 -> R.drawable.ch1_1
+                                -1 -> R.drawable.black_back
+                                else -> R.drawable.black_back
+                            }
                         )
                     )
             )
@@ -1760,7 +1821,6 @@ fun ShowStoryChapter10(
                             text = activity.getString(R.string.ch10_t2)
                         }
                         1 -> DialogLine(activity, stringResource(R.string.ch10_q), isSelect = false) {
-                            slide()
                             lineNumber = 2
                             text = activity.getString(R.string.ch10_t3)
                         }
@@ -1775,7 +1835,6 @@ fun ShowStoryChapter10(
                             text = activity.getString(R.string.ch10_t5)
                         }
                         4 -> DialogLine(activity, stringResource(R.string.ch10_q), isSelect = false) {
-                            slide()
                             lineNumber = 5
                             text = activity.getString(R.string.ch10_t6)
                         }
@@ -1863,7 +1922,21 @@ fun ShowStoryChapter9A(
                     .padding(8.dp)
                     .paint(
                         painterResource(
-                            id = R.drawable.frank_head
+                            id = if (gameResult == -1) {
+                                R.drawable.black_back
+                            } else {
+                                when (lineNumber) {
+                                    0, 1 -> R.drawable.ch9_1
+                                    2 -> R.drawable.ch4_1
+                                    3 -> R.drawable.ch9_4
+                                    4 -> R.drawable.ch9_2
+                                    5 -> R.drawable.ch9_3
+                                    6 -> R.drawable.ch7_3
+                                    -2 -> R.drawable.ch9_1
+                                    -3 -> R.drawable.ch4_1
+                                    else -> R.drawable.black_back
+                                }
+                            }
                         )
                     ))
 
