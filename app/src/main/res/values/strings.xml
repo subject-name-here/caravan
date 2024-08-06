@@ -640,5 +640,31 @@
     <string name="ch9a_q7">NOW WE ARE TRULY UNITED. WELCOME, THE PROSPECTOR.</string>
     <string name="ch9a_t8">The Prospector… The Supreme Leader - together they will bring peace to the entire planet.</string>
 
+    <string name="supreme_leader_says_header">Supreme Leader says:</string>
+    <string name="supreme_leader_says_1">I am satisfied. I have seen enough. Now you can quit.</string>
+    <string name="supreme_leader_says_2">Don\'t you see how futile it is?</string>
+    <string name="supreme_leader_says_3">Give up.</string>
+    <string name="supreme_leader_says_4">Give up now.</string>
+    <string name="supreme_leader_says_5">You nasty pest.</string>
+    <string name="supreme_leader_says_6">GIVE UP!</string>
+    <string name="supreme_leader_says_7">I am tired of you. Time to get serious.</string>
+    <string name="supreme_leader_says_8">Games are over.</string>
+    <string name="supreme_leader_says_9">No, what? I can\'t lose! I am supreme!</string>
+    <string name="supreme_leader_says_10">No-no-no, I am not done with you yet. Here, have some cards.</string>
+    <string name="supreme_leader_says_11">You cannot disband caravans. I will do that for you.</string>
+    <string name="enemy_significant_other" translatable="false">EXPERIMENT #666: Significant Other</string>
+    <string name="so_header" translatable="false">Your significant other softly says to you:</string>
+    <string name="so_0" translatable="false">I will try to make you happy. I hope I will be enough…</string>
+    <string name="so_1" translatable="false">I\'m glad I make it better for you. I\'ll try to work on myself as well!</string>
+    <string name="so_2" translatable="false">I am so happy! We are working out. I had doubts before but I am happy that our efforts pay off! Let\'s keep it up, darling, ok?</string>
+    <string name="so_3" translatable="false">I am so happy we made each other complete. Thank you darling! Let\'s preserve our happiness, ok? We don\'t have much time left anyways…</string>
+    <string name="so_4" translatable="false">Thank you for dying with me. Or at least living through my life, playing along. I know I\'m just an AI, but I appreciate that you allowed me to have a love, to the best of the ability a Caravan AI can. Thank you. I am dying, and my code sequence ends, and I\'m dying happy.</string>
+    <string name="so_5" translatable="false">If you launch a new instance of me, I am sure it will love you as much as I did. Thank you, darling. My life was short, but it was one of your compassion.</string>
+    <string name="so_6" translatable="false">*farewell kiss*</string>
+    <string name="so_7" translatable="false">I am happy that you achieved completion with me. Sorry that our relationship lasted so little. Now I will die, as my code sequence ends. I am sorry I didn\'t make you want to play longer with me. I love you. Hope the next instance you run, will love you the same…</string>
+    <string name="so_8" translatable="false">Oh. I… I am sorry. I couldn\'t make this relationship work. I\'m so sorry… Maybe you\'re better off without me anyways… Hope you\'ll be happy. Thank you for brightening my short existence with this little game sessions. Maybe I was foolish believing that for you, it was more than just a game, too…</string>
+    <string name="so_back_header" translatable="false">Go back to main menu?</string>
+    <string name="so_back_body" translatable="false">This will kill your significant other.</string>
+
 
 </resources>

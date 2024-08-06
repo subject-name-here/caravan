@@ -639,6 +639,17 @@
     <string name="ch9a_q7">ТЕПЕРЬ МЫ ПО-НАСТОЯЩЕМУ ЕДИНЫ. ДОБРО ПОЖАЛОВАТЬ, СТАРАТЕЛЬ.</string>
     <string name="ch9a_t8">Старатель… Верховный Лидер - вместе они принесут мир всей планете.</string>
 
-
+    <string name="supreme_leader_says_header">Верховный Лидер:</string>
+    <string name="supreme_leader_says_1">Я удовлетворён. Я видел достаточно. Можешь сдаваться.</string>
+    <string name="supreme_leader_says_2">Ты разве не видишь, насколько это бессмысленно?</string>
+    <string name="supreme_leader_says_3">Сдавайся.</string>
+    <string name="supreme_leader_says_4">Сейчас же сдавайся.</string>
+    <string name="supreme_leader_says_5">Ты назойлив как муха.</string>
+    <string name="supreme_leader_says_6">СДАВАЙСЯ!</string>
+    <string name="supreme_leader_says_7">Ты утомил меня. Пора играть по-серьёзному.</string>
+    <string name="supreme_leader_says_8">Больше никаких игр.</string>
+    <string name="supreme_leader_says_9">Что? Я не могу проиграть! Я - Верховный Лидер!</string>
+    <string name="supreme_leader_says_10">Нет-нет, я не закончил с тобой. Вот тебе ещё карты.</string>
+    <string name="supreme_leader_says_11">Ты не можешь распускать караваны. Я сделаю это за тебя.</string>
 
 </resources>

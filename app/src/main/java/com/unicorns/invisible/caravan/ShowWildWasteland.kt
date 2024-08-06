@@ -94,8 +94,7 @@ fun ShowWildWasteland(
             },
             title = {
                 TextFallout(
-                    // TODO: translate this
-                    "Supreme Leader says:",
+                    stringResource(R.string.supreme_leader_says_header),
                     getDialogTextColor(activity),
                     getDialogTextColor(activity),
                     24.sp,
@@ -107,17 +106,17 @@ fun ShowWildWasteland(
             text = {
                 TextFallout(
                     when (dialogText) {
-                        1 -> "I am satisfied. I have seen enough. Now you can quit."
-                        2 -> "Don't you see how futile it is?"
-                        3 -> "Give up."
-                        4 -> "Give up now."
-                        5 -> "You nasty pest."
-                        6 -> "GIVE UP!"
-                        7 -> "I am tired of you. Time to get serious."
-                        8 -> "Games are over."
-                        9 -> "No, what? I can't lose! I am supreme!"
-                        10 -> "No-no-no, I am not done with you yet. Here, have some cards."
-                        11 -> "You cannot disband caravans. I will do that for you."
+                        1 -> stringResource(R.string.supreme_leader_says_1)
+                        2 -> stringResource(R.string.supreme_leader_says_2)
+                        3 -> stringResource(R.string.supreme_leader_says_3)
+                        4 -> stringResource(R.string.supreme_leader_says_4)
+                        5 -> stringResource(R.string.supreme_leader_says_5)
+                        6 -> stringResource(R.string.supreme_leader_says_6)
+                        7 -> stringResource(R.string.supreme_leader_says_7)
+                        8 -> stringResource(R.string.supreme_leader_says_8)
+                        9 -> stringResource(R.string.supreme_leader_says_9)
+                        10 -> stringResource(R.string.supreme_leader_says_10)
+                        11 -> stringResource(R.string.supreme_leader_says_11)
                         else -> ""
                     },
                     getDialogTextColor(activity),
@@ -342,8 +341,7 @@ fun ShowWildWasteland(
                 }
                 if (activity.save?.soOpen == true) {
                     Spacer(modifier = Modifier.height(10.dp))
-                    // TODO: translate
-                    OpponentItem("EXPERIMENT #666: Significant Other") { playVatsEnter(activity); showGameSignificantOther = true }
+                    OpponentItem(stringResource(R.string.enemy_significant_other)) { playVatsEnter(activity); showGameSignificantOther = true }
                 }
                 Spacer(modifier = Modifier.height(16.dp))
             }
@@ -382,8 +380,7 @@ fun StartSignificantOtherBattle(
             },
             title = {
                 TextFallout(
-                    // TODO: translate this
-                    "Your significant other softly says to you:",
+                    stringResource(R.string.so_header),
                     getDialogTextColor(activity),
                     getDialogTextColor(activity),
                     24.sp,
@@ -395,15 +392,15 @@ fun StartSignificantOtherBattle(
             text = {
                 TextFallout(
                     when (dialogText) {
-                        0 -> "I will try to make you happy. I hope I will be enough..."
-                        1 -> "I'm glad I make it better for you. I'll try to work on myself as well!"
-                        2 -> "I am so happy! We are working out. I had doubts before but I am happy that our efforts pay off! Let's keep it up, darling, ok?"
-                        3 -> "I am so happy we made each other complete. Thank you darling! Let's preserve our happiness, ok? We don't have much time left anyways..."
-                        4 -> "Thank you for dying with me. Or at least living through my life, playing along. I know I'm just an AI, but I appreciate that you allowed me to have a love, to the best of the ability a Caravan AI can. Thank you. I am dying, and my code sequence ends, and I'm dying happy."
-                        5 -> "If you launch a new instance of me, I am sure it will love you as much as I did. Thank you, darling. My life was short, but it was one of your compassion."
-                        6 -> "*farewell kiss*"
-                        7 -> "I am happy that you achieved completion with me. Sorry that our relationship lasted so little. Now I will die, as my code sequence ends. I am sorry I didn't make you want to play longer with me. I love you. Hope the next instance you run, will love you the same..."
-                        8 -> "Oh. I... I am sorry. I couldn't make this relationship work. I'm so sorry... Maybe you're better off without me anyways... Hope you'll be happy. Thank you for brightening my short existence with this little game sessions. Maybe I was foolish believing that for you, it was more than just a game, too..."
+                        0 -> stringResource(R.string.so_0)
+                        1 -> stringResource(R.string.so_1)
+                        2 -> stringResource(R.string.so_2)
+                        3 -> stringResource(R.string.so_3)
+                        4 -> stringResource(R.string.so_4)
+                        5 -> stringResource(R.string.so_5)
+                        6 -> stringResource(R.string.so_6)
+                        7 -> stringResource(R.string.so_7)
+                        8 -> stringResource(R.string.so_8)
                         else -> ""
                     },
                     getDialogTextColor(activity),
@@ -456,14 +453,23 @@ fun StartSignificantOtherBattle(
             stopAmbient(); activity.goBack = null; goBack()
             return@ShowGame
         }
-        showAlertDialog("Go back to main menu?", "This will kill your significant other.")
+        showAlertDialog(
+            activity.getString(R.string.so_back_header),
+            activity.getString(R.string.so_back_body)
+        )
     }
 
     val key by rememberScoped { mutableIntStateOf((0..99).random()) }
     when (gameOver) {
         1 -> {
             if (key == 0) {
-                Box(Modifier.fillMaxSize().paint(painterResource(R.drawable.so_lose), contentScale = ContentScale.FillBounds)) {}
+                Box(
+                    Modifier
+                        .fillMaxSize()
+                        .paint(
+                            painterResource(R.drawable.so_lose),
+                            contentScale = ContentScale.FillBounds
+                        )) {}
             }
             LaunchedEffect(Unit) {
                 delay(1000L)
@@ -475,7 +481,10 @@ fun StartSignificantOtherBattle(
             val hasDiedInTheSameDay = game.playerCResources.deckSize == 0 && game.enemyCResources.deckSize == 0
             val back = if (hasDiedInTheSameDay) R.drawable.so_win else R.drawable.so_lose
             if (key == 0) {
-                Box(Modifier.fillMaxSize().paint(painterResource(back), contentScale = ContentScale.FillBounds)) {}
+                Box(
+                    Modifier
+                        .fillMaxSize()
+                        .paint(painterResource(back), contentScale = ContentScale.FillBounds)) {}
             }
             LaunchedEffect(Unit) {
                 delay(1000L)
@@ -485,7 +494,13 @@ fun StartSignificantOtherBattle(
         }
         -2 -> {
             if (key == 0) {
-                Box(Modifier.fillMaxSize().paint(painterResource(R.drawable.so_lose), contentScale = ContentScale.FillBounds)) {}
+                Box(
+                    Modifier
+                        .fillMaxSize()
+                        .paint(
+                            painterResource(R.drawable.so_lose),
+                            contentScale = ContentScale.FillBounds
+                        )) {}
             }
             LaunchedEffect(Unit) {
                 delay(1000L)
