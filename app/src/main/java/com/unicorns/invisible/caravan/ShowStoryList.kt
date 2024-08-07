@@ -1374,7 +1374,8 @@ fun ShowStoryChapter8(
                                 when (lineNumber) {
                                     0 -> R.drawable.ch8_0
                                     1 -> R.drawable.ch7_0
-                                    2, 3 -> R.drawable.black_back
+                                    2 -> R.drawable.ch8_0a
+                                    3 -> R.drawable.ch8_0d
                                     4 -> R.drawable.ch7_2
                                     5, 6 -> R.drawable.ch8_1
                                     -1 -> R.drawable.ch8_2
@@ -1787,7 +1788,8 @@ fun ShowStoryChapter10(
                                 0 -> R.drawable.ch7_0
                                 1, 2 -> R.drawable.ch9_win
                                 3 -> R.drawable.ch7_2
-                                4, 5 -> R.drawable.black_back
+                                4 -> R.drawable.ch8_0e
+                                5 -> R.drawable.ch8_0c
                                 6 -> R.drawable.black_back
                                 7 -> R.drawable.ch7_3
                                 8 -> R.drawable.ch1_1
@@ -1835,6 +1837,7 @@ fun ShowStoryChapter10(
                             text = activity.getString(R.string.ch10_t5)
                         }
                         4 -> DialogLine(activity, stringResource(R.string.ch10_q), isSelect = false) {
+                            slide()
                             lineNumber = 5
                             text = activity.getString(R.string.ch10_t6)
                         }
@@ -1933,7 +1936,7 @@ fun ShowStoryChapter9A(
                                     5 -> R.drawable.ch9_3
                                     6 -> R.drawable.ch7_3
                                     -2 -> R.drawable.ch9_1
-                                    -3 -> R.drawable.ch4_1
+                                    -3 -> R.drawable.ch8_0b
                                     else -> R.drawable.black_back
                                 }
                             }
