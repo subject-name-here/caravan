@@ -196,6 +196,13 @@ class MainActivity : SaveDataActivity() {
             R.string.intro_tip_17,
             R.string.intro_tip_vault,
             R.string.intro_tip_desert,
+            R.string.intro_tip_arctic,
+            R.string.intro_tip_blitz,
+            R.string.intro_tip_enclave,
+            R.string.intro_tip_new_world,
+            R.string.intro_tip_snuffles,
+            R.string.intro_tip_tower,
+            R.string.intro_tip_ww,
         ).random()
 
         setContent {
@@ -1006,8 +1013,6 @@ class MainActivity : SaveDataActivity() {
                         }
                         MenuItem(stringResource(R.string.lucky_38_blitz), showHouseBlitz)
                         Spacer(modifier = Modifier.height(16.dp))
-//                        MenuItem(stringResource(R.string.menu_roguelike), showRoguelike)
-//                        Spacer(modifier = Modifier.height(16.dp))
                         MenuItem(stringResource(R.string.menu_pvp), showPvP)
                         Spacer(modifier = Modifier.height(16.dp))
                         MenuItem(stringResource(R.string.menu_tutorial), showTutorial)

@@ -256,6 +256,14 @@
     <string name="intro_tip_vault">Знали ли вы, что в мире Fallout 122 убежища? Всего 17 из них не были экспериментами над постояльцами..</string>
     <string name="intro_tip_desert">Касадоры легко могут убить Когтя Смерти (или даже двух). Представьте, что они сделают с вашим хрупким тельцем.</string>
 
+    <string name="intro_tip_arctic">В 2066 китайские войска вторглись в северную Аляску для доступа к нефти, но позже были оттуда изгнаны.</string>
+    <string name="intro_tip_tower">Старый враг ожидает вас на вершине БАШНИ…</string>
+    <string name="intro_tip_ww">Завершите Главу 5 Сюжета, чтобы получить доступ к Дикой Пустоши!</string>
+    <string name="intro_tip_blitz">Когда играете в БЛИЦ, помните, что неважно, насколько хорошо вы играете - казино всегда выигрывает.</string>
+    <string name="intro_tip_snuffles">Snuffle!</string>
+    <string name="intro_tip_new_world">НКР и Легион, несмотря на разногласия, имеют общих врагов. Один из них - Братство Стали.</string>
+    <string name="intro_tip_enclave">Анклав всё еще живой? Кто бы мог подумать?</string>
+
 
     <string name="tap_to_play">Нажмите, чтобы играть</string>
 

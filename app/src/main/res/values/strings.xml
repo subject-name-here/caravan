@@ -280,6 +280,14 @@
 
     <string name="intro_tip_vault">Did you know that there are 122 vaults in the Fallout world? Only 17 of them were not experimenting on their inhabitants.</string>
     <string name="intro_tip_desert">Cazadors can easily tear down a deathclaw or two. Imagine what they can do to your puny fragile body.</string>
+    <string name="intro_tip_arctic">In 2066, Chinese forces invaded northern Alaska for access to oil, but were eventually chased away.</string>
+    <string name="intro_tip_tower">Some claim that at the top of the TOWER an old enemy awaits you…</string>
+    <string name="intro_tip_ww">Complete Chapter 5 of Story to get access to Wild Wasteland!</string>
+    <string name="intro_tip_blitz">When playing BLITZ, it is vital to remember that it doesn\'t matter how good you are - House always wins.</string>
+    <string name="intro_tip_snuffles">Snuffle!</string>
+    <string name="intro_tip_new_world">NCR and Legion, despite having some disagreements, have common enemies. Brotherhood of Steel is one of them.</string>
+    <string name="intro_tip_enclave">Enclave is still around, huh? Who could have thought?</string>
+
 
     <string name="tap_to_play">Tap to Play</string>
 

@@ -478,7 +478,7 @@ fun StartSignificantOtherBattle(
             }
         }
         -1 -> {
-            val hasDiedInTheSameDay = game.playerCResources.deckSize == 0 && game.enemyCResources.deckSize == 0
+            val hasDiedInTheSameDay = game.playerCResources.hand.isEmpty() && game.enemyCResources.hand.isEmpty()
             val back = if (hasDiedInTheSameDay) R.drawable.so_win else R.drawable.so_lose
             if (key == 0) {
                 Box(
