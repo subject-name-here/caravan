@@ -627,8 +627,7 @@ fun Hand(
         val itemVerticalOffsetMovingOut = remember { Animatable(0f) }
 
         var recomposeKey by remember { mutableStateOf(false) }
-        LaunchedEffect(recomposeKey) { }
-
+        LaunchedEffect(recomposeKey) {}
         val isAnyMovingIn = memCards.any { it.handAnimationMark.isMovingIn() }
         val isAnyMovingOut = memCards.any { it.handAnimationMark.isMovingOut() }
 
@@ -904,8 +903,10 @@ fun RowScope.CaravanOnField(
                             }
                         }
 
-                        caravan.cards.forEachIndexed { index, it ->
-                            CardInCaravan(it, index)
+                        key(caravansKey) {
+                            caravan.cards.forEachIndexed { index, it ->
+                                CardInCaravan(it, index)
+                            }
                         }
                     } else {
                         val memCards = remember { mutableObjectListOf<CardWithModifier>() }
@@ -915,7 +916,7 @@ fun RowScope.CaravanOnField(
                         val animationIn = remember { Animatable(3f) }
                         val animationOut = remember { Animatable(0f) }
                         var recomposeKey by remember { mutableStateOf(false) }
-                        LaunchedEffect(recomposeKey, caravansKey) {}
+                        LaunchedEffect(recomposeKey) {}
 
                         val isAnyMovingIn = memCards.any {
                             it.card.caravanAnimationMark.isMovingIn() ||
@@ -1084,8 +1085,10 @@ fun RowScope.CaravanOnField(
                             }
                         }
 
-                        memCards.forEachIndexed { index, it ->
-                            CardInCaravan(it, index)
+                        key(caravansKey, recomposeKey) {
+                            memCards.forEachIndexed { index, it ->
+                                CardInCaravan(it, index)
+                            }
                         }
                     }
 
@@ -1387,7 +1390,9 @@ fun Caravans(
                         )
                     },
                     { card ->
-                        addCardToPlayerCaravan(it, card)
+                        if (isPlayersTurn()) {
+                            addCardToPlayerCaravan(it, card)
+                        }
                     },
                     caravansKey
                 )

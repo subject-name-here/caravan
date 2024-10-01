@@ -14,6 +14,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -46,30 +47,31 @@ fun ShowDailys(
 ) {
     val mainState = rememberLazyListState()
     var updateKey by remember { mutableStateOf(false) }
-    LaunchedEffect(updateKey) {}
 
     MenuItemOpen(activity, stringResource(R.string.missions), "<-", goBack) {
-        LazyColumn(
-            Modifier
-                .fillMaxSize()
-                .background(getBackgroundColor(activity))
-                .padding(horizontal = 16.dp)
-                .scrollbar(
-                    mainState,
-                    horizontal = false,
-                    knobColor = getKnobColor(activity),
-                    trackColor = getTrackColor(activity)
-                ),
-            mainState,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            item {
-                Spacer(Modifier.height(16.dp))
-                activity.save?.challenges?.forEach { challenge ->
-                    ShowChallenge(activity, challenge, challenge.isCompleted()) {
-                        updateKey = !updateKey
-                    }
+        key(updateKey) {
+            LazyColumn(
+                Modifier
+                    .fillMaxSize()
+                    .background(getBackgroundColor(activity))
+                    .padding(horizontal = 16.dp)
+                    .scrollbar(
+                        mainState,
+                        horizontal = false,
+                        knobColor = getKnobColor(activity),
+                        trackColor = getTrackColor(activity)
+                    ),
+                mainState,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                item {
                     Spacer(Modifier.height(16.dp))
+                    activity.save?.challenges?.forEach { challenge ->
+                        ShowChallenge(activity, challenge, challenge.isCompleted()) {
+                            updateKey = !updateKey
+                        }
+                        Spacer(Modifier.height(16.dp))
+                    }
                 }
             }
         }

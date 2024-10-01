@@ -12,6 +12,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -48,68 +49,69 @@ fun ShowStyles(
 ) {
     var styleInt by rememberSaveable { mutableStateOf(getStyle()) }
     val mainState = rememberLazyListState()
-    LaunchedEffect(styleInt) {}
 
-    MenuItemOpen(activity, stringResource(R.string.themes), "<-", goBack) {
-        LazyColumn(
-            Modifier
-                .fillMaxSize()
-                .background(getBackgroundColor(activity))
-                .scrollbar(
-                    mainState,
-                    horizontal = false,
-                    knobColor = getKnobColor(activity),
-                    trackColor = getTrackColor(activity)
-                ),
-            mainState,
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            item {
-                TextFallout(
-                    stringResource(R.string.caps, activity.save?.caps ?: 0),
-                    getTextColor(activity),
-                    getTextStrokeColor(activity),
-                    24.sp,
-                    Alignment.Center,
-                    Modifier.fillMaxWidth().padding(top = 8.dp),
-                    TextAlign.Center
-                )
+    key(styleInt) {
+        MenuItemOpen(activity, stringResource(R.string.themes), "<-", goBack) {
+            LazyColumn(
+                Modifier
+                    .fillMaxSize()
+                    .background(getBackgroundColor(activity))
+                    .scrollbar(
+                        mainState,
+                        horizontal = false,
+                        knobColor = getKnobColor(activity),
+                        trackColor = getTrackColor(activity)
+                    ),
+                mainState,
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                item {
+                    TextFallout(
+                        stringResource(R.string.caps, activity.save?.caps ?: 0),
+                        getTextColor(activity),
+                        getTextStrokeColor(activity),
+                        24.sp,
+                        Alignment.Center,
+                        Modifier.fillMaxWidth().padding(top = 8.dp),
+                        TextAlign.Center
+                    )
 
-                Style.entries.forEach { style ->
-                    if (style == Style.ENCLAVE && activity.save?.isEnclaveThemeAvailable != true) {
-                        return@forEach
-                    }
-                    ShowStyle(
-                        activity, style,
-                        style in activity.save!!.ownedStyles,
-                        style.ordinal == activity.save!!.styleId
-                    ) {
-                        if (style !in activity.save!!.ownedStyles) {
-                            if (activity.save!!.caps >= style.price) {
-                                activity.save!!.ownedStyles.add(style)
-                                activity.save!!.caps -= style.price
+                    Style.entries.forEach { style ->
+                        if (style == Style.ENCLAVE && activity.save?.isEnclaveThemeAvailable != true) {
+                            return@forEach
+                        }
+                        ShowStyle(
+                            activity, style,
+                            style in activity.save!!.ownedStyles,
+                            style.ordinal == activity.save!!.styleId
+                        ) {
+                            if (style !in activity.save!!.ownedStyles) {
+                                if (activity.save!!.caps >= style.price) {
+                                    activity.save!!.ownedStyles.add(style)
+                                    activity.save!!.caps -= style.price
+                                    styleInt = style
+                                    selectStyle(style.ordinal)
+                                    showAlertDialog(
+                                        activity.getString(R.string.transaction_succeeded),
+                                        activity.getString(
+                                            R.string.you_have_bought_style,
+                                            activity.getString(style.styleNameId)
+                                        )
+                                    )
+                                    playPimpBoySound(activity)
+                                } else {
+                                    showAlertDialog(
+                                        activity.getString(R.string.transaction_failed),
+                                        activity.getString(
+                                            R.string.not_enough_caps
+                                        )
+                                    )
+                                }
+                            } else if (style.ordinal != activity.save!!.styleId) {
                                 styleInt = style
                                 selectStyle(style.ordinal)
-                                showAlertDialog(
-                                    activity.getString(R.string.transaction_succeeded),
-                                    activity.getString(
-                                        R.string.you_have_bought_style,
-                                        activity.getString(style.styleNameId)
-                                    )
-                                )
-                                playPimpBoySound(activity)
-                            } else {
-                                showAlertDialog(
-                                    activity.getString(R.string.transaction_failed),
-                                    activity.getString(
-                                        R.string.not_enough_caps
-                                    )
-                                )
                             }
-                        } else if (style.ordinal != activity.save!!.styleId) {
-                            styleInt = style
-                            selectStyle(style.ordinal)
                         }
                     }
                 }

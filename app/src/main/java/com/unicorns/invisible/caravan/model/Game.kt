@@ -158,8 +158,8 @@ class Game(
         }
 
         CoroutineScope(Dispatchers.Default).launch {
-            processMove(playerCResources)
             isPlayerTurn = false
+            processMove(playerCResources)
 
             if (checkOnGameOver()) {
                 updateView()
