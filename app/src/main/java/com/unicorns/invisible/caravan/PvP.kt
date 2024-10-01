@@ -632,19 +632,17 @@ fun StartPvP(
         goBack()
     }
 
-    var enemyHandKey by remember { mutableStateOf(true) }
-    fun updateEnemyHand() {
-        enemyHandKey = !enemyHandKey
-    }
-
-    var caravansKey by remember { mutableStateOf(true) }
+    var caravansKey by rememberSaveable { mutableIntStateOf(0) }
+    var enemyHandKey by rememberSaveable { mutableIntStateOf(0) }
+    var playerHandKey by rememberSaveable { mutableIntStateOf(0) }
     fun updateCaravans() {
-        caravansKey = !caravansKey
+        caravansKey++
     }
-
-    var playerHandKey by remember { mutableStateOf(true) }
+    fun updateEnemyHand() {
+        enemyHandKey++
+    }
     fun updatePlayerHand() {
-        playerHandKey = !playerHandKey
+        playerHandKey++
     }
 
     fun pingForMove(sendHandCard: () -> Unit) {

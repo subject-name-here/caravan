@@ -54,7 +54,6 @@ import com.unicorns.invisible.caravan.save.saveOnGD
 import com.unicorns.invisible.caravan.utils.CheckboxCustom
 import com.unicorns.invisible.caravan.utils.MenuItemOpen
 import com.unicorns.invisible.caravan.utils.TextFallout
-import com.unicorns.invisible.caravan.utils.clickableCancel
 import com.unicorns.invisible.caravan.utils.getBackgroundColor
 import com.unicorns.invisible.caravan.utils.getCardPrice
 import com.unicorns.invisible.caravan.utils.getDividerColor
@@ -692,8 +691,8 @@ fun winCard(
     val deckOld = deckList.filter { !checkCard(it) }
     val deckNew = deckList - deckOld.toSet()
     val prob = when {
-        isCustom -> if (numberOfCards == 1) 45 else 35
-        else -> if (numberOfCards == 1) 60 else 50
+        isCustom -> if (numberOfCards == 1) 50 else 40
+        else -> if (numberOfCards == 1) 65 else 55
     }
     val reward = run {
         val probs = (0 until numberOfCards).map {

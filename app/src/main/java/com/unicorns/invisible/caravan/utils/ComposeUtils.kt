@@ -503,7 +503,6 @@ fun MenuItemOpen(
     goBack: () -> Unit,
     mainBlock: @Composable () -> Unit
 ) {
-
     Scaffold(bottomBar = {
         Row(Modifier
             .fillMaxWidth()

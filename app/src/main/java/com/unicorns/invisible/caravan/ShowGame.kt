@@ -103,9 +103,18 @@ fun ShowGame(activity: MainActivity, game: Game, isBlitz: Boolean = false, onMov
     var selectedCard by remember { mutableStateOf<Int?>(null) }
     var selectedCaravan by remember { mutableIntStateOf(-1) }
 
-    var caravansKey by rememberSaveable { mutableStateOf(true) }
-    var enemyHandKey by rememberSaveable { mutableStateOf(true) }
-    var playerHandKey by rememberSaveable { mutableStateOf(true) }
+    var caravansKey by rememberSaveable { mutableIntStateOf(0) }
+    var enemyHandKey by rememberSaveable { mutableIntStateOf(0) }
+    var playerHandKey by rememberSaveable { mutableIntStateOf(0) }
+    fun updateCaravans() {
+        caravansKey++
+    }
+    fun updateEnemyHand() {
+        enemyHandKey++
+    }
+    fun updatePlayerHand() {
+        playerHandKey++
+    }
 
     val animationSpeed by rememberSaveable { mutableStateOf(
         if (isBlitz) AnimationSpeed.NONE else activity.save?.animationSpeed ?: AnimationSpeed.NORMAL
@@ -139,17 +148,7 @@ fun ShowGame(activity: MainActivity, game: Game, isBlitz: Boolean = false, onMov
             playSelectSound(activity)
         }
         selectedCard = null
-        caravansKey = !caravansKey
-    }
-
-    fun updateCaravans() {
-        caravansKey = !caravansKey
-    }
-    fun updateEnemyHand() {
-        enemyHandKey = !enemyHandKey
-    }
-    fun updatePlayerHand() {
-        playerHandKey = !playerHandKey
+        updateCaravans()
     }
 
     fun resetSelected() {
@@ -278,9 +277,9 @@ fun ShowGameRaw(
     addCardToCaravan: (Caravan, Int, Int, Boolean) -> Unit,
     dropCardFromHand: () -> Unit,
     dropCaravan: () -> Unit,
-    enemyHandKey: Boolean,
-    caravansKey: Boolean,
-    playerHandKey: Boolean,
+    enemyHandKey: Int,
+    caravansKey: Int,
+    playerHandKey: Int,
 ) {
     var ambientStartedFlag by rememberSaveable { mutableStateOf(false) }
     if (!ambientStartedFlag) {
@@ -494,7 +493,7 @@ fun EnemySide(
     getEnemySymbol: () -> String,
     game: Game,
     fillHeight: Float,
-    enemyHandKey: Boolean
+    enemyHandKey: Int
 ) {
     Row(
         modifier = Modifier
@@ -537,7 +536,7 @@ fun PlayerSide(
     selectedCard: Int?,
     onCardClicked: (Int) -> Unit,
     getMySymbol: () -> String, setMySymbol: () -> Unit,
-    playerHandKey: Boolean,
+    playerHandKey: Int,
 ) {
     val selectedCardColor = getGameSelectionColor(activity)
     Row(
@@ -622,6 +621,7 @@ fun Hand(
 
         val memCards = remember { mutableObjectListOf<Card>() }
         memCards.addAll(cards - memCards.asMutableList().toSet())
+        memCards.removeIf { it.handAnimationMark == Card.AnimationMark.MOVED_OUT }
 
         val itemVerticalOffsetMovingIn = remember { Animatable(2.5f * enemyMult) }
         val itemVerticalOffsetMovingOut = remember { Animatable(0f) }
@@ -678,6 +678,10 @@ fun Hand(
                     memCards.removeIf { it.handAnimationMark.isMovingOut() }
                     recomposeKey = !recomposeKey
                 }
+            }
+        } else {
+            if (isAnyMovingIn || isAnyMovingOut) {
+                recomposeKey = !recomposeKey
             }
         }
 
@@ -779,7 +783,7 @@ fun RowScope.CaravanOnField(
     canPutSelectedCardOnTop: () -> Int,
     selectCaravan: () -> Unit = {},
     addSelectedCardOnPosition: (Int) -> Unit,
-    caravansKey: Boolean,
+    caravansKey: Int,
 ) {
     val enemyMult = if (isEnemy) -1 else 1
     var width by remember { mutableIntStateOf(0) }
@@ -867,11 +871,11 @@ fun RowScope.CaravanOnField(
                                     val scaleHeightOffset = placeable.height / 2 - placeableHeight / 2
                                     val layoutFullHeight = if (isEnemy) {
                                         max(
-                                            placeableHeight / 3 * (caravan.cards.size + 2),
+                                            placeableHeight / 3 * (caravan.size + 2),
                                             state.layoutInfo.viewportSize.height - 1
                                         )
                                     } else {
-                                        placeableHeight / 3 * (caravan.cards.size + 3)
+                                        placeableHeight / 3 * (caravan.size + 3)
                                     }
                                     val offsetWidth = constraints.maxWidth / 2 - placeable.width / 2
                                     val antiOffsetHeight = if (isEnemy)
@@ -906,11 +910,12 @@ fun RowScope.CaravanOnField(
                     } else {
                         val memCards = remember { mutableObjectListOf<CardWithModifier>() }
                         memCards.addAll(caravan.cards - memCards.asMutableList().toSet())
+                        memCards.removeIf { it.card.caravanAnimationMark == Card.AnimationMark.MOVED_OUT }
 
                         val animationIn = remember { Animatable(3f) }
                         val animationOut = remember { Animatable(0f) }
                         var recomposeKey by remember { mutableStateOf(false) }
-                        LaunchedEffect(recomposeKey xor caravansKey) { }
+                        LaunchedEffect(recomposeKey, caravansKey) {}
 
                         val isAnyMovingIn = memCards.any {
                             it.card.caravanAnimationMark.isMovingIn() ||
@@ -1227,7 +1232,7 @@ fun Caravans(
     isGameOver: () -> Boolean,
     getPlayerCaravan: (Int) -> Caravan,
     getEnemyCaravan: (Int) -> Caravan,
-    caravansKey: Boolean
+    caravansKey: Int
 ) {
     val enemyCaravanFillHeight = if (isMaxHeight) 0.36f else 0.425f
     Column(
