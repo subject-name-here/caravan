@@ -1,5 +1,6 @@
 package com.unicorns.invisible.caravan
 
+import android.annotation.SuppressLint
 import androidx.collection.mutableObjectListOf
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.TweenSpec
@@ -103,7 +104,8 @@ fun ShowGame(activity: MainActivity, game: Game, isBlitz: Boolean = false, onMov
     var selectedCaravan by remember { mutableIntStateOf(-1) }
 
     var caravansKey by rememberSaveable { mutableStateOf(true) }
-    var enemyHandKey by rememberSaveable { mutableIntStateOf(0) }
+    var enemyHandKey by rememberSaveable { mutableStateOf(true) }
+    var playerHandKey by rememberSaveable { mutableStateOf(true) }
 
     val animationSpeed by rememberSaveable { mutableStateOf(
         if (isBlitz) AnimationSpeed.NONE else activity.save?.animationSpeed ?: AnimationSpeed.NORMAL
@@ -143,9 +145,11 @@ fun ShowGame(activity: MainActivity, game: Game, isBlitz: Boolean = false, onMov
     fun updateCaravans() {
         caravansKey = !caravansKey
     }
-
     fun updateEnemyHand() {
-        enemyHandKey = 1 - enemyHandKey
+        enemyHandKey = !enemyHandKey
+    }
+    fun updatePlayerHand() {
+        playerHandKey = !playerHandKey
     }
 
     fun resetSelected() {
@@ -158,9 +162,10 @@ fun ShowGame(activity: MainActivity, game: Game, isBlitz: Boolean = false, onMov
         playVatsReady(activity)
         game.playerCResources.dropCardFromHand(selectedCardNN)
         resetSelected()
+        updatePlayerHand()
         onMove()
         game.afterPlayerMove(
-            { updateEnemyHand(); updateCaravans() },
+            { updateEnemyHand(); updateCaravans(); updatePlayerHand() },
             animationSpeed
         )
     }
@@ -172,9 +177,10 @@ fun ShowGame(activity: MainActivity, game: Game, isBlitz: Boolean = false, onMov
         activity.processChallengesMove(Challenge.Move(moveCode = 1), game)
         game.playerCaravans[selectedCaravanNN].dropCaravan()
         resetSelected()
+        updateCaravans()
         onMove()
         game.afterPlayerMove(
-            { updateEnemyHand(); updateCaravans() },
+            { updateEnemyHand(); updateCaravans(); updatePlayerHand() },
             animationSpeed
         )
     }
@@ -182,9 +188,10 @@ fun ShowGame(activity: MainActivity, game: Game, isBlitz: Boolean = false, onMov
     fun addCardToCaravan(caravan: Caravan, position: Int, isEnemy: Boolean) {
         fun onCaravanCardInserted() {
             resetSelected()
+            updatePlayerHand()
             onMove()
             game.afterPlayerMove(
-                { updateEnemyHand(); updateCaravans() },
+                { updateEnemyHand(); updateCaravans(); updatePlayerHand() },
                 animationSpeed
             )
         }
@@ -247,10 +254,13 @@ fun ShowGame(activity: MainActivity, game: Game, isBlitz: Boolean = false, onMov
         { a1, _, a3, a4 -> addCardToCaravan(a1, a3, a4) },
         ::dropCardFromHand,
         ::dropCaravan,
-        enemyHandKey
+        enemyHandKey,
+        caravansKey,
+        playerHandKey
     )
 }
 
+@SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
 fun ShowGameRaw(
     activity: MainActivity,
@@ -268,7 +278,9 @@ fun ShowGameRaw(
     addCardToCaravan: (Caravan, Int, Int, Boolean) -> Unit,
     dropCardFromHand: () -> Unit,
     dropCaravan: () -> Unit,
-    enemyHandKey: Int
+    enemyHandKey: Boolean,
+    caravansKey: Boolean,
+    playerHandKey: Boolean,
 ) {
     var ambientStartedFlag by rememberSaveable { mutableStateOf(false) }
     if (!ambientStartedFlag) {
@@ -396,7 +408,7 @@ fun ShowGameRaw(
                                 fillHeight = 0.45f,
                                 enemyHandKey
                             )
-                            PlayerSide(activity, animationSpeed, isPvP, game, selectedCard, onCardClicked, getMySymbol, setMySymbol)
+                            PlayerSide(activity, animationSpeed, isPvP, game, selectedCard, onCardClicked, getMySymbol, setMySymbol, playerHandKey)
                         }
                         Caravans(
                             activity,
@@ -422,6 +434,7 @@ fun ShowGameRaw(
                             { game.isOver() },
                             { num -> game.playerCaravans[num] },
                             { num -> game.enemyCaravans[num] },
+                            caravansKey
                         )
                     }
                 } else {
@@ -463,8 +476,9 @@ fun ShowGameRaw(
                             { game.isOver() },
                             { num -> game.playerCaravans[num] },
                             { num -> game.enemyCaravans[num] },
+                            caravansKey
                         )
-                        PlayerSide(activity, animationSpeed, isPvP, game, selectedCard, onCardClicked, getMySymbol, setMySymbol)
+                        PlayerSide(activity, animationSpeed, isPvP, game, selectedCard, onCardClicked, getMySymbol, setMySymbol, playerHandKey)
                     }
                 }
             }
@@ -480,7 +494,7 @@ fun EnemySide(
     getEnemySymbol: () -> String,
     game: Game,
     fillHeight: Float,
-    enemyHandKey: Int
+    enemyHandKey: Boolean
 ) {
     Row(
         modifier = Modifier
@@ -522,7 +536,8 @@ fun PlayerSide(
     game: Game,
     selectedCard: Int?,
     onCardClicked: (Int) -> Unit,
-    getMySymbol: () -> String, setMySymbol: () -> Unit
+    getMySymbol: () -> String, setMySymbol: () -> Unit,
+    playerHandKey: Boolean,
 ) {
     val selectedCardColor = getGameSelectionColor(activity)
     Row(
@@ -536,27 +551,29 @@ fun PlayerSide(
             selectedCardColor,
             onCardClicked
         )
-        Box {
-            ShowDeck(game.playerCResources, activity)
-            if (isPvP) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(Color.Transparent),
-                    contentAlignment = Alignment.BottomCenter
-                ) {
-                    TextSymbola(
-                        getMySymbol(),
-                        getTextColor(activity),
-                        24.sp,
-                        Alignment.BottomCenter,
-                        Modifier
-                            .background(getTextBackgroundColor(activity))
-                            .clickableOk(activity) {
-                                setMySymbol()
-                            },
-                        TextAlign.Center
-                    )
+        key(playerHandKey) {
+            Box {
+                ShowDeck(game.playerCResources, activity)
+                if (isPvP) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(Color.Transparent),
+                        contentAlignment = Alignment.BottomCenter
+                    ) {
+                        TextSymbola(
+                            getMySymbol(),
+                            getTextColor(activity),
+                            24.sp,
+                            Alignment.BottomCenter,
+                            Modifier
+                                .background(getTextBackgroundColor(activity))
+                                .clickableOk(activity) {
+                                    setMySymbol()
+                                },
+                            TextAlign.Center
+                        )
+                    }
                 }
             }
         }
@@ -581,6 +598,7 @@ fun RowOfEnemyCards(activity: MainActivity, animationSpeed: AnimationSpeed, card
 }
 
 
+@SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
 fun Hand(
     activity: MainActivity,
@@ -761,6 +779,7 @@ fun RowScope.CaravanOnField(
     canPutSelectedCardOnTop: () -> Int,
     selectCaravan: () -> Unit = {},
     addSelectedCardOnPosition: (Int) -> Unit,
+    caravansKey: Boolean,
 ) {
     val enemyMult = if (isEnemy) -1 else 1
     var width by remember { mutableIntStateOf(0) }
@@ -891,7 +910,7 @@ fun RowScope.CaravanOnField(
                         val animationIn = remember { Animatable(3f) }
                         val animationOut = remember { Animatable(0f) }
                         var recomposeKey by remember { mutableStateOf(false) }
-                        LaunchedEffect(recomposeKey) { }
+                        LaunchedEffect(recomposeKey xor caravansKey) { }
 
                         val isAnyMovingIn = memCards.any {
                             it.card.caravanAnimationMark.isMovingIn() ||
@@ -1207,7 +1226,8 @@ fun Caravans(
     canDiscard: () -> Boolean,
     isGameOver: () -> Boolean,
     getPlayerCaravan: (Int) -> Caravan,
-    getEnemyCaravan: (Int) -> Caravan
+    getEnemyCaravan: (Int) -> Caravan,
+    caravansKey: Boolean
 ) {
     val enemyCaravanFillHeight = if (isMaxHeight) 0.36f else 0.425f
     Column(
@@ -1231,10 +1251,12 @@ fun Caravans(
                     isInitStage = getIsInitStage(),
                     enemyStates[it],
                     { -1 },
-                    {}
-                ) { card ->
-                    addCardToEnemyCaravan(it, card)
-                }
+                    {},
+                    { card ->
+                        addCardToEnemyCaravan(it, card)
+                    },
+                    caravansKey
+                )
             }
 
             Box(Modifier.weight(0.25f))
@@ -1244,29 +1266,31 @@ fun Caravans(
             Modifier
                 .fillMaxWidth()
                 .height(52.dp)) {
-            Column(
-                Modifier
-                    .fillMaxHeight()
-                    .weight(0.75f)) {
-                Row(
+            key(caravansKey) {
+                Column(
                     Modifier
-                        .fillMaxWidth()
-                        .height(24.dp)) {
-                    repeat(3) {
-                        val caravan = getEnemyCaravan(it)
-                        val opposingValue = getPlayerCaravan(it).getValue()
-                        Score(activity, it, caravan, opposingValue)
+                        .fillMaxHeight()
+                        .weight(0.75f)) {
+                    Row(
+                        Modifier
+                            .fillMaxWidth()
+                            .height(24.dp)) {
+                        repeat(3) {
+                            val caravan = getEnemyCaravan(it)
+                            val opposingValue = getPlayerCaravan(it).getValue()
+                            Score(activity, it, caravan, opposingValue)
+                        }
                     }
-                }
-                HorizontalDivider(thickness = 4.dp, color = getGameDividerColor(activity))
-                Row(
-                    Modifier
-                        .fillMaxWidth()
-                        .height(24.dp)) {
-                    repeat(3) {
-                        val caravan = getPlayerCaravan(it)
-                        val opposingValue = getEnemyCaravan(it).getValue()
-                        Score(activity, it + 3, caravan, opposingValue)
+                    HorizontalDivider(thickness = 4.dp, color = getGameDividerColor(activity))
+                    Row(
+                        Modifier
+                            .fillMaxWidth()
+                            .height(24.dp)) {
+                        repeat(3) {
+                            val caravan = getPlayerCaravan(it)
+                            val opposingValue = getEnemyCaravan(it).getValue()
+                            Score(activity, it + 3, caravan, opposingValue)
+                        }
                     }
                 }
             }
@@ -1356,10 +1380,12 @@ fun Caravans(
                                 it
                             }
                         )
-                    }
-                ) { card ->
-                    addCardToPlayerCaravan(it, card)
-                }
+                    },
+                    { card ->
+                        addCardToPlayerCaravan(it, card)
+                    },
+                    caravansKey
+                )
             }
             Box(Modifier.weight(0.25f))
         }

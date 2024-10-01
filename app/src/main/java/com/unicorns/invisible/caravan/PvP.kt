@@ -642,7 +642,10 @@ fun StartPvP(
         caravansKey = !caravansKey
     }
 
-    LaunchedEffect(caravansKey, enemyHandKey) {}
+    var playerHandKey by remember { mutableStateOf(true) }
+    fun updatePlayerHand() {
+        playerHandKey = !playerHandKey
+    }
 
     fun pingForMove(sendHandCard: () -> Unit) {
         val link = "$crvnUrl/crvn/get_move?room=$roomNumber" +
@@ -700,6 +703,7 @@ fun StartPvP(
 
     fun sendHandCard() {
         val card = game.playerCResources.addCardToHandPvPInit()
+        updatePlayerHand()
         if (card == null) {
             game.isCorrupted = true
             return
@@ -741,8 +745,11 @@ fun StartPvP(
         roomNumber,
         showAlertDialog,
         enemyHandKey,
+        caravansKey,
+        playerHandKey,
         ::updateEnemyHand,
-        ::updateCaravans
+        ::updateCaravans,
+        ::updatePlayerHand
     ) lambda@{
         if (game.isOver()) {
             activity.goBack?.invoke()

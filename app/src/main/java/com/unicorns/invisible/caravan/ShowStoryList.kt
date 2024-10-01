@@ -330,9 +330,10 @@ fun ShowStoryChapter1(
     var isGame by rememberSaveable { mutableStateOf(false) }
     var gameResult by rememberSaveable { mutableIntStateOf(0) }
     if (isGame) {
-        StartTowerGame(
+        StartStoryGame(
             activity,
             EnemyStory1,
+            CResources(activity.save?.getCustomDeckCopy() ?: CustomDeck(CardBack.STANDARD, false)),
             showAlertDialog,
             {},
             { gameResult = 1; advanceChapter() },
@@ -449,9 +450,10 @@ fun ShowStoryChapter2(
     var isGame by rememberSaveable { mutableStateOf(false) }
     var gameResult by rememberSaveable { mutableIntStateOf(0) }
     if (isGame) {
-        StartTowerGame(
+        StartStoryGame(
             activity,
             EnemyStory2,
+            CResources(activity.save?.getCustomDeckCopy() ?: CustomDeck(CardBack.STANDARD, false)),
             showAlertDialog,
             {},
             { gameResult = 1; advanceChapter() },
@@ -1055,9 +1057,10 @@ fun ShowStoryChapter6(
 
     if (isGame) {
         val enemy = EnemyStory6 { messageNumber = it }
-        StartTowerGame(
+        StartStoryGame(
             activity,
             enemy,
+            CResources(activity.save?.getCustomDeckCopy() ?: CustomDeck(CardBack.STANDARD, false)),
             showAlertDialog,
             {},
             { gameResult = 2 },
@@ -1207,9 +1210,10 @@ fun ShowStoryChapter7(
     var isGame by rememberSaveable { mutableStateOf(false) }
     var gameResult by rememberSaveable { mutableIntStateOf(0) }
     if (isGame) {
-        StartTowerGame(
+        StartStoryGame(
             activity,
             EnemyStory7,
+            CResources(activity.save?.getCustomDeckCopy() ?: CustomDeck(CardBack.STANDARD, false)),
             showAlertDialog,
             {},
             { gameResult = 1; advanceChapter() },
@@ -1324,9 +1328,10 @@ fun ShowStoryChapter8(
     var gameResult by rememberSaveable { mutableIntStateOf(0) }
     if (isGame) {
         val enemy by rememberScoped { mutableStateOf(EnemyStory8()) }
-        StartTowerGame(
+        StartStoryGame(
             activity,
             enemy,
+            CResources(activity.save?.getCustomDeckCopy() ?: CustomDeck(CardBack.STANDARD, false)),
             showAlertDialog,
             {},
             { gameResult = 1; advanceChapter() },

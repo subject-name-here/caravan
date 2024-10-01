@@ -192,8 +192,11 @@ fun ShowGamePvP(
     roomNumber: Int,
     showAlert: (String, String) -> Unit,
     enemyHandKey: Boolean,
+    caravansKey: Boolean,
+    playerHandKey: Boolean,
     updateEnemyHand: () -> Unit,
     updateCaravans: () -> Unit,
+    updatePlayerHand: () -> Unit,
     goBack: () -> Unit,
 ) {
     val speed = activity.save?.animationSpeed ?: AnimationSpeed.NORMAL
@@ -246,6 +249,10 @@ fun ShowGamePvP(
         }
     }
 
+    fun updateAll() {
+        updateEnemyHand(); updateCaravans(); updatePlayerHand()
+    }
+
     fun resetSelected() {
         selectedCaravan = -1
         selectedCard = null
@@ -262,14 +269,14 @@ fun ShowGamePvP(
             moveCode = 2,
             handCardNumber = selectedCardNN,
         ), chosenSymbol,
-            { updateCaravans(); updateEnemyHand() },
+            ::updateAll,
             ::corruptGame,
             {
                 pingForMove(
                     game, speed, roomNumber, isCreator,
                     { enemyChosenSymbol = it },
                     ::corruptGame,
-                    { updateCaravans(); updateEnemyHand() },
+                    ::updateAll,
                     {
                         if (it) {
                             timeOnTimerTrigger = !timeOnTimerTrigger
@@ -293,14 +300,14 @@ fun ShowGamePvP(
             moveCode = 1,
             caravanCode = selectedCaravanNN,
         ), chosenSymbol,
-            { updateCaravans(); updateEnemyHand() },
+            ::updateAll,
             ::corruptGame,
             {
                 pingForMove(
                     game, speed, roomNumber, isCreator,
                     { enemyChosenSymbol = it },
                     ::corruptGame,
-                    { updateCaravans(); updateEnemyHand() },
+                    ::updateAll,
                     {
                         if (it) {
                             timeOnTimerTrigger = !timeOnTimerTrigger
@@ -327,14 +334,14 @@ fun ShowGamePvP(
                     handCardNumber = cardIndex,
                     caravanCode = caravanIndex
                 ), chosenSymbol,
-                    { updateCaravans(); updateEnemyHand() },
+                    ::updateAll,
                     ::corruptGame,
                     {
                         pingForMove(
                             game, speed, roomNumber, isCreator,
                             { enemyChosenSymbol = it },
                             ::corruptGame,
-                            { updateCaravans(); updateEnemyHand() },
+                            ::updateAll,
                             {
                                 if (it) {
                                     timeOnTimerTrigger = !timeOnTimerTrigger
@@ -350,14 +357,14 @@ fun ShowGamePvP(
                     cardInCaravanNumber = cardInCaravan,
                     caravanCode = if (isEnemy) (-3 + caravanIndex) else caravanIndex
                 ), chosenSymbol,
-                    { updateCaravans(); updateEnemyHand() },
+                    ::updateAll,
                     ::corruptGame,
                     {
                         pingForMove(
                             game, speed, roomNumber, isCreator,
                             { enemyChosenSymbol = it },
                             ::corruptGame,
-                            { updateCaravans(); updateEnemyHand() },
+                            ::updateAll,
                             {
                                 if (it) {
                                     timeOnTimerTrigger = !timeOnTimerTrigger
@@ -442,7 +449,7 @@ fun ShowGamePvP(
         ::onCardClicked,
         selectedCard,
         getSelectedCaravan = { selectedCaravan },
-        setSelectedCaravan = lambda@{
+        setSelectedCaravan = lambda@ {
             if (game.isOver()) {
                 return@lambda
             }
@@ -458,7 +465,9 @@ fun ShowGamePvP(
         ::addCardToCaravan,
         ::dropCardFromHand,
         ::dropCaravan,
-        if (enemyHandKey) 0 else 1,
+        enemyHandKey,
+        caravansKey,
+        playerHandKey
     )
 
     key(timeOnTimer) {

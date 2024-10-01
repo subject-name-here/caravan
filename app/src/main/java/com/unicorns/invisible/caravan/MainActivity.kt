@@ -690,8 +690,16 @@ class MainActivity : SaveDataActivity() {
                     }
 
                     showStoryMode -> {
-                        ShowStoryList(this@MainActivity, ::showAlertDialog) {
+                        if (!checkIfCustomDeckCanBeUsedInGame(CResources(save?.getCustomDeckCopy() ?: CustomDeck()))) {
+                            showAlertDialog(
+                                stringResource(R.string.custom_deck_is_too_small),
+                                stringResource(R.string.custom_deck_is_too_small_message)
+                            )
                             showStoryMode = false
+                        } else {
+                            ShowStoryList(this@MainActivity, ::showAlertDialog) {
+                                showStoryMode = false
+                            }
                         }
                     }
 

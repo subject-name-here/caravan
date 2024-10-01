@@ -13,7 +13,7 @@ class Caravan {
     val size: Int
         get() = cardsMutable.size
 
-    fun isEmpty() = cardsMutable.size == 0
+    fun isEmpty() = size == 0
     fun isFull() = size >= 10
     var canBeDisbanded = true
 
