@@ -97,11 +97,7 @@ fun BlitzScreen(
     var time by rememberSaveable { mutableStateOf(BlitzTime.FAST) }
     var bet by rememberSaveable { mutableIntStateOf(30) }
 
-    var checkedCustomDeck by rememberSaveable {
-        mutableStateOf(
-            activity.save?.useCustomDeck ?: false
-        )
-    }
+    var checkedCustomDeck by rememberSaveable { mutableStateOf(activity.save?.useCustomDeck == true) }
     fun getPlayerDeck(): CResources {
         return if (checkedCustomDeck)
             CResources(activity.save?.getCustomDeckCopy() ?: CustomDeck(CardBack.STANDARD, false))
@@ -491,7 +487,7 @@ fun StartBlitz(
 
     activity.goBack = { stopAmbient(); goBack(); activity.goBack = null }
 
-    ShowGame(activity, game, isBlitz = true, ::onMove) {
+    ShowGame(activity, game, isBlitz = true, { onMove() }) {
         if (game.isOver()) {
             activity.goBack?.invoke()
             return@ShowGame

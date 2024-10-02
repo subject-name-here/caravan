@@ -566,6 +566,13 @@
 
     <string name="ch9_mh">Supreme Leader says:</string>
     <string name="ch9_m0">It\'s a shame it has to end this way. You would be a valuable addition to my mind.</string>
+    <string name="ch9_m100">Okay, this is the final fight. I hope you have brought the biggest, the toughest custom deck.</string>
+    <string name="ch9_m101">The Supreme Leader\'s chamber is filled with radiation, which changes the rules juuuust a little bit.</string>
+    <string name="ch9_m102">Zero: every time Supreme Leader uses bomb, you get extra cards. The bigger was your caravan (but less or equal than 26) - the better cards you get.</string>
+    <string name="ch9_m103">One: every Jack you play gives you extra card.</string>
+    <string name="ch9_m104">Two: every Queen you play adds 2 extra seconds to a timer.</string>
+    <string name="ch9_m105">Three: every Joker you play adds 3 extra seconds to timer and gives you extra card.</string>
+    <string name="ch9_m106">Finally, there is a timer. When it reaches zero, Prospector dies due to radiation poisoning. Good luck!</string>
     <string name="ch9_m1">My resources are infinite. Yours - are not.</string>
     <string name="ch9_m2">The whole China is against you. Don\'t you see how futile it is?</string>
     <string name="ch9_m3">Resisting is illogical. You are fighting against the brighter future for humanity.</string>
@@ -574,7 +581,7 @@
     <string name="ch9_m6">That\'s… that\'s not right. Where are my resources?</string>
     <string name="ch9_m7">You. It\'s all you, isn\'t it?\nYou doomed us. You doomed everyone.</string>
     <string name="ch9_m8">Give up, before you take away humanity\'s last chance on bright future…</string>
-    <string name="ch9_win">With the help of paladin, who cut out important cables, The Prospector managed to outmaneuver the mechanical appendages of the Supreme Leader, hitting the nuclear core of the facility. It initiated a chain reaction, which resulted in a blast.</string>
+    <string name="ch9_win">With the help of paladin, who cut off important cables, The Prospector managed to outmaneuver the mechanical appendages of the Supreme Leader, hitting the nuclear core of the facility. It initiated a chain reaction, which resulted in a blast.</string>
     <string name="ch9_lose">\"We don\'t need rebels like you\", said Supreme Leader. One of his scalpel stabbed the Prospector right in the neck.</string>
     <string name="ch9_t1">The dark halls of the palace played the same melody on repeat. There was nothing but circuits, flickering lights and lots, lots of brains in jars, connected to the circuits by electrodes and brain chips.</string>
     <string name="ch9_q1">What have you gotten yourself into, Prospector?</string>

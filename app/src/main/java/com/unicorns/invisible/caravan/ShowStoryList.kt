@@ -20,6 +20,7 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -87,11 +88,13 @@ import com.unicorns.invisible.caravan.utils.playTowerCompleted
 import com.unicorns.invisible.caravan.utils.playTowerFailed
 import com.unicorns.invisible.caravan.utils.playWWSound
 import com.unicorns.invisible.caravan.utils.playWinSound
+import com.unicorns.invisible.caravan.utils.playYesBeep
 import com.unicorns.invisible.caravan.utils.scrollbar
 import com.unicorns.invisible.caravan.utils.startFinalBossTheme
 import com.unicorns.invisible.caravan.utils.stopAmbient
 import com.unicorns.invisible.caravan.utils.stopRadio
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
 
@@ -1478,8 +1481,21 @@ fun ShowStoryChapter9(
     var isGame by rememberSaveable { mutableStateOf(false) }
     var gameResult by rememberSaveable { mutableIntStateOf(0) }
 
+    val time = 404
+    var timeOnTimer by rememberScoped { mutableIntStateOf(-1000) }
+    if (timeOnTimer > 0) {
+        LaunchedEffect(Unit) {
+            while (isActive && timeOnTimer > 0) {
+                timeOnTimer--
+                if (timeOnTimer < 10) {
+                    playYesBeep(activity)
+                }
+                delay(1000L)
+            }
+        }
+    }
+
     var dialogText by rememberSaveable { mutableIntStateOf(-1) }
-    var isDistracted by rememberScoped { mutableIntStateOf(0) }
 
     if (dialogText != -1) {
         AlertDialog(
@@ -1492,13 +1508,28 @@ fun ShowStoryChapter9(
                     getDialogTextColor(activity),
                     14.sp,
                     Alignment.CenterEnd,
-                    Modifier.clickableCancel(activity) { dialogText = -1 },
+                    Modifier.clickableCancel(activity) {
+                        dialogText = when (dialogText) {
+                            0 -> 100
+                            100 -> 101
+                            101 -> 102
+                            102 -> 103
+                            103 -> 104
+                            104 -> 105
+                            105 -> 106
+                            106 -> {
+                                timeOnTimer = time
+                                -1
+                            }
+                            else -> -1
+                        }
+                    },
                     TextAlign.End
                 )
             },
             title = {
                 TextFallout(
-                    stringResource(R.string.ch9_mh),
+                    if (dialogText >= 100) "" else stringResource(R.string.ch9_mh),
                     getDialogTextColor(activity),
                     getDialogTextColor(activity),
                     24.sp,
@@ -1511,6 +1542,13 @@ fun ShowStoryChapter9(
                 TextFallout(
                     when (dialogText) {
                         0 -> stringResource(R.string.ch9_m0)
+                        100 -> stringResource(R.string.ch9_m100)
+                        101 -> stringResource(R.string.ch9_m101)
+                        102 -> stringResource(R.string.ch9_m102)
+                        103 -> stringResource(R.string.ch9_m103)
+                        104 -> stringResource(R.string.ch9_m104)
+                        105 -> stringResource(R.string.ch9_m105)
+                        106 -> stringResource(R.string.ch9_m106)
                         1 -> stringResource(R.string.ch9_m1)
                         2 -> stringResource(R.string.ch9_m2)
                         3 -> stringResource(R.string.ch9_m3)
@@ -1537,7 +1575,7 @@ fun ShowStoryChapter9(
 
     if (isGame) {
         val enemy = rememberScoped {
-            EnemyFinalBossStory(isDistracted).apply {
+            EnemyFinalBossStory(0).apply {
                 playAlarm = {
                     repeat(3) {
                         playNoCardAlarm(activity)
@@ -1549,11 +1587,13 @@ fun ShowStoryChapter9(
         LaunchedEffect(Unit) {
             dialogText = 0
         }
-        StartStoryGame(
+        StartStoryFinalBossGame(
             activity,
             enemy,
             CResources(activity.save?.getCustomDeckCopy() ?: CustomDeck(CardBack.STANDARD, false)),
             showAlertDialog,
+            { timeOnTimer },
+            { delta -> timeOnTimer += delta },
             { startFinalBossTheme(activity) },
             { gameResult = 1; advanceChapter(); stopRadio() },
             { gameResult = -1; stopRadio() },
@@ -1683,7 +1723,6 @@ fun ShowStoryChapter9(
                             }
                             9 -> {
                                 DialogLine(activity, stringResource(R.string.ch9_q11)) {
-                                    isDistracted++
                                     lineNumber = 10
                                     text = activity.getString(R.string.ch9_t12)
                                 }
@@ -1708,7 +1747,6 @@ fun ShowStoryChapter9(
                             }
                             13 -> {
                                 DialogLine(activity, stringResource(R.string.ch9_q15)) {
-                                    isDistracted++
                                     lineNumber = 14
                                     text = activity.getString(R.string.ch9_t16)
                                 }
@@ -2073,5 +2111,105 @@ fun StartStoryGame(
         }
         showAlertDialog(activity.getString(R.string.check_back_to_menu),
             activity.getString(R.string.tower_progress_will_be_lost))
+    }
+}
+
+@Composable
+fun StartStoryFinalBossGame(
+    activity: MainActivity,
+    enemy: Enemy,
+    playerCResources: CResources,
+    showAlertDialog: (String, String) -> Unit,
+    getTime: () -> Int,
+    addTime: (Int) -> Unit,
+    onStart: () -> Unit,
+    onWin: () -> Unit,
+    onLose: () -> Unit,
+    goBack: () -> Unit,
+) {
+    val game = rememberScoped {
+        Game(
+            playerCResources,
+            enemy
+        ).also {
+            onStart()
+            it.startGame()
+        }
+    }
+
+    game.also {
+        it.onWin = {
+            activity.processChallengesGameOver(it)
+            playWinSound(activity)
+            onWin()
+            showAlertDialog(
+                activity.getString(R.string.result),
+                activity.getString(R.string.you_win)
+            )
+        }
+        it.onLose = {
+            playLoseSound(activity)
+            onLose()
+            showAlertDialog(
+                activity.getString(R.string.result),
+                activity.getString(R.string.you_lose)
+            )
+        }
+        it.jokerPlayedSound = { playJokerSounds(activity) }
+        it.wildWastelandSound = { playWWSound(activity) }
+        it.nukeBlownSound = { playNukeBlownSound(activity) }
+        it.specialGameOverCondition = { if (getTime() in (-100..0)) -1 else 0 }
+    }
+
+    activity.goBack = { stopAmbient(); goBack(); activity.goBack = null }
+
+    ShowGame(activity, game, isBlitz = true, onMove = { card ->
+        when (card?.rank) {
+            Rank.QUEEN -> {
+                addTime(2)
+            }
+            Rank.JOKER -> {
+                addTime(3)
+                game.playerCResources.addOnTop(Card(
+                    Rank.entries.filter { it.value <= 10 }.random(),
+                    Suit.entries.random(), CardBack.WILD_WASTELAND, false
+                ))
+            }
+            Rank.JACK -> {
+                game.playerCResources.addOnTop(Card(
+                    Rank.entries.filter { it.value <= 10 }.random(),
+                    Suit.entries.random(), CardBack.WILD_WASTELAND, false
+                ))
+            }
+            else -> {}
+        }
+    }) {
+        if (game.isOver()) {
+            activity.goBack?.invoke()
+            return@ShowGame
+        }
+        showAlertDialog(activity.getString(R.string.check_back_to_menu),
+            activity.getString(R.string.tower_progress_will_be_lost))
+    }
+
+    key(getTime()) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.Transparent),
+            contentAlignment = Alignment.BottomEnd
+        ) {
+            TextClassic(
+                getTime().toString(),
+                getTextColorByStyle(activity, Style.PIP_BOY),
+                getStrokeColorByStyle(activity, Style.PIP_BOY),
+                14.sp,
+                Alignment.BottomEnd,
+                Modifier
+                    .background(getTextBackByStyle(activity, Style.PIP_BOY))
+                    .padding(8.dp),
+                TextAlign.Center
+            )
+        }
     }
 }

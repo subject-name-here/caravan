@@ -99,7 +99,7 @@ import kotlin.math.min
 
 
 @Composable
-fun ShowGame(activity: MainActivity, game: Game, isBlitz: Boolean = false, onMove: () -> Unit = {}, goBack: () -> Unit) {
+fun ShowGame(activity: MainActivity, game: Game, isBlitz: Boolean = false, onMove: (Card?) -> Unit = {}, goBack: () -> Unit) {
     var selectedCard by remember { mutableStateOf<Int?>(null) }
     var selectedCaravan by remember { mutableIntStateOf(-1) }
 
@@ -162,7 +162,7 @@ fun ShowGame(activity: MainActivity, game: Game, isBlitz: Boolean = false, onMov
         game.playerCResources.dropCardFromHand(selectedCardNN)
         resetSelected()
         updatePlayerHand()
-        onMove()
+        onMove(null)
         game.afterPlayerMove(
             { updateEnemyHand(); updateCaravans(); updatePlayerHand() },
             animationSpeed
@@ -177,7 +177,7 @@ fun ShowGame(activity: MainActivity, game: Game, isBlitz: Boolean = false, onMov
         game.playerCaravans[selectedCaravanNN].dropCaravan()
         resetSelected()
         updateCaravans()
-        onMove()
+        onMove(null)
         game.afterPlayerMove(
             { updateEnemyHand(); updateCaravans(); updatePlayerHand() },
             animationSpeed
@@ -185,18 +185,17 @@ fun ShowGame(activity: MainActivity, game: Game, isBlitz: Boolean = false, onMov
     }
 
     fun addCardToCaravan(caravan: Caravan, position: Int, isEnemy: Boolean) {
+        val cardIndex = selectedCard
+        val card = cardIndex?.let { game.playerCResources.hand[cardIndex] }
         fun onCaravanCardInserted() {
             resetSelected()
             updatePlayerHand()
-            onMove()
+            onMove(card)
             game.afterPlayerMove(
                 { updateEnemyHand(); updateCaravans(); updatePlayerHand() },
                 animationSpeed
             )
         }
-
-        val cardIndex = selectedCard
-        val card = cardIndex?.let { game.playerCResources.hand[cardIndex] }
         if (card != null && game.isPlayerTurn && !game.isOver() && !(game.isInitStage() && card.isFace())) {
             if (card.isFace()) {
                 if (position in caravan.cards.indices && caravan.cards[position].canAddModifier(card)) {
