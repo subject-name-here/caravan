@@ -1575,7 +1575,7 @@ fun ShowStoryChapter9(
 
     if (isGame) {
         val enemy = rememberScoped {
-            EnemyFinalBossStory(0).apply {
+            EnemyFinalBossStory(1).apply {
                 playAlarm = {
                     repeat(3) {
                         playNoCardAlarm(activity)
