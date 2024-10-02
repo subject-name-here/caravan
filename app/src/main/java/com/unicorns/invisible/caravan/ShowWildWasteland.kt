@@ -34,6 +34,7 @@ import com.sebaslogen.resaca.rememberScoped
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.enemy.EnemyFinalBoss
+import com.unicorns.invisible.caravan.model.enemy.EnemyManInTheMirror
 import com.unicorns.invisible.caravan.model.enemy.EnemyPriestess
 import com.unicorns.invisible.caravan.model.enemy.EnemySignificantOther
 import com.unicorns.invisible.caravan.model.enemy.EnemySnuffles
@@ -75,6 +76,7 @@ fun ShowWildWasteland(
     var showGamePriestess by rememberSaveable { mutableStateOf(false) }
     var showGameFinalBoss by rememberSaveable { mutableStateOf(false) }
     var showGameFinalBossWild by rememberSaveable { mutableStateOf(false) }
+    var showGameTheManInTheMirror by rememberSaveable { mutableStateOf(false) }
     var dialogText by rememberSaveable { mutableIntStateOf(-1) }
 
     if (dialogText != -1) {
@@ -284,6 +286,18 @@ fun ShowWildWasteland(
             showAlertDialog = showAlertDialog
         ) { showGameSignificantOther = false }
         return
+    } else if (showGameTheManInTheMirror) {
+        val deck = activity.save?.getCustomDeckCopy() ?: CustomDeck(CardBack.STANDARD, false)
+        StartGame(
+            activity = activity,
+            playerCResources = CResources(deck),
+            isCustom = true,
+            enemy = EnemyManInTheMirror(deck.copy()),
+            showAlertDialog = showAlertDialog
+        ) {
+            showGameTheManInTheMirror = false
+        }
+        return
     }
 
     MenuItemOpen(activity, stringResource(R.string.menu_wild_wastealnd), "<-", goBack) {
@@ -331,6 +345,8 @@ fun ShowWildWasteland(
                 }
 
                 OpponentItem(stringResource(R.string.snuffles)) { playVatsEnter(activity); showGameSnuffles = true }
+                Spacer(modifier = Modifier.height(10.dp))
+                OpponentItem("ЯИHNR") { playVatsEnter(activity); showGameTheManInTheMirror = true }
                 Spacer(modifier = Modifier.height(10.dp))
                 OpponentItem(stringResource(R.string.priest)) { playVatsEnter(activity); showGamePriestess = true }
                 if ((activity.save?.storyChaptersProgress ?: 0) >= 9) {
