@@ -48,6 +48,7 @@ import com.unicorns.invisible.caravan.utils.playCloseSound
 import com.unicorns.invisible.caravan.utils.playPimpBoySound
 import com.unicorns.invisible.caravan.utils.playYesBeep
 import com.unicorns.invisible.caravan.utils.scrollbar
+import kotlinx.serialization.EncodeDefault
 
 
 @Composable
@@ -250,6 +251,14 @@ fun ShowTrueSettings(
                                                 saveOnGD(activity)
                                                 playYesBeep(activity)
                                             }
+                                        }
+                                    }
+                                    404 -> {
+                                        activity.save?.let {
+                                            it.storyChaptersProgress = 0
+                                            it.altStoryChaptersProgress = 0
+                                            saveOnGD(activity)
+                                            playYesBeep(activity)
                                         }
                                     }
                                 } }
