@@ -17,11 +17,9 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -681,6 +679,7 @@ fun StartPvP(
                 }
                 game.isExchangingCards = false
                 game.isPlayerTurn = isCreator
+                updateCaravans()
             } else {
                 (game.enemy as EnemyPlayer).latestMoveResponse = move
                 game.isExchangingCards = false

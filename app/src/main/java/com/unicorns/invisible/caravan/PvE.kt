@@ -691,6 +691,7 @@ fun winCard(
     val deckOld = deckList.filter { !checkCard(it) }
     val deckNew = deckList - deckOld.toSet()
     val prob = when {
+        back == CardBack.STANDARD -> 100
         isCustom -> if (numberOfCards == 1) 50 else 40
         else -> if (numberOfCards == 1) 65 else 55
     }
