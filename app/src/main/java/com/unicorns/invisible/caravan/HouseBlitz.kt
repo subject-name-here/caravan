@@ -100,7 +100,7 @@ fun BlitzScreen(
     var checkedCustomDeck by rememberSaveable { mutableStateOf(activity.save?.useCustomDeck == true) }
     fun getPlayerDeck(): CResources {
         return if (checkedCustomDeck)
-            CResources(activity.save?.getCustomDeckCopy() ?: CustomDeck(CardBack.STANDARD, false))
+            activity.getCustomDeck()
         else
             CResources(selectedDeck().first, selectedDeck().second)
     }

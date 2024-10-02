@@ -336,7 +336,7 @@ fun ShowStoryChapter1(
         StartStoryGame(
             activity,
             EnemyStory1,
-            CResources(activity.save?.getCustomDeckCopy() ?: CustomDeck(CardBack.STANDARD, false)),
+            activity.getCustomDeck(),
             showAlertDialog,
             {},
             { gameResult = 1; advanceChapter() },
@@ -456,7 +456,7 @@ fun ShowStoryChapter2(
         StartStoryGame(
             activity,
             EnemyStory2,
-            CResources(activity.save?.getCustomDeckCopy() ?: CustomDeck(CardBack.STANDARD, false)),
+            activity.getCustomDeck(),
             showAlertDialog,
             {},
             { gameResult = 1; advanceChapter() },
@@ -577,7 +577,7 @@ fun ShowStoryChapter3(
         StartStoryGame(
             activity,
             EnemyStory3(),
-            CResources(activity.save?.getCustomDeckCopy() ?: CustomDeck(CardBack.STANDARD, false)),
+            activity.getCustomDeck(),
             showAlertDialog,
             {},
             { gameResult = 1; advanceChapter() },
@@ -883,7 +883,7 @@ fun ShowStoryChapter5(
         StartStoryGame(
             activity,
             EnemyPriestess,
-            CResources(activity.save?.getCustomDeckCopy() ?: CustomDeck(CardBack.STANDARD, false)),
+            activity.getCustomDeck(),
             showAlertDialog,
             {},
             { gameResult = 1; advanceChapter() },
@@ -1063,7 +1063,7 @@ fun ShowStoryChapter6(
         StartStoryGame(
             activity,
             enemy,
-            CResources(activity.save?.getCustomDeckCopy() ?: CustomDeck(CardBack.STANDARD, false)),
+            activity.getCustomDeck(),
             showAlertDialog,
             {},
             { gameResult = 2 },
@@ -1216,7 +1216,7 @@ fun ShowStoryChapter7(
         StartStoryGame(
             activity,
             EnemyStory7,
-            CResources(activity.save?.getCustomDeckCopy() ?: CustomDeck(CardBack.STANDARD, false)),
+            activity.getCustomDeck(),
             showAlertDialog,
             {},
             { gameResult = 1; advanceChapter() },
@@ -1334,7 +1334,7 @@ fun ShowStoryChapter8(
         StartStoryGame(
             activity,
             enemy,
-            CResources(activity.save?.getCustomDeckCopy() ?: CustomDeck(CardBack.STANDARD, false)),
+            activity.getCustomDeck(),
             showAlertDialog,
             {},
             { gameResult = 1; advanceChapter() },
@@ -1590,7 +1590,7 @@ fun ShowStoryChapter9(
         StartStoryFinalBossGame(
             activity,
             enemy,
-            CResources(activity.save?.getCustomDeckCopy() ?: CustomDeck(CardBack.STANDARD, false)),
+            activity.getCustomDeck(),
             showAlertDialog,
             { timeOnTimer },
             { delta -> timeOnTimer += delta },

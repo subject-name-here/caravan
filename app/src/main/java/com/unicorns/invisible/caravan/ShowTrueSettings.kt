@@ -19,7 +19,6 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -46,6 +45,7 @@ import com.unicorns.invisible.caravan.utils.getTextStrokeColor
 import com.unicorns.invisible.caravan.utils.getTrackColor
 import com.unicorns.invisible.caravan.utils.playClickSound
 import com.unicorns.invisible.caravan.utils.playCloseSound
+import com.unicorns.invisible.caravan.utils.playPimpBoySound
 import com.unicorns.invisible.caravan.utils.playYesBeep
 import com.unicorns.invisible.caravan.utils.scrollbar
 
@@ -194,7 +194,7 @@ fun ShowTrueSettings(
                                 .fillMaxWidth(0.33f)
                                 .padding(horizontal = 8.dp)
                                 .clickableOk(activity) { when (secretCode) {
-                                    101042 -> {
+                                    1142 -> {
                                         activity.save?.let {
                                             it.towerLevel = 10
                                             saveOnGD(activity)
@@ -220,6 +220,36 @@ fun ShowTrueSettings(
                                             it.soOpen = true
                                             saveOnGD(activity)
                                             playYesBeep(activity)
+                                        }
+                                    }
+                                    1337 -> {
+                                        playPimpBoySound(activity)
+                                    }
+                                    1776 -> {
+                                        activity.save?.let {
+                                            it.isEnclaveThemeAvailable = true
+                                            saveOnGD(activity)
+                                            playYesBeep(activity)
+                                        }
+                                    }
+                                    62869 -> {
+                                        activity.save?.let {
+                                            if (!it.prize1Activated) {
+                                                it.prize1Activated = true
+                                                it.caps += 1969
+                                                saveOnGD(activity)
+                                                playYesBeep(activity)
+                                            }
+                                        }
+                                    }
+                                    50724 -> {
+                                        activity.save?.let {
+                                            if (!it.prize2Activated) {
+                                                it.prize2Activated = true
+                                                it.caps += 2024
+                                                saveOnGD(activity)
+                                                playYesBeep(activity)
+                                            }
                                         }
                                     }
                                 } }

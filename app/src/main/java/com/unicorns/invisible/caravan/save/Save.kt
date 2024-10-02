@@ -159,4 +159,9 @@ class Save {
     var storyChaptersProgress = 0
     @EncodeDefault
     var altStoryChaptersProgress = 0
+
+    @EncodeDefault
+    var prize1Activated = false
+    @EncodeDefault
+    var prize2Activated = false
 }

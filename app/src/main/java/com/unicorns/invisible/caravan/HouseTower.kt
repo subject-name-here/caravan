@@ -841,7 +841,7 @@ fun StartTowerGame(
     val playerCResources = if (isFrankSequence) {
         CResources(CustomDeck(CardBack.STANDARD, false))
     } else {
-        CResources(activity.save?.getCustomDeckCopy() ?: CustomDeck(CardBack.STANDARD, false))
+        activity.getCustomDeck()
     }
     val game = rememberScoped {
         if (isFrankSequence) {

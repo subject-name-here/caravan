@@ -1052,6 +1052,10 @@ class MainActivity : SaveDataActivity() {
         }
     }
 
+    fun getCustomDeck(): CResources {
+        return CResources(save?.getCustomDeckCopy() ?: CustomDeck(CardBack.STANDARD, false))
+    }
+
     companion object {
         const val MIN_DECK_SIZE = 30
         const val MIN_NUM_OF_NUMBERS = 15
