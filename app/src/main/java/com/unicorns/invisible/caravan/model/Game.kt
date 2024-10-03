@@ -2,6 +2,7 @@ package com.unicorns.invisible.caravan.model
 
 import com.unicorns.invisible.caravan.AnimationSpeed
 import com.unicorns.invisible.caravan.model.enemy.Enemy
+import com.unicorns.invisible.caravan.model.enemy.EnemyManInTheMirror
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.Caravan
 import com.unicorns.invisible.caravan.model.primitives.Card
@@ -70,6 +71,9 @@ class Game(
     fun startGame(maxNumOfFaces: Int = 5) {
         initDeck(playerCResources, maxNumOfFaces)
         initDeck(enemyCResources, maxNumOfFaces)
+        if (enemy is EnemyManInTheMirror) {
+            enemyCResources.copyFrom(playerCResources)
+        }
     }
 
     fun processField(): Boolean {

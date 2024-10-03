@@ -7,17 +7,10 @@ import kotlinx.serialization.Serializable
 
 
 @Serializable
-class EnemyManInTheMirror(
-    val deck: CustomDeck
-) : Enemy() {
-    override fun createDeck(): CResources = CResources(deck)
+data object EnemyManInTheMirror : Enemy() {
+    override fun createDeck(): CResources = CResources(CustomDeck())
 
     override fun makeMove(game: Game) {
-        val overWeightCaravans = game.enemyCaravans.filter { it.getValue() > 26 }
-        if (overWeightCaravans.isNotEmpty()) {
-            overWeightCaravans.random().dropCaravan()
-            return
-        }
-        EnemySnuffles.makeMove(game)
+        EnemyBestest.makeMove(game)
     }
 }

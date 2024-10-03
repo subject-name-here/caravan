@@ -1059,7 +1059,7 @@ fun ShowStoryChapter6(
     }
 
     if (isGame) {
-        val enemy = EnemyStory6 { messageNumber = it }
+        val enemy = rememberScoped { EnemyStory6 { messageNumber = it } }
         StartStoryGame(
             activity,
             enemy,
@@ -1928,9 +1928,12 @@ fun ShowStoryChapter9A(
             activity,
             EnemyStory9A,
             CResources(CustomDeck(CardBack.UNPLAYABLE, false).apply {
-                Rank.entries.forEach { rank ->
+                repeat(9) {
+                    add(Card(Rank.entries[it], Suit.HEARTS, CardBack.UNPLAYABLE, true))
+                }
+                Rank.entries.filter { !it.isFace() }.forEach { rank ->
                     Suit.entries.forEach { suit ->
-                        add(Card(rank, suit, CardBack.UNPLAYABLE, true))
+                        add(Card(rank, suit, CardBack.WILD_WASTELAND, false))
                     }
                 }
             }),

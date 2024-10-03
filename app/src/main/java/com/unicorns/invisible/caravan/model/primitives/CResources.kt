@@ -129,11 +129,18 @@ class CResources(private val deck: CustomDeck) {
     }
 
     fun addNewDeck(newDeck: CustomDeck) {
-        newDeck.toList().forEach {
+        newDeck.toList().reversed().forEach {
             deck.addOnTop(it)
         }
     }
     fun addOnTop(card: Card) {
         deck.addOnTop(card)
+    }
+
+    fun copyFrom(cResources: CResources) {
+        addNewDeck(cResources.deck.copy())
+        for (card in cResources.hand) {
+            handMutable.add(Card(card.rank, card.suit, card.back, card.isAlt))
+        }
     }
 }

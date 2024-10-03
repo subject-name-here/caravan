@@ -287,12 +287,11 @@ fun ShowWildWasteland(
         ) { showGameSignificantOther = false }
         return
     } else if (showGameTheManInTheMirror) {
-        val deck = activity.save?.getCustomDeckCopy() ?: CustomDeck(CardBack.STANDARD, false)
         StartGame(
             activity = activity,
-            playerCResources = CResources(deck),
+            playerCResources = activity.getCustomDeck(),
             isCustom = true,
-            enemy = EnemyManInTheMirror(deck.copy()),
+            enemy = EnemyManInTheMirror,
             showAlertDialog = showAlertDialog
         ) {
             showGameTheManInTheMirror = false
@@ -346,7 +345,7 @@ fun ShowWildWasteland(
 
                 OpponentItem(stringResource(R.string.snuffles)) { playVatsEnter(activity); showGameSnuffles = true }
                 Spacer(modifier = Modifier.height(10.dp))
-                OpponentItem("ЯИHNR") { playVatsEnter(activity); showGameTheManInTheMirror = true }
+                OpponentItem("ЯОЯЯIM ЭHT ИI ИAM") { playVatsEnter(activity); showGameTheManInTheMirror = true }
                 Spacer(modifier = Modifier.height(10.dp))
                 OpponentItem(stringResource(R.string.priest)) { playVatsEnter(activity); showGamePriestess = true }
                 if ((activity.save?.storyChaptersProgress ?: 0) >= 9) {
