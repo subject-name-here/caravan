@@ -13,7 +13,7 @@ serialization = "1.7.3"
 gms = "4.4.2"
 cronet = "18.1.0"
 gpservices = "20.1.2"
-ac = "1.2.2"
+ac = "1.3.0"
 ac3 = "1.1.1"
 
 [libraries]
@@ -28,8 +28,8 @@ compose-material3 = { group = "androidx.compose.material3", name = "material3", 
 compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
 compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 compose-activity = { group = "androidx.activity", name = "activity-compose", version.ref = "activity" }
-compose-foundation = { group = "androidx.compose.foundation", name = "foundation", version = "1.7.2" }
-compose-runtime = { group = "androidx.compose.runtime", name = "runtime-livedata", version = "1.7.2" }
+compose-foundation = { group = "androidx.compose.foundation", name = "foundation", version = "1.7.3" }
+compose-runtime = { group = "androidx.compose.runtime", name = "runtime-livedata", version = "1.7.3" }
 coil = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
 coil-svg = { group = "io.coil-kt", name = "coil-svg", version.ref = "coil" }
 

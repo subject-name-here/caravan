@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
@@ -70,6 +71,9 @@ fun ShowDailys(
                             updateKey = !updateKey
                         }
                         Spacer(Modifier.height(16.dp))
+                    }
+                    if (activity.save?.challenges?.all { it.isCompleted() } == true) {
+                        activity.achievementsClient?.unlock(activity.getString(R.string.achievement_done_for_today))
                     }
                 }
             }

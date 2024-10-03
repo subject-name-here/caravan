@@ -36,6 +36,7 @@ import com.unicorns.invisible.caravan.model.enemy.EnemyEasy
 import com.unicorns.invisible.caravan.model.enemy.EnemyFinalBoss
 import com.unicorns.invisible.caravan.model.enemy.EnemyHard
 import com.unicorns.invisible.caravan.model.enemy.EnemyKing
+import com.unicorns.invisible.caravan.model.enemy.EnemyManInTheMirror
 import com.unicorns.invisible.caravan.model.enemy.EnemyMedium
 import com.unicorns.invisible.caravan.model.enemy.EnemyNash
 import com.unicorns.invisible.caravan.model.enemy.EnemyNoBark
@@ -589,6 +590,19 @@ fun StartGame(
 
     game.also {
         it.onWin = {
+            when (enemy) {
+                is EnemyBestest -> {
+                    activity.achievementsClient?.unlock(activity.getString(R.string.achievement_who_are_you_that_do_not_know_your_history))
+                }
+                is EnemySix -> {
+                    activity.achievementsClient?.unlock(activity.getString(R.string.achievement_just_load_everything_up_with_sixes_and_tens_and_kings))
+                }
+                is EnemyManInTheMirror -> {
+                    activity.achievementsClient?.unlock(activity.getString(R.string.achievement_a_worthy_opponent))
+                }
+                else -> {}
+            }
+
             activity.processChallengesGameOver(it)
             playWinSound(activity)
             var message = activity.getString(R.string.you_win)

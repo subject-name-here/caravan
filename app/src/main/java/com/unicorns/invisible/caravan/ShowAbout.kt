@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -35,6 +36,10 @@ import com.unicorns.invisible.caravan.utils.scrollbar
 
 @Composable
 fun ShowAbout(activity: MainActivity, goBack: () -> Unit) {
+    LaunchedEffect(Unit) {
+        activity.achievementsClient?.unlock(activity.getString(R.string.achievement_test_achievement))
+    }
+
     MenuItemOpen(activity, stringResource(R.string.menu_about), "<-", goBack) {
         val state = rememberLazyListState()
         LazyColumn(

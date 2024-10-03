@@ -114,6 +114,7 @@ fun ShowStoryList(activity: MainActivity, showAlertDialog: (String, String) -> U
                         }
                         saveOnGD(activity)
                     }
+                    activity.achievementsClient?.unlock(activity.getString(R.string.achievement_madre_roja))
                 }) { showChapter = null }
             }
             1 -> {
@@ -142,6 +143,7 @@ fun ShowStoryList(activity: MainActivity, showAlertDialog: (String, String) -> U
                         it.storyChaptersProgress = maxOf(it.storyChaptersProgress, 4)
                         saveOnGD(activity)
                     }
+                    activity.achievementsClient?.unlock(activity.getString(R.string.achievement_not_ready_to_die))
                 }) { showChapter = null; isSoundEffectsReduced = false; nextSong(activity);  }
             }
             4 -> {
@@ -181,6 +183,7 @@ fun ShowStoryList(activity: MainActivity, showAlertDialog: (String, String) -> U
                         it.altStoryChaptersProgress = maxOf(it.altStoryChaptersProgress, 1)
                         saveOnGD(activity)
                     }
+                    activity.achievementsClient?.unlock(activity.getString(R.string.achievement_penultimatum))
                 }) { showChapter = null }
             }
             8 -> {
@@ -193,6 +196,7 @@ fun ShowStoryList(activity: MainActivity, showAlertDialog: (String, String) -> U
                         it.storyChaptersProgress = maxOf(it.storyChaptersProgress, 9)
                         saveOnGD(activity)
                     }
+                    activity.achievementsClient?.unlock(activity.getString(R.string.achievement_you_can_be_hero))
                 }) { showChapter = null; isSoundEffectsReduced = false; nextSong(activity) }
             }
             9 -> {
@@ -1939,7 +1943,7 @@ fun ShowStoryChapter9A(
             }),
             showAlertDialog,
             {},
-            { gameResult = 1 },
+            { gameResult = 1; activity.achievementsClient?.unlock(activity.getString(R.string.achievement_you_can_be_so_much_more)) },
             { gameResult = -1 },
             { isGame = false }
         )

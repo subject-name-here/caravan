@@ -139,6 +139,17 @@ fun TowerScreen(
                 it.towerLevel = levelMemory + 1
                 saveOnGD(activity)
             }
+            when (level) {
+                6 -> {
+                    activity.achievementsClient?.unlock(activity.getString(R.string.achievement_five_down_five_to_go))
+                }
+                11 -> {
+                    activity.achievementsClient?.unlock(activity.getString(R.string.achievement_1010))
+                }
+                12 -> {
+                    activity.achievementsClient?.unlock(activity.getString(R.string.achievement_aint_no_way_dev))
+                }
+            }
         }, {
             level = 0
             activity.save?.let {

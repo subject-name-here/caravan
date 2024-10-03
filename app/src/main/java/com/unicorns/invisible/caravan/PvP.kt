@@ -596,6 +596,8 @@ fun StartPvP(
 ) {
     game.also {
         it.onWin = {
+            activity.achievementsClient?.unlock(activity.getString(R.string.achievement_winnerwinner_brahmin_dinner))
+
             activity.processChallengesGameOver(it)
             playWinSound(activity)
             showAlertDialog(

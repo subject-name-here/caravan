@@ -3,6 +3,7 @@ package com.unicorns.invisible.caravan
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.gms.games.AchievementsClient
 import com.google.android.gms.games.PlayGames
 import com.google.android.gms.games.PlayGamesSdk
 import com.google.android.gms.games.SnapshotsClient
@@ -53,8 +54,12 @@ abstract class SaveDataActivity : AppCompatActivity() {
             }).await()
     }
 
+    var achievementsClient: AchievementsClient? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        achievementsClient = PlayGames.getAchievementsClient(this)
+
         if (snapshotsClient == null) {
             PlayGamesSdk.initialize(this)
             signInLoud()

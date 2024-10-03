@@ -447,6 +447,10 @@ fun StartBlitz(
 
     game.also {
         it.onWin = {
+            if (enemy is EnemyHouse) {
+                activity.achievementsClient?.unlock(activity.getString(R.string.achievement_bravo_))
+            }
+
             activity.processChallengesGameOver(it)
             playWinSound(activity)
             var message = activity.getString(R.string.you_win)
