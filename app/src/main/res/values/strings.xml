@@ -47,7 +47,7 @@
     <string name="menu_settings">Settings</string>
     <string name="menu_story">Story</string>
     <string name="menu_wild_wastealnd">Wild Wasteland</string>
-    <string name="missions">Missions!</string>
+    <string name="missions">Challenges GRA</string>
 
     <string name="none" translatable="false">[NONE]</string>
     <string name="next_song">NXT SONG</string>
@@ -711,5 +711,7 @@
     <string name="achievement_a_worthy_opponent" translatable="false">CgkIvtnbpMwbEAIQDg</string>
     <!--achievement Winner-winner, brahmin dinner!-->
     <string name="achievement_winnerwinner_brahmin_dinner" translatable="false">CgkIvtnbpMwbEAIQDw</string>
+    <string name="achievement_tis_but_a_flesh_wound" translatable="false"> CgkIvtnbpMwbEAIQEA</string>
+    <string name="achievements">Achievements</string>
 
 </resources>

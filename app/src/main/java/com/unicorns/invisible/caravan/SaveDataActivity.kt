@@ -1,7 +1,9 @@
 package com.unicorns.invisible.caravan
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.games.AchievementsClient
 import com.google.android.gms.games.PlayGames
@@ -55,6 +57,13 @@ abstract class SaveDataActivity : AppCompatActivity() {
     }
 
     var achievementsClient: AchievementsClient? = null
+    private val contracts = ActivityResultContracts.StartActivityForResult()
+    private val startForResult = registerForActivityResult(contracts) {}
+    fun openAchievements(task: Task<Intent>) {
+        task.addOnSuccessListener {
+            startForResult.launch(it)
+        }
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 

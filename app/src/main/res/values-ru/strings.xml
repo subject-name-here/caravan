@@ -369,7 +369,7 @@
     <string name="claim_caps">Забрать крышки (50)</string>
     <string name="claim_tickets">Забрать билеты</string>
 
-    <string name="missions">Квесты!</string>
+    <string name="missions">Испытания GRA</string>
 
     <string name="deck_o_54_only">(Только стандартная колода!)</string>
     <string name="custom_deck_only">(Только сборная колода!)</string>
@@ -666,5 +666,7 @@
     <string name="supreme_leader_says_9">Что? Я не могу проиграть! Я - Верховный Лидер!</string>
     <string name="supreme_leader_says_10">Нет-нет, я не закончил с тобой. Вот тебе ещё карты.</string>
     <string name="supreme_leader_says_11">Ты не можешь распускать караваны. Я сделаю это за тебя.</string>
+
+    <string name="achievements">Достижения</string>
 
 </resources>

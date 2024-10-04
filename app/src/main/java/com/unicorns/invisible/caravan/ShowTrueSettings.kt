@@ -177,7 +177,7 @@ fun ShowTrueSettings(
                             }
                         }
                     }
-
+                    Spacer(Modifier.height(16.dp))
                     Row(
                         modifier = Modifier.height(96.dp),
                         verticalAlignment = Alignment.CenterVertically,
@@ -193,74 +193,84 @@ fun ShowTrueSettings(
                             modifier = Modifier
                                 .fillMaxWidth(0.33f)
                                 .padding(horizontal = 8.dp)
-                                .clickableOk(activity) { when (secretCode) {
-                                    1142 -> {
-                                        activity.save?.let {
-                                            it.towerLevel = 10
-                                            saveOnGD(activity)
-                                            playYesBeep(activity)
+                                .clickableOk(activity) {
+                                    when (secretCode) {
+                                        1142 -> {
+                                            activity.save?.let {
+                                                it.towerLevel = 10
+                                                saveOnGD(activity)
+                                                playYesBeep(activity)
+                                            }
                                         }
-                                    }
-                                    9941 -> {
-                                        activity.save?.let {
-                                            it.towerLevel = 9
-                                            saveOnGD(activity)
-                                            playYesBeep(activity)
+
+                                        9941 -> {
+                                            activity.save?.let {
+                                                it.towerLevel = 9
+                                                saveOnGD(activity)
+                                                playYesBeep(activity)
+                                            }
                                         }
-                                    }
-                                    65537 -> {
-                                        activity.save?.let {
-                                            it.towerLevel = 11
-                                            saveOnGD(activity)
-                                            playYesBeep(activity)
+
+                                        65537 -> {
+                                            activity.save?.let {
+                                                it.towerLevel = 11
+                                                saveOnGD(activity)
+                                                playYesBeep(activity)
+                                            }
                                         }
-                                    }
-                                    666 -> {
-                                        activity.save?.let {
-                                            it.soOpen = true
-                                            saveOnGD(activity)
-                                            playYesBeep(activity)
+
+                                        666 -> {
+                                            activity.save?.let {
+                                                it.soOpen = true
+                                                saveOnGD(activity)
+                                                playYesBeep(activity)
+                                            }
                                         }
-                                    }
-                                    1337 -> {
-                                        playPimpBoySound(activity)
-                                    }
-                                    1776 -> {
-                                        activity.save?.let {
-                                            it.isEnclaveThemeAvailable = true
-                                            saveOnGD(activity)
-                                            playYesBeep(activity)
+
+                                        1337 -> {
+                                            playPimpBoySound(activity)
                                         }
-                                    }
-                                    62869 -> {
-                                        activity.save?.let {
-                                            if (!it.prize1Activated) {
-                                                it.prize1Activated = true
-                                                it.caps += 1969
+
+                                        1776 -> {
+                                            activity.save?.let {
+                                                it.isEnclaveThemeAvailable = true
+                                                saveOnGD(activity)
+                                                playYesBeep(activity)
+                                            }
+                                        }
+
+                                        62869 -> {
+                                            activity.save?.let {
+                                                if (!it.prize1Activated) {
+                                                    it.prize1Activated = true
+                                                    it.caps += 1969
+                                                    saveOnGD(activity)
+                                                    playYesBeep(activity)
+                                                }
+                                            }
+                                        }
+
+                                        50724 -> {
+                                            activity.save?.let {
+                                                if (!it.prize2Activated) {
+                                                    it.prize2Activated = true
+                                                    it.caps += 2024
+                                                    saveOnGD(activity)
+                                                    playYesBeep(activity)
+                                                }
+                                            }
+                                        }
+
+                                        404 -> {
+                                            activity.save?.let {
+                                                it.storyChaptersProgress = 0
+                                                it.altStoryChaptersProgress = 0
                                                 saveOnGD(activity)
                                                 playYesBeep(activity)
                                             }
                                         }
                                     }
-                                    50724 -> {
-                                        activity.save?.let {
-                                            if (!it.prize2Activated) {
-                                                it.prize2Activated = true
-                                                it.caps += 2024
-                                                saveOnGD(activity)
-                                                playYesBeep(activity)
-                                            }
-                                        }
-                                    }
-                                    404 -> {
-                                        activity.save?.let {
-                                            it.storyChaptersProgress = 0
-                                            it.altStoryChaptersProgress = 0
-                                            saveOnGD(activity)
-                                            playYesBeep(activity)
-                                        }
-                                    }
-                                } }
+                                }
                                 .background(getTextBackgroundColor(activity))
                                 .padding(4.dp),
                             textAlign = TextAlign.Center,
@@ -297,6 +307,7 @@ fun ShowTrueSettings(
                         )
                     }
                 }
+
                 Spacer(Modifier.height(16.dp))
             }
         }

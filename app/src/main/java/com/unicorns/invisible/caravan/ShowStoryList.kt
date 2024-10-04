@@ -178,12 +178,12 @@ fun ShowStoryList(activity: MainActivity, showAlertDialog: (String, String) -> U
                         it.storyChaptersProgress = maxOf(it.storyChaptersProgress, 8)
                         saveOnGD(activity)
                     }
+                    activity.achievementsClient?.unlock(activity.getString(R.string.achievement_penultimatum))
                 }, {
                     activity.save?.let {
                         it.altStoryChaptersProgress = maxOf(it.altStoryChaptersProgress, 1)
                         saveOnGD(activity)
                     }
-                    activity.achievementsClient?.unlock(activity.getString(R.string.achievement_penultimatum))
                 }) { showChapter = null }
             }
             8 -> {
@@ -2088,6 +2088,16 @@ fun StartStoryGame(
 
     game.also {
         it.onWin = {
+            if (enemy is EnemyStory3) {
+                val isPoisonedInEveryCaravan = game.playerCaravans.all { caravan ->
+                    val backs = caravan.cards.map { it.card.back }
+                    backs.any { it == CardBack.WILD_WASTELAND }
+                }
+                if (isPoisonedInEveryCaravan) {
+                    activity.achievementsClient?.unlock(activity.getString(R.string.achievement_tis_but_a_flesh_wound))
+                }
+            }
+
             activity.processChallengesGameOver(it)
             playWinSound(activity)
             onWin()

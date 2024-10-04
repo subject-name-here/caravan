@@ -66,6 +66,33 @@ fun ShowDailys(
             ) {
                 item {
                     Spacer(Modifier.height(16.dp))
+                    Row(
+                        Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        TextFallout(
+                            stringResource(R.string.achievements),
+                            getTextColor(activity),
+                            getTextStrokeColor(activity),
+                            18.sp,
+                            Alignment.Center,
+                            Modifier
+                                .fillMaxWidth(0.66f)
+                                .padding(horizontal = 8.dp)
+                                .background(getTextBackgroundColor(activity))
+                                .padding(4.dp)
+                                .clickableOk(activity) {
+                                    activity.achievementsClient?.achievementsIntent?.let {
+                                        activity.openAchievements(it)
+                                    }
+                                },
+                            TextAlign.Center
+                        )
+                    }
+                }
+                item {
+                    Spacer(Modifier.height(16.dp))
                     activity.save?.challenges?.forEach { challenge ->
                         ShowChallenge(activity, challenge, challenge.isCompleted()) {
                             updateKey = !updateKey
