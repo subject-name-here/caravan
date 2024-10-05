@@ -27,7 +27,13 @@ abstract class SaveDataActivity : AppCompatActivity() {
         if (snapshotsClient == null) return false
         val conflictResolutionPolicy = SnapshotsClient.RESOLUTION_POLICY_MOST_RECENTLY_MODIFIED
         val res = snapshotsClient!!.open(SAVE_FILE_NAME, true, conflictResolutionPolicy)
+            .addOnFailureListener { e ->
+                Toast.makeText(this, e.toString(), Toast.LENGTH_LONG).show()
+            }
             .continueWith { task ->
+                if (task.result.isConflict) {
+                    return@continueWith false
+                }
                 val snapshot = task.result.data
                 snapshot!!.snapshotContents.writeBytes(data)
                 val metadataChange = SnapshotMetadataChange.Builder().build()

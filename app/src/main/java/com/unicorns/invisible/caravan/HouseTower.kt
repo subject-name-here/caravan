@@ -146,9 +146,6 @@ fun TowerScreen(
                 11 -> {
                     activity.achievementsClient?.unlock(activity.getString(R.string.achievement_1010))
                 }
-                12 -> {
-                    activity.achievementsClient?.unlock(activity.getString(R.string.achievement_aint_no_way_dev))
-                }
             }
         }, {
             level = 0
@@ -241,6 +238,7 @@ fun TowerScreen(
                 }
                 stopRadio()
                 playFrankPhrase(activity, R.raw.frank_on_defeat)
+                activity.achievementsClient?.unlock(activity.getString(R.string.achievement_aint_no_way_dev))
             }, {
                 level = 0
                 activity.save?.let {
