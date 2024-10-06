@@ -9,10 +9,7 @@ import com.google.android.gms.games.AchievementsClient
 import com.google.android.gms.games.PlayGames
 import com.google.android.gms.games.PlayGamesSdk
 import com.google.android.gms.games.SnapshotsClient
-import com.google.android.gms.games.SnapshotsClient.DataOrConflict
-import com.google.android.gms.games.snapshot.Snapshot
 import com.google.android.gms.games.snapshot.SnapshotMetadataChange
-import com.google.android.gms.tasks.Continuation
 import com.google.android.gms.tasks.Task
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
@@ -31,6 +28,9 @@ abstract class SaveDataActivity : AppCompatActivity() {
                 Toast.makeText(this, e.toString(), Toast.LENGTH_LONG).show()
             }
             .continueWith { task ->
+                if (task.exception != null) {
+                    return@continueWith false
+                }
                 if (task.result.isConflict) {
                     return@continueWith false
                 }
@@ -50,16 +50,20 @@ abstract class SaveDataActivity : AppCompatActivity() {
             .addOnFailureListener { e ->
                 Toast.makeText(this, e.toString(), Toast.LENGTH_LONG).show()
             }
-            .continueWith(object : Continuation<DataOrConflict<Snapshot?>?, ByteArray?> {
-                override fun then(task: Task<DataOrConflict<Snapshot?>?>): ByteArray? {
-                    val snapshot = task.result?.data ?: return null
-                    return try {
-                        snapshot.snapshotContents.readFully()
-                    } catch (e: IOException) {
-                        null
-                    }
+            .continueWith { task ->
+                if (task.exception != null) {
+                    return@continueWith null
                 }
-            }).await()
+                if (task.result.isConflict) {
+                    return@continueWith null
+                }
+                val snapshot = task.result.data
+                return@continueWith try {
+                    snapshot!!.snapshotContents.readFully()
+                } catch (e: IOException) {
+                    null
+                }
+            }.await()
     }
 
     var achievementsClient: AchievementsClient? = null
