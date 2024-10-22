@@ -82,10 +82,10 @@ fun ShowStyles(
                         }
                         ShowStyle(
                             activity, style,
-                            style in activity.save!!.ownedStyles,
+                            style in (activity.save?.ownedStyles ?: emptyList()),
                             style.ordinal == activity.save!!.styleId
                         ) {
-                            if (style !in activity.save!!.ownedStyles) {
+                            if (style !in (activity.save?.ownedStyles ?: emptyList())) {
                                 if (activity.save!!.caps >= style.price) {
                                     activity.save!!.ownedStyles.add(style)
                                     activity.save!!.caps -= style.price
@@ -107,7 +107,7 @@ fun ShowStyles(
                                         )
                                     )
                                 }
-                            } else if (style.ordinal != activity.save!!.styleId) {
+                            } else if (style.ordinal != getStyle().ordinal) {
                                 styleInt = style
                                 selectStyle(style.ordinal)
                             }

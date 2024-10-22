@@ -103,9 +103,7 @@ fun ShowPvE(
     var showGameCaesar by rememberSaveable { mutableStateOf(false) }
 
     var checkedCustomDeck by rememberSaveable {
-        mutableStateOf(
-            activity.save?.useCustomDeck ?: false
-        )
+        mutableStateOf(activity.save?.useCustomDeck == true)
     }
 
     fun getPlayerDeck(): CResources {
@@ -696,27 +694,28 @@ fun winCard(
     isAlt: Boolean,
     isCustom: Boolean
 ): String {
-    fun checkCard(card: Card): Boolean {
-        return save.availableCards.none { aCard -> aCard.rank == card.rank && aCard.suit == card.suit && aCard.back == card.back && aCard.isAlt == card.isAlt }
+    fun isCardNew(card: Card): Boolean {
+        return save.availableCards.none { aCard ->
+            aCard.rank == card.rank && aCard.suit == card.suit && aCard.back == card.back && aCard.isAlt == card.isAlt
+        }
     }
 
-    val deck = CustomDeck(back, isAlt)
-    val deckList = deck.takeRandom(deck.size)
-    val deckOld = deckList.filter { !checkCard(it) }
-    val deckNew = deckList - deckOld.toSet()
     val prob = when {
         back == CardBack.STANDARD -> 100
         isCustom -> if (numberOfCards == 1) 50 else 40
         else -> if (numberOfCards == 1) 65 else 55
     }
-    val reward = run {
-        val probs = (0 until numberOfCards).map {
-            (0..99).random() < prob
-        }
-        val newCards = probs.count { it }.coerceAtMost(deckNew.size)
-        val oldCards = (numberOfCards - newCards).coerceAtMost(deckOld.size)
-        deckNew.take(newCards) + deckOld.take(oldCards)
+    val probs = (0 until numberOfCards).map {
+        (0..99).random() < prob
     }
+
+    val deck = CustomDeck(back, isAlt)
+    val deckSorted = deck.takeRandom(deck.size).partition { isCardNew(it) }
+    val deckS = mutableListOf<Card>()
+    deckS.addAll(deckSorted.first)
+    deckS.addAll(deckSorted.second)
+    val reward = deckS.take(probs.count { it }) + deckS.takeLast(probs.count { !it })
+
     var result = activity.getString(R.string.your_prize_cards_from)
     var capsEarned = 0
     reward.forEach { card ->
@@ -732,7 +731,7 @@ fun winCard(
         } else {
             "${activity.getString(card.rank.nameId)} ${activity.getString(card.suit.nameId)}, $deckName"
         }
-        result += if (checkCard(card)) {
+        result += if (isCardNew(card)) {
             save.availableCards.add(card)
             if (isAlt && !(card.back == CardBack.STANDARD || card.back == CardBack.DECK_13)) {
                 activity.getString(R.string.new_card_alt, cardName)
