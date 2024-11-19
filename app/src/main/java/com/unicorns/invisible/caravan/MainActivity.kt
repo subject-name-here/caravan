@@ -711,9 +711,6 @@ class MainActivity : SaveDataActivity() {
 
                     else -> {
                         LaunchedEffect(Unit) {
-                            if (save?.updateSoldCards() == true) {
-                                saveOnGD(this@MainActivity)
-                            }
                             save?.updateChallenges()
                         }
 

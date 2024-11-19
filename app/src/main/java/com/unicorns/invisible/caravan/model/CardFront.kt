@@ -5,28 +5,35 @@ import com.unicorns.invisible.caravan.model.primitives.Rank
 import com.unicorns.invisible.caravan.model.primitives.Suit
 
 
-fun getCardName(card: Card, isAlt: Boolean): String {
+fun getCardName(card: Card): String {
     return when (card.back) {
         CardBack.STANDARD -> getStandardName(card)
-        CardBack.VAULT_21 -> if (isAlt) getVault21AltName(card) else getVault21Name(card)
+        CardBack.VAULT_21 -> if (card.isAlt) getVault21AltName(card) else getVault21Name(card)
         CardBack.GOMORRAH -> getGomorrahName(card)
         CardBack.TOPS -> getTopsName(card)
         CardBack.ULTRA_LUXE -> getUltraLuxeName(card)
-        CardBack.LUCKY_38 -> if (isAlt) getLucky38AltName(card) else getLucky38Name(card)
-        CardBack.DECK_13 -> if (isAlt) getMadnessName(card) else getDeck13Name(card)
-        CardBack.UNPLAYABLE -> if (isAlt) getCcpAltCard() else getChineseName(card)
-        CardBack.WILD_WASTELAND -> if (isAlt) getWildWastelandAltCard() else getWildWastelandName(card)
+        CardBack.LUCKY_38 -> if (card.isAlt) getLucky38AltName(card) else getLucky38Name(card)
+        CardBack.SIERRA_MADRE -> if (card.isAlt) getSmCleanName(card) else getStandardName(card)
+
+        CardBack.CHINESE -> if (!card.isAlt) getChineseName(card) else getCcpAltCard()
+        CardBack.ENCLAVE -> if (!card.isAlt) getEnclaveName(card) else getEnclaveAltCard()
+        CardBack.MADNESS -> if (!card.isAlt) getMadnessName(card) else getWildWastelandName(card)
     }
 }
 
-private fun getWildWastelandAltCard(): String {
+private fun getEnclaveAltCard(): String {
     return "wild/nuclear_front.webp"
 }
 private fun getCcpAltCard(): String {
     return "wild/ccp_nuclear_front.webp"
 }
 
-private fun getDeck13Name(card: Card): String {
+private fun getSmCleanName(card: Card): String {
+    return "sm_clean/${getStandardName(card)}"
+}
+
+private fun getEnclaveName(card: Card): String {
+    // TODO
     return "sm_clean/${getStandardName(card)}"
 }
 

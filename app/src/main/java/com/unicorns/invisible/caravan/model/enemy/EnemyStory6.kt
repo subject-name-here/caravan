@@ -13,6 +13,8 @@ class EnemyStory6(@Transient val showMessage: (Int) -> Unit = {}) : Enemy() {
     override fun createDeck(): CResources = CResources(CustomDeck(CardBack.STANDARD, false))
     override fun getRewardBack() = null
 
+    // TODO: bug.
+
     private fun getHash(game: Game): Int {
         val enemyHash = game.enemyCaravans
             .flatMap { it.cards }

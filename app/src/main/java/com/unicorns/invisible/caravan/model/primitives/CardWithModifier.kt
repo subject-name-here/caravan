@@ -10,21 +10,17 @@ class CardWithModifier(val card: Card) {
     fun addModifier(card: Card) {
         modifiers.add(card)
         card.caravanAnimationMark = Card.AnimationMark.MOVING_IN
-        if (card.isSpecial()) {
-            if (card.isAlt) {
-                hasBomb = true
-            } else {
-                when (card.getWildWastelandCardType()) {
-                    Card.WildWastelandCardType.DIFFICULT_PETE -> hasActivePete = true
-                    Card.WildWastelandCardType.FEV -> hasActiveFev = true
-                    Card.WildWastelandCardType.UFO -> hasActiveUfo = true
-                    else -> {}
-                }
+        if (card.isNuclear()) {
+            hasBomb = true
+        } else if (card.isWildWasteland()) {
+            when (card.getWildWastelandCardType()) {
+                Card.WildWastelandCardType.DIFFICULT_PETE -> hasActivePete = true
+                Card.WildWastelandCardType.FEV -> hasActiveFev = true
+                Card.WildWastelandCardType.UFO -> hasActiveUfo = true
+                else -> {}
             }
-        } else {
-            if (card.rank == Rank.JOKER) {
-                hasActiveJoker = true
-            }
+        } else if (card.rank == Rank.JOKER) {
+            hasActiveJoker = true
         }
     }
     fun copyModifiersFrom(mods: List<Card>) {
@@ -32,7 +28,8 @@ class CardWithModifier(val card: Card) {
     }
 
     fun canAddModifier(card: Card): Boolean {
-        return card.isFace() && !isProtectedByMuggy && (modifiers.size < 3 || !card.isSpecial() && card.rank == Rank.JACK)
+        val isOrdinaryJack = card.rank == Rank.JACK && card.isOrdinary()
+        return card.isFace() && !isProtectedByMuggy && (modifiers.size < 3 || isOrdinaryJack)
     }
 
     var hasActiveJoker: Boolean = false
@@ -65,9 +62,9 @@ class CardWithModifier(val card: Card) {
         hasActivePete = false
     }
 
-    fun isQueenReversingSequence() = modifiers.count { !it.isSpecial() && it.rank == Rank.QUEEN } % 2 == 1
+    fun isQueenReversingSequence() = modifiers.count { it.isOrdinary() && it.rank == Rank.QUEEN } % 2 == 1
 
-    fun hasJacks() = modifiers.any { !it.isSpecial() && it.rank == Rank.JACK }
+    fun hasJacks() = modifiers.any { it.isOrdinary() && it.rank == Rank.JACK }
 
     fun modifiersCopy() = modifiers.toList()
 
@@ -75,11 +72,11 @@ class CardWithModifier(val card: Card) {
         return if (card.isFace()) {
             0
         } else {
-            card.rank.value * (2.0.pow(modifiers.count { !it.isSpecial() && it.rank == Rank.KING })).toInt()
+            card.rank.value * (2.0.pow(modifiers.count { it.isOrdinary() && it.rank == Rank.KING })).toInt()
         }
     }
 
     fun getTopSuit(): Suit {
-        return modifiers.findLast { !it.isSpecial() && it.rank == Rank.QUEEN }?.suit ?: card.suit
+        return modifiers.findLast { it.isOrdinary() && it.rank == Rank.QUEEN }?.suit ?: card.suit
     }
 }

@@ -798,7 +798,7 @@ fun RowScope.CaravanOnField(
             .fillMaxHeight()
             .weight(0.25f)
     ) {
-        if (!isEnemy && caravan.canBeDisbanded) {
+        if (!isEnemy) {
             TextFallout(
                 if (isInitStage || caravan.getValue() == 0) "" else stringResource(R.string.discard),
                 getTextColor(activity),

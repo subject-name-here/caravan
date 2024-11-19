@@ -33,7 +33,6 @@ import com.unicorns.invisible.caravan.model.enemy.EnemyBestest
 import com.unicorns.invisible.caravan.model.enemy.EnemyBetter
 import com.unicorns.invisible.caravan.model.enemy.EnemyCaesar
 import com.unicorns.invisible.caravan.model.enemy.EnemyEasy
-import com.unicorns.invisible.caravan.model.enemy.EnemyFinalBoss
 import com.unicorns.invisible.caravan.model.enemy.EnemyHard
 import com.unicorns.invisible.caravan.model.enemy.EnemyKing
 import com.unicorns.invisible.caravan.model.enemy.EnemyManInTheMirror
@@ -56,7 +55,6 @@ import com.unicorns.invisible.caravan.utils.CheckboxCustom
 import com.unicorns.invisible.caravan.utils.MenuItemOpen
 import com.unicorns.invisible.caravan.utils.TextFallout
 import com.unicorns.invisible.caravan.utils.getBackgroundColor
-import com.unicorns.invisible.caravan.utils.getCardPrice
 import com.unicorns.invisible.caravan.utils.getDividerColor
 import com.unicorns.invisible.caravan.utils.getKnobColor
 import com.unicorns.invisible.caravan.utils.getTextBackgroundColor
@@ -72,7 +70,6 @@ import com.unicorns.invisible.caravan.utils.playVatsEnter
 import com.unicorns.invisible.caravan.utils.playWWSound
 import com.unicorns.invisible.caravan.utils.playWinSound
 import com.unicorns.invisible.caravan.utils.scrollbar
-import com.unicorns.invisible.caravan.utils.startFinalBossTheme
 import com.unicorns.invisible.caravan.utils.stopAmbient
 import java.util.Locale
 
@@ -572,12 +569,6 @@ fun StartGame(
             playerCResources,
             enemy
         ).also {
-            if (enemy is EnemyFinalBoss) {
-                isSoundEffectsReduced = true
-                startFinalBossTheme(activity)
-                it.playerCaravans.forEach { caravan -> caravan.canBeDisbanded = false }
-                enemy.sayThing(11)
-            }
             activity.save?.let { save ->
                 save.gamesStarted++
                 saveOnGD(activity)

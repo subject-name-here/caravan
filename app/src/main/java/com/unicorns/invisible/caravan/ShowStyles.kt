@@ -30,9 +30,7 @@ import com.unicorns.invisible.caravan.utils.getKnobColor
 import com.unicorns.invisible.caravan.utils.getMusicPanelColorByStyle
 import com.unicorns.invisible.caravan.utils.getStrokeColorByStyle
 import com.unicorns.invisible.caravan.utils.getTextBackByStyle
-import com.unicorns.invisible.caravan.utils.getTextColor
 import com.unicorns.invisible.caravan.utils.getTextColorByStyle
-import com.unicorns.invisible.caravan.utils.getTextStrokeColor
 import com.unicorns.invisible.caravan.utils.getTrackColor
 import com.unicorns.invisible.caravan.utils.playPimpBoySound
 import com.unicorns.invisible.caravan.utils.scrollbar
@@ -66,16 +64,6 @@ fun ShowStyles(
                 verticalArrangement = Arrangement.Center
             ) {
                 item {
-                    TextFallout(
-                        stringResource(R.string.caps, activity.save?.caps ?: 0),
-                        getTextColor(activity),
-                        getTextStrokeColor(activity),
-                        24.sp,
-                        Alignment.Center,
-                        Modifier.fillMaxWidth().padding(top = 8.dp),
-                        TextAlign.Center
-                    )
-
                     Style.entries.forEach { style ->
                         if (style == Style.ENCLAVE && activity.save?.isEnclaveThemeAvailable != true) {
                             return@forEach

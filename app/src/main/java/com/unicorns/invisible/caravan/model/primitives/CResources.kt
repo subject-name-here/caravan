@@ -19,9 +19,9 @@ class CResources(private val deck: CustomDeck) {
      */
     private fun getTopHand(): List<Card> {
         val cards = deck.toList().toMutableList()
-        cards.removeAll { it.back == CardBack.WILD_WASTELAND && !it.isAlt && it.getWildWastelandCardType() != null }
+        cards.removeAll { it.isWildWasteland() }
 
-        val bomb = cards.find { (it.back == CardBack.WILD_WASTELAND || it.back == CardBack.UNPLAYABLE) && it.isAlt }
+        val bomb = cards.find { it.isNuclear() }
         return if (bomb != null) {
             (cards - bomb).take(7) + bomb
         } else {
@@ -42,10 +42,7 @@ class CResources(private val deck: CustomDeck) {
             handMutable.addAll(tmpHand)
         } else {
             var tmpHand = deck.toList().take(8)
-            while (
-                tmpHand.count { it.isFace() } > maxNumOfFaces ||
-                tmpHand.any { it.isSpecial() && !it.isAlt }
-            ) {
+            while (tmpHand.count { it.isFace() } > maxNumOfFaces && tmpHand.any { it.isWildWasteland() }) {
                 shuffleDeck()
                 tmpHand = deck.toList().take(8)
             }
@@ -84,14 +81,12 @@ class CResources(private val deck: CustomDeck) {
     }
 
     private fun processHandAddedCard(card: Card) {
-        if (card.back == CardBack.WILD_WASTELAND && !card.isAlt) {
-            if (card.getWildWastelandCardType() == Card.WildWastelandCardType.CAZADOR) {
-                val notSpecial = handMutable.filter { !it.isSpecial() }
-                notSpecial.forEach { it.handAnimationMark = Card.AnimationMark.MOVING_OUT }
-                handMutable.removeAll(notSpecial)
-                repeat(notSpecial.size) {
-                    handMutable.add(Card(Rank.QUEEN, Suit.HEARTS, CardBack.WILD_WASTELAND, false))
-                }
+        if (card.getWildWastelandCardType() == Card.WildWastelandCardType.CAZADOR) {
+            val notSpecial = handMutable.filter { it.isOrdinary() }
+            notSpecial.forEach { it.handAnimationMark = Card.AnimationMark.MOVED_OUT }
+            handMutable.removeAll(notSpecial)
+            repeat(notSpecial.size) {
+                handMutable.add(Card(Rank.QUEEN, Suit.HEARTS, CardBack.MADNESS, true))
             }
         }
     }
@@ -124,7 +119,7 @@ class CResources(private val deck: CustomDeck) {
         handMutable.forEach { it.handAnimationMark = Card.AnimationMark.MOVED_OUT }
         handMutable.clear()
         repeat(cards) {
-            handMutable.add(Card(card.rank, card.suit, CardBack.WILD_WASTELAND, false))
+            handMutable.add(Card(card.rank, card.suit, CardBack.MADNESS, true))
         }
     }
 

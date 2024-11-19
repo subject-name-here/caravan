@@ -24,30 +24,33 @@
     <string name="spades_name">of Spades</string>
 
     <string name="standard_deck_name">standard deck</string>
-    <string name="standard_deck_alt_name">Sierra Madre deck</string>
     <string name="tops_deck_name">Tops deck</string>
-    <string name="lucky_38_deck_name">Lucky 38 deck</string>
     <string name="ultra_luxe_deck_name">Ultra-Luxe deck</string>
     <string name="gomorrah_deck_name">Gomorrah deck</string>
+    <string name="lucky_38_deck_name">Lucky 38 deck</string>
     <string name="vault_21_deck_name">Vault 21 deck</string>
-    <string name="deck_13_deck_name">Deck 13</string>
-    <string name="deck_13_deck_alt_name">Madness deck</string>
-    <string name="other_deck_name" translatable="false">[NOT PLAYABLE]</string>
+    <string name="sierra_madre_deck_name">Sierra Madre deck</string>
+    <string name="madness_deck_name">Madness deck</string>
+    <string name="chinese_deck_name">Chinese deck</string>
+    <string name="enclave_deck_name">Enclave deck</string>
+    <string name="madness_alt_deck_name">Wild Wasteland deck</string>
+    <string name="chinese_alt_deck_name">Nuclear FU deck</string>
+    <string name="enclave_alt_deck_name">Nuclear deck</string>
 
-    <string name="standard_deck_owners">other players</string>
 
     <string name="menu_pve">Single player</string>
     <string name="menu_pvp">Multiplayer</string>
-    <string name="menu_tutorial">Tutorial</string>
-    <string name="menu_rules">Rules</string>
+    <string name="menu_rules">Rules &amp; FAQ</string>
     <string name="menu_deck">Deck Settings</string>
-    <string name="menu_vision">Vision!</string>
-    <string name="menu_about">About</string>
-    <string name="menu_discord" translatable="false">Discord!</string>
-    <string name="menu_settings">Settings</string>
-    <string name="menu_story">Story</string>
-    <string name="menu_wild_wastealnd">Wild Wasteland</string>
     <string name="missions">Challenges GRA</string>
+    <string name="market">Market</string>
+
+    <string name="menu_discord" translatable="false">Discord!</string>
+
+    <string name="menu_vision">Vision!</string>
+    <string name="menu_settings">Settings</string>
+    <string name="menu_about">About</string>
+
 
     <string name="none" translatable="false">[NONE]</string>
     <string name="next_song">NXT SONG</string>
@@ -63,40 +66,29 @@
     <string name="custom_deck_non_faces">Number of non-face cards: %1$s\n(must be at least %2$s)</string>
 
     <string name="pve_select_enemy">Select the Opponent</string>
-    <string name="pve_select_enemy_1">Fair Opponents</string>
-    <string name="pve_select_enemy_2">Cheesy Ones</string>
-    <string name="pve_select_enemy_3">Tower Enemies</string>
-    <string name="pve_enemy_easy">Ultra-Luxe visitor</string>
-    <string name="pve_enemy_medium">Thug from Gomorrah</string>
-    <string name="pve_enemy_hard">The Tops Promoter</string>
-    <string name="pve_enemy_better">Victor</string>
-    <string name="pve_enemy_best">Ulysses</string>
 
-    <string name="pve_enemy_queen">Swank from Tops</string>
-    <string name="johnson_nash">Johnson Nash</string>
-    <string name="no_bark">No-bark Noonan</string>
-    <string name="pve_enemy_38">Securitron P373</string>
-    <string name="pve_enemy_cheater">Courier Six</string>
-
+    <string name="pve_enemy_oliver_fake">General Lee Oliver</string>
+    <string name="pve_enemy_oliver_real">Oliver Swanick</string>
+    <string name="pve_enemy_veronica">Veronica</string>
+    <string name="pve_enemy_chief_hanlon">Chief Hanlon</string>
+    <string name="pve_enemy_victor">Victor</string>
+    <string name="pve_enemy_ulysses">Ulysses</string>
     <string name="benny">Benny</string>
-    <string name="mr_house">Mr. House</string>
 
-    <string name="sunny_smiles">Sunny Smiles</string>
-    <string name="ringo">Ringo</string>
-    <string name="cliff_briscoe">Cliff Briscoe</string>
-    <string name="yes_man">Yes Man</string>
-    <string name="ambassador_crocker">Ambassador Crocker</string>
-    <string name="the_king">The King</string>
-    <string name="general_lee_oliver">General Lee Oliver</string>
-    <string name="caesar">Caesar</string>
-    <string name="frank_horrigan">Frank Horrigan</string>
+    <string name="no_bark">No-bark Noonan</string>
+    <string name="johnson_nash">Johnson Nash</string>
+    <string name="tabitha">Tabitha (feat. Moe)</string>
+    <string name="vulpes">Vulpes Inculta</string>
+    <string name="elijah">Father Elijah</string>
+    <string name="crooker">Ambassador Crooker</string>
 
-    <string name="no_one">no one</string>
-    <string name="priest">Madness Priestess</string>
     <string name="snuffles">Snuffles</string>
-    <string name="final_boss">Supreme Leader</string>
+    <string name="easy_pete">Easy Pete</string>
+    <string name="enemy_significant_other" translatable="false">EXPERIMENT #666: Significant Other</string>
+    <string name="luc10" translatable="false">LUC10</string>
+    <string name="dr_mobius">Dr. Mobius</string>
+    <string name="man_in_the_mirror" translatable="false">ЯОЯЯIM ЭHT ИI ИAM</string>
 
-    <string name="pve_use_custom_deck">Use Custom Deck</string>
     <string name="pve_stats">Stats</string>
     <string name="pve_games_started">Games started: %1$s</string>
     <string name="pve_games_finished">Games finished: %1$s</string>
@@ -112,12 +104,7 @@
 
     <string name="you_win">You win!</string>
     <string name="result">Result</string>
-    <string name="result_ulysses">You\'ve got lucky this time, Courier.</string>
     <string name="you_lose">You lose!</string>
-
-    <string name="benny_custom_deck_header">Babe, I ain\'t good enough already.</string>
-    <string name="benny_custom_deck_body">Now how about you leave that custom deck in your deep pocket?</string>
-    <string name="what_tired_of_losing">What, tired of losing?</string>
 
     <string name="you_have_unlocked_deck">\nYou have unlocked the %1$s!</string>
     <string name="you_have_unlocked_deck_alt">\nYou have unlocked the ALT of %1$s!</string>
@@ -129,6 +116,7 @@
     <string name="old_card_alt">Old: %1$s (ALT).\n</string>
 
     <string name="discard_card">DISCARD CARD</string>
+    <string name="discard">DISBAND!</string>
     <string name="drop_caravan">DISBAND CARAVAN #%1$s</string>
     <string name="back_to_menu">Back to Menu</string>
 
@@ -243,21 +231,13 @@
         Action timeout (move, room waiting) is ~38 seconds, then the room is destroyed.
     </string>
 
-    <string name="discard">DISBAND!</string>
     <string name="wait">Wait…</string>
     <string name="init_stage">Init stage!</string>
     <string name="can_t_act">Can\'t act!</string>
     <string name="your_turn">Your turn!</string>
 
     <string name="close">Close</string>
-
-    <string name="ulysses_victory">The luck was on my side.</string>
     <string name="check_back_to_menu">Are you sure you want to quit?</string>
-    <string name="check_back_to_menu_ulysses">Running away from your mistakes?</string>
-    <string name="tap_card_back_to_open_cards">Tap card back to open cards</string>
-    <string name="get_cards_from">Get cards from:\n</string>
-    <string name="ulysses_fair_fight_header">It\'s an honest fight.</string>
-    <string name="ulysses_fair_fight_body">You cannot use custom deck against this enemy.</string>
 
     <string name="sound">Sound!</string>
     <string name="save">Save</string>
@@ -266,6 +246,7 @@
     <string name="sfx">SFX</string>
 
     <string name="intro_music">Same Radio Intro</string>
+    <string name="non_stop_radio">Non-stop Radio</string>
 
     <string name="intro_tip_1">Did you know that \"Caravan game\" is an acronym? It stands for \"Cards And Reclamation Approved by Vault-Tec And NCR\" game?\n\n(no, it\'s not)</string>
     <string name="intro_tip_2">Unlike chess, Queens are not so useful in Caravan. However, you can have fun by sabotaging enemy\'s caravan with them.</string>
@@ -282,8 +263,6 @@
     <string name="intro_tip_13">While not so popular as 10-K-6 tactic, 9-K-8 sometimes can be more flexible.</string>
     <string name="intro_tip_14">If you have Jokers in your custom deck, think about throwing there a couple of Aces.</string>
     <string name="intro_tip_15">Discarding a caravan might give you a valuable advantage in a long game: you have one card more in your deck.</string>
-    <string name="intro_tip_16">There are legends about mysterious card Deck 13. The rumours are that it has cards unscathed by the war, like the ones from Vault 21.</string>
-    <string name="intro_tip_17">The more you sell cards with the same back, the less they cost.</string>
 
     <string name="intro_tip_vault">Did you know that there are 122 vaults in the Fallout world? Only 17 of them were not experimenting on their inhabitants.</string>
     <string name="intro_tip_desert">Cazadors can easily tear down a deathclaw or two. Imagine what they can do to your puny fragile body.</string>
@@ -396,14 +375,10 @@
     <string name="custom_deck_only">(Custom deck only!)</string>
     <string name="you_can_change_custom_deck_between_games">(You can change custom deck between games.)</string>
     <string name="progress_is_saved_between_sessions">(Progress is saved between sessions!).</string>
-    <string name="tickets_please_you_have_tickets_caps">Tickets, please!\n(You have tickets: %1$s;\ncaps: %2$s.)</string>
-    <string name="play_for_free_no_jackpot">Play for free (NO JACKPOT!)</string>
+    <string name="tickets_please_you_have_tickets">Tickets, please!\n(You have tickets: %1$s.)</string>
     <string name="pay_1_ticket">Pay 1 ticket</string>
-    <string name="pay_100_caps">Pay 100 caps</string>
     <string name="hey">HEY!</string>
     <string name="tower_progress_will_be_lost">All progress will be lost!</string>
-    <string name="select_payment_method">Select payment method.</string>
-    <string name="you_don_t_have_enough_cash_kid">You don\'t have enough cash, kid.</string>
     <string name="you_don_t_have_a_ticket_on_you">You don\'t have a ticket on you.</string>
     <string name="level_10">Level: %1$s / 10</string>
     <string name="currently_in_bank_caps">Currently in bank: %1$s caps</string>
@@ -662,19 +637,6 @@
     <string name="ch9a_q7">NOW WE ARE TRULY UNITED. WELCOME, THE PROSPECTOR.</string>
     <string name="ch9a_t8">The Prospector… The Supreme Leader - together they will bring peace to the entire planet.</string>
 
-    <string name="supreme_leader_says_header">Supreme Leader says:</string>
-    <string name="supreme_leader_says_1">I am satisfied. I have seen enough. Now you can quit.</string>
-    <string name="supreme_leader_says_2">Don\'t you see how futile it is?</string>
-    <string name="supreme_leader_says_3">Give up.</string>
-    <string name="supreme_leader_says_4">Give up now.</string>
-    <string name="supreme_leader_says_5">You nasty pest.</string>
-    <string name="supreme_leader_says_6">GIVE UP!</string>
-    <string name="supreme_leader_says_7">I am tired of you. Time to get serious.</string>
-    <string name="supreme_leader_says_8">Games are over.</string>
-    <string name="supreme_leader_says_9">No, what? I can\'t lose! I am supreme!</string>
-    <string name="supreme_leader_says_10">No-no-no, I am not done with you yet. Here, have some cards.</string>
-    <string name="supreme_leader_says_11">You cannot disband caravans. I will do that for you.</string>
-    <string name="enemy_significant_other" translatable="false">EXPERIMENT #666: Significant Other</string>
     <string name="so_header" translatable="false">Your significant other softly says to you:</string>
     <string name="so_0" translatable="false">I will try to make you happy. I hope I will be enough…</string>
     <string name="so_1" translatable="false">I\'m glad I make it better for you. I\'ll try to work on myself as well!</string>
@@ -687,6 +649,7 @@
     <string name="so_8" translatable="false">Oh. I… I am sorry. I couldn\'t make this relationship work. I\'m so sorry… Maybe you\'re better off without me anyways… Hope you\'ll be happy. Thank you for brightening my short existence with this little game sessions. Maybe I was foolish believing that for you, it was more than just a game, too…</string>
     <string name="so_back_header" translatable="false">Go back to main menu?</string>
     <string name="so_back_body" translatable="false">This will kill your significant other.</string>
+
 
     <!--achievement Test Achievement-->
     <string name="achievement_test_achievement" translatable="false">CgkIvtnbpMwbEAIQAQ</string>

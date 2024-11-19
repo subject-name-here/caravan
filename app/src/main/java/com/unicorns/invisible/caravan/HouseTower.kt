@@ -1,9 +1,7 @@
 package com.unicorns.invisible.caravan
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -59,7 +57,6 @@ import com.unicorns.invisible.caravan.utils.clickableOk
 import com.unicorns.invisible.caravan.utils.clickableSelect
 import com.unicorns.invisible.caravan.utils.getBackgroundColor
 import com.unicorns.invisible.caravan.utils.getKnobColor
-import com.unicorns.invisible.caravan.utils.getSelectionColor
 import com.unicorns.invisible.caravan.utils.getStrokeColorByStyle
 import com.unicorns.invisible.caravan.utils.getTextBackByStyle
 import com.unicorns.invisible.caravan.utils.getTextBackgroundColor
@@ -69,13 +66,11 @@ import com.unicorns.invisible.caravan.utils.getTextStrokeColor
 import com.unicorns.invisible.caravan.utils.getTrackColor
 import com.unicorns.invisible.caravan.utils.nextSong
 import com.unicorns.invisible.caravan.utils.playCashSound
-import com.unicorns.invisible.caravan.utils.playCloseSound
 import com.unicorns.invisible.caravan.utils.playFrankPhrase
 import com.unicorns.invisible.caravan.utils.playJokerSounds
 import com.unicorns.invisible.caravan.utils.playLoseSound
 import com.unicorns.invisible.caravan.utils.playNotificationSound
 import com.unicorns.invisible.caravan.utils.playNukeBlownSound
-import com.unicorns.invisible.caravan.utils.playSelectSound
 import com.unicorns.invisible.caravan.utils.playTowerCompleted
 import com.unicorns.invisible.caravan.utils.playTowerFailed
 import com.unicorns.invisible.caravan.utils.playWinSound
@@ -89,21 +84,14 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 
-enum class Payment {
-    FREE,
-    ONE_HUNDRED_CAPS,
-    TICKET
-}
-
 @Composable
 fun TowerScreen(
     activity: MainActivity,
     showAlertDialog: (String, String) -> Unit,
     goBack: () -> Unit,
 ) {
-    var payment by rememberSaveable { mutableStateOf<Payment?>(null) }
     var level by rememberSaveable { mutableIntStateOf(activity.save?.towerLevel ?: 0) }
-    var isGameRigged by rememberSaveable { mutableStateOf(activity.save?.isGameRigged ?: false) }
+    var isGameRigged by rememberSaveable { mutableStateOf(activity.save?.isGameRigged == true) }
     var startFrank by rememberSaveable { mutableStateOf(false) }
     var timesClicked by rememberSaveable { mutableIntStateOf(0) }
     if (startFrank) {
@@ -350,9 +338,8 @@ fun TowerScreen(
                 if (level == 0) {
                     TextFallout(
                         stringResource(
-                            R.string.tickets_please_you_have_tickets_caps,
-                            activity.save?.tickets ?: 0,
-                            activity.save?.caps ?: 0
+                            R.string.tickets_please_you_have_tickets,
+                            activity.save?.tickets ?: 0
                         ),
                         getTextColor(activity),
                         getTextStrokeColor(activity),
@@ -364,80 +351,27 @@ fun TowerScreen(
                     Spacer(modifier = Modifier.height(16.dp))
                     Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.SpaceEvenly) {
                         TextFallout(
-                            stringResource(R.string.play_for_free_no_jackpot),
-                            getTextColor(activity),
-                            getTextStrokeColor(activity),
-                            20.sp,
-                            Alignment.Center,
-                            Modifier
-                                .border(
-                                    BorderStroke(
-                                        if (payment == Payment.FREE) 3.dp else (-1).dp,
-                                        getSelectionColor(activity)
-                                    )
-                                )
-                                .padding(4.dp)
-                                .clickable {
-                                    if (payment == Payment.FREE) {
-                                        payment = null
-                                        playCloseSound(activity)
-                                    } else {
-                                        payment = Payment.FREE
-                                        playSelectSound(activity)
-                                    }
-                                }
-                                .background(getTextBackgroundColor(activity))
-                                .padding(4.dp),
-                            TextAlign.Center
-                        )
-                        TextFallout(
                             stringResource(R.string.pay_1_ticket),
                             getTextColor(activity),
                             getTextStrokeColor(activity),
                             20.sp,
                             Alignment.Center,
                             Modifier
-                                .border(
-                                    BorderStroke(
-                                        if (payment == Payment.TICKET) 3.dp else (-1).dp,
-                                        getSelectionColor(activity)
-                                    )
-                                )
                                 .padding(4.dp)
-                                .clickable {
-                                    if (payment == Payment.TICKET) {
-                                        payment = null
-                                        playCloseSound(activity)
-                                    } else {
-                                        payment = Payment.TICKET
-                                        playSelectSound(activity)
+                                .clickableOk(activity) {
+                                    if ((activity.save?.tickets ?: 0) <= 0) {
+                                        showAlertDialog(
+                                            activity.getString(R.string.hey),
+                                            activity.getString(R.string.you_don_t_have_a_ticket_on_you)
+                                        )
+                                        return@clickableOk
                                     }
-                                }
-                                .background(getTextBackgroundColor(activity))
-                                .padding(4.dp),
-                            TextAlign.Center
-                        )
-                        TextFallout(
-                            stringResource(R.string.pay_100_caps),
-                            getTextColor(activity),
-                            getTextStrokeColor(activity),
-                            20.sp,
-                            Alignment.Center,
-                            Modifier
-                                .border(
-                                    BorderStroke(
-                                        if (payment == Payment.ONE_HUNDRED_CAPS) 3.dp else (-1).dp,
-                                        getSelectionColor(activity)
-                                    )
-                                )
-                                .padding(4.dp)
-                                .clickable {
-                                    if (payment == Payment.ONE_HUNDRED_CAPS) {
-                                        payment = null
-                                        playCloseSound(activity)
-                                    } else {
-                                        payment = Payment.ONE_HUNDRED_CAPS
-                                        playSelectSound(activity)
+
+                                    level++
+                                    activity.save?.let {
+                                        it.towerLevel++
+                                        it.tickets--
+                                        saveOnGD(activity)
                                     }
                                 }
                                 .background(getTextBackgroundColor(activity))
@@ -445,93 +379,20 @@ fun TowerScreen(
                             TextAlign.Center
                         )
                     }
-
-                    Spacer(Modifier.height(32.dp))
-                    TextFallout(
-                        stringResource(R.string.start),
-                        getTextColor(activity),
-                        getTextStrokeColor(activity),
-                        24.sp,
-                        Alignment.Center,
-                        modifier = Modifier
-                            .clickableOk(activity) {
-                                if (payment == null) {
-                                    showAlertDialog(
-                                        activity.getString(R.string.hey),
-                                        activity.getString(R.string.select_payment_method)
-                                    )
-                                    return@clickableOk
-                                }
-
-                                when (payment) {
-                                    Payment.ONE_HUNDRED_CAPS -> {
-                                        if ((activity.save?.caps ?: 0) < 100) {
-                                            showAlertDialog(
-                                                activity.getString(R.string.hey),
-                                                activity.getString(R.string.you_don_t_have_enough_cash_kid)
-                                            )
-                                            return@clickableOk
-                                        }
-                                    }
-
-                                    Payment.TICKET -> {
-                                        if ((activity.save?.tickets ?: 0) < 1) {
-                                            showAlertDialog(
-                                                activity.getString(R.string.hey),
-                                                activity.getString(R.string.you_don_t_have_a_ticket_on_you)
-                                            )
-                                            return@clickableOk
-                                        }
-                                    }
-
-                                    else -> {}
-                                }
-
-                                level++
-                                activity.save?.let {
-                                    it.towerLevel++
-
-                                    when (payment) {
-                                        Payment.ONE_HUNDRED_CAPS -> {
-                                            it.isTowerFree = false
-                                            it.caps -= 100
-                                        }
-
-                                        Payment.TICKET -> {
-                                            it.isTowerFree = false
-                                            it.tickets--
-                                        }
-
-                                        else -> {
-                                            it.isTowerFree = true
-                                        }
-                                    }
-
-                                    saveOnGD(activity)
-                                }
-                            }
-                            .background(getTextBackgroundColor(activity))
-                            .padding(horizontal = 8.dp, vertical = 4.dp),
-                        TextAlign.Center
-                    )
                 } else {
-                    val inBank = if (activity.save?.isTowerFree == false) {
-                        when (level) {
-                            1 -> 1
-                            2 -> 5
-                            3 -> 10
-                            4 -> 25
-                            5 -> 50
-                            6 -> 101
-                            7 -> 166
-                            8 -> 222
-                            9 -> 333
-                            10 -> 444
-                            11 -> 555
-                            else -> 999
-                        }
-                    } else {
-                        0
+                    val inBank = when (level) {
+                        1 -> 1
+                        2 -> 5
+                        3 -> 10
+                        4 -> 25
+                        5 -> 50
+                        6 -> 101
+                        7 -> 166
+                        8 -> 222
+                        9 -> 333
+                        10 -> 444
+                        11 -> 555
+                        else -> 999
                     }
                     @Composable
                     fun showTowerCard(enemyName: String) {
@@ -625,7 +486,6 @@ fun TowerScreen(
                                     .clickableOk(activity) {
                                         if (level > 0) {
                                             level = 0
-                                            payment = null
                                             activity.save?.let {
                                                 it.towerLevel = 0
                                                 it.caps += inBank

@@ -5,12 +5,11 @@ import kotlinx.serialization.Serializable
 
 
 @Serializable
-class Card(val rank: Rank, val suit: Suit, val back: CardBack, val isAlt: Boolean = false) {
+class Card(val rank: Rank, val suit: Suit, val back: CardBack, val isAlt: Boolean) {
     var handAnimationMark = AnimationMark.STABLE
     var caravanAnimationMark = AnimationMark.STABLE
 
-    fun isFace() = rank.isFace() || isSpecial()
-    fun isSpecial() = back.isSpecialCard(isAlt) && !(back == CardBack.WILD_WASTELAND && !isAlt && !rank.isFace())
+    fun isFace() = rank.isFace()
 
     override fun toString(): String {
         return "${this.hashCode()}; ${this.rank.ordinal}; ${this.suit.ordinal}; ${this.back.ordinal}; ${this.isAlt};"
@@ -35,8 +34,20 @@ class Card(val rank: Rank, val suit: Suit, val back: CardBack, val isAlt: Boolea
         }
     }
 
+    fun isNuclear(): Boolean {
+        return (back == CardBack.CHINESE || back == CardBack.ENCLAVE) && isAlt
+    }
+
+    fun isWildWasteland(): Boolean {
+        return back == CardBack.MADNESS && isAlt
+    }
+
+    fun isOrdinary(): Boolean {
+        return !isWildWasteland() && !isNuclear()
+    }
+
     fun getWildWastelandCardType(): WildWastelandCardType? {
-        if (!(back == CardBack.WILD_WASTELAND && !isAlt)) {
+        if (!isWildWasteland()) {
             return null
         }
 

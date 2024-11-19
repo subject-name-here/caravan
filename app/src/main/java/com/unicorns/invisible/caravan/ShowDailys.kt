@@ -66,6 +66,18 @@ fun ShowDailys(
             ) {
                 item {
                     Spacer(Modifier.height(16.dp))
+                    activity.save?.challenges?.forEach { challenge ->
+                        ShowChallenge(activity, challenge, challenge.isCompleted()) {
+                            updateKey = !updateKey
+                        }
+                        Spacer(Modifier.height(16.dp))
+                    }
+                    if (activity.save?.challenges?.all { it.isCompleted() } == true) {
+                        activity.achievementsClient?.unlock(activity.getString(R.string.achievement_done_for_today))
+                    }
+                }
+                item {
+                    Spacer(Modifier.height(16.dp))
                     Row(
                         Modifier.fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically,
@@ -89,18 +101,6 @@ fun ShowDailys(
                                 },
                             TextAlign.Center
                         )
-                    }
-                }
-                item {
-                    Spacer(Modifier.height(16.dp))
-                    activity.save?.challenges?.forEach { challenge ->
-                        ShowChallenge(activity, challenge, challenge.isCompleted()) {
-                            updateKey = !updateKey
-                        }
-                        Spacer(Modifier.height(16.dp))
-                    }
-                    if (activity.save?.challenges?.all { it.isCompleted() } == true) {
-                        activity.achievementsClient?.unlock(activity.getString(R.string.achievement_done_for_today))
                     }
                 }
             }

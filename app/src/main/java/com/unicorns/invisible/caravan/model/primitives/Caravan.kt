@@ -15,7 +15,6 @@ class Caravan {
 
     fun isEmpty() = size == 0
     fun isFull() = size >= 10
-    var canBeDisbanded = true
 
     private fun removeAll(predicate: (CardWithModifier) -> Boolean) {
         val toRemove = cardsMutable.filter(predicate)
@@ -51,7 +50,7 @@ class Caravan {
             val mods = it.modifiersCopy()
             val newOrdinal = (changeOrdinal(it.card.rank.ordinal)).coerceIn(0, 9)
             cardsMutable.add(CardWithModifier(
-                Card(Rank.entries[newOrdinal], it.card.suit, CardBack.WILD_WASTELAND, false)
+                Card(Rank.entries[newOrdinal], it.card.suit, CardBack.MADNESS, true)
             ).apply {
                 copyModifiersFrom(mods)
             })
@@ -64,7 +63,7 @@ class Caravan {
         copy.forEach {
             val mods = it.modifiersCopy()
             cardsMutable.add(CardWithModifier(
-                Card(Rank.TEN, it.card.suit, CardBack.WILD_WASTELAND, false)
+                Card(Rank.TEN, it.card.suit, CardBack.MADNESS, true)
             ).apply {
                 copyModifiersFrom(mods)
             })

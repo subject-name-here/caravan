@@ -119,7 +119,7 @@ class Game(
                 card -> card.modifiersCopy().any { mod -> mod in cazadorCards }
             }
             val queensAffected = cazadorOwners.sumOf {
-                owner -> owner.modifiersCopy().count { m -> m.rank == Rank.QUEEN && !m.isSpecial() }
+                owner -> owner.modifiersCopy().count { m -> m.rank == Rank.QUEEN && m.isOrdinary() }
             }
 
             if (cazadorCards.isNotEmpty()) {
@@ -249,7 +249,7 @@ class Game(
 
     private fun processBomb(bombOwner: CardWithModifier) {
         (playerCaravans + enemyCaravans).forEach {
-            val isFBomb = bombOwner.modifiersCopy().lastOrNull()?.back == CardBack.UNPLAYABLE
+            val isFBomb = bombOwner.modifiersCopy().lastOrNull()?.back == CardBack.CHINESE
             val isThisCaravan = bombOwner in it.cards
             val isMuggyOnCaravan = it.cards.any { card -> card.isProtectedByMuggy }
 
@@ -271,56 +271,56 @@ class Game(
     private fun addFBombCard(value: Int) {
         when (value) {
             3 -> {
-                playerCResources.addOnTop(Card(Rank.ACE, Suit.entries.random(), CardBack.WILD_WASTELAND, false))
+                playerCResources.addOnTop(Card(Rank.ACE, Suit.entries.random(), CardBack.MADNESS, true))
             }
             4 -> {
-                playerCResources.addOnTop(Card(Rank.TWO, Suit.entries.random(), CardBack.WILD_WASTELAND, false))
+                playerCResources.addOnTop(Card(Rank.TWO, Suit.entries.random(), CardBack.MADNESS, true))
             }
             in (5..6) -> {
-                playerCResources.addOnTop(Card(Rank.THREE, Suit.entries.random(), CardBack.WILD_WASTELAND, false))
+                playerCResources.addOnTop(Card(Rank.THREE, Suit.entries.random(), CardBack.MADNESS, true))
             }
             in (7..8) -> {
-                playerCResources.addOnTop(Card(Rank.FOUR, Suit.entries.random(), CardBack.WILD_WASTELAND, false))
+                playerCResources.addOnTop(Card(Rank.FOUR, Suit.entries.random(), CardBack.MADNESS, true))
             }
             in (9..10) -> {
-                playerCResources.addOnTop(Card(Rank.FIVE, Suit.entries.random(), CardBack.WILD_WASTELAND, false))
+                playerCResources.addOnTop(Card(Rank.FIVE, Suit.entries.random(), CardBack.MADNESS, true))
             }
             in (11..12) -> {
-                playerCResources.addOnTop(Card(Rank.SIX, Suit.entries.random(), CardBack.WILD_WASTELAND, false))
+                playerCResources.addOnTop(Card(Rank.SIX, Suit.entries.random(), CardBack.MADNESS, true))
             }
             in (13..14) -> {
-                playerCResources.addOnTop(Card(Rank.SEVEN, Suit.entries.random(), CardBack.WILD_WASTELAND, false))
+                playerCResources.addOnTop(Card(Rank.SEVEN, Suit.entries.random(), CardBack.MADNESS, true))
             }
             in (15..16) -> {
-                playerCResources.addOnTop(Card(Rank.EIGHT, Suit.entries.random(), CardBack.WILD_WASTELAND, false))
+                playerCResources.addOnTop(Card(Rank.EIGHT, Suit.entries.random(), CardBack.MADNESS, true))
             }
             in (17..18) -> {
-                playerCResources.addOnTop(Card(Rank.NINE, Suit.entries.random(), CardBack.WILD_WASTELAND, false))
+                playerCResources.addOnTop(Card(Rank.NINE, Suit.entries.random(), CardBack.MADNESS, true))
             }
             in (19..20) -> {
-                playerCResources.addOnTop(Card(Rank.TEN, Suit.entries.random(), CardBack.WILD_WASTELAND, false))
+                playerCResources.addOnTop(Card(Rank.TEN, Suit.entries.random(), CardBack.MADNESS, true))
             }
             in (21..22) -> {
                 if (Random.nextBoolean()) {
-                    playerCResources.addOnTop(Card(Rank.SEVEN, Suit.entries.random(), CardBack.WILD_WASTELAND, false))
-                    playerCResources.addOnTop(Card(Rank.ACE, Suit.entries.random(), CardBack.WILD_WASTELAND, false))
+                    playerCResources.addOnTop(Card(Rank.SEVEN, Suit.entries.random(), CardBack.MADNESS, true))
+                    playerCResources.addOnTop(Card(Rank.ACE, Suit.entries.random(), CardBack.MADNESS, true))
                 } else {
-                    playerCResources.addOnTop(Card(Rank.SIX, Suit.entries.random(), CardBack.WILD_WASTELAND, false))
-                    playerCResources.addOnTop(Card(Rank.TWO, Suit.entries.random(), CardBack.WILD_WASTELAND, false))
+                    playerCResources.addOnTop(Card(Rank.SIX, Suit.entries.random(), CardBack.MADNESS, true))
+                    playerCResources.addOnTop(Card(Rank.TWO, Suit.entries.random(), CardBack.MADNESS, true))
                 }
             }
             in (23..24) -> {
                 if (Random.nextBoolean()) {
-                    playerCResources.addOnTop(Card(Rank.NINE, Suit.entries.random(), CardBack.WILD_WASTELAND, false))
-                    playerCResources.addOnTop(Card(Rank.THREE, Suit.entries.random(), CardBack.WILD_WASTELAND, false))
+                    playerCResources.addOnTop(Card(Rank.NINE, Suit.entries.random(), CardBack.MADNESS, true))
+                    playerCResources.addOnTop(Card(Rank.THREE, Suit.entries.random(), CardBack.MADNESS, true))
                 } else {
-                    playerCResources.addOnTop(Card(Rank.EIGHT, Suit.entries.random(), CardBack.WILD_WASTELAND, false))
-                    playerCResources.addOnTop(Card(Rank.FOUR, Suit.entries.random(), CardBack.WILD_WASTELAND, false))
+                    playerCResources.addOnTop(Card(Rank.EIGHT, Suit.entries.random(), CardBack.MADNESS, true))
+                    playerCResources.addOnTop(Card(Rank.FOUR, Suit.entries.random(), CardBack.MADNESS, true))
                 }
             }
             in (25..26) -> {
-                playerCResources.addOnTop(Card(Rank.TEN, Suit.entries.random(), CardBack.WILD_WASTELAND, false))
-                playerCResources.addOnTop(Card(Rank.FIVE, Suit.entries.random(), CardBack.WILD_WASTELAND, false))
+                playerCResources.addOnTop(Card(Rank.TEN, Suit.entries.random(), CardBack.MADNESS, true))
+                playerCResources.addOnTop(Card(Rank.FIVE, Suit.entries.random(), CardBack.MADNESS, true))
             }
         }
     }
