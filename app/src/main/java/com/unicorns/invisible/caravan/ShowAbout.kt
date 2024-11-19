@@ -79,29 +79,10 @@ fun ShowAbout(activity: MainActivity, goBack: () -> Unit) {
                     Modifier,
                     TextAlign.Center
                 )
-                Spacer(modifier = Modifier.height(16.dp))
 
-                val annotatedString = buildAnnotatedString {
-                    append(stringResource(R.string.about_3_1))
-                    withLink(
-                        link = LinkAnnotation.Url(
-                            url = "mailto:unicornsinvisible@gmail.com",
-                            styles = TextLinkStyles(
-                                style = SpanStyle(
-                                    color = getTextColor(activity),
-                                    fontFamily = FontFamily(Font(R.font.monofont)),
-                                    textDecoration = TextDecoration.Underline
-                                )
-                            )
-                        ),
-                    ) {
-                        append("unicornsinvisible@gmail.com")
-                    }
-                    append(stringResource(R.string.about_3_2))
-                }
-
+                Spacer(modifier = Modifier.height(24.dp))
                 TextFallout(
-                    annotatedString,
+                    stringResource(R.string.about_3_0),
                     getTextColor(activity),
                     getTextStrokeColor(activity),
                     20.sp,
@@ -109,28 +90,9 @@ fun ShowAbout(activity: MainActivity, goBack: () -> Unit) {
                     Modifier,
                     TextAlign.Center
                 )
-                Spacer(modifier = Modifier.height(16.dp))
-
-                val annotatedString2 = buildAnnotatedString {
-                    append(stringResource(R.string.about_4_1))
-                    withLink(
-                        link = LinkAnnotation.Url(
-                            url = "https://www.reddit.com/r/cardgames/comments/97c7g2/caravan_card_game_in_reallife_detailed_rules/",
-                            styles = TextLinkStyles(
-                                style = SpanStyle(
-                                    color = getTextColor(activity),
-                                    fontFamily = FontFamily(Font(R.font.monofont)),
-                                    textDecoration = TextDecoration.Underline
-                                )
-                            )
-                        ),
-                    ) {
-                        append(stringResource(R.string.about_4_2))
-                    }
-                    append(stringResource(R.string.about_4_3))
-                }
+                Spacer(modifier = Modifier.height(12.dp))
                 TextFallout(
-                    annotatedString2,
+                    stringResource(R.string.about_3_1),
                     getTextColor(activity),
                     getTextStrokeColor(activity),
                     20.sp,
@@ -138,47 +100,9 @@ fun ShowAbout(activity: MainActivity, goBack: () -> Unit) {
                     Modifier,
                     TextAlign.Center
                 )
+                Spacer(modifier = Modifier.height(12.dp))
 
-                Spacer(modifier = Modifier.height(16.dp))
-                TextFallout(
-                    stringResource(R.string.about_5),
-                    getTextColor(activity),
-                    getTextStrokeColor(activity),
-                    20.sp,
-                    Alignment.Center,
-                    Modifier,
-                    TextAlign.Center
-                )
-
-                Spacer(modifier = Modifier.height(16.dp))
-                TextFallout(
-                    stringResource(R.string.about_6),
-                    getTextColor(activity),
-                    getTextStrokeColor(activity),
-                    20.sp,
-                    Alignment.Center,
-                    Modifier,
-                    TextAlign.Center
-                )
-
-                Spacer(modifier = Modifier.height(16.dp))
-                val annotatedString3 = buildAnnotatedString {
-                    append(stringResource(R.string.about_8))
-                    withLink(
-                        link = LinkAnnotation.Url(
-                            url = "https://www.youtube.com/@ithracael",
-                            styles = TextLinkStyles(
-                                style = SpanStyle(
-                                    color = getTextColor(activity),
-                                    fontFamily = FontFamily(Font(R.font.monofont)),
-                                    textDecoration = TextDecoration.Underline
-                                )
-                            )
-                        ),
-                    ) {
-                        append("Ithracael")
-                    }
-                    append(", ")
+                val annotatedString0 = buildAnnotatedString {
                     withLink(
                         link = LinkAnnotation.Url(
                             url = "https://www.youtube.com/@churchofmadness",
@@ -193,6 +117,104 @@ fun ShowAbout(activity: MainActivity, goBack: () -> Unit) {
                     ) {
                         append("Sobek")
                     }
+                    append(stringResource(R.string.about_3_2))
+                }
+
+                TextFallout(
+                    annotatedString0,
+                    getTextColor(activity),
+                    getTextStrokeColor(activity),
+                    20.sp,
+                    Alignment.Center,
+                    Modifier,
+                    TextAlign.Center
+                )
+                Spacer(modifier = Modifier.height(12.dp))
+                TextFallout(
+                    stringResource(R.string.about_3_3),
+                    getTextColor(activity),
+                    getTextStrokeColor(activity),
+                    20.sp,
+                    Alignment.Center,
+                    Modifier,
+                    TextAlign.Center
+                )
+                Spacer(modifier = Modifier.height(12.dp))
+
+                val annotatedString2 = buildAnnotatedString {
+                    append(stringResource(R.string.about_3_4_1))
+                    withLink(
+                        link = LinkAnnotation.Url(
+                            url = "https://www.reddit.com/r/cardgames/comments/97c7g2/caravan_card_game_in_reallife_detailed_rules/",
+                            styles = TextLinkStyles(
+                                style = SpanStyle(
+                                    color = getTextColor(activity),
+                                    fontFamily = FontFamily(Font(R.font.monofont)),
+                                    textDecoration = TextDecoration.Underline
+                                )
+                            )
+                        ),
+                    ) {
+                        append(stringResource(R.string.about_3_4_2))
+                    }
+                    append(stringResource(R.string.about_3_4_3))
+                }
+                TextFallout(
+                    annotatedString2,
+                    getTextColor(activity),
+                    getTextStrokeColor(activity),
+                    20.sp,
+                    Alignment.Center,
+                    Modifier,
+                    TextAlign.Center
+                )
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                val annotatedStringCFF = buildAnnotatedString {
+                    append(stringResource(R.string.about_3_5_1))
+                    withLink(
+                        link = LinkAnnotation.Url(
+                            url = "https://github.com/Sasabmeg/fallout-classic-dialog-font",
+                            styles = TextLinkStyles(
+                                style = SpanStyle(
+                                    color = getTextColor(activity),
+                                    fontFamily = FontFamily(Font(R.font.monofont)),
+                                    textDecoration = TextDecoration.Underline
+                                )
+                            )
+                        ),
+                    ) {
+                        append(stringResource(R.string.about_3_5_2))
+                    }
+                    append(stringResource(R.string.about_3_5_3))
+                }
+                TextFallout(
+                    annotatedStringCFF,
+                    getTextColor(activity),
+                    getTextStrokeColor(activity),
+                    20.sp,
+                    Alignment.Center,
+                    Modifier,
+                    TextAlign.Center
+                )
+                Spacer(modifier = Modifier.height(12.dp))
+                val annotatedString3 = buildAnnotatedString {
+                    withLink(
+                        link = LinkAnnotation.Url(
+                            url = "https://www.youtube.com/@ithracael",
+                            styles = TextLinkStyles(
+                                style = SpanStyle(
+                                    color = getTextColor(activity),
+                                    fontFamily = FontFamily(Font(R.font.monofont)),
+                                    textDecoration = TextDecoration.Underline
+                                )
+                            )
+                        ),
+                    ) {
+                        append("Ithracael")
+                    }
+                    append(stringResource(R.string.about_3_6))
                 }
                 TextFallout(
                     annotatedString3,
@@ -203,10 +225,58 @@ fun ShowAbout(activity: MainActivity, goBack: () -> Unit) {
                     Modifier,
                     TextAlign.Center
                 )
+                Spacer(modifier = Modifier.height(12.dp))
 
-                Spacer(modifier = Modifier.height(16.dp))
+                val annotatedStringOthers = buildAnnotatedString {
+                    append(stringResource(R.string.about_3_7_1))
+                    withLink(
+                        link = LinkAnnotation.Url(
+                            url = "https://github.com/Sasabmeg/fallout-classic-dialog-font",
+                            styles = TextLinkStyles(
+                                style = SpanStyle(
+                                    color = getTextColor(activity),
+                                    fontFamily = FontFamily(Font(R.font.monofont)),
+                                    textDecoration = TextDecoration.Underline
+                                )
+                            )
+                        ),
+                    ) {
+                        append(stringResource(R.string.about_3_7_2))
+                    }
+                    append(stringResource(R.string.about_3_7_3))
+                }
                 TextFallout(
-                    stringResource(R.string.about_7),
+                    annotatedStringOthers,
+                    getTextColor(activity),
+                    getTextStrokeColor(activity),
+                    20.sp,
+                    Alignment.Center,
+                    Modifier,
+                    TextAlign.Center
+                )
+                Spacer(modifier = Modifier.height(24.dp))
+
+                val annotatedString = buildAnnotatedString {
+                    append(stringResource(R.string.about_4_1))
+                    withLink(
+                        link = LinkAnnotation.Url(
+                            url = "mailto:unicornsinvisible@gmail.com",
+                            styles = TextLinkStyles(
+                                style = SpanStyle(
+                                    color = getTextColor(activity),
+                                    fontFamily = FontFamily(Font(R.font.monofont)),
+                                    textDecoration = TextDecoration.Underline
+                                )
+                            )
+                        ),
+                    ) {
+                        append("unicornsinvisible@gmail.com")
+                    }
+                    append(stringResource(R.string.about_4_2))
+                }
+
+                TextFallout(
+                    annotatedString,
                     getTextColor(activity),
                     getTextStrokeColor(activity),
                     20.sp,

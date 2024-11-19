@@ -9,14 +9,14 @@ plugins {
 
 android {
     namespace = "com.unicorns.invisible.caravan"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.unicorns.invisible.caravan"
         minSdk = 23
-        targetSdk = 34
-        versionCode = 65
-        versionName = "1.6.3"
+        targetSdk = 35
+        versionCode = 70
+        versionName = "2.0.A"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }

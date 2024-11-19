@@ -133,16 +133,23 @@
     <string name="back_to_menu">Back to Menu</string>
 
     <string name="about_1">Caravan is the card game from video game \"Fallout: New Vegas\", created by Obsidian and Bethesda.</string>
-    <string name="about_2">This port is created by subject_name_here (it\'s a username, not a bug!), who is in no way affiliated with the creators of the original game. Additional thanks for help with design go to Kat.</string>
-    <string name="about_3_1">"If you want to request some features or report bugs, contact me at "</string>
-    <string name="about_3_2">. You can also leave a review in Play Store.</string>
-    <string name="about_4_1">"The Caravan rules and tutorial are heavily based on "</string>
-    <string name="about_4_2">this Reddit post</string>
-    <string name="about_4_3">. You can thank its creator by upvote.</string>
-    <string name="about_5">Vault-Girl images are created by bigcman123. Thanks a lot!</string>
-    <string name="about_6">Huge thanks go to Gibed and Sobek (and many other people of community) for their help and support!</string>
-    <string name="about_7">Classic Fallout font was taken from Sasabmeg. Go find their GitHub and give them a star.</string>
-    <string name="about_8">"Madness deck created by two incredibly talented people: "</string>
+    <string name="about_2">This port is created by subject_name_here (it\'s a username, not a bug!), who is in no way affiliated with the creators of the original game.</string>
+    <string name="about_3_0">SPECIAL thanks go to:</string>
+    <string name="about_3_1">Kat - for help with design;</string>
+    <string name="about_3_2">" - for all the help with Wild Wasteland, Story Mode, Chinese deck and a lot of other things (basically, half of the app!!);"</string>
+    <string name="about_3_3">bigcman123 - for Vault-Girl images;</string>
+    <string name="about_3_4_1">"Kyle - for "</string>
+    <string name="about_3_4_2">this Reddit post</string>
+    <string name="about_3_4_3">" with Caravan rules;"</string>
+    <string name="about_3_5_1">"Sasabmeg - for "</string>
+    <string name="about_3_5_2">Classic Fallout font</string>
+    <string name="about_3_5_3">;</string>
+    <string name="about_3_6">, Sobek - for the Madness deck (it looks awesome!!);"</string>
+    <string name="about_3_7_1">"People in "</string>
+    <string name="about_3_7_2">Discord</string>
+    <string name="about_3_7_3">" (especially Gibed), reviewers in Google Play and many other people of the community - for the help and support!!"</string>
+    <string name="about_4_1">"If you want to request some features or report bugs, contact me at "</string>
+    <string name="about_4_2">. You can also leave a review in Play Store.</string>
 
     <string name="rules" tools:ignore="TypographyDashes">ORIGINAL RULES\nCaravan is played with two players building three opposing piles (or \"caravans\") of numbered cards. The goal is to outbid your opponent\'s caravan with the highest value of numbered cards without being too light (under 21) or overburdened (over 26).\n\nThe game begins with each player taking eight cards from their deck and placing either one numerical card or ace on each caravan. Players may not discard during this initial round.\n\nOnce both players have started their three caravans, each player may do ONE of the following on their turn:\n1. Play one card and draw a new card from his or her deck to their hand.\n2. Discard one card from their hand and draw a new card from his or her deck.\n3. Disband one of their three caravans by removing all cards from that pile.\n\nCaravans have a direction, either ascending or descending numerically, and a suit. The suit is determined with the first card placed on a caravan, the direction by the second. All subsequent cards must continue the numerical direction or match the suit of the previous card. Cards of the same numerical value cannot be played in sequence, regardless of suit. Face cards can be attached to numeric cards in any caravan and affects them in various ways.\n\nCARD VALUES\nJoker: Played against ace, 2-10. Effects change based on whether it\'s an ace or a numbered card (see below). Multiple jokers may be played on the same card.\n\nAce: Value of 1. Jokers played on aces remove all other non-face cards of the ace\'s suit from the table. E.g. a joker played on an Ace of Spades removes all spades (except face cards and that card, specifically) from the table.\n\n2-10: Listed value. Jokers played on these cards remove all other cards of this value from the table. E.g. a joker played on a 4 of Hearts removes all 4s (other than that card, specifically) from the table.\n\nJack: Played against ace, 2\-10. Removes that card, along with any face cards attached to it.\n\nQueen: Played against ace, 2\-10. Reverses the current direction of the hand and changes the current suit of the hand. Multiple queens may be played on the same card.\n\nKing: Played against ace, 2\-10. Adds the value of that card again. E.g. a king played on a 9 adds 9 to that hand. Multiple kings may be played on the same card for multiplicative effects. E.g. 4+ king = 8. 4 + 2 kings = 16.\n\nWINNING\nA player\'s caravan is considered sold when the value of its cards is over 20 and under 27. The other player may still outbid by increasing the value of their opposing pile while staying within the 21-26 range. When each of the three competing caravans has sold, the game is over. In the event that one of the three caravan values are tied between players, the game continues until all three caravans have sold. The player with two or more sales wins the pot.</string>
     <string name="kyle">Kyle says:</string>
