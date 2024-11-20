@@ -1,7 +1,6 @@
 package com.unicorns.invisible.caravan.save
 
 import com.unicorns.invisible.caravan.MainActivity
-import com.unicorns.invisible.caravan.saveGlobal
 import com.unicorns.invisible.caravan.snapshotsClient
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
@@ -25,7 +24,7 @@ private fun getLocalSaveFile(activity: MainActivity): File {
     return activity.filesDir.resolve("saveMkII")
 }
 
-fun save(activity: MainActivity) {
+fun saveData(activity: MainActivity) {
     // TODO: save locally and on cloud!!!
     saveOnGD(activity)
 }

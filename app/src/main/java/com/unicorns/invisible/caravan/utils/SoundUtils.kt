@@ -5,6 +5,8 @@ import com.unicorns.invisible.caravan.MainActivity
 import com.unicorns.invisible.caravan.R
 import com.unicorns.invisible.caravan.Style
 import com.unicorns.invisible.caravan.isSoundEffectsReduced
+import com.unicorns.invisible.caravan.save
+import com.unicorns.invisible.caravan.soundReduced
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -24,7 +26,7 @@ fun stopSoundEffects() {
 }
 
 fun playNotificationSound(activity: MainActivity, onPrepared: () -> Unit) {
-    val volume = activity.save?.soundVolume ?: 1f
+    val volume = save.soundVolume
     MediaPlayer
         .create(activity, R.raw.notification)
         .apply {
@@ -134,6 +136,7 @@ fun playNukeBlownSound(activity: MainActivity) = playEffectPlayerSound(activity,
 fun playWWSound(activity: MainActivity) = playEffectPlayerSound(activity, R.raw.ui_wildwasteland)
 fun playHeartbeatSound(activity: MainActivity) = playEffectPlayerSound(activity, R.raw.sfx_heartbeat)
 fun playSlideSound(activity: MainActivity) = playEffectPlayerSound(activity, R.raw.slide)
+fun playMinigunSound(activity: MainActivity) = playEffectPlayerSound(activity, R.raw.minigun_f2)
 
 private val ambientPlayers = HashSet<MediaPlayer>()
 private val ambientPlayersLock = ReentrantLock()
@@ -151,9 +154,9 @@ fun setAmbientVolume(volume: Float) {
 }
 
 fun startAmbient(activity: MainActivity) {
-    if (isSoundEffectsReduced) return
+    if (soundReduced) return
 
-    val vol = (activity.save?.ambientVolume ?: 1f) / 2
+    val vol = save.ambientVolume / 2
     MediaPlayer
         .create(
             activity, listOf(

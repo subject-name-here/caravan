@@ -1,5 +1,7 @@
 package com.unicorns.invisible.caravan.model.primitives
 
+import com.unicorns.invisible.caravan.MainActivity.Companion.MIN_DECK_SIZE
+import com.unicorns.invisible.caravan.MainActivity.Companion.MIN_NUM_OF_NUMBERS
 import com.unicorns.invisible.caravan.model.CardBack
 import kotlinx.serialization.Serializable
 
@@ -137,5 +139,15 @@ class CResources(private val deck: CustomDeck) {
         for (card in cResources.hand) {
             handMutable.add(Card(card.rank, card.suit, card.back, card.isAlt))
         }
+    }
+
+    fun isCustomDeckValid(): Boolean {
+        // TODO: count decks!!
+        return deckSize >= MIN_DECK_SIZE && numOfNumbers >= MIN_NUM_OF_NUMBERS
+    }
+
+    companion object {
+        const val MIN_DECK_SIZE = 30
+        const val MIN_NUM_OF_NUMBERS = 15
     }
 }

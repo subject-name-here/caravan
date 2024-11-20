@@ -53,17 +53,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.challenge.Challenge
-import com.unicorns.invisible.caravan.model.enemy.EnemyHouse
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.Caravan
 import com.unicorns.invisible.caravan.model.primitives.Card
 import com.unicorns.invisible.caravan.model.primitives.CardWithModifier
 import com.unicorns.invisible.caravan.model.primitives.Rank
 import com.unicorns.invisible.caravan.model.primitives.Suit
-import com.unicorns.invisible.caravan.save.saveOnGD
 import com.unicorns.invisible.caravan.utils.ShowCard
 import com.unicorns.invisible.caravan.utils.ShowCardBack
 import com.unicorns.invisible.caravan.utils.TextFallout
@@ -85,18 +82,14 @@ import com.unicorns.invisible.caravan.utils.playCardFlipSound
 import com.unicorns.invisible.caravan.utils.playCloseSound
 import com.unicorns.invisible.caravan.utils.playJokerReceivedSounds
 import com.unicorns.invisible.caravan.utils.playJokerSounds
-import com.unicorns.invisible.caravan.utils.playLoseSound
 import com.unicorns.invisible.caravan.utils.playNoCardAlarm
 import com.unicorns.invisible.caravan.utils.playNukeBlownSound
 import com.unicorns.invisible.caravan.utils.playSelectSound
 import com.unicorns.invisible.caravan.utils.playVatsReady
 import com.unicorns.invisible.caravan.utils.playWWSound
-import com.unicorns.invisible.caravan.utils.playWinSound
 import com.unicorns.invisible.caravan.utils.playYesBeep
 import com.unicorns.invisible.caravan.utils.pxToDp
 import com.unicorns.invisible.caravan.utils.scrollbar
-import com.unicorns.invisible.caravan.utils.startAmbient
-import com.unicorns.invisible.caravan.utils.stopAmbient
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
@@ -106,7 +99,13 @@ import kotlin.math.min
 
 
 @Composable
-fun ShowGame(activity: MainActivity, game: Game, isBlitz: Boolean = false, onMove: (Card?) -> Unit = {}, goBack: () -> Unit) {
+fun ShowGame(
+    activity: MainActivity,
+    game: Game,
+    isBlitz: Boolean = false,
+    onMove: (Card?) -> Unit = {},
+    goBack: () -> Unit
+) {
     var selectedCard by remember { mutableStateOf<Int?>(null) }
     var selectedCaravan by remember { mutableIntStateOf(-1) }
 
@@ -124,7 +123,7 @@ fun ShowGame(activity: MainActivity, game: Game, isBlitz: Boolean = false, onMov
     }
 
     val animationSpeed by rememberSaveable { mutableStateOf(
-        if (isBlitz) AnimationSpeed.NONE else activity.save?.animationSpeed ?: AnimationSpeed.NORMAL
+        if (isBlitz) AnimationSpeed.NONE else save.animationSpeed
     ) }
 
     fun onCardClicked(index: Int) {
@@ -207,12 +206,11 @@ fun ShowGame(activity: MainActivity, game: Game, isBlitz: Boolean = false, onMov
             if (card.isFace()) {
                 if (position in caravan.cards.indices && caravan.cards[position].canAddModifier(card)) {
                     playCardFlipSound(activity)
-                    if (!card.isSpecial() && card.rank == Rank.JOKER) {
+                    if (card.isOrdinary() && card.rank == Rank.JOKER) {
                         playJokerSounds(activity)
-                    }
-                    if (card.back == CardBack.WILD_WASTELAND && !card.isAlt) {
+                    } else if (card.getWildWastelandCardType() != null) {
                         playWWSound(activity)
-                    } else if (card.isAlt && card.isSpecial()) {
+                    } else if (card.isNuclear()) {
                         playNukeBlownSound(activity)
                     }
 
@@ -326,12 +324,6 @@ fun ShowGameRaw(
     caravansKey: Int,
     playerHandKey: Int,
 ) {
-    var ambientStartedFlag by rememberSaveable { mutableStateOf(false) }
-    if (!ambientStartedFlag) {
-        ambientStartedFlag = true
-        LaunchedEffect(Unit) { startAmbient(activity) }
-    }
-
     if (game.playerCResources.deckSize == 0) {
         LaunchedEffect(Unit) { playNoCardAlarm(activity) }
     }
@@ -433,7 +425,7 @@ fun ShowGameRaw(
                 Box(
                     Modifier
                         .fillMaxSize()
-                        .getTableBackground(activity.styleId)) {}
+                        .getTableBackground()) {}
             }
             BoxWithConstraints(Modifier.padding(innerPadding)) {
                 if (maxWidth > maxHeight) {

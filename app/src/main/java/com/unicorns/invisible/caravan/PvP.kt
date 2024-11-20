@@ -217,10 +217,10 @@ fun ShowPvP(
             return
         }
         isRoomCreated = roomNumber.toIntOrNull() ?: return
-        val deckPair = selectedDeck()
+        val deckPair = save.selectedDeck
         val deckCodes = customDeckToInts(
             if (checkedCustomDeck)
-                activity.save!!.getCustomDeckCopy()
+                save.getCustomDeckCopy()
             else
                 CustomDeck(deckPair.first, deckPair.second)
         )
@@ -260,12 +260,12 @@ fun ShowPvP(
             return
         }
         isRoomCreated = roomNumber.toIntOrNull() ?: return
-        val deckCodes = customDeckToInts(activity.save!!.getCustomDeckCopy())
+        val deckCodes = customDeckToInts(save.getCustomDeckCopy())
         sendRequest(
             "${crvnUrl}/crvn/join?room=$isRoomCreated" +
                     "&jid=${userId}" +
-                    "&back=${selectedDeck().first.ordinal}" +
-                    "&is_alt=${selectedDeck().second.toPythonBool()}" +
+                    "&back=${save.selectedDeck.first.ordinal}" +
+                    "&is_alt=${save.selectedDeck.second.toPythonBool()}" +
                     "&deck0=${deckCodes[0]}" +
                     "&deck1=${deckCodes[1]}" +
                     "&deck2=${deckCodes[2]}" +
@@ -304,21 +304,21 @@ fun ShowPvP(
             activity = activity,
             playerCResources = run {
                 val deck = if (checkedCustomDeck)
-                    activity.save?.getCustomDeckCopy() ?: CustomDeck(CardBack.STANDARD, false)
+                    save.getCustomDeckCopy()
                 else
-                    CustomDeck(selectedDeck().first, selectedDeck().second)
+                    CustomDeck(save.selectedDeck.first, save.selectedDeck.second)
 
                 if (checkedWild) {
                     deck.apply {
-                        add(Card(Rank.ACE, Suit.HEARTS, CardBack.WILD_WASTELAND, true))
-                        add(Card(Rank.ACE, Suit.CLUBS, CardBack.WILD_WASTELAND, true))
-                        add(Card(Rank.ACE, Suit.DIAMONDS, CardBack.WILD_WASTELAND, true))
-                        add(Card(Rank.KING, Suit.HEARTS, CardBack.WILD_WASTELAND, false))
-                        add(Card(Rank.KING, Suit.CLUBS, CardBack.WILD_WASTELAND, false))
-                        add(Card(Rank.KING, Suit.DIAMONDS, CardBack.WILD_WASTELAND, false))
-                        add(Card(Rank.KING, Suit.SPADES, CardBack.WILD_WASTELAND, false))
-                        add(Card(Rank.JACK, Suit.HEARTS, CardBack.WILD_WASTELAND, false))
-                        add(Card(Rank.QUEEN, Suit.HEARTS, CardBack.WILD_WASTELAND, false))
+                        add(Card(Rank.ACE, Suit.HEARTS, CardBack.ENCLAVE, true))
+                        add(Card(Rank.ACE, Suit.CLUBS, CardBack.ENCLAVE, true))
+                        add(Card(Rank.ACE, Suit.DIAMONDS, CardBack.ENCLAVE, true))
+                        add(Card(Rank.KING, Suit.HEARTS, CardBack.MADNESS, true))
+                        add(Card(Rank.KING, Suit.CLUBS, CardBack.MADNESS, true))
+                        add(Card(Rank.KING, Suit.DIAMONDS, CardBack.MADNESS, true))
+                        add(Card(Rank.KING, Suit.SPADES, CardBack.MADNESS, true))
+                        add(Card(Rank.JACK, Suit.HEARTS, CardBack.MADNESS, true))
+                        add(Card(Rank.QUEEN, Suit.HEARTS, CardBack.MADNESS, true))
                     }
                 }
 
@@ -331,15 +331,15 @@ fun ShowPvP(
                 }
                 if (checkedWild) {
                     deck.apply {
-                        add(Card(Rank.ACE, Suit.HEARTS, CardBack.WILD_WASTELAND, true))
-                        add(Card(Rank.ACE, Suit.CLUBS, CardBack.WILD_WASTELAND, true))
-                        add(Card(Rank.ACE, Suit.DIAMONDS, CardBack.WILD_WASTELAND, true))
-                        add(Card(Rank.KING, Suit.HEARTS, CardBack.WILD_WASTELAND, false))
-                        add(Card(Rank.KING, Suit.CLUBS, CardBack.WILD_WASTELAND, false))
-                        add(Card(Rank.KING, Suit.DIAMONDS, CardBack.WILD_WASTELAND, false))
-                        add(Card(Rank.KING, Suit.SPADES, CardBack.WILD_WASTELAND, false))
-                        add(Card(Rank.JACK, Suit.HEARTS, CardBack.WILD_WASTELAND, false))
-                        add(Card(Rank.QUEEN, Suit.HEARTS, CardBack.WILD_WASTELAND, false))
+                        add(Card(Rank.ACE, Suit.HEARTS, CardBack.ENCLAVE, true))
+                        add(Card(Rank.ACE, Suit.CLUBS, CardBack.ENCLAVE, true))
+                        add(Card(Rank.ACE, Suit.DIAMONDS, CardBack.ENCLAVE, true))
+                        add(Card(Rank.KING, Suit.HEARTS, CardBack.MADNESS, true))
+                        add(Card(Rank.KING, Suit.CLUBS, CardBack.MADNESS, true))
+                        add(Card(Rank.KING, Suit.DIAMONDS, CardBack.MADNESS, true))
+                        add(Card(Rank.KING, Suit.SPADES, CardBack.MADNESS, true))
+                        add(Card(Rank.JACK, Suit.HEARTS, CardBack.MADNESS, true))
+                        add(Card(Rank.QUEEN, Suit.HEARTS, CardBack.MADNESS, true))
                     }
                 }
                 deck
@@ -602,7 +602,7 @@ fun StartPvP(
                 activity.getString(R.string.result), activity.getString(R.string.you_win) +
                         winCard(
                             activity,
-                            activity.save!!,
+                            save,
                             CardBack.STANDARD,
                             1,
                             isAlt = true,

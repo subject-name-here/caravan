@@ -2127,7 +2127,7 @@ fun StartStoryGame(
             return@ShowGame
         }
         showAlertDialog(activity.getString(R.string.check_back_to_menu),
-            activity.getString(R.string.tower_progress_will_be_lost))
+            activity.getString(R.string.progress_will_be_lost))
     }
 }
 
@@ -2206,7 +2206,7 @@ fun StartStoryFinalBossGame(
             return@ShowGame
         }
         showAlertDialog(activity.getString(R.string.check_back_to_menu),
-            activity.getString(R.string.tower_progress_will_be_lost))
+            activity.getString(R.string.progress_will_be_lost))
     }
 
     key(getTime()) {

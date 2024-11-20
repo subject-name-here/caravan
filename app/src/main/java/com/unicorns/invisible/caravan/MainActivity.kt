@@ -56,7 +56,6 @@ import com.sebaslogen.resaca.rememberScoped
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.challenge.Challenge
 import com.unicorns.invisible.caravan.model.primitives.CResources
-import com.unicorns.invisible.caravan.model.primitives.CustomDeck
 import com.unicorns.invisible.caravan.save.Save
 import com.unicorns.invisible.caravan.save.saveOnGD
 import com.unicorns.invisible.caravan.utils.SliderCustom
@@ -93,9 +92,11 @@ import kotlinx.coroutines.launch
 import org.chromium.net.CronetEngine
 
 
+var save = Save(isUsable = false)
+var soundReduced = false
+
 @Suppress("MoveLambdaOutsideParentheses")
 class MainActivity : SaveDataActivity() {
-    var save = Save(isUsable = false) // TODO: this wil reinit every config change
     val styleId
         get() = Style.entries.getOrElse(save.styleId) { Style.PIP_BOY }
 
@@ -112,12 +113,14 @@ class MainActivity : SaveDataActivity() {
 
     override fun onSnapshotClientInitialized() {
         CoroutineScope(Dispatchers.Default).launch {
+            if (!save.isUsable) {
 
-            // TODO: init save
+                // TODO: init save
 
-            save = Save(isUsable = true)
+                save = Save(isUsable = true)
 
-            startRadio(this@MainActivity)
+                startRadio(this@MainActivity)
+            }
         }
     }
 
@@ -137,15 +140,13 @@ class MainActivity : SaveDataActivity() {
             }
         }
 
+        // TODO: more advices
         val advice = listOf(
-            R.string.intro_tip_1,
             R.string.intro_tip_2,
             R.string.intro_tip_3,
             R.string.intro_tip_4,
             R.string.intro_tip_5,
             R.string.intro_tip_6,
-            R.string.intro_tip_7,
-            R.string.intro_tip_8,
             R.string.intro_tip_9,
             R.string.intro_tip_10,
             R.string.intro_tip_11,
@@ -156,12 +157,9 @@ class MainActivity : SaveDataActivity() {
             R.string.intro_tip_vault,
             R.string.intro_tip_desert,
             R.string.intro_tip_arctic,
-            R.string.intro_tip_blitz,
             R.string.intro_tip_enclave,
             R.string.intro_tip_new_world,
             R.string.intro_tip_snuffles,
-            R.string.intro_tip_tower,
-            R.string.intro_tip_ww,
         ).random()
 
         setContent {
@@ -247,15 +245,15 @@ class MainActivity : SaveDataActivity() {
 
     @Composable
     fun Screen() {
-        var deckSelection by rememberSaveable { mutableStateOf(false) }
+        var showPvE by rememberSaveable { mutableStateOf(false) }
         var showPvP by rememberSaveable { mutableStateOf(false) }
-        var showAbout by rememberSaveable { mutableStateOf(false) }
-        var showGameStats by rememberSaveable { mutableStateOf(false) }
+        var deckSelection by rememberSaveable { mutableStateOf(false) }
         var showRules by rememberSaveable { mutableStateOf(false) }
-        var showSettings by rememberSaveable { mutableStateOf(false) }
         var showDailys by rememberSaveable { mutableStateOf(false) }
         var showMarket by rememberSaveable { mutableStateOf(false) }
 
+        var showAbout by rememberSaveable { mutableStateOf(false) }
+        var showSettings by rememberSaveable { mutableStateOf(false) }
         var showVision by rememberSaveable { mutableStateOf(false) }
         var styleIdForTop by rememberSaveable { mutableStateOf(styleId) }
 
@@ -313,6 +311,7 @@ class MainActivity : SaveDataActivity() {
                                     .background(getDialogTextColor(this))
                                     .clickableCancel(this) {
                                         hideAlertDialog()
+                                        alertGoBack.first()
                                     }
                                     .padding(4.dp),
                                 TextAlign.Center
@@ -548,15 +547,23 @@ class MainActivity : SaveDataActivity() {
                         ShowAbout(this@MainActivity) { showAbout = false }
                     }
 
-                    showGameStats -> {
-                        ShowPvE(
-                            activity = this@MainActivity,
-                            ::showAlertDialog
-                        ) { showGameStats = false }
+                    showPvE -> {
+                        if (!CResources(save.getCustomDeckCopy()).isCustomDeckValid()) {
+                            showAlertDialog(
+                                stringResource(R.string.custom_deck_is_too_small),
+                                stringResource(R.string.custom_deck_is_too_small_message)
+                            )
+                            showPvP = false
+                        } else {
+                            ShowPvE(
+                                activity = this@MainActivity,
+                                ::showAlertDialog
+                            ) { showPvE = false }
+                        }
                     }
 
                     showPvP -> {
-                        if (!checkIfCustomDeckCanBeUsedInGame(CResources(save.getCustomDeckCopy()))) {
+                        if (!CResources(save.getCustomDeckCopy()).isCustomDeckValid()) {
                             showAlertDialog(
                                 stringResource(R.string.custom_deck_is_too_small),
                                 stringResource(R.string.custom_deck_is_too_small_message)
@@ -608,10 +615,10 @@ class MainActivity : SaveDataActivity() {
                             val width = maxWidth.dpToPx().toInt()
                             val height = maxHeight.dpToPx().toInt()
                             MainMenu(
-                                { StylePicture(this@MainActivity, styleId, userId.hashCode(), width, height) },
+                                { StylePicture(this@MainActivity, styleId, width, height) },
                                 { deckSelection = true },
                                 { showAbout = true },
-                                { showGameStats = true },
+                                { showPvE = true },
                                 { showPvP = true },
                                 { showRules = true },
                                 { showVision = true },
@@ -913,10 +920,5 @@ class MainActivity : SaveDataActivity() {
         save.challenges.forEach { challenge ->
             challenge.processGameResult(game)
         }
-    }
-
-    companion object {
-        const val MIN_DECK_SIZE = 30
-        const val MIN_NUM_OF_NUMBERS = 15
     }
 }

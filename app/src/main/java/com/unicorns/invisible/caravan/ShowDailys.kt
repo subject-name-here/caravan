@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.unicorns.invisible.caravan.model.challenge.Challenge
 import com.unicorns.invisible.caravan.save.Save
-import com.unicorns.invisible.caravan.save.save
+import com.unicorns.invisible.caravan.save.saveData
 import com.unicorns.invisible.caravan.utils.MenuItemOpen
 import com.unicorns.invisible.caravan.utils.TextFallout
 import com.unicorns.invisible.caravan.utils.clickableOk
@@ -65,7 +65,7 @@ fun ShowDailys(
             ) {
                 item {
                     Spacer(Modifier.height(16.dp))
-                    activity.save.challenges.forEach { challenge ->
+                    save.challenges.forEach { challenge ->
                         ShowChallenge(activity, challenge, challenge.isCompleted()) {
                             updateKey = !updateKey
                         }
@@ -142,9 +142,9 @@ fun ShowChallenge(activity: MainActivity, challenge: Challenge, isCompleted: Boo
         if (isCompleted) {
             fun dailyCompleted(save: Save) {
                 save.challenges.remove(challenge)
-                save(activity)
+                saveData(activity)
                 playDailyCompleted(activity)
-                if (activity.save.challenges.isEmpty()) {
+                if (save.challenges.isEmpty()) {
                     activity.achievementsClient?.unlock(activity.getString(R.string.achievement_done_for_today))
                 }
                 updater()
@@ -160,8 +160,8 @@ fun ShowChallenge(activity: MainActivity, challenge: Challenge, isCompleted: Boo
                     Modifier
                         .background(getTextBackgroundColor(activity))
                         .clickableOk(activity) {
-                            activity.save.tickets++
-                            dailyCompleted(activity.save)
+                            save.tickets++
+                            dailyCompleted(save)
                         }
                         .padding(8.dp),
                     TextAlign.Center
@@ -175,8 +175,8 @@ fun ShowChallenge(activity: MainActivity, challenge: Challenge, isCompleted: Boo
                     Modifier
                         .background(getTextBackgroundColor(activity))
                         .clickableOk(activity) {
-                            activity.save.capsInHand += 10
-                            dailyCompleted(activity.save)
+                            save.capsInHand += 10
+                            dailyCompleted(save)
                         }
                         .padding(8.dp),
                     TextAlign.Center

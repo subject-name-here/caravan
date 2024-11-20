@@ -43,29 +43,6 @@ abstract class SaveDataActivity : AppCompatActivity() {
         return res
     }
 
-    suspend fun fetchDataFromDrive(): ByteArray? {
-        if (snapshotsClient == null) return null
-        val conflictResolutionPolicy = SnapshotsClient.RESOLUTION_POLICY_MOST_RECENTLY_MODIFIED
-        return snapshotsClient!!.open(SAVE_FILE_NAME, true, conflictResolutionPolicy)
-            .addOnFailureListener { e ->
-                Toast.makeText(this, e.toString(), Toast.LENGTH_LONG).show()
-            }
-            .continueWith { task ->
-                if (task.exception != null) {
-                    return@continueWith null
-                }
-                if (task.result.isConflict) {
-                    return@continueWith null
-                }
-                val snapshot = task.result.data
-                return@continueWith try {
-                    snapshot!!.snapshotContents.readFully()
-                } catch (e: IOException) {
-                    null
-                }
-            }.await()
-    }
-
     var achievementsClient: AchievementsClient? = null
     private val contracts = ActivityResultContracts.StartActivityForResult()
     private val startForResult = registerForActivityResult(contracts) {}
@@ -112,6 +89,37 @@ abstract class SaveDataActivity : AppCompatActivity() {
                     }
                 }
             }
+    }
+
+    suspend fun fetchDataFromDrive(): ByteArray? {
+        return fetchFileFromDrive(SAVE_FILE_NAME)
+    }
+
+    suspend fun fetchOldSaveFromDrive(): ByteArray? {
+        return fetchFileFromDrive(OLD_SAVE_FILE_NAME)
+    }
+
+    private suspend fun fetchFileFromDrive(fileName: String): ByteArray? {
+        if (snapshotsClient == null) return null
+        val conflictResolutionPolicy = SnapshotsClient.RESOLUTION_POLICY_MOST_RECENTLY_MODIFIED
+        return snapshotsClient!!.open(fileName, true, conflictResolutionPolicy)
+            .addOnFailureListener { e ->
+                Toast.makeText(this, e.toString(), Toast.LENGTH_LONG).show()
+            }
+            .continueWith { task ->
+                if (task.exception != null) {
+                    return@continueWith null
+                }
+                if (task.result.isConflict) {
+                    return@continueWith null
+                }
+                val snapshot = task.result.data
+                return@continueWith try {
+                    snapshot!!.snapshotContents.readFully()
+                } catch (_: IOException) {
+                    null
+                }
+            }.await()
     }
 
     companion object {

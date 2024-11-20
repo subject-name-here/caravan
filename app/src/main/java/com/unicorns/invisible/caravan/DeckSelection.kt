@@ -27,7 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.unicorns.invisible.caravan.model.CardBack
-import com.unicorns.invisible.caravan.save.save
+import com.unicorns.invisible.caravan.save.saveData
 import com.unicorns.invisible.caravan.utils.MenuItemOpen
 import com.unicorns.invisible.caravan.utils.TextFallout
 import com.unicorns.invisible.caravan.utils.clickableOk
@@ -50,7 +50,7 @@ fun DeckSelection(
 ) {
     @Composable
     fun getModifier(cardBack: CardBack, isAlt: Boolean): Modifier {
-        val (backSelected, isAltSelected) = activity.save.selectedDeck
+        val (backSelected, isAltSelected) = save.selectedDeck
         return if (backSelected == cardBack && isAltSelected == isAlt) {
             Modifier.border(width = 3.dp, color = getSelectionColor(activity))
         } else {
@@ -58,8 +58,8 @@ fun DeckSelection(
         }
             .padding(4.dp)
             .clickableSelect(activity) {
-                activity.save.selectedDeck = cardBack to isAlt
-                save(activity)
+                save.selectedDeck = cardBack to isAlt
+                saveData(activity)
             }
     }
 
@@ -121,14 +121,14 @@ fun DeckSelection(
 
                 @Composable
                 fun showDeckBackRow(back: CardBack) {
-                    if (back in activity.save.ownedDecks) {
+                    if (back in save.ownedDecks) {
                         Row {
                             AsyncImage(
                                 model = "file:///android_asset/caravan_cards_back/" + back.getCardBackAsset(),
                                 contentDescription = "",
                                 modifier = getModifier(back, false).clip(RoundedCornerShape(6f))
                             )
-                            if (back.hasAltPlayable() && back in activity.save.ownedDecksAlt) {
+                            if (back.hasAltPlayable() && back in save.ownedDecksAlt) {
                                 Spacer(modifier = Modifier.width(12.dp))
                                 AsyncImage(
                                     model = "file:///android_asset/caravan_cards_back/" + back.getCardBackAltAsset(),

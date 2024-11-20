@@ -29,7 +29,7 @@ class Save(val isUsable: Boolean) {
     val altDecksChosen = CardBack.entries.associateWith { false }.toMutableMap()
 
     @EncodeDefault
-    val customDeck: CustomDeck = CustomDeck()
+    val customDeck: CustomDeck = CustomDeck(CardBack.STANDARD, false)
 
     @EncodeDefault
     val availableCards: MutableSet<Card> = HashSet(CustomDeck(CardBack.STANDARD, false).toList())

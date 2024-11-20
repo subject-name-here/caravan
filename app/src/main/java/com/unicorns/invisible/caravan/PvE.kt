@@ -6,7 +6,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -39,27 +38,17 @@ import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.enemy.Enemy
 import com.unicorns.invisible.caravan.model.enemy.EnemyBestest
-import com.unicorns.invisible.caravan.model.enemy.EnemyBetter
-import com.unicorns.invisible.caravan.model.enemy.EnemyCaesar
-import com.unicorns.invisible.caravan.model.enemy.EnemyEasy
-import com.unicorns.invisible.caravan.model.enemy.EnemyHard
-import com.unicorns.invisible.caravan.model.enemy.EnemyKing
 import com.unicorns.invisible.caravan.model.enemy.EnemyManInTheMirror
-import com.unicorns.invisible.caravan.model.enemy.EnemyMedium
 import com.unicorns.invisible.caravan.model.enemy.EnemyNash
 import com.unicorns.invisible.caravan.model.enemy.EnemyNoBark
-import com.unicorns.invisible.caravan.model.enemy.EnemyRingo
-import com.unicorns.invisible.caravan.model.enemy.EnemySecuritron38
 import com.unicorns.invisible.caravan.model.enemy.EnemySignificantOther
 import com.unicorns.invisible.caravan.model.enemy.EnemySix
-import com.unicorns.invisible.caravan.model.enemy.EnemyYesMan
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.Card
 import com.unicorns.invisible.caravan.model.primitives.CustomDeck
 import com.unicorns.invisible.caravan.model.primitives.Rank
 import com.unicorns.invisible.caravan.save.Save
-import com.unicorns.invisible.caravan.save.saveOnGD
-import com.unicorns.invisible.caravan.utils.CheckboxCustom
+import com.unicorns.invisible.caravan.save.saveData
 import com.unicorns.invisible.caravan.utils.MenuItemOpen
 import com.unicorns.invisible.caravan.utils.TextFallout
 import com.unicorns.invisible.caravan.utils.clickableCancel
@@ -72,8 +61,6 @@ import com.unicorns.invisible.caravan.utils.getTextBackgroundColor
 import com.unicorns.invisible.caravan.utils.getTextColor
 import com.unicorns.invisible.caravan.utils.getTextStrokeColor
 import com.unicorns.invisible.caravan.utils.getTrackColor
-import com.unicorns.invisible.caravan.utils.playClickSound
-import com.unicorns.invisible.caravan.utils.playCloseSound
 import com.unicorns.invisible.caravan.utils.playJokerSounds
 import com.unicorns.invisible.caravan.utils.playLoseSound
 import com.unicorns.invisible.caravan.utils.playNukeBlownSound
@@ -81,6 +68,7 @@ import com.unicorns.invisible.caravan.utils.playVatsEnter
 import com.unicorns.invisible.caravan.utils.playWWSound
 import com.unicorns.invisible.caravan.utils.playWinSound
 import com.unicorns.invisible.caravan.utils.scrollbar
+import com.unicorns.invisible.caravan.utils.startAmbient
 import com.unicorns.invisible.caravan.utils.stopAmbient
 import kotlinx.coroutines.delay
 import java.util.Locale
@@ -89,86 +77,34 @@ import java.util.Locale
 @Composable
 fun ShowPvE(
     activity: MainActivity,
-    showAlertDialog: (String, String) -> Unit,
+    showAlertDialog: (String, String, (() -> Unit)?) -> Unit,
     goBack: () -> Unit
 ) {
-    var showGameEasy by rememberSaveable { mutableStateOf(false) }
-    var showGameMedium by rememberSaveable { mutableStateOf(false) }
-    var showGameHard by rememberSaveable { mutableStateOf(false) }
-    var showGameBetter by rememberSaveable { mutableStateOf(false) }
+    var showGameOliver by rememberSaveable { mutableStateOf(false) }
+    var showGameVeronica by rememberSaveable { mutableStateOf(false) }
+    var showGameVictor by rememberSaveable { mutableStateOf(false) }
+    var showGameChiefHanlon by rememberSaveable { mutableStateOf(false) }
     var showGameUlysses by rememberSaveable { mutableStateOf(false) }
-
-    var showGame38 by rememberSaveable { mutableStateOf(false) }
-    var showGameCheater by rememberSaveable { mutableStateOf(false) }
-    var showGameQueen by rememberSaveable { mutableStateOf(false) }
-    var showGameNash by rememberSaveable { mutableStateOf(false) }
+    var showGameBenny by rememberSaveable { mutableStateOf(false) }
+    
     var showGameNoBark by rememberSaveable { mutableStateOf(false) }
+    var showGameNash by rememberSaveable { mutableStateOf(false) }
+    var showGameTabitha by rememberSaveable { mutableStateOf(false) }
+    var showGameVulpes by rememberSaveable { mutableStateOf(false) }
+    var showGameElijah by rememberSaveable { mutableStateOf(false) }
+    var showGameCrooker by rememberSaveable { mutableStateOf(false) }
 
     var showGameSnuffles by rememberSaveable { mutableStateOf(false) }
-    var showGameSignificantOther by rememberSaveable { mutableStateOf(false) }
-    var showGamePriestCardinal by rememberSaveable { mutableStateOf(false) }
+    var showGameEasyPete by rememberSaveable { mutableStateOf(false) }
+    var showGameMadnessCardinal by rememberSaveable { mutableStateOf(false) }
+    var showGameLuc10 by rememberSaveable { mutableStateOf(false) }
+    var showGameDrMobius by rememberSaveable { mutableStateOf(false) }
     var showGameTheManInTheMirror by rememberSaveable { mutableStateOf(false) }
 
-    if (showGameEasy) {
+    if (showGameNash) {
         StartGame(
             activity = activity,
-            playerCResources = getPlayerDeck(),
-            isCustom = checkedCustomDeck,
-            enemy = EnemyEasy,
-            showAlertDialog = showAlertDialog
-        ) {
-            showGameEasy = false
-        }
-        return
-    } else if (showGameMedium) {
-        StartGame(
-            activity = activity,
-            playerCResources = getPlayerDeck(),
-            isCustom = checkedCustomDeck,
-            enemy = EnemyMedium,
-            showAlertDialog = showAlertDialog
-        ) {
-            showGameMedium = false
-        }
-        return
-    } else if (showGame38) {
-        StartGame(
-            activity = activity,
-            playerCResources = getPlayerDeck(),
-            isCustom = checkedCustomDeck,
-            enemy = EnemySecuritron38,
-            showAlertDialog = showAlertDialog
-        ) {
-            showGame38 = false
-        }
-        return
-    } else if (showGameCheater) {
-        StartGame(
-            activity = activity,
-            playerCResources = getPlayerDeck(),
-            isCustom = checkedCustomDeck,
-            enemy = EnemySix,
-            showAlertDialog = showAlertDialog
-        ) {
-            showGameCheater = false
-        }
-        return
-    } else if (showGameQueen) {
-        StartGame(
-            activity = activity,
-            playerCResources = getPlayerDeck(),
-            isCustom = checkedCustomDeck,
-            enemy = EnemySwank,
-            showAlertDialog = showAlertDialog
-        ) {
-            showGameQueen = false
-        }
-        return
-    } else if (showGameNash) {
-        StartGame(
-            activity = activity,
-            playerCResources = getPlayerDeck(),
-            isCustom = checkedCustomDeck,
+            playerCResources = CResources(save.getCustomDeckCopy()),
             enemy = EnemyNash,
             showAlertDialog = showAlertDialog
         ) {
@@ -178,100 +114,21 @@ fun ShowPvE(
     } else if (showGameNoBark) {
         StartGame(
             activity = activity,
-            playerCResources = getPlayerDeck(),
-            isCustom = checkedCustomDeck,
+            playerCResources = CResources(save.getCustomDeckCopy()),
             enemy = EnemyNoBark,
             showAlertDialog = showAlertDialog
         ) {
             showGameNoBark = false
         }
         return
-    } else if (showGameHard) {
-        StartGame(
-            activity = activity,
-            playerCResources = getPlayerDeck(),
-            isCustom = checkedCustomDeck,
-            enemy = EnemyHard,
-            showAlertDialog = showAlertDialog
-        ) {
-            showGameHard = false
-        }
-        return
-    } else if (showGameBetter) {
-        StartGame(
-            activity = activity,
-            playerCResources = getPlayerDeck(),
-            isCustom = checkedCustomDeck,
-            enemy = EnemyBetter,
-            showAlertDialog = showAlertDialog
-        ) {
-            showGameBetter = false
-        }
-        return
     } else if (showGameUlysses) {
         StartGame(
             activity = activity,
-            playerCResources = getPlayerDeck(),
-            isCustom = checkedCustomDeck,
+            playerCResources = CResources(save.selectedDeck.first, save.selectedDeck.second),
             enemy = EnemyBestest,
             showAlertDialog = showAlertDialog
         ) {
             showGameUlysses = false
-        }
-        return
-    } else if (showGameRingo) {
-        StartGame(
-            activity = activity,
-            playerCResources = getPlayerDeck(),
-            isCustom = checkedCustomDeck,
-            enemy = EnemyRingo,
-            showAlertDialog = showAlertDialog
-        ) {
-            showGameRingo = false
-        }
-        return
-    } else if (showGameYesMan) {
-        StartGame(
-            activity = activity,
-            playerCResources = getPlayerDeck(),
-            isCustom = checkedCustomDeck,
-            enemy = EnemyYesMan,
-            showAlertDialog = showAlertDialog
-        ) {
-            showGameYesMan = false
-        }
-        return
-    } else if (showGameKing) {
-        StartGame(
-            activity = activity,
-            playerCResources = getPlayerDeck(),
-            isCustom = checkedCustomDeck,
-            enemy = EnemyKing,
-            showAlertDialog = showAlertDialog
-        ) {
-            showGameKing = false
-        }
-        return
-    } else if (showGameOliver) {
-        StartGame(
-            activity = activity,
-            playerCResources = getPlayerDeck(),
-            isCustom = checkedCustomDeck,
-            enemy = EnemyOliver,
-            showAlertDialog = showAlertDialog
-        ) {
-            showGameOliver = false
-        }
-        return
-    } else if (showGameCaesar) {
-        StartGame(
-            activity = activity,
-            playerCResources = getPlayerDeck(),
-            isCustom = checkedCustomDeck,
-            enemy = EnemyCaesar,
-            showAlertDialog = showAlertDialog
-        ) {
-            showGameCaesar = false
         }
         return
     }
@@ -300,16 +157,6 @@ fun ShowPvE(
             ) {
                 item {
                     Spacer(modifier = Modifier.height(16.dp))
-                    TextFallout(
-                        stringResource(R.string.pve_select_enemy_1),
-                        getTextColor(activity),
-                        getTextStrokeColor(activity),
-                        22.sp,
-                        Alignment.Center,
-                        Modifier,
-                        TextAlign.Center
-                    )
-                    Spacer(modifier = Modifier.height(16.dp))
 
                     @Composable
                     fun OpponentItem(name: String, onClick: () -> Unit) {
@@ -327,109 +174,19 @@ fun ShowPvE(
                         )
                     }
 
-                    OpponentItem(stringResource(R.string.pve_enemy_easy)) { playVatsEnter(activity); showGameEasy = true }
-                    Spacer(modifier = Modifier.height(10.dp))
-                    OpponentItem(stringResource(R.string.pve_enemy_medium)) { playVatsEnter(activity); showGameMedium = true }
-                    Spacer(modifier = Modifier.height(10.dp))
-                    OpponentItem(stringResource(R.string.pve_enemy_hard)) { playVatsEnter(activity); showGameHard = true }
-                    Spacer(modifier = Modifier.height(10.dp))
-                    OpponentItem(stringResource(R.string.pve_enemy_better)) { playVatsEnter(activity); showGameBetter = true }
-                    Spacer(modifier = Modifier.height(10.dp))
-                    OpponentItem(stringResource(R.string.pve_enemy_best)) {
-                        if (checkedCustomDeck) {
-                            showAlertDialog(
-                                activity.getString(R.string.ulysses_fair_fight_header),
-                                activity.getString(R.string.ulysses_fair_fight_body)
-                            )
-                        } else {
-                            playVatsEnter(activity)
-                            showGameUlysses = true
-                        }
-                    }
-                    Spacer(modifier = Modifier.height(16.dp))
-                    TextFallout(
-                        stringResource(R.string.pve_select_enemy_2),
-                        getTextColor(activity),
-                        getTextStrokeColor(activity),
-                        22.sp,
-                        Alignment.Center,
-                        Modifier,
-                        TextAlign.Center
-                    )
-                    Spacer(modifier = Modifier.height(16.dp))
-                    OpponentItem(stringResource(R.string.pve_enemy_queen)) { playVatsEnter(activity); showGameQueen = true }
+                    OpponentItem(stringResource(R.string.pve_enemy_ulysses)) { playVatsEnter(activity); showGameUlysses = true }
                     Spacer(modifier = Modifier.height(10.dp))
                     OpponentItem(stringResource(R.string.no_bark)) { playVatsEnter(activity); showGameNoBark = true }
                     Spacer(modifier = Modifier.height(10.dp))
                     OpponentItem(stringResource(R.string.johnson_nash)) { playVatsEnter(activity); showGameNash = true }
-                    Spacer(modifier = Modifier.height(10.dp))
-                    OpponentItem(stringResource(R.string.pve_enemy_38)) { playVatsEnter(activity); showGame38 = true }
-                    Spacer(modifier = Modifier.height(10.dp))
-                    OpponentItem(stringResource(R.string.pve_enemy_cheater)) { playVatsEnter(activity); showGameCheater = true }
-                    Spacer(modifier = Modifier.height(16.dp))
-                    TextFallout(
-                        stringResource(R.string.pve_select_enemy_3),
-                        getTextColor(activity),
-                        getTextStrokeColor(activity),
-                        22.sp,
-                        Alignment.Center,
-                        Modifier,
-                        TextAlign.Center
-                    )
-                    Spacer(modifier = Modifier.height(16.dp))
-                    OpponentItem(stringResource(R.string.ringo)) { playVatsEnter(activity); showGameRingo = true }
-                    Spacer(modifier = Modifier.height(10.dp))
-                    OpponentItem(stringResource(R.string.yes_man)) { playVatsEnter(activity); showGameYesMan = true }
-                    Spacer(modifier = Modifier.height(10.dp))
-                    OpponentItem(stringResource(R.string.the_king)) { playVatsEnter(activity); showGameKing = true }
-                    Spacer(modifier = Modifier.height(10.dp))
-                    OpponentItem(stringResource(R.string.general_lee_oliver)) { playVatsEnter(activity); showGameOliver = true }
-                    Spacer(modifier = Modifier.height(10.dp))
-                    OpponentItem(stringResource(R.string.caesar)) { playVatsEnter(activity); showGameCaesar = true }
                     Spacer(modifier = Modifier.height(16.dp))
                 }
             }
-            HorizontalDivider(color = getDividerColor(activity))
-
-            Row(
-                modifier = Modifier
-                    .height(56.dp)
-                    .padding(8.dp),
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                TextFallout(
-                    stringResource(R.string.pve_use_custom_deck),
-                    getTextColor(activity),
-                    getTextStrokeColor(activity),
-                    14.sp,
-                    Alignment.CenterStart,
-                    Modifier.fillMaxWidth(0.7f),
-                    TextAlign.Start
-                )
-                CheckboxCustom(
-                    activity,
-                    { checkedCustomDeck },
-                    {
-                        checkedCustomDeck = !checkedCustomDeck
-                        if (checkedCustomDeck) {
-                            playClickSound(activity)
-                        } else {
-                            playCloseSound(activity)
-                        }
-                        activity.save?.let {
-                            it.useCustomDeck = checkedCustomDeck
-                            saveOnGD(activity)
-                        }
-                    },
-                    { true }
-                )
-            }
 
             HorizontalDivider(color = getDividerColor(activity))
-            val started = activity.save?.gamesStarted ?: 0
-            val finished = activity.save?.gamesFinished ?: 0
-            val won = activity.save?.wins ?: 0
+            val started = save.gamesStarted
+            val finished = save.gamesFinished
+            val won = save.wins
             val loss = finished - won
             val state2 = rememberLazyListState()
             LazyColumn(
@@ -549,15 +306,15 @@ fun ShowPvE(
 fun StartGame(
     activity: MainActivity,
     playerCResources: CResources,
-    isCustom: Boolean,
     enemy: Enemy,
-    showAlertDialog: (String, String) -> Unit,
+    showAlertDialog: (String, String, (() -> Unit)?) -> Unit,
     goBack: () -> Unit,
 ) {
-    if (!activity.checkIfCustomDeckCanBeUsedInGame(playerCResources)) {
+    if (!playerCResources.isCustomDeckValid()) {
         showAlertDialog(
             stringResource(R.string.custom_deck_is_too_small),
-            stringResource(R.string.custom_deck_is_too_small_message)
+            stringResource(R.string.custom_deck_is_too_small_message),
+            null
         )
         goBack()
         return
@@ -568,16 +325,18 @@ fun StartGame(
             playerCResources,
             enemy
         ).also {
-            activity.save?.let { save ->
-                save.gamesStarted++
-                saveOnGD(activity)
-            }
+            save.gamesStarted++
+            saveData(activity)
             it.startGame()
         }
     }
 
+    LaunchedEffect(Unit) { startAmbient(activity) }
+    val onQuitPressed = { stopAmbient(); goBack() }
+
     game.also {
         it.onWin = {
+            // TODO: achievementys!!!
             when (enemy) {
                 is EnemyBestest -> {
                     activity.achievementsClient?.unlock(activity.getString(R.string.achievement_who_are_you_that_do_not_know_your_history))
@@ -592,86 +351,43 @@ fun StartGame(
             }
 
             activity.processChallengesGameOver(it)
+
             playWinSound(activity)
-            var message = activity.getString(R.string.you_win)
-            activity.save?.let { save ->
-                val rewardBack = enemy.getRewardBack()
-                if (rewardBack == null || rewardBack == CardBack.WILD_WASTELAND || rewardBack == CardBack.UNPLAYABLE) {
-                    save.caps += 30
-                    message += activity.getString(R.string.you_have_earned_caps, 30.toString())
-                } else if (rewardBack == CardBack.DECK_13 && enemy.isAlt()) {
-                    if (save.ownedDecksAlt[rewardBack] != true) {
-                        save.ownedDecksAlt[rewardBack] = true
-                        message += activity.getString(
-                            R.string.you_have_unlocked_deck,
-                            activity.getString(rewardBack.getMadnessDeckName())
-                        )
-                    }
-                    message += winCard(activity, save, rewardBack, 3, isAlt = true, isCustom)
-                } else {
-                    if (!enemy.isAlt()) {
-                        if (save.ownedDecks[rewardBack] != true) {
-                            save.ownedDecks[rewardBack] = true
-                            message += activity.getString(
-                                R.string.you_have_unlocked_deck,
-                                activity.getString(rewardBack.getDeckName())
-                            )
-                        }
-                        message += winCard(activity, save, rewardBack, 3, isAlt = false, isCustom)
-                    } else {
-                        if (save.ownedDecksAlt[rewardBack] != true) {
-                            save.ownedDecksAlt[rewardBack] = true
-                            message += activity.getString(
-                                R.string.you_have_unlocked_deck_alt,
-                                activity.getString(rewardBack.getDeckName())
-                            )
-                        }
-                        message += winCard(activity, save, rewardBack, 1, isAlt = true, isCustom)
-                    }
-                }
-                save.gamesFinished++
-                save.wins++
-                saveOnGD(activity)
-            }
-            if (game.enemy is EnemyBestest) {
-                showAlertDialog(activity.getString(R.string.result_ulysses), message)
-            } else {
-                showAlertDialog(activity.getString(R.string.result), message)
-            }
+            save.gamesFinished++
+            save.wins++
+            saveData(activity)
+
+            showAlertDialog(
+                activity.getString(R.string.result),
+                activity.getString(R.string.you_win),
+                onQuitPressed
+            )
         }
         it.onLose = {
             playLoseSound(activity)
-            activity.save?.let { save ->
-                save.gamesFinished++
-                saveOnGD(activity)
-            }
-            if (game.enemy is EnemyBestest) {
-                showAlertDialog(
-                    activity.getString(R.string.ulysses_victory),
-                    activity.getString(R.string.you_lose)
-                )
-            } else {
-                showAlertDialog(
-                    activity.getString(R.string.result),
-                    activity.getString(R.string.you_lose)
-                )
-            }
+            save.gamesFinished++
+            saveData(activity)
+
+            showAlertDialog(
+                activity.getString(R.string.result),
+                activity.getString(R.string.you_lose),
+                onQuitPressed
+            )
         }
         it.jokerPlayedSound = { playJokerSounds(activity) }
         it.nukeBlownSound = { playNukeBlownSound(activity) }
         it.wildWastelandSound = { playWWSound(activity) }
     }
-    activity.goBack = { stopAmbient(); goBack(); activity.goBack = null }
+
     ShowGame(activity, game) {
         if (game.isOver()) {
-            activity.goBack?.invoke()
-            return@ShowGame
-        }
-
-        if (game.enemy is EnemyBestest) {
-            showAlertDialog(activity.getString(R.string.check_back_to_menu_ulysses), "")
+            onQuitPressed()
         } else {
-            showAlertDialog(activity.getString(R.string.check_back_to_menu), "")
+            showAlertDialog(
+                activity.getString(R.string.check_back_to_menu),
+                activity.getString(R.string.check_back_to_menu_body),
+                onQuitPressed
+            )
         }
     }
 }
@@ -746,7 +462,7 @@ fun StartSignificantOtherBattle(
         )
     }
 
-    val selectedDeck = activity.save?.selectedDeck ?: (CardBack.STANDARD to false)
+    val selectedDeck = save.selectedDeck
     val deck = CustomDeck(selectedDeck.first, selectedDeck.second)
     val playerCResources = CResources(deck)
     val game = rememberScoped {
@@ -843,9 +559,7 @@ fun winCard(
     activity: MainActivity,
     save: Save,
     back: CardBack,
-    numberOfCards: Int,
-    isAlt: Boolean,
-    isCustom: Boolean
+    isAlt: Boolean
 ): String {
     fun isCardNew(card: Card): Boolean {
         return save.availableCards.none { aCard ->
@@ -853,60 +567,23 @@ fun winCard(
         }
     }
 
-    val prob = when {
-        back == CardBack.STANDARD -> 100
-        isCustom -> if (numberOfCards == 1) 50 else 40
-        else -> if (numberOfCards == 1) 65 else 55
-    }
-    val probs = (0 until numberOfCards).map {
-        (0..99).random() < prob
-    }
-
+    val isNew = if (back == CardBack.STANDARD) true else ((0..2).random() > 0)
     val deck = CustomDeck(back, isAlt)
-    val deckSorted = deck.takeRandom(deck.size).partition { isCardNew(it) }
-    val deckS = mutableListOf<Card>()
-    deckS.addAll(deckSorted.first)
-    deckS.addAll(deckSorted.second)
-    val reward = deckS.take(probs.count { it }) + deckS.takeLast(probs.count { !it })
-
-    var result = activity.getString(R.string.your_prize_cards_from)
-    var capsEarned = 0
-    reward.forEach { card ->
-        val deckName = if (card.back == CardBack.STANDARD && isAlt) {
-            activity.getString(card.back.getSierraMadreDeckName())
-        } else if (card.back == CardBack.DECK_13 && isAlt) {
-            activity.getString(card.back.getMadnessDeckName())
-        } else {
-            activity.getString(card.back.getDeckName())
-        }
-        val cardName = if (card.rank == Rank.JOKER) {
-            "${activity.getString(card.rank.nameId)} ${card.suit.ordinal + 1}, $deckName"
-        } else {
-            "${activity.getString(card.rank.nameId)} ${activity.getString(card.suit.nameId)}, $deckName"
-        }
-        result += if (isCardNew(card)) {
-            save.availableCards.add(card)
-            if (isAlt && !(card.back == CardBack.STANDARD || card.back == CardBack.DECK_13)) {
-                activity.getString(R.string.new_card_alt, cardName)
-            } else {
-                activity.getString(R.string.new_card, cardName)
-            }
-        } else {
-            capsEarned += activity.save?.getCardPrice(card) ?: 0
-            activity.save?.let {
-                it.soldCards[card.back to isAlt] = (it.soldCards[card.back to isAlt] ?: 0) + 1
-            }
-            if (isAlt && !(card.back == CardBack.STANDARD || card.back == CardBack.DECK_13)) {
-                activity.getString(R.string.old_card_alt, cardName)
-            } else {
-                activity.getString(R.string.old_card, cardName)
-            }
-        }
-    }
-    if (capsEarned > 0) {
-        activity.save?.let { it.caps += capsEarned }
-        result += activity.getString(R.string.caps_earned, capsEarned.toString())
+    deck.shuffle()
+    val card = if (isNew) {
+        deck.toList().firstOrNull(::isCardNew)
+    } else {
+        null
     }
 
-    return result
+    if (card != null) {
+        save.availableCards.add(card)
+
+    } else {
+        save.capsInHand += if (isAlt) 50 else 15
+
+    }
+    saveData(activity)
+
+    return ""
 }

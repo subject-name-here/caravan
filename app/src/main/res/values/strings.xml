@@ -232,6 +232,9 @@
 
     <string name="close">Close</string>
     <string name="check_back_to_menu">Are you sure you want to quit?</string>
+    <string name="check_back_to_menu_body">Really?!</string>
+    <string name="check_back_to_menu_body_tower">All TOWER progress will be lost!</string>
+    <string name="check_back_to_menu_body_tower_frank">All TOWER progress and all your caps will be lost to Frank!</string>
 
     <string name="sound">Sound!</string>
     <string name="save">Save</string>
@@ -345,7 +348,10 @@
     <string name="claim_caps">Claim 10 Caps</string>
     <string name="claim_tickets">Claim 1 Ticket</string>
 
+    <string name="tower_presents">VAULT-TEC\nproudly presents</string>
     <string name="tower">TOWER!</string>
+    <string name="tower_starring_1">Starring:\nDean Domino\nRobert Edwin House\nSunny Smiles\nand Edward Sallow as Caesar.</string>
+    <string name="tower_starring_2">Also starring: Craig Muffin,\n3-time Caravan champ of NCR.</string>
     <string name="deck_o_54_only">(Deck o\' 54 only!)</string>
     <string name="custom_deck_only">(Custom deck only!)</string>
     <string name="you_can_change_custom_deck_between_games">(You can change custom deck between games.)</string>
@@ -354,16 +360,41 @@
     <string name="pay_1_ticket">Pay 1 ticket</string>
     <string name="hey">HEY!</string>
     <string name="you_don_t_have_a_ticket_on_you">You don\'t have a ticket on you.</string>
-    <string name="level_10">Level: %1$s / 9</string>
+    <string name="level_10">Level: %1$s / 10</string>
     <string name="currently_in_bank_caps">Currently at stake: %1$s caps</string>
     <string name="enemy">Enemy: %1$s</string>
     <string name="your_reward_caps">Your reward: %1$s caps</string>
 
+    <string name="tower_enemy_1">Sunny Smiles</string>
+    <string name="tower_enemy_2">Yes Man</string>
+    <string name="tower_enemy_3">Papa Khan</string>
+    <string name="tower_enemy_3A">Papa Smurf</string>
+    <string name="tower_enemy_4">Jason Bright</string>
+    <string name="tower_enemy_5">King</string>
+    <string name="tower_enemy_6">Dean Domino</string>
+    <string name="tower_enemy_7">Mr. House</string>
+    <string name="tower_enemy_8">Cook-Cook</string>
+    <string name="tower_enemy_8A">COOK-COOK, MOTHERFU-</string>
+    <string name="tower_enemy_9">Caesar</string>
+    <string name="tower_enemy_10">Craig Muffin</string>
+    <string name="tower_enemy_10A">Special Agent Frank Horrigan</string>
+
     <string name="take_the_cash">Take the cash!</string>
+    <string name="take_the_cash_alt">Run away with cash!</string>
     <string name="congratulations">Congratulations!</string>
     <string name="en_garde">En garde!</string>
 
+    <string name="frank_think_header">THIS IS THE LAST WARNING!!!</string>
+    <string name="frank_think_body">If you lose, then you die, and Frank Horrigan will loot your body.</string>
+    <string name="frank_start_button">Let\'s go.</string>
+    <string name="frank_think_button">Let me think…</string>
+
     <string name="finish">[FINISH]</string>
+
+    <string name="craig_1">Hi! I am Craig Muffin, three-time NCR champion in Caravan. I hope you can present at least some challenge, and…</string>
+    <string name="craig_2">…wait, who is this thug?</string>
+    <string name="craig_3">*minigun death-bringing sounds*</string>
+    <string name="craig_continue">[GO ON]</string>
 
     <string name="you_re_not_a_hero_you_re_just_a_walking_corpse">You\'re not a hero. You\'re just a walking corpse.</string>
     <string name="now_playing_loyalty_to_your_people_neon_light_man">Now playing: Loyalty to Your People - Neon Light Man.</string>

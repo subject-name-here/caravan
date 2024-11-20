@@ -30,10 +30,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.unicorns.invisible.caravan.model.CardBack
+import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.Card
 import com.unicorns.invisible.caravan.model.primitives.CustomDeck
 import com.unicorns.invisible.caravan.model.primitives.Rank
 import com.unicorns.invisible.caravan.model.primitives.Suit
+import com.unicorns.invisible.caravan.save.saveData
 import com.unicorns.invisible.caravan.save.saveOnGD
 import com.unicorns.invisible.caravan.utils.CheckboxCustom
 import com.unicorns.invisible.caravan.utils.MenuItemOpen
@@ -58,26 +60,26 @@ fun SetCustomDeck(
     goBack: () -> Unit,
 ) {
     fun isInCustomDeck(card: Card): Boolean {
-        return activity.save?.customDeck?.let { deck ->
+        return save.customDeck.let { deck ->
             card in deck
-        } ?: false
+        }
     }
 
     fun toggleToCustomDeck(card: Card) {
-        activity.save?.customDeck?.let { deck ->
+        save.customDeck.let { deck ->
             if (card in deck) {
                 deck.removeAll(listOf(card))
             } else {
                 deck.add(card)
             }
         }
-        saveOnGD(activity)
+        saveData(activity)
     }
 
     fun isAvailable(card: Card): Boolean {
-        return activity.save?.availableCards?.let { cards ->
+        return save.availableCards.let { cards ->
             cards.any { it.rank == card.rank && it.suit == card.suit && it.back == card.back && it.isAlt == card.isAlt }
-        } ?: false
+        }
     }
 
     val mainState = rememberLazyListState()
@@ -87,19 +89,6 @@ fun SetCustomDeck(
             key (updater) {
                 ShowCharacteristics(activity)
             }
-
-            TextFallout(
-                stringResource(R.string.tap_card_back_to_open_cards),
-                getTextColor(activity),
-                getTextStrokeColor(activity),
-                24.sp,
-                Alignment.Center,
-                Modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight()
-                    .padding(8.dp),
-                TextAlign.Center
-            )
 
             LazyColumn(
                 Modifier
@@ -114,10 +103,6 @@ fun SetCustomDeck(
             ) {
                 item {
                     CardBack.playableBacks.forEach { back ->
-                        if (back == CardBack.DECK_13 && activity.save?.ownedDecks?.get(CardBack.DECK_13) != true) {
-                            return@forEach
-                        }
-
                         var rowTabShow by remember { mutableStateOf(false) }
                         var check by rememberSaveable {
                             mutableStateOf(
@@ -274,6 +259,7 @@ fun SetCustomDeck(
 
 @Composable
 fun ShowCharacteristics(activity: MainActivity) {
+    // TODO: decks used (MAX IS 6!!!)
     Row(
         Modifier
             .padding(6.dp)
@@ -281,8 +267,8 @@ fun ShowCharacteristics(activity: MainActivity) {
             .wrapContentHeight(),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        val deck = activity.save?.getCustomDeckCopy() ?: CustomDeck()
-        val deckSizeMin = MainActivity.MIN_DECK_SIZE
+        val deck = save.getCustomDeckCopy()
+        val deckSizeMin = CResources.MIN_DECK_SIZE
         val color1 = if (deck.size < deckSizeMin) Color.Red else getTextColor(activity)
         val color2 = if (deck.size < deckSizeMin) Color.Red else getTextStrokeColor(activity)
         TextFallout(
@@ -295,7 +281,7 @@ fun ShowCharacteristics(activity: MainActivity) {
             TextAlign.Center
         )
         val nonFaces = deck.count { !it.isFace() }
-        val nonFacesMin = MainActivity.MIN_NUM_OF_NUMBERS
+        val nonFacesMin = CResources.MIN_NUM_OF_NUMBERS
         val color3 = if (nonFaces < nonFacesMin) Color.Red else getTextColor(activity)
         val color4 = if (nonFaces < nonFacesMin) Color.Red else getTextStrokeColor(activity)
         TextFallout(

@@ -19,7 +19,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.challenge.Challenge
 import com.unicorns.invisible.caravan.model.enemy.EnemyPlayer
@@ -146,7 +145,7 @@ fun pingForMove(
             val enemyMove = decodeMove(result.getString("body"))
             (game.enemy as EnemyPlayer).latestMoveResponse = enemyMove
             setEnemySymbol(enemyMove.symbolNumber)
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             corrupt(result.toString())
             return@sendRequest
         }
@@ -200,7 +199,7 @@ fun ShowGamePvP(
     updatePlayerHand: () -> Unit,
     goBack: () -> Unit,
 ) {
-    val speed = activity.save?.animationSpeed ?: AnimationSpeed.NORMAL
+    val speed = save.animationSpeed
     var selectedCard by remember { mutableStateOf<Int?>(null) }
 
     var selectedCaravan by remember { mutableIntStateOf(-1) }
@@ -400,12 +399,11 @@ fun ShowGamePvP(
                     )
                 ) {
                     playCardFlipSound(activity)
-                    if (!card.isSpecial() && card.rank == Rank.JOKER) {
+                    if (card.isOrdinary() && card.rank == Rank.JOKER) {
                         playJokerSounds(activity)
-                    }
-                    if (card.back == CardBack.WILD_WASTELAND && !card.isAlt) {
+                    } else if (card.getWildWastelandCardType() != null) {
                         playWWSound(activity)
-                    } else if (card.isAlt && card.isSpecial()) {
+                    } else if (card.isNuclear()) {
                         playNukeBlownSound(activity)
                     }
                     activity.processChallengesMove(Challenge.Move(

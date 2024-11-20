@@ -56,6 +56,7 @@ import coil.decode.SvgDecoder
 import coil.request.ImageRequest
 import coil.size.Size
 import coil.size.pxOrElse
+import com.sebaslogen.resaca.rememberScoped
 import com.unicorns.invisible.caravan.Style.ALASKA_FRONTIER
 import com.unicorns.invisible.caravan.Style.DESERT
 import com.unicorns.invisible.caravan.Style.ENCLAVE
@@ -67,7 +68,7 @@ import com.unicorns.invisible.caravan.Style.PIP_GIRL
 import com.unicorns.invisible.caravan.Style.SIERRA_MADRE
 import com.unicorns.invisible.caravan.Style.VAULT_21
 import com.unicorns.invisible.caravan.Style.VAULT_22
-import com.unicorns.invisible.caravan.save.saveOnGD
+import com.unicorns.invisible.caravan.save.saveData
 import com.unicorns.invisible.caravan.utils.TextFallout
 import com.unicorns.invisible.caravan.utils.dpToPx
 import com.unicorns.invisible.caravan.utils.getTextBackgroundColor
@@ -89,7 +90,7 @@ enum class Style(val styleNameId: Int, val price: Int) {
     DESERT(R.string.style_desert, 500),
     ALASKA_FRONTIER(R.string.style_alaska, 500),
     PIP_BOY(R.string.style_pip_boy, 0),
-    PIP_GIRL(R.string.style_pip_girl, 2000),
+    PIP_GIRL(R.string.style_pip_girl, 1969),
     OLD_WORLD(R.string.style_old_world, 2000),
     NEW_WORLD(R.string.style_new_world, 3000),
     SIERRA_MADRE(R.string.style_sierra_madre, 2000),
@@ -101,60 +102,10 @@ enum class Style(val styleNameId: Int, val price: Int) {
 
 
 @Composable
-fun Modifier.getTableBackground(style: Style): Modifier {
-    // TODO: maybe, remove tables that are not wood??
+fun Modifier.getTableBackground(): Modifier {
     return paint(
-        painterResource(
-            id = when (style) {
-                DESERT -> R.drawable.table_wood
-                ALASKA_FRONTIER -> R.drawable.table_black
-                PIP_BOY -> R.drawable.table_blue
-                PIP_GIRL -> R.drawable.table_black
-                OLD_WORLD -> R.drawable.table_amber
-                NEW_WORLD -> R.drawable.table_wood
-                SIERRA_MADRE -> R.drawable.table_green
-                MADRE_ROJA -> R.drawable.table_green
-                VAULT_21 -> R.drawable.table_blue
-                VAULT_22 -> R.drawable.table_green
-                ENCLAVE -> R.drawable.table_black
-            }
-        ),
+        painterResource(id = R.drawable.table_wood),
         contentScale = ContentScale.Crop,
-        colorFilter = when (style) {
-            PIP_GIRL -> {
-                ColorFilter.colorMatrix(ColorMatrix().apply {
-                    timesAssign(
-                        ColorMatrix(
-                            floatArrayOf(
-                                2f, 0f, 0f, 0f, 0f,
-                                0f, 1.75f, 0f, 0f, 0f,
-                                0f, 0f, 1.75f, 0f, 0f,
-                                0f, 0f, 0f, 1f, 0f
-                            )
-                        )
-                    )
-                })
-            }
-
-            ALASKA_FRONTIER -> {
-                ColorFilter.colorMatrix(ColorMatrix().apply {
-                    timesAssign(
-                        ColorMatrix(
-                            floatArrayOf(
-                                3f, 0f, 0f, 0f, 0f,
-                                0f, 3f, 0f, 0f, 0f,
-                                0f, 0f, 3f, 0f, 0f,
-                                0f, 0f, 0f, 1f, 0f
-                            )
-                        )
-                    )
-                })
-            }
-
-            else -> {
-                ColorFilter.colorMatrix(ColorMatrix())
-            }
-        }
     )
 }
 
@@ -174,10 +125,10 @@ fun getStyleCities(style: Style): List<String> {
 fun BoxWithConstraintsScope.StylePicture(
     activity: MainActivity,
     style: Style,
-    key: Int,
     width: Int,
     height: Int
 ) {
+    val key by rememberScoped { mutableIntStateOf(Random.nextInt()) }
     val prefix = "file:///android_asset/menu_items/"
     val rand = Random(key)
     when (style) {
@@ -250,7 +201,8 @@ fun BoxWithConstraintsScope.StylePicture(
                 BoxWithConstraints(
                     Modifier
                         .weight(1f)
-                        .fillMaxHeight()) {
+                        .fillMaxHeight()
+                ) {
                     val mW = maxWidth.dpToPx().toInt() - 238
                     val mH = maxHeight.dpToPx().toInt() - 207
                     fun getOffset() = IntOffset(
@@ -898,10 +850,8 @@ fun BoxWithConstraintsScope.StylePicture(
                     if (cnt == numberOfRounds) {
                         LaunchedEffect(Unit) {
                             playFanfares(activity)
-                            activity.save?.let {
-                                it.capsInHand += 777
-                                saveOnGD(activity)
-                            }
+                            save.capsInHand += 777
+                            saveData(activity)
                             delay(25000L)
                             cnt = 0
                         }
