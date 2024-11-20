@@ -108,7 +108,7 @@ fun ShowStoryList(activity: MainActivity, showAlertDialog: (String, String) -> U
                 ShowStoryChapter1(activity, showAlertDialog, {
                     activity.save?.let {
                         if (it.storyChaptersProgress == 0) {
-                            it.availableDecks[CardBack.DECK_13] = true
+                            it.ownedDecks[CardBack.DECK_13] = true
                             it.availableCards.addAll(CustomDeck(CardBack.DECK_13, false).toList())
                             it.storyChaptersProgress = maxOf(it.storyChaptersProgress, 1)
                         }
@@ -151,7 +151,7 @@ fun ShowStoryList(activity: MainActivity, showAlertDialog: (String, String) -> U
                     activity.save?.let {
                         it.storyChaptersProgress = maxOf(it.storyChaptersProgress, 5)
                         it.secretMode = true
-                        it.availableDecksAlt[CardBack.DECK_13] = true
+                        it.ownedDecksAlt[CardBack.DECK_13] = true
                         saveOnGD(activity)
                     }
                 }) { showChapter = null }

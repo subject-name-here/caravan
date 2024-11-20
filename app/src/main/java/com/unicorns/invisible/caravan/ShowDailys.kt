@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
@@ -26,7 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.unicorns.invisible.caravan.model.challenge.Challenge
 import com.unicorns.invisible.caravan.save.Save
-import com.unicorns.invisible.caravan.save.saveOnGD
+import com.unicorns.invisible.caravan.save.save
 import com.unicorns.invisible.caravan.utils.MenuItemOpen
 import com.unicorns.invisible.caravan.utils.TextFallout
 import com.unicorns.invisible.caravan.utils.clickableOk
@@ -66,14 +65,11 @@ fun ShowDailys(
             ) {
                 item {
                     Spacer(Modifier.height(16.dp))
-                    activity.save?.challenges?.forEach { challenge ->
+                    activity.save.challenges.forEach { challenge ->
                         ShowChallenge(activity, challenge, challenge.isCompleted()) {
                             updateKey = !updateKey
                         }
                         Spacer(Modifier.height(16.dp))
-                    }
-                    if (activity.save?.challenges?.all { it.isCompleted() } == true) {
-                        activity.achievementsClient?.unlock(activity.getString(R.string.achievement_done_for_today))
                     }
                 }
                 item {
@@ -146,8 +142,11 @@ fun ShowChallenge(activity: MainActivity, challenge: Challenge, isCompleted: Boo
         if (isCompleted) {
             fun dailyCompleted(save: Save) {
                 save.challenges.remove(challenge)
-                saveOnGD(activity)
+                save(activity)
                 playDailyCompleted(activity)
+                if (activity.save.challenges.isEmpty()) {
+                    activity.achievementsClient?.unlock(activity.getString(R.string.achievement_done_for_today))
+                }
                 updater()
             }
             Spacer(Modifier.height(8.dp))
@@ -161,10 +160,8 @@ fun ShowChallenge(activity: MainActivity, challenge: Challenge, isCompleted: Boo
                     Modifier
                         .background(getTextBackgroundColor(activity))
                         .clickableOk(activity) {
-                            activity.save?.let { save ->
-                                save.tickets++
-                                dailyCompleted(save)
-                            }
+                            activity.save.tickets++
+                            dailyCompleted(activity.save)
                         }
                         .padding(8.dp),
                     TextAlign.Center
@@ -178,10 +175,8 @@ fun ShowChallenge(activity: MainActivity, challenge: Challenge, isCompleted: Boo
                     Modifier
                         .background(getTextBackgroundColor(activity))
                         .clickableOk(activity) {
-                            activity.save?.let { save ->
-                                save.caps += 50
-                                dailyCompleted(save)
-                            }
+                            activity.save.capsInHand += 10
+                            dailyCompleted(activity.save)
                         }
                         .padding(8.dp),
                     TextAlign.Center

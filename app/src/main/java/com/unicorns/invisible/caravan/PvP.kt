@@ -49,6 +49,7 @@ import com.unicorns.invisible.caravan.utils.CheckboxCustom
 import com.unicorns.invisible.caravan.utils.MenuItemOpen
 import com.unicorns.invisible.caravan.utils.TextFallout
 import com.unicorns.invisible.caravan.utils.clickableOk
+import com.unicorns.invisible.caravan.utils.crvnUrl
 import com.unicorns.invisible.caravan.utils.getBackgroundColor
 import com.unicorns.invisible.caravan.utils.getDividerColor
 import com.unicorns.invisible.caravan.utils.getKnobColor
@@ -76,8 +77,6 @@ import org.chromium.net.CronetEngine
 
 
 var cronetEngine: CronetEngine? = null
-var currentGameId = ""
-
 
 fun customDeckToInts(customDeck: CustomDeck): List<ULong> {
     val result = ArrayList<ULong>()
@@ -117,7 +116,6 @@ fun isRoomNumberIncorrect(roomNumber: String): Boolean {
 @Composable
 fun ShowPvP(
     activity: MainActivity,
-    selectedDeck: () -> Pair<CardBack, Boolean>,
     showAlertDialog: (String, String) -> Unit,
     goBack: () -> Unit
 ) {
@@ -192,7 +190,7 @@ fun ShowPvP(
     }
 
     fun checkRoomForJoiner() {
-        sendRequest("$crvnUrl/crvn/check_room_for_joiner?room=${isRoomCreated}") { result ->
+        sendRequest("${crvnUrl}/crvn/check_room_for_joiner?room=${isRoomCreated}") { result ->
             if (result.getString("body") == "-1") {
                 CoroutineScope(Dispatchers.Unconfined).launch {
                     delay(1900L)
@@ -227,7 +225,7 @@ fun ShowPvP(
                 CustomDeck(deckPair.first, deckPair.second)
         )
         sendRequest(
-            "$crvnUrl/crvn/create?is_custom=${checkedCustomDeck.toPythonBool()}" +
+            "${crvnUrl}/crvn/create?is_custom=${checkedCustomDeck.toPythonBool()}" +
                     "&room=${isRoomCreated}" +
                     "&is_private=${checkedPrivateRoom.toPythonBool()}" +
                     "&is_new=True" +
@@ -264,7 +262,7 @@ fun ShowPvP(
         isRoomCreated = roomNumber.toIntOrNull() ?: return
         val deckCodes = customDeckToInts(activity.save!!.getCustomDeckCopy())
         sendRequest(
-            "$crvnUrl/crvn/join?room=$isRoomCreated" +
+            "${crvnUrl}/crvn/join?room=$isRoomCreated" +
                     "&jid=${userId}" +
                     "&back=${selectedDeck().first.ordinal}" +
                     "&is_alt=${selectedDeck().second.toPythonBool()}" +
@@ -646,7 +644,7 @@ fun StartPvP(
     }
 
     fun pingForMove(sendHandCard: () -> Unit) {
-        val link = "$crvnUrl/crvn/get_move?room=$roomNumber" +
+        val link = "${crvnUrl}/crvn/get_move?room=$roomNumber" +
                 "&is_creators_move=${isCreator.toPythonBool()}"
         sendRequest(link) { result ->
             val body = result.getString("body")
@@ -708,7 +706,7 @@ fun StartPvP(
             return
         }
 
-        val link = "$crvnUrl/crvn/move?room=$roomNumber" +
+        val link = "${crvnUrl}/crvn/move?room=$roomNumber" +
                 "&is_creators_move=${isCreator.toPythonBool()}" +
                 "&move_code=0" +
                 "&new_card_back_in_hand_code=${card.back.ordinal}" +

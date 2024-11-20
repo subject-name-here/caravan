@@ -13,6 +13,8 @@ import okio.withLock
 import java.util.concurrent.locks.ReentrantLock
 
 
+// TODO: rehaul!!
+
 private val effectPlayers = HashSet<MediaPlayer>()
 private val effectPlayersLock = ReentrantLock()
 fun stopSoundEffects() {
@@ -231,7 +233,7 @@ fun startRadio(activity: MainActivity) {
         return
     }
     radioStartedFlag = true
-    if (activity.save?.useCaravanIntro != false) {
+    if (activity.save.useCaravanIntro) {
         if (activity.styleId == Style.SIERRA_MADRE || activity.styleId == Style.MADRE_ROJA) {
             playSongFromRadio(activity, "begin_again.amr")
         } else {
@@ -252,7 +254,7 @@ private val radioPlayers = HashSet<MediaPlayer>()
 private val radioLock = ReentrantLock()
 private var radioState = RadioState.PLAYING
 private fun playSongFromRadio(activity: MainActivity, songName: String) {
-    val vol = activity.save?.radioVolume ?: 1f
+    val vol = activity.save.radioVolume
     MediaPlayer()
         .apply {
             val afd = activity.assets.openFd("radio/$songName")
@@ -314,8 +316,8 @@ fun resumeRadio() {
         }
     }
 }
-fun pauseActivitySound() {
-    if (radioState == RadioState.PLAYING) {
+fun pauseActivitySound(leaveRadioOn: Boolean) {
+    if (radioState == RadioState.PLAYING && !leaveRadioOn) {
         radioLock.withLock {
             radioPlayers.forEach { it.pause() }
             radioState = RadioState.PAUSED_BY_LEAVING_ACTIVITY

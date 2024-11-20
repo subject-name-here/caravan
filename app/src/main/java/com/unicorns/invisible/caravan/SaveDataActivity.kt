@@ -115,6 +115,7 @@ abstract class SaveDataActivity : AppCompatActivity() {
     }
 
     companion object {
-        const val SAVE_FILE_NAME = "saveFile"
+        const val SAVE_FILE_NAME = "saveFileMkII"
+        const val OLD_SAVE_FILE_NAME = "saveFile"
     }
 }

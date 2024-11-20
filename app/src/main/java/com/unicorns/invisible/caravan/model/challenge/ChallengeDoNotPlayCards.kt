@@ -36,11 +36,14 @@ class ChallengeDoNotPlayCards(private val code: Int) : Challenge {
                     6 -> {
                         { playedCard.suit == Suit.SPADES || playedCard.suit == Suit.CLUBS }
                     }
+                    7 -> {
+                        { playedCard.rank in listOf(Rank.FOUR, Rank.SIX, Rank.EIGHT, Rank.NINE, Rank.TEN) }
+                    }
                     else -> {
                         { true }
                     }
                 }
-                if (!playedCard.isSpecial() && playedCard.rank != Rank.JOKER && predicate()) {
+                if (playedCard.isOrdinary() && playedCard.rank != Rank.JOKER && predicate()) {
                     notPlayed = false
                 }
             }
@@ -60,36 +63,26 @@ class ChallengeDoNotPlayCards(private val code: Int) : Challenge {
 
     override fun getName(activity: MainActivity): String {
         return when (code) {
-            1 -> activity.getString(R.string.say_no_to_even)
-            2 -> activity.getString(R.string.say_no_to_odd)
-            3 -> activity.getString(R.string.not_every_man_jack)
-            4 -> activity.getString(R.string.french_revolution)
-            5 -> activity.getString(R.string.put_it_all_on_black)
-            6 -> activity.getString(R.string.put_it_all_on_red)
+            1 -> activity.getString(R.string.play_only_odd)
+            2 -> activity.getString(R.string.play_only_even)
+            3 -> activity.getString(R.string.no_jacks)
+            4 -> activity.getString(R.string.no_kings)
+            5 -> activity.getString(R.string.only_black)
+            6 -> activity.getString(R.string.only_red)
+            7 -> activity.getString(R.string.father_pucci)
             else -> ""
         }
     }
 
     override fun getDescription(activity: MainActivity): String {
         return when (code) {
-            1 -> {
-                activity.getString(R.string.do_not_play_even_number_cards_2_4_6_8_10)
-            }
-            2 -> {
-                activity.getString(R.string.do_not_play_odd_number_cards_3_5_7_9)
-            }
-            3 -> {
-                activity.getString(R.string.do_not_play_jacks)
-            }
-            4 -> {
-                activity.getString(R.string.do_not_play_kings)
-            }
-            5 -> {
-                activity.getString(R.string.do_not_play_hearts_or_diamonds)
-            }
-            6 -> {
-                activity.getString(R.string.do_not_play_clubs_or_spades)
-            }
+            1 -> activity.getString(R.string.play_only_odd_descr)
+            2 -> activity.getString(R.string.play_only_even_descr)
+            3 -> activity.getString(R.string.no_jacks_descr)
+            4 -> activity.getString(R.string.no_kings_descr)
+            5 -> activity.getString(R.string.only_black_descr)
+            6 -> activity.getString(R.string.only_red_descr)
+            7 -> activity.getString(R.string.father_pucci_descr)
             else -> ""
         }
     }

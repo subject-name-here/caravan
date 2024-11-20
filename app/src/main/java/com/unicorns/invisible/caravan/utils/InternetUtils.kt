@@ -27,3 +27,5 @@ fun sendRequest(link: String, onFinish: (JSONObject) -> Unit) {
         request.start()
     }
 }
+
+const val crvnUrl = "http://crvnserver.onrender.com"

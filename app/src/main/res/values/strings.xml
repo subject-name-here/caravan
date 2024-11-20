@@ -33,9 +33,6 @@
     <string name="madness_deck_name">Madness deck</string>
     <string name="chinese_deck_name">Chinese deck</string>
     <string name="enclave_deck_name">Enclave deck</string>
-    <string name="madness_alt_deck_name">Wild Wasteland deck</string>
-    <string name="chinese_alt_deck_name">Nuclear FU deck</string>
-    <string name="enclave_alt_deck_name">Nuclear deck</string>
 
 
     <string name="menu_pve">Single player</string>
@@ -102,18 +99,9 @@
     <string name="custom_deck_is_too_small">Custom deck is too small!</string>
     <string name="custom_deck_is_too_small_message">Deck has less than 30 cards or less than 15 numbered cards!</string>
 
-    <string name="you_win">You win!</string>
     <string name="result">Result</string>
+    <string name="you_win">You win!</string>
     <string name="you_lose">You lose!</string>
-
-    <string name="you_have_unlocked_deck">\nYou have unlocked the %1$s!</string>
-    <string name="you_have_unlocked_deck_alt">\nYou have unlocked the ALT of %1$s!</string>
-    <string name="your_prize_cards_from">\nYour reward:\n</string>
-
-    <string name="new_card">New: %1$s.\n</string>
-    <string name="old_card">Old: %1$s.\n</string>
-    <string name="new_card_alt">New: %1$s (ALT).\n</string>
-    <string name="old_card_alt">Old: %1$s (ALT).\n</string>
 
     <string name="discard_card">DISCARD CARD</string>
     <string name="discard">DISBAND!</string>
@@ -140,6 +128,7 @@
     <string name="about_4_2">. You can also leave a review in Play Store.</string>
 
     <string name="rules" tools:ignore="TypographyDashes">ORIGINAL RULES\nCaravan is played with two players building three opposing piles (or \"caravans\") of numbered cards. The goal is to outbid your opponent\'s caravan with the highest value of numbered cards without being too light (under 21) or overburdened (over 26).\n\nThe game begins with each player taking eight cards from their deck and placing either one numerical card or ace on each caravan. Players may not discard during this initial round.\n\nOnce both players have started their three caravans, each player may do ONE of the following on their turn:\n1. Play one card and draw a new card from his or her deck to their hand.\n2. Discard one card from their hand and draw a new card from his or her deck.\n3. Disband one of their three caravans by removing all cards from that pile.\n\nCaravans have a direction, either ascending or descending numerically, and a suit. The suit is determined with the first card placed on a caravan, the direction by the second. All subsequent cards must continue the numerical direction or match the suit of the previous card. Cards of the same numerical value cannot be played in sequence, regardless of suit. Face cards can be attached to numeric cards in any caravan and affects them in various ways.\n\nCARD VALUES\nJoker: Played against ace, 2-10. Effects change based on whether it\'s an ace or a numbered card (see below). Multiple jokers may be played on the same card.\n\nAce: Value of 1. Jokers played on aces remove all other non-face cards of the ace\'s suit from the table. E.g. a joker played on an Ace of Spades removes all spades (except face cards and that card, specifically) from the table.\n\n2-10: Listed value. Jokers played on these cards remove all other cards of this value from the table. E.g. a joker played on a 4 of Hearts removes all 4s (other than that card, specifically) from the table.\n\nJack: Played against ace, 2\-10. Removes that card, along with any face cards attached to it.\n\nQueen: Played against ace, 2\-10. Reverses the current direction of the hand and changes the current suit of the hand. Multiple queens may be played on the same card.\n\nKing: Played against ace, 2\-10. Adds the value of that card again. E.g. a king played on a 9 adds 9 to that hand. Multiple kings may be played on the same card for multiplicative effects. E.g. 4+ king = 8. 4 + 2 kings = 16.\n\nWINNING\nA player\'s caravan is considered sold when the value of its cards is over 20 and under 27. The other player may still outbid by increasing the value of their opposing pile while staying within the 21-26 range. When each of the three competing caravans has sold, the game is over. In the event that one of the three caravan values are tied between players, the game continues until all three caravans have sold. The player with two or more sales wins the pot.</string>
+
     <string name="kyle">Kyle says:</string>
     <string name="tutorial_1_1">Howdy! Fine hot day for a Sarsaparilla, ain\'t it?\n</string>
     <string name="tutorial_1_2">Days like this are the reason why I ain\'t leaving Mojave, not for anything.</string>
@@ -230,6 +219,11 @@
         Sometimes first connection to server might take a long time, like, ~2 minutes.
         Action timeout (move, room waiting) is ~38 seconds, then the room is destroyed.
     </string>
+    <string name="room_exists_already">Room exists already!!!</string>
+    <string name="response_has_wrong_size">Response has wrong size!</string>
+    <string name="failure_2">Failure!</string>
+    <string name="no_room_to_join">No room to join! Create your own room!</string>
+    <string name="failed_to_start_the_game">Failed to start the game!</string>
 
     <string name="wait">Wait…</string>
     <string name="init_stage">Init stage!</string>
@@ -247,35 +241,29 @@
 
     <string name="intro_music">Same Radio Intro</string>
     <string name="non_stop_radio">Non-stop Radio</string>
+    <string name="cheats">Enter Secret Code</string>
 
-    <string name="intro_tip_1">Did you know that \"Caravan game\" is an acronym? It stands for \"Cards And Reclamation Approved by Vault-Tec And NCR\" game?\n\n(no, it\'s not)</string>
     <string name="intro_tip_2">Unlike chess, Queens are not so useful in Caravan. However, you can have fun by sabotaging enemy\'s caravan with them.</string>
     <string name="intro_tip_3">Joker in the right place in the right time can bring victory (or defeat). Use them carefully.</string>
     <string name="intro_tip_4">You can change caravan direction without Queen by using same suit cards.</string>
     <string name="intro_tip_5">Jack can remove a card from enemy\'s caravan. King, however, can force enemy to remove the card from their caravan.</string>
     <string name="intro_tip_6">Good time-of-the-day, wherever and whenever you are!</string>
-    <string name="intro_tip_7">There are two edges: with custom deck the game might be too easy, but with deck o\' 54 it might be too hard and unfair.</string>
-    <string name="intro_tip_8">Using deck o\' 54 gives better chances of winning a new card for custom deck.</string>
     <string name="intro_tip_9">If your enemy is about to win, but you have a sold caravan, consider dropping it to buy yourself a couple of moves.</string>
     <string name="intro_tip_10">What happens in Vegas - stays in Vegas. Until Mr. New Vegas tells about it via the radio.</string>
     <string name="intro_tip_11">Great Khans once were a major raider force. Now they are just drug dealers.</string>
     <string name="intro_tip_12">What happened to Shady Sands?</string>
     <string name="intro_tip_13">While not so popular as 10-K-6 tactic, 9-K-8 sometimes can be more flexible.</string>
     <string name="intro_tip_14">If you have Jokers in your custom deck, think about throwing there a couple of Aces.</string>
-    <string name="intro_tip_15">Discarding a caravan might give you a valuable advantage in a long game: you have one card more in your deck.</string>
-
+    <string name="intro_tip_15">Disbanding a caravan might give you a valuable advantage in a long game: you have one card more in your deck.</string>
     <string name="intro_tip_vault">Did you know that there are 122 vaults in the Fallout world? Only 17 of them were not experimenting on their inhabitants.</string>
     <string name="intro_tip_desert">Cazadors can easily tear down a deathclaw or two. Imagine what they can do to your puny fragile body.</string>
     <string name="intro_tip_arctic">In 2066, Chinese forces invaded northern Alaska for access to oil, but were eventually chased away.</string>
-    <string name="intro_tip_tower">Some claim that at the top of the TOWER an old enemy awaits you…</string>
-    <string name="intro_tip_ww">Complete Chapter 5 of Story to get access to Wild Wasteland!</string>
-    <string name="intro_tip_blitz">When playing BLITZ, it is vital to remember that it doesn\'t matter how good you are - House always wins.</string>
     <string name="intro_tip_snuffles">Snuffle!</string>
     <string name="intro_tip_new_world">NCR and Legion, despite having some disagreements, have common enemies. Brotherhood of Steel is one of them.</string>
     <string name="intro_tip_enclave">Enclave is still around, huh? Who could have thought?</string>
 
-
     <string name="tap_to_play">Tap to Play</string>
+
 
     <string name="caps_earned">\nCaps earned: %1$s.\n</string>
     <string name="caps">CAPS: %1$s</string>
@@ -284,16 +272,13 @@
     <string name="transaction_failed">Transaction failed!</string>
     <string name="not_enough_caps">Not enough caps!</string>
     <string name="cost_caps">" caps"</string>
+
     <string name="animation_length">Animation Length</string>
     <string name="themes">Styles</string>
-    <string name="room_exists_already">Room exists already!!!</string>
+
     <string name="select">SELECT</string>
     <string name="buy">BUY</string>
 
-    <string name="response_has_wrong_size">Response has wrong size!</string>
-    <string name="failure_2">Failure!</string>
-    <string name="no_room_to_join">No room to join! Create your own room!</string>
-    <string name="failed_to_start_the_game">Failed to start the game!</string>
 
     <string name="style_desert">Desert</string>
     <string name="style_pip_boy">Pip-Boy</string>
@@ -311,25 +296,7 @@
     <string name="heads">HEADS</string>
     <string name="tails">TAILS</string>
 
-    <string name="lucky_38_blitz">BLITZ</string>
-    <string name="lucky_38_tower">TOWER</string>
-    <string name="place_your_bets">Place your bets!\n(You have %1$s caps.)</string>
-    <string name="time_s">Time: %1$s s</string>
-    <string name="seconds">%1$s s</string>
-    <string name="bet_caps">Bet: %1$s caps</string>
-    <string name="your_current_reward_caps">Your current reward: %1$s caps.</string>
-    <string name="you_have_earned_caps">\nYou have earned %1$s caps!</string>
-    <string name="blitz">BLITZ!</string>
-    <string name="tower">TOWER!</string>
-    <string name="start">START!</string>
-    <string name="not_enough_caps_warning">Not enough caps!</string>
-    <string name="please_lower_your_bet_to_play">Please, lower your bet to play.</string>
-    <string name="select_your_opponent">Select your opponent!</string>
-    <string name="blitz_rules">BLITZ Rules</string>
-    <string name="blitz_rules_body">The game rules are the same, but now there is a timer (20 or 30 seconds) that ticks down to zero and never stops. Each your move adds +1 second to the timer; when timer reaches 0, you automatically lose.</string>
-
     <string name="play_cards_of_rank">Play %1$s cards of rank %2$s.</string>
-
     <string name="ace_in_the_hole">Ace in the Hole</string>
     <string name="always_bet_on_jack">Always bet on Jack</string>
     <string name="queen_s_gambit">Queen\'s Gambit</string>
@@ -344,33 +311,41 @@
     <string name="pieces_of_eight">Pieces of Eight</string>
     <string name="the_whole_nine_yards">The Whole Nine Yards</string>
     <string name="all_in">All in!</string>
-    <string name="standing_here_i_realize">Standing Here, I Realize</string>
-    <string name="courier_six">Courier Six?</string>
-    <string name="house_has_gone_bust">House Has Gone Bust!</string>
-    <string name="robots">Robots!</string>
-    <string name="unlikely_alliance_1">Unlikely Alliance 1</string>
-    <string name="unlikely_alliance_2">Unlikely Alliance 2</string>
-    <string name="tops_guns">Tops Guns</string>
-    <string name="defeat_enemies">Defeat enemies: %1$s</string>
+
     <string name="boulder_city">Boulder City</string>
     <string name="win_a_game_by_discarding_your_caravan">Win a game by discarding your caravan.</string>
-    <string name="i_have_the_last_laugh">I Have The Last Laugh</string>
+    <string name="the_killing_joke">The Killing Joke</string>
     <string name="win_a_game_by_playing_joker">Win a game by playing Joker.</string>
-    <string name="say_no_to_even">Say No To Even</string>
-    <string name="say_no_to_odd">Say No To Odd</string>
-    <string name="not_every_man_jack">Not Every Man Jack</string>
-    <string name="french_revolution">French Revolution</string>
-    <string name="put_it_all_on_black">Put It All On Black!</string>
-    <string name="put_it_all_on_red">Put It All On Red!</string>
-    <string name="do_not_play_even_number_cards_2_4_6_8_10">Win a game without playing even number cards (2, 4, 6, 8, 10). (Init stage is not counted.)</string>
-    <string name="do_not_play_odd_number_cards_3_5_7_9">Win a game without playing odd number cards (3, 5, 7, 9). (Init stage is not counted.)</string>
-    <string name="do_not_play_jacks">Win a game without playing Jacks.</string>
-    <string name="do_not_play_kings">Win a game without playing Kings.</string>
-    <string name="do_not_play_hearts_or_diamonds">Win a game without playing Hearts or Diamonds. (Init stage is not counted.)</string>
-    <string name="do_not_play_clubs_or_spades">Win a game without playing Clubs or Spades. (Init stage is not counted.)</string>
-    <string name="claim_caps">Claim 50 Caps</string>
+    <string name="marriage">Habsburg Tradition</string>
+    <string name="win_a_game_by_marriage">Win a game by playing King on the card that already has Queen; both must have the same suit.</string>
+    <string name="all_yours_26">Full-out</string>
+    <string name="win_a_game_all_yours_26">Win a game with all your caravans having weight of 26.</string>
+    <string name="all_yours_21">I Only Know Blackjack</string>
+    <string name="win_a_game_all_yours_21">Win a game with all your caravans having weight of 21.</string>
+    <string name="attrition">I\'m Still Standing</string>
+    <string name="win_a_game_attrition">Win a game because your opponent has no cards in hand.</string>
+    <string name="empty_deck">And For My Last Trick…</string>
+    <string name="win_a_game_empty_deck">Win a game having no cards in your deck.</string>
+
+    <string name="play_only_odd">Space Oddity</string>
+    <string name="play_only_even">Avenged Even-fold</string>
+    <string name="no_jacks">Hit The Road Jack</string>
+    <string name="no_kings">French Revolution</string>
+    <string name="only_black">Put It All On Black!</string>
+    <string name="only_red">Put It All On Red!</string>
+    <string name="father_pucci">To Keep Your Composure</string>
+    <string name="play_only_odd_descr">Win a game playing only aces, face cards and odd number cards. (Init stage is not counted.)</string>
+    <string name="play_only_even_descr">Win a game playing only aces, face cards and even number cards. (Init stage is not counted.)</string>
+    <string name="no_jacks_descr">Win a game without playing Jacks.</string>
+    <string name="no_kings_descr">Win a game without playing Kings.</string>
+    <string name="only_black_descr">Win a game playing only Spades, Clubs and Jokers. (Init stage is not counted.)</string>
+    <string name="only_red_descr">Win a game playing only Hearts, Diamonds and Jokers. (Init stage is not counted.)</string>
+    <string name="father_pucci_descr">Win a game playing only aces, face cards and prime number cards (2, 3, 5, 7). (Init stage is not counted.)</string>
+
+    <string name="claim_caps">Claim 10 Caps</string>
     <string name="claim_tickets">Claim 1 Ticket</string>
 
+    <string name="tower">TOWER!</string>
     <string name="deck_o_54_only">(Deck o\' 54 only!)</string>
     <string name="custom_deck_only">(Custom deck only!)</string>
     <string name="you_can_change_custom_deck_between_games">(You can change custom deck between games.)</string>
@@ -378,16 +353,12 @@
     <string name="tickets_please_you_have_tickets">Tickets, please!\n(You have tickets: %1$s.)</string>
     <string name="pay_1_ticket">Pay 1 ticket</string>
     <string name="hey">HEY!</string>
-    <string name="tower_progress_will_be_lost">All progress will be lost!</string>
     <string name="you_don_t_have_a_ticket_on_you">You don\'t have a ticket on you.</string>
-    <string name="level_10">Level: %1$s / 10</string>
-    <string name="currently_in_bank_caps">Currently in bank: %1$s caps</string>
+    <string name="level_10">Level: %1$s / 9</string>
+    <string name="currently_in_bank_caps">Currently at stake: %1$s caps</string>
     <string name="enemy">Enemy: %1$s</string>
     <string name="your_reward_caps">Your reward: %1$s caps</string>
 
-    <string name="skip_for_caps">Skip for %1$s caps</string>
-    <string name="skipped">Skipped!</string>
-    <string name="you_ve_paid_caps">You\'ve paid %1$s caps!</string>
     <string name="take_the_cash">Take the cash!</string>
     <string name="congratulations">Congratulations!</string>
     <string name="en_garde">En garde!</string>
@@ -636,6 +607,7 @@
     <string name="ch9a_t7">Yes, dealing with the paladin. The spy, who stood between him and the bright future of unification of the mankind…</string>
     <string name="ch9a_q7">NOW WE ARE TRULY UNITED. WELCOME, THE PROSPECTOR.</string>
     <string name="ch9a_t8">The Prospector… The Supreme Leader - together they will bring peace to the entire planet.</string>
+
 
     <string name="so_header" translatable="false">Your significant other softly says to you:</string>
     <string name="so_0" translatable="false">I will try to make you happy. I hope I will be enough…</string>

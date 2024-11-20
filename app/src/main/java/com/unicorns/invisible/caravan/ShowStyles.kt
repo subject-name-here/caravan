@@ -32,7 +32,6 @@ import com.unicorns.invisible.caravan.utils.getStrokeColorByStyle
 import com.unicorns.invisible.caravan.utils.getTextBackByStyle
 import com.unicorns.invisible.caravan.utils.getTextColorByStyle
 import com.unicorns.invisible.caravan.utils.getTrackColor
-import com.unicorns.invisible.caravan.utils.playPimpBoySound
 import com.unicorns.invisible.caravan.utils.scrollbar
 
 
@@ -41,7 +40,6 @@ fun ShowStyles(
     activity: MainActivity,
     getStyle: () -> Style,
     selectStyle: (Int) -> Unit,
-    showAlertDialog: (String, String) -> Unit,
     goBack: () -> Unit
 ) {
     var styleInt by rememberSaveable { mutableStateOf(getStyle()) }
@@ -64,38 +62,9 @@ fun ShowStyles(
                 verticalArrangement = Arrangement.Center
             ) {
                 item {
-                    Style.entries.forEach { style ->
-                        if (style == Style.ENCLAVE && activity.save?.isEnclaveThemeAvailable != true) {
-                            return@forEach
-                        }
-                        ShowStyle(
-                            activity, style,
-                            style in (activity.save?.ownedStyles ?: emptyList()),
-                            style.ordinal == activity.save!!.styleId
-                        ) {
-                            if (style !in (activity.save?.ownedStyles ?: emptyList())) {
-                                if (activity.save!!.caps >= style.price) {
-                                    activity.save!!.ownedStyles.add(style)
-                                    activity.save!!.caps -= style.price
-                                    styleInt = style
-                                    selectStyle(style.ordinal)
-                                    showAlertDialog(
-                                        activity.getString(R.string.transaction_succeeded),
-                                        activity.getString(
-                                            R.string.you_have_bought_style,
-                                            activity.getString(style.styleNameId)
-                                        )
-                                    )
-                                    playPimpBoySound(activity)
-                                } else {
-                                    showAlertDialog(
-                                        activity.getString(R.string.transaction_failed),
-                                        activity.getString(
-                                            R.string.not_enough_caps
-                                        )
-                                    )
-                                }
-                            } else if (style.ordinal != getStyle().ordinal) {
+                    Style.entries.filter { it in activity.save.ownedStyles }.forEach { style ->
+                        ShowStyle(activity, style, style.ordinal == activity.save.styleId) {
+                            if (style.ordinal != getStyle().ordinal) {
                                 styleInt = style
                                 selectStyle(style.ordinal)
                             }
@@ -111,7 +80,6 @@ fun ShowStyles(
 fun ShowStyle(
     activity: MainActivity,
     style: Style,
-    isStyleBought: Boolean,
     isStyleUsed: Boolean,
     onClick: (Int) -> Unit
 ) {
@@ -136,11 +104,7 @@ fun ShowStyle(
             TextAlign.Center
         )
         TextFallout(
-            when {
-                !isStyleBought -> stringResource(R.string.buy)
-                !isStyleUsed -> stringResource(R.string.select)
-                else -> "OK"
-            },
+            if (isStyleUsed) "OK" else stringResource(R.string.select),
             getTextColorByStyle(activity, style),
             getTextColorByStyle(activity, style),
             22.sp,
@@ -155,21 +119,5 @@ fun ShowStyle(
                 },
             TextAlign.Center
         )
-
-        if (!isStyleBought) {
-            TextFallout(
-                style.price.toString(),
-                getTextColorByStyle(activity, style),
-                getStrokeColorByStyle(activity, style),
-                22.sp,
-                Alignment.Center,
-                Modifier
-                    .fillMaxWidth()
-                    .background(getBackByStyle(activity, style))
-                    .padding(6.dp)
-                    .background(getTextBackByStyle(activity, style)),
-                TextAlign.Center
-            )
-        }
     }
 }

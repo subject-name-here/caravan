@@ -56,12 +56,14 @@ import androidx.compose.ui.unit.sp
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.challenge.Challenge
+import com.unicorns.invisible.caravan.model.enemy.EnemyHouse
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.Caravan
 import com.unicorns.invisible.caravan.model.primitives.Card
 import com.unicorns.invisible.caravan.model.primitives.CardWithModifier
 import com.unicorns.invisible.caravan.model.primitives.Rank
 import com.unicorns.invisible.caravan.model.primitives.Suit
+import com.unicorns.invisible.caravan.save.saveOnGD
 import com.unicorns.invisible.caravan.utils.ShowCard
 import com.unicorns.invisible.caravan.utils.ShowCardBack
 import com.unicorns.invisible.caravan.utils.TextFallout
@@ -83,16 +85,21 @@ import com.unicorns.invisible.caravan.utils.playCardFlipSound
 import com.unicorns.invisible.caravan.utils.playCloseSound
 import com.unicorns.invisible.caravan.utils.playJokerReceivedSounds
 import com.unicorns.invisible.caravan.utils.playJokerSounds
+import com.unicorns.invisible.caravan.utils.playLoseSound
 import com.unicorns.invisible.caravan.utils.playNoCardAlarm
 import com.unicorns.invisible.caravan.utils.playNukeBlownSound
 import com.unicorns.invisible.caravan.utils.playSelectSound
 import com.unicorns.invisible.caravan.utils.playVatsReady
 import com.unicorns.invisible.caravan.utils.playWWSound
+import com.unicorns.invisible.caravan.utils.playWinSound
+import com.unicorns.invisible.caravan.utils.playYesBeep
 import com.unicorns.invisible.caravan.utils.pxToDp
 import com.unicorns.invisible.caravan.utils.scrollbar
 import com.unicorns.invisible.caravan.utils.startAmbient
+import com.unicorns.invisible.caravan.utils.stopAmbient
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlin.math.max
 import kotlin.math.min
@@ -256,6 +263,45 @@ fun ShowGame(activity: MainActivity, game: Game, isBlitz: Boolean = false, onMov
         caravansKey,
         playerHandKey
     )
+
+    if (isBlitz) {
+        var timeOnTimer by rememberSaveable { mutableIntStateOf(game.playerCResources.deckSize * 2) }
+        game.specialGameOverCondition = { if (timeOnTimer <= 0f) -1 else 0 }
+
+        LaunchedEffect(Unit) {
+            while (isActive && timeOnTimer > 0 && !game.isOver()) {
+                timeOnTimer--
+                if (timeOnTimer < 10) {
+                    playYesBeep(activity)
+                }
+                delay(1000L)
+            }
+            if (timeOnTimer <= 0f) {
+                game.checkOnGameOver()
+            }
+        }
+
+        key(timeOnTimer) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Transparent),
+                contentAlignment = Alignment.BottomEnd
+            ) {
+                TextFallout(
+                    timeOnTimer.toString(),
+                    getTextColor(activity),
+                    getTextStrokeColor(activity),
+                    14.sp,
+                    Alignment.BottomEnd,
+                    Modifier
+                        .background(getTextBackgroundColor(activity))
+                        .padding(8.dp),
+                    TextAlign.Center
+                )
+            }
+        }
+    }
 }
 
 @SuppressLint("UnusedBoxWithConstraintsScope")

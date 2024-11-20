@@ -14,8 +14,8 @@ class ChallengeWinByPlayingJoker : Challenge {
     private var wasLastMoveJoker = false
     private var completedFlag = false
     override fun processMove(move: Challenge.Move, game: Game) {
-        wasLastMoveJoker = move.moveCode == 4 &&
-                (move.handCard?.let { it.rank == Rank.JOKER && !it.isSpecial() } ?: false)
+        val isCardJoker = move.handCard?.let { it.rank == Rank.JOKER && it.isOrdinary() } == true
+        wasLastMoveJoker = move.moveCode == 4 && isCardJoker
     }
 
     override fun processGameResult(game: Game) {
@@ -27,7 +27,7 @@ class ChallengeWinByPlayingJoker : Challenge {
     }
 
     override fun getName(activity: MainActivity): String {
-        return activity.getString(R.string.i_have_the_last_laugh)
+        return activity.getString(R.string.the_killing_joke)
     }
 
     override fun getDescription(activity: MainActivity): String {

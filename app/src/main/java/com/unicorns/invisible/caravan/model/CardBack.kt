@@ -30,23 +30,51 @@ enum class CardBack {
         ENCLAVE -> R.string.enclave_deck_name
     }
 
+    fun hasAltPlayable(): Boolean = this !in listOf(CHINESE, ENCLAVE, MADNESS)
+
+    fun getCardBackAsset(): String {
+        return when (this) {
+            STANDARD -> "FNV_Caravan_card_back_-_standard.webp"
+            TOPS -> "FNV_Caravan_card_back_-_Tops.webp"
+            ULTRA_LUXE -> "FNV_Caravan_card_back_-_Ultra-Luxe.webp"
+            GOMORRAH -> "FNV_Caravan_card_back_-_Gomorrah.webp"
+            LUCKY_38 -> "FNV_Caravan_card_back_-_Lucky_38.webp"
+            VAULT_21 -> "standard_alt.webp"
+            SIERRA_MADRE -> "FNV_Caravan_card_back_-_Sierra_Madre.webp"
+            CHINESE -> "ccp_back.webp"
+            ENCLAVE -> "FNV_Caravan_card_back_-_st_alt.webp" // TODO
+            MADNESS -> "madness_back.webp"
+        }
+    }
+
+    fun getCardBackAltAsset(): String {
+        return when (this) {
+            STANDARD -> "FNV_Caravan_card_back_-_st_alt.webp"
+            TOPS -> "tops_alt.webp"
+            ULTRA_LUXE -> "ultra_luxe_alt.webp"
+            GOMORRAH -> "gomorrah_alt.webp"
+            LUCKY_38 -> "lucky_38_alt.webp"
+            VAULT_21 -> "sm_alt.webp"
+            SIERRA_MADRE -> "sm_clean.webp"
+            CHINESE -> "ccp_alt_back.webp"
+            ENCLAVE -> "nuclear_back.webp"
+            MADNESS -> "ww_back.webp"
+        }
+    }
+
     fun getFilter(isAlt: Boolean): ColorFilter {
         if (!isAlt) {
             return ColorFilter.colorMatrix(ColorMatrix())
         }
         return when (this) {
-            STANDARD -> ColorFilter.colorMatrix(ColorMatrix().apply {
-                timesAssign(
-                    ColorMatrix(
-                        floatArrayOf(
-                            0f, 0f, 1f, 0f, 0f,
-                            0f, 1f, 0f, 0f, 0f,
-                            1f, 0f, 0f, 0f, 0f,
-                            0f, 0f, 0f, 1f, 0f
-                        )
-                    )
+            STANDARD -> ColorFilter.colorMatrix(ColorMatrix(
+                floatArrayOf(
+                    0f, 0f, 1f, 0f, 0f,
+                    0f, 1f, 0f, 0f, 0f,
+                    1f, 0f, 0f, 0f, 0f,
+                    0f, 0f, 0f, 1f, 0f
                 )
-            })
+            ))
 
             TOPS -> ColorFilter.colorMatrix(ColorMatrix().apply {
                 timesAssign(

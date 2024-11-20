@@ -19,27 +19,15 @@ val json = Json {
     ignoreUnknownKeys = true
 }
 
-fun loadLocalSave(activity: MainActivity): Save? {
-    val saveFile = getSaveFile(activity)
-    return try {
-        saveFile.bufferedReader().use {
-            val text = it.readText()
-            json.decodeFromString<Save>(text)
-        }
-    } catch (e: Exception) {
-        null
-    }
+// TODO: local save backup!!!
+
+private fun getLocalSaveFile(activity: MainActivity): File {
+    return activity.filesDir.resolve("saveMkII")
 }
 
-fun deleteLocalFile(activity: MainActivity) {
-    val saveFile = getSaveFile(activity)
-    if (saveFile.exists()) {
-        saveFile.delete()
-    }
-}
-
-private fun getSaveFile(activity: MainActivity): File {
-    return activity.filesDir.resolve("save")
+fun save(activity: MainActivity) {
+    // TODO: save locally and on cloud!!!
+    saveOnGD(activity)
 }
 
 fun saveOnGDAsync(activity: MainActivity): Deferred<Boolean> {

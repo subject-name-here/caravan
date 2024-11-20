@@ -28,6 +28,7 @@ import com.unicorns.invisible.caravan.model.primitives.Rank
 import com.unicorns.invisible.caravan.multiplayer.MoveResponse
 import com.unicorns.invisible.caravan.multiplayer.decodeMove
 import com.unicorns.invisible.caravan.utils.TextFallout
+import com.unicorns.invisible.caravan.utils.crvnUrl
 import com.unicorns.invisible.caravan.utils.getTextBackgroundColor
 import com.unicorns.invisible.caravan.utils.getTextColor
 import com.unicorns.invisible.caravan.utils.getTextStrokeColor
@@ -91,7 +92,7 @@ fun afterPlayerMove(
         updateView()
 
         sendRequest(
-            "$crvnUrl/crvn/move?room=$roomNumber" +
+            "${crvnUrl}/crvn/move?room=$roomNumber" +
                     "&is_creators_move=${isCreator.toPythonBool()}" +
                     "&symbol=$chosenSymbol" +
                     "&move_code=${move.moveCode}" +
@@ -123,7 +124,7 @@ fun pingForMove(
     updateView: () -> Unit,
     afterEnemyMove: (Boolean) -> Unit
 ) {
-    sendRequest("$crvnUrl/crvn/get_move?room=$room&is_creators_move=${isCreator.toPythonBool()}") { result ->
+    sendRequest("${crvnUrl}/crvn/get_move?room=$room&is_creators_move=${isCreator.toPythonBool()}") { result ->
         if (result.getString("body") == "-1") {
             CoroutineScope(Dispatchers.Unconfined).launch {
                 delay(1900L)

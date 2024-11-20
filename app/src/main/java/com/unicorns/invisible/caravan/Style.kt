@@ -86,7 +86,7 @@ import kotlin.random.Random
 
 
 enum class Style(val styleNameId: Int, val price: Int) {
-    DESERT(R.string.style_desert, 0),
+    DESERT(R.string.style_desert, 500),
     ALASKA_FRONTIER(R.string.style_alaska, 500),
     PIP_BOY(R.string.style_pip_boy, 0),
     PIP_GIRL(R.string.style_pip_girl, 2000),
@@ -96,12 +96,13 @@ enum class Style(val styleNameId: Int, val price: Int) {
     MADRE_ROJA(R.string.style_madre_roja, 3000),
     VAULT_21(R.string.style_vault_21, 2100),
     VAULT_22(R.string.style_vault_22, 2200),
-    ENCLAVE(R.string.style_enclave, 1);
+    ENCLAVE(R.string.style_enclave, 1776);
 }
 
 
 @Composable
 fun Modifier.getTableBackground(style: Style): Modifier {
+    // TODO: maybe, remove tables that are not wood??
     return paint(
         painterResource(
             id = when (style) {
@@ -898,7 +899,7 @@ fun BoxWithConstraintsScope.StylePicture(
                         LaunchedEffect(Unit) {
                             playFanfares(activity)
                             activity.save?.let {
-                                it.caps += 777
+                                it.capsInHand += 777
                                 saveOnGD(activity)
                             }
                             delay(25000L)

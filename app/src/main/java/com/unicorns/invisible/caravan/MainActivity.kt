@@ -27,7 +27,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -40,7 +39,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.SpanStyle
@@ -54,18 +52,13 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withLink
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.MutableLiveData
-import com.unicorns.invisible.caravan.model.CardBack
+import com.sebaslogen.resaca.rememberScoped
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.challenge.Challenge
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.CustomDeck
 import com.unicorns.invisible.caravan.save.Save
-import com.unicorns.invisible.caravan.save.deleteLocalFile
-import com.unicorns.invisible.caravan.save.loadFromGD
-import com.unicorns.invisible.caravan.save.loadLocalSave
 import com.unicorns.invisible.caravan.save.saveOnGD
-import com.unicorns.invisible.caravan.save.saveOnGDAsync
 import com.unicorns.invisible.caravan.utils.SliderCustom
 import com.unicorns.invisible.caravan.utils.TextFallout
 import com.unicorns.invisible.caravan.utils.clickableCancel
@@ -93,46 +86,22 @@ import com.unicorns.invisible.caravan.utils.setAmbientVolume
 import com.unicorns.invisible.caravan.utils.setRadioVolume
 import com.unicorns.invisible.caravan.utils.startRadio
 import com.unicorns.invisible.caravan.utils.stopSoundEffects
-import com.unicorns.invisible.caravan.utils.updateSoldCards
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.chromium.net.CronetEngine
-import java.util.UUID
 
-
-const val crvnUrl = "http://crvnserver.onrender.com"
-
-var saveGlobal: Save? = null
-
-var userId = ""
-
-private var readyFlag = MutableLiveData(false)
-
-var isSoundEffectsReduced = false
-    set(value) {
-        field = value
-        isSoundEffectsReducedData.value = value
-    }
-private var isSoundEffectsReducedData = MutableLiveData(false)
 
 @Suppress("MoveLambdaOutsideParentheses")
 class MainActivity : SaveDataActivity() {
-    val save: Save?
-        get() = saveGlobal
-
-    var goBack: (() -> Unit)? = null
-
-    var styleId: Style = Style.PIP_BOY
-
-    fun checkIfCustomDeckCanBeUsedInGame(playerCResources: CResources): Boolean {
-        return playerCResources.deckSize >= MIN_DECK_SIZE && playerCResources.numOfNumbers >= MIN_NUM_OF_NUMBERS
-    }
+    var save = Save(isUsable = false) // TODO: this wil reinit every config change
+    val styleId
+        get() = Style.entries.getOrElse(save.styleId) { Style.PIP_BOY }
 
     override fun onPause() {
         super.onPause()
-        pauseActivitySound()
+        pauseActivitySound(save.playRadioInBack)
         stopSoundEffects()
     }
 
@@ -143,16 +112,11 @@ class MainActivity : SaveDataActivity() {
 
     override fun onSnapshotClientInitialized() {
         CoroutineScope(Dispatchers.Default).launch {
-            val savedOnGDData = fetchDataFromDrive()
-            if (savedOnGDData == null || savedOnGDData.isEmpty()) {
-                saveGlobal = loadLocalSave(this@MainActivity) ?: Save()
-                if (saveOnGDAsync(this@MainActivity).await()) {
-                    deleteLocalFile(this@MainActivity)
-                }
-            }
-            loadFromGD(this@MainActivity)
-            readyFlag.postValue(true)
-            styleId = Style.entries[save!!.styleId]
+
+            // TODO: init save
+
+            save = Save(isUsable = true)
+
             startRadio(this@MainActivity)
         }
     }
@@ -160,14 +124,11 @@ class MainActivity : SaveDataActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        if (userId == "") {
-            userId = UUID.randomUUID().toString()
-        }
         if (cronetEngine == null) {
             try {
                 val myBuilder = CronetEngine.Builder(this)
                 cronetEngine = myBuilder.build()
-            } catch (e: Exception) {
+            } catch (_: Exception) {
                 Toast.makeText(
                     this,
                     "Failed to init CronetEngine. Multiplayer is unavailable.",
@@ -192,8 +153,6 @@ class MainActivity : SaveDataActivity() {
             R.string.intro_tip_13,
             R.string.intro_tip_14,
             R.string.intro_tip_15,
-            R.string.intro_tip_16,
-            R.string.intro_tip_17,
             R.string.intro_tip_vault,
             R.string.intro_tip_desert,
             R.string.intro_tip_arctic,
@@ -206,86 +165,78 @@ class MainActivity : SaveDataActivity() {
         ).random()
 
         setContent {
-            val k by readyFlag.observeAsState()
-            var isIntroScreen by rememberSaveable { mutableStateOf(k != true) }
-
             @Composable
             fun getColors(): Triple<Color, Color, Color> {
                 return Triple(
-                    (if (k == true) getTextColor(this) else colorResource(R.color.colorText)),
-                    (if (k == true) getBackgroundColor(this) else colorResource(R.color.colorBack)),
-                    (if (k == true) getTextStrokeColor(this) else colorResource(R.color.colorTextStroke)),
+                    getTextColor(this),
+                    getBackgroundColor(this),
+                    getTextStrokeColor(this),
                 )
             }
-
-            styleId = Style.entries[save?.styleId ?: 1]
             val (textColor, backgroundColor, strokeColor) = getColors()
-            val modifier = if (k == true) {
-                Modifier
-                    .fillMaxSize()
-                    .background(backgroundColor)
-                    .clickableOk(this) {
-                        if (readyFlag.value == true) {
-                            isIntroScreen = false
-                        }
-                    }
-            } else {
-                Modifier
-                    .fillMaxSize()
-                    .background(backgroundColor)
-            }
+            var isIntroScreen by rememberScoped { mutableStateOf(true) }
+
             if (isIntroScreen) {
                 Box(
-                    modifier,
+                    Modifier
+                        .fillMaxSize()
+                        .background(backgroundColor)
+                        .clickableOk(this) {
+                            if (save.isUsable) {
+                                isIntroScreen = false
+                            }
+                        },
                     contentAlignment = Alignment.Center
                 ) {
-                    Column(
-                        Modifier
-                            .fillMaxSize()
-                            .padding(4.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center
-                    ) {
-                        if (k == true) {
+                    key(save.isUsable) {
+                        Column(
+                            Modifier
+                                .fillMaxSize()
+                                .padding(4.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center
+                        ) {
+                            if (save.isUsable) {
+                                TextFallout(
+                                    "CARAVAN",
+                                    textColor,
+                                    strokeColor,
+                                    40.sp,
+                                    Alignment.Center,
+                                    Modifier.padding(4.dp),
+                                    TextAlign.Center
+                                )
+                                TextFallout(
+                                    stringResource(R.string.tap_to_play),
+                                    textColor,
+                                    strokeColor,
+                                    24.sp,
+                                    Alignment.Center,
+                                    Modifier.padding(4.dp),
+                                    TextAlign.Center
+                                )
+                                Spacer(Modifier.height(8.dp))
+                            } else {
+                                TextFallout(
+                                    "PLEASE\nSTAND BY",
+                                    textColor,
+                                    strokeColor,
+                                    32.sp,
+                                    Alignment.Center,
+                                    Modifier.padding(4.dp),
+                                    TextAlign.Center
+                                )
+                            }
                             TextFallout(
-                                "CARAVAN",
+                                getString(advice),
                                 textColor,
                                 strokeColor,
-                                40.sp,
+                                16.sp,
                                 Alignment.Center,
-                                Modifier.padding(4.dp),
-                                TextAlign.Center
-                            )
-                            TextFallout(
-                                stringResource(R.string.tap_to_play),
-                                textColor,
-                                strokeColor,
-                                24.sp,
-                                Alignment.Center,
-                                Modifier.padding(4.dp),
-                                TextAlign.Center
-                            )
-                            Spacer(Modifier.height(8.dp))
-                        } else {
-                            TextFallout(
-                                "PLEASE\nSTAND BY",
-                                textColor,
-                                strokeColor,
-                                32.sp,
-                                Alignment.Center,
-                                Modifier.padding(4.dp),
+                                Modifier.padding(vertical = 4.dp, horizontal = 12.dp),
                                 TextAlign.Center
                             )
                         }
-                        TextFallout(
-                            getString(advice),
-                            textColor,
-                            strokeColor,
-                            16.sp,
-                            Alignment.Center,
-                            Modifier.padding(vertical = 4.dp, horizontal = 12.dp),
-                            TextAlign.Center
-                        )
                     }
                 }
             } else {
@@ -298,16 +249,12 @@ class MainActivity : SaveDataActivity() {
     fun Screen() {
         var deckSelection by rememberSaveable { mutableStateOf(false) }
         var showPvP by rememberSaveable { mutableStateOf(false) }
-        var showHouseBlitz by rememberSaveable { mutableStateOf(false) }
-        var showHouseTower by rememberSaveable { mutableStateOf(false) }
-        var showWildWasteland by rememberSaveable { mutableStateOf(false) }
-        var showStoryMode by rememberSaveable { mutableStateOf(false) }
         var showAbout by rememberSaveable { mutableStateOf(false) }
         var showGameStats by rememberSaveable { mutableStateOf(false) }
-        var showTutorial by rememberSaveable { mutableStateOf(false) }
         var showRules by rememberSaveable { mutableStateOf(false) }
         var showSettings by rememberSaveable { mutableStateOf(false) }
         var showDailys by rememberSaveable { mutableStateOf(false) }
+        var showMarket by rememberSaveable { mutableStateOf(false) }
 
         var showVision by rememberSaveable { mutableStateOf(false) }
         var styleIdForTop by rememberSaveable { mutableStateOf(styleId) }
@@ -315,21 +262,17 @@ class MainActivity : SaveDataActivity() {
         var showSoundSettings by remember { mutableStateOf(false) }
         var showSoundSettings2 by remember { mutableStateOf(false) }
 
-        var selectedDeck by rememberSaveable {
-            mutableStateOf(
-                save?.selectedDeck ?: (CardBack.STANDARD to false)
-            )
-        }
-
         var showAlertDialog by remember { mutableStateOf(false) }
         var showAlertDialog2 by remember { mutableStateOf(false) }
         var alertDialogHeader by remember { mutableStateOf("") }
         var alertDialogMessage by remember { mutableStateOf("") }
+        var alertGoBack = rememberScoped { {} to false }
 
-        fun showAlertDialog(header: String, message: String) {
+        fun showAlertDialog(header: String, message: String, goBack: (() -> Unit)? = null) {
             showAlertDialog = true
             alertDialogHeader = header
             alertDialogMessage = message
+            alertGoBack = if (goBack == null) ({} to false) else (goBack to true)
         }
 
         fun hideAlertDialog() {
@@ -361,7 +304,7 @@ class MainActivity : SaveDataActivity() {
                         )
                     },
                     dismissButton = {
-                        if (goBack != null) {
+                        if (alertGoBack.second) {
                             TextFallout(
                                 stringResource(R.string.back_to_menu),
                                 getDialogBackground(this),
@@ -369,7 +312,7 @@ class MainActivity : SaveDataActivity() {
                                 Modifier
                                     .background(getDialogTextColor(this))
                                     .clickableCancel(this) {
-                                        hideAlertDialog(); goBack?.invoke(); goBack = null
+                                        hideAlertDialog()
                                     }
                                     .padding(4.dp),
                                 TextAlign.Center
@@ -441,13 +384,9 @@ class MainActivity : SaveDataActivity() {
                         )
                     },
                     text = {
-                        var radioVolume by remember { mutableFloatStateOf(save?.radioVolume ?: 1f) }
-                        var soundVolume by remember { mutableFloatStateOf(save?.soundVolume ?: 1f) }
-                        var ambientVolume by remember {
-                            mutableFloatStateOf(
-                                save?.ambientVolume ?: 1f
-                            )
-                        }
+                        var radioVolume by remember { mutableFloatStateOf(save.radioVolume) }
+                        var soundVolume by remember { mutableFloatStateOf(save.soundVolume) }
+                        var ambientVolume by remember { mutableFloatStateOf(save.ambientVolume) }
                         Column {
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 TextFallout(
@@ -465,7 +404,7 @@ class MainActivity : SaveDataActivity() {
                                     { radioVolume },
                                     {
                                         radioVolume = it
-                                        save?.radioVolume = it
+                                        save.radioVolume = it
                                         setRadioVolume(it)
                                     }
                                 )
@@ -482,7 +421,8 @@ class MainActivity : SaveDataActivity() {
                                 )
 
                                 SliderCustom(this@MainActivity, { ambientVolume }, {
-                                    ambientVolume = it; save?.ambientVolume = it
+                                    ambientVolume = it
+                                    save.ambientVolume = it
                                     setAmbientVolume(it / 2)
                                 })
                             }
@@ -498,7 +438,8 @@ class MainActivity : SaveDataActivity() {
                                 )
 
                                 SliderCustom(this@MainActivity, { soundVolume }, {
-                                    soundVolume = it; save?.soundVolume = it
+                                    soundVolume = it
+                                    save.soundVolume = it
                                 }, { playNotificationSound(this@MainActivity) {} })
                             }
                         }
@@ -513,7 +454,6 @@ class MainActivity : SaveDataActivity() {
         Scaffold(
             topBar = {
                 var isPaused by remember { mutableStateOf(false) }
-                val soundReduced by isSoundEffectsReducedData.observeAsState()
                 key(styleIdForTop) {
                     Row(
                         Modifier
@@ -597,89 +537,59 @@ class MainActivity : SaveDataActivity() {
             Box(Modifier.padding(innerPadding)) {
                 when {
                     showRules -> {
-                        ShowRules(activity = this@MainActivity) { showRules = false }
-                    }
-
-                    showTutorial -> {
-                        Tutorial(activity = this@MainActivity) { showTutorial = false }
+                        ShowRules(this@MainActivity) { showRules = false }
                     }
 
                     deckSelection -> {
-                        DeckSelection(
-                            this@MainActivity,
-                            { selectedDeck },
-                            { back, isAlt -> selectedDeck = back to isAlt }
-                        ) { deckSelection = false }
+                        DeckSelection(this@MainActivity) { deckSelection = false }
                     }
 
                     showAbout -> {
-                        ShowAbout(activity = this@MainActivity) { showAbout = false }
-                    }
-
-                    showHouseBlitz -> {
-                        BlitzScreen(
-                            activity = this@MainActivity,
-                            selectedDeck = { selectedDeck },
-                            ::showAlertDialog
-                        ) { showHouseBlitz = false }
-                    }
-
-                    showHouseTower -> {
-                        if (!checkIfCustomDeckCanBeUsedInGame(CResources(save?.getCustomDeckCopy() ?: CustomDeck()))) {
-                            showAlertDialog(
-                                stringResource(R.string.custom_deck_is_too_small),
-                                stringResource(R.string.custom_deck_is_too_small_message)
-                            )
-                            showHouseTower = false
-                        } else {
-                            TowerScreen(
-                                activity = this@MainActivity,
-                                ::showAlertDialog
-                            ) { showHouseTower = false }
-                        }
+                        ShowAbout(this@MainActivity) { showAbout = false }
                     }
 
                     showGameStats -> {
                         ShowPvE(
                             activity = this@MainActivity,
-                            selectedDeck = { selectedDeck },
                             ::showAlertDialog
                         ) { showGameStats = false }
                     }
 
                     showPvP -> {
-                        if (!checkIfCustomDeckCanBeUsedInGame(CResources(save?.getCustomDeckCopy() ?: CustomDeck()))) {
+                        if (!checkIfCustomDeckCanBeUsedInGame(CResources(save.getCustomDeckCopy()))) {
                             showAlertDialog(
                                 stringResource(R.string.custom_deck_is_too_small),
                                 stringResource(R.string.custom_deck_is_too_small_message)
                             )
                             showPvP = false
+                        } else if (cronetEngine == null) {
+                            Toast.makeText(
+                                this@MainActivity,
+                                "Failed to init CronetEngine. Multiplayer is unavailable.",
+                                Toast.LENGTH_LONG
+                            ).show()
+                            showPvP = false
                         } else {
                             ShowPvP(
-                                activity = this@MainActivity,
-                                selectedDeck = { selectedDeck },
-                                ::showAlertDialog,
+                                activity = this@MainActivity, ::showAlertDialog,
                             ) { showPvP = false }
                         }
                     }
 
                     showVision -> {
                         ShowStyles(activity = this@MainActivity, { styleId }, {
-                            styleId = Style.entries[it]
                             styleIdForTop = styleId
-                            save?.let { s ->
-                                s.styleId = styleId.ordinal
-                                saveOnGD(this@MainActivity)
-                            }
-                        }, ::showAlertDialog) { showVision = false }
+                            save.styleId = styleId.ordinal
+                            saveOnGD(this@MainActivity)
+                        }) { showVision = false }
                     }
 
                     showSettings -> {
                         ShowTrueSettings(
                             this@MainActivity,
-                            { save?.animationSpeed ?: AnimationSpeed.NORMAL },
+                            { save.animationSpeed },
                             {
-                                save?.animationSpeed = it
+                                save.animationSpeed = it
                                 saveOnGD(this@MainActivity)
                             }
                         ) { showSettings = false }
@@ -689,29 +599,9 @@ class MainActivity : SaveDataActivity() {
                         ShowDailys(this@MainActivity) { showDailys = false }
                     }
 
-                    showStoryMode -> {
-                        if (!checkIfCustomDeckCanBeUsedInGame(CResources(save?.getCustomDeckCopy() ?: CustomDeck()))) {
-                            showAlertDialog(
-                                stringResource(R.string.custom_deck_is_too_small),
-                                stringResource(R.string.custom_deck_is_too_small_message)
-                            )
-                            showStoryMode = false
-                        } else {
-                            ShowStoryList(this@MainActivity, ::showAlertDialog) {
-                                showStoryMode = false
-                            }
-                        }
-                    }
-
-                    showWildWasteland -> {
-                        ShowWildWasteland(this@MainActivity, ::showAlertDialog) {
-                            showWildWasteland = false
-                        }
-                    }
-
                     else -> {
                         LaunchedEffect(Unit) {
-                            save?.updateChallenges()
+                            save.updateChallenges()
                         }
 
                         BoxWithConstraints {
@@ -722,16 +612,12 @@ class MainActivity : SaveDataActivity() {
                                 { deckSelection = true },
                                 { showAbout = true },
                                 { showGameStats = true },
-                                { showHouseBlitz = true },
-                                { showHouseTower = true },
                                 { showPvP = true },
-                                { showTutorial = true },
                                 { showRules = true },
                                 { showVision = true },
                                 { showSettings = true },
                                 { showDailys = true },
-                                { showStoryMode = true },
-                                { showWildWasteland = true },
+                                { showMarket = true }
                             )
                         }
                     }
@@ -746,16 +632,12 @@ class MainActivity : SaveDataActivity() {
         showDeckSelection: () -> Unit,
         showAbout: () -> Unit,
         showPvE: () -> Unit,
-        showHouseBlitz: () -> Unit,
-        showHouseTower: () -> Unit,
         showPvP: () -> Unit,
-        showTutorial: () -> Unit,
         showRules: () -> Unit,
         showVision: () -> Unit,
         showSettings: () -> Unit,
         showDailys: () -> Unit,
-        showStory: () -> Unit,
-        showWildWasteland: () -> Unit,
+        showMarket: () -> Unit,
     ) {
         Box(
             Modifier
@@ -919,9 +801,7 @@ class MainActivity : SaveDataActivity() {
                                 .padding(horizontal = 4.dp)
                                 .background(getTextBackgroundColor(this@MainActivity))
                                 .clickableOk(this@MainActivity) {
-                                    if (save != null) {
-                                        showVision()
-                                    }
+                                    showVision()
                                 }
                                 .padding(4.dp),
                             TextAlign.Center
@@ -1006,27 +886,17 @@ class MainActivity : SaveDataActivity() {
                             )
                         }
                         Spacer(Modifier.height(32.dp))
-                        MenuItem(stringResource(R.string.menu_story), showStory)
-                        Spacer(modifier = Modifier.height(16.dp))
-                        MenuItem(stringResource(R.string.lucky_38_tower), showHouseTower)
-                        Spacer(modifier = Modifier.height(16.dp))
                         MenuItem(stringResource(R.string.menu_pve), showPvE)
                         Spacer(modifier = Modifier.height(16.dp))
-                        if (save?.secretMode == true) {
-                            MenuItem(stringResource(R.string.menu_wild_wastealnd), showWildWasteland)
-                            Spacer(modifier = Modifier.height(16.dp))
-                        }
-                        MenuItem(stringResource(R.string.lucky_38_blitz), showHouseBlitz)
-                        Spacer(modifier = Modifier.height(16.dp))
                         MenuItem(stringResource(R.string.menu_pvp), showPvP)
-                        Spacer(modifier = Modifier.height(16.dp))
-                        MenuItem(stringResource(R.string.menu_tutorial), showTutorial)
                         Spacer(modifier = Modifier.height(16.dp))
                         MenuItem(stringResource(R.string.menu_rules), showRules)
                         Spacer(modifier = Modifier.height(16.dp))
                         MenuItem(stringResource(R.string.menu_deck), showDeckSelection)
                         Spacer(modifier = Modifier.height(16.dp))
                         MenuItem(stringResource(R.string.missions), showDailys)
+                        Spacer(modifier = Modifier.height(16.dp))
+                        MenuItem(stringResource(R.string.market), showMarket)
                         Spacer(modifier = Modifier.height(32.dp))
                     }
                 }
@@ -1035,22 +905,14 @@ class MainActivity : SaveDataActivity() {
     }
 
     fun processChallengesMove(move: Challenge.Move, game: Game) {
-        save?.let {
-            it.challenges.forEach { challenge ->
-                challenge.processMove(move, game)
-            }
+        save.challenges.forEach { challenge ->
+            challenge.processMove(move, game)
         }
     }
     fun processChallengesGameOver(game: Game) {
-        save?.let {
-            it.challenges.forEach { challenge ->
-                challenge.processGameResult(game)
-            }
+        save.challenges.forEach { challenge ->
+            challenge.processGameResult(game)
         }
-    }
-
-    fun getCustomDeck(): CResources {
-        return CResources(save?.getCustomDeckCopy() ?: CustomDeck(CardBack.STANDARD, false))
     }
 
     companion object {

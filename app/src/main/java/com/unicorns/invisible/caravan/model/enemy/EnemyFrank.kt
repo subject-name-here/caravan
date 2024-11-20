@@ -16,9 +16,9 @@ import kotlin.math.max
 @Serializable
 data object EnemyFrank : Enemy() {
     override fun createDeck(): CResources = CResources(CustomDeck(CardBack.STANDARD, false).apply {
-        add(Card(Rank.ACE, Suit.HEARTS, CardBack.WILD_WASTELAND, true))
-        add(Card(Rank.ACE, Suit.CLUBS, CardBack.WILD_WASTELAND, true))
-        add(Card(Rank.ACE, Suit.DIAMONDS, CardBack.WILD_WASTELAND, true))
+        add(Card(Rank.ACE, Suit.HEARTS, CardBack.ENCLAVE, true))
+        add(Card(Rank.ACE, Suit.CLUBS, CardBack.ENCLAVE, true))
+        add(Card(Rank.ACE, Suit.DIAMONDS, CardBack.ENCLAVE, true))
     })
     override fun getRewardBack() = null
 
@@ -28,7 +28,7 @@ data object EnemyFrank : Enemy() {
         val hand = game.enemyCResources.hand
 
         if (game.isInitStage()) {
-            val card = hand.filter { !it.isSpecial() }.filter { !it.isFace() }.minBy { it.rank.value }
+            val card = hand.filter { it.isOrdinary() }.filter { !it.isFace() }.minBy { it.rank.value }
             val caravan = game.enemyCaravans.filter { it.isEmpty() }.random()
             caravan.putCardOnTop(game.enemyCResources.removeFromHand(hand.indexOf(card)))
             return

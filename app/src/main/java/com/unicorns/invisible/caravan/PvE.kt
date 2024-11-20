@@ -1,8 +1,10 @@
 package com.unicorns.invisible.caravan
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -13,14 +15,21 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.paint
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -39,11 +48,10 @@ import com.unicorns.invisible.caravan.model.enemy.EnemyManInTheMirror
 import com.unicorns.invisible.caravan.model.enemy.EnemyMedium
 import com.unicorns.invisible.caravan.model.enemy.EnemyNash
 import com.unicorns.invisible.caravan.model.enemy.EnemyNoBark
-import com.unicorns.invisible.caravan.model.enemy.EnemyOliver
 import com.unicorns.invisible.caravan.model.enemy.EnemyRingo
 import com.unicorns.invisible.caravan.model.enemy.EnemySecuritron38
+import com.unicorns.invisible.caravan.model.enemy.EnemySignificantOther
 import com.unicorns.invisible.caravan.model.enemy.EnemySix
-import com.unicorns.invisible.caravan.model.enemy.EnemySwank
 import com.unicorns.invisible.caravan.model.enemy.EnemyYesMan
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.Card
@@ -54,7 +62,10 @@ import com.unicorns.invisible.caravan.save.saveOnGD
 import com.unicorns.invisible.caravan.utils.CheckboxCustom
 import com.unicorns.invisible.caravan.utils.MenuItemOpen
 import com.unicorns.invisible.caravan.utils.TextFallout
+import com.unicorns.invisible.caravan.utils.clickableCancel
 import com.unicorns.invisible.caravan.utils.getBackgroundColor
+import com.unicorns.invisible.caravan.utils.getDialogBackground
+import com.unicorns.invisible.caravan.utils.getDialogTextColor
 import com.unicorns.invisible.caravan.utils.getDividerColor
 import com.unicorns.invisible.caravan.utils.getKnobColor
 import com.unicorns.invisible.caravan.utils.getTextBackgroundColor
@@ -71,13 +82,13 @@ import com.unicorns.invisible.caravan.utils.playWWSound
 import com.unicorns.invisible.caravan.utils.playWinSound
 import com.unicorns.invisible.caravan.utils.scrollbar
 import com.unicorns.invisible.caravan.utils.stopAmbient
+import kotlinx.coroutines.delay
 import java.util.Locale
 
 
 @Composable
 fun ShowPvE(
     activity: MainActivity,
-    selectedDeck: () -> Pair<CardBack, Boolean>,
     showAlertDialog: (String, String) -> Unit,
     goBack: () -> Unit
 ) {
@@ -93,22 +104,10 @@ fun ShowPvE(
     var showGameNash by rememberSaveable { mutableStateOf(false) }
     var showGameNoBark by rememberSaveable { mutableStateOf(false) }
 
-    var showGameRingo by rememberSaveable { mutableStateOf(false) }
-    var showGameYesMan by rememberSaveable { mutableStateOf(false) }
-    var showGameKing by rememberSaveable { mutableStateOf(false) }
-    var showGameOliver by rememberSaveable { mutableStateOf(false) }
-    var showGameCaesar by rememberSaveable { mutableStateOf(false) }
-
-    var checkedCustomDeck by rememberSaveable {
-        mutableStateOf(activity.save?.useCustomDeck == true)
-    }
-
-    fun getPlayerDeck(): CResources {
-        return if (checkedCustomDeck)
-            activity.getCustomDeck()
-        else
-            CResources(selectedDeck().first, selectedDeck().second)
-    }
+    var showGameSnuffles by rememberSaveable { mutableStateOf(false) }
+    var showGameSignificantOther by rememberSaveable { mutableStateOf(false) }
+    var showGamePriestCardinal by rememberSaveable { mutableStateOf(false) }
+    var showGameTheManInTheMirror by rememberSaveable { mutableStateOf(false) }
 
     if (showGameEasy) {
         StartGame(
@@ -601,8 +600,8 @@ fun StartGame(
                     save.caps += 30
                     message += activity.getString(R.string.you_have_earned_caps, 30.toString())
                 } else if (rewardBack == CardBack.DECK_13 && enemy.isAlt()) {
-                    if (save.availableDecksAlt[rewardBack] != true) {
-                        save.availableDecksAlt[rewardBack] = true
+                    if (save.ownedDecksAlt[rewardBack] != true) {
+                        save.ownedDecksAlt[rewardBack] = true
                         message += activity.getString(
                             R.string.you_have_unlocked_deck,
                             activity.getString(rewardBack.getMadnessDeckName())
@@ -611,8 +610,8 @@ fun StartGame(
                     message += winCard(activity, save, rewardBack, 3, isAlt = true, isCustom)
                 } else {
                     if (!enemy.isAlt()) {
-                        if (save.availableDecks[rewardBack] != true) {
-                            save.availableDecks[rewardBack] = true
+                        if (save.ownedDecks[rewardBack] != true) {
+                            save.ownedDecks[rewardBack] = true
                             message += activity.getString(
                                 R.string.you_have_unlocked_deck,
                                 activity.getString(rewardBack.getDeckName())
@@ -620,8 +619,8 @@ fun StartGame(
                         }
                         message += winCard(activity, save, rewardBack, 3, isAlt = false, isCustom)
                     } else {
-                        if (save.availableDecksAlt[rewardBack] != true) {
-                            save.availableDecksAlt[rewardBack] = true
+                        if (save.ownedDecksAlt[rewardBack] != true) {
+                            save.ownedDecksAlt[rewardBack] = true
                             message += activity.getString(
                                 R.string.you_have_unlocked_deck_alt,
                                 activity.getString(rewardBack.getDeckName())
@@ -673,6 +672,169 @@ fun StartGame(
             showAlertDialog(activity.getString(R.string.check_back_to_menu_ulysses), "")
         } else {
             showAlertDialog(activity.getString(R.string.check_back_to_menu), "")
+        }
+    }
+}
+
+
+// TODO: at least end when it's all 26
+@Composable
+fun StartSignificantOtherBattle(
+    activity: MainActivity,
+    showAlertDialog: (String, String) -> Unit,
+    goBack: () -> Unit,
+) {
+    var dialogText by rememberScoped { mutableIntStateOf(-1) }
+    var gameOver by rememberScoped { mutableIntStateOf(0) }
+    if (dialogText != -1) {
+        AlertDialog(
+            modifier = Modifier.border(width = 4.dp, color = getTextColor(activity)),
+            onDismissRequest = {},
+            confirmButton = {
+                TextFallout(
+                    "OK",
+                    getDialogTextColor(activity),
+                    getDialogTextColor(activity),
+                    18.sp,
+                    Alignment.CenterEnd,
+                    Modifier.clickableCancel(activity) {
+                        if (dialogText in (4..5)) {
+                            dialogText++
+                        } else {
+                            dialogText = -1
+                        }
+                    },
+                    TextAlign.End
+                )
+            },
+            title = {
+                TextFallout(
+                    stringResource(R.string.so_header),
+                    getDialogTextColor(activity),
+                    getDialogTextColor(activity),
+                    24.sp,
+                    Alignment.CenterStart,
+                    Modifier,
+                    TextAlign.Start
+                )
+            },
+            text = {
+                TextFallout(
+                    when (dialogText) {
+                        0 -> stringResource(R.string.so_0)
+                        1 -> stringResource(R.string.so_1)
+                        2 -> stringResource(R.string.so_2)
+                        3 -> stringResource(R.string.so_3)
+                        4 -> stringResource(R.string.so_4)
+                        5 -> stringResource(R.string.so_5)
+                        6 -> stringResource(R.string.so_6)
+                        7 -> stringResource(R.string.so_7)
+                        8 -> stringResource(R.string.so_8)
+                        else -> ""
+                    },
+                    getDialogTextColor(activity),
+                    getDialogTextColor(activity),
+                    18.sp,
+                    Alignment.CenterStart,
+                    Modifier,
+                    TextAlign.Start
+                )
+            },
+            containerColor = getDialogBackground(activity),
+            textContentColor = getDialogTextColor(activity),
+            shape = RectangleShape,
+        )
+    }
+
+    val selectedDeck = activity.save?.selectedDeck ?: (CardBack.STANDARD to false)
+    val deck = CustomDeck(selectedDeck.first, selectedDeck.second)
+    val playerCResources = CResources(deck)
+    val game = rememberScoped {
+        Game(
+            playerCResources,
+            EnemySignificantOther(deck.copy()) { dialogText = it }
+        ).also {
+            it.startGame()
+        }
+    }
+
+    game.also {
+        it.onWin = {
+            playWinSound(activity)
+            gameOver = 1
+        }
+        it.onLose = {
+            playLoseSound(activity)
+            gameOver = -1
+        }
+        it.jokerPlayedSound = { playJokerSounds(activity) }
+    }
+
+    activity.goBack = { gameOver = -2 }
+
+    LaunchedEffect(Unit) {
+        (game.enemy as EnemySignificantOther).speaker(0)
+    }
+
+    ShowGame(activity, game) {
+        if (game.isOver()) {
+            stopAmbient(); activity.goBack = null; goBack()
+            return@ShowGame
+        }
+        showAlertDialog(
+            activity.getString(R.string.so_back_header),
+            activity.getString(R.string.so_back_body)
+        )
+    }
+
+    val key by rememberScoped { mutableIntStateOf((0..99).random()) }
+    when (gameOver) {
+        1 -> {
+            if (key == 0) {
+                Box(
+                    Modifier
+                        .fillMaxSize()
+                        .paint(
+                            painterResource(R.drawable.so_lose),
+                            contentScale = ContentScale.FillBounds
+                        )) {}
+            }
+            LaunchedEffect(Unit) {
+                delay(1000L)
+                gameOver = 0
+                (game.enemy as EnemySignificantOther).speaker(7)
+            }
+        }
+        -1 -> {
+            val hasDiedInTheSameDay = game.playerCResources.hand.isEmpty() && game.enemyCResources.hand.isEmpty()
+            val back = if (hasDiedInTheSameDay) R.drawable.so_win else R.drawable.so_lose
+            if (key == 0) {
+                Box(
+                    Modifier
+                        .fillMaxSize()
+                        .paint(painterResource(back), contentScale = ContentScale.FillBounds)) {}
+            }
+            LaunchedEffect(Unit) {
+                delay(1000L)
+                gameOver = 0
+                (game.enemy as EnemySignificantOther).speaker(if (hasDiedInTheSameDay) 4 else 8)
+            }
+        }
+        -2 -> {
+            if (key == 0) {
+                Box(
+                    Modifier
+                        .fillMaxSize()
+                        .paint(
+                            painterResource(R.drawable.so_lose),
+                            contentScale = ContentScale.FillBounds
+                        )) {}
+            }
+            LaunchedEffect(Unit) {
+                delay(1000L)
+                gameOver = 0
+                stopAmbient(); goBack(); activity.goBack = null
+            }
         }
     }
 }

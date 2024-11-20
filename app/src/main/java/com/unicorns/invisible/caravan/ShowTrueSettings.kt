@@ -59,12 +59,14 @@ fun ShowTrueSettings(
 ) {
     val mainState = rememberLazyListState()
     var speed by remember { mutableStateOf(getSpeed()) }
-    var intro by remember { mutableStateOf(activity.save?.useCaravanIntro ?: true) }
+    var intro by remember { mutableStateOf(activity.save?.useCaravanIntro != false) }
+    var playInBack by remember { mutableStateOf(activity.save?.playRadioInBack == true) }
 
     MenuItemOpen(activity, stringResource(R.string.menu_settings), stringResource(R.string.save), {
         setSpeed(speed)
         activity.save?.let {
             it.useCaravanIntro = intro
+            it.playRadioInBack = playInBack
             saveOnGD(activity)
         }
         goBack()
@@ -179,13 +181,39 @@ fun ShowTrueSettings(
                     }
                     Spacer(Modifier.height(16.dp))
                     Row(
+                        Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        TextFallout(
+                            stringResource(R.string.non_stop_radio),
+                            getTextColor(activity),
+                            getTextStrokeColor(activity),
+                            18.sp,
+                            Alignment.CenterStart,
+                            Modifier.fillMaxWidth(0.5f),
+                            TextAlign.Start
+                        )
+                        Spacer(modifier = Modifier.width(16.dp))
+                        Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                            SwitchCustomUsualBackground(activity, { playInBack }) {
+                                playInBack = !playInBack
+                                if (playInBack) {
+                                    playClickSound(activity)
+                                } else {
+                                    playCloseSound(activity)
+                                }
+                            }
+                        }
+                    }
+                    Spacer(Modifier.height(16.dp))
+                    Row(
                         modifier = Modifier.height(96.dp),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.Center
                     ) {
                         var secretCode by remember { mutableStateOf<Int?>(null) }
                         TextFallout(
-                            text = "???",
+                            text = stringResource(R.string.cheats),
                             getTextColor(activity),
                             getTextStrokeColor(activity),
                             14.sp,
@@ -195,14 +223,6 @@ fun ShowTrueSettings(
                                 .padding(horizontal = 8.dp)
                                 .clickableOk(activity) {
                                     when (secretCode) {
-                                        1142 -> {
-                                            activity.save?.let {
-                                                it.towerLevel = 10
-                                                saveOnGD(activity)
-                                                playYesBeep(activity)
-                                            }
-                                        }
-
                                         9941 -> {
                                             activity.save?.let {
                                                 it.towerLevel = 9
@@ -213,7 +233,7 @@ fun ShowTrueSettings(
 
                                         65537 -> {
                                             activity.save?.let {
-                                                it.towerLevel = 11
+                                                it.towerLevel = 10
                                                 saveOnGD(activity)
                                                 playYesBeep(activity)
                                             }
@@ -231,19 +251,11 @@ fun ShowTrueSettings(
                                             playPimpBoySound(activity)
                                         }
 
-                                        1776 -> {
-                                            activity.save?.let {
-                                                it.isEnclaveThemeAvailable = true
-                                                saveOnGD(activity)
-                                                playYesBeep(activity)
-                                            }
-                                        }
-
                                         62869 -> {
                                             activity.save?.let {
                                                 if (!it.prize1Activated) {
                                                     it.prize1Activated = true
-                                                    it.caps += 1969
+                                                    it.capsInHand += 1969
                                                     saveOnGD(activity)
                                                     playYesBeep(activity)
                                                 }
@@ -254,7 +266,7 @@ fun ShowTrueSettings(
                                             activity.save?.let {
                                                 if (!it.prize2Activated) {
                                                     it.prize2Activated = true
-                                                    it.caps += 2024
+                                                    it.capsInHand += 2024
                                                     saveOnGD(activity)
                                                     playYesBeep(activity)
                                                 }
@@ -269,6 +281,8 @@ fun ShowTrueSettings(
                                                 playYesBeep(activity)
                                             }
                                         }
+
+                                        // TODO: more cheats
                                     }
                                 }
                                 .background(getTextBackgroundColor(activity))
@@ -279,7 +293,7 @@ fun ShowTrueSettings(
                             modifier = Modifier.fillMaxWidth(0.5f),
                             singleLine = true,
                             enabled = true,
-                            value = (secretCode ?: 0).toString(),
+                            value = secretCode?.toString() ?: "",
                             onValueChange = { secretCode = it.toIntOrNull() },
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                             textStyle = TextStyle(
@@ -289,7 +303,7 @@ fun ShowTrueSettings(
                             ),
                             label = {
                                 TextFallout(
-                                    text = "???",
+                                    text = "Enter the Code:",
                                     getTextColor(activity),
                                     getTextStrokeColor(activity),
                                     11.sp,

@@ -114,7 +114,7 @@ fun SetCustomDeck(
             ) {
                 item {
                     CardBack.playableBacks.forEach { back ->
-                        if (back == CardBack.DECK_13 && activity.save?.availableDecks?.get(CardBack.DECK_13) != true) {
+                        if (back == CardBack.DECK_13 && activity.save?.ownedDecks?.get(CardBack.DECK_13) != true) {
                             return@forEach
                         }
 
@@ -205,7 +205,7 @@ fun SetCustomDeck(
                                         }
                                         updater = !updater
                                     }
-                                ) { activity.save?.let { it.availableDecksAlt[back] == true } ?: false }
+                                ) { activity.save?.let { it.ownedDecksAlt[back] == true } ?: false }
                             }
                         }
                         if (rowTabShow) {

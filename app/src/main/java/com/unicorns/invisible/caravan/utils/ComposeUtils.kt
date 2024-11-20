@@ -66,7 +66,7 @@ fun Dp.dpToPx() = with(LocalDensity.current) { this@dpToPx.toPx() }
 
 @Composable
 fun ShowCard(activity: MainActivity, card: Card, modifier: Modifier, toModify: Boolean = true) {
-    val cardName = getCardName(card, card.isAlt)
+    val cardName = getCardName(card)
     val painter = rememberAsyncImagePainter(
         ImageRequest.Builder(activity)
             .size(183, 256)

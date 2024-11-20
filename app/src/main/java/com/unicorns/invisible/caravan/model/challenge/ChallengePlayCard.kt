@@ -25,14 +25,14 @@ class ChallengePlayCard(val rank: Rank) : Challenge {
         Rank.NINE -> 9
         Rank.TEN -> 10
         Rank.JACK -> 12
-        Rank.QUEEN -> 8
+        Rank.QUEEN -> 6
         Rank.KING -> 12
         Rank.JOKER -> 4
     }
     override fun processMove(move: Challenge.Move, game: Game) {
         if (move.moveCode == 3 || move.moveCode == 4) {
             val cardFromHand = move.handCard ?: return
-            if (cardFromHand.rank == rank && !cardFromHand.isSpecial()) {
+            if (cardFromHand.rank == rank && cardFromHand.isOrdinary()) {
                 counter++
             }
         }

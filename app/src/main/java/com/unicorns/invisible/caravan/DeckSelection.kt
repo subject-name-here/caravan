@@ -20,7 +20,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -28,7 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.unicorns.invisible.caravan.model.CardBack
-import com.unicorns.invisible.caravan.save.saveOnGD
+import com.unicorns.invisible.caravan.save.save
 import com.unicorns.invisible.caravan.utils.MenuItemOpen
 import com.unicorns.invisible.caravan.utils.TextFallout
 import com.unicorns.invisible.caravan.utils.clickableOk
@@ -47,32 +46,21 @@ import com.unicorns.invisible.caravan.utils.scrollbar
 @Composable
 fun DeckSelection(
     activity: MainActivity,
-    getSelectedBack: () -> Pair<CardBack, Boolean>,
-    setSelectedBack: (CardBack, Boolean) -> Unit,
     goBack: () -> Unit,
 ) {
     @Composable
     fun getModifier(cardBack: CardBack, isAlt: Boolean): Modifier {
-        activity.save?.let { save ->
-            val checker = if (isAlt) save.availableDecksAlt else save.availableDecks
-            if (checker[cardBack] == true) {
-                val (backSelected, isAltSelected) = getSelectedBack()
-                return if (backSelected == cardBack && isAltSelected == isAlt) {
-                    Modifier.border(width = 3.dp, color = getSelectionColor(activity))
-                } else {
-                    Modifier
-                }
-                    .padding(4.dp)
-                    .clickableSelect(activity) {
-                        setSelectedBack(cardBack, isAlt)
-                        save.selectedDeck = cardBack to isAlt
-                        saveOnGD(activity)
-                    }
-            }
+        val (backSelected, isAltSelected) = activity.save.selectedDeck
+        return if (backSelected == cardBack && isAltSelected == isAlt) {
+            Modifier.border(width = 3.dp, color = getSelectionColor(activity))
+        } else {
+            Modifier
         }
-        return Modifier
             .padding(4.dp)
-            .alpha(0.5f)
+            .clickableSelect(activity) {
+                activity.save.selectedDeck = cardBack to isAlt
+                save(activity)
+            }
     }
 
     var setCustomDeck by rememberSaveable { mutableStateOf(false) }
@@ -130,128 +118,40 @@ fun DeckSelection(
                     Modifier,
                     TextAlign.Center
                 )
-                Spacer(modifier = Modifier.height(12.dp))
-                Row {
-                    AsyncImage(
-                        model = "file:///android_asset/caravan_cards_back/" + CardBack.STANDARD.getCardBackAsset(),
-                        contentDescription = "",
-                        modifier = getModifier(
-                            CardBack.STANDARD,
-                            false
-                        ).clip(RoundedCornerShape(6f))
-                    )
-                    Spacer(modifier = Modifier.width(12.dp))
-                    AsyncImage(
-                        model = "file:///android_asset/caravan_cards_back/" + CardBack.TOPS.getCardBackAsset(),
-                        contentDescription = "",
-                        modifier = getModifier(CardBack.TOPS, false).clip(RoundedCornerShape(6f))
-                    )
-                    Spacer(modifier = Modifier.width(12.dp))
-                    AsyncImage(
-                        model = "file:///android_asset/caravan_cards_back/" + CardBack.LUCKY_38.getCardBackAsset(),
-                        contentDescription = "",
-                        modifier = getModifier(
-                            CardBack.LUCKY_38,
-                            false
-                        ).clip(RoundedCornerShape(6f))
-                    )
-                }
-                Spacer(modifier = Modifier.height(12.dp))
-                Row {
-                    AsyncImage(
-                        model = "file:///android_asset/caravan_cards_back/" + CardBack.ULTRA_LUXE.getCardBackAsset(),
-                        contentDescription = "",
-                        modifier = getModifier(CardBack.ULTRA_LUXE, false).clip(
-                            RoundedCornerShape(6f)
-                        )
-                    )
-                    Spacer(modifier = Modifier.width(12.dp))
-                    AsyncImage(
-                        model = "file:///android_asset/caravan_cards_back/" + CardBack.GOMORRAH.getCardBackAsset(),
-                        contentDescription = "",
-                        modifier = getModifier(
-                            CardBack.GOMORRAH,
-                            false
-                        ).clip(RoundedCornerShape(6f))
-                    )
-                    Spacer(modifier = Modifier.width(12.dp))
-                    AsyncImage(
-                        model = "file:///android_asset/caravan_cards_back/" + CardBack.VAULT_21.getCardBackAsset(),
-                        contentDescription = "",
-                        modifier = getModifier(
-                            CardBack.VAULT_21,
-                            false
-                        ).clip(RoundedCornerShape(6f))
-                    )
-                }
-                Spacer(modifier = Modifier.height(12.dp))
-                Row {
-                    AsyncImage(
-                        model = "file:///android_asset/caravan_cards_back/" + CardBack.ULTRA_LUXE.getCardBackAltAsset(),
-                        contentDescription = "",
-                        modifier = getModifier(
-                            CardBack.ULTRA_LUXE,
-                            true
-                        ).clip(RoundedCornerShape(6f))
-                    )
-                    Spacer(modifier = Modifier.width(12.dp))
-                    AsyncImage(
-                        model = "file:///android_asset/caravan_cards_back/" + CardBack.GOMORRAH.getCardBackAltAsset(),
-                        contentDescription = "",
-                        modifier = getModifier(CardBack.GOMORRAH, true).clip(RoundedCornerShape(6f))
-                    )
-                    Spacer(modifier = Modifier.width(12.dp))
-                    AsyncImage(
-                        model = "file:///android_asset/caravan_cards_back/" + CardBack.VAULT_21.getCardBackAltAsset(),
-                        contentDescription = "",
-                        modifier = getModifier(CardBack.VAULT_21, true).clip(RoundedCornerShape(6f))
-                    )
-                }
-                Spacer(modifier = Modifier.height(12.dp))
-                Row {
-                    AsyncImage(
-                        model = "file:///android_asset/caravan_cards_back/" + CardBack.STANDARD.getCardBackAltAsset(),
-                        contentDescription = "",
-                        modifier = getModifier(CardBack.STANDARD, true).clip(RoundedCornerShape(6f))
-                    )
-                    Spacer(modifier = Modifier.width(12.dp))
-                    AsyncImage(
-                        model = "file:///android_asset/caravan_cards_back/" + CardBack.TOPS.getCardBackAltAsset(),
-                        contentDescription = "",
-                        modifier = getModifier(CardBack.TOPS, true).clip(RoundedCornerShape(6f))
-                    )
-                    Spacer(modifier = Modifier.width(12.dp))
-                    AsyncImage(
-                        model = "file:///android_asset/caravan_cards_back/" + CardBack.LUCKY_38.getCardBackAltAsset(),
-                        contentDescription = "",
-                        modifier = getModifier(CardBack.LUCKY_38, true).clip(RoundedCornerShape(6f))
-                    )
-                }
-                if (activity.save?.availableDecks?.get(CardBack.DECK_13) == true) {
-                    Spacer(modifier = Modifier.height(12.dp))
-                    Row(horizontalArrangement = Arrangement.Center) {
-                        AsyncImage(
-                            model = "file:///android_asset/caravan_cards_back/" + CardBack.DECK_13.getCardBackAsset(),
-                            contentDescription = "",
-                            modifier = getModifier(CardBack.DECK_13, false).clip(
-                                RoundedCornerShape(
-                                    6f
-                                )
+
+                @Composable
+                fun showDeckBackRow(back: CardBack) {
+                    if (back in activity.save.ownedDecks) {
+                        Row {
+                            AsyncImage(
+                                model = "file:///android_asset/caravan_cards_back/" + back.getCardBackAsset(),
+                                contentDescription = "",
+                                modifier = getModifier(back, false).clip(RoundedCornerShape(6f))
                             )
-                        )
-                        Spacer(modifier = Modifier.width(12.dp))
-                        AsyncImage(
-                            model = "file:///android_asset/caravan_cards_back/" + CardBack.DECK_13.getCardBackAltAsset(),
-                            contentDescription = "",
-                            modifier = getModifier(CardBack.DECK_13, true).clip(
-                                RoundedCornerShape(
-                                    6f
+                            if (back.hasAltPlayable() && back in activity.save.ownedDecksAlt) {
+                                Spacer(modifier = Modifier.width(12.dp))
+                                AsyncImage(
+                                    model = "file:///android_asset/caravan_cards_back/" + back.getCardBackAltAsset(),
+                                    contentDescription = "",
+                                    modifier = getModifier(back, true).clip(RoundedCornerShape(6f))
                                 )
-                            )
-                        )
+                            }
+                        }
+                        Spacer(modifier = Modifier.height(12.dp))
                     }
                 }
+
                 Spacer(modifier = Modifier.height(12.dp))
+                showDeckBackRow(CardBack.STANDARD)
+                showDeckBackRow(CardBack.TOPS)
+                showDeckBackRow(CardBack.ULTRA_LUXE)
+                showDeckBackRow(CardBack.GOMORRAH)
+                showDeckBackRow(CardBack.LUCKY_38)
+                showDeckBackRow(CardBack.VAULT_21)
+                showDeckBackRow(CardBack.SIERRA_MADRE)
+                showDeckBackRow(CardBack.MADNESS)
+                showDeckBackRow(CardBack.ENCLAVE)
+                showDeckBackRow(CardBack.CHINESE)
             }
         }
     }
