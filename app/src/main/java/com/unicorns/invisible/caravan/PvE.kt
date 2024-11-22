@@ -15,6 +15,8 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
+import androidx.compose.material3.TabRowDefaults
+import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -45,6 +47,7 @@ import com.unicorns.invisible.caravan.utils.TextFallout
 import com.unicorns.invisible.caravan.utils.getBackgroundColor
 import com.unicorns.invisible.caravan.utils.getDividerColor
 import com.unicorns.invisible.caravan.utils.getKnobColor
+import com.unicorns.invisible.caravan.utils.getSelectionColor
 import com.unicorns.invisible.caravan.utils.getTextBackgroundColor
 import com.unicorns.invisible.caravan.utils.getTextColor
 import com.unicorns.invisible.caravan.utils.getTextStrokeColor
@@ -138,7 +141,7 @@ fun ShowPvE(
                         knobColor = getKnobColor(activity), trackColor = getTrackColor(activity),
                         horizontal = false,
                     ),
-                verticalArrangement = Arrangement.Center,
+                verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.CenterHorizontally,
                 state = state
             ) {
@@ -161,14 +164,85 @@ fun ShowPvE(
                         )
                     }
 
-                    Column {
+                    Column(verticalArrangement = Arrangement.Top, horizontalAlignment = Alignment.CenterHorizontally) {
                         var selectedTab by rememberSaveable { mutableIntStateOf(0) }
-                        TabRow(selectedTab, Modifier) {
-                            Tab(selectedTab == 0, { selectedTab = 0 }) {}
-                            Tab(selectedTab == 1, { selectedTab = 1 }) {}
-                            Tab(selectedTab == 2, { selectedTab = 2 }) {}
+                        TabRow(
+                            selectedTab, Modifier.fillMaxWidth(),
+                            containerColor = getBackgroundColor(activity),
+                            indicator = { tabPositions ->
+                                if (selectedTab < tabPositions.size) {
+                                    TabRowDefaults.SecondaryIndicator(
+                                        Modifier.tabIndicatorOffset(tabPositions[selectedTab]),
+                                        color = getSelectionColor(activity)
+                                    )
+                                }
+                            },
+                            divider = {
+                                HorizontalDivider(color = getDividerColor(activity))
+                            }
+                        ) {
+                            Tab(selectedTab == 0, { selectedTab = 0 }, 
+                                selectedContentColor = getSelectionColor(activity),
+                                unselectedContentColor = getTextBackgroundColor(activity)
+                            ) {
+                                TextFallout(
+                                    "Deck o' 54",
+                                    getTextColor(activity),
+                                    getTextStrokeColor(activity),
+                                    16.sp,
+                                    Alignment.Center,
+                                    Modifier.padding(4.dp),
+                                    TextAlign.Center
+                                )
+                            }
+                            Tab(
+                                selectedTab == 1, { selectedTab = 1 },
+                                selectedContentColor = getSelectionColor(activity),
+                                unselectedContentColor = getTextBackgroundColor(activity)
+                            ) {
+                                TextFallout(
+                                    "Custom Deck",
+                                    getTextColor(activity),
+                                    getTextStrokeColor(activity),
+                                    16.sp,
+                                    Alignment.Center,
+                                    Modifier.padding(4.dp),
+                                    TextAlign.Center
+                                )
+                            }
+                            Tab(
+                                selectedTab == 2, { selectedTab = 2 },
+                                selectedContentColor = getSelectionColor(activity),
+                                unselectedContentColor = getTextBackgroundColor(activity)
+                            ) {
+                                TextFallout(
+                                    "Wild Wasteland",
+                                    getTextColor(activity),
+                                    getTextStrokeColor(activity),
+                                    16.sp,
+                                    Alignment.Center,
+                                    Modifier.padding(4.dp),
+                                    TextAlign.Center
+                                )
+                            }
+                            Tab(
+                                selectedTab == 3, { selectedTab = 3 },
+                                selectedContentColor = getSelectionColor(activity),
+                                unselectedContentColor = getTextBackgroundColor(activity)
+                            ) {
+                                TextFallout(
+                                    "Extra Content",
+                                    getTextColor(activity),
+                                    getTextStrokeColor(activity),
+                                    16.sp,
+                                    Alignment.Center,
+                                    Modifier.padding(4.dp),
+                                    TextAlign.Center
+                                )
+                            }
                         }
 
+                        Spacer(modifier = Modifier.height(16.dp))
                         when (selectedTab) {
                             0 -> {
                                 OpponentItem(stringResource(R.string.pve_enemy_ulysses)) { playVatsEnter(activity); showGameUlysses = true }
@@ -191,6 +265,17 @@ fun ShowPvE(
                                 Spacer(modifier = Modifier.height(10.dp))
                                 OpponentItem(stringResource(R.string.no_bark)) { playVatsEnter(activity); showGameNoBark = true }
                             }
+                            3 -> {
+                                TextFallout(
+                                    "COMING SOON!!?",
+                                    getTextColor(activity),
+                                    getTextStrokeColor(activity),
+                                    16.sp,
+                                    Alignment.Center,
+                                    Modifier.padding(4.dp),
+                                    TextAlign.Center
+                                )
+                            }
                         }
                         Spacer(modifier = Modifier.height(16.dp))
                     }
@@ -206,7 +291,7 @@ fun ShowPvE(
             LazyColumn(
                 Modifier
                     .fillMaxSize()
-                    .padding(horizontal = 16.dp, vertical = 12.dp)
+                    .padding(horizontal = 16.dp, vertical = 8.dp)
                     .scrollbar(
                         state2,
                         knobColor = getKnobColor(activity), trackColor = getTrackColor(activity),
@@ -226,7 +311,7 @@ fun ShowPvE(
                         Modifier,
                         TextAlign.Center
                     )
-                    Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(12.dp))
                     @Composable
                     fun StatsItem(text: String) {
                         TextFallout(

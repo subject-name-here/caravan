@@ -26,6 +26,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.sebaslogen.resaca.rememberScoped
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.save.saveData
 import com.unicorns.invisible.caravan.utils.MenuItemOpen
@@ -48,9 +49,10 @@ fun DeckSelection(
     activity: MainActivity,
     goBack: () -> Unit,
 ) {
+    var selectedDeck by rememberScoped { mutableStateOf(save.selectedDeck) }
     @Composable
     fun getModifier(cardBack: CardBack, isAlt: Boolean): Modifier {
-        val (backSelected, isAltSelected) = save.selectedDeck
+        val (backSelected, isAltSelected) = selectedDeck
         return if (backSelected == cardBack && isAltSelected == isAlt) {
             Modifier.border(width = 3.dp, color = getSelectionColor(activity))
         } else {
@@ -58,6 +60,7 @@ fun DeckSelection(
         }
             .padding(4.dp)
             .clickableSelect(activity) {
+                selectedDeck = cardBack to isAlt
                 save.selectedDeck = cardBack to isAlt
                 saveData(activity)
             }

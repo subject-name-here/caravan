@@ -265,13 +265,13 @@ class MainActivity : SaveDataActivity() {
         var showAlertDialog2 by remember { mutableStateOf(false) }
         var alertDialogHeader by remember { mutableStateOf("") }
         var alertDialogMessage by remember { mutableStateOf("") }
-        var alertGoBack = rememberScoped { {} to false }
+        var alertGoBack by rememberScoped { mutableStateOf({} to false) }
 
-        fun showAlertDialog(header: String, message: String, goBack: (() -> Unit)? = null) {
-            showAlertDialog = true
+        fun showAlertDialog(header: String, message: String, goBack: (() -> Unit)?) {
             alertDialogHeader = header
             alertDialogMessage = message
             alertGoBack = if (goBack == null) ({} to false) else (goBack to true)
+            showAlertDialog = true
         }
 
         fun hideAlertDialog() {
@@ -552,7 +552,8 @@ class MainActivity : SaveDataActivity() {
                         if (!CResources(save.getCustomDeckCopy()).isCustomDeckValid()) {
                             showAlertDialog(
                                 stringResource(R.string.custom_deck_is_too_small),
-                                stringResource(R.string.custom_deck_is_too_small_message)
+                                stringResource(R.string.custom_deck_is_too_small_message),
+                                null
                             )
                             showPvE = false
                         } else {
@@ -567,7 +568,8 @@ class MainActivity : SaveDataActivity() {
                         if (!CResources(save.getCustomDeckCopy()).isCustomDeckValid()) {
                             showAlertDialog(
                                 stringResource(R.string.custom_deck_is_too_small),
-                                stringResource(R.string.custom_deck_is_too_small_message)
+                                stringResource(R.string.custom_deck_is_too_small_message),
+                                null
                             )
                             showPvP = false
                         } else if (cronetEngine == null) {

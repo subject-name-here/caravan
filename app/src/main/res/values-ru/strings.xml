@@ -23,27 +23,24 @@
     <string name="spades_name">Пик</string>
 
     <string name="standard_deck_name">стандартная колода</string>
-    <string name="standard_deck_alt_name">колода казино Сьерра-Мадре</string>
     <string name="tops_deck_name">колода казино Топс</string>
     <string name="lucky_38_deck_name">колода казино Лаки 38</string>
     <string name="ultra_luxe_deck_name">колода казино Ультра-Люкс</string>
     <string name="gomorrah_deck_name">колода казино Гоморра</string>
     <string name="vault_21_deck_name">колода Убежища 21</string>
-    <string name="deck_13_deck_name">Колода 13</string>
-    <string name="deck_13_deck_alt_name">колода Madness</string>
-
-    <string name="standard_deck_owners">другие люди</string>
+    <string name="sierra_madre_deck_name">колода казино Сьерра-Мадре</string>
+    <string name="madness_deck_name">колода Madness</string>
+    <string name="chinese_deck_name">Китайская колода</string>
+    <string name="enclave_deck_name">колода Анклава</string>
 
     <string name="menu_pve">Играть с ИИ</string>
     <string name="menu_pvp">Играть с человеком</string>
-    <string name="menu_tutorial">Обучение</string>
     <string name="menu_rules">Правила</string>
     <string name="menu_deck">Настройка колоды</string>
+    <string name="market">Торговцы</string>
     <string name="menu_vision">Визуал!</string>
     <string name="menu_about">О Караване</string>
     <string name="menu_settings">Настройки</string>
-    <string name="menu_story">Сюжет</string>
-    <string name="menu_wild_wastealnd">Дикая Пустошь</string>
 
     <string name="menu_back">Назад</string>
 
@@ -54,27 +51,29 @@
     <string name="custom_deck_non_faces">Количество младших карт: %1$s\n(нужно хотя бы %2$s)</string>
 
     <string name="pve_select_enemy">Выбор соперника</string>
-    <string name="pve_select_enemy_1">Честные соперники</string>
-    <string name="pve_select_enemy_2">Нечестные игроки</string>
-    <string name="pve_select_enemy_3">Соперники из Башни</string>
-    <string name="pve_enemy_easy">Посетитель Ультра-Люкс</string>
-    <string name="pve_enemy_medium">Громила из Гоморры</string>
-    <string name="pve_enemy_hard">Зазывала Топс</string>
-    <string name="pve_enemy_better">Виктор</string>
-    <string name="pve_enemy_best">Улисс</string>
 
-    <string name="pve_enemy_queen">Франт из Топс</string>
-    <string name="johnson_nash">Джонсон Нэш</string>
+    <string name="pve_enemy_oliver_fake">General Lee Oliver</string>
+    <string name="pve_enemy_oliver_real">Oliver Swanick</string>
+    <string name="pve_enemy_veronica">Veronica</string>
+    <string name="pve_enemy_chief_hanlon">Chief Hanlon</string>
+    <string name="pve_enemy_victor">Victor</string>
+    <string name="pve_enemy_ulysses">Ulysses</string>
+    <string name="benny">Benny</string>
+
     <string name="no_bark">Нелай Нунан</string>
-    <string name="pve_enemy_38">Секьюритрон P373</string>
-    <string name="pve_enemy_cheater">Курьер Шесть</string>
+    <string name="johnson_nash">Джонсон Нэш</string>
+    <string name="tabitha">Tabitha (feat. Moe)</string>
+    <string name="vulpes">Vulpes Inculta</string>
+    <string name="elijah">Father Elijah</string>
+    <string name="crooker">Ambassador Crooker</string>
 
-    <string name="no_one">никого</string>
-    <string name="priest">Жрица Безумия</string>
     <string name="snuffles">Нюхач</string>
-    <string name="final_boss">Верховный Лидер</string>
+    <string name="easy_pete">Easy Pete</string>
+    <string name="enemy_significant_other" translatable="false">EXPERIMENT #666: Significant Other</string>
+    <string name="luc10" translatable="false">LUC10</string>
+    <string name="dr_mobius">Dr. Mobius</string>
+    <string name="man_in_the_mirror" translatable="false">ЯОЯЯIM ЭHT ИI ИAM</string>
 
-    <string name="pve_use_custom_deck">Использовать сборную колоду</string>
     <string name="pve_stats">Статистика</string>
     <string name="pve_games_started">Игр начато: %1$s</string>
     <string name="pve_games_finished">Игр завершено: %1$s</string>
@@ -88,16 +87,7 @@
     <string name="custom_deck_is_too_small_message">В колоде меньше 30 карт или меньше 15 младших карт!</string>
     <string name="you_win">Победа!</string>
     <string name="result">Результат</string>
-    <string name="result_ulysses">В этот раз тебе повезло, Курьер.</string>
     <string name="you_lose">Поражение!</string>
-    <string name="you_have_unlocked_deck">\nРазблокирована %1$s!</string>
-    <string name="you_have_unlocked_deck_alt">\nРазблокирована ALT %1$s!</string>
-    <string name="your_prize_cards_from">\nВаш приз:\n</string>
-
-    <string name="new_card">Новая: %1$s.\n</string>
-    <string name="old_card">Старая: %1$s.\n</string>
-    <string name="new_card_alt">Новая: %1$s (ALT).\n</string>
-    <string name="old_card_alt">Старая: %1$s (ALT).\n</string>
 
     <string name="discard_card">СБРОСИТЬ КАРТУ</string>
     <string name="drop_caravan">СБРОСИТЬ КАРАВАН №%1$s</string>
@@ -224,14 +214,10 @@
 
     <string name="close">Закрыть</string>
 
-    <string name="ulysses_victory">Удача была на моей стороне.</string>
     <string name="check_back_to_menu">Вы уверены, что хотите выйти?</string>
-    <string name="check_back_to_menu_ulysses">Убегаешь от своих ошибок?</string>
-
-    <string name="tap_card_back_to_open_cards">Нажмите на рубашку, чтобы открыть выбор карт.</string>
-    <string name="get_cards_from">Карты выпадают из:\n</string>
-    <string name="ulysses_fair_fight_header">Это честная битва.</string>
-    <string name="ulysses_fair_fight_body">Вы не можете использовать сборную колоду против этого врага.</string>
+    <string name="check_back_to_menu_body">Серьёзно?!</string>
+    <string name="check_back_to_menu_body_tower">Весь прогресс БАШНИ будет утерян!</string>
+    <string name="check_back_to_menu_body_tower_frank">Весь прогресс БАШНИ будет утерян и все ваши крышечки окажутся у Фрэнка!</string>
 
     <string name="sound">Звук!</string>
     <string name="save">Сохранить</string>
@@ -240,15 +226,14 @@
     <string name="sfx">SFX</string>
 
     <string name="intro_music">Первая песня на радио одна и та же</string>
+    <string name="non_stop_radio">Радио Нон-Стоп</string>
+    <string name="cheats">Введите секретный код</string>
 
-    <string name="intro_tip_1">Вы знали, что Караван - это акроним? (нет)</string>
     <string name="intro_tip_2">В отличие от шахмат, Дама (Королева) не так полезна в Караване. Однако можно неплохо повеселиться, устраивая сопернику подлости с её помощью.</string>
     <string name="intro_tip_3">Джокер в нужный момент может перевернуть игру с ног на голову. Будьте с ним аккуратны.</string>
     <string name="intro_tip_4">Вы можете поменять направление каравана без Дамы, используя карты одной масти.</string>
     <string name="intro_tip_5">Валет может удалить карту из вражеского каравана. Однако король может заставить врага удалить эту карту.</string>
     <string name="intro_tip_6">Доброго времени суток, где и когда бы вы ни находились!</string>
-    <string name="intro_tip_7">Есть две стороны медали: со сборной колодой игра может казаться легкой, но с колодой из 54 карт - сложной и нечестной.</string>
-    <string name="intro_tip_8">Использование колоды из 54 карт дает больше шансов выиграть новую карту.</string>
     <string name="intro_tip_9">Если оппонент вот-вот победит, но у вас есть проданный караван, можно продать его, чтобы купить себе пару ходов.</string>
     <string name="intro_tip_10">Что происходит в Вегасе - остается в Вегасе. Пока Мистер Нью-Вегас не расскажет об этом по радио.</string>
     <string name="intro_tip_11">Великие Ханы когда-то были одной из главных сил Новой Калифорнии. Теперь они лишь наркобароны.</string>
@@ -256,16 +241,11 @@
     <string name="intro_tip_13">Не такая популярная как 10-K-6 стратегия, 9-K-8 иногда может быть более гибкой.</string>
     <string name="intro_tip_14">Если у вас есть Джокеры в колоде, подумайте о добавлении пары тузов.</string>
     <string name="intro_tip_15">Сброс каравана может дать вам преимущество ближе к концу игры: в колоде у вас будет на одну карту больше.</string>
-    <string name="intro_tip_16">Ходят легенды о таинственной Колоде 13. По слухам, карты из этой колоды не пострадали от войны, в отличие от, например, карт казино.</string>
-    <string name="intro_tip_17">Чем больше карт одной рубашки вы продадите, тем меньше они будут стоить.</string>
 
     <string name="intro_tip_vault">Знали ли вы, что в мире Fallout 122 убежища? Всего 17 из них не были экспериментами над постояльцами..</string>
     <string name="intro_tip_desert">Касадоры легко могут убить Когтя Смерти (или даже двух). Представьте, что они сделают с вашим хрупким тельцем.</string>
 
     <string name="intro_tip_arctic">В 2066 китайские войска вторглись в северную Аляску для доступа к нефти, но позже были оттуда изгнаны.</string>
-    <string name="intro_tip_tower">Старый враг ожидает вас на вершине БАШНИ…</string>
-    <string name="intro_tip_ww">Завершите Главу 5 Сюжета, чтобы получить доступ к Дикой Пустоши!</string>
-    <string name="intro_tip_blitz">Когда играете в БЛИЦ, помните, что неважно, насколько хорошо вы играете - казино всегда выигрывает.</string>
     <string name="intro_tip_snuffles">Snuffle!</string>
     <string name="intro_tip_new_world">НКР и Легион, несмотря на разногласия, имеют общих врагов. Один из них - Братство Стали.</string>
     <string name="intro_tip_enclave">Анклав всё еще живой? Кто бы мог подумать?</string>
@@ -307,30 +287,6 @@
     <string name="style_vault_22">Убежище 22</string>
     <string name="style_enclave">Анклав</string>
 
-    <string name="lucky_38_blitz">БЛИЦ</string>
-    <string name="lucky_38_tower">БАШНЯ</string>
-
-    <string name="place_your_bets">Делайте ваши ставки!\n(У вас на счету %1$s крышечек.)</string>
-    <string name="time_s">Время: %1$s с</string>
-    <string name="seconds">%1$s с</string>
-    <string name="bet_caps">Ставка: %1$s крышечек</string>
-    <string name="your_current_reward_caps">Ваш выигрыш: %1$s крышечек.</string>
-    <string name="you_have_earned_caps">\nВы выиграли %1$s крышечек!</string>
-    <string name="blitz">БЛИЦ!</string>
-    <string name="tower">БАШНЯ!</string>
-    <string name="benny">Бенни</string>
-    <string name="mr_house">Мистер Хаус</string>
-    <string name="start">НАЧАТЬ!</string>
-    <string name="not_enough_caps_warning">Недостаточно крышечек!</string>
-    <string name="please_lower_your_bet_to_play">Пожалуйста, понизьте вашу ставку.</string>
-    <string name="select_your_opponent">Выберите соперника!</string>
-    <string name="benny_custom_deck_header">Детка, я и так недостаточно хорош для Каравана.</string>
-    <string name="benny_custom_deck_body">Давай ты оставишь свою сборную колоду в кармане?</string>
-    <string name="what_tired_of_losing">Что, устал проигрывать?</string>
-
-    <string name="blitz_rules">Правила БЛИЦа</string>
-    <string name="blitz_rules_body">Правила Каравана не меняются, но есть таймер (20 или 30 секунд), который стремится к нулю и не останавливается. Каждый ваш ход добавляет +1 секунду к таймеру; когда таймер достигнет 0, вы автоматически проигрываете.</string>
-
     <string name="play_cards_of_rank">Сыграйте %1$s карт ранга %2$s.</string>
 
     <string name="ace_in_the_hole">Туз в рукаве</string>
@@ -348,35 +304,45 @@
     <string name="the_whole_nine_yards">Девятый вал</string>
     <string name="all_in">Ва-банк!</string>
 
-    <string name="standing_here_i_realize">Standing Here, I Realize</string>
-    <string name="courier_six">Courier Six?</string>
-    <string name="house_has_gone_bust">Казино - крышка!</string>
-    <string name="robots">Роботы!</string>
-    <string name="unlikely_alliance_1">Странный альянс 1</string>
-    <string name="unlikely_alliance_2">Странный альянс 2</string>
-    <string name="tops_guns">Председатели</string>
-    <string name="defeat_enemies">Победите соперников: %1$s</string>
     <string name="boulder_city">Боулдер-Сити</string>
-    <string name="win_a_game_by_discarding_your_caravan">Выиграйте игру так, чтобы вашим последним ходом был сброс каравана.</string>
-    <string name="i_have_the_last_laugh">Я смеюсь последним</string>
-    <string name="win_a_game_by_playing_joker">Выиграйте игру так, чтобы последней сыгранной картой был Джокер.</string>
-    <string name="say_no_to_even">Никаких чётных</string>
-    <string name="say_no_to_odd">Никаких нечётных</string>
-    <string name="not_every_man_jack">Валет не для всех</string>
-    <string name="french_revolution">Французская революция</string>
-    <string name="put_it_all_on_black">Всё на черное!</string>
-    <string name="put_it_all_on_red">Всё на красное!</string>
-    <string name="do_not_play_even_number_cards_2_4_6_8_10">Выиграйте, не играя чётные карты (2, 4, 6, 8, 10). (Дебют не считается!)</string>
-    <string name="do_not_play_odd_number_cards_3_5_7_9">Выиграйте, не играя нечётные карты (3, 5, 7, 9). (Дебют не считается!)</string>
-    <string name="do_not_play_jacks">Выиграйте, не играя Валеты.</string>
-    <string name="do_not_play_kings">Выиграйте, не играя Короли.</string>
-    <string name="do_not_play_hearts_or_diamonds">Выиграйте, не играя Черви и Буби. (Дебют не считается!)</string>
-    <string name="do_not_play_clubs_or_spades">Выиграйте, не играя Пики и Крести. (Дебют не считается!)</string>
-    <string name="claim_caps">Забрать крышки (50)</string>
-    <string name="claim_tickets">Забрать билеты</string>
+    <string name="win_a_game_by_discarding_your_caravan">Победите так, чтобы последним ходом был роспуск каравана.</string>
+    <string name="the_killing_joke">Убийственная шутка</string>
+    <string name="win_a_game_by_playing_joker">Победите так, чтобы последним ходом был сыгран Джокер.</string>
+    <string name="marriage">Марьяж имени Габсбургов</string>
+    <string name="win_a_game_by_marriage">Победите так, чтобы последним ходом был сыгран Король. На карте, на которую был положен Король, уже должна лежать Дама; масти этих Дамы и Короля должны совпадать.</string>
+    <string name="all_yours_26">Фулл-аут</string>
+    <string name="win_a_game_all_yours_26">Победите так, чтобы вес всех ваших караванов был 26.</string>
+    <string name="all_yours_21">Я умею играть только в Блэкджек</string>
+    <string name="win_a_game_all_yours_21">Победите так, чтобы вес всех ваших караванов был 21.</string>
+    <string name="attrition">Игра на истощение</string>
+    <string name="win_a_game_attrition">Победите, потому что у вашего оппонента закончились карты.</string>
+    <string name="empty_deck">Из последних сил</string>
+    <string name="win_a_game_empty_deck">Победите так, чтобы в вашей колоде не осталось карт.</string>
+
+    <string name="play_only_odd">Всё на нечётные!</string>
+    <string name="play_only_even">Всё на чётные!</string>
+    <string name="no_jacks">Валет? Сразу нет!</string>
+    <string name="no_kings">Французская Революция</string>
+    <string name="only_black">Всё на чёрное!</string>
+    <string name="only_red">Всё на красное!</string>
+    <string name="father_pucci">Они дают мне силу.</string>
+    <string name="play_only_odd_descr">Одолейте соперника, играя только тузы, картинки и нечетные числовые карты. (Дебют не считается!)</string>
+    <string name="play_only_even_descr">Одолейте соперника, играя только тузы, картинки и четные числовые карты. (Дебют не считается!)</string>
+    <string name="no_jacks_descr">Одолейте соперника, не сыграв ни одного Валета.</string>
+    <string name="no_kings_descr">Одолейте соперника, не сыграв ни одного Короля.</string>
+    <string name="only_black_descr">Одолейте соперника, играя только Пики, Крести и Джокеры. (Дебют не считается!)</string>
+    <string name="only_red_descr">Одолейте соперника, играя только Черви, Буби и Джокеры. (Дебют не считается!)</string>
+    <string name="father_pucci_descr">Одолейте соперника, играя только тузы, картинки и числовые карты простого достоинства (2, 3, 5, 7). (Дебют не считается!)</string>
+
+    <string name="claim_caps">Забрать крышки (10)</string>
+    <string name="claim_tickets">Забрать билет (1)</string>
 
     <string name="missions">Испытания GRA</string>
 
+    <string name="tower_presents">Волт-Тек\nс гордостью представляет</string>
+    <string name="tower">БАШНЯ!</string>
+    <string name="tower_starring_1">В главных ролях:\nДин Домино\nРоберт Эдвин Хаус\nСанни Смайлс\nи Эдвард Саллоу в роли Цезаря.</string>
+    <string name="tower_starring_2">Также в ролях: Крейг Маффин,\nтрёхкратный чемпион НКР по Каравану.</string>
     <string name="deck_o_54_only">(Только стандартная колода!)</string>
     <string name="custom_deck_only">(Только сборная колода!)</string>
     <string name="you_can_change_custom_deck_between_games">(Сборную колоду можно пересобрать между играми.)</string>
@@ -390,11 +356,35 @@
     <string name="enemy">Соперник: %1$s</string>
     <string name="your_reward_caps">Ваш приз: %1$s крышечек</string>
     <string name="take_the_cash">Забрать деньги!</string>
+    <string name="take_the_cash_alt">Убежать с деньгами!</string>
     <string name="congratulations">Поздравляем!</string>
     <string name="en_garde">К барьеру!</string>
     <string name="you_re_not_a_hero_you_re_just_a_walking_corpse">Ты никакой не герой. Ты всего лишь ходячий труп.</string>
     <string name="now_playing_loyalty_to_your_people_neon_light_man">Сейчас играет: Loyalty to Your People - Neon Light Man.</string>
     <string name="finish">[ЗАВЕРШИТЬ]</string>
+
+    <string name="tower_enemy_1">Санни Смайлс</string>
+    <string name="tower_enemy_2">Йес-мэн</string>
+    <string name="tower_enemy_3">Папа Хан</string>
+    <string name="tower_enemy_3A">Папа Смурф</string>
+    <string name="tower_enemy_4">Джейсон Брайт</string>
+    <string name="tower_enemy_5">Король</string>
+    <string name="tower_enemy_6">Дин Домино</string>
+    <string name="tower_enemy_7">Мистер Хаус</string>
+    <string name="tower_enemy_8">Шеф-Шеф</string>
+    <string name="tower_enemy_9">Цезарь</string>
+    <string name="tower_enemy_10">Чемпион Крейг Маффин</string>
+    <string name="tower_enemy_10A">Специальный Агент Фрэнк Хорриган</string>
+
+    <string name="craig_1">Привет! Я Крейг Маффин, трёхкратный чемпион НКР по Каравану. Надеюсь, наша игра будет интересной, и…</string>
+    <string name="craig_2">…стоп, что это за громила?</string>
+    <string name="craig_3">*несущие смерть звуки пулемёта*</string>
+    <string name="craig_continue">[ДАЛЕЕ]</string>
+
+    <string name="frank_think_header">Последнее Анклавское Предупрежедние!!!</string>
+    <string name="frank_think_body">Если вы проиграете, то умрете, и Фрэнк Хорриган заберет все крышки, что у вас на руках.</string>
+    <string name="frank_start_button">Сразиться.</string>
+    <string name="frank_think_button">Подумать.</string>
 
     <string name="frank_final_words">Наша работа продолжится. Ты ничего не добился, кроме смертного приговора. Долг, (кашель) честь… храбрость… Semper Fiiiii……</string>
     <string name="frank_welcome">Ты забрался дальше, чем тебе следовало, но ведь ты еще не встречал Фрэнка Хорригана. Твоя остановочка, мутантик. Пора умирать.</string>
@@ -642,19 +632,6 @@
     <string name="ch9a_win">Итак, последняя угроза для будущего человечества была устранена. Старатель был рад, что не стал жертвой лжи паладина, который хотел навредить планам Верховного Лидера ради того, чтобы погубить нацию и украсть все технологии для Братства.</string>
     <string name="ch9a_q7">ТЕПЕРЬ МЫ ПО-НАСТОЯЩЕМУ ЕДИНЫ. ДОБРО ПОЖАЛОВАТЬ, СТАРАТЕЛЬ.</string>
     <string name="ch9a_t8">Старатель… Верховный Лидер - вместе они принесут мир всей планете.</string>
-
-    <string name="supreme_leader_says_header">Верховный Лидер:</string>
-    <string name="supreme_leader_says_1">Я удовлетворён. Я видел достаточно. Можешь сдаваться.</string>
-    <string name="supreme_leader_says_2">Ты разве не видишь, насколько это бессмысленно?</string>
-    <string name="supreme_leader_says_3">Сдавайся.</string>
-    <string name="supreme_leader_says_4">Сейчас же сдавайся.</string>
-    <string name="supreme_leader_says_5">Ты назойлив как муха.</string>
-    <string name="supreme_leader_says_6">СДАВАЙСЯ!</string>
-    <string name="supreme_leader_says_7">Ты утомил меня. Пора играть по-серьёзному.</string>
-    <string name="supreme_leader_says_8">Больше никаких игр.</string>
-    <string name="supreme_leader_says_9">Что? Я не могу проиграть! Я - Верховный Лидер!</string>
-    <string name="supreme_leader_says_10">Нет-нет, я не закончил с тобой. Вот тебе ещё карты.</string>
-    <string name="supreme_leader_says_11">Ты не можешь распускать караваны. Я сделаю это за тебя.</string>
 
     <string name="achievements">Достижения</string>
 

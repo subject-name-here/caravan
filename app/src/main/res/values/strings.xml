@@ -40,7 +40,7 @@
     <string name="menu_rules">Rules &amp; FAQ</string>
     <string name="menu_deck">Deck Settings</string>
     <string name="missions">Challenges GRA</string>
-    <string name="market">Market</string>
+    <string name="market">Traders</string>
 
     <string name="menu_discord" translatable="false">Discord!</string>
 
@@ -315,9 +315,6 @@
     <string name="the_whole_nine_yards">The Whole Nine Yards</string>
     <string name="all_in">All in!</string>
 
-    <string name="beat_enemies_1_name">Mojave Express Squad</string>
-    <string name="beat_enemies_1_descr">Defeat enemies: Ulysses, Johnson Nash.</string>
-
     <string name="boulder_city">Boulder City</string>
     <string name="win_a_game_by_discarding_your_caravan">Win a game by discarding your caravan.</string>
     <string name="the_killing_joke">The Killing Joke</string>
@@ -377,7 +374,6 @@
     <string name="tower_enemy_6">Dean Domino</string>
     <string name="tower_enemy_7">Mr. House</string>
     <string name="tower_enemy_8">Cook-Cook</string>
-    <string name="tower_enemy_8A">COOK-COOK, MOTHERFU-</string>
     <string name="tower_enemy_9">Caesar</string>
     <string name="tower_enemy_10">Champion Craig Muffin</string>
     <string name="tower_enemy_10A">Special Agent Frank Horrigan</string>
@@ -472,7 +468,7 @@
     <string name="ch4_m2">You are too strong to perish like this.</string>
     <string name="ch4_m3">Now get up and fight. Fight!</string>
     <string name="ch4_m4">You are not dying here today!</string>
-    <string name="ch4_w1">The Prospector’s body had not succumbed to the poison. As his soul wrestled the angel of death and reigned victorious, he earnt himself yet another day to live.</string>
+    <string name="ch4_w1" tools:ignore="Typos">The Prospector’s body had not succumbed to the poison. As his soul wrestled the angel of death and reigned victorious, he earnt himself yet another day to live.</string>
     <string name="ch4_l1">The Prospector\'s body had succumbed to the poison. He is just another dead body in the cursed vault.</string>
     <string name="ch4_q1">Someone\'s coming, Prospector.</string>
     <string name="ch4_t2">(grim reaper approaches)</string>
