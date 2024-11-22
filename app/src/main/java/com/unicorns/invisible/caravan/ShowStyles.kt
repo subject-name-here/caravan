@@ -62,8 +62,8 @@ fun ShowStyles(
                 verticalArrangement = Arrangement.Center
             ) {
                 item {
-                    Style.entries.filter { it in activity.save.ownedStyles }.forEach { style ->
-                        ShowStyle(activity, style, style.ordinal == activity.save.styleId) {
+                    Style.entries.filter { it in save.ownedStyles }.forEach { style ->
+                        ShowStyle(activity, style, style.ordinal == save.styleId) {
                             if (style.ordinal != getStyle().ordinal) {
                                 styleInt = style
                                 selectStyle(style.ordinal)

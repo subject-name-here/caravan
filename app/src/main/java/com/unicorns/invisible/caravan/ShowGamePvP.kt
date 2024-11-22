@@ -190,7 +190,7 @@ fun ShowGamePvP(
     game: Game,
     isCreator: Boolean,
     roomNumber: Int,
-    showAlert: (String, String) -> Unit,
+    showAlert: (String, String, (() -> Unit)?) -> Unit,
     enemyHandKey: Int,
     caravansKey: Int,
     playerHandKey: Int,
@@ -245,7 +245,7 @@ fun ShowGamePvP(
     fun corruptGame(message: String) {
         game.isCorrupted = true
         if (currentGameId == game.id) {
-            showAlert("Corrupted!", message)
+            showAlert("Corrupted!", message, null)
         }
     }
 

@@ -1,6 +1,7 @@
 package com.unicorns.invisible.caravan.save
 
 import com.unicorns.invisible.caravan.MainActivity
+import com.unicorns.invisible.caravan.save
 import com.unicorns.invisible.caravan.snapshotsClient
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
@@ -26,28 +27,29 @@ private fun getLocalSaveFile(activity: MainActivity): File {
 
 fun saveData(activity: MainActivity) {
     // TODO: save locally and on cloud!!!
-    saveOnGD(activity)
+    // saveOnGD(activity)
 }
 
 fun saveOnGDAsync(activity: MainActivity): Deferred<Boolean> {
     if (snapshotsClient == null)
         return CoroutineScope(Dispatchers.Unconfined).async { false }
 
-    val bytes = json.encodeToString(saveGlobal).toByteArray(StandardCharsets.UTF_8)
+    val bytes = json.encodeToString(save).toByteArray(StandardCharsets.UTF_8)
     return CoroutineScope(Dispatchers.IO).async { activity.uploadDataToDrive(bytes) }
 }
 
+// TODO: make it private
 fun saveOnGD(activity: MainActivity) {
     if (snapshotsClient == null)
         return
 
-    val bytes = json.encodeToString(saveGlobal).toByteArray(StandardCharsets.UTF_8)
+    val bytes = json.encodeToString(save).toByteArray(StandardCharsets.UTF_8)
     CoroutineScope(Dispatchers.IO).launch { activity.uploadDataToDrive(bytes) }
 }
 
 suspend fun loadFromGD(activity: MainActivity) {
     val data = activity.fetchDataFromDrive()?.toString(StandardCharsets.UTF_8)
     if (data != null && data != "") {
-        saveGlobal = json.decodeFromString<Save>(data)
+        save = json.decodeFromString<Save>(data)
     }
 }

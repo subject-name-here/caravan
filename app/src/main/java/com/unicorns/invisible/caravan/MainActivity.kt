@@ -195,6 +195,7 @@ class MainActivity : SaveDataActivity() {
                             verticalArrangement = Arrangement.Center
                         ) {
                             if (save.isUsable) {
+                                // TODO: this does not appear!!!
                                 TextFallout(
                                     "CARAVAN",
                                     textColor,
@@ -553,7 +554,7 @@ class MainActivity : SaveDataActivity() {
                                 stringResource(R.string.custom_deck_is_too_small),
                                 stringResource(R.string.custom_deck_is_too_small_message)
                             )
-                            showPvP = false
+                            showPvE = false
                         } else {
                             ShowPvE(
                                 activity = this@MainActivity,

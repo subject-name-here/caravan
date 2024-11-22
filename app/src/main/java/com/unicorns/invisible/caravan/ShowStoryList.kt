@@ -44,21 +44,17 @@ import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.enemy.Enemy
 import com.unicorns.invisible.caravan.model.enemy.EnemyFinalBossStory
-import com.unicorns.invisible.caravan.model.enemy.EnemyPriestess
 import com.unicorns.invisible.caravan.model.enemy.EnemyStory1
 import com.unicorns.invisible.caravan.model.enemy.EnemyStory2
 import com.unicorns.invisible.caravan.model.enemy.EnemyStory3
 import com.unicorns.invisible.caravan.model.enemy.EnemyStory4
-import com.unicorns.invisible.caravan.model.enemy.EnemyStory6
-import com.unicorns.invisible.caravan.model.enemy.EnemyStory7
-import com.unicorns.invisible.caravan.model.enemy.EnemyStory8
-import com.unicorns.invisible.caravan.model.enemy.EnemyStory9A
+import com.unicorns.invisible.caravan.model.enemy.EnemySunny
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.Card
 import com.unicorns.invisible.caravan.model.primitives.CustomDeck
 import com.unicorns.invisible.caravan.model.primitives.Rank
 import com.unicorns.invisible.caravan.model.primitives.Suit
-import com.unicorns.invisible.caravan.save.saveOnGD
+import com.unicorns.invisible.caravan.save.saveData
 import com.unicorns.invisible.caravan.utils.MenuItemOpen
 import com.unicorns.invisible.caravan.utils.TextClassic
 import com.unicorns.invisible.caravan.utils.TextFallout
@@ -91,7 +87,6 @@ import com.unicorns.invisible.caravan.utils.playWinSound
 import com.unicorns.invisible.caravan.utils.playYesBeep
 import com.unicorns.invisible.caravan.utils.scrollbar
 import com.unicorns.invisible.caravan.utils.startFinalBossTheme
-import com.unicorns.invisible.caravan.utils.stopAmbient
 import com.unicorns.invisible.caravan.utils.stopRadio
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
@@ -99,112 +94,90 @@ import kotlinx.coroutines.launch
 
 
 @Composable
-fun ShowStoryList(activity: MainActivity, showAlertDialog: (String, String) -> Unit, goBack: () -> Unit) {
+fun ShowStoryList(
+    activity: MainActivity,
+    showAlertDialog: (String, String, (() -> Unit)?) -> Unit,
+    goBack: () -> Unit
+) {
     var showChapter by rememberScoped { mutableStateOf<Int?>(null) }
 
     if (showChapter != null) {
         when (showChapter) {
             0 -> {
                 ShowStoryChapter1(activity, showAlertDialog, {
-                    activity.save?.let {
-                        if (it.storyChaptersProgress == 0) {
-                            it.ownedDecks[CardBack.DECK_13] = true
-                            it.availableCards.addAll(CustomDeck(CardBack.DECK_13, false).toList())
-                            it.storyChaptersProgress = maxOf(it.storyChaptersProgress, 1)
-                        }
-                        saveOnGD(activity)
-                    }
+                    save.storyChaptersProgress = maxOf(save.storyChaptersProgress, 1)
+                    saveData(activity)
                     activity.achievementsClient?.unlock(activity.getString(R.string.achievement_madre_roja))
                 }) { showChapter = null }
             }
             1 -> {
                 ShowStoryChapter2(activity, showAlertDialog, {
-                    activity.save?.let {
-                        it.storyChaptersProgress = maxOf(it.storyChaptersProgress, 2)
-                        saveOnGD(activity)
-                    }
+                    save.storyChaptersProgress = maxOf(save.storyChaptersProgress, 2)
+                    saveData(activity)
                 }) { showChapter = null }
             }
             2 -> {
                 ShowStoryChapter3(activity, showAlertDialog, {
-                    activity.save?.let {
-                        it.storyChaptersProgress = maxOf(it.storyChaptersProgress, 3)
-                        saveOnGD(activity)
-                    }
+                    save.storyChaptersProgress = maxOf(save.storyChaptersProgress, 3)
+                    saveData(activity)
                 }) { showChapter = null }
             }
             3 -> {
                 LaunchedEffect(Unit) {
                     stopRadio()
-                    isSoundEffectsReduced = true
+                    soundReduced = true
                 }
                 ShowStoryChapter4(activity, showAlertDialog, {
-                    activity.save?.let {
-                        it.storyChaptersProgress = maxOf(it.storyChaptersProgress, 4)
-                        saveOnGD(activity)
-                    }
+                    save.storyChaptersProgress = maxOf(save.storyChaptersProgress, 4)
+                    saveData(activity)
                     activity.achievementsClient?.unlock(activity.getString(R.string.achievement_not_ready_to_die))
-                }) { showChapter = null; isSoundEffectsReduced = false; nextSong(activity);  }
+                }) { showChapter = null; soundReduced = false; nextSong(activity);  }
             }
             4 -> {
                 ShowStoryChapter5(activity, showAlertDialog, {
-                    activity.save?.let {
-                        it.storyChaptersProgress = maxOf(it.storyChaptersProgress, 5)
-                        it.secretMode = true
-                        it.ownedDecksAlt[CardBack.DECK_13] = true
-                        saveOnGD(activity)
-                    }
+                    save.storyChaptersProgress = maxOf(save.storyChaptersProgress, 5)
+                    saveData(activity)
                 }) { showChapter = null }
             }
             5 -> {
                 ShowStoryChapter6(activity, showAlertDialog, {
-                    activity.save?.let {
-                        it.storyChaptersProgress = maxOf(it.storyChaptersProgress, 6)
-                        saveOnGD(activity)
-                    }
+                    save.storyChaptersProgress = maxOf(save.storyChaptersProgress, 6)
+                    saveData(activity)
                 }) { showChapter = null }
             }
             6 -> {
                 ShowStoryChapter7(activity, showAlertDialog, {
-                    activity.save?.let {
-                        it.storyChaptersProgress = maxOf(it.storyChaptersProgress, 7)
-                        saveOnGD(activity)
-                    }
+                    save.storyChaptersProgress = maxOf(save.storyChaptersProgress, 7)
+                    saveData(activity)
                 }) { showChapter = null }
             }
             7 -> {
                 ShowStoryChapter8(activity, showAlertDialog, {
-                    activity.save?.let {
-                        it.storyChaptersProgress = maxOf(it.storyChaptersProgress, 8)
-                        saveOnGD(activity)
-                    }
+                    save.storyChaptersProgress = maxOf(save.storyChaptersProgress, 8)
+                    saveData(activity)
                     activity.achievementsClient?.unlock(activity.getString(R.string.achievement_penultimatum))
                 }, {
-                    activity.save?.let {
-                        it.altStoryChaptersProgress = maxOf(it.altStoryChaptersProgress, 1)
-                        saveOnGD(activity)
-                    }
+                    save.altStoryChaptersProgress = maxOf(save.altStoryChaptersProgress, 1)
+                    saveData(activity)
                 }) { showChapter = null }
             }
             8 -> {
                 LaunchedEffect(Unit) {
                     stopRadio()
-                    isSoundEffectsReduced = true
+                    soundReduced = true
                 }
                 ShowStoryChapter9(activity, showAlertDialog, {
-                    activity.save?.let {
-                        it.storyChaptersProgress = maxOf(it.storyChaptersProgress, 9)
-                        saveOnGD(activity)
-                    }
+                    save.storyChaptersProgress = maxOf(save.storyChaptersProgress, 9)
+                    saveData(activity)
                     activity.achievementsClient?.unlock(activity.getString(R.string.achievement_you_can_be_hero))
-                }) { showChapter = null; isSoundEffectsReduced = false; nextSong(activity) }
+                }) { showChapter = null; soundReduced = false; nextSong(activity) }
             }
             9 -> {
                 LaunchedEffect(Unit) {
                     stopRadio()
-                    isSoundEffectsReduced = true
+                    soundReduced = true
                 }
-                ShowStoryChapter10(activity) { showChapter = null; isSoundEffectsReduced = false; nextSong(activity) }
+                ShowStoryChapter10(activity) { showChapter = null; soundReduced = false; nextSong(activity) }
             }
             else -> {
                 ShowStoryChapter9A(activity, showAlertDialog) { showChapter = null }
@@ -213,7 +186,8 @@ fun ShowStoryList(activity: MainActivity, showAlertDialog: (String, String) -> U
         return
     }
 
-    MenuItemOpen(activity, stringResource(R.string.menu_story), "<-", goBack) {
+    // TODO: exgtract strings
+    MenuItemOpen(activity, "Story", "<-", goBack) {
         val state = rememberLazyListState()
         LazyColumn(
             Modifier
@@ -243,7 +217,7 @@ fun ShowStoryList(activity: MainActivity, showAlertDialog: (String, String) -> U
 
                 @Composable
                 fun Chapter(number: Int, isAlt: Boolean = false, onClick: () -> Unit) {
-                    val isAvailable = number <= (activity.save?.storyChaptersProgress ?: 0)
+                    val isAvailable = number <= save.storyChaptersProgress
                     val text = if (!isAvailable && !isAlt) {
                         "???"
                     } else when (number) {
@@ -278,7 +252,7 @@ fun ShowStoryList(activity: MainActivity, showAlertDialog: (String, String) -> U
                     )
                 }
 
-                val chaptersRevealed = when (activity.save?.storyChaptersProgress ?: 0) {
+                val chaptersRevealed = when (save.storyChaptersProgress) {
                     in (0..2) -> 3
                     3 -> 4
                     in (4..7) -> 8
@@ -289,7 +263,7 @@ fun ShowStoryList(activity: MainActivity, showAlertDialog: (String, String) -> U
                     Chapter(it) { playSelectSound(activity); showChapter = it }
                     Spacer(modifier = Modifier.height(10.dp))
                 }
-                if ((activity.save?.altStoryChaptersProgress ?: 0) > 0) {
+                if (save.altStoryChaptersProgress > 0) {
                     Chapter(10, isAlt = true) { playSelectSound(activity); showChapter = 10 }
                     Spacer(modifier = Modifier.height(10.dp))
                 }
@@ -325,10 +299,39 @@ fun DialogLine(activity: MainActivity, line: String, isSelect: Boolean = true, o
     Spacer(Modifier.height(12.dp))
 }
 
+fun getDeck(chapterNumber: Int): CustomDeck {
+    return when (chapterNumber) {
+        0 -> {
+            CustomDeck(CardBack.STANDARD, true)
+        }
+        1, 2 -> {
+            CustomDeck(CardBack.STANDARD, true).apply {
+                addAll(CustomDeck(CardBack.SIERRA_MADRE, true))
+            }
+        }
+        4 -> {
+            CustomDeck(CardBack.STANDARD, false).apply {
+                addAll(CustomDeck(CardBack.SIERRA_MADRE, true))
+            }
+        }
+        5, 6, 7, 8 -> {
+            CustomDeck(CardBack.STANDARD, false).apply {
+                addAll(CustomDeck(CardBack.SIERRA_MADRE, true))
+                addAll(CustomDeck(CardBack.MADNESS, false))
+            }
+        }
+        10 -> {
+            // TODO: add F bombs
+            CustomDeck(CardBack.CHINESE, false)
+        }
+        else -> CustomDeck()
+    }
+}
+
 @Composable
 fun ShowStoryChapter1(
     activity: MainActivity,
-    showAlertDialog: (String, String) -> Unit,
+    showAlertDialog: (String, String, (() -> Unit)?) -> Unit,
     advanceChapter: () -> Unit,
     goBack: () -> Unit,
 ) {
@@ -340,7 +343,7 @@ fun ShowStoryChapter1(
         StartStoryGame(
             activity,
             EnemyStory1,
-            activity.getCustomDeck(),
+            CResources(getDeck(0)),
             showAlertDialog,
             {},
             { gameResult = 1; advanceChapter() },
@@ -448,7 +451,7 @@ fun ShowStoryChapter1(
 @Composable
 fun ShowStoryChapter2(
     activity: MainActivity,
-    showAlertDialog: (String, String) -> Unit,
+    showAlertDialog: (String, String, (() -> Unit)?) -> Unit,
     advanceChapter: () -> Unit,
     goBack: () -> Unit,
 ) {
@@ -460,7 +463,7 @@ fun ShowStoryChapter2(
         StartStoryGame(
             activity,
             EnemyStory2,
-            activity.getCustomDeck(),
+            CResources(getDeck(1)),
             showAlertDialog,
             {},
             { gameResult = 1; advanceChapter() },
@@ -569,7 +572,7 @@ fun ShowStoryChapter2(
 @Composable
 fun ShowStoryChapter3(
     activity: MainActivity,
-    showAlertDialog: (String, String) -> Unit,
+    showAlertDialog: (String, String, (() -> Unit)?) -> Unit,
     advanceChapter: () -> Unit,
     goBack: () -> Unit,
 ) {
@@ -581,7 +584,7 @@ fun ShowStoryChapter3(
         StartStoryGame(
             activity,
             EnemyStory3(),
-            activity.getCustomDeck(),
+            CResources(getDeck(2)),
             showAlertDialog,
             {},
             { gameResult = 1; advanceChapter() },
@@ -688,7 +691,7 @@ fun ShowStoryChapter3(
 @Composable
 fun ShowStoryChapter4(
     activity: MainActivity,
-    showAlertDialog: (String, String) -> Unit,
+    showAlertDialog: (String, String, (() -> Unit)?) -> Unit,
     advanceChapter: () -> Unit,
     goBack: () -> Unit,
 ) {
@@ -875,7 +878,7 @@ fun ShowStoryChapter4(
 @Composable
 fun ShowStoryChapter5(
     activity: MainActivity,
-    showAlertDialog: (String, String) -> Unit,
+    showAlertDialog: (String, String, (() -> Unit)?) -> Unit,
     advanceChapter: () -> Unit,
     goBack: () -> Unit,
 ) {
@@ -886,8 +889,8 @@ fun ShowStoryChapter5(
     if (isGame) {
         StartStoryGame(
             activity,
-            EnemyPriestess,
-            activity.getCustomDeck(),
+            EnemySunny,
+            CResources(getDeck(4)),
             showAlertDialog,
             {},
             { gameResult = 1; advanceChapter() },
@@ -1002,7 +1005,7 @@ fun ShowStoryChapter5(
 @Composable
 fun ShowStoryChapter6(
     activity: MainActivity,
-    showAlertDialog: (String, String) -> Unit,
+    showAlertDialog: (String, String, (() -> Unit)?) -> Unit,
     advanceChapter: () -> Unit,
     goBack: () -> Unit,
 ) {
@@ -1063,16 +1066,17 @@ fun ShowStoryChapter6(
     }
 
     if (isGame) {
-        val enemy = rememberScoped { EnemyStory6 { messageNumber = it } }
+        val enemy = rememberScoped { EnemySunny }
         StartStoryGame(
             activity,
             enemy,
-            activity.getCustomDeck(),
+            CResources(getDeck(5)),
             showAlertDialog,
             {},
             { gameResult = 2 },
             {
-                if (enemy.shownMessage) {
+                // TODO
+                if (false) {
                     gameResult = -1
                 } else {
                     gameResult = 1
@@ -1208,7 +1212,7 @@ fun ShowStoryChapter6(
 @Composable
 fun ShowStoryChapter7(
     activity: MainActivity,
-    showAlertDialog: (String, String) -> Unit,
+    showAlertDialog: (String, String, (() -> Unit)?) -> Unit,
     advanceChapter: () -> Unit,
     goBack: () -> Unit,
 ) {
@@ -1219,8 +1223,8 @@ fun ShowStoryChapter7(
     if (isGame) {
         StartStoryGame(
             activity,
-            EnemyStory7,
-            activity.getCustomDeck(),
+            EnemySunny,
+            CResources(getDeck(6)),
             showAlertDialog,
             {},
             { gameResult = 1; advanceChapter() },
@@ -1324,7 +1328,7 @@ fun ShowStoryChapter7(
 @Composable
 fun ShowStoryChapter8(
     activity: MainActivity,
-    showAlertDialog: (String, String) -> Unit,
+    showAlertDialog: (String, String, (() -> Unit)?) -> Unit,
     advanceChapter: () -> Unit,
     advanceAltChapter: () -> Unit,
     goBack: () -> Unit,
@@ -1334,16 +1338,16 @@ fun ShowStoryChapter8(
     var isGame by rememberSaveable { mutableStateOf(false) }
     var gameResult by rememberSaveable { mutableIntStateOf(0) }
     if (isGame) {
-        val enemy by rememberScoped { mutableStateOf(EnemyStory8()) }
+        val enemy by rememberScoped { mutableStateOf(EnemySunny) }
         StartStoryGame(
             activity,
             enemy,
-            activity.getCustomDeck(),
+            CResources(getDeck(7)),
             showAlertDialog,
             {},
             { gameResult = 1; advanceChapter() },
             {
-                if (enemy.resisted) {
+                if (false) {
                     gameResult = -1
                 } else {
                     gameResult = 2
@@ -1476,7 +1480,7 @@ fun ShowStoryChapter8(
 @Composable
 fun ShowStoryChapter9(
     activity: MainActivity,
-    showAlertDialog: (String, String) -> Unit,
+    showAlertDialog: (String, String, (() -> Unit)?) -> Unit,
     advanceChapter: () -> Unit,
     goBack: () -> Unit,
 ) {
@@ -1594,7 +1598,7 @@ fun ShowStoryChapter9(
         StartStoryFinalBossGame(
             activity,
             enemy,
-            activity.getCustomDeck(),
+            CResources(getDeck(8)),
             showAlertDialog,
             { timeOnTimer },
             { delta -> timeOnTimer += delta },
@@ -1920,7 +1924,7 @@ fun ShowStoryChapter10(
 @Composable
 fun ShowStoryChapter9A(
     activity: MainActivity,
-    showAlertDialog: (String, String) -> Unit,
+    showAlertDialog: (String, String, (() -> Unit)?) -> Unit,
     goBack: () -> Unit,
 ) {
     var text by rememberSaveable { mutableStateOf(activity.getString(R.string.ch9a_t1)) }
@@ -1930,17 +1934,8 @@ fun ShowStoryChapter9A(
     if (isGame) {
         StartStoryGame(
             activity,
-            EnemyStory9A,
-            CResources(CustomDeck(CardBack.UNPLAYABLE, false).apply {
-                repeat(9) {
-                    add(Card(Rank.entries[it], Suit.HEARTS, CardBack.UNPLAYABLE, true))
-                }
-                Rank.entries.filter { !it.isFace() }.forEach { rank ->
-                    Suit.entries.forEach { suit ->
-                        add(Card(rank, suit, CardBack.WILD_WASTELAND, false))
-                    }
-                }
-            }),
+            EnemySunny,
+            CResources(getDeck(10)),
             showAlertDialog,
             {},
             { gameResult = 1; activity.achievementsClient?.unlock(activity.getString(R.string.achievement_you_can_be_so_much_more)) },
@@ -2033,7 +2028,7 @@ fun ShowStoryChapter9A(
                     }
                     2 -> DialogLine(activity, stringResource(R.string.ch9a_q3)) {
                         stopRadio()
-                        isSoundEffectsReduced = true
+                        soundReduced = true
                         lineNumber = 3
                         text = activity.getString(R.string.ch9a_t4)
                     }
@@ -2049,12 +2044,12 @@ fun ShowStoryChapter9A(
                         lineNumber = 6
                         text = activity.getString(R.string.ch9a_t7)
                     }
-                    -1 -> DialogLine(activity, activity.getString(R.string.finish)) { goBack(); isSoundEffectsReduced = false; nextSong(activity) }
+                    -1 -> DialogLine(activity, activity.getString(R.string.finish)) { goBack(); soundReduced = false; nextSong(activity) }
                     -2 -> DialogLine(activity, stringResource(R.string.ch9a_q7)) {
                         lineNumber = -3
                         text = activity.getString(R.string.ch9a_t8)
                     }
-                    -3 -> DialogLine(activity, stringResource(R.string.ch_end)) { goBack(); isSoundEffectsReduced = false; nextSong(activity) }
+                    -3 -> DialogLine(activity, stringResource(R.string.ch_end)) { goBack(); soundReduced = false; nextSong(activity) }
                     else -> {
                         DialogLine(activity, activity.getString(R.string.finish)) { isGame = true; gameResult = -1 }
                     }
@@ -2070,7 +2065,7 @@ fun StartStoryGame(
     activity: MainActivity,
     enemy: Enemy,
     playerCResources: CResources,
-    showAlertDialog: (String, String) -> Unit,
+    showAlertDialog: (String, String, (() -> Unit)?) -> Unit,
     onStart: () -> Unit,
     onWin: () -> Unit,
     onLose: () -> Unit,
@@ -2090,8 +2085,8 @@ fun StartStoryGame(
         it.onWin = {
             if (enemy is EnemyStory3) {
                 val isPoisonedInEveryCaravan = game.playerCaravans.all { caravan ->
-                    val backs = caravan.cards.map { it.card.back }
-                    backs.any { it == CardBack.WILD_WASTELAND }
+                    val cards = caravan.cards.map { it.card }
+                    cards.any { it.back == CardBack.MADNESS && it.isAlt }
                 }
                 if (isPoisonedInEveryCaravan) {
                     activity.achievementsClient?.unlock(activity.getString(R.string.achievement_tis_but_a_flesh_wound))
@@ -2103,7 +2098,8 @@ fun StartStoryGame(
             onWin()
             showAlertDialog(
                 activity.getString(R.string.result),
-                activity.getString(R.string.you_win)
+                activity.getString(R.string.you_win),
+                goBack
             )
         }
         it.onLose = {
@@ -2111,7 +2107,8 @@ fun StartStoryGame(
             onLose()
             showAlertDialog(
                 activity.getString(R.string.result),
-                activity.getString(R.string.you_lose)
+                activity.getString(R.string.you_lose),
+                goBack
             )
         }
         it.jokerPlayedSound = { playJokerSounds(activity) }
@@ -2119,15 +2116,16 @@ fun StartStoryGame(
         it.nukeBlownSound = { playNukeBlownSound(activity) }
     }
 
-    activity.goBack = { stopAmbient(); goBack(); activity.goBack = null }
-
     ShowGame(activity, game) {
         if (game.isOver()) {
-            activity.goBack?.invoke()
+            goBack()
             return@ShowGame
         }
-        showAlertDialog(activity.getString(R.string.check_back_to_menu),
-            activity.getString(R.string.progress_will_be_lost))
+        showAlertDialog(
+            activity.getString(R.string.check_back_to_menu),
+            "", // TODO
+            goBack
+        )
     }
 }
 
@@ -2136,7 +2134,7 @@ fun StartStoryFinalBossGame(
     activity: MainActivity,
     enemy: Enemy,
     playerCResources: CResources,
-    showAlertDialog: (String, String) -> Unit,
+    showAlertDialog: (String, String, (() -> Unit)?) -> Unit,
     getTime: () -> Int,
     addTime: (Int) -> Unit,
     onStart: () -> Unit,
@@ -2161,7 +2159,8 @@ fun StartStoryFinalBossGame(
             onWin()
             showAlertDialog(
                 activity.getString(R.string.result),
-                activity.getString(R.string.you_win)
+                activity.getString(R.string.you_win),
+                goBack
             )
         }
         it.onLose = {
@@ -2169,7 +2168,8 @@ fun StartStoryFinalBossGame(
             onLose()
             showAlertDialog(
                 activity.getString(R.string.result),
-                activity.getString(R.string.you_lose)
+                activity.getString(R.string.you_lose),
+                goBack
             )
         }
         it.jokerPlayedSound = { playJokerSounds(activity) }
@@ -2178,7 +2178,6 @@ fun StartStoryFinalBossGame(
         it.specialGameOverCondition = { if (getTime() in (-100..0)) -1 else 0 }
     }
 
-    activity.goBack = { stopAmbient(); goBack(); activity.goBack = null }
 
     ShowGame(activity, game, isBlitz = true, onMove = { card ->
         when (card?.rank) {
@@ -2189,24 +2188,27 @@ fun StartStoryFinalBossGame(
                 addTime(3)
                 game.playerCResources.addOnTop(Card(
                     Rank.entries.filter { it.value <= 10 }.random(),
-                    Suit.entries.random(), CardBack.WILD_WASTELAND, false
+                    Suit.entries.random(), CardBack.MADNESS, true
                 ))
             }
             Rank.JACK -> {
                 game.playerCResources.addOnTop(Card(
                     Rank.entries.filter { it.value <= 10 }.random(),
-                    Suit.entries.random(), CardBack.WILD_WASTELAND, false
+                    Suit.entries.random(), CardBack.MADNESS, true
                 ))
             }
             else -> {}
         }
     }) {
         if (game.isOver()) {
-            activity.goBack?.invoke()
+            goBack()
             return@ShowGame
         }
-        showAlertDialog(activity.getString(R.string.check_back_to_menu),
-            activity.getString(R.string.progress_will_be_lost))
+        showAlertDialog(
+            activity.getString(R.string.check_back_to_menu),
+            "", // TODO
+            goBack
+        )
     }
 
     key(getTime()) {

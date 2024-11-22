@@ -77,9 +77,8 @@ fun SetCustomDeck(
     }
 
     fun isAvailable(card: Card): Boolean {
-        return save.availableCards.let { cards ->
-            cards.any { it.rank == card.rank && it.suit == card.suit && it.back == card.back && it.isAlt == card.isAlt }
-        }
+        return save.availableCards
+            .any { it.rank == card.rank && it.suit == card.suit && it.back == card.back && it.isAlt == card.isAlt }
     }
 
     val mainState = rememberLazyListState()
@@ -102,13 +101,9 @@ fun SetCustomDeck(
                 mainState
             ) {
                 item {
-                    CardBack.playableBacks.forEach { back ->
+                    CardBack.entries.forEach { back ->
                         var rowTabShow by remember { mutableStateOf(false) }
-                        var check by rememberSaveable {
-                            mutableStateOf(
-                                activity.save?.altDecksChosen?.get(back) ?: false
-                            )
-                        }
+                        var check by rememberSaveable { mutableStateOf(save.altDecksChosen[back] == true) }
                         Row(Modifier.fillMaxWidth().padding(4.dp), horizontalArrangement = Arrangement.Start) {
                             Column(
                                 Modifier
@@ -116,13 +111,7 @@ fun SetCustomDeck(
                                     .fillMaxWidth(0.33f)
                             ) {
                                 TextFallout(
-                                    stringResource(
-                                        when {
-                                            back == CardBack.STANDARD && check -> back.getSierraMadreDeckName()
-                                            back == CardBack.DECK_13 && check -> back.getMadnessDeckName()
-                                            else -> back.getDeckName()
-                                        }
-                                    ),
+                                    stringResource(back.getDeckName()),
                                     getTextColor(activity),
                                     getTextStrokeColor(activity),
                                     12.sp,
@@ -145,19 +134,18 @@ fun SetCustomDeck(
                                         },
                                 )
                             }
-                            val owners = back.getOwners()
-                            val owner = if (check) owners[1] else owners[0]
-                            TextFallout(
-                                stringResource(R.string.get_cards_from) + activity.getString(owner),
-                                getTextColor(activity),
-                                getTextStrokeColor(activity),
-                                12.sp,
-                                Alignment.CenterStart,
-                                Modifier
-                                    .fillMaxWidth(0.66f)
-                                    .align(Alignment.CenterVertically),
-                                TextAlign.Center
-                            )
+                            // TODO: write owners
+//                            TextFallout(
+//                                stringResource(R.string.get_cards_from) + "JAJAJA",
+//                                getTextColor(activity),
+//                                getTextStrokeColor(activity),
+//                                12.sp,
+//                                Alignment.CenterStart,
+//                                Modifier
+//                                    .fillMaxWidth(0.66f)
+//                                    .align(Alignment.CenterVertically),
+//                                TextAlign.Center
+//                            )
                             Column(
                                 Modifier
                                     .fillMaxSize()
@@ -165,36 +153,39 @@ fun SetCustomDeck(
                                 verticalArrangement = Arrangement.Center,
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
-                                TextFallout(
-                                    text = "ALT!",
-                                    getTextColor(activity),
-                                    getTextStrokeColor(activity),
-                                    12.sp,
-                                    Alignment.Center,
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .wrapContentHeight(),
-                                    TextAlign.Center
-                                )
-                                CheckboxCustom(
-                                    activity,
-                                    { check },
-                                    {
-                                        activity.save!!.altDecksChosen[back] = !check
-                                        saveOnGD(activity)
-                                        check = !check
-                                        if (check) {
-                                            playClickSound(activity)
-                                        } else {
-                                            playCloseSound(activity)
+                                if (back.hasAltPlayable()) {
+                                    TextFallout(
+                                        text = "ALT!",
+                                        getTextColor(activity),
+                                        getTextStrokeColor(activity),
+                                        12.sp,
+                                        Alignment.Center,
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .wrapContentHeight(),
+                                        TextAlign.Center
+                                    )
+                                    CheckboxCustom(
+                                        activity,
+                                        { check },
+                                        {
+                                            save.altDecksChosen[back] = !check
+                                            saveData(activity)
+                                            check = !check
+                                            if (check) {
+                                                playClickSound(activity)
+                                            } else {
+                                                playCloseSound(activity)
+                                            }
+                                            updater = !updater
                                         }
-                                        updater = !updater
-                                    }
-                                ) { activity.save?.let { it.ownedDecksAlt[back] == true } ?: false }
+                                    ) { back in save.ownedDecksAlt }
+                                }
                             }
                         }
                         if (rowTabShow) {
                             val state = rememberLazyListState()
+                            // TODO: select all/deselect all!!!!
                             key(check) {
                                 LazyRow(
                                     Modifier

@@ -15,29 +15,28 @@ class EnemyStory3 : Enemy() {
     override fun createDeck(): CResources = CResources(CustomDeck(CardBack.TOPS, false).apply {
         removeAll(toList().filter { it.isFace() && it.rank != Rank.JACK })
     })
-    override fun getRewardBack() = null
 
     private var cazadorsAdded = false
     override fun makeMove(game: Game) {
         val hand = game.enemyCResources.hand
 
         if (game.isInitStage()) {
-            val card = hand.filter { !it.isSpecial() }.filter { !it.isFace() }.maxBy { it.rank.value }
+            val card = hand.filter { it.isOrdinary() }.filter { !it.isFace() }.maxBy { it.rank.value }
             val caravan = game.enemyCaravans.filter { it.isEmpty() }.random()
             caravan.putCardOnTop(game.enemyCResources.removeFromHand(hand.indexOf(card)))
             return
         } else if (!cazadorsAdded) {
             cazadorsAdded = true
-            game.enemyCResources.addOnTop(Card(Rank.QUEEN, Suit.HEARTS, CardBack.WILD_WASTELAND, false))
+            game.enemyCResources.addOnTop(Card(Rank.QUEEN, Suit.HEARTS, CardBack.MADNESS, true))
         }
 
-        val specials = hand.withIndex().filter { it.value.isSpecial() }
+        val specials = hand.withIndex().filter { it.value.isWildWasteland() }
         specials.forEach { (index, special) ->
             when (special.getWildWastelandCardType()) {
                 Card.WildWastelandCardType.CAZADOR -> {
                     val candidate = game.playerCaravans
                         .filter { it.getValue() in (11..26) }
-                        .filter { !it.cards.flatMap { card -> card.modifiersCopy() }.any { mod -> mod.isSpecial() } }
+                        .filter { !it.cards.flatMap { card -> card.modifiersCopy() }.any { mod -> mod.isWildWasteland() } }
                         .maxByOrNull { it.size }
                         ?.cards
                         ?.filter { it.canAddModifier(special) }
@@ -53,7 +52,7 @@ class EnemyStory3 : Enemy() {
         }
 
 
-        hand.withIndex().filter { !it.value.isSpecial() }.shuffled().forEach { (cardIndex, card) ->
+        hand.withIndex().filter { it.value.isOrdinary() }.shuffled().forEach { (cardIndex, card) ->
             if (!card.rank.isFace()) {
                 game.enemyCaravans.shuffled().forEach { caravan ->
                     if (caravan.getValue() + card.rank.value <= 26) {
@@ -78,7 +77,7 @@ class EnemyStory3 : Enemy() {
         }
 
         game.enemyCResources.dropCardFromHand(hand.withIndex().minByOrNull {
-            if (it.value.isSpecial()) {
+            if (it.value.isWildWasteland()) {
                 15
             } else {
                 when (it.value.rank) {

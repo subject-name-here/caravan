@@ -32,6 +32,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.unicorns.invisible.caravan.save.saveData
 import com.unicorns.invisible.caravan.save.saveOnGD
 import com.unicorns.invisible.caravan.utils.MenuItemOpen
 import com.unicorns.invisible.caravan.utils.SwitchCustomUsualBackground
@@ -59,16 +60,14 @@ fun ShowTrueSettings(
 ) {
     val mainState = rememberLazyListState()
     var speed by remember { mutableStateOf(getSpeed()) }
-    var intro by remember { mutableStateOf(activity.save?.useCaravanIntro != false) }
-    var playInBack by remember { mutableStateOf(activity.save?.playRadioInBack == true) }
+    var intro by remember { mutableStateOf(save.useCaravanIntro) }
+    var playInBack by remember { mutableStateOf(save.playRadioInBack) }
 
     MenuItemOpen(activity, stringResource(R.string.menu_settings), stringResource(R.string.save), {
         setSpeed(speed)
-        activity.save?.let {
-            it.useCaravanIntro = intro
-            it.playRadioInBack = playInBack
-            saveOnGD(activity)
-        }
+        save.useCaravanIntro = intro
+        save.playRadioInBack = playInBack
+        saveData(activity)
         goBack()
     }) {
         LazyColumn(
@@ -223,64 +222,64 @@ fun ShowTrueSettings(
                                 .padding(horizontal = 8.dp)
                                 .clickableOk(activity) {
                                     when (secretCode) {
-                                        9941 -> {
-                                            activity.save?.let {
-                                                it.towerLevel = 9
-                                                saveOnGD(activity)
-                                                playYesBeep(activity)
-                                            }
-                                        }
-
-                                        65537 -> {
-                                            activity.save?.let {
-                                                it.towerLevel = 10
-                                                saveOnGD(activity)
-                                                playYesBeep(activity)
-                                            }
-                                        }
-
-                                        666 -> {
-                                            activity.save?.let {
-                                                it.soOpen = true
-                                                saveOnGD(activity)
-                                                playYesBeep(activity)
-                                            }
-                                        }
+//                                        9941 -> {
+//                                            save?.let {
+//                                                it.towerLevel = 9
+//                                                saveOnGD(activity)
+//                                                playYesBeep(activity)
+//                                            }
+//                                        }
+//
+//                                        65537 -> {
+//                                            save?.let {
+//                                                it.towerLevel = 10
+//                                                saveOnGD(activity)
+//                                                playYesBeep(activity)
+//                                            }
+//                                        }
+//
+//                                        666 -> {
+//                                            save?.let {
+//                                                it.soOpen = true
+//                                                saveOnGD(activity)
+//                                                playYesBeep(activity)
+//                                            }
+//                                        }
 
                                         1337 -> {
                                             playPimpBoySound(activity)
                                         }
 
                                         62869 -> {
-                                            activity.save?.let {
+                                            save.let {
                                                 if (!it.prize1Activated) {
                                                     it.prize1Activated = true
                                                     it.capsInHand += 1969
-                                                    saveOnGD(activity)
+                                                    saveData(activity)
                                                     playYesBeep(activity)
                                                 }
                                             }
                                         }
 
                                         50724 -> {
-                                            activity.save?.let {
+                                            save.let {
                                                 if (!it.prize2Activated) {
                                                     it.prize2Activated = true
                                                     it.capsInHand += 2024
-                                                    saveOnGD(activity)
+                                                    saveData(activity)
                                                     playYesBeep(activity)
                                                 }
                                             }
                                         }
 
-                                        404 -> {
-                                            activity.save?.let {
-                                                it.storyChaptersProgress = 0
-                                                it.altStoryChaptersProgress = 0
-                                                saveOnGD(activity)
-                                                playYesBeep(activity)
-                                            }
-                                        }
+//                                        404 -> {
+//                                            activity.save?.let {
+//                                                it.storyChaptersProgress = 0
+//                                                it.altStoryChaptersProgress = 0
+//                                                saveOnGD(activity)
+//                                                playYesBeep(activity)
+//                                            }
+//                                        }
 
                                         // TODO: more cheats
                                     }

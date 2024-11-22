@@ -44,6 +44,7 @@ import com.unicorns.invisible.caravan.model.primitives.Rank
 import com.unicorns.invisible.caravan.model.primitives.Suit
 import com.unicorns.invisible.caravan.multiplayer.decodeMove
 import com.unicorns.invisible.caravan.save.json
+import com.unicorns.invisible.caravan.save.saveData
 import com.unicorns.invisible.caravan.save.saveOnGD
 import com.unicorns.invisible.caravan.utils.CheckboxCustom
 import com.unicorns.invisible.caravan.utils.MenuItemOpen
@@ -116,7 +117,7 @@ fun isRoomNumberIncorrect(roomNumber: String): Boolean {
 @Composable
 fun ShowPvP(
     activity: MainActivity,
-    showAlertDialog: (String, String) -> Unit,
+    showAlertDialog: (String, String, (() -> Unit)?) -> Unit,
     goBack: () -> Unit
 ) {
     var roomNumber by rememberSaveable { mutableStateOf("") }
@@ -134,7 +135,7 @@ fun ShowPvP(
     }
 
     fun showFailure(s: String) {
-        showAlertDialog(activity.getString(R.string.failure_2), s)
+        showAlertDialog(activity.getString(R.string.failure_2), s, null)
         isRoomCreated = 2
         CoroutineScope(Dispatchers.Unconfined).launch {
             delay(3800L)
@@ -230,7 +231,7 @@ fun ShowPvP(
                     "&is_private=${checkedPrivateRoom.toPythonBool()}" +
                     "&is_new=True" +
                     "&is_wild=${checkedWild.toPythonBool()}" +
-                    "&cid=${userId}" +
+                    "&cid=${save.hashCode()}" +
                     "&deck0=${deckCodes[0]}" +
                     "&deck1=${deckCodes[1]}" +
                     "&deck2=${deckCodes[2]}" +
@@ -263,7 +264,7 @@ fun ShowPvP(
         val deckCodes = customDeckToInts(save.getCustomDeckCopy())
         sendRequest(
             "${crvnUrl}/crvn/join?room=$isRoomCreated" +
-                    "&jid=${userId}" +
+                    "&jid=${save.hashCode()}" +
                     "&back=${save.selectedDeck.first.ordinal}" +
                     "&is_alt=${save.selectedDeck.second.toPythonBool()}" +
                     "&deck0=${deckCodes[0]}" +
@@ -299,7 +300,7 @@ fun ShowPvP(
         }
     }
 
-    if (enemyDeck.size >= MainActivity.MIN_DECK_SIZE) {
+    if (enemyDeck.size >= 10) {
         StartPvP(
             activity = activity,
             playerCResources = run {
@@ -460,7 +461,7 @@ fun ShowPvP(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             TextFallout(
-                                stringResource(R.string.pve_use_custom_deck),
+                                "Use custom deck",
                                 getTextColor(activity),
                                 getTextStrokeColor(activity),
                                 14.sp,
@@ -514,37 +515,35 @@ fun ShowPvP(
                             )
                         }
 
-                        if (activity.save?.secretMode == true) {
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(48.dp),
-                                horizontalArrangement = Arrangement.Center,
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                TextFallout(
-                                    stringResource(R.string.menu_wild_wastealnd),
-                                    getTextColor(activity),
-                                    getTextStrokeColor(activity),
-                                    14.sp,
-                                    Alignment.CenterStart,
-                                    Modifier.fillMaxWidth(0.7f),
-                                    TextAlign.Start
-                                )
-                                CheckboxCustom(
-                                    activity,
-                                    { checkedWild },
-                                    {
-                                        checkedWild = !checkedWild
-                                        if (checkedWild) {
-                                            playClickSound(activity)
-                                        } else {
-                                            playCloseSound(activity)
-                                        }
-                                    },
-                                    { isRoomCreated == 0 }
-                                )
-                            }
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(48.dp),
+                            horizontalArrangement = Arrangement.Center,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            TextFallout(
+                                "Use Wild Wasteland cards",
+                                getTextColor(activity),
+                                getTextStrokeColor(activity),
+                                14.sp,
+                                Alignment.CenterStart,
+                                Modifier.fillMaxWidth(0.7f),
+                                TextAlign.Start
+                            )
+                            CheckboxCustom(
+                                activity,
+                                { checkedWild },
+                                {
+                                    checkedWild = !checkedWild
+                                    if (checkedWild) {
+                                        playClickSound(activity)
+                                    } else {
+                                        playCloseSound(activity)
+                                    }
+                                },
+                                { isRoomCreated == 0 }
+                            )
                         }
                     }
                 }
@@ -571,6 +570,7 @@ fun ShowPvP(
     }
 }
 
+var currentGameId = ""
 @Composable
 fun StartPvP(
     activity: MainActivity,
@@ -578,7 +578,7 @@ fun StartPvP(
     enemyStartDeck: CustomDeck,
     isCreator: Boolean,
     roomNumber: Int,
-    showAlertDialog: (String, String) -> Unit,
+    showAlertDialog: (String, String, (() -> Unit)?) -> Unit,
     game: Game = rememberScoped {
         Game(
             playerCResources,
@@ -599,30 +599,25 @@ fun StartPvP(
             activity.processChallengesGameOver(it)
             playWinSound(activity)
             showAlertDialog(
-                activity.getString(R.string.result), activity.getString(R.string.you_win) +
-                        winCard(
-                            activity,
-                            save,
-                            CardBack.STANDARD,
-                            1,
-                            isAlt = true,
-                            isCustom = false
-                        )
+                activity.getString(R.string.result),
+                activity.getString(R.string.you_win) + winCard(activity, save, CardBack.STANDARD, isAlt = true,),
+                null
             )
-            saveOnGD(activity)
+            saveData(activity)
         }
         it.onLose = {
             playLoseSound(activity)
             showAlertDialog(
                 activity.getString(R.string.result),
-                activity.getString(R.string.you_lose)
+                activity.getString(R.string.you_lose),
+                null
             )
         }
         it.jokerPlayedSound = { playJokerSounds(activity) }
         it.nukeBlownSound = { playNukeBlownSound(activity) }
         it.wildWastelandSound = { playWWSound(activity) }
     }
-    activity.goBack = {
+    val quit = {
         if (!game.isOver() && game.isPlayerTurn) {
             playQuitMultiplayer(activity)
         }
@@ -649,7 +644,7 @@ fun StartPvP(
         sendRequest(link) { result ->
             val body = result.getString("body")
             if (body.contains("Timeout!")) {
-                showAlertDialog(activity.getString(R.string.failed_to_start_the_game), body)
+                showAlertDialog(activity.getString(R.string.failed_to_start_the_game), body, null)
                 return@sendRequest
             }
 
@@ -730,8 +725,7 @@ fun StartPvP(
     }
 
     if (game.isCorrupted && game.id == currentGameId) {
-        activity.goBack?.invoke()
-        activity.goBack = null
+        quit()
         return
     }
 
@@ -749,10 +743,13 @@ fun StartPvP(
         ::updatePlayerHand
     ) lambda@{
         if (game.isOver()) {
-            activity.goBack?.invoke()
-            activity.goBack = null
-            return@lambda
+            quit()
+        } else {
+            showAlertDialog(
+                activity.getString(R.string.check_back_to_menu),
+                "",
+                quit
+            )
         }
-        showAlertDialog(activity.getString(R.string.check_back_to_menu), "")
     }
 }

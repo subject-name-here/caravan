@@ -24,9 +24,8 @@ class CustomDeck() {
     val size: Int
         get() = cards.size
 
-    fun takeRandom(n: Int) = cards.shuffled().take(n)
-
     fun add(element: Card) = cards.add(element)
+    fun addAll(elements: CustomDeck) = cards.addAll(elements.toList())
     fun addOnTop(element: Card) = cards.add(0, element)
     operator fun get(index: Int) = cards[index]
 

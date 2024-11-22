@@ -4,7 +4,6 @@ import android.media.MediaPlayer
 import com.unicorns.invisible.caravan.MainActivity
 import com.unicorns.invisible.caravan.R
 import com.unicorns.invisible.caravan.Style
-import com.unicorns.invisible.caravan.isSoundEffectsReduced
 import com.unicorns.invisible.caravan.save
 import com.unicorns.invisible.caravan.soundReduced
 import kotlinx.coroutines.CoroutineScope
@@ -14,8 +13,6 @@ import kotlinx.coroutines.launch
 import okio.withLock
 import java.util.concurrent.locks.ReentrantLock
 
-
-// TODO: rehaul!!
 
 private val effectPlayers = HashSet<MediaPlayer>()
 private val effectPlayersLock = ReentrantLock()
@@ -50,7 +47,7 @@ fun playNotificationSound(activity: MainActivity, onPrepared: () -> Unit) {
 }
 
 private fun playEffectPlayerSound(activity: MainActivity, soundId: Int, volumeFraction: Int = 1) {
-    val vol = (activity.save?.soundVolume ?: 1f) / volumeFraction
+    val vol = save.soundVolume / volumeFraction
     MediaPlayer
         .create(activity, soundId)
         .apply {
@@ -109,12 +106,12 @@ fun playWinSound(activity: MainActivity) {
 }
 
 fun playJokerReceivedSounds(activity: MainActivity) {
-    if (isSoundEffectsReduced) return
+    if (soundReduced) return
     playEffectPlayerSound(activity, R.raw.mus_mysteriousstranger_a_01, 2)
 }
 
 fun playJokerSounds(activity: MainActivity) {
-    if (isSoundEffectsReduced) return
+    if (soundReduced) return
     playEffectPlayerSound(activity, R.raw.mus_mysteriousstranger_a_02, 2)
 }
 
@@ -236,7 +233,7 @@ fun startRadio(activity: MainActivity) {
         return
     }
     radioStartedFlag = true
-    if (activity.save.useCaravanIntro) {
+    if (save.useCaravanIntro) {
         if (activity.styleId == Style.SIERRA_MADRE || activity.styleId == Style.MADRE_ROJA) {
             playSongFromRadio(activity, "begin_again.amr")
         } else {
@@ -257,7 +254,7 @@ private val radioPlayers = HashSet<MediaPlayer>()
 private val radioLock = ReentrantLock()
 private var radioState = RadioState.PLAYING
 private fun playSongFromRadio(activity: MainActivity, songName: String) {
-    val vol = activity.save.radioVolume
+    val vol = save.radioVolume
     MediaPlayer()
         .apply {
             val afd = activity.assets.openFd("radio/$songName")
@@ -352,7 +349,7 @@ fun setRadioVolume(volume: Float) {
 
 fun playTheme(activity: MainActivity, themeId: Int) {
     stopRadio()
-    val vol = activity.save?.radioVolume ?: 1f
+    val vol = save.radioVolume
     MediaPlayer.create(activity, themeId)
         .apply {
             isLooping = true
@@ -380,7 +377,7 @@ fun startFinalBossTheme(activity: MainActivity) {
 }
 
 fun playFrankPhrase(activity: MainActivity, phraseId: Int) {
-    val vol = (activity.save?.soundVolume ?: 1f) / 2
+    val vol = save.soundVolume / 2
     MediaPlayer
         .create(activity, phraseId)
         .apply {

@@ -11,7 +11,6 @@ import kotlinx.serialization.Serializable
 @Serializable
 data object EnemyStory2 : Enemy() {
     override fun createDeck(): CResources = CResources(CustomDeck(CardBack.ULTRA_LUXE, false))
-    override fun getRewardBack() = null
 
     override fun makeMove(game: Game) {
         val hand = game.enemyCResources.hand

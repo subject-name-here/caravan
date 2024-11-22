@@ -13,7 +13,6 @@ data object EnemySunny : Enemy() {
     override fun createDeck(): CResources = CResources(CustomDeck(CardBack.STANDARD, false).apply {
         removeAll(toList().filter { it.rank == Rank.QUEEN || it.rank == Rank.JOKER })
     })
-    override fun getRewardBack() = null
 
     override fun makeMove(game: Game) {
         val hand = game.enemyCResources.hand

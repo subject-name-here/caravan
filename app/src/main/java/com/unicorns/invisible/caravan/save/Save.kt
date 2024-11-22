@@ -20,6 +20,7 @@ class Save(val isUsable: Boolean) {
     @EncodeDefault
     var selectedDeck: Pair<CardBack, Boolean> = CardBack.STANDARD to false
 
+    // TODO: deck is owned if you have at least one card from it!!!!
     @EncodeDefault
     val ownedDecks = listOf(CardBack.STANDARD)
     @EncodeDefault
@@ -34,7 +35,6 @@ class Save(val isUsable: Boolean) {
     @EncodeDefault
     val availableCards: MutableSet<Card> = HashSet(CustomDeck(CardBack.STANDARD, false).toList())
 
-    // TODO
     fun getCustomDeckCopy(): CustomDeck {
         val deck = CustomDeck()
         customDeck.toList().forEach {
@@ -47,6 +47,7 @@ class Save(val isUsable: Boolean) {
 
     @EncodeDefault
     val ownedStyles = mutableSetOf(Style.PIP_BOY)
+
     @EncodeDefault
     var styleId: Int = Style.PIP_BOY.ordinal
 
@@ -101,8 +102,6 @@ class Save(val isUsable: Boolean) {
     @EncodeDefault
     var altStoryChaptersProgress = 0
 
-    @EncodeDefault
-    var soOpen: Boolean = false
     @EncodeDefault
     var prize1Activated = false
     @EncodeDefault

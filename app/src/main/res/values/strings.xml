@@ -315,6 +315,9 @@
     <string name="the_whole_nine_yards">The Whole Nine Yards</string>
     <string name="all_in">All in!</string>
 
+    <string name="beat_enemies_1_name">Mojave Express Squad</string>
+    <string name="beat_enemies_1_descr">Defeat enemies: Ulysses, Johnson Nash.</string>
+
     <string name="boulder_city">Boulder City</string>
     <string name="win_a_game_by_discarding_your_caravan">Win a game by discarding your caravan.</string>
     <string name="the_killing_joke">The Killing Joke</string>
@@ -376,7 +379,7 @@
     <string name="tower_enemy_8">Cook-Cook</string>
     <string name="tower_enemy_8A">COOK-COOK, MOTHERFU-</string>
     <string name="tower_enemy_9">Caesar</string>
-    <string name="tower_enemy_10">Craig Muffin</string>
+    <string name="tower_enemy_10">Champion Craig Muffin</string>
     <string name="tower_enemy_10A">Special Agent Frank Horrigan</string>
 
     <string name="take_the_cash">Take the cash!</string>
@@ -386,7 +389,7 @@
 
     <string name="frank_think_header">THIS IS THE LAST WARNING!!!</string>
     <string name="frank_think_body">If you lose, then you die, and Frank Horrigan will loot your body.</string>
-    <string name="frank_start_button">Let\'s go.</string>
+    <string name="frank_start_button">Let\'s get this over with.</string>
     <string name="frank_think_button">Let me think…</string>
 
     <string name="finish">[FINISH]</string>

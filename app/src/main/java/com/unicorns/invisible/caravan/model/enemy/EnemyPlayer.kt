@@ -16,8 +16,6 @@ class EnemyPlayer(
     private val startDeck: CustomDeck,
 ) : Enemy() {
     override fun createDeck(): CResources = CResources(startDeck)
-    override fun getRewardBack() = CardBack.STANDARD
-    override fun isAlt() = true
 
     var latestMoveResponse: MoveResponse? = null
 
@@ -86,9 +84,9 @@ class EnemyPlayer(
                 }
                 if (card.rank == Rank.JOKER) {
                     game.jokerPlayedSound()
-                } else if (card.isSpecial() && card.isAlt) {
+                } else if (card.isNuclear() && card.isAlt) {
                     game.nukeBlownSound()
-                } else if (card.isSpecial()) {
+                } else if (card.getWildWastelandCardType() != null) {
                     game.wildWastelandSound()
                 }
                 cardInCaravan.addModifier(card)

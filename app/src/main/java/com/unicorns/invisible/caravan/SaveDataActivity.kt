@@ -16,6 +16,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import java.io.IOException
 
+
 var snapshotsClient: SnapshotsClient? = null
     private set
 
@@ -120,6 +121,7 @@ abstract class SaveDataActivity : AppCompatActivity() {
                     null
                 }
             }.await()
+        // TODO: work with snapshot can be moved away.
     }
 
     companion object {

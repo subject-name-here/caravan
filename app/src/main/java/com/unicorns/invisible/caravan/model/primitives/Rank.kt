@@ -2,6 +2,7 @@ package com.unicorns.invisible.caravan.model.primitives
 
 import com.unicorns.invisible.caravan.R
 
+
 enum class Rank(val value: Int, val nameId: Int) {
     ACE(1, R.string.ace_name),
     TWO(2, R.string.two_name),

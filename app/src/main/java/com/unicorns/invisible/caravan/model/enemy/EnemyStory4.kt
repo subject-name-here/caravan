@@ -18,7 +18,6 @@ class EnemyStory4(val showMessage: (Int) -> Unit) : Enemy() {
         add(Card(Rank.KING, Suit.SPADES, CardBack.GOMORRAH, true))
         add(Card(Rank.ACE, Suit.SPADES, CardBack.GOMORRAH, true))
     })
-    override fun getRewardBack() = null
 
     private var shownMessage = false
     override fun makeMove(game: Game) {

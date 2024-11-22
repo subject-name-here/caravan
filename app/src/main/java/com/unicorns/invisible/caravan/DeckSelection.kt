@@ -104,11 +104,10 @@ fun DeckSelection(
                     TextAlign.Center
                 )
 
-                Spacer(modifier = Modifier.height(20.dp))
-
-                HorizontalDivider(color = getDividerColor(activity))
-
                 Spacer(modifier = Modifier.height(12.dp))
+                HorizontalDivider(color = getDividerColor(activity))
+                Spacer(modifier = Modifier.height(12.dp))
+
                 TextFallout(
                     stringResource(R.string.deck_select),
                     getTextColor(activity),

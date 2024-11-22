@@ -11,8 +11,7 @@ import kotlin.random.Random
 
 @Serializable
 data object EnemyStory1 : Enemy() {
-    override fun createDeck(): CResources = CResources(CustomDeck(CardBack.DECK_13, false))
-    override fun getRewardBack() = null
+    override fun createDeck(): CResources = CResources(CustomDeck(CardBack.SIERRA_MADRE, true))
 
     override fun makeMove(game: Game) {
         val hand = game.enemyCResources.hand
