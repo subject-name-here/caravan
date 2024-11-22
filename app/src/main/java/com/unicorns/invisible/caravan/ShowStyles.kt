@@ -12,7 +12,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -38,11 +38,10 @@ import com.unicorns.invisible.caravan.utils.scrollbar
 @Composable
 fun ShowStyles(
     activity: MainActivity,
-    getStyle: () -> Style,
     selectStyle: (Int) -> Unit,
     goBack: () -> Unit
 ) {
-    var styleInt by rememberSaveable { mutableStateOf(getStyle()) }
+    var styleInt by rememberSaveable { mutableIntStateOf(save.styleId) }
     val mainState = rememberLazyListState()
 
     key(styleInt) {
@@ -62,14 +61,16 @@ fun ShowStyles(
                 verticalArrangement = Arrangement.Center
             ) {
                 item {
-                    Style.entries.filter { it in save.ownedStyles }.forEach { style ->
-                        ShowStyle(activity, style, style.ordinal == save.styleId) {
-                            if (style.ordinal != getStyle().ordinal) {
-                                styleInt = style
-                                selectStyle(style.ordinal)
+                    Style.entries
+                        .filter { it in save.ownedStyles }
+                        .forEach { style ->
+                            ShowStyle(activity, style, style.ordinal == styleInt) {
+                                if (styleInt != style.ordinal) {
+                                    styleInt = style.ordinal
+                                    selectStyle(style.ordinal)
+                                }
                             }
                         }
-                    }
                 }
             }
         }
@@ -88,7 +89,8 @@ fun ShowStyle(
             .fillMaxWidth()
             .defaultMinSize(minHeight = 48.dp)
             .padding(horizontal = 8.dp, vertical = 8.dp),
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center
     ) {
         TextFallout(
             activity.getString(style.styleNameId),

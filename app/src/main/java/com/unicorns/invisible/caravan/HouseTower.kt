@@ -307,7 +307,7 @@ fun TowerScreen(
                         stringResource(R.string.tower_presents),
                         getTextColor(activity),
                         getTextStrokeColor(activity),
-                        20.sp,
+                        18.sp,
                         Alignment.Center,
                         Modifier,
                         TextAlign.Center
@@ -316,30 +316,32 @@ fun TowerScreen(
                         stringResource(R.string.tower),
                         getTextColor(activity),
                         getTextStrokeColor(activity),
-                        20.sp,
+                        40.sp,
                         Alignment.Center,
                         Modifier,
                         TextAlign.Center
                     )
+                    Spacer(modifier = Modifier.height(12.dp))
                     TextFallout(
                         stringResource(R.string.tower_starring_1),
                         getTextColor(activity),
                         getTextStrokeColor(activity),
-                        20.sp,
+                        24.sp,
                         Alignment.Center,
                         Modifier,
                         TextAlign.Center
                     )
+                    Spacer(modifier = Modifier.height(8.dp))
                     TextFallout(
                         stringResource(R.string.tower_starring_2),
                         getTextColor(activity),
                         getTextStrokeColor(activity),
-                        20.sp,
+                        18.sp,
                         Alignment.Center,
                         Modifier,
                         TextAlign.Center
                     )
-                    Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(24.dp))
 
                     TextFallout(
                         stringResource(R.string.tickets_please_you_have_tickets, save.tickets),
@@ -388,7 +390,7 @@ fun TowerScreen(
                         7 -> 256
                         8 -> 399
                         9 -> 512
-                        else -> 2025
+                        else -> 2077
                     }
                     @Composable
                     fun showTowerCard(enemyName: String) {
@@ -423,7 +425,7 @@ fun TowerScreen(
                         }
                     }
                     when (level) {
-                        // TODO: names like 3A, 8A
+                        // TODO: names like 3A
                         1 -> {
                             showTowerCard(stringResource(R.string.tower_enemy_1))
                         }

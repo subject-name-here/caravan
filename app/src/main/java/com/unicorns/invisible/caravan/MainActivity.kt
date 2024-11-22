@@ -27,6 +27,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -52,12 +53,13 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withLink
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.MutableLiveData
 import com.sebaslogen.resaca.rememberScoped
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.challenge.Challenge
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.save.Save
-import com.unicorns.invisible.caravan.save.saveOnGD
+import com.unicorns.invisible.caravan.save.saveData
 import com.unicorns.invisible.caravan.utils.SliderCustom
 import com.unicorns.invisible.caravan.utils.TextFallout
 import com.unicorns.invisible.caravan.utils.clickableCancel
@@ -93,12 +95,19 @@ import org.chromium.net.CronetEngine
 
 
 var save = Save(isUsable = false)
-var soundReduced = false
+var soundReduced: Boolean = false
+    set(value) {
+        field = value
+        soundReducedLiveData.postValue(value)
+    }
+private val soundReducedLiveData = MutableLiveData(soundReduced)
 
 @Suppress("MoveLambdaOutsideParentheses")
 class MainActivity : SaveDataActivity() {
     val styleId
         get() = Style.entries.getOrElse(save.styleId) { Style.PIP_BOY }
+
+    val isSaveLoaded = MutableLiveData(save.isUsable)
 
     override fun onPause() {
         super.onPause()
@@ -118,6 +127,7 @@ class MainActivity : SaveDataActivity() {
                 // TODO: init save
 
                 save = Save(isUsable = true)
+                isSaveLoaded.postValue(true)
 
                 startRadio(this@MainActivity)
             }
@@ -186,7 +196,8 @@ class MainActivity : SaveDataActivity() {
                         },
                     contentAlignment = Alignment.Center
                 ) {
-                    key(save.isUsable) {
+                    val k by isSaveLoaded.observeAsState()
+                    key(k) {
                         Column(
                             Modifier
                                 .fillMaxSize()
@@ -195,7 +206,6 @@ class MainActivity : SaveDataActivity() {
                             verticalArrangement = Arrangement.Center
                         ) {
                             if (save.isUsable) {
-                                // TODO: this does not appear!!!
                                 TextFallout(
                                     "CARAVAN",
                                     textColor,
@@ -356,7 +366,7 @@ class MainActivity : SaveDataActivity() {
                 AlertDialog(
                     modifier = Modifier.border(width = 4.dp, color = getKnobColor(this)),
                     onDismissRequest = {
-                        saveOnGD(this); hideSoundSettings()
+                        saveData(this); hideSoundSettings()
                     },
                     confirmButton = {
                         TextFallout(
@@ -367,7 +377,7 @@ class MainActivity : SaveDataActivity() {
                             Alignment.Center,
                             Modifier
                                 .background(getDialogTextColor(this))
-                                .clickableCancel(this) { saveOnGD(this); hideSoundSettings() }
+                                .clickableCancel(this) { saveData(this); hideSoundSettings() }
                                 .padding(4.dp),
                             TextAlign.Center
                         )
@@ -454,7 +464,8 @@ class MainActivity : SaveDataActivity() {
         Scaffold(
             topBar = {
                 var isPaused by remember { mutableStateOf(false) }
-                key(styleIdForTop) {
+                val soundReducedObserver = soundReducedLiveData.observeAsState()
+                key(styleIdForTop, soundReducedObserver) {
                     Row(
                         Modifier
                             .fillMaxWidth()
@@ -557,7 +568,7 @@ class MainActivity : SaveDataActivity() {
                             )
                             showPvE = false
                         } else {
-                            ShowPvE(
+                            ShowSelectPvE(
                                 activity = this@MainActivity,
                                 ::showAlertDialog
                             ) { showPvE = false }
@@ -587,10 +598,10 @@ class MainActivity : SaveDataActivity() {
                     }
 
                     showVision -> {
-                        ShowStyles(activity = this@MainActivity, { styleId }, {
-                            styleIdForTop = styleId
-                            save.styleId = styleId.ordinal
-                            saveOnGD(this@MainActivity)
+                        ShowStyles(activity = this@MainActivity, {
+                            styleIdForTop = Style.entries[it]
+                            save.styleId = it
+                            saveData(this@MainActivity)
                         }) { showVision = false }
                     }
 
@@ -600,7 +611,7 @@ class MainActivity : SaveDataActivity() {
                             { save.animationSpeed },
                             {
                                 save.animationSpeed = it
-                                saveOnGD(this@MainActivity)
+                                saveData(this@MainActivity)
                             }
                         ) { showSettings = false }
                     }

@@ -33,7 +33,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.unicorns.invisible.caravan.save.saveData
-import com.unicorns.invisible.caravan.save.saveOnGD
 import com.unicorns.invisible.caravan.utils.MenuItemOpen
 import com.unicorns.invisible.caravan.utils.SwitchCustomUsualBackground
 import com.unicorns.invisible.caravan.utils.TextFallout
@@ -222,21 +221,11 @@ fun ShowTrueSettings(
                                 .padding(horizontal = 8.dp)
                                 .clickableOk(activity) {
                                     when (secretCode) {
-//                                        9941 -> {
-//                                            save?.let {
-//                                                it.towerLevel = 9
-//                                                saveOnGD(activity)
-//                                                playYesBeep(activity)
-//                                            }
-//                                        }
-//
-//                                        65537 -> {
-//                                            save?.let {
-//                                                it.towerLevel = 10
-//                                                saveOnGD(activity)
-//                                                playYesBeep(activity)
-//                                            }
-//                                        }
+                                        65537 -> {
+                                            save.towerLevel = 10
+                                            saveData(activity)
+                                            playYesBeep(activity)
+                                        }
 //
 //                                        666 -> {
 //                                            save?.let {

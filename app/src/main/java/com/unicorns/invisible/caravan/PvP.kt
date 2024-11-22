@@ -45,7 +45,6 @@ import com.unicorns.invisible.caravan.model.primitives.Suit
 import com.unicorns.invisible.caravan.multiplayer.decodeMove
 import com.unicorns.invisible.caravan.save.json
 import com.unicorns.invisible.caravan.save.saveData
-import com.unicorns.invisible.caravan.save.saveOnGD
 import com.unicorns.invisible.caravan.utils.CheckboxCustom
 import com.unicorns.invisible.caravan.utils.MenuItemOpen
 import com.unicorns.invisible.caravan.utils.TextFallout

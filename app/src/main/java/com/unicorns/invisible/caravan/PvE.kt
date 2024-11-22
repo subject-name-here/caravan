@@ -44,6 +44,7 @@ import com.unicorns.invisible.caravan.save.Save
 import com.unicorns.invisible.caravan.save.saveData
 import com.unicorns.invisible.caravan.utils.MenuItemOpen
 import com.unicorns.invisible.caravan.utils.TextFallout
+import com.unicorns.invisible.caravan.utils.clickableSelect
 import com.unicorns.invisible.caravan.utils.getBackgroundColor
 import com.unicorns.invisible.caravan.utils.getDividerColor
 import com.unicorns.invisible.caravan.utils.getKnobColor
@@ -62,6 +63,202 @@ import com.unicorns.invisible.caravan.utils.scrollbar
 import com.unicorns.invisible.caravan.utils.startAmbient
 import com.unicorns.invisible.caravan.utils.stopAmbient
 import java.util.Locale
+
+
+@Composable
+fun ShowSelectPvE(
+    activity: MainActivity,
+    showAlertDialog: (String, String, (() -> Unit)?) -> Unit,
+    goBack: () -> Unit
+) {
+    var showStats by rememberScoped { mutableStateOf(false) }
+    var showSelectEnemy by rememberScoped { mutableStateOf(false) }
+    var showTower by rememberScoped { mutableStateOf(false) }
+
+    when {
+        showStats -> {
+            ShowStats(activity) { showStats = false }
+            return
+        }
+        showSelectEnemy -> {
+            ShowPvE(activity, showAlertDialog) { showSelectEnemy = false }
+            return
+        }
+        showTower -> {
+            TowerScreen(activity, showAlertDialog) { showTower = false }
+            return
+        }
+    }
+
+    MenuItemOpen(activity, stringResource(R.string.menu_pve), "<-", goBack) {
+        val state = rememberLazyListState()
+        LazyColumn(
+            Modifier
+                .fillMaxSize()
+                .background(getBackgroundColor(activity))
+                .scrollbar(
+                    state,
+                    knobColor = getKnobColor(activity), trackColor = getTrackColor(activity),
+                    horizontal = false,
+                ),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally,
+            state = state
+        ) {
+            item {
+                Spacer(modifier = Modifier.height(16.dp))
+
+                @Composable
+                fun SubMenuItem(name: String, onClick: () -> Unit) {
+                    TextFallout(
+                        name,
+                        getTextColor(activity),
+                        getTextStrokeColor(activity),
+                        32.sp,
+                        Alignment.Center,
+                        Modifier
+                            .clickableSelect(activity) { onClick() }
+                            .background(getTextBackgroundColor(activity))
+                            .padding(8.dp),
+                        TextAlign.Center
+                    )
+                }
+
+                SubMenuItem("Select Enemy") { showSelectEnemy = true }
+                Spacer(modifier = Modifier.height(12.dp))
+                SubMenuItem(stringResource(R.string.tower)) { showTower = true }
+                Spacer(modifier = Modifier.height(12.dp))
+                SubMenuItem(stringResource(R.string.pve_stats)) { showStats = true }
+            }
+        }
+    }
+}
+
+
+@Composable
+fun ShowStats(
+    activity: MainActivity,
+    goBack: () -> Unit
+) {
+    MenuItemOpen(activity, stringResource(R.string.pve_stats), "<-", goBack) {
+        // TODO: more stats
+        val started = save.gamesStarted
+        val finished = save.gamesFinished
+        val won = save.wins
+        val loss = finished - won
+        val state2 = rememberLazyListState()
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(getBackgroundColor(activity))
+                .padding(horizontal = 16.dp, vertical = 16.dp)
+                .scrollbar(
+                    state2,
+                    knobColor = getKnobColor(activity), trackColor = getTrackColor(activity),
+                    horizontal = false,
+                ),
+            state = state2,
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            item {
+                TextFallout(
+                    stringResource(R.string.pve_stats),
+                    getTextColor(activity),
+                    getTextStrokeColor(activity),
+                    20.sp,
+                    Alignment.Center,
+                    Modifier,
+                    TextAlign.Center
+                )
+                Spacer(modifier = Modifier.height(12.dp))
+                @Composable
+                fun StatsItem(text: String) {
+                    TextFallout(
+                        text,
+                        getTextColor(activity),
+                        getTextStrokeColor(activity),
+                        14.sp,
+                        Alignment.Center,
+                        Modifier,
+                        TextAlign.Center,
+                    )
+                }
+                StatsItem(
+                    text = stringResource(
+                        R.string.pve_games_started,
+                        started
+                    )
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                StatsItem(
+                    text = stringResource(
+                        R.string.pve_games_finished,
+                        finished
+                    ),
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                StatsItem(
+                    text = stringResource(R.string.pve_games_won, won),
+                )
+                Spacer(modifier = Modifier.height(12.dp))
+                TextFallout(
+                    stringResource(R.string.pve_percentiles),
+                    getTextColor(activity),
+                    getTextStrokeColor(activity),
+                    20.sp,
+                    Alignment.Center,
+                    Modifier,
+                    TextAlign.Center
+                )
+                Spacer(modifier = Modifier.height(12.dp))
+                StatsItem(
+                    text = stringResource(
+                        R.string.pve_w_to_l,
+                        if (loss == 0) "-" else String.format(
+                            Locale.UK,
+                            "%.3f",
+                            won.toDouble() / loss
+                        )
+                    ),
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                StatsItem(
+                    text = stringResource(
+                        R.string.pve_w_to_finished,
+                        if (finished == 0) "-" else String.format(
+                            Locale.UK,
+                            "%.2f",
+                            (won.toDouble() / finished) * 100
+                        )
+                    ),
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                StatsItem(
+                    text = stringResource(
+                        R.string.pve_w_to_started,
+                        if (started == 0) "-" else String.format(
+                            Locale.UK,
+                            "%.2f",
+                            won.toDouble() / started * 100.0
+                        )
+                    ),
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                StatsItem(
+                    text = stringResource(
+                        R.string.pve_finished_to_started,
+                        if (started == 0) "-" else String.format(
+                            Locale.UK,
+                            "%.1f",
+                            finished.toDouble() / started * 100.0
+                        )
+                    ),
+                )
+            }
+        }
+    }
+}
 
 
 @Composable
@@ -123,12 +320,12 @@ fun ShowPvE(
         return
     }
 
-    MenuItemOpen(activity, stringResource(R.string.menu_pve), "<-", goBack) {
+    MenuItemOpen(activity, "Select Enemy", "<-", goBack) {
         Column(
             Modifier
                 .fillMaxSize()
                 .background(getBackgroundColor(activity)),
-            verticalArrangement = Arrangement.Center,
+            verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             val state = rememberLazyListState()
@@ -281,125 +478,10 @@ fun ShowPvE(
                     }
                 }
             }
-
-            HorizontalDivider(color = getDividerColor(activity))
-            val started = save.gamesStarted
-            val finished = save.gamesFinished
-            val won = save.wins
-            val loss = finished - won
-            val state2 = rememberLazyListState()
-            LazyColumn(
-                Modifier
-                    .fillMaxSize()
-                    .padding(horizontal = 16.dp, vertical = 8.dp)
-                    .scrollbar(
-                        state2,
-                        knobColor = getKnobColor(activity), trackColor = getTrackColor(activity),
-                        horizontal = false,
-                    ),
-                state = state2,
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                item {
-                    TextFallout(
-                        stringResource(R.string.pve_stats),
-                        getTextColor(activity),
-                        getTextStrokeColor(activity),
-                        20.sp,
-                        Alignment.Center,
-                        Modifier,
-                        TextAlign.Center
-                    )
-                    Spacer(modifier = Modifier.height(12.dp))
-                    @Composable
-                    fun StatsItem(text: String) {
-                        TextFallout(
-                            text,
-                            getTextColor(activity),
-                            getTextStrokeColor(activity),
-                            14.sp,
-                            Alignment.Center,
-                            Modifier,
-                            TextAlign.Center,
-                        )
-                    }
-                    StatsItem(
-                        text = stringResource(
-                            R.string.pve_games_started,
-                            started
-                        )
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    StatsItem(
-                        text = stringResource(
-                            R.string.pve_games_finished,
-                            finished
-                        ),
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    StatsItem(
-                        text = stringResource(R.string.pve_games_won, won),
-                    )
-                    Spacer(modifier = Modifier.height(12.dp))
-                    TextFallout(
-                        stringResource(R.string.pve_percentiles),
-                        getTextColor(activity),
-                        getTextStrokeColor(activity),
-                        20.sp,
-                        Alignment.Center,
-                        Modifier,
-                        TextAlign.Center
-                    )
-                    Spacer(modifier = Modifier.height(12.dp))
-                    StatsItem(
-                        text = stringResource(
-                            R.string.pve_w_to_l,
-                            if (loss == 0) "-" else String.format(
-                                Locale.UK,
-                                "%.3f",
-                                won.toDouble() / loss
-                            )
-                        ),
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    StatsItem(
-                        text = stringResource(
-                            R.string.pve_w_to_finished,
-                            if (finished == 0) "-" else String.format(
-                                Locale.UK,
-                                "%.2f",
-                                (won.toDouble() / finished) * 100
-                            )
-                        ),
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    StatsItem(
-                        text = stringResource(
-                            R.string.pve_w_to_started,
-                            if (started == 0) "-" else String.format(
-                                Locale.UK,
-                                "%.2f",
-                                won.toDouble() / started * 100.0
-                            )
-                        ),
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    StatsItem(
-                        text = stringResource(
-                            R.string.pve_finished_to_started,
-                            if (started == 0) "-" else String.format(
-                                Locale.UK,
-                                "%.1f",
-                                finished.toDouble() / started * 100.0
-                            )
-                        ),
-                    )
-                }
-            }
         }
     }
 }
+
 
 @Composable
 fun StartGame(

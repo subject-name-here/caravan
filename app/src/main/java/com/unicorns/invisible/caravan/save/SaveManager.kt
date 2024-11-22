@@ -30,16 +30,7 @@ fun saveData(activity: MainActivity) {
     // saveOnGD(activity)
 }
 
-fun saveOnGDAsync(activity: MainActivity): Deferred<Boolean> {
-    if (snapshotsClient == null)
-        return CoroutineScope(Dispatchers.Unconfined).async { false }
-
-    val bytes = json.encodeToString(save).toByteArray(StandardCharsets.UTF_8)
-    return CoroutineScope(Dispatchers.IO).async { activity.uploadDataToDrive(bytes) }
-}
-
-// TODO: make it private
-fun saveOnGD(activity: MainActivity) {
+private fun saveOnGD(activity: MainActivity) {
     if (snapshotsClient == null)
         return
 
@@ -47,7 +38,7 @@ fun saveOnGD(activity: MainActivity) {
     CoroutineScope(Dispatchers.IO).launch { activity.uploadDataToDrive(bytes) }
 }
 
-suspend fun loadFromGD(activity: MainActivity) {
+private suspend fun loadFromGD(activity: MainActivity) {
     val data = activity.fetchDataFromDrive()?.toString(StandardCharsets.UTF_8)
     if (data != null && data != "") {
         save = json.decodeFromString<Save>(data)
