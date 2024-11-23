@@ -464,7 +464,7 @@ class MainActivity : SaveDataActivity() {
         Scaffold(
             topBar = {
                 var isPaused by remember { mutableStateOf(false) }
-                val soundReducedObserver = soundReducedLiveData.observeAsState()
+                val soundReducedObserver by soundReducedLiveData.observeAsState()
                 key(styleIdForTop, soundReducedObserver) {
                     Row(
                         Modifier

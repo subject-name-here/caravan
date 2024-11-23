@@ -235,7 +235,7 @@ fun TowerScreen(
         }
     }
 
-    MenuItemOpen(activity, stringResource(R.string.tower), "<-", goBack) {
+    MenuItemOpen(activity, stringResource(R.string.tower), "<-", { if (!frankSequencePlayed) goBack() }) {
         val state2 = rememberLazyListState()
         LazyColumn(
             Modifier
@@ -257,26 +257,20 @@ fun TowerScreen(
                         Modifier.fillMaxWidth(),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        if (level == 10 && frankSequencePlayed) {
-                            TextFallout(
-                                stringResource(R.string.deck_o_54_only),
-                                getTextColor(activity),
-                                getTextStrokeColor(activity),
-                                24.sp,
-                                Alignment.Center,
-                                Modifier,
-                                TextAlign.Center
-                            )
-                        } else {
-                            TextFallout(
-                                stringResource(R.string.custom_deck_only),
-                                getTextColor(activity),
-                                getTextStrokeColor(activity),
-                                24.sp,
-                                Alignment.Center,
-                                Modifier,
-                                TextAlign.Center
-                            )
+                        TextFallout(
+                            if (level == 10 && frankSequencePlayed) {
+                                stringResource(R.string.deck_o_54_only)
+                            } else {
+                                stringResource(R.string.custom_deck_only)
+                            },
+                            getTextColor(activity),
+                            getTextStrokeColor(activity),
+                            24.sp,
+                            Alignment.Center,
+                            Modifier,
+                            TextAlign.Center
+                        )
+                        if (level != 10 || !frankSequencePlayed) {
                             TextFallout(
                                 stringResource(R.string.you_can_change_custom_deck_between_games),
                                 getTextColor(activity),
@@ -390,7 +384,7 @@ fun TowerScreen(
                         7 -> 256
                         8 -> 399
                         9 -> 512
-                        else -> 2077
+                        else -> if (frankSequencePlayed) 2077 else 1024
                     }
                     @Composable
                     fun showTowerCard(enemyName: String) {
@@ -482,6 +476,7 @@ fun TowerScreen(
                                 .clickableOk(activity) {
                                     if (level > 0) {
                                         level = 0
+                                        frankSequencePlayed = false
                                         save.towerLevel = 0
                                         save.capsInHand += inBank
                                         saveData(activity)
@@ -581,7 +576,9 @@ fun TowerScreen(
                         18.sp, Alignment.Center,
                         Modifier
                             .background(Color(activity.getColor(R.color.colorText)))
-                            .clickableOk(activity) { showFrankWarning = false; showGameLevel10 = true }
+                            .clickableOk(activity) {
+                                showFrankWarning = false; showGameLevel10 = true
+                            }
                             .padding(4.dp),
                         TextAlign.Center
                     )
@@ -808,9 +805,6 @@ fun ShowFrank(activity: MainActivity, goBack: () -> Unit) {
 
     LaunchedEffect(craigLine) {
         if (craigLine == 3) {
-            showDialogs = false
-            stopRadio()
-            soundReduced = true
             playFrankPhrase(activity, R.raw.frank_on_welcome)
             text = activity.getString(R.string.frank_welcome)
             delay(3000L)
@@ -826,17 +820,15 @@ fun ShowFrank(activity: MainActivity, goBack: () -> Unit) {
             .background(Color.Black)) {
 
         Column {
-            if (showFrankFlag) {
-                Box(
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(8.dp)
-                        .paint(
-                            painterResource(
-                                id = R.drawable.frank_head
-                            )
-                        ))
-            }
+            Box(Modifier
+                .fillMaxWidth()
+                .padding(8.dp)
+                .paint(
+                    painterResource(
+                        if (showFrankFlag) R.drawable.frank_head else R.drawable.black_back
+                    )
+                )
+            )
 
             Box(Modifier.fillMaxWidth()) {
                 TextClassic(
@@ -897,6 +889,8 @@ fun ShowFrank(activity: MainActivity, goBack: () -> Unit) {
                             1 -> {
                                 DialogLine(stringResource(R.string.craig_continue)) {
                                     craigLine++
+                                    stopRadio()
+                                    soundReduced = true
                                     playMinigunSound(activity)
                                     text = activity.getString(R.string.craig_3)
                                 }
@@ -904,6 +898,7 @@ fun ShowFrank(activity: MainActivity, goBack: () -> Unit) {
                             }
                             2 -> {
                                 DialogLine(stringResource(R.string.craig_continue)) {
+                                    showDialogs = false
                                     craigLine++
                                     text = ""
                                 }

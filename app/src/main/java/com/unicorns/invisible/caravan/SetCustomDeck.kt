@@ -14,6 +14,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
@@ -41,9 +42,13 @@ import com.unicorns.invisible.caravan.utils.MenuItemOpen
 import com.unicorns.invisible.caravan.utils.ShowCard
 import com.unicorns.invisible.caravan.utils.ShowCardBack
 import com.unicorns.invisible.caravan.utils.TextFallout
+import com.unicorns.invisible.caravan.utils.clickableCancel
+import com.unicorns.invisible.caravan.utils.clickableSelect
 import com.unicorns.invisible.caravan.utils.getBackgroundColor
+import com.unicorns.invisible.caravan.utils.getDividerColor
 import com.unicorns.invisible.caravan.utils.getKnobColor
 import com.unicorns.invisible.caravan.utils.getSelectionColor
+import com.unicorns.invisible.caravan.utils.getTextBackgroundColor
 import com.unicorns.invisible.caravan.utils.getTextColor
 import com.unicorns.invisible.caravan.utils.getTextStrokeColor
 import com.unicorns.invisible.caravan.utils.getTrackColor
@@ -59,9 +64,7 @@ fun SetCustomDeck(
     goBack: () -> Unit,
 ) {
     fun isInCustomDeck(card: Card): Boolean {
-        return save.customDeck.let { deck ->
-            card in deck
-        }
+        return save.customDeck.let { deck -> card in deck }
     }
 
     fun toggleToCustomDeck(card: Card) {
@@ -100,8 +103,7 @@ fun SetCustomDeck(
                 mainState
             ) {
                 item {
-                    CardBack.entries.forEach { back ->
-                        var rowTabShow by remember { mutableStateOf(false) }
+                    CardBack.entries.filter { it in save.ownedDecks }.forEach { back ->
                         var check by rememberSaveable { mutableStateOf(save.altDecksChosen[back] == true) }
                         Row(Modifier.fillMaxWidth().padding(4.dp), horizontalArrangement = Arrangement.Start) {
                             Column(
@@ -121,34 +123,60 @@ fun SetCustomDeck(
                                 ShowCardBack(
                                     activity,
                                     Card(Rank.ACE, Suit.CLUBS, back, check),
-                                    Modifier
-                                        .align(Alignment.CenterHorizontally)
-                                        .clickable {
-                                            rowTabShow = !rowTabShow
-                                            if (rowTabShow) {
-                                                playClickSound(activity)
-                                            } else {
-                                                playCloseSound(activity)
-                                            }
-                                        },
+                                    Modifier.align(Alignment.CenterHorizontally),
                                 )
                             }
-                            // TODO: write owners
-//                            TextFallout(
-//                                stringResource(R.string.get_cards_from) + "JAJAJA",
-//                                getTextColor(activity),
-//                                getTextStrokeColor(activity),
-//                                12.sp,
-//                                Alignment.CenterStart,
-//                                Modifier
-//                                    .fillMaxWidth(0.66f)
-//                                    .align(Alignment.CenterVertically),
-//                                TextAlign.Center
-//                            )
+                            Column(
+                                Modifier
+                                    .padding(horizontal = 8.dp)
+                                    .fillMaxWidth(0.5f)
+                            ) {
+                                TextFallout(
+                                    "Select all",
+                                    getTextColor(activity),
+                                    getTextStrokeColor(activity),
+                                    18.sp,
+                                    Alignment.Center,
+                                    Modifier.fillMaxWidth()
+                                        .background(getTextBackgroundColor(activity))
+                                        .clickableSelect(activity) {
+                                            updater = !updater
+                                            CustomDeck(back, check).toList()
+                                                .filter { isAvailable(it) }
+                                                .forEach {
+                                                    if (!isInCustomDeck(it)) {
+                                                        toggleToCustomDeck(it)
+                                                    }
+                                                }
+                                        },
+                                    TextAlign.Center
+                                )
+                                HorizontalDivider(color = getDividerColor(activity))
+                                TextFallout(
+                                    "Deselect all",
+                                    getTextColor(activity),
+                                    getTextStrokeColor(activity),
+                                    18.sp,
+                                    Alignment.Center,
+                                    Modifier.fillMaxWidth()
+                                        .background(getTextBackgroundColor(activity))
+                                        .clickableCancel(activity) {
+                                            updater = !updater
+                                            CustomDeck(back, check).toList()
+                                                .filter { isAvailable(it) }
+                                                .forEach {
+                                                    if (isInCustomDeck(it)) {
+                                                        toggleToCustomDeck(it)
+                                                    }
+                                                }
+                                        },
+                                    TextAlign.Center
+                                )
+                            }
                             Column(
                                 Modifier
                                     .fillMaxSize()
-                                    .padding(vertical = 8.dp),
+                                    .padding(8.dp),
                                 verticalArrangement = Arrangement.Center,
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
@@ -159,18 +187,16 @@ fun SetCustomDeck(
                                         getTextStrokeColor(activity),
                                         12.sp,
                                         Alignment.Center,
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .wrapContentHeight(),
+                                        modifier = Modifier.wrapContentHeight(),
                                         TextAlign.Center
                                     )
                                     CheckboxCustom(
                                         activity,
                                         { check },
                                         {
-                                            save.altDecksChosen[back] = !check
-                                            saveData(activity)
                                             check = !check
+                                            save.altDecksChosen[back] = check
+                                            saveData(activity)
                                             if (check) {
                                                 playClickSound(activity)
                                             } else {
@@ -182,60 +208,55 @@ fun SetCustomDeck(
                                 }
                             }
                         }
-                        if (rowTabShow) {
-                            val state = rememberLazyListState()
-                            // TODO: select all/deselect all!!!!
-                            key(check) {
-                                LazyRow(
-                                    Modifier
-                                        .scrollbar(
-                                            state,
-                                            knobColor = getKnobColor(activity),
-                                            trackColor = getTrackColor(activity),
-                                            horizontal = true
-                                        )
-                                        .padding(horizontal = 4.dp)
-                                        .padding(bottom = 4.dp),
-                                    state = state
-                                ) lambda@{
-                                    items(CustomDeck(back, check).toList().sortedWith { o1, o2 ->
-                                        if (o1.rank != o2.rank) {
-                                            o2.rank.value - o1.rank.value
-                                        } else {
-                                            o1.suit.ordinal - o2.suit.ordinal
-                                        }
-                                    }) { card ->
-                                        var isSelected by remember {
-                                            mutableStateOf(
-                                                isInCustomDeck(card)
-                                            )
-                                        }
+                        val state = rememberLazyListState()
+                        key(check) {
+                            LazyRow(
+                                Modifier
+                                    .scrollbar(
+                                        state,
+                                        knobColor = getKnobColor(activity),
+                                        trackColor = getTrackColor(activity),
+                                        horizontal = true
+                                    )
+                                    .padding(horizontal = 4.dp)
+                                    .padding(bottom = 4.dp),
+                                state = state
+                            ) lambda@{
+                                items(CustomDeck(back, check).toList().sortedWith { o1, o2 ->
+                                    if (o1.rank != o2.rank) {
+                                        o2.rank.value - o1.rank.value
+                                    } else {
+                                        o1.suit.ordinal - o2.suit.ordinal
+                                    }
+                                }) { card ->
+                                    var isSelected by remember {
+                                        mutableStateOf(isInCustomDeck(card))
+                                    }
 
-                                        if (isAvailable(card)) {
-                                            ShowCard(activity, card, Modifier
-                                                .clickable {
-                                                    toggleToCustomDeck(card)
-                                                    isSelected = !isSelected
-                                                    if (isSelected) {
-                                                        playSelectSound(activity)
-                                                    } else {
-                                                        playCloseSound(activity)
-                                                    }
-                                                    updater = !updater
+                                    if (isAvailable(card)) {
+                                        ShowCard(activity, card, Modifier
+                                            .clickable {
+                                                toggleToCustomDeck(card)
+                                                isSelected = !isSelected
+                                                if (isSelected) {
+                                                    playSelectSound(activity)
+                                                } else {
+                                                    playCloseSound(activity)
                                                 }
-                                                .border(
-                                                    width = (if (isSelected) 3 else 0).dp,
-                                                    color = getSelectionColor(activity)
-                                                )
-                                                .padding(4.dp)
-                                                .alpha(if (isSelected) 1f else 0.5f))
-                                        } else {
-                                            ShowCardBack(
-                                                activity, card, Modifier
-                                                    .padding(4.dp)
-                                                    .alpha(0.33f)
+                                                updater = !updater
+                                            }
+                                            .border(
+                                                width = (if (isSelected) 3 else 0).dp,
+                                                color = getSelectionColor(activity)
                                             )
-                                        }
+                                            .padding(4.dp)
+                                            .alpha(if (isSelected) 1f else 0.5f))
+                                    } else {
+                                        ShowCardBack(
+                                            activity, card, Modifier
+                                                .padding(4.dp)
+                                                .alpha(0.33f)
+                                        )
                                     }
                                 }
                             }

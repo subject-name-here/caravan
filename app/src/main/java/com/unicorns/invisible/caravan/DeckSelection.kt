@@ -68,9 +68,7 @@ fun DeckSelection(
 
     var setCustomDeck by rememberSaveable { mutableStateOf(false) }
     if (setCustomDeck) {
-        SetCustomDeck(activity = activity) {
-            setCustomDeck = false
-        }
+        SetCustomDeck(activity = activity) { setCustomDeck = false }
         return
     }
 
@@ -88,7 +86,7 @@ fun DeckSelection(
                 ),
             state = state,
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
+            verticalArrangement = Arrangement.Top,
         ) {
             item {
                 Spacer(modifier = Modifier.height(20.dp))

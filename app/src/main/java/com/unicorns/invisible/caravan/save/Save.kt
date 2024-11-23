@@ -20,12 +20,6 @@ class Save(val isUsable: Boolean) {
     @EncodeDefault
     var selectedDeck: Pair<CardBack, Boolean> = CardBack.STANDARD to false
 
-    // TODO: deck is owned if you have at least one card from it!!!!
-    @EncodeDefault
-    val ownedDecks = listOf(CardBack.STANDARD)
-    @EncodeDefault
-    val ownedDecksAlt = listOf(CardBack.STANDARD)
-
     @EncodeDefault
     val altDecksChosen = CardBack.entries.associateWith { false }.toMutableMap()
 
@@ -34,6 +28,11 @@ class Save(val isUsable: Boolean) {
 
     @EncodeDefault
     val availableCards: MutableSet<Card> = HashSet(CustomDeck(CardBack.STANDARD, false).toList())
+
+    val ownedDecks
+        get() = availableCards.filterNot { it.isAlt }.map { it.back }.distinct()
+    val ownedDecksAlt
+        get() = availableCards.filter { it.isAlt }.map { it.back }.distinct()
 
     fun getCustomDeckCopy(): CustomDeck {
         val deck = CustomDeck()

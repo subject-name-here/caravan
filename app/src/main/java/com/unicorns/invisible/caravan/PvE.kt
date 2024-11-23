@@ -74,6 +74,7 @@ fun ShowSelectPvE(
     var showStats by rememberScoped { mutableStateOf(false) }
     var showSelectEnemy by rememberScoped { mutableStateOf(false) }
     var showTower by rememberScoped { mutableStateOf(false) }
+    var showTutorial by rememberScoped { mutableStateOf(false) }
 
     when {
         showStats -> {
@@ -87,6 +88,9 @@ fun ShowSelectPvE(
         showTower -> {
             TowerScreen(activity, showAlertDialog) { showTower = false }
             return
+        }
+        showTutorial -> {
+            // TODO
         }
     }
 
@@ -129,6 +133,8 @@ fun ShowSelectPvE(
                 SubMenuItem(stringResource(R.string.tower)) { showTower = true }
                 Spacer(modifier = Modifier.height(12.dp))
                 SubMenuItem(stringResource(R.string.pve_stats)) { showStats = true }
+                Spacer(modifier = Modifier.height(12.dp))
+                SubMenuItem("Tutorial") {  }
             }
         }
     }
