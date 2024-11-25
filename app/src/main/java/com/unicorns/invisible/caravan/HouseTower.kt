@@ -252,7 +252,7 @@ fun TowerScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             item {
-                if (level > 0) {
+                if (level in 1..10) {
                     Column(
                         Modifier.fillMaxWidth(),
                         horizontalAlignment = Alignment.CenterHorizontally

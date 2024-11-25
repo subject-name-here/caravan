@@ -105,7 +105,11 @@ fun SetCustomDeck(
                 item {
                     CardBack.entries.filter { it in save.ownedDecks }.forEach { back ->
                         var check by rememberSaveable { mutableStateOf(save.altDecksChosen[back] == true) }
-                        Row(Modifier.fillMaxWidth().padding(4.dp), horizontalArrangement = Arrangement.Start) {
+                        Row(
+                            Modifier.fillMaxWidth().padding(4.dp),
+                            horizontalArrangement = Arrangement.Start,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
                             Column(
                                 Modifier
                                     .padding(horizontal = 8.dp)
@@ -209,7 +213,7 @@ fun SetCustomDeck(
                             }
                         }
                         val state = rememberLazyListState()
-                        key(check) {
+                        key(check, updater) {
                             LazyRow(
                                 Modifier
                                     .scrollbar(
@@ -270,39 +274,63 @@ fun SetCustomDeck(
 
 @Composable
 fun ShowCharacteristics(activity: MainActivity) {
-    // TODO: decks used (MAX IS 6!!!)
-    Row(
+    Column(
         Modifier
-            .padding(6.dp)
             .fillMaxWidth()
-            .wrapContentHeight(),
-        verticalAlignment = Alignment.CenterVertically
+            .wrapContentHeight()
     ) {
-        val deck = save.getCustomDeckCopy()
-        val deckSizeMin = CResources.MIN_DECK_SIZE
-        val color1 = if (deck.size < deckSizeMin) Color.Red else getTextColor(activity)
-        val color2 = if (deck.size < deckSizeMin) Color.Red else getTextStrokeColor(activity)
-        TextFallout(
-            text = stringResource(R.string.custom_deck_size, deck.size, deckSizeMin),
-            color1,
-            color2,
-            14.sp,
-            Alignment.Center,
-            Modifier.fillMaxWidth(0.5f),
-            TextAlign.Center
-        )
-        val nonFaces = deck.count { !it.isFace() }
-        val nonFacesMin = CResources.MIN_NUM_OF_NUMBERS
-        val color3 = if (nonFaces < nonFacesMin) Color.Red else getTextColor(activity)
-        val color4 = if (nonFaces < nonFacesMin) Color.Red else getTextStrokeColor(activity)
-        TextFallout(
-            text = stringResource(R.string.custom_deck_non_faces, nonFaces, nonFacesMin),
-            color3,
-            color4,
-            14.sp,
-            Alignment.Center,
-            Modifier.fillMaxWidth(),
-            TextAlign.Center,
-        )
+        Row(
+            Modifier
+                .padding(6.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            val deck = save.getCustomDeckCopy()
+            val deckSizeMin = CResources.MIN_DECK_SIZE
+            val color1 = if (deck.size < deckSizeMin) Color.Red else getTextColor(activity)
+            val color2 = if (deck.size < deckSizeMin) Color.Red else getTextStrokeColor(activity)
+            TextFallout(
+                text = stringResource(R.string.custom_deck_size, deck.size, deckSizeMin),
+                color1,
+                color2,
+                14.sp,
+                Alignment.Center,
+                Modifier.fillMaxWidth(0.5f),
+                TextAlign.Center
+            )
+            val nonFaces = deck.count { !it.isFace() }
+            val nonFacesMin = CResources.MIN_NUM_OF_NUMBERS
+            val color3 = if (nonFaces < nonFacesMin) Color.Red else getTextColor(activity)
+            val color4 = if (nonFaces < nonFacesMin) Color.Red else getTextStrokeColor(activity)
+            TextFallout(
+                text = stringResource(R.string.custom_deck_non_faces, nonFaces, nonFacesMin),
+                color3,
+                color4,
+                14.sp,
+                Alignment.Center,
+                Modifier.fillMaxWidth(),
+                TextAlign.Center,
+            )
+        }
+        Row(
+            Modifier
+                .padding(6.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
+        ) {
+            val deck = save.getCustomDeckCopy()
+            val decksUsed = deck.toList().groupBy { it.back }.keys.size
+            val decksUsedMax = CResources.MAX_NUMBER_OF_DECKS
+            val color1 = if (decksUsed > decksUsedMax) Color.Red else getTextColor(activity)
+            val color2 = if (decksUsed > decksUsedMax) Color.Red else getTextStrokeColor(activity)
+            TextFallout(
+                text = stringResource(R.string.custom_deck_num_of_decks, decksUsed, decksUsedMax),
+                color1,
+                color2,
+                14.sp,
+                Alignment.Center,
+                Modifier.fillMaxWidth(0.5f),
+                TextAlign.Center
+            )
+        }
     }
 }

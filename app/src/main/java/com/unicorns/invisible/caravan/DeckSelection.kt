@@ -121,14 +121,15 @@ fun DeckSelection(
 
                 @Composable
                 fun showDeckBackRow(back: CardBack) {
-                    if (back in save.ownedDecks) {
+                    val isStandard = back == CardBack.STANDARD
+                    if (isStandard || back in save.ownedDecks) {
                         Row {
                             AsyncImage(
                                 model = "file:///android_asset/caravan_cards_back/" + back.getCardBackAsset(),
                                 contentDescription = "",
                                 modifier = getModifier(back, false).clip(RoundedCornerShape(6f))
                             )
-                            if (back.hasAltPlayable() && back in save.ownedDecksAlt) {
+                            if (isStandard || back.hasAltPlayable() && back in save.ownedDecksAlt) {
                                 Spacer(modifier = Modifier.width(12.dp))
                                 AsyncImage(
                                     model = "file:///android_asset/caravan_cards_back/" + back.getCardBackAltAsset(),

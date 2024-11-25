@@ -61,6 +61,7 @@
 
     <string name="custom_deck_size">Deck size: %1$s\n(must be at least %2$s)</string>
     <string name="custom_deck_non_faces">Number of non-face cards: %1$s\n(must be at least %2$s)</string>
+    <string name="custom_deck_num_of_decks">Decks used: %1$s\n(must be at most %2$s)</string>
 
     <string name="pve_select_enemy">Select the Opponent</string>
 
