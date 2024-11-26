@@ -382,7 +382,7 @@ fun TowerScreen(
                         5 -> 64
                         6 -> 128
                         7 -> 256
-                        8 -> 399
+                        8 -> 384
                         9 -> 512
                         else -> if (frankSequencePlayed) 2077 else 1024
                     }

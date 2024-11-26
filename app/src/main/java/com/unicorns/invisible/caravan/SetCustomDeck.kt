@@ -85,6 +85,7 @@ fun SetCustomDeck(
 
     val mainState = rememberLazyListState()
     var updater by remember { mutableStateOf(false) }
+    var updaterAll by remember { mutableStateOf(false) }
     MenuItemOpen(activity, stringResource(R.string.deck_custom), "<-", goBack) {
         Column(Modifier.fillMaxSize().background(getBackgroundColor(activity))) {
             key (updater) {
@@ -144,6 +145,7 @@ fun SetCustomDeck(
                                     Modifier.fillMaxWidth()
                                         .background(getTextBackgroundColor(activity))
                                         .clickableSelect(activity) {
+                                            updaterAll = !updaterAll
                                             updater = !updater
                                             CustomDeck(back, check).toList()
                                                 .filter { isAvailable(it) }
@@ -165,6 +167,7 @@ fun SetCustomDeck(
                                     Modifier.fillMaxWidth()
                                         .background(getTextBackgroundColor(activity))
                                         .clickableCancel(activity) {
+                                            updaterAll = !updaterAll
                                             updater = !updater
                                             CustomDeck(back, check).toList()
                                                 .filter { isAvailable(it) }
@@ -213,7 +216,7 @@ fun SetCustomDeck(
                             }
                         }
                         val state = rememberLazyListState()
-                        key(check, updater) {
+                        key(check, updaterAll) {
                             LazyRow(
                                 Modifier
                                     .scrollbar(

@@ -71,9 +71,6 @@ fun ShowDailys(
                         }
                         Spacer(Modifier.height(16.dp))
                     }
-                }
-                item {
-                    Spacer(Modifier.height(16.dp))
                     Row(
                         Modifier.fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically,

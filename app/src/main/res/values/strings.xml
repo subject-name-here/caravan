@@ -357,7 +357,7 @@
     <string name="custom_deck_only">(Custom deck only!)</string>
     <string name="you_can_change_custom_deck_between_games">(You can change custom deck between games.)</string>
     <string name="progress_is_saved_between_sessions">(Progress is saved between sessions!).</string>
-    <string name="tickets_please_you_have_tickets">Tickets, please!\n(You have tickets: %1$s.)</string>
+    <string name="tickets_please_you_have_tickets">Tickets, please!\n(You have: %1$s tickets.)</string>
     <string name="pay_1_ticket">Pay 1 ticket</string>
     <string name="hey">HEY!</string>
     <string name="you_don_t_have_a_ticket_on_you">You don\'t have a ticket on you.</string>

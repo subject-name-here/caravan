@@ -59,6 +59,8 @@ import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.challenge.Challenge
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.save.Save
+import com.unicorns.invisible.caravan.save.loadSave
+import com.unicorns.invisible.caravan.save.processOldSave
 import com.unicorns.invisible.caravan.save.saveData
 import com.unicorns.invisible.caravan.utils.SliderCustom
 import com.unicorns.invisible.caravan.utils.TextFallout
@@ -121,12 +123,17 @@ class MainActivity : SaveDataActivity() {
     }
 
     override fun onSnapshotClientInitialized() {
-        CoroutineScope(Dispatchers.Default).launch {
+        CoroutineScope(Dispatchers.IO).launch {
             if (!save.isUsable) {
+                val loadedSave = loadSave(this@MainActivity)
+                if (loadedSave != null) {
+                    save = loadedSave
+                } else {
+                    save = Save(isUsable = true)
+                    processOldSave(this@MainActivity)
+                    saveData(this@MainActivity)
+                }
 
-                // TODO: init save
-
-                save = Save(isUsable = true)
                 isSaveLoaded.postValue(true)
 
                 startRadio(this@MainActivity)

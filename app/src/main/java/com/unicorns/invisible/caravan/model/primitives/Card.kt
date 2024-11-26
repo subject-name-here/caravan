@@ -2,11 +2,14 @@ package com.unicorns.invisible.caravan.model.primitives
 
 import com.unicorns.invisible.caravan.model.CardBack
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 
 
 @Serializable
 class Card(val rank: Rank, val suit: Suit, val back: CardBack, val isAlt: Boolean) {
+    @Transient
     var handAnimationMark = AnimationMark.STABLE
+    @Transient
     var caravanAnimationMark = AnimationMark.STABLE
 
     fun isFace() = rank.isFace()

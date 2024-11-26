@@ -9,12 +9,12 @@ import com.google.android.gms.games.AchievementsClient
 import com.google.android.gms.games.PlayGames
 import com.google.android.gms.games.PlayGamesSdk
 import com.google.android.gms.games.SnapshotsClient
+import com.google.android.gms.games.snapshot.Snapshot
 import com.google.android.gms.games.snapshot.SnapshotMetadataChange
 import com.google.android.gms.tasks.Task
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
-import java.io.IOException
 
 
 var snapshotsClient: SnapshotsClient? = null
@@ -22,26 +22,15 @@ var snapshotsClient: SnapshotsClient? = null
 
 abstract class SaveDataActivity : AppCompatActivity() {
     suspend fun uploadDataToDrive(data: ByteArray): Boolean {
-        if (snapshotsClient == null) return false
-        val conflictResolutionPolicy = SnapshotsClient.RESOLUTION_POLICY_MOST_RECENTLY_MODIFIED
-        val res = snapshotsClient!!.open(SAVE_FILE_NAME, true, conflictResolutionPolicy)
-            .addOnFailureListener { e ->
-                Toast.makeText(this, e.toString(), Toast.LENGTH_LONG).show()
-            }
-            .continueWith { task ->
-                if (task.exception != null) {
-                    return@continueWith false
-                }
-                if (task.result.isConflict) {
-                    return@continueWith false
-                }
-                val snapshot = task.result.data
-                snapshot!!.snapshotContents.writeBytes(data)
-                val metadataChange = SnapshotMetadataChange.Builder().build()
-                val result = snapshotsClient!!.commitAndClose(snapshot, metadataChange)
-                result.isSuccessful
-            }.await()
-        return res
+        val snapshot = getSnapshot(SAVE_FILE_NAME)
+        return try {
+            snapshot!!.snapshotContents.writeBytes(data)
+            val metadataChange = SnapshotMetadataChange.Builder().build()
+            val result = snapshotsClient!!.commitAndClose(snapshot, metadataChange)
+            result.isSuccessful
+        } catch (_: Exception) {
+            false
+        }
     }
 
     var achievementsClient: AchievementsClient? = null
@@ -101,6 +90,15 @@ abstract class SaveDataActivity : AppCompatActivity() {
     }
 
     private suspend fun fetchFileFromDrive(fileName: String): ByteArray? {
+        val snapshot = getSnapshot(fileName)
+        return try {
+            snapshot!!.snapshotContents.readFully()
+        } catch (_: Exception) {
+            null
+        }
+    }
+
+    private suspend fun getSnapshot(fileName: String): Snapshot? {
         if (snapshotsClient == null) return null
         val conflictResolutionPolicy = SnapshotsClient.RESOLUTION_POLICY_MOST_RECENTLY_MODIFIED
         return snapshotsClient!!.open(fileName, true, conflictResolutionPolicy)
@@ -114,14 +112,8 @@ abstract class SaveDataActivity : AppCompatActivity() {
                 if (task.result.isConflict) {
                     return@continueWith null
                 }
-                val snapshot = task.result.data
-                return@continueWith try {
-                    snapshot!!.snapshotContents.readFully()
-                } catch (_: IOException) {
-                    null
-                }
+                return@continueWith task.result.data
             }.await()
-        // TODO: work with snapshot can be moved away.
     }
 
     companion object {

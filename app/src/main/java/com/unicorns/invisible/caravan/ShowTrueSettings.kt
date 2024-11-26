@@ -32,6 +32,10 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.unicorns.invisible.caravan.model.CardBack
+import com.unicorns.invisible.caravan.model.primitives.Card
+import com.unicorns.invisible.caravan.model.primitives.Rank
+import com.unicorns.invisible.caravan.model.primitives.Suit
 import com.unicorns.invisible.caravan.save.saveData
 import com.unicorns.invisible.caravan.utils.MenuItemOpen
 import com.unicorns.invisible.caravan.utils.SwitchCustomUsualBackground
@@ -261,14 +265,29 @@ fun ShowTrueSettings(
                                             }
                                         }
 
-//                                        404 -> {
-//                                            activity.save?.let {
-//                                                it.storyChaptersProgress = 0
-//                                                it.altStoryChaptersProgress = 0
-//                                                saveOnGD(activity)
-//                                                playYesBeep(activity)
-//                                            }
-//                                        }
+                                        404 -> {
+                                            save.let {
+                                                it.storyChaptersProgress = 0
+                                                it.altStoryChaptersProgress = 0
+                                                saveData(activity)
+                                                playYesBeep(activity)
+                                            }
+                                        }
+
+                                        9900 -> {
+                                            save.let {
+                                                listOf(Suit.HEARTS, Suit.SPADES).forEach { suit ->
+                                                    Rank.entries.forEach { rank ->
+                                                        if (rank != Rank.JOKER) {
+                                                            it.availableCards.add(Card(rank, suit, CardBack.STANDARD, true))
+                                                        }
+                                                    }
+                                                }
+
+                                                saveData(activity)
+                                                playYesBeep(activity)
+                                            }
+                                        }
 
                                         // TODO: more cheats
                                     }

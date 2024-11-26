@@ -20,6 +20,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -52,6 +53,10 @@ fun DeckSelection(
     var selectedDeck by rememberScoped { mutableStateOf(save.selectedDeck) }
     @Composable
     fun getModifier(cardBack: CardBack, isAlt: Boolean): Modifier {
+        if (!isAlt && cardBack !in save.ownedDecks || isAlt && cardBack !in save.ownedDecksAlt) {
+            return Modifier.padding(4.dp).alpha(0.33f)
+        }
+
         val (backSelected, isAltSelected) = selectedDeck
         return if (backSelected == cardBack && isAltSelected == isAlt) {
             Modifier.border(width = 3.dp, color = getSelectionColor(activity))
@@ -121,24 +126,27 @@ fun DeckSelection(
 
                 @Composable
                 fun showDeckBackRow(back: CardBack) {
-                    val isStandard = back == CardBack.STANDARD
-                    if (isStandard || back in save.ownedDecks) {
+                    if (back.hasAltPlayable()) {
                         Row {
                             AsyncImage(
                                 model = "file:///android_asset/caravan_cards_back/" + back.getCardBackAsset(),
                                 contentDescription = "",
                                 modifier = getModifier(back, false).clip(RoundedCornerShape(6f))
                             )
-                            if (isStandard || back.hasAltPlayable() && back in save.ownedDecksAlt) {
-                                Spacer(modifier = Modifier.width(12.dp))
-                                AsyncImage(
-                                    model = "file:///android_asset/caravan_cards_back/" + back.getCardBackAltAsset(),
-                                    contentDescription = "",
-                                    modifier = getModifier(back, true).clip(RoundedCornerShape(6f))
-                                )
-                            }
+                            Spacer(modifier = Modifier.width(12.dp))
+                            AsyncImage(
+                                model = "file:///android_asset/caravan_cards_back/" + back.getCardBackAltAsset(),
+                                contentDescription = "",
+                                modifier = getModifier(back, true).clip(RoundedCornerShape(6f))
+                            )
                         }
                         Spacer(modifier = Modifier.height(12.dp))
+                    } else {
+                        AsyncImage(
+                            model = "file:///android_asset/caravan_cards_back/" + back.getCardBackAsset(),
+                            contentDescription = "",
+                            modifier = getModifier(back, false).clip(RoundedCornerShape(6f))
+                        )
                     }
                 }
 
@@ -150,9 +158,11 @@ fun DeckSelection(
                 showDeckBackRow(CardBack.LUCKY_38)
                 showDeckBackRow(CardBack.VAULT_21)
                 showDeckBackRow(CardBack.SIERRA_MADRE)
-                showDeckBackRow(CardBack.MADNESS)
-                showDeckBackRow(CardBack.ENCLAVE)
-                showDeckBackRow(CardBack.CHINESE)
+                Row {
+                    showDeckBackRow(CardBack.MADNESS)
+                    showDeckBackRow(CardBack.ENCLAVE)
+                    showDeckBackRow(CardBack.CHINESE)
+                }
             }
         }
     }

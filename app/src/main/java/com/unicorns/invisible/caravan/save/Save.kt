@@ -9,6 +9,7 @@ import com.unicorns.invisible.caravan.model.primitives.CustomDeck
 import kotlinx.serialization.EncodeDefault
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
