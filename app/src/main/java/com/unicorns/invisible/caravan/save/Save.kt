@@ -9,10 +9,10 @@ import com.unicorns.invisible.caravan.model.primitives.CustomDeck
 import kotlinx.serialization.EncodeDefault
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.Transient
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import kotlin.random.Random
 
 
 @OptIn(ExperimentalSerializationApi::class)
@@ -57,6 +57,7 @@ class Save(val isUsable: Boolean) {
     var gamesFinished = 0
     @EncodeDefault
     var wins = 0
+    // TODO: more stats (caps won/lost, the biggest bet, ...)
 
     @EncodeDefault
     var radioVolume = 1f
@@ -81,17 +82,13 @@ class Save(val isUsable: Boolean) {
 
     @EncodeDefault
     var challengesHash = getCurrentDateHashCode()
-    private fun getCurrentDateHashCode(): Int {
+    fun getCurrentDateHashCode(): Int {
         return SimpleDateFormat("yyyyMMdd", Locale.ENGLISH).format(Date()).hashCode()
     }
     @EncodeDefault
     var challenges: MutableList<Challenge> = Challenge.initChallenges(challengesHash)
     fun updateChallenges() {
-        val currentHash = getCurrentDateHashCode()
-        if (currentHash != challengesHash) {
-            challengesHash = currentHash
-            challenges = Challenge.initChallenges(challengesHash)
-        }
+        challenges = Challenge.initChallenges(challengesHash)
     }
 
     @EncodeDefault
@@ -106,4 +103,20 @@ class Save(val isUsable: Boolean) {
     var prize1Activated = false
     @EncodeDefault
     var prize2Activated = false
+
+    @EncodeDefault
+    var oliverStatus = 0
+
+    @EncodeDefault
+    val enemyCapsLeft = HashMap<Int, Int>()
+    fun updateDailyStats() {
+        val random = Random(challengesHash)
+        repeat(30) {
+            enemyCapsLeft[it] = if (it % 6 == 5) {
+                random.nextInt(75, 100)
+            } else {
+                random.nextInt(15, 50)
+            }
+        }
+    }
 }

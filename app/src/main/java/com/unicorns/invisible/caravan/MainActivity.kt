@@ -629,7 +629,12 @@ class MainActivity : SaveDataActivity() {
 
                     else -> {
                         LaunchedEffect(Unit) {
-                            save.updateChallenges()
+                            val currentHash = save.getCurrentDateHashCode()
+                            if (currentHash != save.challengesHash) {
+                                save.challengesHash = currentHash
+                                save.updateChallenges()
+                                save.updateDailyStats()
+                            }
                         }
 
                         BoxWithConstraints {

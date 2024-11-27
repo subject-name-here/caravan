@@ -48,7 +48,11 @@ import com.unicorns.invisible.caravan.model.enemy.EnemyStory1
 import com.unicorns.invisible.caravan.model.enemy.EnemyStory2
 import com.unicorns.invisible.caravan.model.enemy.EnemyStory3
 import com.unicorns.invisible.caravan.model.enemy.EnemyStory4
-import com.unicorns.invisible.caravan.model.enemy.EnemySunny
+import com.unicorns.invisible.caravan.model.enemy.EnemyStory5
+import com.unicorns.invisible.caravan.model.enemy.EnemyStory6
+import com.unicorns.invisible.caravan.model.enemy.EnemyStory7
+import com.unicorns.invisible.caravan.model.enemy.EnemyStory8
+import com.unicorns.invisible.caravan.model.enemy.EnemyStory9A
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.Card
 import com.unicorns.invisible.caravan.model.primitives.CustomDeck
@@ -302,20 +306,27 @@ fun DialogLine(activity: MainActivity, line: String, isSelect: Boolean = true, o
 fun getDeck(chapterNumber: Int): CustomDeck {
     return when (chapterNumber) {
         0 -> {
-            CustomDeck(CardBack.STANDARD, true)
+            CustomDeck(CardBack.STANDARD, false)
         }
         1, 2 -> {
+            CustomDeck(CardBack.STANDARD, false).apply {
+                addAll(CustomDeck(CardBack.SIERRA_MADRE, true))
+            }
+        }
+        3 -> {
+            CustomDeck().apply {
+                add(Card(Rank.ACE, Suit.SPADES, CardBack.GOMORRAH, false))
+                add(Card(Rank.ACE, Suit.SPADES, CardBack.ULTRA_LUXE, false))
+                add(Card(Rank.ACE, Suit.SPADES, CardBack.TOPS, false))
+            }
+        }
+        4 -> {
             CustomDeck(CardBack.STANDARD, true).apply {
                 addAll(CustomDeck(CardBack.SIERRA_MADRE, true))
             }
         }
-        4 -> {
-            CustomDeck(CardBack.STANDARD, false).apply {
-                addAll(CustomDeck(CardBack.SIERRA_MADRE, true))
-            }
-        }
         5, 6, 7, 8 -> {
-            CustomDeck(CardBack.STANDARD, false).apply {
+            CustomDeck(CardBack.STANDARD, true).apply {
                 addAll(CustomDeck(CardBack.SIERRA_MADRE, true))
                 addAll(CustomDeck(CardBack.MADNESS, false))
             }
@@ -889,7 +900,7 @@ fun ShowStoryChapter5(
     if (isGame) {
         StartStoryGame(
             activity,
-            EnemySunny,
+            EnemyStory5,
             CResources(getDeck(4)),
             showAlertDialog,
             {},
@@ -1066,7 +1077,7 @@ fun ShowStoryChapter6(
     }
 
     if (isGame) {
-        val enemy = rememberScoped { EnemySunny }
+        val enemy = rememberScoped { EnemyStory6 }
         StartStoryGame(
             activity,
             enemy,
@@ -1223,7 +1234,7 @@ fun ShowStoryChapter7(
     if (isGame) {
         StartStoryGame(
             activity,
-            EnemySunny,
+            EnemyStory7,
             CResources(getDeck(6)),
             showAlertDialog,
             {},
@@ -1338,7 +1349,7 @@ fun ShowStoryChapter8(
     var isGame by rememberSaveable { mutableStateOf(false) }
     var gameResult by rememberSaveable { mutableIntStateOf(0) }
     if (isGame) {
-        val enemy by rememberScoped { mutableStateOf(EnemySunny) }
+        val enemy by rememberScoped { mutableStateOf(EnemyStory8) }
         StartStoryGame(
             activity,
             enemy,
@@ -1934,7 +1945,7 @@ fun ShowStoryChapter9A(
     if (isGame) {
         StartStoryGame(
             activity,
-            EnemySunny,
+            EnemyStory9A,
             CResources(getDeck(10)),
             showAlertDialog,
             {},

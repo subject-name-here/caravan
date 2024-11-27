@@ -36,7 +36,15 @@ import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.enemy.Enemy
 import com.unicorns.invisible.caravan.model.enemy.EnemyFrank
-import com.unicorns.invisible.caravan.model.enemy.EnemySunny
+import com.unicorns.invisible.caravan.model.enemy.EnemyTower1
+import com.unicorns.invisible.caravan.model.enemy.EnemyTower2
+import com.unicorns.invisible.caravan.model.enemy.EnemyTower3
+import com.unicorns.invisible.caravan.model.enemy.EnemyTower4
+import com.unicorns.invisible.caravan.model.enemy.EnemyTower5
+import com.unicorns.invisible.caravan.model.enemy.EnemyTower6
+import com.unicorns.invisible.caravan.model.enemy.EnemyTower7
+import com.unicorns.invisible.caravan.model.enemy.EnemyTower8
+import com.unicorns.invisible.caravan.model.enemy.EnemyTower9
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.CustomDeck
 import com.unicorns.invisible.caravan.save.saveData
@@ -135,60 +143,60 @@ fun TowerScreen(
     }
     when {
         showGameLevel1 -> {
-            showTower(EnemySunny) {
+            showTower(EnemyTower1) {
                 showGameLevel1 = false
             }
             return
         }
         showGameLevel2 -> {
-            showTower(EnemySunny) {
+            showTower(EnemyTower2) {
                 showGameLevel2 = false
             }
             return
         }
         showGameLevel3 -> {
             // TODO: Papa Khan (or Papa Smurf)
-            showTower(EnemySunny) {
+            showTower(EnemyTower3) {
                 showGameLevel3 = false
             }
             return
         }
         showGameLevel4 -> {
             // TODO: Jason Bright
-            showTower(EnemySunny) {
+            showTower(EnemyTower4) {
                 showGameLevel4 = false
             }
             return
         }
         showGameLevel5 -> {
-            showTower(EnemySunny) {
+            showTower(EnemyTower5) {
                 showGameLevel5 = false
             }
             return
         }
         showGameLevel6 -> {
             // TODO: Dean Domino
-            showTower(EnemySunny) {
+            showTower(EnemyTower6) {
                 showGameLevel6 = false
             }
             return
         }
         showGameLevel7 -> {
-            showTower(EnemySunny) {
+            showTower(EnemyTower7) {
                 showGameLevel7 = false
             }
             return
         }
         showGameLevel8 -> {
             // TODO: Cook-Cook
-            showTower(EnemySunny) {
+            showTower(EnemyTower8) {
                 showGameLevel8 = false
             }
             return
         }
         showGameLevel9 -> {
             // TODO: Caesar
-            showTower(EnemySunny) {
+            showTower(EnemyTower9) {
                 showGameLevel9 = false
             }
             return

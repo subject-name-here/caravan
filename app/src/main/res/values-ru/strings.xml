@@ -71,6 +71,7 @@
     <string name="snuffles">Нюхач</string>
     <string name="easy_pete">Easy Pete</string>
     <string name="enemy_significant_other" translatable="false">EXPERIMENT #666: Significant Other</string>
+    <string name="madness_cardinal">Madness Cardinal</string>
     <string name="luc10" translatable="false">LUC10</string>
     <string name="dr_mobius">Dr. Mobius</string>
     <string name="man_in_the_mirror" translatable="false">ЯОЯЯIM ЭHT ИI ИAM</string>
@@ -287,6 +288,23 @@
     <string name="style_vault_21">Убежище 21</string>
     <string name="style_vault_22">Убежище 22</string>
     <string name="style_enclave">Анклав</string>
+
+    <string name="beat_enemies_1_name">Отцы и дети</string>
+    <string name="beat_enemies_1_desc">Beat Veronica and Father Elijah.</string>
+    <string name="beat_enemies_2_name">Элита НКР</string>
+    <string name="beat_enemies_2_desc">Beat Chief Hanlon and Ambassador Crooker.</string>
+    <string name="beat_enemies_3_name">Бастарды Удачи</string>
+    <string name="beat_enemies_3_desc">Beat Benny and LUC10.</string>
+    <string name="beat_enemies_4_name">Дети Пустоши</string>
+    <string name="beat_enemies_4_desc">Beat Tabitha and Snuffles.</string>
+    <string name="beat_enemies_5_name">Триархия Малых Городов</string>
+    <string name="beat_enemies_5_desc">Beat Johnson Nash, No-Bark Noonan and Easy Pete.</string>
+    <string name="beat_enemies_6_name">Тот, кто жалеет, и Тот, кто забывает</string>
+    <string name="beat_enemies_6_desc">Beat Ulysses and Dr. Mobius.</string>
+    <string name="beat_enemies_7_name">V значит Виктория</string>
+    <string name="beat_enemies_7_desc">Beat Veronica, Victor and Vulpes Inculta.</string>
+    <string name="beat_enemies_8_name">Камео!!</string>
+    <string name="beat_enemies_8_desc">Beat Madness Cardinal and The Man In The Mirror.</string>
 
     <string name="play_cards_of_rank">Сыграйте %1$s карт ранга %2$s.</string>
 

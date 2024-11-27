@@ -32,7 +32,7 @@ sealed interface Challenge {
             val rank = Rank.entries.random(rand)
             challenges.add(ChallengePlayCard(rank))
             challenges.add(ChallengeDoNotPlayCards((1..7).random(rand)))
-            challenges.add(ChallengeBeatEnemies((1..7).random(rand)))
+            challenges.add(ChallengeBeatEnemies((1..8).random(rand)))
 
             val specialCode = (1..7).random(rand)
             when (specialCode) {

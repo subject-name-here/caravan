@@ -14,7 +14,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 class EnemyPlayer(
     private val startDeck: CustomDeck,
-) : Enemy() {
+) : Enemy {
     override fun createDeck(): CResources = CResources(startDeck)
 
     var latestMoveResponse: MoveResponse? = null

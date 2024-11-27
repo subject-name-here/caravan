@@ -61,11 +61,13 @@ private fun saveOnGD(activity: MainActivity) {
 
 suspend fun loadSave(activity: MainActivity): Save? {
     try {
-        val data = activity.fetchDataFromDrive()?.toString(StandardCharsets.UTF_8)
-        return if (data != null && data != "" && data != "null") {
-            json.decodeFromString<Save>(data)
-        } else {
-            loadLocalSave(activity)
+        return loadLocalSave(activity) ?: run {
+            val data = activity.fetchDataFromDrive()?.toString(StandardCharsets.UTF_8)
+            if (data != null && data != "" && data != "null") {
+                json.decodeFromString<Save>(data)
+            } else {
+                null
+            }
         }
     } catch (_: Exception) {
         MainScope().launch {

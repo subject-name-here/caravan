@@ -13,7 +13,7 @@ import kotlinx.serialization.Transient
 
 
 @Serializable
-class EnemyFinalBossStory(@Transient private var update: Int = 0) : Enemy() {
+class EnemyFinalBossStory(@Transient private var update: Int = 0) : Enemy {
     override fun createDeck(): CResources = CResources(CustomDeck(CardBack.CHINESE, false))
 
     @Transient

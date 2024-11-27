@@ -11,7 +11,7 @@ import kotlinx.serialization.Serializable
 
 
 @Serializable
-class EnemyStory3 : Enemy() {
+class EnemyStory3 : Enemy {
     override fun createDeck(): CResources = CResources(CustomDeck(CardBack.TOPS, false).apply {
         removeAll(toList().filter { it.isFace() && it.rank != Rank.JACK })
     })

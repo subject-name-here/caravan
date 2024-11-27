@@ -11,7 +11,7 @@ import kotlinx.serialization.Serializable
 
 
 @Serializable
-data object EnemyFrank : Enemy() {
+data object EnemyFrank : Enemy {
     override fun createDeck(): CResources = CResources(CustomDeck(CardBack.ENCLAVE, false).apply {
         add(Card(Rank.ACE, Suit.HEARTS, CardBack.ENCLAVE, true))
         add(Card(Rank.ACE, Suit.CLUBS, CardBack.ENCLAVE, true))

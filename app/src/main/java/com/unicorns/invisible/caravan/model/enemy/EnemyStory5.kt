@@ -3,14 +3,14 @@ package com.unicorns.invisible.caravan.model.enemy
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.primitives.CResources
-import com.unicorns.invisible.caravan.model.primitives.CustomDeck
 import com.unicorns.invisible.caravan.model.primitives.Rank
 import kotlinx.serialization.Serializable
+import kotlin.random.Random
 
 
 @Serializable
-data object EnemyStory2 : Enemy {
-    override fun createDeck(): CResources = CResources(CustomDeck(CardBack.ULTRA_LUXE, false))
+data object EnemyStory5 : Enemy {
+    override fun createDeck(): CResources = CResources(CardBack.MADNESS, false)
 
     override fun makeMove(game: Game) {
         val hand = game.enemyCResources.hand
@@ -22,7 +22,13 @@ data object EnemyStory2 : Enemy {
             return
         }
 
-        hand.withIndex().sortedBy { it.value.rank.value }.forEach { (cardIndex, card) ->
+        val overWeightCaravans = game.enemyCaravans.filter { it.getValue() > 26 }
+        if (overWeightCaravans.isNotEmpty()) {
+            overWeightCaravans.random().dropCaravan()
+            return
+        }
+
+        hand.withIndex().filter { Random.nextBoolean() }.forEach { (cardIndex, card) ->
             if (!card.rank.isFace()) {
                 game.enemyCaravans.shuffled().forEach { caravan ->
                     if (caravan.getValue() + card.rank.value <= 26) {
@@ -56,40 +62,6 @@ data object EnemyStory2 : Enemy {
                     }
                 }
             }
-            if (card.rank == Rank.QUEEN) {
-                val possibleQueenCaravans = game.enemyCaravans
-                    .filter { c ->
-                        c.size >= 2 && hand.all { !c.canPutCardOnTop(it) } && c.cards.last().canAddModifier(card)
-                    }
-                if (possibleQueenCaravans.isNotEmpty()) {
-                    possibleQueenCaravans
-                        .random()
-                        .cards
-                        .last()
-                        .addModifier(game.enemyCResources.removeFromHand(cardIndex))
-                    return
-                }
-            }
-
-            if (card.rank == Rank.JOKER) {
-                val cards = (game.playerCaravans + game.enemyCaravans).flatMap { it.cards }.groupBy { it.card.rank }
-                val maxRank = cards.entries.maxBy { it.value.size }
-                val cardsRank = maxRank.value
-                if (cardsRank.isNotEmpty()) {
-                    val cardToJoke = cardsRank.random()
-                    if (cardToJoke.canAddModifier(card)) {
-                        cardToJoke.addModifier(game.enemyCResources.removeFromHand(cardIndex))
-                        game.jokerPlayedSound()
-                        return
-                    }
-                }
-            }
-        }
-
-        val overWeightCaravans = game.enemyCaravans.filter { it.getValue() > 26 }
-        if (overWeightCaravans.isNotEmpty()) {
-            overWeightCaravans.random().dropCaravan()
-            return
         }
 
         game.enemyCResources.dropCardFromHand(hand.indices.random())

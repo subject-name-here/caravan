@@ -599,7 +599,7 @@ fun StartPvP(
             playWinSound(activity)
             showAlertDialog(
                 activity.getString(R.string.result),
-                activity.getString(R.string.you_win) + winCard(activity, save, CardBack.STANDARD, isAlt = true,),
+                activity.getString(R.string.you_win) + winCard(activity, CardBack.STANDARD, isAlt = true),
                 null
             )
             saveData(activity)

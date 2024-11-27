@@ -1,22 +1,32 @@
 package com.unicorns.invisible.caravan
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -26,7 +36,13 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -34,18 +50,37 @@ import com.sebaslogen.resaca.rememberScoped
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.enemy.Enemy
-import com.unicorns.invisible.caravan.model.enemy.EnemyCliff
-import com.unicorns.invisible.caravan.model.enemy.EnemyEasy
-import com.unicorns.invisible.caravan.model.enemy.EnemyMedium
+import com.unicorns.invisible.caravan.model.enemy.EnemyBenny
+import com.unicorns.invisible.caravan.model.enemy.EnemyCrooker
+import com.unicorns.invisible.caravan.model.enemy.EnemyDrMobius
+import com.unicorns.invisible.caravan.model.enemy.EnemyEasyPete
+import com.unicorns.invisible.caravan.model.enemy.EnemyElijah
+import com.unicorns.invisible.caravan.model.enemy.EnemyHanlon
+import com.unicorns.invisible.caravan.model.enemy.EnemyLuc10
+import com.unicorns.invisible.caravan.model.enemy.EnemyMadnessCardinal
+import com.unicorns.invisible.caravan.model.enemy.EnemyNash
+import com.unicorns.invisible.caravan.model.enemy.EnemyNoBark
+import com.unicorns.invisible.caravan.model.enemy.EnemyOliver
+import com.unicorns.invisible.caravan.model.enemy.EnemySnuffles
+import com.unicorns.invisible.caravan.model.enemy.EnemyTabitha
+import com.unicorns.invisible.caravan.model.enemy.EnemyTheManInTheMirror
+import com.unicorns.invisible.caravan.model.enemy.EnemyUlysses
+import com.unicorns.invisible.caravan.model.enemy.EnemyVeronica
+import com.unicorns.invisible.caravan.model.enemy.EnemyVictor
+import com.unicorns.invisible.caravan.model.enemy.EnemyVulpes
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.Card
 import com.unicorns.invisible.caravan.model.primitives.CustomDeck
-import com.unicorns.invisible.caravan.save.Save
 import com.unicorns.invisible.caravan.save.saveData
+import com.unicorns.invisible.caravan.utils.CheckboxCustom
 import com.unicorns.invisible.caravan.utils.MenuItemOpen
 import com.unicorns.invisible.caravan.utils.TextFallout
+import com.unicorns.invisible.caravan.utils.clickableCancel
+import com.unicorns.invisible.caravan.utils.clickableOk
 import com.unicorns.invisible.caravan.utils.clickableSelect
 import com.unicorns.invisible.caravan.utils.getBackgroundColor
+import com.unicorns.invisible.caravan.utils.getDialogBackground
+import com.unicorns.invisible.caravan.utils.getDialogTextColor
 import com.unicorns.invisible.caravan.utils.getDividerColor
 import com.unicorns.invisible.caravan.utils.getKnobColor
 import com.unicorns.invisible.caravan.utils.getSelectionColor
@@ -55,6 +90,7 @@ import com.unicorns.invisible.caravan.utils.getTextStrokeColor
 import com.unicorns.invisible.caravan.utils.getTrackColor
 import com.unicorns.invisible.caravan.utils.playJokerSounds
 import com.unicorns.invisible.caravan.utils.playLoseSound
+import com.unicorns.invisible.caravan.utils.playNotificationSound
 import com.unicorns.invisible.caravan.utils.playNukeBlownSound
 import com.unicorns.invisible.caravan.utils.playVatsEnter
 import com.unicorns.invisible.caravan.utils.playWWSound
@@ -63,6 +99,7 @@ import com.unicorns.invisible.caravan.utils.scrollbar
 import com.unicorns.invisible.caravan.utils.startAmbient
 import com.unicorns.invisible.caravan.utils.stopAmbient
 import java.util.Locale
+import kotlin.math.pow
 
 
 @Composable
@@ -72,6 +109,7 @@ fun ShowSelectPvE(
     goBack: () -> Unit
 ) {
     var showStats by rememberScoped { mutableStateOf(false) }
+    var showStory by rememberScoped { mutableStateOf(false) }
     var showSelectEnemy by rememberScoped { mutableStateOf(false) }
     var showTower by rememberScoped { mutableStateOf(false) }
     var showTutorial by rememberScoped { mutableStateOf(false) }
@@ -91,6 +129,11 @@ fun ShowSelectPvE(
         }
         showTutorial -> {
             // TODO
+            // return
+        }
+        showStory -> {
+            ShowStoryList(activity, showAlertDialog) { showStory = false }
+            return
         }
     }
 
@@ -118,7 +161,7 @@ fun ShowSelectPvE(
                         name,
                         getTextColor(activity),
                         getTextStrokeColor(activity),
-                        32.sp,
+                        28.sp,
                         Alignment.Center,
                         Modifier
                             .clickableSelect(activity) { onClick() }
@@ -131,6 +174,8 @@ fun ShowSelectPvE(
                 SubMenuItem("Select Enemy") { showSelectEnemy = true }
                 Spacer(modifier = Modifier.height(12.dp))
                 SubMenuItem(stringResource(R.string.tower)) { showTower = true }
+                Spacer(modifier = Modifier.height(12.dp))
+                SubMenuItem("Story Mode") { showStory = true }
                 Spacer(modifier = Modifier.height(12.dp))
                 SubMenuItem(stringResource(R.string.pve_stats)) { showStats = true }
                 Spacer(modifier = Modifier.height(12.dp))
@@ -294,36 +339,209 @@ fun ShowPvE(
     var showGameDrMobius by rememberSaveable { mutableStateOf(false) }
     var showGameTheManInTheMirror by rememberSaveable { mutableStateOf(false) }
 
-    if (showGameNash) {
-        StartGame(
-            activity = activity,
-            playerCResources = CResources(save.getCustomDeckCopy()),
-            enemy = EnemyEasy,
-            showAlertDialog = showAlertDialog
-        ) {
-            showGameNash = false
+    var showOliverWarning by rememberSaveable { mutableStateOf(false) }
+
+    when {
+        showGameOliver -> {
+            StartGame(
+                activity = activity,
+                playerCResources = CResources(save.selectedDeck.first, save.selectedDeck.second),
+                enemy = EnemyOliver,
+                showAlertDialog = showAlertDialog
+            ) {
+                showGameOliver = false
+            }
+            return
         }
-        return
-    } else if (showGameNoBark) {
-        StartGame(
-            activity = activity,
-            playerCResources = CResources(save.getCustomDeckCopy()),
-            enemy = EnemyMedium,
-            showAlertDialog = showAlertDialog
-        ) {
-            showGameNoBark = false
+        showGameVeronica -> {
+            StartGame(
+                activity = activity,
+                playerCResources = CResources(save.selectedDeck.first, save.selectedDeck.second),
+                enemy = EnemyVeronica,
+                showAlertDialog = showAlertDialog
+            ) {
+                showGameVeronica = false
+            }
+            return
         }
-        return
-    } else if (showGameUlysses) {
-        StartGame(
-            activity = activity,
-            playerCResources = CResources(save.selectedDeck.first, save.selectedDeck.second),
-            enemy = EnemyCliff,
-            showAlertDialog = showAlertDialog
-        ) {
-            showGameUlysses = false
+        showGameVictor -> {
+            StartGame(
+                activity = activity,
+                playerCResources = CResources(save.selectedDeck.first, save.selectedDeck.second),
+                enemy = EnemyVictor,
+                showAlertDialog = showAlertDialog
+            ) {
+                showGameVictor = false
+            }
+            return
         }
-        return
+        showGameChiefHanlon -> {
+            StartGame(
+                activity = activity,
+                playerCResources = CResources(save.selectedDeck.first, save.selectedDeck.second),
+                enemy = EnemyHanlon,
+                showAlertDialog = showAlertDialog
+            ) {
+                showGameChiefHanlon = false
+            }
+            return
+        }
+        showGameUlysses -> {
+            StartGame(
+                activity = activity,
+                playerCResources = CResources(save.selectedDeck.first, save.selectedDeck.second),
+                enemy = EnemyUlysses,
+                showAlertDialog = showAlertDialog
+            ) {
+                showGameUlysses = false
+            }
+            return
+        }
+        showGameBenny -> {
+            StartGame(
+                activity = activity,
+                playerCResources = CResources(save.selectedDeck.first, save.selectedDeck.second),
+                enemy = EnemyBenny,
+                showAlertDialog = showAlertDialog
+            ) {
+                showGameBenny = false
+            }
+            return
+        }
+
+        showGameNoBark -> {
+            StartGame(
+                activity = activity,
+                playerCResources = CResources(save.getCustomDeckCopy()),
+                enemy = EnemyNoBark,
+                showAlertDialog = showAlertDialog
+            ) {
+                showGameNoBark = false
+            }
+            return
+        }
+        showGameNash -> {
+            StartGame(
+                activity = activity,
+                playerCResources = CResources(save.getCustomDeckCopy()),
+                enemy = EnemyNash,
+                showAlertDialog = showAlertDialog
+            ) {
+                showGameNash = false
+            }
+            return
+        }
+        showGameTabitha -> {
+            StartGame(
+                activity = activity,
+                playerCResources = CResources(save.getCustomDeckCopy()),
+                enemy = EnemyNash,
+                showAlertDialog = showAlertDialog
+            ) {
+                showGameTabitha = false
+            }
+            return
+        }
+        showGameVulpes -> {
+            StartGame(
+                activity = activity,
+                playerCResources = CResources(save.getCustomDeckCopy()),
+                enemy = EnemyVulpes,
+                showAlertDialog = showAlertDialog
+            ) {
+                showGameVulpes = false
+            }
+            return
+        }
+        showGameElijah -> {
+            StartGame(
+                activity = activity,
+                playerCResources = CResources(save.getCustomDeckCopy()),
+                enemy = EnemyElijah,
+                showAlertDialog = showAlertDialog
+            ) {
+                showGameElijah = false
+            }
+            return
+        }
+        showGameCrooker -> {
+            StartGame(
+                activity = activity,
+                playerCResources = CResources(save.getCustomDeckCopy()),
+                enemy = EnemyCrooker,
+                showAlertDialog = showAlertDialog
+            ) {
+                showGameCrooker = false
+            }
+            return
+        }
+
+        showGameSnuffles -> {
+            StartGame(
+                activity = activity,
+                playerCResources = CResources(save.getCustomDeckCopy()),
+                enemy = EnemySnuffles,
+                showAlertDialog = showAlertDialog
+            ) {
+                showGameSnuffles = false
+            }
+            return
+        }
+        showGameEasyPete -> {
+            StartGame(
+                activity = activity,
+                playerCResources = CResources(save.selectedDeck.first, save.selectedDeck.second),
+                enemy = EnemyEasyPete,
+                showAlertDialog = showAlertDialog
+            ) {
+                showGameEasyPete = false
+            }
+            return
+        }
+        showGameMadnessCardinal -> {
+            StartGame(
+                activity = activity,
+                playerCResources = CResources(save.getCustomDeckCopy()),
+                enemy = EnemyMadnessCardinal,
+                showAlertDialog = showAlertDialog
+            ) {
+                showGameMadnessCardinal = false
+            }
+            return
+        }
+        showGameLuc10 -> {
+            StartGame(
+                activity = activity,
+                playerCResources = CResources(save.selectedDeck.first, save.selectedDeck.second),
+                enemy = EnemyLuc10,
+                showAlertDialog = showAlertDialog
+            ) {
+                showGameLuc10 = false
+            }
+            return
+        }
+        showGameDrMobius -> {
+            StartGame(
+                activity = activity,
+                playerCResources = CResources(save.getCustomDeckCopy()),
+                enemy = EnemyDrMobius,
+                showAlertDialog = showAlertDialog
+            ) {
+                showGameDrMobius = false
+            }
+            return
+        }
+        showGameTheManInTheMirror -> {
+            StartGame(
+                activity = activity,
+                playerCResources = CResources(save.getCustomDeckCopy()),
+                enemy = EnemyTheManInTheMirror,
+                showAlertDialog = showAlertDialog
+            ) {
+                showGameTheManInTheMirror = false
+            }
+            return
+        }
     }
 
     MenuItemOpen(activity, "Select Enemy", "<-", goBack) {
@@ -448,25 +666,53 @@ fun ShowPvE(
                         Spacer(modifier = Modifier.height(16.dp))
                         when (selectedTab) {
                             0 -> {
+                                when (save.oliverStatus) {
+                                    0 -> OpponentItem(stringResource(R.string.pve_enemy_oliver_fake)) {
+                                        showOliverWarning = true
+                                    }
+                                    1 -> OpponentItem(stringResource(R.string.pve_enemy_oliver_real)) {
+                                        playVatsEnter(activity); showGameOliver = true
+                                    }
+                                    2 -> OpponentItem(stringResource(R.string.pve_enemy_oliver_real)) {
+                                        showOliverWarning = true
+                                    }
+                                }
+                                Spacer(modifier = Modifier.height(10.dp))
+                                OpponentItem(stringResource(R.string.pve_enemy_veronica)) { playVatsEnter(activity); showGameVeronica = true }
+                                Spacer(modifier = Modifier.height(10.dp))
+                                OpponentItem(stringResource(R.string.pve_enemy_victor)) { playVatsEnter(activity); showGameVictor = true }
+                                Spacer(modifier = Modifier.height(10.dp))
+                                OpponentItem(stringResource(R.string.pve_enemy_chief_hanlon)) { playVatsEnter(activity); showGameChiefHanlon = true }
+                                Spacer(modifier = Modifier.height(10.dp))
                                 OpponentItem(stringResource(R.string.pve_enemy_ulysses)) { playVatsEnter(activity); showGameUlysses = true }
                                 Spacer(modifier = Modifier.height(10.dp))
-                                OpponentItem(stringResource(R.string.no_bark)) { playVatsEnter(activity); showGameNoBark = true }
-                                Spacer(modifier = Modifier.height(10.dp))
-                                OpponentItem(stringResource(R.string.johnson_nash)) { playVatsEnter(activity); showGameNash = true }
+                                OpponentItem(stringResource(R.string.benny)) { playVatsEnter(activity); showGameBenny = true }
                             }
                             1 -> {
                                 OpponentItem(stringResource(R.string.no_bark)) { playVatsEnter(activity); showGameNoBark = true }
                                 Spacer(modifier = Modifier.height(10.dp))
-                                OpponentItem(stringResource(R.string.no_bark)) { playVatsEnter(activity); showGameNoBark = true }
-                                Spacer(modifier = Modifier.height(10.dp))
                                 OpponentItem(stringResource(R.string.johnson_nash)) { playVatsEnter(activity); showGameNash = true }
+                                Spacer(modifier = Modifier.height(10.dp))
+                                OpponentItem(stringResource(R.string.tabitha)) { playVatsEnter(activity); showGameTabitha = true }
+                                Spacer(modifier = Modifier.height(10.dp))
+                                OpponentItem(stringResource(R.string.vulpes)) { playVatsEnter(activity); showGameVulpes = true }
+                                Spacer(modifier = Modifier.height(10.dp))
+                                OpponentItem(stringResource(R.string.elijah)) { playVatsEnter(activity); showGameElijah = true }
+                                Spacer(modifier = Modifier.height(10.dp))
+                                OpponentItem(stringResource(R.string.crooker)) { playVatsEnter(activity); showGameCrooker = true }
                             }
                             2 -> {
-                                OpponentItem(stringResource(R.string.no_bark)) { playVatsEnter(activity); showGameNoBark = true }
+                                OpponentItem(stringResource(R.string.snuffles)) { playVatsEnter(activity); showGameSnuffles = true }
                                 Spacer(modifier = Modifier.height(10.dp))
-                                OpponentItem(stringResource(R.string.no_bark)) { playVatsEnter(activity); showGameNoBark = true }
+                                OpponentItem(stringResource(R.string.easy_pete)) { playVatsEnter(activity); showGameEasyPete = true }
                                 Spacer(modifier = Modifier.height(10.dp))
-                                OpponentItem(stringResource(R.string.no_bark)) { playVatsEnter(activity); showGameNoBark = true }
+                                OpponentItem(stringResource(R.string.madness_cardinal)) { playVatsEnter(activity); showGameMadnessCardinal = true }
+                                Spacer(modifier = Modifier.height(10.dp))
+                                OpponentItem(stringResource(R.string.luc10)) { playVatsEnter(activity); showGameLuc10 = true }
+                                Spacer(modifier = Modifier.height(10.dp))
+                                OpponentItem(stringResource(R.string.dr_mobius)) { playVatsEnter(activity); showGameDrMobius = true }
+                                Spacer(modifier = Modifier.height(10.dp))
+                                OpponentItem(stringResource(R.string.man_in_the_mirror)) { playVatsEnter(activity); showGameTheManInTheMirror = true }
                             }
                             3 -> {
                                 TextFallout(
@@ -486,6 +732,99 @@ fun ShowPvE(
             }
         }
     }
+
+
+    if (showOliverWarning) {
+        LaunchedEffect(Unit) {
+            playNotificationSound(activity) {}
+        }
+        when (save.oliverStatus) {
+            0 -> {
+                AlertDialog(
+                    modifier = Modifier.border(width = 4.dp, color = getTextColor(activity)),
+                    onDismissRequest = {},
+                    confirmButton = {
+                        TextFallout(
+                            stringResource(R.string.close),
+                            getDialogBackground(activity),
+                            getDialogBackground(activity),
+                            18.sp, Alignment.Center,
+                            Modifier
+                                .background(getDialogTextColor(activity))
+                                .clickableCancel(activity) {
+                                    save.oliverStatus = 1
+                                    saveData(activity)
+                                    showOliverWarning = false
+                                }
+                                .padding(4.dp),
+                            TextAlign.Center
+                        )
+                    },
+                    title = {
+                        TextFallout(
+                            "Oh no!",
+                            getDialogTextColor(activity), getDialogTextColor(activity),
+                            24.sp, Alignment.CenterStart, Modifier,
+                            TextAlign.Start
+                        )
+                    },
+                    text = {
+                        TextFallout(
+                            "Sorry, but General Lee Oliver is too busy!\n\nVault-Tec offers you the sincerest apologies and replaces your enemy with another one of the same name.",
+                            getDialogTextColor(activity),
+                            getDialogTextColor(activity),
+                            16.sp, Alignment.CenterStart, Modifier,
+                            TextAlign.Start
+                        )
+                    },
+                    containerColor = getDialogBackground(activity),
+                    textContentColor = getDialogTextColor(activity),
+                    shape = RectangleShape,
+                )
+            }
+            2 -> {
+                AlertDialog(
+                    modifier = Modifier.border(width = 4.dp, color = getTextColor(activity)),
+                    onDismissRequest = {},
+                    confirmButton = {
+                        TextFallout(
+                            "...",
+                            getDialogBackground(activity),
+                            getDialogBackground(activity),
+                            18.sp, Alignment.Center,
+                            Modifier
+                                .background(getDialogTextColor(activity))
+                                .clickableCancel(activity) {
+                                    showOliverWarning = false
+                                }
+                                .padding(4.dp),
+                            TextAlign.Center
+                        )
+                    },
+                    title = {
+                        TextFallout(
+                            "But nobody came.",
+                            getDialogTextColor(activity), getDialogTextColor(activity),
+                            24.sp, Alignment.CenterStart, Modifier,
+                            TextAlign.Start
+                        )
+                    },
+                    text = {
+                        TextFallout(
+                            "Oliver Swanick is dead.",
+                            getDialogTextColor(activity),
+                            getDialogTextColor(activity),
+                            16.sp, Alignment.CenterStart, Modifier,
+                            TextAlign.Start
+                        )
+                    },
+                    containerColor = getDialogBackground(activity),
+                    textContentColor = getDialogTextColor(activity),
+                    shape = RectangleShape,
+                )
+            }
+        }
+    }
 }
 
 
@@ -497,6 +836,21 @@ fun StartGame(
     showAlertDialog: (String, String, (() -> Unit)?) -> Unit,
     goBack: () -> Unit,
 ) {
+    var bet: Int by rememberScoped { mutableIntStateOf(0) }
+    var reward: Int by rememberScoped { mutableIntStateOf(0) }
+    var isBlitz: Boolean by rememberScoped { mutableStateOf(false) }
+
+    val isBettingEnemy = enemy !is EnemyMadnessCardinal && enemy !is EnemyLuc10
+
+    var showBettingScreen: Boolean by rememberScoped { mutableStateOf(isBettingEnemy) }
+
+    if (showBettingScreen) {
+        ShowBettingScreen(
+            activity, enemy, { bet = it }, { isBlitz = it }, { reward = it }
+        ) { showBettingScreen = false }
+        return
+    }
+
     val game: Game = rememberScoped {
         Game(
             playerCResources,
@@ -509,7 +863,15 @@ fun StartGame(
     }
 
     LaunchedEffect(Unit) { startAmbient(activity) }
-    val onQuitPressed = { stopAmbient(); goBack() }
+    val onQuitPressed = {
+        if (!game.isOver()) {
+            if (isBettingEnemy) {
+                val enemyCaps = save.enemyCapsLeft[enemy.getBankNumber()] ?: 0
+                save.enemyCapsLeft[enemy.getBankNumber()] = enemyCaps + reward
+            }
+        }
+        stopAmbient(); goBack()
+    }
 
     game.also {
         it.onWin = {
@@ -520,17 +882,43 @@ fun StartGame(
             playWinSound(activity)
             save.gamesFinished++
             save.wins++
+            if (enemy is EnemyOliver) {
+                save.oliverStatus = 2
+            }
+
+            if (isBettingEnemy) {
+                save.capsInHand += reward
+
+                showAlertDialog(
+                    activity.getString(R.string.result),
+                    activity.getString(R.string.you_win) + "Your reward: $reward caps!!",
+                    onQuitPressed
+                )
+            } else {
+                when (enemy) {
+                    is EnemyMadnessCardinal -> {
+                        val rewardCard = winCard(activity, CardBack.MADNESS, false)
+
+                        showAlertDialog(
+                            activity.getString(R.string.result),
+                            activity.getString(R.string.you_win) + "Your reward: card $rewardCard!!",
+                            onQuitPressed
+                        )
+                    }
+                    else -> { onQuitPressed() }
+                }
+            }
+
             saveData(activity)
 
-            showAlertDialog(
-                activity.getString(R.string.result),
-                activity.getString(R.string.you_win),
-                onQuitPressed
-            )
         }
         it.onLose = {
             playLoseSound(activity)
             save.gamesFinished++
+            if (isBettingEnemy) {
+                val enemyCaps = save.enemyCapsLeft[enemy.getBankNumber()] ?: 0
+                save.enemyCapsLeft[enemy.getBankNumber()] = enemyCaps + reward
+            }
             saveData(activity)
 
             showAlertDialog(
@@ -558,9 +946,214 @@ fun StartGame(
 }
 
 
+@Composable
+fun ShowBettingScreen(
+    activity: MainActivity,
+    enemy: Enemy,
+    setBet: (Int) -> Unit,
+    setIsBlitz: (Boolean) -> Unit,
+    setReward: (Int) -> Unit,
+    goBack: () -> Unit,
+) {
+    val enemyName = when (enemy) {
+        EnemyBenny -> stringResource(R.string.benny)
+        EnemyCrooker -> stringResource(R.string.crooker)
+        EnemyDrMobius -> stringResource(R.string.dr_mobius)
+        EnemyEasyPete -> stringResource(R.string.easy_pete)
+        EnemyElijah -> stringResource(R.string.elijah)
+        EnemyHanlon -> stringResource(R.string.pve_enemy_chief_hanlon)
+        EnemyLuc10 -> stringResource(R.string.luc10)
+        EnemyMadnessCardinal -> stringResource(R.string.madness_cardinal)
+        EnemyNash -> stringResource(R.string.johnson_nash)
+        EnemyNoBark -> stringResource(R.string.no_bark)
+        EnemyOliver -> stringResource(R.string.pve_enemy_oliver_real)
+        EnemySnuffles -> stringResource(R.string.snuffles)
+        EnemyTabitha -> stringResource(R.string.tabitha)
+        EnemyTheManInTheMirror -> stringResource(R.string.man_in_the_mirror)
+        EnemyUlysses -> stringResource(R.string.pve_enemy_ulysses)
+        EnemyVeronica -> stringResource(R.string.pve_enemy_veronica)
+        EnemyVictor -> stringResource(R.string.pve_enemy_victor)
+        EnemyVulpes -> stringResource(R.string.vulpes)
+        else -> "?!?"
+    }
+    var bet: Int by rememberScoped { mutableIntStateOf(0) }
+    var enemyBet: Int by rememberScoped { mutableIntStateOf(run {
+        val capsLeft = save.enemyCapsLeft[enemy.getBankNumber()] ?: 0
+        if (capsLeft < 10) {
+            capsLeft
+        } else {
+            capsLeft / 2
+        }
+    }) }
+    var isBlitz: Boolean by rememberScoped { mutableStateOf(false) }
+
+    Scaffold(bottomBar = {
+        Row(
+            modifier = Modifier
+                .wrapContentHeight()
+                .fillMaxWidth()
+                .background(getBackgroundColor(activity))
+        ) {
+            TextFallout(
+                stringResource(R.string.back_to_menu),
+                getTextColor(activity),
+                getTextStrokeColor(activity),
+                16.sp,
+                Alignment.Center,
+                Modifier
+                    .fillMaxWidth()
+                    .clickableCancel(activity) {
+                        goBack()
+                    }
+                    .padding(8.dp),
+                TextAlign.Center
+            )
+        }
+    }) { innerPadding ->
+        Box(
+            Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .rotate(180f)) {
+            Box(
+                Modifier
+                    .fillMaxSize()
+                    .getTableBackground()) {}
+        }
+        Box(Modifier.padding(innerPadding)) {
+            Column(
+                Modifier.wrapContentSize().background(getBackgroundColor(activity)),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                TextFallout(
+                    "Enemy: $enemyName",
+                    getTextColor(activity),
+                    getTextStrokeColor(activity),
+                    16.sp,
+                    Alignment.Center,
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp),
+                    TextAlign.Center
+                )
+                TextFallout(
+                    "Enemy's bet: $enemyBet",
+                    getTextColor(activity),
+                    getTextStrokeColor(activity),
+                    16.sp,
+                    Alignment.Center,
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp),
+                    TextAlign.Center
+                )
+
+                TextField(
+                    modifier = Modifier.fillMaxWidth(0.5f),
+                    singleLine = true,
+                    enabled = true,
+                    value = bet.toString(),
+                    onValueChange = { bet = run {
+                        // TODO: make it betteerrrrr
+                        val betWritten = it.toIntOrNull() ?: 0
+                        if (betWritten != 0) {
+                            if (betWritten < enemyBet) {
+                                0
+                            } else if (betWritten > save.capsInHand) {
+                                if (save.capsInHand < enemyBet) {
+                                    0
+                                } else {
+                                    save.capsInHand
+                                }
+                            } else {
+                                betWritten
+                            }
+                        } else {
+                            0
+                        }
+                    } },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    textStyle = TextStyle(
+                        fontSize = 14.sp,
+                        color = getTextColor(activity),
+                        fontFamily = FontFamily(Font(R.font.monofont))
+                    ),
+                    label = {
+                        TextFallout(
+                            text = "Enter your bet (either 0 or something between $enemyBet and ${save.capsInHand}):",
+                            getTextColor(activity),
+                            getTextStrokeColor(activity),
+                            14.sp,
+                            Alignment.Center,
+                            Modifier,
+                            TextAlign.Center
+                        )
+                    },
+                    colors = TextFieldDefaults.colors().copy(
+                        cursorColor = getTextColor(activity),
+                        focusedContainerColor = getTextBackgroundColor(activity),
+                        unfocusedContainerColor = getTextBackgroundColor(activity),
+                        disabledContainerColor = getBackgroundColor(activity),
+                    )
+                )
+
+                CheckboxCustom(activity, { isBlitz }, { isBlitz = it }) { true }
+
+                TextFallout(
+                    "Your expected reward: ${countReward(bet, enemyBet, isBlitz)} caps.",
+                    getTextColor(activity),
+                    getTextStrokeColor(activity),
+                    16.sp,
+                    Alignment.Center,
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp),
+                    TextAlign.Center
+                )
+
+                TextFallout(
+                    "LET'S GO!",
+                    getTextColor(activity),
+                    getTextStrokeColor(activity),
+                    16.sp,
+                    Alignment.Center,
+                    Modifier
+                        .fillMaxWidth()
+                        .clickableOk(activity) {
+                            setIsBlitz(isBlitz)
+                            setBet(bet)
+                            setReward(countReward(bet, enemyBet, isBlitz))
+
+                            save.capsInHand -= bet
+                            save.enemyCapsLeft -= enemyBet
+                            saveData(activity)
+
+                            goBack()
+                        }
+                        .padding(8.dp),
+                    TextAlign.Center
+                )
+            }
+        }
+    }
+}
+
+
+fun countReward(playerBet: Int, enemyBet: Int, isBlitz: Boolean): Int {
+    return if (playerBet == 0) {
+        0
+    } else if (!isBlitz) {
+        playerBet + enemyBet
+    } else {
+        val k = playerBet.toDouble() / (1.0 + enemyBet)
+        val p = k.pow(1.0 / k)
+        (playerBet + enemyBet).toDouble().pow(p).toInt()
+    }
+}
+
 fun winCard(
     activity: MainActivity,
-    save: Save,
     back: CardBack,
     isAlt: Boolean
 ): String {

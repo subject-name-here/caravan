@@ -6,7 +6,9 @@ import kotlinx.serialization.Serializable
 
 
 @Serializable
-sealed class Enemy {
-    abstract fun makeMove(game: Game)
-    abstract fun createDeck(): CResources
+sealed interface Enemy {
+    fun createDeck(): CResources
+    fun getBankNumber(): Int = -1
+
+    fun makeMove(game: Game)
 }
