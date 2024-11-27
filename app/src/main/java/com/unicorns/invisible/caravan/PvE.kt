@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -99,6 +98,7 @@ import com.unicorns.invisible.caravan.utils.scrollbar
 import com.unicorns.invisible.caravan.utils.startAmbient
 import com.unicorns.invisible.caravan.utils.stopAmbient
 import java.util.Locale
+import kotlin.math.min
 import kotlin.math.pow
 
 
@@ -192,7 +192,7 @@ fun ShowStats(
     goBack: () -> Unit
 ) {
     MenuItemOpen(activity, stringResource(R.string.pve_stats), "<-", goBack) {
-        // TODO: more stats
+        // TODO: more stats (?)
         val started = save.gamesStarted
         val finished = save.gamesFinished
         val won = save.wins
@@ -340,6 +340,7 @@ fun ShowPvE(
     var showGameTheManInTheMirror by rememberSaveable { mutableStateOf(false) }
 
     var showOliverWarning by rememberSaveable { mutableStateOf(false) }
+    var oliverStatus by rememberSaveable { mutableIntStateOf(save.oliverStatus) }
 
     when {
         showGameOliver -> {
@@ -435,7 +436,7 @@ fun ShowPvE(
             StartGame(
                 activity = activity,
                 playerCResources = CResources(save.getCustomDeckCopy()),
-                enemy = EnemyNash,
+                enemy = EnemyTabitha,
                 showAlertDialog = showAlertDialog
             ) {
                 showGameTabitha = false
@@ -555,8 +556,7 @@ fun ShowPvE(
             val state = rememberLazyListState()
             LazyColumn(
                 Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight(0.5f)
+                    .fillMaxSize()
                     .scrollbar(
                         state,
                         knobColor = getKnobColor(activity), trackColor = getTrackColor(activity),
@@ -666,7 +666,7 @@ fun ShowPvE(
                         Spacer(modifier = Modifier.height(16.dp))
                         when (selectedTab) {
                             0 -> {
-                                when (save.oliverStatus) {
+                                when (oliverStatus) {
                                     0 -> OpponentItem(stringResource(R.string.pve_enemy_oliver_fake)) {
                                         showOliverWarning = true
                                     }
@@ -738,7 +738,7 @@ fun ShowPvE(
         LaunchedEffect(Unit) {
             playNotificationSound(activity) {}
         }
-        when (save.oliverStatus) {
+        when (oliverStatus) {
             0 -> {
                 AlertDialog(
                     modifier = Modifier.border(width = 4.dp, color = getTextColor(activity)),
@@ -753,6 +753,7 @@ fun ShowPvE(
                                 .background(getDialogTextColor(activity))
                                 .clickableCancel(activity) {
                                     save.oliverStatus = 1
+                                    oliverStatus = 1
                                     saveData(activity)
                                     showOliverWarning = false
                                 }
@@ -846,8 +847,9 @@ fun StartGame(
 
     if (showBettingScreen) {
         ShowBettingScreen(
-            activity, enemy, { bet = it }, { isBlitz = it }, { reward = it }
-        ) { showBettingScreen = false }
+            activity, enemy, { bet = it }, { isBlitz = it }, { reward = it },
+            { showBettingScreen = false; goBack() }, { showBettingScreen = false }
+        )
         return
     }
 
@@ -864,11 +866,9 @@ fun StartGame(
 
     LaunchedEffect(Unit) { startAmbient(activity) }
     val onQuitPressed = {
-        if (!game.isOver()) {
-            if (isBettingEnemy) {
-                val enemyCaps = save.enemyCapsLeft[enemy.getBankNumber()] ?: 0
-                save.enemyCapsLeft[enemy.getBankNumber()] = enemyCaps + reward
-            }
+        if (!game.isOver() && isBettingEnemy) {
+            val enemyCaps = save.enemyCapsLeft[enemy.getBankNumber()] ?: 0
+            save.enemyCapsLeft[enemy.getBankNumber()] = ((enemyCaps + reward) * 0.85).toInt()
         }
         stopAmbient(); goBack()
     }
@@ -891,7 +891,7 @@ fun StartGame(
 
                 showAlertDialog(
                     activity.getString(R.string.result),
-                    activity.getString(R.string.you_win) + "Your reward: $reward caps!!",
+                    activity.getString(R.string.you_win) + "\nYour reward: $reward caps!!",
                     onQuitPressed
                 )
             } else {
@@ -917,7 +917,7 @@ fun StartGame(
             save.gamesFinished++
             if (isBettingEnemy) {
                 val enemyCaps = save.enemyCapsLeft[enemy.getBankNumber()] ?: 0
-                save.enemyCapsLeft[enemy.getBankNumber()] = enemyCaps + reward
+                save.enemyCapsLeft[enemy.getBankNumber()] = ((enemyCaps + reward) * 0.85).toInt()
             }
             saveData(activity)
 
@@ -932,7 +932,7 @@ fun StartGame(
         it.wildWastelandSound = { playWWSound(activity) }
     }
 
-    ShowGame(activity, game) {
+    ShowGame(activity, game, isBlitz) {
         if (game.isOver()) {
             onQuitPressed()
         } else {
@@ -954,6 +954,7 @@ fun ShowBettingScreen(
     setIsBlitz: (Boolean) -> Unit,
     setReward: (Int) -> Unit,
     goBack: () -> Unit,
+    goForward: () -> Unit
 ) {
     val enemyName = when (enemy) {
         EnemyBenny -> stringResource(R.string.benny)
@@ -976,16 +977,20 @@ fun ShowBettingScreen(
         EnemyVulpes -> stringResource(R.string.vulpes)
         else -> "?!?"
     }
-    var bet: Int by rememberScoped { mutableIntStateOf(0) }
+    var bet by rememberScoped { mutableStateOf<Int?>(null) }
     var enemyBet: Int by rememberScoped { mutableIntStateOf(run {
         val capsLeft = save.enemyCapsLeft[enemy.getBankNumber()] ?: 0
         if (capsLeft < 10) {
             capsLeft
         } else {
-            capsLeft / 2
+            min(capsLeft / 2, 50)
         }
     }) }
     var isBlitz: Boolean by rememberScoped { mutableStateOf(false) }
+
+    fun countRewardLocal(): Int {
+        return bet?.let { countReward(it, enemyBet, isBlitz) } ?: 0
+    }
 
     Scaffold(bottomBar = {
         Row(
@@ -1020,7 +1025,7 @@ fun ShowBettingScreen(
                     .fillMaxSize()
                     .getTableBackground()) {}
         }
-        Box(Modifier.padding(innerPadding)) {
+        Box(Modifier.fillMaxSize().padding(innerPadding)) {
             Column(
                 Modifier.wrapContentSize().background(getBackgroundColor(activity)),
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -1049,30 +1054,16 @@ fun ShowBettingScreen(
                     TextAlign.Center
                 )
 
+                Spacer(Modifier.height(16.dp))
+
                 TextField(
                     modifier = Modifier.fillMaxWidth(0.5f),
                     singleLine = true,
                     enabled = true,
-                    value = bet.toString(),
-                    onValueChange = { bet = run {
-                        // TODO: make it betteerrrrr
-                        val betWritten = it.toIntOrNull() ?: 0
-                        if (betWritten != 0) {
-                            if (betWritten < enemyBet) {
-                                0
-                            } else if (betWritten > save.capsInHand) {
-                                if (save.capsInHand < enemyBet) {
-                                    0
-                                } else {
-                                    save.capsInHand
-                                }
-                            } else {
-                                betWritten
-                            }
-                        } else {
-                            0
-                        }
-                    } },
+                    value = bet?.toString() ?: "",
+                    onValueChange = {
+                        bet = it.toIntOrNull()
+                    },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     textStyle = TextStyle(
                         fontSize = 14.sp,
@@ -1098,13 +1089,26 @@ fun ShowBettingScreen(
                     )
                 )
 
-                CheckboxCustom(activity, { isBlitz }, { isBlitz = it }) { true }
+                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
+                    TextFallout(
+                        "Time limit anyone?",
+                        getTextColor(activity),
+                        getTextStrokeColor(activity),
+                        18.sp,
+                        Alignment.Center,
+                        Modifier
+                            .padding(8.dp),
+                        TextAlign.Center
+                    )
+                    CheckboxCustom(activity, { isBlitz }, { isBlitz = it }) { true }
+
+                }
 
                 TextFallout(
-                    "Your expected reward: ${countReward(bet, enemyBet, isBlitz)} caps.",
+                    "Your expected reward: ${countRewardLocal()} caps.",
                     getTextColor(activity),
                     getTextStrokeColor(activity),
-                    16.sp,
+                    18.sp,
                     Alignment.Center,
                     Modifier
                         .fillMaxWidth()
@@ -1112,26 +1116,32 @@ fun ShowBettingScreen(
                     TextAlign.Center
                 )
 
+                val modifier = if (bet.let { it == null || it < enemyBet || it > save.capsInHand } ) {
+                    Modifier
+                        .padding(8.dp)
+                } else {
+                    Modifier
+                        .clickableOk(activity) {
+                            setIsBlitz(isBlitz)
+                            setBet(bet ?: 0)
+                            setReward(countRewardLocal())
+
+                            save.capsInHand -= (bet ?: 0)
+                            save.enemyCapsLeft -= enemyBet
+                            saveData(activity)
+
+                            goForward()
+                        }
+                        .background(getTextBackgroundColor(activity))
+                        .padding(8.dp)
+                }
                 TextFallout(
                     "LET'S GO!",
                     getTextColor(activity),
                     getTextStrokeColor(activity),
-                    16.sp,
+                    24.sp,
                     Alignment.Center,
-                    Modifier
-                        .fillMaxWidth()
-                        .clickableOk(activity) {
-                            setIsBlitz(isBlitz)
-                            setBet(bet)
-                            setReward(countReward(bet, enemyBet, isBlitz))
-
-                            save.capsInHand -= bet
-                            save.enemyCapsLeft -= enemyBet
-                            saveData(activity)
-
-                            goBack()
-                        }
-                        .padding(8.dp),
+                    modifier,
                     TextAlign.Center
                 )
             }
@@ -1146,7 +1156,7 @@ fun countReward(playerBet: Int, enemyBet: Int, isBlitz: Boolean): Int {
     } else if (!isBlitz) {
         playerBet + enemyBet
     } else {
-        val k = playerBet.toDouble() / (1.0 + enemyBet)
+        val k = (playerBet + enemyBet).toDouble()
         val p = k.pow(1.0 / k)
         (playerBet + enemyBet).toDouble().pow(p).toInt()
     }

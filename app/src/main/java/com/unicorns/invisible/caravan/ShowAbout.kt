@@ -80,7 +80,38 @@ fun ShowAbout(activity: MainActivity, goBack: () -> Unit) {
                     TextAlign.Center
                 )
 
+                Spacer(modifier = Modifier.height(16.dp))
+
+                val annotatedString = buildAnnotatedString {
+                    append(stringResource(R.string.about_4_1))
+                    withLink(
+                        link = LinkAnnotation.Url(
+                            url = "mailto:unicornsinvisible@gmail.com",
+                            styles = TextLinkStyles(
+                                style = SpanStyle(
+                                    color = getTextColor(activity),
+                                    fontFamily = FontFamily(Font(R.font.monofont)),
+                                    textDecoration = TextDecoration.Underline
+                                )
+                            )
+                        ),
+                    ) {
+                        append("unicornsinvisible@gmail.com")
+                    }
+                    append(stringResource(R.string.about_4_2))
+                }
+
+                TextFallout(
+                    annotatedString,
+                    getTextColor(activity),
+                    getTextStrokeColor(activity),
+                    20.sp,
+                    Alignment.Center,
+                    Modifier,
+                    TextAlign.Center
+                )
                 Spacer(modifier = Modifier.height(24.dp))
+
                 TextFallout(
                     stringResource(R.string.about_3_0),
                     getTextColor(activity),
@@ -231,7 +262,7 @@ fun ShowAbout(activity: MainActivity, goBack: () -> Unit) {
                     append(stringResource(R.string.about_3_7_1))
                     withLink(
                         link = LinkAnnotation.Url(
-                            url = "https://github.com/Sasabmeg/fallout-classic-dialog-font",
+                            url = "https://discord.gg/xSTJpjvzJV",
                             styles = TextLinkStyles(
                                 style = SpanStyle(
                                     color = getTextColor(activity),
@@ -255,36 +286,6 @@ fun ShowAbout(activity: MainActivity, goBack: () -> Unit) {
                     TextAlign.Center
                 )
                 Spacer(modifier = Modifier.height(24.dp))
-
-                val annotatedString = buildAnnotatedString {
-                    append(stringResource(R.string.about_4_1))
-                    withLink(
-                        link = LinkAnnotation.Url(
-                            url = "mailto:unicornsinvisible@gmail.com",
-                            styles = TextLinkStyles(
-                                style = SpanStyle(
-                                    color = getTextColor(activity),
-                                    fontFamily = FontFamily(Font(R.font.monofont)),
-                                    textDecoration = TextDecoration.Underline
-                                )
-                            )
-                        ),
-                    ) {
-                        append("unicornsinvisible@gmail.com")
-                    }
-                    append(stringResource(R.string.about_4_2))
-                }
-
-                TextFallout(
-                    annotatedString,
-                    getTextColor(activity),
-                    getTextStrokeColor(activity),
-                    20.sp,
-                    Alignment.Center,
-                    Modifier,
-                    TextAlign.Center
-                )
-                Spacer(modifier = Modifier.height(16.dp))
             }
         }
     }

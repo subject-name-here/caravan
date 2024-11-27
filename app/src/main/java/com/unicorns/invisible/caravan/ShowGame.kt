@@ -263,7 +263,7 @@ fun ShowGame(
     )
 
     if (isBlitz) {
-        var timeOnTimer by rememberSaveable { mutableIntStateOf(game.playerCResources.deckSize * 2) }
+        var timeOnTimer by rememberSaveable { mutableIntStateOf(game.playerCResources.deckSize * 3 / 2) }
         game.specialGameOverCondition = { if (timeOnTimer <= 0f) -1 else 0 }
 
         LaunchedEffect(Unit) {

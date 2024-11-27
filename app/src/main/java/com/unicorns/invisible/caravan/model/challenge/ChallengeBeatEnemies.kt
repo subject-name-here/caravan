@@ -26,17 +26,18 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 class ChallengeBeatEnemies(private val code: Int) : Challenge {
-    private val enemyList: List<Enemy> = when (code) {
-        1 -> listOf(EnemyVeronica, EnemyElijah)
-        2 -> listOf(EnemyHanlon, EnemyCrooker)
-        3 -> listOf(EnemyBenny, EnemyLuc10)
-        4 -> listOf(EnemyTabitha, EnemySnuffles)
-        5 -> listOf(EnemyNash, EnemyNoBark, EnemyEasyPete)
-        6 -> listOf(EnemyUlysses, EnemyDrMobius)
-        7 -> listOf(EnemyVeronica, EnemyVictor, EnemyVulpes)
-        8 -> listOf(EnemyMadnessCardinal, EnemyTheManInTheMirror)
-        else -> emptyList()
-    }
+    private val enemyList: List<Enemy>
+        get() = when (code) {
+            1 -> listOf(EnemyVeronica, EnemyElijah)
+            2 -> listOf(EnemyHanlon, EnemyCrooker)
+            3 -> listOf(EnemyBenny, EnemyLuc10)
+            4 -> listOf(EnemyTabitha, EnemySnuffles)
+            5 -> listOf(EnemyNash, EnemyNoBark, EnemyEasyPete)
+            6 -> listOf(EnemyUlysses, EnemyDrMobius)
+            7 -> listOf(EnemyVeronica, EnemyVictor, EnemyVulpes)
+            8 -> listOf(EnemyMadnessCardinal, EnemyTheManInTheMirror)
+            else -> emptyList()
+        }
     private val isBeaten = Array(enemyList.size) { false }
 
     override fun processMove(
