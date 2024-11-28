@@ -393,7 +393,8 @@ fun TowerScreen(
                         7 -> 256
                         8 -> 384
                         9 -> 512
-                        else -> if (frankSequencePlayed) 2077 else 1024
+                        10 -> 1024
+                        else -> 2077
                     }
                     @Composable
                     fun showTowerCard(enemyName: String) {

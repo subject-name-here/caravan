@@ -16,7 +16,7 @@ data object EnemyVictor : Enemy {
         val hand = game.enemyCResources.hand
 
         if (game.isInitStage()) {
-            val cardIndex = hand.withIndex().filter { !it.value.isFace() }.random().index
+            val cardIndex = hand.withIndex().filter { !it.value.isFace() }.maxBy { it.value.rank.value }.index
             val caravan = game.enemyCaravans.filter { it.isEmpty() }.random()
             caravan.putCardOnTop(game.enemyCResources.removeFromHand(cardIndex))
             return
@@ -24,26 +24,25 @@ data object EnemyVictor : Enemy {
 
         hand.withIndex().sortedByDescending {
             when (it.value.rank) {
-                Rank.JOKER -> 7
-                Rank.JACK -> 6
-                Rank.QUEEN -> 4
-                Rank.KING -> 5
-                Rank.ACE -> 3
+                Rank.JOKER -> 6
+                Rank.JACK -> 7
+                Rank.QUEEN -> 0
+                Rank.KING -> 9
                 else -> it.value.rank.value
             }
         }.forEach { (cardIndex, card) ->
             if (!card.rank.isFace()) {
-                game.enemyCaravans.shuffled().forEach { caravan ->
-                    if (caravan.getValue() + card.rank.value <= 26) {
-                        if (caravan.canPutCardOnTop(card)) {
-                            caravan.putCardOnTop(game.enemyCResources.removeFromHand(cardIndex))
-                            return
-                        }
-                    }
+                val caravan = game.enemyCaravans
+                    .filter { it.canPutCardOnTop(card) }
+                    .filter { it.getValue() + card.rank.value <= 26 }
+                    .maxByOrNull { it.getValue() }
+                if (caravan != null) {
+                    caravan.putCardOnTop(game.enemyCResources.removeFromHand(cardIndex))
+                    return
                 }
             }
             if (card.rank == Rank.JACK) {
-                val caravans = game.playerCaravans.filter { it.getValue() in (21..26) }
+                val caravans = game.playerCaravans.filter { it.getValue() in (16..26) }
                 if (caravans.isNotEmpty()) {
                     val caravan = caravans.maxBy { it.getValue() }
                     val cardToAdd = caravan.cards.maxBy { it.getValue() }
@@ -99,11 +98,10 @@ data object EnemyVictor : Enemy {
 
         game.enemyCResources.dropCardFromHand(hand.withIndex().minBy {
             when (it.value.rank) {
-                Rank.JOKER -> 7
-                Rank.JACK -> 6
-                Rank.QUEEN -> 4
-                Rank.KING -> 5
-                Rank.ACE -> 3
+                Rank.JOKER -> 11
+                Rank.JACK -> 13
+                Rank.QUEEN -> 0
+                Rank.KING -> 15
                 else -> it.value.rank.value
             }
         }.index)

@@ -91,6 +91,7 @@ import com.unicorns.invisible.caravan.utils.playJokerSounds
 import com.unicorns.invisible.caravan.utils.playLoseSound
 import com.unicorns.invisible.caravan.utils.playNotificationSound
 import com.unicorns.invisible.caravan.utils.playNukeBlownSound
+import com.unicorns.invisible.caravan.utils.playSelectSound
 import com.unicorns.invisible.caravan.utils.playVatsEnter
 import com.unicorns.invisible.caravan.utils.playWWSound
 import com.unicorns.invisible.caravan.utils.playWinSound
@@ -342,6 +343,8 @@ fun ShowPvE(
     var showOliverWarning by rememberSaveable { mutableStateOf(false) }
     var oliverStatus by rememberSaveable { mutableIntStateOf(save.oliverStatus) }
 
+    var selectedTab by rememberSaveable { mutableIntStateOf(0) }
+
     when {
         showGameOliver -> {
             StartGame(
@@ -586,7 +589,6 @@ fun ShowPvE(
                     }
 
                     Column(verticalArrangement = Arrangement.Top, horizontalAlignment = Alignment.CenterHorizontally) {
-                        var selectedTab by rememberSaveable { mutableIntStateOf(0) }
                         TabRow(
                             selectedTab, Modifier.fillMaxWidth(),
                             containerColor = getBackgroundColor(activity),
@@ -602,7 +604,7 @@ fun ShowPvE(
                                 HorizontalDivider(color = getDividerColor(activity))
                             }
                         ) {
-                            Tab(selectedTab == 0, { selectedTab = 0 }, 
+                            Tab(selectedTab == 0, { playSelectSound(activity); selectedTab = 0 },
                                 selectedContentColor = getSelectionColor(activity),
                                 unselectedContentColor = getTextBackgroundColor(activity)
                             ) {
@@ -617,7 +619,7 @@ fun ShowPvE(
                                 )
                             }
                             Tab(
-                                selectedTab == 1, { selectedTab = 1 },
+                                selectedTab == 1, { playSelectSound(activity); selectedTab = 1 },
                                 selectedContentColor = getSelectionColor(activity),
                                 unselectedContentColor = getTextBackgroundColor(activity)
                             ) {
@@ -632,7 +634,7 @@ fun ShowPvE(
                                 )
                             }
                             Tab(
-                                selectedTab == 2, { selectedTab = 2 },
+                                selectedTab == 2, { playSelectSound(activity); selectedTab = 2 },
                                 selectedContentColor = getSelectionColor(activity),
                                 unselectedContentColor = getTextBackgroundColor(activity)
                             ) {
@@ -647,7 +649,7 @@ fun ShowPvE(
                                 )
                             }
                             Tab(
-                                selectedTab == 3, { selectedTab = 3 },
+                                selectedTab == 3, { playSelectSound(activity); selectedTab = 3 },
                                 selectedContentColor = getSelectionColor(activity),
                                 unselectedContentColor = getTextBackgroundColor(activity)
                             ) {
@@ -895,18 +897,13 @@ fun StartGame(
                     onQuitPressed
                 )
             } else {
-                when (enemy) {
-                    is EnemyMadnessCardinal -> {
-                        val rewardCard = winCard(activity, CardBack.MADNESS, false)
+                val rewardCard = winCard(activity, CardBack.MADNESS, false)
 
-                        showAlertDialog(
-                            activity.getString(R.string.result),
-                            activity.getString(R.string.you_win) + "Your reward: card $rewardCard!!",
-                            onQuitPressed
-                        )
-                    }
-                    else -> { onQuitPressed() }
-                }
+                showAlertDialog(
+                    activity.getString(R.string.result),
+                    activity.getString(R.string.you_win) + "Your reward: card $rewardCard!!",
+                    onQuitPressed
+                )
             }
 
             saveData(activity)
