@@ -11,4 +11,6 @@ sealed interface Enemy {
     fun getBankNumber(): Int = -1
 
     fun makeMove(game: Game)
+
+    fun onVictory() {}
 }

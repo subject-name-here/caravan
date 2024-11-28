@@ -73,10 +73,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.serialization.encodeToString
-import org.chromium.net.CronetEngine
 
-
-var cronetEngine: CronetEngine? = null
 
 fun customDeckToInts(customDeck: CustomDeck): List<ULong> {
     val result = ArrayList<ULong>()
@@ -181,7 +178,7 @@ fun ShowPvP(
 
         if (!isCreator) {
             checkedCustomDeck = (response[0] shr 55) and 1UL == 1UL
-            checkedWild = (response[8] != 0UL)
+            checkedWild = (response[0] shr 56) and 1UL == 1UL
         }
 
         enemyDeck = CustomDeck().also { customDeck ->
@@ -238,8 +235,8 @@ fun ShowPvP(
                     "&deck4=${deckCodes[4]}" +
                     "&deck5=${deckCodes[5]}" +
                     "&deck6=${deckCodes[6]}" +
-                    "&deck7=0" +
-                    "&deck8=${if (checkedWild) (1UL shl 61) else 0}"
+                    "&deck7=${deckCodes[7]}" +
+                    "&deck8=${deckCodes[8]}"
         ) { result ->
             val response = result.toString()
             if (response.contains("exists")) {
@@ -273,12 +270,12 @@ fun ShowPvP(
                     "&deck4=${deckCodes[4]}" +
                     "&deck5=${deckCodes[5]}" +
                     "&deck6=${deckCodes[6]}" +
-                    "&deck7=0" +
-                    "&deck8=0"
+                    "&deck7=${deckCodes[7]}" +
+                    "&deck8=${deckCodes[8]}"
         ) { result ->
             val responseIfCreator = try {
                 json.decodeFromString<Int>(result.getString("body"))
-            } catch (e: Exception) {
+            } catch (_: Exception) {
                 0
             }
             if (responseIfCreator != 0) {
@@ -290,7 +287,7 @@ fun ShowPvP(
 
             val response = try {
                 json.decodeFromString<List<ULong>>(result.getString("body"))
-            } catch (e: Exception) {
+            } catch (_: Exception) {
                 showFailure(result.getString("body"))
                 return@sendRequest
             }
@@ -649,7 +646,7 @@ fun StartPvP(
 
             val move = try {
                 decodeMove(body)
-            } catch (e: Exception) {
+            } catch (_: Exception) {
                 CoroutineScope(Dispatchers.Unconfined).launch {
                     delay(1900L)
                     pingForMove(sendHandCard)

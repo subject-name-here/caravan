@@ -192,7 +192,7 @@ fun ShowGame(
 
     fun addCardToCaravan(caravan: Caravan, position: Int, isEnemy: Boolean) {
         val cardIndex = selectedCard
-        val card = cardIndex?.let { game.playerCResources.hand[cardIndex] }
+        val card = cardIndex?.let { game.playerCResources.hand[it] }
         fun onCaravanCardInserted() {
             resetSelected()
             updatePlayerHand()
@@ -226,7 +226,7 @@ fun ShowGame(
                     onCaravanCardInserted()
                 }
             } else {
-                if (position == caravan.cards.size && !isEnemy) {
+                if (!isEnemy) {
                     if (caravan.canPutCardOnTop(card)) {
                         playCardFlipSound(activity)
                         activity.processChallengesMove(Challenge.Move(
@@ -263,7 +263,7 @@ fun ShowGame(
     )
 
     if (isBlitz) {
-        var timeOnTimer by rememberSaveable { mutableIntStateOf(game.playerCResources.deckSize * 3 / 2) }
+        var timeOnTimer by rememberSaveable { mutableIntStateOf(game.playerCResources.deckSize * 4 / 3) }
         game.specialGameOverCondition = { if (timeOnTimer <= 0f) -1 else 0 }
 
         LaunchedEffect(Unit) {
@@ -290,7 +290,7 @@ fun ShowGame(
                     timeOnTimer.toString(),
                     getTextColor(activity),
                     getTextStrokeColor(activity),
-                    14.sp,
+                    16.sp,
                     Alignment.BottomEnd,
                     Modifier
                         .background(getTextBackgroundColor(activity))

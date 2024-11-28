@@ -32,7 +32,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sebaslogen.resaca.rememberScoped
-import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.enemy.Enemy
 import com.unicorns.invisible.caravan.model.enemy.EnemyFrank
@@ -155,14 +154,12 @@ fun TowerScreen(
             return
         }
         showGameLevel3 -> {
-            // TODO: Papa Khan (or Papa Smurf)
             showTower(EnemyTower3) {
                 showGameLevel3 = false
             }
             return
         }
         showGameLevel4 -> {
-            // TODO: Jason Bright
             showTower(EnemyTower4) {
                 showGameLevel4 = false
             }
@@ -175,7 +172,6 @@ fun TowerScreen(
             return
         }
         showGameLevel6 -> {
-            // TODO: Dean Domino
             showTower(EnemyTower6) {
                 showGameLevel6 = false
             }
@@ -188,14 +184,12 @@ fun TowerScreen(
             return
         }
         showGameLevel8 -> {
-            // TODO: Cook-Cook
             showTower(EnemyTower8) {
                 showGameLevel8 = false
             }
             return
         }
         showGameLevel9 -> {
-            // TODO: Caesar
             showTower(EnemyTower9) {
                 showGameLevel9 = false
             }
@@ -265,20 +259,27 @@ fun TowerScreen(
                         Modifier.fillMaxWidth(),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        TextFallout(
-                            if (level == 10 && frankSequencePlayed) {
-                                stringResource(R.string.deck_o_54_only)
-                            } else {
-                                stringResource(R.string.custom_deck_only)
-                            },
-                            getTextColor(activity),
-                            getTextStrokeColor(activity),
-                            24.sp,
-                            Alignment.Center,
-                            Modifier,
-                            TextAlign.Center
-                        )
-                        if (level != 10 || !frankSequencePlayed) {
+                        if (level == 10 && frankSequencePlayed) {
+                            TextFallout(
+                                stringResource(R.string.deck_o_54_only),
+                                getTextColor(activity),
+                                getTextStrokeColor(activity),
+                                24.sp,
+                                Alignment.Center,
+                                Modifier,
+                                TextAlign.Center
+                            )
+                        } else {
+                            TextFallout(
+                                stringResource(R.string.custom_deck_only),
+                                getTextColor(activity),
+                                getTextStrokeColor(activity),
+                                24.sp,
+                                Alignment.Center,
+                                Modifier,
+                                TextAlign.Center
+                            )
+                            Spacer(Modifier.height(8.dp))
                             TextFallout(
                                 stringResource(R.string.you_can_change_custom_deck_between_games),
                                 getTextColor(activity),
@@ -288,17 +289,17 @@ fun TowerScreen(
                                 Modifier,
                                 TextAlign.Center
                             )
+                            Spacer(Modifier.height(8.dp))
+                            TextFallout(
+                                stringResource(R.string.progress_is_saved_between_sessions),
+                                getTextColor(activity),
+                                getTextStrokeColor(activity),
+                                24.sp,
+                                Alignment.Center,
+                                Modifier,
+                                TextAlign.Center
+                            )
                         }
-                        Spacer(Modifier.height(8.dp))
-                        TextFallout(
-                            stringResource(R.string.progress_is_saved_between_sessions),
-                            getTextColor(activity),
-                            getTextStrokeColor(activity),
-                            24.sp,
-                            Alignment.Center,
-                            Modifier,
-                            TextAlign.Center
-                        )
                         Spacer(modifier = Modifier.height(16.dp))
                     }
                 }
@@ -427,7 +428,6 @@ fun TowerScreen(
                         }
                     }
                     when (level) {
-                        // TODO: names like 3A
                         1 -> {
                             showTowerCard(stringResource(R.string.tower_enemy_1))
                         }
@@ -435,7 +435,12 @@ fun TowerScreen(
                             showTowerCard(stringResource(R.string.tower_enemy_2))
                         }
                         3 -> {
-                            showTowerCard(stringResource(R.string.tower_enemy_3))
+                            if (save.papaSmurfActive) {
+                                showTowerCard(stringResource(R.string.tower_enemy_3A))
+                            } else {
+                                showTowerCard(stringResource(R.string.tower_enemy_3))
+                            }
+
                         }
                         4 -> {
                             showTowerCard(stringResource(R.string.tower_enemy_4))
@@ -504,66 +509,40 @@ fun TowerScreen(
                             TextAlign.Center
                         )
 
-                        TextFallout(
-                            stringResource(R.string.en_garde),
-                            getTextColor(activity),
-                            getTextStrokeColor(activity),
-                            24.sp,
-                            Alignment.Center,
-                            modifier = Modifier
-                                .clickableOk(activity) {
-                                    when (level) {
-                                        1 -> {
-                                            showGameLevel1 = true
-                                        }
-
-                                        2 -> {
-                                            showGameLevel2 = true
-                                        }
-
-                                        3 -> {
-                                            showGameLevel3 = true
-                                        }
-
-                                        4 -> {
-                                            showGameLevel4 = true
-                                        }
-
-                                        5 -> {
-                                            showGameLevel5 = true
-                                        }
-
-                                        6 -> {
-                                            showGameLevel6 = true
-                                        }
-
-                                        7 -> {
-                                            showGameLevel7 = true
-                                        }
-
-                                        8 -> {
-                                            showGameLevel8 = true
-                                        }
-
-                                        9 -> {
-                                            showGameLevel9 = true
-                                        }
-
-                                        10 -> {
-                                            if (!frankSequencePlayed) {
-                                                startFrank = true
-                                            } else {
-                                                showFrankWarning = true
+                        if (level in (1..10)) {
+                            TextFallout(
+                                stringResource(R.string.en_garde),
+                                getTextColor(activity),
+                                getTextStrokeColor(activity),
+                                24.sp,
+                                Alignment.Center,
+                                modifier = Modifier
+                                    .clickableOk(activity) {
+                                        when (level) {
+                                            1 -> { showGameLevel1 = true }
+                                            2 -> { showGameLevel2 = true }
+                                            3 -> { showGameLevel3 = true }
+                                            4 -> { showGameLevel4 = true }
+                                            5 -> { showGameLevel5 = true }
+                                            6 -> { showGameLevel6 = true }
+                                            7 -> { showGameLevel7 = true }
+                                            8 -> { showGameLevel8 = true }
+                                            9 -> { showGameLevel9 = true }
+                                            10 -> {
+                                                if (!frankSequencePlayed) {
+                                                    startFrank = true
+                                                } else {
+                                                    showFrankWarning = true
+                                                }
                                             }
+                                            else -> {}
                                         }
-
-                                        else -> {}
                                     }
-                                }
-                                .background(getTextBackgroundColor(activity))
-                                .padding(horizontal = 8.dp, vertical = 4.dp),
-                            TextAlign.Center
-                        )
+                                    .background(getTextBackgroundColor(activity))
+                                    .padding(horizontal = 8.dp, vertical = 4.dp),
+                                TextAlign.Center
+                            )
+                        }
                     }
                 }
             }
@@ -730,7 +709,7 @@ fun StartTowerGame(
     LaunchedEffect(Unit) { startAmbient(activity) }
     val onQuitPressed = { stopAmbient(); goBack() }
     val playerCResources = CResources(if (isFrankSequence) {
-        CustomDeck(CardBack.STANDARD, true)
+        CustomDeck(save.selectedDeck.first, save.selectedDeck.second)
     } else {
         save.getCustomDeckCopy()
     })
@@ -809,7 +788,7 @@ fun ShowFrank(activity: MainActivity, goBack: () -> Unit) {
     var whoIAmAsked by rememberSaveable { mutableStateOf(false) }
     var iChallengeYou by rememberSaveable { mutableStateOf(false) }
 
-    var text by rememberScoped { mutableStateOf(activity.getString(R.string. craig_1)) }
+    var text by rememberScoped { mutableStateOf(activity.getString(R.string.craig_1)) }
 
     LaunchedEffect(craigLine) {
         if (craigLine == 3) {

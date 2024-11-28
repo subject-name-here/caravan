@@ -34,6 +34,23 @@
     <string name="chinese_deck_name">Chinese deck</string>
     <string name="enclave_deck_name">Enclave deck</string>
 
+    <string name="ultra_luxe_trader_name">Martin Luther</string>
+    <string name="ultra_luxe_trader_condition">Ultra-Luxe card market is open only on Mondays and Thursdays. We apologize for any inconvenience.</string>
+    <string name="tops_trader_name">Max</string>
+    <string name="tops_trader_condition">Defeat Benny 7 times.</string>
+    <string name="gomorrah_trader_name">Ben Broadson</string>
+    <string name="gomorrah_trader_condition">Defeat Vulpes Inculta and reach Level 6 of the Tower.</string>
+    <string name="vault_21_trader_name">Melanie Martinez</string>
+    <string name="vault_21_trader_condition">Win 21 games or visit every 21st day of month.</string>
+    <string name="lucky_38_trader_name">Marylin &amp; Jane</string>
+    <string name="lucky_38_trader_cond">Beat Mr. House in Tower.</string>
+    <string name="sierra_madre_trader_name">Sierra Madre BottleCaps Exchange Machine</string>
+    <string name="sierra_madre_trader_cond">Beat Father Elijah 10 times and complete Chapter 1 of the Story mode.</string>
+    <string name="chinese_trader_name">Warlord Li Xuan</string>
+    <string name="chinese_trader_condition">First of all, finish chapters 9 and 9A of the Story mode. By the way, what year CCP was established?</string>
+    <string name="enclave_trader_name">Savanth</string>
+    <string name="enclave_trader_cond">Complete the Tower.</string>
+
 
     <string name="menu_pve">Single player</string>
     <string name="menu_pvp">Multiplayer</string>
@@ -245,7 +262,7 @@
     <string name="sfx">SFX</string>
 
     <string name="intro_music">Same Radio Intro</string>
-    <string name="non_stop_radio">Non-stop Radio</string>
+    <string name="non_stop_radio">Radio App Mode</string>
     <string name="cheats">Enter Secret Code</string>
 
     <string name="intro_tip_2">Unlike chess, Queens are not so useful in Caravan. However, you can have fun by sabotaging enemy\'s caravan with them.</string>

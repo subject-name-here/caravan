@@ -66,6 +66,7 @@ import com.unicorns.invisible.caravan.utils.SliderCustom
 import com.unicorns.invisible.caravan.utils.TextFallout
 import com.unicorns.invisible.caravan.utils.clickableCancel
 import com.unicorns.invisible.caravan.utils.clickableOk
+import com.unicorns.invisible.caravan.utils.cronetEngine
 import com.unicorns.invisible.caravan.utils.dpToPx
 import com.unicorns.invisible.caravan.utils.getBackgroundColor
 import com.unicorns.invisible.caravan.utils.getDialogBackground
@@ -180,15 +181,11 @@ class MainActivity : SaveDataActivity() {
         ).random()
 
         setContent {
-            @Composable
-            fun getColors(): Triple<Color, Color, Color> {
-                return Triple(
-                    getTextColor(this),
-                    getBackgroundColor(this),
-                    getTextStrokeColor(this),
-                )
-            }
-            val (textColor, backgroundColor, strokeColor) = getColors()
+            val (textColor, backgroundColor, strokeColor) = Triple(
+                getTextColor(this),
+                getBackgroundColor(this),
+                getTextStrokeColor(this),
+            )
             var isIntroScreen by rememberScoped { mutableStateOf(true) }
 
             if (isIntroScreen) {
@@ -247,7 +244,7 @@ class MainActivity : SaveDataActivity() {
                                 getString(advice),
                                 textColor,
                                 strokeColor,
-                                16.sp,
+                                18.sp,
                                 Alignment.Center,
                                 Modifier.padding(vertical = 4.dp, horizontal = 12.dp),
                                 TextAlign.Center
@@ -269,6 +266,7 @@ class MainActivity : SaveDataActivity() {
         var showRules by rememberSaveable { mutableStateOf(false) }
         var showDailys by rememberSaveable { mutableStateOf(false) }
         var showMarket by rememberSaveable { mutableStateOf(false) }
+        // TODO: Bank deposit!!
 
         var showAbout by rememberSaveable { mutableStateOf(false) }
         var showSettings by rememberSaveable { mutableStateOf(false) }
@@ -338,7 +336,9 @@ class MainActivity : SaveDataActivity() {
                     },
                     title = {
                         TextFallout(
-                            alertDialogHeader, getDialogTextColor(this), getDialogTextColor(this),
+                            alertDialogHeader,
+                            getDialogTextColor(this),
+                            getDialogTextColor(this),
                             24.sp, Alignment.CenterStart, Modifier,
                             TextAlign.Start
                         )
@@ -482,7 +482,7 @@ class MainActivity : SaveDataActivity() {
                         horizontalArrangement = Arrangement.SpaceAround
                     ) {
                         TextFallout(
-                            if (soundReduced != true && !isPaused)
+                            if (!isPaused && !soundReduced)
                                 stringResource(R.string.next_song)
                             else
                                 stringResource(R.string.none),
@@ -494,7 +494,7 @@ class MainActivity : SaveDataActivity() {
                                 .weight(1f)
                                 .wrapContentWidth()
                                 .clickableOk(this@MainActivity) {
-                                    if (!isPaused && soundReduced != true) {
+                                    if (!isPaused && !soundReduced) {
                                         nextSong(this@MainActivity)
                                     }
                                 }
@@ -505,7 +505,7 @@ class MainActivity : SaveDataActivity() {
 
                         TextFallout(
                             when {
-                                soundReduced == true -> stringResource(R.string.none)
+                                soundReduced -> stringResource(R.string.none)
                                 isPaused -> stringResource(R.string.resume_radio)
                                 else -> stringResource(R.string.pause_radio)
                             },
@@ -517,7 +517,7 @@ class MainActivity : SaveDataActivity() {
                                 .weight(1f)
                                 .wrapContentWidth()
                                 .clickableOk(this@MainActivity) {
-                                    if (soundReduced == true) {
+                                    if (soundReduced) {
                                         return@clickableOk
                                     }
                                     if (isPaused) {
@@ -569,24 +569,21 @@ class MainActivity : SaveDataActivity() {
                     showPvE -> {
                         if (!CResources(save.getCustomDeckCopy()).isCustomDeckValid()) {
                             showAlertDialog(
-                                stringResource(R.string.custom_deck_is_too_small),
-                                stringResource(R.string.custom_deck_is_too_small_message),
+                                "Custom deck is illegal!",
+                                "Deck uses more than 6 backs, has less than 30 cards or less than 15 numbered cards!",
                                 null
                             )
                             showPvE = false
                         } else {
-                            ShowSelectPvE(
-                                activity = this@MainActivity,
-                                ::showAlertDialog
-                            ) { showPvE = false }
+                            ShowSelectPvE(this@MainActivity, ::showAlertDialog) { showPvE = false }
                         }
                     }
 
                     showPvP -> {
                         if (!CResources(save.getCustomDeckCopy()).isCustomDeckValid()) {
                             showAlertDialog(
-                                stringResource(R.string.custom_deck_is_too_small),
-                                stringResource(R.string.custom_deck_is_too_small_message),
+                                "Custom deck is illegal!",
+                                "Deck uses more than 6 backs, has less than 30 cards or less than 15 numbered cards!",
                                 null
                             )
                             showPvP = false
@@ -598,9 +595,7 @@ class MainActivity : SaveDataActivity() {
                             ).show()
                             showPvP = false
                         } else {
-                            ShowPvP(
-                                activity = this@MainActivity, ::showAlertDialog,
-                            ) { showPvP = false }
+                            ShowPvP(this@MainActivity, ::showAlertDialog) { showPvP = false }
                         }
                     }
 
@@ -613,27 +608,31 @@ class MainActivity : SaveDataActivity() {
                     }
 
                     showSettings -> {
-                        ShowTrueSettings(
-                            this@MainActivity,
-                            { save.animationSpeed },
-                            {
-                                save.animationSpeed = it
-                                saveData(this@MainActivity)
-                            }
-                        ) { showSettings = false }
+                        ShowTrueSettings(this@MainActivity) { showSettings = false }
                     }
 
                     showDailys -> {
                         ShowDailys(this@MainActivity) { showDailys = false }
                     }
 
+                    showMarket -> {
+                        ShowTraders(this@MainActivity) { showMarket = false }
+                    }
+
                     else -> {
                         LaunchedEffect(Unit) {
                             val currentHash = save.getCurrentDateHashCode()
                             if (currentHash != save.challengesHash) {
+                                showAlertDialog(
+                                    "It's a beautiful day!",
+                                    "Challenges, bottlecaps of enemies and inventory of traders are refreshed!\n\nAnd you have found 10 bottlecaps!",
+                                    null
+                                )
                                 save.challengesHash = currentHash
                                 save.updateChallenges()
                                 save.updateDailyStats()
+                                save.capsInHand += 10
+                                saveData(this@MainActivity)
                             }
                         }
 

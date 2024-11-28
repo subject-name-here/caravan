@@ -1,10 +1,10 @@
 package com.unicorns.invisible.caravan.utils
 
-import com.unicorns.invisible.caravan.cronetEngine
 import com.unicorns.invisible.caravan.multiplayer.MyUrlRequestCallback
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.chromium.net.CronetEngine
 import org.json.JSONObject
 import java.util.concurrent.Executors
 
@@ -29,3 +29,4 @@ fun sendRequest(link: String, onFinish: (JSONObject) -> Unit) {
 }
 
 const val crvnUrl = "http://crvnserver.onrender.com"
+var cronetEngine: CronetEngine? = null

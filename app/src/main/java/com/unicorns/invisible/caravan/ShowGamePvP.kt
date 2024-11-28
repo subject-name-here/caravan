@@ -388,9 +388,7 @@ fun ShowGamePvP(
                             handCard = card
                         ), game)
                         caravan.putCardOnTop(game.playerCResources.removeFromHand(cardIndex))
-                        onCaravanCardInserted(
-                            cardIndex, caravanIndex, null,
-                        )
+                        onCaravanCardInserted(cardIndex, caravanIndex, null)
                     }
                 }
             } else {
@@ -415,9 +413,7 @@ fun ShowGamePvP(
                             cardIndex
                         )
                     )
-                    onCaravanCardInserted(
-                        cardIndex, caravanIndex, position
-                    )
+                    onCaravanCardInserted(cardIndex, caravanIndex, position)
                 }
             }
         }

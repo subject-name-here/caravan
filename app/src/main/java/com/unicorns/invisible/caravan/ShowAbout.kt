@@ -285,7 +285,7 @@ fun ShowAbout(activity: MainActivity, goBack: () -> Unit) {
                     Modifier,
                     TextAlign.Center
                 )
-                Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(16.dp))
             }
         }
     }

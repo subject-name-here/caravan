@@ -1,11 +1,22 @@
 package com.unicorns.invisible.caravan.save
 
 import com.unicorns.invisible.caravan.AnimationSpeed
+import com.unicorns.invisible.caravan.MainActivity
 import com.unicorns.invisible.caravan.Style
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.challenge.Challenge
 import com.unicorns.invisible.caravan.model.primitives.Card
 import com.unicorns.invisible.caravan.model.primitives.CustomDeck
+import com.unicorns.invisible.caravan.model.primitives.Rank
+import com.unicorns.invisible.caravan.model.trading.ChineseTrader
+import com.unicorns.invisible.caravan.model.trading.EnclaveTrader
+import com.unicorns.invisible.caravan.model.trading.GomorrahTrader
+import com.unicorns.invisible.caravan.model.trading.Lucky38Trader
+import com.unicorns.invisible.caravan.model.trading.SierraMadreTrader
+import com.unicorns.invisible.caravan.model.trading.TopsTrader
+import com.unicorns.invisible.caravan.model.trading.Trader
+import com.unicorns.invisible.caravan.model.trading.UltraLuxeTrader
+import com.unicorns.invisible.caravan.model.trading.Vault21Trader
 import kotlinx.serialization.EncodeDefault
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
@@ -103,6 +114,8 @@ class Save(val isUsable: Boolean) {
     var prize1Activated = false
     @EncodeDefault
     var prize2Activated = false
+    @EncodeDefault
+    var papaSmurfActive = false
 
     @EncodeDefault
     var oliverStatus = 0
@@ -113,10 +126,54 @@ class Save(val isUsable: Boolean) {
         val random = Random(challengesHash)
         repeat(30) {
             enemyCapsLeft[it] = if (it % 6 == 5) {
-                random.nextInt(75, 100)
+                100
             } else {
                 random.nextInt(15, 50)
             }
         }
     }
+
+    @EncodeDefault
+    var barterStat = 10
+    @EncodeDefault
+    var barterStatProgress = 0.0
+
+    fun getPriceOfCard(card: Card): Int {
+        val base = if (card.isAlt) 50 else 15
+        val barterMult = 2.5 - barterStat.toDouble() / 50.0
+        val rankMult = when (card.rank) {
+            Rank.ACE -> 1.0
+            Rank.TWO, Rank.THREE, Rank.FOUR -> 0.75
+            Rank.FIVE, Rank.SIX, Rank.SEVEN -> 1.0
+            Rank.EIGHT, Rank.NINE, Rank.TEN -> 1.25
+            Rank.JACK -> 1.5
+            Rank.QUEEN -> 1.0
+            Rank.KING -> 2.0
+            Rank.JOKER -> 3.0
+        }
+        val backCount = availableCards.count { c -> c.back == card.back && c.isAlt == card.isAlt }
+        val rarityMult = (backCount + 26.0) / 52.0
+        val bsMult = Random.nextDouble(0.8, 1.2)
+        return (base.toDouble() * barterMult * rankMult * rarityMult * bsMult).toInt()
+    }
+    fun onCardBuying(activity: MainActivity) {
+        barterStatProgress += Random.nextDouble(0.05, 0.1)
+        if (barterStatProgress >= 1.0) {
+            barterStat++
+            barterStatProgress = 0.0
+        }
+        saveData(activity)
+    }
+
+    @EncodeDefault
+    val traders = listOf<Trader>(
+        UltraLuxeTrader,
+        TopsTrader,
+        GomorrahTrader,
+        Lucky38Trader,
+        Vault21Trader,
+        SierraMadreTrader,
+        EnclaveTrader,
+        ChineseTrader,
+    )
 }

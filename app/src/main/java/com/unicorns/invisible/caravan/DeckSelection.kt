@@ -140,7 +140,7 @@ fun DeckSelection(
                                 modifier = getModifier(back, true).clip(RoundedCornerShape(6f))
                             )
                         }
-                        Spacer(modifier = Modifier.height(12.dp))
+                        Spacer(modifier = Modifier.height(8.dp))
                     } else {
                         AsyncImage(
                             model = "file:///android_asset/caravan_cards_back/" + back.getCardBackAsset(),

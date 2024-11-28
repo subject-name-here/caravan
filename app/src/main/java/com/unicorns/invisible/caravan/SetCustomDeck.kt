@@ -316,6 +316,7 @@ fun ShowCharacteristics(activity: MainActivity) {
         }
         Row(
             Modifier
+                .fillMaxWidth()
                 .padding(6.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center

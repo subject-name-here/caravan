@@ -841,7 +841,7 @@ fun StartGame(
     var reward: Int by rememberScoped { mutableIntStateOf(0) }
     var isBlitz: Boolean by rememberScoped { mutableStateOf(false) }
 
-    val isBettingEnemy = enemy !is EnemyMadnessCardinal && enemy !is EnemyLuc10
+    val isBettingEnemy = enemy !is EnemyMadnessCardinal
 
     var showBettingScreen: Boolean by rememberScoped { mutableStateOf(isBettingEnemy) }
 

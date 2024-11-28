@@ -135,7 +135,7 @@ fun ShowStoryList(
                     save.storyChaptersProgress = maxOf(save.storyChaptersProgress, 4)
                     saveData(activity)
                     activity.achievementsClient?.unlock(activity.getString(R.string.achievement_not_ready_to_die))
-                }) { showChapter = null; soundReduced = false; nextSong(activity);  }
+                }) { showChapter = null; soundReduced = false; nextSong(activity) }
             }
             4 -> {
                 ShowStoryChapter5(activity, showAlertDialog, {
@@ -280,14 +280,10 @@ fun ShowStoryList(
 fun DialogLine(activity: MainActivity, line: String, isSelect: Boolean = true, onClick: () -> Unit) {
     val modifier = if (isSelect) {
         Modifier
-            .clickableSelect(activity) {
-                onClick()
-            }
+            .clickableSelect(activity) { onClick() }
     } else {
         Modifier
-            .clickable {
-                onClick()
-            }
+            .clickable { onClick() }
     }
     TextClassic(
         line,
@@ -332,13 +328,13 @@ fun getDeck(chapterNumber: Int): CustomDeck {
             }
         }
         10 -> {
-            // TODO: add F bombs
             CustomDeck(CardBack.CHINESE, false)
         }
         else -> CustomDeck()
     }
 }
 
+// TODO: test it all!!
 @Composable
 fun ShowStoryChapter1(
     activity: MainActivity,
@@ -1077,7 +1073,7 @@ fun ShowStoryChapter6(
     }
 
     if (isGame) {
-        val enemy = rememberScoped { EnemyStory6 }
+        val enemy by rememberScoped { mutableStateOf(EnemyStory6) }
         StartStoryGame(
             activity,
             enemy,
@@ -2134,7 +2130,7 @@ fun StartStoryGame(
         }
         showAlertDialog(
             activity.getString(R.string.check_back_to_menu),
-            "", // TODO
+            "This game will be counted as lost!!",
             goBack
         )
     }
@@ -2217,7 +2213,7 @@ fun StartStoryFinalBossGame(
         }
         showAlertDialog(
             activity.getString(R.string.check_back_to_menu),
-            "", // TODO
+            "If you quit, Supreme Leader kills you.",
             goBack
         )
     }

@@ -114,7 +114,6 @@ fun ShowChallenge(activity: MainActivity, challenge: Challenge, isCompleted: Boo
                 Modifier,
                 TextAlign.Start
             )
-
             TextFallout(
                 challenge.getProgress(),
                 getTextColor(activity),

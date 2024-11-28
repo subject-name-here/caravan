@@ -36,6 +36,7 @@ import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.primitives.Card
 import com.unicorns.invisible.caravan.model.primitives.Rank
 import com.unicorns.invisible.caravan.model.primitives.Suit
+import com.unicorns.invisible.caravan.model.trading.ChineseTrader
 import com.unicorns.invisible.caravan.save.saveData
 import com.unicorns.invisible.caravan.utils.MenuItemOpen
 import com.unicorns.invisible.caravan.utils.SwitchCustomUsualBackground
@@ -57,17 +58,15 @@ import com.unicorns.invisible.caravan.utils.scrollbar
 @Composable
 fun ShowTrueSettings(
     activity: MainActivity,
-    getSpeed: () -> AnimationSpeed,
-    setSpeed: (AnimationSpeed) -> Unit,
     goBack: () -> Unit
 ) {
     val mainState = rememberLazyListState()
-    var speed by remember { mutableStateOf(getSpeed()) }
+    var speed by remember { mutableStateOf(save.animationSpeed) }
     var intro by remember { mutableStateOf(save.useCaravanIntro) }
     var playInBack by remember { mutableStateOf(save.playRadioInBack) }
 
     MenuItemOpen(activity, stringResource(R.string.menu_settings), stringResource(R.string.save), {
-        setSpeed(speed)
+        save.animationSpeed = speed
         save.useCaravanIntro = intro
         save.playRadioInBack = playInBack
         saveData(activity)
@@ -274,7 +273,7 @@ fun ShowTrueSettings(
                                             }
                                         }
 
-                                        9900 -> {
+                                        9009 -> {
                                             save.let {
                                                 listOf(Suit.HEARTS, Suit.SPADES).forEach { suit ->
                                                     Rank.entries.forEach { rank ->
@@ -287,6 +286,25 @@ fun ShowTrueSettings(
                                                 saveData(activity)
                                                 playYesBeep(activity)
                                             }
+                                        }
+
+                                        1921 -> {
+                                            save.let {
+                                                it.traders
+                                                    .filterIsInstance<ChineseTrader>()
+                                                    .forEach { trader ->
+                                                        trader.is1921Entered = true
+                                                    }
+
+                                                saveData(activity)
+                                                playYesBeep(activity)
+                                            }
+                                        }
+
+                                        110811 -> {
+                                            save.papaSmurfActive = !save.papaSmurfActive
+                                            saveData(activity)
+                                            playYesBeep(activity)
                                         }
 
                                         // TODO: more cheats
@@ -328,8 +346,6 @@ fun ShowTrueSettings(
                         )
                     }
                 }
-
-                Spacer(Modifier.height(16.dp))
             }
         }
     }
