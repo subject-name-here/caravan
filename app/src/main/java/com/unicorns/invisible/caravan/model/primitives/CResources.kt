@@ -103,9 +103,8 @@ class CResources(private val deck: CustomDeck) {
 
     fun getDeckBack() = deck.firstOrNull()?.run { this.back to this.isAlt }
 
-    var canBeShuffled = true
     fun shuffleDeck() {
-        if (canBeShuffled) deck.shuffle()
+        deck.shuffle()
     }
 
     val deckSize: Int

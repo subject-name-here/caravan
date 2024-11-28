@@ -17,6 +17,9 @@ import com.unicorns.invisible.caravan.model.trading.TopsTrader
 import com.unicorns.invisible.caravan.model.trading.Trader
 import com.unicorns.invisible.caravan.model.trading.UltraLuxeTrader
 import com.unicorns.invisible.caravan.model.trading.Vault21Trader
+import com.unicorns.invisible.caravan.save
+import com.unicorns.invisible.caravan.utils.playPimpBoySound
+import com.unicorns.invisible.caravan.utils.playYesBeep
 import kotlinx.serialization.EncodeDefault
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
@@ -40,6 +43,11 @@ class Save(val isUsable: Boolean) {
 
     @EncodeDefault
     val availableCards: MutableSet<Card> = HashSet(CustomDeck(CardBack.STANDARD, false).toList())
+    fun isCardAvailableAlready(it: Card): Boolean {
+        return availableCards.any { ac ->
+            ac.rank == it.rank && ac.suit == it.suit && ac.back == it.back && ac.isAlt == it.isAlt
+        }
+    }
 
     val ownedDecks
         get() = availableCards.filterNot { it.isAlt }.map { it.back }.distinct()
@@ -82,8 +90,9 @@ class Save(val isUsable: Boolean) {
 
     @EncodeDefault
     var capsInHand = 100
-    @EncodeDefault
-    var capsInDeposit = 0
+    // TODO:
+//    @EncodeDefault
+//    var capsInDeposit = 0
 
     @EncodeDefault
     var tickets = 3
@@ -153,12 +162,13 @@ class Save(val isUsable: Boolean) {
         }
         val backCount = availableCards.count { c -> c.back == card.back && c.isAlt == card.isAlt }
         val rarityMult = (backCount + 26.0) / 52.0
-        val bsMult = Random.nextDouble(0.8, 1.2)
+        val bsMult = Random(challengesHash).nextDouble(0.8, 1.2)
         return (base.toDouble() * barterMult * rankMult * rarityMult * bsMult).toInt()
     }
     fun onCardBuying(activity: MainActivity) {
-        barterStatProgress += Random.nextDouble(0.05, 0.1)
-        if (barterStatProgress >= 1.0) {
+        barterStatProgress += Random.nextDouble(0.175, 0.225)
+        if (barterStatProgress >= 1.0 && barterStat < 100) {
+            playPimpBoySound(activity)
             barterStat++
             barterStatProgress = 0.0
         }

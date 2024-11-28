@@ -73,7 +73,7 @@ fun DeckSelection(
 
     var setCustomDeck by rememberSaveable { mutableStateOf(false) }
     if (setCustomDeck) {
-        SetCustomDeck(activity = activity) { setCustomDeck = false }
+        SetCustomDeck(activity) { setCustomDeck = false }
         return
     }
 

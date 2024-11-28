@@ -26,8 +26,8 @@ data object Vault21Trader : Trader {
         val rand = Random(save.challengesHash)
         val deck1 = CustomDeck(CardBack.VAULT_21, false)
         val deck2 = CustomDeck(CardBack.VAULT_21, true)
-        val cards1 = deck1.toList().shuffled(rand).take(rand.nextInt(6, 8))
-        val cards2 = deck2.toList().shuffled(rand).take(rand.nextInt(1, 3))
+        val cards1 = deck1.toList().shuffled(rand).take(10)
+        val cards2 = deck2.toList().shuffled(rand).take(4)
         return (cards1 + cards2).map { card -> card to save.getPriceOfCard(card) }
     }
 

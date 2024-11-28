@@ -22,7 +22,7 @@ data object EnclaveTrader : Trader {
     override fun getCards(): List<Pair<Card, Int>> {
         val rand = Random(save.challengesHash)
         val deck1 = CustomDeck(CardBack.ENCLAVE, false)
-        val cards1 = deck1.toList().shuffled(rand).take(5)
+        val cards1 = deck1.toList().shuffled(rand).take(9)
         return cards1.map { card -> card to save.getPriceOfCard(card) }
     }
 

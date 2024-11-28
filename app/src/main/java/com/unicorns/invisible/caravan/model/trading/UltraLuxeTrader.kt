@@ -27,8 +27,8 @@ data object UltraLuxeTrader : Trader {
         val rand = Random(save.challengesHash)
         val deck1 = CustomDeck(CardBack.ULTRA_LUXE, false)
         val deck2 = CustomDeck(CardBack.ULTRA_LUXE, true)
-        val cards1 = deck1.toList().shuffled(rand).take(rand.nextInt(5, 7))
-        val cards2 = deck2.toList().shuffled(rand).take(rand.nextInt(1, 3))
+        val cards1 = deck1.toList().shuffled(rand).take(12)
+        val cards2 = deck2.toList().shuffled(rand).take(5)
         return (cards1 + cards2).map { card -> card to save.getPriceOfCard(card) }
     }
 

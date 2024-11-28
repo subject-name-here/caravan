@@ -171,7 +171,7 @@ fun ShowChallenge(activity: MainActivity, challenge: Challenge, isCompleted: Boo
                     Modifier
                         .background(getTextBackgroundColor(activity))
                         .clickableOk(activity) {
-                            save.capsInHand += 10
+                            save.capsInHand += 15
                             dailyCompleted(save)
                         }
                         .padding(8.dp),

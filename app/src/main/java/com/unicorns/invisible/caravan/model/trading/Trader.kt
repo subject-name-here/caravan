@@ -10,6 +10,6 @@ sealed interface Trader {
     fun isOpen(): Boolean
     fun openingCondition(): Int
     fun getName(): Int
-    fun getCards(): List<Pair<Card, Int>> // TODO: generate more cards player doesn't have
+    fun getCards(): List<Pair<Card, Int>>
     fun getStyles(): List<Style>
 }

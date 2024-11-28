@@ -7,7 +7,6 @@ import com.unicorns.invisible.caravan.model.primitives.Card
 import com.unicorns.invisible.caravan.model.primitives.CustomDeck
 import com.unicorns.invisible.caravan.save
 import kotlinx.serialization.Serializable
-import java.util.Calendar
 import kotlin.random.Random
 
 
@@ -23,8 +22,8 @@ data object Lucky38Trader : Trader {
         val rand = Random(save.challengesHash)
         val deck1 = CustomDeck(CardBack.LUCKY_38, false)
         val deck2 = CustomDeck(CardBack.LUCKY_38, true)
-        val cards1 = deck1.toList().shuffled(rand).take(rand.nextInt(6, 8))
-        val cards2 = deck2.toList().shuffled(rand).take(rand.nextInt(1, 3))
+        val cards1 = deck1.toList().shuffled(rand).take(9)
+        val cards2 = deck2.toList().shuffled(rand).take(7)
         return (cards1 + cards2).map { card -> card to save.getPriceOfCard(card) }
     }
 

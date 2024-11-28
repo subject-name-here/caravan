@@ -197,7 +197,7 @@ fun ShowPvP(
             }
             val response = try {
                 json.decodeFromString<List<ULong>>(result.getString("body"))
-            } catch (e: Exception) {
+            } catch (_: Exception) {
                 showFailure(result.getString("body"))
                 return@sendRequest
             }

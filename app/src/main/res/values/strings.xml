@@ -381,7 +381,7 @@
     <string name="only_red_descr">Win a game playing only Hearts, Diamonds and Jokers. (Init stage is not counted.)</string>
     <string name="father_pucci_descr">Win a game playing only aces, face cards and prime number cards (2, 3, 5, 7). (Init stage is not counted.)</string>
 
-    <string name="claim_caps">Claim 10 Caps</string>
+    <string name="claim_caps">Claim 15 Caps</string>
     <string name="claim_tickets">Claim 1 Ticket</string>
 
     <string name="tower_presents">VAULT-TEC\nproudly presents</string>

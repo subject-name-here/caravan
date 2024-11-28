@@ -652,7 +652,7 @@ fun ShowPvE(
                                 unselectedContentColor = getTextBackgroundColor(activity)
                             ) {
                                 TextFallout(
-                                    "Extra Content",
+                                    "TBA",
                                     getTextColor(activity),
                                     getTextStrokeColor(activity),
                                     16.sp,
@@ -1116,7 +1116,7 @@ fun ShowBettingScreen(
                     TextAlign.Center
                 )
 
-                val modifier = if (bet.let { it == null || it < enemyBet || it > save.capsInHand } ) {
+                val modifier = if (bet != 0 && bet.let { it == null || it < enemyBet || it > save.capsInHand } ) {
                     Modifier
                         .padding(8.dp)
                 } else {
@@ -1144,6 +1144,7 @@ fun ShowBettingScreen(
                     modifier,
                     TextAlign.Center
                 )
+                Spacer(Modifier.height(12.dp))
             }
         }
     }
@@ -1157,8 +1158,7 @@ fun countReward(playerBet: Int, enemyBet: Int, isBlitz: Boolean): Int {
         playerBet + enemyBet
     } else {
         val k = (playerBet + enemyBet).toDouble()
-        val p = k.pow(1.0 / k)
-        (playerBet + enemyBet).toDouble().pow(p).toInt()
+        k.pow(k.pow(1.0 / k)).toInt()
     }
 }
 
@@ -1168,9 +1168,7 @@ fun winCard(
     isAlt: Boolean
 ): String {
     fun isCardNew(card: Card): Boolean {
-        return save.availableCards.none { aCard ->
-            aCard.rank == card.rank && aCard.suit == card.suit && aCard.back == card.back && aCard.isAlt == card.isAlt
-        }
+        return !save.isCardAvailableAlready(card)
     }
 
     val isNew = if (back == CardBack.STANDARD) true else ((0..2).random() > 0)
@@ -1182,15 +1180,15 @@ fun winCard(
         null
     }
 
-    // TODO: card
     val message = if (card != null) {
         save.availableCards.add(card)
-        "CARD"
+        "${activity.getString(card.rank.nameId)} ${activity.getString(card.suit.nameId)}, ${activity.getString(back.getDeckName())}"
     } else {
-        save.capsInHand += if (isAlt) 50 else 15
-        "CAPS"
+        val prize = if (isAlt) 50 else 15
+        save.capsInHand += prize
+        "$prize caps"
     }
     saveData(activity)
 
-    return message
+    return "\n You have won: $message."
 }

@@ -22,8 +22,8 @@ data object SierraMadreTrader : Trader {
         val rand = Random(save.challengesHash)
         val deck1 = CustomDeck(CardBack.SIERRA_MADRE, false)
         val deck2 = CustomDeck(CardBack.SIERRA_MADRE, true)
-        val cards1 = deck1.toList().shuffled(rand).take(rand.nextInt(6, 8))
-        val cards2 = deck2.toList().shuffled(rand).take(rand.nextInt(1, 3))
+        val cards1 = deck1.toList().shuffled(rand).take(11)
+        val cards2 = deck2.toList().shuffled(rand).take(7)
         return (cards1 + cards2).map { card -> card to save.getPriceOfCard(card) }
     }
 

@@ -62,7 +62,8 @@ class CardWithModifier(val card: Card) {
         hasActivePete = false
     }
 
-    fun isQueenReversingSequence() = modifiers.count { it.isOrdinary() && it.rank == Rank.QUEEN } % 2 == 1
+    fun isQueenReversingSequence() = modifiers
+        .count { it.isOrdinary() && it.rank == Rank.QUEEN } % 2 == 1
 
     fun hasJacks() = modifiers.any { it.isOrdinary() && it.rank == Rank.JACK }
 

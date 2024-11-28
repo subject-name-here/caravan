@@ -278,7 +278,9 @@ fun ShowTrueSettings(
                                                 listOf(Suit.HEARTS, Suit.SPADES).forEach { suit ->
                                                     Rank.entries.forEach { rank ->
                                                         if (rank != Rank.JOKER) {
-                                                            it.availableCards.add(Card(rank, suit, CardBack.STANDARD, true))
+                                                            it.availableCards.add(Card(
+                                                                rank, suit, CardBack.STANDARD, true
+                                                            ))
                                                         }
                                                     }
                                                 }
@@ -292,9 +294,7 @@ fun ShowTrueSettings(
                                             save.let {
                                                 it.traders
                                                     .filterIsInstance<ChineseTrader>()
-                                                    .forEach { trader ->
-                                                        trader.is1921Entered = true
-                                                    }
+                                                    .forEach { t -> t.is1921Entered = true }
 
                                                 saveData(activity)
                                                 playYesBeep(activity)

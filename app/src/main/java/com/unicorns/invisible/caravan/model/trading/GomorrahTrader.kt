@@ -5,8 +5,6 @@ import com.unicorns.invisible.caravan.Style
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.primitives.Card
 import com.unicorns.invisible.caravan.model.primitives.CustomDeck
-import com.unicorns.invisible.caravan.model.primitives.Rank
-import com.unicorns.invisible.caravan.model.primitives.Suit
 import com.unicorns.invisible.caravan.save
 import kotlinx.serialization.Serializable
 import kotlin.random.Random
@@ -25,8 +23,8 @@ data object GomorrahTrader : Trader {
         val rand = Random(save.challengesHash)
         val deck1 = CustomDeck(CardBack.GOMORRAH, false)
         val deck2 = CustomDeck(CardBack.GOMORRAH, true)
-        val cards1 = deck1.toList().shuffled(rand).take(rand.nextInt(6, 8))
-        val cards2 = deck2.toList().shuffled(rand).take(rand.nextInt(1, 3))
+        val cards1 = deck1.toList().shuffled(rand).take(13)
+        val cards2 = deck2.toList().shuffled(rand).take(5)
         return (cards1 + cards2).map { card -> card to save.getPriceOfCard(card) }
     }
 

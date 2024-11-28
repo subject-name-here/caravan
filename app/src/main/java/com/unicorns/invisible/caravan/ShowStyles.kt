@@ -2,6 +2,7 @@ package com.unicorns.invisible.caravan
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
@@ -61,16 +62,14 @@ fun ShowStyles(
                 verticalArrangement = Arrangement.Center
             ) {
                 item {
-                    Style.entries
-                        .filter { it in save.ownedStyles }
-                        .forEach { style ->
-                            ShowStyle(activity, style, style.ordinal == styleInt) {
-                                if (styleInt != style.ordinal) {
-                                    styleInt = style.ordinal
-                                    selectStyle(style.ordinal)
-                                }
+                    Style.entries.forEach { style ->
+                        ShowStyle(activity, style, style.ordinal == styleInt) {
+                            if (styleInt != style.ordinal) {
+                                styleInt = style.ordinal
+                                selectStyle(style.ordinal)
                             }
                         }
+                    }
                 }
             }
         }
@@ -105,21 +104,25 @@ fun ShowStyle(
                 .padding(4.dp),
             TextAlign.Center
         )
-        TextFallout(
-            if (isStyleUsed) "OK" else stringResource(R.string.select),
-            getTextColorByStyle(activity, style),
-            getTextColorByStyle(activity, style),
-            22.sp,
-            Alignment.Center,
-            Modifier
-                .fillMaxWidth(0.5f)
-                .background(getMusicPanelColorByStyle(activity, style))
-                .padding(6.dp)
-                .background(getTextBackByStyle(activity, style))
-                .clickableOk(activity) {
-                    onClick(style.ordinal)
-                },
-            TextAlign.Center
-        )
+        if (style in save.ownedStyles) {
+            TextFallout(
+                if (isStyleUsed) "OK" else stringResource(R.string.select),
+                getTextColorByStyle(activity, style),
+                getTextColorByStyle(activity, style),
+                22.sp,
+                Alignment.Center,
+                Modifier
+                    .fillMaxWidth(0.5f)
+                    .background(getMusicPanelColorByStyle(activity, style))
+                    .padding(6.dp)
+                    .background(getTextBackByStyle(activity, style))
+                    .clickableOk(activity) {
+                        onClick(style.ordinal)
+                    },
+                TextAlign.Center
+            )
+        } else {
+            Box(Modifier.fillMaxWidth(0.5f)) {}
+        }
     }
 }

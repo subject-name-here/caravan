@@ -75,10 +75,8 @@ class Caravan {
     }
 
     fun getValue(): Int {
-        if (cards.any {
-            it.modifiersCopy().any {
-                mod -> mod.getWildWastelandCardType() == Card.WildWastelandCardType.YES_MAN
-            }
+        if (cards.flatMap{ it.modifiersCopy() }.any { mod ->
+            mod.getWildWastelandCardType() == Card.WildWastelandCardType.YES_MAN
         }) {
             return 26
         }
