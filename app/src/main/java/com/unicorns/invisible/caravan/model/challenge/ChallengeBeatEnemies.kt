@@ -1,7 +1,7 @@
 package com.unicorns.invisible.caravan.model.challenge
 
-import com.unicorns.invisible.caravan.R
 import com.unicorns.invisible.caravan.MainActivity
+import com.unicorns.invisible.caravan.R
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.enemy.Enemy
 import com.unicorns.invisible.caravan.model.enemy.EnemyBenny

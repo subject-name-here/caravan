@@ -5,11 +5,8 @@ import com.unicorns.invisible.caravan.R
 import com.unicorns.invisible.caravan.Style
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.primitives.Card
-import com.unicorns.invisible.caravan.model.primitives.CustomDeck
-import com.unicorns.invisible.caravan.save
 import kotlinx.serialization.Serializable
 import java.util.Calendar
-import kotlin.random.Random
 
 
 @Serializable

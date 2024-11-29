@@ -97,6 +97,7 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
 
+// TODO: check this
 @Composable
 fun ShowStoryList(
     activity: MainActivity,
@@ -191,6 +192,7 @@ fun ShowStoryList(
     }
 
     // TODO: exgtract strings
+    // TODO: translate strings
     MenuItemOpen(activity, "Story", "<-", goBack) {
         val state = rememberLazyListState()
         LazyColumn(
@@ -1082,7 +1084,7 @@ fun ShowStoryChapter6(
             {},
             { gameResult = 2 },
             {
-                // TODO
+                // TODO: fix this
                 if (false) {
                     gameResult = -1
                 } else {

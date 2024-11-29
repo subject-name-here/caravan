@@ -87,9 +87,6 @@ class Save(val isUsable: Boolean) {
 
     @EncodeDefault
     var capsInHand = 100
-    // TODO:
-//    @EncodeDefault
-//    var capsInDeposit = 0
 
     @EncodeDefault
     var tickets = 3

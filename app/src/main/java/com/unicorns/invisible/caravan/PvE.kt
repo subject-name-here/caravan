@@ -668,6 +668,7 @@ fun ShowPvE(
                         Spacer(modifier = Modifier.height(16.dp))
                         when (selectedTab) {
                             0 -> {
+                                // TODO: remove this thing >_<
                                 when (oliverStatus) {
                                     0 -> OpponentItem(stringResource(R.string.pve_enemy_oliver_fake)) {
                                         showOliverWarning = true

@@ -4,8 +4,8 @@ import android.widget.Toast
 import com.unicorns.invisible.caravan.MainActivity
 import com.unicorns.invisible.caravan.Style
 import com.unicorns.invisible.caravan.model.CardBack
-import com.unicorns.invisible.caravan.model.primitives.Rank
 import com.unicorns.invisible.caravan.model.primitives.Card
+import com.unicorns.invisible.caravan.model.primitives.Rank
 import com.unicorns.invisible.caravan.model.primitives.Suit
 import com.unicorns.invisible.caravan.save
 import com.unicorns.invisible.caravan.snapshotsClient

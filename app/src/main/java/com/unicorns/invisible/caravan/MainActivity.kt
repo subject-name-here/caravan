@@ -267,7 +267,6 @@ class MainActivity : SaveDataActivity() {
         var showRules by rememberSaveable { mutableStateOf(false) }
         var showDailys by rememberSaveable { mutableStateOf(false) }
         var showMarket by rememberSaveable { mutableStateOf(false) }
-        // TODO: Bank deposit!!
 
         var showAbout by rememberSaveable { mutableStateOf(false) }
         var showSettings by rememberSaveable { mutableStateOf(false) }

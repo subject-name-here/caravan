@@ -205,6 +205,8 @@ fun ShowTraders(activity: MainActivity, goBack: () -> Unit) {
                                     TextAlign.Center
                                 )
 
+                                // TODO: Bank deposit by investment in trader!!!
+
                                 selectedTrader.getStyles().filter { it !in save.ownedStyles }.forEach {
                                     Spacer(modifier = Modifier.height(4.dp))
                                     Row(
