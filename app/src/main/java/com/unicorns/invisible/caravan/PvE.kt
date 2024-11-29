@@ -906,6 +906,8 @@ fun StartGame(
                 )
             }
 
+            enemy.onVictory()
+
             saveData(activity)
 
         }
@@ -974,7 +976,7 @@ fun ShowBettingScreen(
         EnemyVulpes -> stringResource(R.string.vulpes)
         else -> "?!?"
     }
-    var bet by rememberScoped { mutableStateOf<Int?>(null) }
+    var bet by rememberScoped { mutableStateOf("") }
     var enemyBet: Int by rememberScoped { mutableIntStateOf(run {
         val capsLeft = save.enemyCapsLeft[enemy.getBankNumber()] ?: 0
         if (capsLeft < 10) {
@@ -986,7 +988,7 @@ fun ShowBettingScreen(
     var isBlitz: Boolean by rememberScoped { mutableStateOf(false) }
 
     fun countRewardLocal(): Int {
-        return bet?.let { countReward(it, enemyBet, isBlitz) } ?: 0
+        return bet.toIntOrNull()?.let { countReward(it, enemyBet, isBlitz) } ?: 0
     }
 
     Scaffold(bottomBar = {
@@ -1057,9 +1059,9 @@ fun ShowBettingScreen(
                     modifier = Modifier.fillMaxWidth(0.5f),
                     singleLine = true,
                     enabled = true,
-                    value = bet?.toString() ?: "",
+                    value = bet,
                     onValueChange = {
-                        bet = it.toIntOrNull()
+                        bet = it
                     },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     textStyle = TextStyle(
@@ -1069,7 +1071,7 @@ fun ShowBettingScreen(
                     ),
                     label = {
                         TextFallout(
-                            text = "Enter your bet (either 0 or something between $enemyBet and ${save.capsInHand}):",
+                            text = "Enter your bet (between $enemyBet and ${save.capsInHand}), or leave empty to play for free:",
                             getTextColor(activity),
                             getTextStrokeColor(activity),
                             14.sp,
@@ -1113,23 +1115,23 @@ fun ShowBettingScreen(
                     TextAlign.Center
                 )
 
-                val modifier = if (bet != 0 && bet.let { it == null || it < enemyBet || it > save.capsInHand } ) {
-                    Modifier
-                        .padding(8.dp)
-                } else {
+                val modifier = if (bet == "" || bet.toIntOrNull().let { it != null && it >= enemyBet && it <= save.capsInHand }) {
                     Modifier
                         .clickableOk(activity) {
                             setIsBlitz(isBlitz)
-                            setBet(bet ?: 0)
+                            setBet(bet.toIntOrNull() ?: 0)
                             setReward(countRewardLocal())
 
-                            save.capsInHand -= (bet ?: 0)
+                            save.capsInHand -= (bet.toIntOrNull() ?: 0)
                             save.enemyCapsLeft -= enemyBet
                             saveData(activity)
 
                             goForward()
                         }
                         .background(getTextBackgroundColor(activity))
+                        .padding(8.dp)
+                } else {
+                    Modifier
                         .padding(8.dp)
                 }
                 TextFallout(

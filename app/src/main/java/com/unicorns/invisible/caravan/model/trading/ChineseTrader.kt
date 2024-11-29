@@ -1,5 +1,6 @@
 package com.unicorns.invisible.caravan.model.trading
 
+import com.unicorns.invisible.caravan.MainActivity
 import com.unicorns.invisible.caravan.R
 import com.unicorns.invisible.caravan.Style
 import com.unicorns.invisible.caravan.model.CardBack
@@ -11,21 +12,17 @@ import kotlin.random.Random
 
 
 @Serializable
-data object ChineseTrader : Trader {
+class ChineseTrader : Trader {
     var is1921Entered = false
     override fun isOpen() = is1921Entered &&
             save.storyChaptersProgress >= 9 && save.altStoryChaptersProgress >= 1
 
-    override fun openingCondition() = R.string.chinese_trader_condition
+    override fun openingCondition(activity: MainActivity) =
+        activity.getString(R.string.chinese_trader_condition)
 
     override fun getName(): Int = R.string.chinese_trader_name
 
-    override fun getCards(): List<Pair<Card, Int>> {
-        val rand = Random(save.challengesHash)
-        val deck1 = CustomDeck(CardBack.CHINESE, false)
-        val cards1 = deck1.toList().shuffled(rand).take(9)
-        return cards1.map { card -> card to save.getPriceOfCard(card) }
-    }
+    override fun getCards(): List<Pair<Card, Int>> = getCards(CardBack.CHINESE, 10)
 
     override fun getStyles(): List<Style> = emptyList()
 }

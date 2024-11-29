@@ -1,5 +1,6 @@
 package com.unicorns.invisible.caravan.model.trading
 
+import com.unicorns.invisible.caravan.MainActivity
 import com.unicorns.invisible.caravan.R
 import com.unicorns.invisible.caravan.Style
 import com.unicorns.invisible.caravan.model.CardBack
@@ -12,25 +13,18 @@ import kotlin.random.Random
 
 
 @Serializable
-data object UltraLuxeTrader : Trader {
+class UltraLuxeTrader : Trader {
     override fun isOpen(): Boolean {
         val calendar = Calendar.getInstance()
         val dayNumber = calendar.get(Calendar.DAY_OF_WEEK)
         return dayNumber == Calendar.MONDAY || dayNumber == Calendar.THURSDAY
     }
 
-    override fun openingCondition(): Int = R.string.ultra_luxe_trader_condition
+    override fun openingCondition(activity: MainActivity) = activity.getString(R.string.ultra_luxe_trader_condition)
 
     override fun getName(): Int = R.string.ultra_luxe_trader_name
 
-    override fun getCards(): List<Pair<Card, Int>> {
-        val rand = Random(save.challengesHash)
-        val deck1 = CustomDeck(CardBack.ULTRA_LUXE, false)
-        val deck2 = CustomDeck(CardBack.ULTRA_LUXE, true)
-        val cards1 = deck1.toList().shuffled(rand).take(12)
-        val cards2 = deck2.toList().shuffled(rand).take(5)
-        return (cards1 + cards2).map { card -> card to save.getPriceOfCard(card) }
-    }
+    override fun getCards(): List<Pair<Card, Int>> = getCards(CardBack.ULTRA_LUXE, 12)
 
     override fun getStyles(): List<Style> {
         return listOf(Style.OLD_WORLD)

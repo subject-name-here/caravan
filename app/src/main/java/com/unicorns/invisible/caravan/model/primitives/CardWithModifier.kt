@@ -29,7 +29,7 @@ class CardWithModifier(val card: Card) {
 
     fun canAddModifier(card: Card): Boolean {
         val isOrdinaryJack = card.rank == Rank.JACK && card.isOrdinary()
-        return card.isFace() && !isProtectedByMuggy && (modifiers.size < 3 || isOrdinaryJack)
+        return (card.isFace() || card.isNuclear()) && !isProtectedByMuggy && (modifiers.size < 3 || isOrdinaryJack)
     }
 
     var hasActiveJoker: Boolean = false

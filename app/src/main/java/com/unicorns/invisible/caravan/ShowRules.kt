@@ -26,7 +26,7 @@ import com.unicorns.invisible.caravan.utils.scrollbar
 
 @Composable
 fun ShowRules(activity: MainActivity, goBack: () -> Unit) {
-    // TODO: FAQ and better rules
+    // TODO: FAQ and better rules!!!
     val rules = stringResource(R.string.rules)
     MenuItemOpen(activity, stringResource(R.string.menu_rules), "<-", goBack) {
         val state = rememberLazyListState()

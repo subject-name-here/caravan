@@ -7,6 +7,8 @@ import com.unicorns.invisible.caravan.model.primitives.Card
 import com.unicorns.invisible.caravan.model.primitives.CustomDeck
 import com.unicorns.invisible.caravan.model.primitives.Rank
 import com.unicorns.invisible.caravan.model.primitives.Suit
+import com.unicorns.invisible.caravan.model.trading.Lucky38Trader
+import com.unicorns.invisible.caravan.save
 import kotlinx.serialization.Serializable
 
 
@@ -26,5 +28,9 @@ data object EnemyTower7 : Enemy {
 
     override fun makeMove(game: Game) {
         TODO("Not yet implemented")
+    }
+
+    override fun onVictory() {
+        save.traders.filterIsInstance<Lucky38Trader>().forEach { it.isMrHouseBeaten = true }
     }
 }

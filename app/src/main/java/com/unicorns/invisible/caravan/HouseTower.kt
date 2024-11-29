@@ -110,7 +110,7 @@ fun TowerScreen(
     var showGameLevel9 by rememberSaveable { mutableStateOf(false) }
     var showGameLevel10 by rememberSaveable { mutableStateOf(false) }
 
-    var levelMemory by rememberSaveable { mutableIntStateOf(0) }
+    var levelMemory by rememberScoped { mutableIntStateOf(0) }
 
     @Composable
     fun showTower(enemy: Enemy, goBack: () -> Unit) {
@@ -196,17 +196,21 @@ fun TowerScreen(
             return
         }
         showGameLevel10 -> {
+            var capsMemory by rememberScoped { mutableIntStateOf(0) }
             StartTowerGame(activity, EnemyFrank, showAlertDialog, {
                 startLevel11Theme(activity)
                 playFrankPhrase(activity, R.raw.frank_on_game_start)
                 levelMemory = level
                 level = 0
                 save.towerLevel = 0
+                capsMemory = save.capsInHand
+                save.capsInHand = 0
                 saveData(activity)
             }, {
                 level = levelMemory + 1
                 save.towerLevel = levelMemory + 1
                 levelMemory = 0
+                save.capsInHand = capsMemory
                 saveData(activity)
                 stopRadio()
                 playFrankPhrase(activity, R.raw.frank_on_defeat)
@@ -220,6 +224,7 @@ fun TowerScreen(
             }) {
                 showGameLevel10 = false
                 soundReduced = false
+                frankSequencePlayed = false
 
                 CoroutineScope(Dispatchers.Unconfined).launch {
                     if (level == 0) {
@@ -741,6 +746,8 @@ fun StartTowerGame(
                     onQuitPressed
                 )
             }
+            enemy.onVictory()
+            saveData(activity)
         }
         it.onLose = {
             playLoseSound(activity)

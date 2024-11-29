@@ -328,7 +328,7 @@ fun ShowTrueSettings(
                             ),
                             label = {
                                 TextFallout(
-                                    text = "Enter the Code:",
+                                    text = "???",
                                     getTextColor(activity),
                                     getTextStrokeColor(activity),
                                     11.sp,

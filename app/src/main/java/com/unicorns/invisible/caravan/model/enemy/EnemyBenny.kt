@@ -17,6 +17,7 @@ import com.unicorns.invisible.caravan.utils.checkMoveOnProbableDefeat
 import com.unicorns.invisible.caravan.utils.checkMoveOnShouldYouDoSmth
 import kotlinx.serialization.Serializable
 import kotlin.math.max
+import kotlin.random.Random
 
 
 @Serializable
@@ -108,7 +109,7 @@ data object EnemyBenny : Enemy {
         game.enemyCaravans.withIndex().forEach { (caravanIndex, caravan) ->
             val isLosing = checkMoveOnDefeat(game, caravanIndex) || checkMoveOnShouldYouDoSmth(game, caravanIndex)
             if (isLosing) {
-                if (StrategyJokerBennyCheater.move(game)) {
+                if (Random.nextBoolean() && StrategyJokerBennyCheater.move(game)) {
                     cheatCounter++
                     game.jokerPlayedSound()
                     return

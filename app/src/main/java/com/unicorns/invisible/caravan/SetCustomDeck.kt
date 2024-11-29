@@ -64,7 +64,7 @@ fun SetCustomDeck(
     goBack: () -> Unit,
 ) {
     fun isInCustomDeck(card: Card): Boolean {
-        return save.customDeck.let { deck -> card in deck }
+        return card in save.customDeck
     }
 
     fun toggleToCustomDeck(card: Card) {
@@ -103,7 +103,7 @@ fun SetCustomDeck(
             ) {
                 items(CardBack.entries) { back ->
                     var check by rememberSaveable { mutableStateOf(save.altDecksChosen[back] == true) }
-                    var updaterAll by remember { mutableStateOf(false) }
+                    var updaterLocal by remember { mutableStateOf(false) }
                     Row(
                         Modifier.fillMaxWidth().padding(4.dp),
                         horizontalArrangement = Arrangement.Start,
@@ -142,8 +142,9 @@ fun SetCustomDeck(
                                 Alignment.Center,
                                 Modifier.fillMaxWidth()
                                     .background(getTextBackgroundColor(activity))
+                                    .padding(vertical = 4.dp)
                                     .clickableSelect(activity) {
-                                        updaterAll = !updaterAll
+                                        updaterLocal = !updaterLocal
                                         updater = !updater
                                         CustomDeck(back, check).toList()
                                             .filter { isAvailable(it) }
@@ -164,8 +165,9 @@ fun SetCustomDeck(
                                 Alignment.Center,
                                 Modifier.fillMaxWidth()
                                     .background(getTextBackgroundColor(activity))
+                                    .padding(vertical = 4.dp)
                                     .clickableCancel(activity) {
-                                        updaterAll = !updaterAll
+                                        updaterLocal = !updaterLocal
                                         updater = !updater
                                         CustomDeck(back, check).toList()
                                             .filter { isAvailable(it) }
@@ -214,7 +216,7 @@ fun SetCustomDeck(
                         }
                     }
                     val state = rememberLazyListState()
-                    key(check, updaterAll) {
+                    key(check, updaterLocal) {
                         LazyRow(
                             Modifier
                                 .scrollbar(
@@ -254,11 +256,7 @@ fun SetCustomDeck(
                                         .padding(4.dp)
                                         .alpha(if (isSelected) 1f else 0.5f))
                                 } else {
-                                    ShowCardBack(
-                                        activity, card, Modifier
-                                            .padding(4.dp)
-                                            .alpha(0.33f)
-                                    )
+                                    ShowCardBack(activity, card, Modifier.padding(4.dp).alpha(0.33f))
                                 }
                             }
                         }
@@ -278,7 +276,7 @@ fun ShowCharacteristics(activity: MainActivity) {
     ) {
         Row(
             Modifier
-                .padding(6.dp),
+                .padding(8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             val deck = save.getCustomDeckCopy()
@@ -311,7 +309,7 @@ fun ShowCharacteristics(activity: MainActivity) {
         Row(
             Modifier
                 .fillMaxWidth()
-                .padding(6.dp),
+                .padding(8.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center
         ) {

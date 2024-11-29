@@ -4,6 +4,8 @@ import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.Rank
+import com.unicorns.invisible.caravan.model.trading.GomorrahTrader
+import com.unicorns.invisible.caravan.save
 import kotlinx.serialization.Serializable
 
 
@@ -107,5 +109,9 @@ data object EnemyVulpes : Enemy {
                 else -> it.value.rank.value
             }
         }.index)
+    }
+
+    override fun onVictory() {
+        save.traders.filterIsInstance<GomorrahTrader>().forEach { it.isVulpesDefeated = true }
     }
 }

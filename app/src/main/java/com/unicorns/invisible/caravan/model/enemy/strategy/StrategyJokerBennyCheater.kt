@@ -75,7 +75,7 @@ data object StrategyJokerBennyCheater : Strategy {
         val jokerApplicant = cards.maxByOrNull { potentialCardToJoker ->
             joke(potentialCardToJoker)
         }
-        if (jokerApplicant != null && joke(jokerApplicant) > 10) {
+        if (jokerApplicant != null && joke(jokerApplicant) >= 3) {
             jokerApplicant.addModifier(card)
             return true
         }

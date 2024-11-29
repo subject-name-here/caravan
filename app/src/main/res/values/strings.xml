@@ -37,9 +37,9 @@
     <string name="ultra_luxe_trader_name">Martin Luther</string>
     <string name="ultra_luxe_trader_condition">Ultra-Luxe card market is open only on Mondays and Thursdays. We apologize for any inconvenience.</string>
     <string name="tops_trader_name">Max</string>
-    <string name="tops_trader_condition">Defeat Benny 7 times.</string>
+    <string name="tops_trader_condition">Defeat Benny 7 times. (%1$s/7)</string>
     <string name="gomorrah_trader_name">Ben Broadson</string>
-    <string name="gomorrah_trader_condition">Defeat Vulpes Inculta and reach Level 6 of the Tower.</string>
+    <string name="gomorrah_trader_condition">Defeat Vulpes Inculta.</string>
     <string name="vault_21_trader_name">Melanie Martinez</string>
     <string name="vault_21_trader_condition">Win 21 games or visit every 21st day of month.</string>
     <string name="lucky_38_trader_name">Marylin &amp; Jane</string>
@@ -263,7 +263,7 @@
 
     <string name="intro_music">Same Radio Intro</string>
     <string name="non_stop_radio">Radio App Mode</string>
-    <string name="cheats">Enter Secret Code</string>
+    <string name="cheats">Enter the Code</string>
 
     <string name="intro_tip_2">Unlike chess, Queens are not so useful in Caravan. However, you can have fun by sabotaging enemy\'s caravan with them.</string>
     <string name="intro_tip_3">Joker in the right place in the right time can bring victory (or defeat). Use them carefully.</string>
@@ -386,7 +386,7 @@
 
     <string name="tower_presents">VAULT-TEC\nproudly presents</string>
     <string name="tower">TOWER!</string>
-    <string name="tower_starring_1">Starring:\nDean Domino\nRobert Edwin House\nSunny Smiles\nand Edward Sallow as Caesar.</string>
+    <string name="tower_starring_1">Starring:\nDean Domino\nRobert Edwin House\nSunny Smiles\nand\nEdward Sallow as Caesar.</string>
     <string name="tower_starring_2">Also starring: Craig Muffin,\n3-time Caravan champ of NCR.</string>
     <string name="deck_o_54_only">(Deck o\' 54 only!)</string>
     <string name="custom_deck_only">(Custom deck only!)</string>

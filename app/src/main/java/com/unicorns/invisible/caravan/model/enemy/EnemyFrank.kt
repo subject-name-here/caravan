@@ -9,6 +9,8 @@ import com.unicorns.invisible.caravan.model.primitives.Card
 import com.unicorns.invisible.caravan.model.primitives.CustomDeck
 import com.unicorns.invisible.caravan.model.primitives.Rank
 import com.unicorns.invisible.caravan.model.primitives.Suit
+import com.unicorns.invisible.caravan.model.trading.EnclaveTrader
+import com.unicorns.invisible.caravan.save
 import com.unicorns.invisible.caravan.utils.checkMoveOnDefeat
 import com.unicorns.invisible.caravan.utils.checkMoveOnImminentVictory
 import com.unicorns.invisible.caravan.utils.checkMoveOnPossibleVictory
@@ -389,5 +391,9 @@ data object EnemyFrank : Enemy {
                 Rank.JOKER -> 14
             }
         }!!.index)
+    }
+
+    override fun onVictory() {
+        save.traders.filterIsInstance<EnclaveTrader>().forEach { it.isTowerBeaten = true }
     }
 }

@@ -33,11 +33,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.unicorns.invisible.caravan.model.primitives.Card
 import com.unicorns.invisible.caravan.model.primitives.Rank
-import com.unicorns.invisible.caravan.model.trading.Trader
 import com.unicorns.invisible.caravan.save.saveData
 import com.unicorns.invisible.caravan.utils.MenuItemOpen
 import com.unicorns.invisible.caravan.utils.TextFallout
-import com.unicorns.invisible.caravan.utils.clickableOk
 import com.unicorns.invisible.caravan.utils.getBackgroundColor
 import com.unicorns.invisible.caravan.utils.getDividerColor
 import com.unicorns.invisible.caravan.utils.getKnobColor
@@ -48,6 +46,7 @@ import com.unicorns.invisible.caravan.utils.getTextStrokeColor
 import com.unicorns.invisible.caravan.utils.getTrackColor
 import com.unicorns.invisible.caravan.utils.playCashSound
 import com.unicorns.invisible.caravan.utils.playNoBeep
+import com.unicorns.invisible.caravan.utils.playPimpBoySound
 import com.unicorns.invisible.caravan.utils.playSelectSound
 import com.unicorns.invisible.caravan.utils.scrollbar
 
@@ -71,6 +70,7 @@ fun ShowTraders(activity: MainActivity, goBack: () -> Unit) {
             item {
                 Spacer(Modifier.height(8.dp))
 
+                var selectedTab by rememberSaveable { mutableIntStateOf(0) }
                 var update by remember { mutableStateOf(false) }
                 key(update) {
                     Column(verticalArrangement = Arrangement.Top, horizontalAlignment = Alignment.CenterHorizontally) {
@@ -96,7 +96,6 @@ fun ShowTraders(activity: MainActivity, goBack: () -> Unit) {
                             )
                         }
 
-                        var selectedTab by rememberSaveable { mutableIntStateOf(0) }
                         TabRow(
                             selectedTab, Modifier.fillMaxWidth(),
                             containerColor = getBackgroundColor(activity),
@@ -119,7 +118,17 @@ fun ShowTraders(activity: MainActivity, goBack: () -> Unit) {
                                     unselectedContentColor = getTextBackgroundColor(activity)
                                 ) {
                                     TextFallout(
-                                        tabNumber.toString(),
+                                        when (tabNumber) {
+                                            0 -> "UL"
+                                            1 -> "T"
+                                            2 -> "G"
+                                            3 -> "38"
+                                            4 -> "21"
+                                            5 -> "SM"
+                                            6 -> "E"
+                                            7 -> "•"
+                                            else -> "?"
+                                        },
                                         getTextColor(activity),
                                         getTextStrokeColor(activity),
                                         12.sp,
@@ -155,41 +164,29 @@ fun ShowTraders(activity: MainActivity, goBack: () -> Unit) {
                                     Modifier.weight(1f).padding(4.dp),
                                     TextAlign.Center
                                 )
-                                if (!save.isCardAvailableAlready(card)) {
-                                    TextFallout(
-                                        "Buy for $price caps",
-                                        getTextColor(activity),
-                                        getTextStrokeColor(activity),
-                                        16.sp,
-                                        Alignment.Center,
-                                        Modifier.weight(1f)
-                                            .padding(4.dp)
-                                            .background(getTextBackgroundColor(activity))
-                                            .clickable {
-                                                if (save.capsInHand < price) {
-                                                    playNoBeep(activity)
-                                                } else {
-                                                    save.capsInHand -= price
-                                                    save.availableCards.add(card)
-                                                    save.onCardBuying(activity)
-                                                    playCashSound(activity)
-                                                    saveData(activity)
-                                                    update = !update
-                                                }
-                                            },
-                                        TextAlign.Center
-                                    )
-                                } else {
-                                    TextFallout(
-                                        "You already have this card!",
-                                        getTextColor(activity),
-                                        getTextStrokeColor(activity),
-                                        14.sp,
-                                        Alignment.Center,
-                                        Modifier.weight(1f).padding(4.dp),
-                                        TextAlign.Center
-                                    )
-                                }
+                                TextFallout(
+                                    "Buy for $price caps",
+                                    getTextColor(activity),
+                                    getTextStrokeColor(activity),
+                                    16.sp,
+                                    Alignment.Center,
+                                    Modifier.weight(1f)
+                                        .padding(4.dp)
+                                        .background(getTextBackgroundColor(activity))
+                                        .clickable {
+                                            if (save.capsInHand < price) {
+                                                playNoBeep(activity)
+                                            } else {
+                                                save.capsInHand -= price
+                                                save.availableCards.add(card)
+                                                save.onCardBuying(activity)
+                                                playCashSound(activity)
+                                                saveData(activity)
+                                                update = !update
+                                            }
+                                        },
+                                    TextAlign.Center
+                                )
                             }
                         }
                         if (selectedTrader.isOpen()) {
@@ -207,6 +204,7 @@ fun ShowTraders(activity: MainActivity, goBack: () -> Unit) {
                                     Modifier.padding(4.dp),
                                     TextAlign.Center
                                 )
+
                                 selectedTrader.getStyles().filter { it !in save.ownedStyles }.forEach {
                                     Spacer(modifier = Modifier.height(4.dp))
                                     Row(
@@ -237,8 +235,7 @@ fun ShowTraders(activity: MainActivity, goBack: () -> Unit) {
                                                     } else {
                                                         save.capsInHand -= it.price
                                                         save.ownedStyles.add(it)
-                                                        save.onCardBuying(activity)
-                                                        playCashSound(activity)
+                                                        playPimpBoySound(activity)
                                                         saveData(activity)
                                                         update = !update
                                                     }
@@ -248,14 +245,29 @@ fun ShowTraders(activity: MainActivity, goBack: () -> Unit) {
                                     }
                                 }
 
-                                selectedTrader.getCards().forEach {
+                                val cards = selectedTrader.getCards()
+                                    .filter { !save.isCardAvailableAlready(it.first) }
+                                if (cards.isEmpty()) {
                                     Spacer(modifier = Modifier.height(4.dp))
-                                    CardToBuy(it.first, it.second)
+                                    TextFallout(
+                                        "Sorry, no new cards!!",
+                                        getTextColor(activity),
+                                        getTextStrokeColor(activity),
+                                        18.sp,
+                                        Alignment.Center,
+                                        Modifier.padding(4.dp),
+                                        TextAlign.Center
+                                    )
+                                } else {
+                                    cards.forEach {
+                                        Spacer(modifier = Modifier.height(4.dp))
+                                        CardToBuy(it.first, it.second)
+                                    }
                                 }
                             }
                         } else {
                             TextFallout(
-                                stringResource(selectedTrader.openingCondition()),
+                                selectedTrader.openingCondition(activity),
                                 getTextColor(activity),
                                 getTextStrokeColor(activity),
                                 18.sp,
@@ -265,7 +277,6 @@ fun ShowTraders(activity: MainActivity, goBack: () -> Unit) {
                             )
                         }
                     }
-
                 }
 
                 Spacer(Modifier.height(8.dp))

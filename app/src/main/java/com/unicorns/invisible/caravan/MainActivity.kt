@@ -120,6 +120,7 @@ class MainActivity : SaveDataActivity() {
 
     override fun onResume() {
         super.onResume()
+        // TODO: ambient is leaking here
         resumeActivitySound()
     }
 
@@ -372,9 +373,7 @@ class MainActivity : SaveDataActivity() {
             if (showSoundSettings2) {
                 AlertDialog(
                     modifier = Modifier.border(width = 4.dp, color = getKnobColor(this)),
-                    onDismissRequest = {
-                        saveData(this); hideSoundSettings()
-                    },
+                    onDismissRequest = { saveData(this); hideSoundSettings() },
                     confirmButton = {
                         TextFallout(
                             stringResource(R.string.save),
@@ -625,7 +624,8 @@ class MainActivity : SaveDataActivity() {
                             if (currentHash != save.challengesHash) {
                                 showAlertDialog(
                                     "It's a beautiful day!",
-                                    "Challenges, bottlecaps of enemies and inventory of traders are refreshed!\n\nAnd you have found 10 bottlecaps!",
+                                    "Challenges, bottlecaps of enemies and inventory of traders " +
+                                            "are refreshed!\n\nAnd you have found 10 bottlecaps!",
                                     null
                                 )
                                 save.challengesHash = currentHash
