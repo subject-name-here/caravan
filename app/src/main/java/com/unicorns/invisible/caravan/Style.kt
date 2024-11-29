@@ -121,7 +121,6 @@ fun getStyleCities(style: Style): List<String> {
     }
 }
 
-// TODO: check all styles!!
 @Composable
 fun BoxWithConstraintsScope.StylePicture(
     activity: MainActivity,

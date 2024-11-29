@@ -140,7 +140,7 @@ fun ShowChallenge(activity: MainActivity, challenge: Challenge, isCompleted: Boo
                 save.challenges.remove(challenge)
                 saveData(activity)
                 playDailyCompleted(activity)
-                if (save.challenges.isEmpty()) {
+                if (save.challenges.size <= 1) {
                     activity.achievementsClient?.unlock(activity.getString(R.string.achievement_done_for_today))
                 }
                 updater()

@@ -73,7 +73,10 @@ class Save(val isUsable: Boolean) {
     var gamesFinished = 0
     @EncodeDefault
     var wins = 0
-    // TODO: more stats (caps won/lost, the biggest bet, ...)
+    @EncodeDefault
+    var capsBet = 0
+    @EncodeDefault
+    var capsWon = 0
 
     @EncodeDefault
     var radioVolume = 1f

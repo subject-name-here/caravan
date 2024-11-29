@@ -104,17 +104,9 @@ data object EnemyBenny : Enemy {
             }
         }
 
-
-        // 2) If not and if player is abt to win, destroy player ready and almost ready caravans (on right columns!)
         game.enemyCaravans.withIndex().forEach { (caravanIndex, caravan) ->
             val isLosing = checkMoveOnDefeat(game, caravanIndex) || checkMoveOnShouldYouDoSmth(game, caravanIndex)
             if (isLosing) {
-                if (Random.nextBoolean() && StrategyJokerBennyCheater.move(game)) {
-                    cheatCounter++
-                    game.jokerPlayedSound()
-                    return
-                }
-
                 hand.withIndex()
                     .filter { it.value.rank == Rank.KING }
                     .forEach { (kingIndex, king) ->
@@ -159,6 +151,11 @@ data object EnemyBenny : Enemy {
                             }
                     }
 
+                if (Random.nextBoolean() && StrategyJokerBennyCheater.move(game)) {
+                    cheatCounter++
+                    game.jokerPlayedSound()
+                    return
+                }
                 if (StrategyJoker.move(game)) {
                     game.jokerPlayedSound()
                     return

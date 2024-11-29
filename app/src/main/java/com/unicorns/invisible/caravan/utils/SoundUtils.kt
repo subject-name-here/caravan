@@ -302,10 +302,12 @@ fun resumeActivitySound() {
         }
     }
     ambientPlayersLock.withLock {
-        ambientPlayers.forEach {
-            it.start()
+        if (wasAmbientPaused) {
+            ambientPlayers.forEach {
+                it.start()
+            }
+            wasAmbientPaused = false
         }
-        wasAmbientPaused = false
     }
 }
 fun resumeRadio() {
@@ -326,10 +328,10 @@ fun pauseActivitySound(leaveRadioOn: Boolean) {
     ambientPlayersLock.withLock {
         ambientPlayers.forEach {
             if (it.isPlaying) {
+                wasAmbientPaused = true
                 it.pause()
             }
         }
-        wasAmbientPaused = true
     }
 }
 fun pauseRadio() {

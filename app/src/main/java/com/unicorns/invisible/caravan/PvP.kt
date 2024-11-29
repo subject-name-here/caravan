@@ -457,7 +457,7 @@ fun ShowPvP(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             TextFallout(
-                                "Use custom deck",
+                                stringResource(R.string.use_custom_deck),
                                 getTextColor(activity),
                                 getTextStrokeColor(activity),
                                 14.sp,
@@ -519,7 +519,7 @@ fun ShowPvP(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             TextFallout(
-                                "Use Wild Wasteland cards",
+                                stringResource(R.string.use_wild_wasteland_cards),
                                 getTextColor(activity),
                                 getTextStrokeColor(activity),
                                 14.sp,
@@ -547,7 +547,9 @@ fun ShowPvP(
                 HorizontalDivider(color = getDividerColor(activity))
                 Spacer(modifier = Modifier.height(16.dp))
                 Column(
-                    Modifier.fillMaxSize().padding(16.dp),
+                    Modifier
+                        .fillMaxSize()
+                        .padding(16.dp),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {

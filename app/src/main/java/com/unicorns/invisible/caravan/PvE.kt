@@ -172,15 +172,15 @@ fun ShowSelectPvE(
                     )
                 }
 
-                SubMenuItem("Select Enemy") { showSelectEnemy = true }
+                SubMenuItem(stringResource(R.string.select_enemy)) { showSelectEnemy = true }
                 Spacer(modifier = Modifier.height(12.dp))
                 SubMenuItem(stringResource(R.string.tower)) { showTower = true }
                 Spacer(modifier = Modifier.height(12.dp))
-                SubMenuItem("Story Mode") { showStory = true }
+                SubMenuItem(stringResource(R.string.story_mode)) { showStory = true }
                 Spacer(modifier = Modifier.height(12.dp))
                 SubMenuItem(stringResource(R.string.pve_stats)) { showStats = true }
                 Spacer(modifier = Modifier.height(12.dp))
-                SubMenuItem("Tutorial") {  }
+                SubMenuItem(stringResource(R.string.tutorial)) {  }
             }
         }
     }
@@ -193,7 +193,6 @@ fun ShowStats(
     goBack: () -> Unit
 ) {
     MenuItemOpen(activity, stringResource(R.string.pve_stats), "<-", goBack) {
-        // TODO: more stats (?)
         val started = save.gamesStarted
         val finished = save.gamesFinished
         val won = save.wins
@@ -252,6 +251,14 @@ fun ShowStats(
                 Spacer(modifier = Modifier.height(8.dp))
                 StatsItem(
                     text = stringResource(R.string.pve_games_won, won),
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                StatsItem(
+                    text = stringResource(R.string.pve_caps_bet, save.capsBet),
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                StatsItem(
+                    text = stringResource(R.string.pve_caps_won, save.capsWon),
                 )
                 Spacer(modifier = Modifier.height(12.dp))
                 TextFallout(
@@ -548,7 +555,7 @@ fun ShowPvE(
         }
     }
 
-    MenuItemOpen(activity, "Select Enemy", "<-", goBack) {
+    MenuItemOpen(activity, stringResource(R.string.select_enemy), "<-", goBack) {
         Column(
             Modifier
                 .fillMaxSize()
@@ -609,7 +616,7 @@ fun ShowPvE(
                                 unselectedContentColor = getTextBackgroundColor(activity)
                             ) {
                                 TextFallout(
-                                    "Deck o' 54",
+                                    stringResource(R.string.deck_o_54),
                                     getTextColor(activity),
                                     getTextStrokeColor(activity),
                                     16.sp,
@@ -624,7 +631,7 @@ fun ShowPvE(
                                 unselectedContentColor = getTextBackgroundColor(activity)
                             ) {
                                 TextFallout(
-                                    "Custom Deck",
+                                    stringResource(R.string.custom_deck),
                                     getTextColor(activity),
                                     getTextStrokeColor(activity),
                                     16.sp,
@@ -639,7 +646,7 @@ fun ShowPvE(
                                 unselectedContentColor = getTextBackgroundColor(activity)
                             ) {
                                 TextFallout(
-                                    "Wild Wasteland",
+                                    stringResource(R.string.wild_wasteland),
                                     getTextColor(activity),
                                     getTextStrokeColor(activity),
                                     16.sp,
@@ -654,7 +661,7 @@ fun ShowPvE(
                                 unselectedContentColor = getTextBackgroundColor(activity)
                             ) {
                                 TextFallout(
-                                    "TBA",
+                                    stringResource(R.string.tba),
                                     getTextColor(activity),
                                     getTextStrokeColor(activity),
                                     16.sp,
@@ -668,18 +675,7 @@ fun ShowPvE(
                         Spacer(modifier = Modifier.height(16.dp))
                         when (selectedTab) {
                             0 -> {
-                                // TODO: remove this thing >_<
-                                when (oliverStatus) {
-                                    0 -> OpponentItem(stringResource(R.string.pve_enemy_oliver_fake)) {
-                                        showOliverWarning = true
-                                    }
-                                    1 -> OpponentItem(stringResource(R.string.pve_enemy_oliver_real)) {
-                                        playVatsEnter(activity); showGameOliver = true
-                                    }
-                                    2 -> OpponentItem(stringResource(R.string.pve_enemy_oliver_real)) {
-                                        showOliverWarning = true
-                                    }
-                                }
+                                OpponentItem(stringResource(R.string.pve_enemy_oliver_real)) { playVatsEnter(activity); showGameOliver = true }
                                 Spacer(modifier = Modifier.height(10.dp))
                                 OpponentItem(stringResource(R.string.pve_enemy_veronica)) { playVatsEnter(activity); showGameVeronica = true }
                                 Spacer(modifier = Modifier.height(10.dp))
@@ -719,7 +715,7 @@ fun ShowPvE(
                             }
                             3 -> {
                                 TextFallout(
-                                    "COMING SOON!!?",
+                                    stringResource(R.string.coming_soon),
                                     getTextColor(activity),
                                     getTextStrokeColor(activity),
                                     16.sp,
@@ -732,100 +728,6 @@ fun ShowPvE(
                         Spacer(modifier = Modifier.height(16.dp))
                     }
                 }
-            }
-        }
-    }
-
-
-    if (showOliverWarning) {
-        LaunchedEffect(Unit) {
-            playNotificationSound(activity) {}
-        }
-        when (oliverStatus) {
-            0 -> {
-                AlertDialog(
-                    modifier = Modifier.border(width = 4.dp, color = getTextColor(activity)),
-                    onDismissRequest = {},
-                    confirmButton = {
-                        TextFallout(
-                            stringResource(R.string.close),
-                            getDialogBackground(activity),
-                            getDialogBackground(activity),
-                            18.sp, Alignment.Center,
-                            Modifier
-                                .background(getDialogTextColor(activity))
-                                .clickableCancel(activity) {
-                                    save.oliverStatus = 1
-                                    oliverStatus = 1
-                                    saveData(activity)
-                                    showOliverWarning = false
-                                }
-                                .padding(4.dp),
-                            TextAlign.Center
-                        )
-                    },
-                    title = {
-                        TextFallout(
-                            "Oh no!",
-                            getDialogTextColor(activity), getDialogTextColor(activity),
-                            24.sp, Alignment.CenterStart, Modifier,
-                            TextAlign.Start
-                        )
-                    },
-                    text = {
-                        TextFallout(
-                            "Sorry, but General Lee Oliver is too busy!\n\nVault-Tec offers you the sincerest apologies and replaces your enemy with another one of the same name.",
-                            getDialogTextColor(activity),
-                            getDialogTextColor(activity),
-                            16.sp, Alignment.CenterStart, Modifier,
-                            TextAlign.Start
-                        )
-                    },
-                    containerColor = getDialogBackground(activity),
-                    textContentColor = getDialogTextColor(activity),
-                    shape = RectangleShape,
-                )
-            }
-            2 -> {
-                AlertDialog(
-                    modifier = Modifier.border(width = 4.dp, color = getTextColor(activity)),
-                    onDismissRequest = {},
-                    confirmButton = {
-                        TextFallout(
-                            "...",
-                            getDialogBackground(activity),
-                            getDialogBackground(activity),
-                            18.sp, Alignment.Center,
-                            Modifier
-                                .background(getDialogTextColor(activity))
-                                .clickableCancel(activity) {
-                                    showOliverWarning = false
-                                }
-                                .padding(4.dp),
-                            TextAlign.Center
-                        )
-                    },
-                    title = {
-                        TextFallout(
-                            "But nobody came.",
-                            getDialogTextColor(activity), getDialogTextColor(activity),
-                            24.sp, Alignment.CenterStart, Modifier,
-                            TextAlign.Start
-                        )
-                    },
-                    text = {
-                        TextFallout(
-                            "Oliver Swanick is dead.",
-                            getDialogTextColor(activity),
-                            getDialogTextColor(activity),
-                            16.sp, Alignment.CenterStart, Modifier,
-                            TextAlign.Start
-                        )
-                    },
-                    containerColor = getDialogBackground(activity),
-                    textContentColor = getDialogTextColor(activity),
-                    shape = RectangleShape,
-                )
             }
         }
     }
@@ -856,12 +758,15 @@ fun StartGame(
         return
     }
 
+    val isDeckCourier6 by rememberScoped { mutableStateOf(playerCResources.isDeckCourier6()) }
+
     val game: Game = rememberScoped {
         Game(
             playerCResources,
             enemy
         ).also {
             save.gamesStarted++
+            save.capsBet += bet
             saveData(activity)
             it.startGame()
         }
@@ -878,7 +783,17 @@ fun StartGame(
 
     game.also {
         it.onWin = {
-            // TODO: achievementys!!!
+            if (enemy is EnemyUlysses) {
+                activity.achievementsClient?.unlock(activity.getString(R.string.achievement_who_are_you_that_do_not_know_your_history))
+            } else if (enemy is EnemyVictor && isBlitz) {
+                activity.achievementsClient?.unlock(activity.getString(R.string.achievement_bravo_))
+            } else if (enemy is EnemyTheManInTheMirror) {
+                activity.achievementsClient?.unlock(activity.getString(R.string.achievement_lookalike))
+            }
+
+            if (isDeckCourier6) {
+                activity.achievementsClient?.unlock(activity.getString(R.string.achievement_just_load_everything_up_with_sixes_and_tens_and_kings))
+            }
 
             activity.processChallengesGameOver(it)
 
@@ -891,10 +806,14 @@ fun StartGame(
 
             if (isBettingEnemy) {
                 save.capsInHand += reward
+                save.capsWon += reward
 
                 showAlertDialog(
                     activity.getString(R.string.result),
-                    activity.getString(R.string.you_win) + "\nYour reward: $reward caps!!",
+                    activity.getString(R.string.you_win) + activity.getString(
+                        R.string.your_reward_reward_caps,
+                        reward.toString()
+                    ),
                     onQuitPressed
                 )
             } else {
@@ -902,7 +821,10 @@ fun StartGame(
 
                 showAlertDialog(
                     activity.getString(R.string.result),
-                    activity.getString(R.string.you_win) + "Your reward: card $rewardCard!!",
+                    activity.getString(R.string.you_win) + activity.getString(
+                        R.string.your_reward_card,
+                        rewardCard
+                    ),
                     onQuitPressed
                 )
             }
@@ -1025,14 +947,18 @@ fun ShowBettingScreen(
                     .fillMaxSize()
                     .getTableBackground()) {}
         }
-        Box(Modifier.fillMaxSize().padding(innerPadding)) {
+        Box(Modifier
+            .fillMaxSize()
+            .padding(innerPadding)) {
             Column(
-                Modifier.wrapContentSize().background(getBackgroundColor(activity)),
+                Modifier
+                    .wrapContentSize()
+                    .background(getBackgroundColor(activity)),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
                 TextFallout(
-                    "Enemy: $enemyName",
+                    stringResource(R.string.enemy_name, enemyName),
                     getTextColor(activity),
                     getTextStrokeColor(activity),
                     16.sp,
@@ -1043,7 +969,7 @@ fun ShowBettingScreen(
                     TextAlign.Center
                 )
                 TextFallout(
-                    "Enemy's bet: $enemyBet",
+                    stringResource(R.string.enemy_s_bet, enemyBet),
                     getTextColor(activity),
                     getTextStrokeColor(activity),
                     16.sp,
@@ -1072,7 +998,11 @@ fun ShowBettingScreen(
                     ),
                     label = {
                         TextFallout(
-                            text = "Enter your bet (between $enemyBet and ${save.capsInHand}), or leave empty to play for free:",
+                            text = stringResource(
+                                R.string.enter_your_bet,
+                                enemyBet,
+                                save.capsInHand
+                            ),
                             getTextColor(activity),
                             getTextStrokeColor(activity),
                             14.sp,
@@ -1091,7 +1021,7 @@ fun ShowBettingScreen(
 
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
                     TextFallout(
-                        "Time limit anyone?",
+                        stringResource(R.string.time_limit_anyone),
                         getTextColor(activity),
                         getTextStrokeColor(activity),
                         18.sp,
@@ -1105,7 +1035,7 @@ fun ShowBettingScreen(
                 }
 
                 TextFallout(
-                    "Your expected reward: ${countRewardLocal()} caps.",
+                    stringResource(R.string.your_expected_reward, countRewardLocal()),
                     getTextColor(activity),
                     getTextStrokeColor(activity),
                     18.sp,
@@ -1136,7 +1066,7 @@ fun ShowBettingScreen(
                         .padding(8.dp)
                 }
                 TextFallout(
-                    "LET'S GO!",
+                    stringResource(R.string.let_s_go),
                     getTextColor(activity),
                     getTextStrokeColor(activity),
                     24.sp,
@@ -1186,9 +1116,9 @@ fun winCard(
     } else {
         val prize = if (isAlt) 50 else 15
         save.capsInHand += prize
-        "$prize caps"
+        activity.getString(R.string.prize_caps, prize.toString())
     }
     saveData(activity)
 
-    return "\n You have won: $message."
+    return activity.getString(R.string.you_have_won, message)
 }

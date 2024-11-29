@@ -120,7 +120,6 @@ class MainActivity : SaveDataActivity() {
 
     override fun onResume() {
         super.onResume()
-        // TODO: ambient is leaking here
         resumeActivitySound()
     }
 
@@ -159,7 +158,6 @@ class MainActivity : SaveDataActivity() {
             }
         }
 
-        // TODO: more advices
         val advice = listOf(
             R.string.intro_tip_2,
             R.string.intro_tip_3,
@@ -179,6 +177,9 @@ class MainActivity : SaveDataActivity() {
             R.string.intro_tip_enclave,
             R.string.intro_tip_new_world,
             R.string.intro_tip_snuffles,
+            R.string.intro_tip_33,
+            R.string.intro_tip_34,
+            R.string.intro_tip_35,
         ).random()
 
         setContent {
@@ -567,8 +568,8 @@ class MainActivity : SaveDataActivity() {
                     showPvE -> {
                         if (!CResources(save.getCustomDeckCopy()).isCustomDeckValid()) {
                             showAlertDialog(
-                                "Custom deck is illegal!",
-                                "Deck uses more than 6 backs, has less than 30 cards or less than 15 numbered cards!",
+                                stringResource(R.string.custom_deck_is_illegal),
+                                stringResource(R.string.deck_illegal_body),
                                 null
                             )
                             showPvE = false
@@ -580,8 +581,8 @@ class MainActivity : SaveDataActivity() {
                     showPvP -> {
                         if (!CResources(save.getCustomDeckCopy()).isCustomDeckValid()) {
                             showAlertDialog(
-                                "Custom deck is illegal!",
-                                "Deck uses more than 6 backs, has less than 30 cards or less than 15 numbered cards!",
+                                stringResource(R.string.custom_deck_is_illegal),
+                                stringResource(R.string.deck_illegal_body),
                                 null
                             )
                             showPvP = false
@@ -622,9 +623,8 @@ class MainActivity : SaveDataActivity() {
                             val currentHash = save.getCurrentDateHashCode()
                             if (currentHash != save.challengesHash) {
                                 showAlertDialog(
-                                    "It's a beautiful day!",
-                                    "Challenges, bottlecaps of enemies and inventory of traders " +
-                                            "are refreshed!\n\nAnd you have found 10 bottlecaps!",
+                                    getString(R.string.daily_update_head),
+                                    getString(R.string.daily_update_body),
                                     null
                                 )
                                 save.challengesHash = currentHash

@@ -97,7 +97,6 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
 
-// TODO: check this
 @Composable
 fun ShowStoryList(
     activity: MainActivity,
@@ -135,7 +134,7 @@ fun ShowStoryList(
                 ShowStoryChapter4(activity, showAlertDialog, {
                     save.storyChaptersProgress = maxOf(save.storyChaptersProgress, 4)
                     saveData(activity)
-                    activity.achievementsClient?.unlock(activity.getString(R.string.achievement_not_ready_to_die))
+                    activity.achievementsClient?.unlock(activity.getString(R.string.achievement_what_do_we_say_to_the_god_of_death))
                 }) { showChapter = null; soundReduced = false; nextSong(activity) }
             }
             4 -> {
@@ -191,9 +190,7 @@ fun ShowStoryList(
         return
     }
 
-    // TODO: exgtract strings
-    // TODO: translate strings
-    MenuItemOpen(activity, "Story", "<-", goBack) {
+    MenuItemOpen(activity, stringResource(R.string.story_mode), "<-", goBack) {
         val state = rememberLazyListState()
         LazyColumn(
             Modifier
@@ -1126,9 +1123,11 @@ fun ShowStoryChapter6(
                                 in listOf(-1, 2) -> {
                                     R.drawable.black_back
                                 }
+
                                 1 -> {
                                     R.drawable.ch6_5
                                 }
+
                                 else -> {
                                     when (lineNumber) {
                                         0, 3 -> R.drawable.ch6_1
@@ -2098,7 +2097,7 @@ fun StartStoryGame(
                     cards.any { it.back == CardBack.MADNESS && it.isAlt }
                 }
                 if (isPoisonedInEveryCaravan) {
-                    activity.achievementsClient?.unlock(activity.getString(R.string.achievement_tis_but_a_flesh_wound))
+                    activity.achievementsClient?.unlock(activity.getString(R.string.achievement_float_like_a_butterfly___))
                 }
             }
 

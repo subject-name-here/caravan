@@ -8,7 +8,6 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 
 
-// TODO: test this
 @Serializable
 class ChallengeWinByMarriage : Challenge {
     @Transient

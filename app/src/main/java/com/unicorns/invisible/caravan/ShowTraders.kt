@@ -53,7 +53,7 @@ import com.unicorns.invisible.caravan.utils.scrollbar
 
 @Composable
 fun ShowTraders(activity: MainActivity, goBack: () -> Unit) {
-    MenuItemOpen(activity, "Traders", "<-", goBack) {
+    MenuItemOpen(activity, stringResource(R.string.market), "<-", goBack) {
         val state = rememberLazyListState()
         LazyColumn(
             Modifier
@@ -76,7 +76,7 @@ fun ShowTraders(activity: MainActivity, goBack: () -> Unit) {
                     Column(verticalArrangement = Arrangement.Top, horizontalAlignment = Alignment.CenterHorizontally) {
                         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
                             TextFallout(
-                                "Your Barter stat: ${save.barterStat}",
+                                stringResource(R.string.your_barter_stat, save.barterStat),
                                 getTextColor(activity),
                                 getTextStrokeColor(activity),
                                 16.sp,
@@ -86,7 +86,7 @@ fun ShowTraders(activity: MainActivity, goBack: () -> Unit) {
                             )
 
                             TextFallout(
-                                "Your caps in hand: ${save.capsInHand}",
+                                stringResource(R.string.your_caps_in_hand, save.capsInHand),
                                 getTextColor(activity),
                                 getTextStrokeColor(activity),
                                 16.sp,
@@ -161,16 +161,19 @@ fun ShowTraders(activity: MainActivity, goBack: () -> Unit) {
                                     getTextStrokeColor(activity),
                                     16.sp,
                                     Alignment.Center,
-                                    Modifier.weight(1f).padding(4.dp),
+                                    Modifier
+                                        .weight(1f)
+                                        .padding(4.dp),
                                     TextAlign.Center
                                 )
                                 TextFallout(
-                                    "Buy for $price caps",
+                                    stringResource(R.string.buy_for_caps, price),
                                     getTextColor(activity),
                                     getTextStrokeColor(activity),
                                     16.sp,
                                     Alignment.Center,
-                                    Modifier.weight(1f)
+                                    Modifier
+                                        .weight(1f)
                                         .padding(4.dp)
                                         .background(getTextBackgroundColor(activity))
                                         .clickable {
@@ -191,12 +194,17 @@ fun ShowTraders(activity: MainActivity, goBack: () -> Unit) {
                         }
                         if (selectedTrader.isOpen()) {
                             Column(
-                                Modifier.fillMaxSize().padding(8.dp),
+                                Modifier
+                                    .fillMaxSize()
+                                    .padding(8.dp),
                                 horizontalAlignment = Alignment.CenterHorizontally,
                                 verticalArrangement = Arrangement.Top
                             ) {
                                 TextFallout(
-                                    "Hi! My name is " + stringResource(selectedTrader.getName()) + "!!",
+                                    stringResource(
+                                        R.string.hi_my_name_is,
+                                        stringResource(selectedTrader.getName())
+                                    ),
                                     getTextColor(activity),
                                     getTextStrokeColor(activity),
                                     18.sp,
@@ -214,21 +222,27 @@ fun ShowTraders(activity: MainActivity, goBack: () -> Unit) {
                                         verticalAlignment = Alignment.CenterVertically
                                     ) {
                                         TextFallout(
-                                            "Style: " + stringResource(it.styleNameId),
+                                            stringResource(
+                                                R.string.style_buy,
+                                                stringResource(it.styleNameId)
+                                            ),
                                             getTextColor(activity),
                                             getTextStrokeColor(activity),
                                             16.sp,
                                             Alignment.Center,
-                                            Modifier.weight(1f).padding(4.dp),
+                                            Modifier
+                                                .weight(1f)
+                                                .padding(4.dp),
                                             TextAlign.Center
                                         )
                                         TextFallout(
-                                            "Buy for ${it.price} caps",
+                                            stringResource(R.string.buy_for_caps, it.price),
                                             getTextColor(activity),
                                             getTextStrokeColor(activity),
                                             16.sp,
                                             Alignment.Center,
-                                            Modifier.weight(1f)
+                                            Modifier
+                                                .weight(1f)
                                                 .padding(4.dp)
                                                 .background(getTextBackgroundColor(activity))
                                                 .clickable {
@@ -274,7 +288,9 @@ fun ShowTraders(activity: MainActivity, goBack: () -> Unit) {
                                 getTextStrokeColor(activity),
                                 18.sp,
                                 Alignment.Center,
-                                Modifier.fillMaxWidth().padding(4.dp),
+                                Modifier
+                                    .fillMaxWidth()
+                                    .padding(4.dp),
                                 TextAlign.Center
                             )
                         }

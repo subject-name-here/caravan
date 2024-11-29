@@ -30,8 +30,25 @@
     <string name="vault_21_deck_name">колода Убежища 21</string>
     <string name="sierra_madre_deck_name">колода казино Сьерра-Мадре</string>
     <string name="madness_deck_name">колода Madness</string>
-    <string name="chinese_deck_name">Китайская колода</string>
+    <string name="chinese_deck_name">китайская колода</string>
     <string name="enclave_deck_name">колода Анклава</string>
+
+    <string name="ultra_luxe_trader_name">Мартин Лютер</string>
+    <string name="ultra_luxe_trader_condition">Магазин карт Ультра-Люкс открыт исключительно по понедельникам и четвергам. Приносим извинения за предоставленные неудобства.</string>
+    <string name="tops_trader_name">Макс</string>
+    <string name="tops_trader_condition">Победите Бенни 7 раз. (%1$s/7)</string>
+    <string name="gomorrah_trader_name">Бен Бродсон</string>
+    <string name="gomorrah_trader_condition">Победите Вульпеса Инкульту.</string>
+    <string name="vault_21_trader_name">Мелани Мартинез</string>
+    <string name="vault_21_trader_condition">Выиграйте 21 игру или приходите 21-го числа любого месяца.</string>
+    <string name="lucky_38_trader_name">Мэрилин и Джейн</string>
+    <string name="lucky_38_trader_cond">Одолейте Мистера Хауса в БАШНЕ.</string>
+    <string name="sierra_madre_trader_name">Приёмник бутылочных крышек Сьерра-Мадре</string>
+    <string name="sierra_madre_trader_cond">Победите Элайджу 10 раз и завершите главу 1 сюжета.</string>
+    <string name="chinese_trader_name">Военачальник Ли Чжоу</string>
+    <string name="chinese_trader_condition">Для начала, завершите главы 9 и 9А Сюжета. Кстати, в каком году была образована КПК?</string>
+    <string name="enclave_trader_name">Савант</string>
+    <string name="enclave_trader_cond">Пройдите БАШНЮ.</string>
 
     <string name="menu_pve">Играть с ИИ</string>
     <string name="menu_pvp">Играть с человеком</string>
@@ -42,51 +59,59 @@
     <string name="menu_about">О Караване</string>
     <string name="menu_settings">Настройки</string>
 
+    <string name="select_enemy">Выбор соперника</string>
+    <string name="story_mode">Сюжет</string>
+    <string name="pve_stats">Статистика</string>
+    <string name="tutorial">Обучение</string>
+
+
     <string name="menu_back">Назад</string>
 
     <string name="deck_select">Выбор стандартной колоды</string>
     <string name="deck_custom">Настроить сборную колоду</string>
+    <string name="select_all">Выбрать все</string>
+    <string name="deselect_all">Убрать все</string>
 
     <string name="custom_deck_size">Размер колоды: %1$s\n(нужно хотя бы %2$s)</string>
     <string name="custom_deck_non_faces">Количество младших карт: %1$s\n(нужно хотя бы %2$s)</string>
     <string name="custom_deck_num_of_decks">Колод задействовано: %1$s\n(нужно не более %2$s)</string>
 
-    <string name="pve_select_enemy">Выбор соперника</string>
-
-    <string name="pve_enemy_oliver_fake">General Lee Oliver</string>
-    <string name="pve_enemy_oliver_real">Oliver Swanick</string>
-    <string name="pve_enemy_veronica">Veronica</string>
-    <string name="pve_enemy_chief_hanlon">Chief Hanlon</string>
-    <string name="pve_enemy_victor">Victor</string>
-    <string name="pve_enemy_ulysses">Ulysses</string>
-    <string name="benny">Benny</string>
+    <string name="pve_enemy_oliver_real">Оливер Суэник</string>
+    <string name="pve_enemy_veronica">Вероника</string>
+    <string name="pve_enemy_chief_hanlon">Командир Хенлон</string>
+    <string name="pve_enemy_victor">Виктор</string>
+    <string name="pve_enemy_ulysses">Улисс</string>
+    <string name="benny">Бенни</string>
 
     <string name="no_bark">Нелай Нунан</string>
     <string name="johnson_nash">Джонсон Нэш</string>
-    <string name="tabitha">Tabitha (feat. Moe)</string>
-    <string name="vulpes">Vulpes Inculta</string>
-    <string name="elijah">Father Elijah</string>
-    <string name="crooker">Ambassador Crooker</string>
+    <string name="tabitha">Табита (feat. Моу)</string>
+    <string name="vulpes">Вульпес Инкульта</string>
+    <string name="elijah">Отец Элайджа</string>
+    <string name="crooker">Посол Деннис Крокер</string>
 
     <string name="snuffles">Нюхач</string>
-    <string name="easy_pete">Easy Pete</string>
+    <string name="easy_pete">Забей-Пит</string>
     <string name="enemy_significant_other" translatable="false">EXPERIMENT #666: Significant Other</string>
-    <string name="madness_cardinal">Madness Cardinal</string>
+    <string name="madness_cardinal">Кардинал Безумия</string>
     <string name="luc10" translatable="false">LUC10</string>
-    <string name="dr_mobius">Dr. Mobius</string>
+    <string name="dr_mobius">Доктор Мёбиус</string>
     <string name="man_in_the_mirror" translatable="false">ЯОЯЯIM ЭHT ИI ИAM</string>
 
-    <string name="pve_stats">Статистика</string>
     <string name="pve_games_started">Игр начато: %1$s</string>
     <string name="pve_games_finished">Игр завершено: %1$s</string>
     <string name="pve_games_won">Побед: %1$s</string>
-    <string name="pve_percentiles">Rates</string>
+    <string name="pve_caps_bet">Крышечек поставлено: %1$s</string>
+    <string name="pve_caps_won">Крышечек выиграно: %1$s</string>
+    <string name="pve_percentiles">Проценты</string>
     <string name="pve_w_to_l">Коэффициент успеха (W/L): %1$s</string>
     <string name="pve_w_to_finished">Процент побед к завершенным (W/Finished): %1$s \%%</string>
     <string name="pve_w_to_started">Процент побед к начатым (W/Started): %1$s \%%</string>
     <string name="pve_finished_to_started">Процент завершенных (Finished/Started): %1$s \%%</string>
-    <string name="custom_deck_is_too_small">Сборная колода слишком мала!</string>
-    <string name="custom_deck_is_too_small_message">В колоде меньше 30 карт или меньше 15 младших карт!</string>
+
+    <string name="custom_deck_is_illegal">Сборная колода недействительна!</string>
+    <string name="deck_illegal_body">Колода использует больше 6 рубашек, или имеет меньше 30 карт, или имеет меньше 15 младших карт!</string>
+
     <string name="you_win">Победа!</string>
     <string name="result">Результат</string>
     <string name="you_lose">Поражение!</string>
@@ -252,6 +277,9 @@
     <string name="intro_tip_new_world">НКР и Легион, несмотря на разногласия, имеют общих врагов. Один из них - Братство Стали.</string>
     <string name="intro_tip_enclave">Анклав всё еще живой? Кто бы мог подумать?</string>
 
+    <string name="intro_tip_33">На Восточном Побережье вряд ли что-то слышали про Караван.</string>
+    <string name="intro_tip_34">В 2275 НКР провела ежегодный турнир по игре в Караван. Крэйг Маффин был объявлен победителем в третий раз подряд.</string>
+    <string name="intro_tip_35">Есть много путей для получения бутылочных крышечек. Однако, билеты могут быть получены только в ежедневных испытаниях.</string>
 
     <string name="tap_to_play">Нажмите, чтобы играть</string>
 
@@ -290,21 +318,21 @@
     <string name="style_enclave">Анклав</string>
 
     <string name="beat_enemies_1_name">Отцы и дети</string>
-    <string name="beat_enemies_1_desc">Beat Veronica and Father Elijah.</string>
+    <string name="beat_enemies_1_desc">Одолейте Веронику и Отца Элайджу.</string>
     <string name="beat_enemies_2_name">Элита НКР</string>
-    <string name="beat_enemies_2_desc">Beat Chief Hanlon and Ambassador Crooker.</string>
+    <string name="beat_enemies_2_desc">Одолейте Командира Хенлона и посла Крокера.</string>
     <string name="beat_enemies_3_name">Бастарды Удачи</string>
-    <string name="beat_enemies_3_desc">Beat Benny and LUC10.</string>
+    <string name="beat_enemies_3_desc">Одолейте Бенни и LUC10.</string>
     <string name="beat_enemies_4_name">Дети Пустоши</string>
-    <string name="beat_enemies_4_desc">Beat Tabitha and Snuffles.</string>
+    <string name="beat_enemies_4_desc">Одолейте Табиту и Нюхача.</string>
     <string name="beat_enemies_5_name">Триархия Малых Городов</string>
-    <string name="beat_enemies_5_desc">Beat Johnson Nash, No-Bark Noonan and Easy Pete.</string>
+    <string name="beat_enemies_5_desc">Одолейте Джонсона Нэша, Нелай Нунана и Забей-Пита.</string>
     <string name="beat_enemies_6_name">Тот, кто жалеет, и Тот, кто забывает</string>
-    <string name="beat_enemies_6_desc">Beat Ulysses and Dr. Mobius.</string>
-    <string name="beat_enemies_7_name">V значит Виктория</string>
-    <string name="beat_enemies_7_desc">Beat Veronica, Victor and Vulpes Inculta.</string>
+    <string name="beat_enemies_6_desc">Одолейте Улисса и Доктора Мёбиуса.</string>
+    <string name="beat_enemies_7_name">В значит Виктория</string>
+    <string name="beat_enemies_7_desc">Одолейте Веронику, Виктора and Вульпеса Инкульту.</string>
     <string name="beat_enemies_8_name">Камео!!</string>
-    <string name="beat_enemies_8_desc">Beat Madness Cardinal and The Man In The Mirror.</string>
+    <string name="beat_enemies_8_desc">Одолейте Кардинала Безумия и Человека-в-Зеркале.</string>
 
     <string name="play_cards_of_rank">Сыграйте %1$s карт ранга %2$s.</string>
 
@@ -396,7 +424,7 @@
     <string name="tower_enemy_10A">Специальный Агент Фрэнк Хорриган</string>
 
     <string name="craig_1">Привет! Я Крейг Маффин, трёхкратный чемпион НКР по Каравану. Надеюсь, наша игра будет интересной, и…</string>
-    <string name="craig_2">…стоп, что это за громила?</string>
+    <string name="craig_2">…стоп, это что за громила?</string>
     <string name="craig_3">*несущие смерть звуки пулемёта*</string>
     <string name="craig_continue">[ДАЛЕЕ]</string>
 
@@ -653,5 +681,35 @@
     <string name="ch9a_t8">Старатель… Верховный Лидер - вместе они принесут мир всей планете.</string>
 
     <string name="achievements">Достижения</string>
+
+    <string name="your_barter_stat">Бартер: %1$s</string>
+    <string name="your_caps_in_hand">Крышечки на руках: %1$s</string>
+    <string name="hi_my_name_is">Привет! Меня зовут %1$s!!</string>
+    <string name="style_buy">Скин: %1$s</string>
+    <string name="buy_for_caps">Купить за %1$s крышечек</string>
+
+    <string name="enemy_name">Оппонент: %1$s</string>
+    <string name="enemy_s_bet">Ставка оппонента: %1$s</string>
+    <string name="enter_your_bet">Введите свою ставку (от %1$s до %2$s), или не вводите ничего, чтобы сыграть ради интереса:</string>
+    <string name="your_expected_reward">Ожидаемый выигрыш: %1$s крышечек.</string>
+    <string name="your_reward_reward_caps">\nВаш выигрыш: %1$s крышечек!!</string>
+    <string name="your_reward_card">\nВаш выигрыш: карты %1$s!!</string>
+    <string name="prize_caps">%1$s крышечек</string>
+    <string name="you_have_won">\nВаш выигрыш: %1$s.</string>
+
+    <string name="daily_update_head">Какой чудесный день!</string>
+    <string name="daily_update_body">Испытания, крышечки врагов и инвентарь торговцев обновлены!\n\nА ещё вы нашли 10 крышечек!</string>
+
+    <string name="time_limit_anyone">Ограничить время?</string>
+    <string name="let_s_go">ВПЕРЁД!</string>
+
+    <string name="deck_o_54">Стандартная колода</string>
+    <string name="custom_deck">Сборная колода</string>
+    <string name="wild_wasteland">Дикая Пустошь</string>
+    <string name="tba">TBA</string>
+    <string name="coming_soon">Скоро.</string>
+
+    <string name="use_custom_deck">Использовать сборную колоду</string>
+    <string name="use_wild_wasteland_cards">Использовать карты Дикой Пустоши</string>
 
 </resources>

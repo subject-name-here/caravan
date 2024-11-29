@@ -85,7 +85,9 @@ fun SetCustomDeck(
     val mainState = rememberLazyListState()
     var updater by remember { mutableStateOf(false) }
     MenuItemOpen(activity, stringResource(R.string.deck_custom), "<-", goBack) {
-        Column(Modifier.fillMaxSize().background(getBackgroundColor(activity))) {
+        Column(Modifier
+            .fillMaxSize()
+            .background(getBackgroundColor(activity))) {
             key (updater) {
                 ShowCharacteristics(activity)
             }
@@ -105,7 +107,9 @@ fun SetCustomDeck(
                     var check by rememberSaveable { mutableStateOf(save.altDecksChosen[back] == true) }
                     var updaterLocal by remember { mutableStateOf(false) }
                     Row(
-                        Modifier.fillMaxWidth().padding(4.dp),
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(4.dp),
                         horizontalArrangement = Arrangement.Start,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
@@ -135,12 +139,13 @@ fun SetCustomDeck(
                                 .fillMaxWidth(0.5f)
                         ) {
                             TextFallout(
-                                "Select all",
+                                activity.getString(R.string.select_all),
                                 getTextColor(activity),
                                 getTextStrokeColor(activity),
                                 18.sp,
                                 Alignment.Center,
-                                Modifier.fillMaxWidth()
+                                Modifier
+                                    .fillMaxWidth()
                                     .background(getTextBackgroundColor(activity))
                                     .padding(vertical = 4.dp)
                                     .clickableSelect(activity) {
@@ -158,12 +163,13 @@ fun SetCustomDeck(
                             )
                             HorizontalDivider(color = getDividerColor(activity))
                             TextFallout(
-                                "Deselect all",
+                                activity.getString(R.string.deselect_all),
                                 getTextColor(activity),
                                 getTextStrokeColor(activity),
                                 18.sp,
                                 Alignment.Center,
-                                Modifier.fillMaxWidth()
+                                Modifier
+                                    .fillMaxWidth()
                                     .background(getTextBackgroundColor(activity))
                                     .padding(vertical = 4.dp)
                                     .clickableCancel(activity) {
@@ -256,7 +262,9 @@ fun SetCustomDeck(
                                         .padding(4.dp)
                                         .alpha(if (isSelected) 1f else 0.5f))
                                 } else {
-                                    ShowCardBack(activity, card, Modifier.padding(4.dp).alpha(0.33f))
+                                    ShowCardBack(activity, card, Modifier
+                                        .padding(4.dp)
+                                        .alpha(0.33f))
                                 }
                             }
                         }

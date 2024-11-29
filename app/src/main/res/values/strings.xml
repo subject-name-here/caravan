@@ -65,6 +65,10 @@
     <string name="menu_settings">Settings</string>
     <string name="menu_about">About</string>
 
+    <string name="select_enemy">Select Enemy</string>
+    <string name="story_mode">Story Mode</string>
+    <string name="pve_stats">Stats</string>
+    <string name="tutorial">Tutorial</string>
 
     <string name="none" translatable="false">[NONE]</string>
     <string name="next_song">NXT SONG</string>
@@ -75,14 +79,13 @@
 
     <string name="deck_select">Select the Deck o\' 54</string>
     <string name="deck_custom">Set Custom Deck</string>
+    <string name="select_all">Select all</string>
+    <string name="deselect_all">Deselect all</string>
 
     <string name="custom_deck_size">Deck size: %1$s\n(must be at least %2$s)</string>
     <string name="custom_deck_non_faces">Number of non-face cards: %1$s\n(must be at least %2$s)</string>
     <string name="custom_deck_num_of_decks">Decks used: %1$s\n(must be at most %2$s)</string>
 
-    <string name="pve_select_enemy">Select the Opponent</string>
-
-    <string name="pve_enemy_oliver_fake">General Lee Oliver</string>
     <string name="pve_enemy_oliver_real">Oliver Swanick</string>
     <string name="pve_enemy_veronica">Veronica</string>
     <string name="pve_enemy_chief_hanlon">Chief Hanlon</string>
@@ -105,18 +108,19 @@
     <string name="dr_mobius">Dr. Mobius</string>
     <string name="man_in_the_mirror" translatable="false">ЯОЯЯIM ЭHT ИI ИAM</string>
 
-    <string name="pve_stats">Stats</string>
     <string name="pve_games_started">Games started: %1$s</string>
     <string name="pve_games_finished">Games finished: %1$s</string>
     <string name="pve_games_won">Games won: %1$s</string>
+    <string name="pve_caps_bet">Caps bet: %1$s</string>
+    <string name="pve_caps_won">Caps won: %1$s</string>
     <string name="pve_percentiles">Rates</string>
     <string name="pve_w_to_l">Success coefficient (W/L): %1$s</string>
     <string name="pve_w_to_finished">Win rate (W/Finished): %1$s \%%</string>
     <string name="pve_w_to_started">Win-No-Quit rate (W/Started): %1$s \%%</string>
     <string name="pve_finished_to_started">No-Quit rate (Finished/Started): %1$s \%%</string>
 
-    <string name="custom_deck_is_too_small">Custom deck is too small!</string>
-    <string name="custom_deck_is_too_small_message">Deck has less than 30 cards or less than 15 numbered cards!</string>
+    <string name="custom_deck_is_illegal">Custom deck is illegal!</string>
+    <string name="deck_illegal_body">Deck uses more than 6 backs, has less than 30 cards or less than 15 numbered cards!</string>
 
     <string name="result">Result</string>
     <string name="you_win">You win!</string>
@@ -283,6 +287,9 @@
     <string name="intro_tip_snuffles">Snuffle!</string>
     <string name="intro_tip_new_world">NCR and Legion, despite having some disagreements, have common enemies. Brotherhood of Steel is one of them.</string>
     <string name="intro_tip_enclave">Enclave is still around, huh? Who could have thought?</string>
+    <string name="intro_tip_33">People of East Coast probably never heard of Caravan.</string>
+    <string name="intro_tip_34">In 2275 NCR has held annual Caravan tournament. Craig Muffin was declared winner, for the third time in a row.</string>
+    <string name="intro_tip_35">There are many ways to get bottlecaps. Tickets, however, can be received only for completing daily Challenges GRA.</string>
 
     <string name="tap_to_play">Tap to Play</string>
 
@@ -399,7 +406,7 @@
     <string name="level_10">Level: %1$s / 10</string>
     <string name="currently_in_bank_caps">Currently at stake: %1$s caps</string>
     <string name="enemy">Enemy: %1$s</string>
-    <string name="your_reward_caps">Your reward: %1$s caps</string>
+    <string name="your_reward_caps">Your reward: %1$s caps.</string>
 
     <string name="tower_enemy_1">Sunny Smiles</string>
     <string name="tower_enemy_2">Yes Man</string>
@@ -689,37 +696,71 @@
     <string name="so_back_body" translatable="false">This will kill your significant other.</string>
 
 
-    <!--achievement Test Achievement-->
-    <string name="achievement_test_achievement" translatable="false">CgkIvtnbpMwbEAIQAQ</string>
-    <!--achievement Madre Roja-->
-    <string name="achievement_madre_roja" translatable="false">CgkIvtnbpMwbEAIQAg</string>
-    <!--achievement Not Ready to Die-->
-    <string name="achievement_not_ready_to_die" translatable="false">CgkIvtnbpMwbEAIQAw</string>
-    <!--achievement Penultimatum-->
-    <string name="achievement_penultimatum" translatable="false">CgkIvtnbpMwbEAIQBA</string>
-    <!--achievement You Can Be Hero-->
-    <string name="achievement_you_can_be_hero" translatable="false">CgkIvtnbpMwbEAIQBQ</string>
-    <!--achievement You Can Be So Much More-->
-    <string name="achievement_you_can_be_so_much_more" translatable="false">CgkIvtnbpMwbEAIQBg</string>
-    <!--achievement Five Down, Five To Go-->
-    <string name="achievement_five_down_five_to_go" translatable="false">CgkIvtnbpMwbEAIQBw</string>
-    <!--achievement 10/10-->
-    <string name="achievement_1010" translatable="false">CgkIvtnbpMwbEAIQCA</string>
-    <!--achievement AIN'T NO WAY DEV-->
-    <string name="achievement_aint_no_way_dev" translatable="false">CgkIvtnbpMwbEAIQCQ</string>
-    <!--achievement Done for today!-->
-    <string name="achievement_done_for_today" translatable="false">CgkIvtnbpMwbEAIQCg</string>
-    <!--achievement Who are you, that do not know your history?-->
-    <string name="achievement_who_are_you_that_do_not_know_your_history" translatable="false">CgkIvtnbpMwbEAIQCw</string>
-    <!--achievement Just load everything up with sixes and tens and kings-->
-    <string name="achievement_just_load_everything_up_with_sixes_and_tens_and_kings" translatable="false">CgkIvtnbpMwbEAIQDA</string>
-    <!--achievement Bravo.-->
-    <string name="achievement_bravo." translatable="false">CgkIvtnbpMwbEAIQDQ</string>
-    <!--achievement A Worthy Opponent-->
-    <string name="achievement_a_worthy_opponent" translatable="false">CgkIvtnbpMwbEAIQDg</string>
-    <!--achievement Winner-winner, brahmin dinner!-->
-    <string name="achievement_winnerwinner_brahmin_dinner" translatable="false">CgkIvtnbpMwbEAIQDw</string>
-    <string name="achievement_tis_but_a_flesh_wound" translatable="false"> CgkIvtnbpMwbEAIQEA</string>
+        <!--achievement Test Achievement-->
+        <string name="achievement_test_achievement" translatable="false">CgkIvtnbpMwbEAIQAQ</string>
+        <!--achievement Madre Roja-->
+        <string name="achievement_madre_roja" translatable="false">CgkIvtnbpMwbEAIQAg</string>
+        <!--achievement What Do We Say To The God of Death?-->
+        <string name="achievement_what_do_we_say_to_the_god_of_death" translatable="false">CgkIvtnbpMwbEAIQAw</string>
+        <!--achievement Penultimatum-->
+        <string name="achievement_penultimatum" translatable="false">CgkIvtnbpMwbEAIQBA</string>
+        <!--achievement You Can Be Hero-->
+        <string name="achievement_you_can_be_hero" translatable="false">CgkIvtnbpMwbEAIQBQ</string>
+        <!--achievement You Can Be So Much More-->
+        <string name="achievement_you_can_be_so_much_more" translatable="false">CgkIvtnbpMwbEAIQBg</string>
+        <!--achievement Five Down, Five To Go-->
+        <string name="achievement_five_down_five_to_go" translatable="false">CgkIvtnbpMwbEAIQBw</string>
+        <!--achievement 10/10-->
+        <string name="achievement_1010" translatable="false">CgkIvtnbpMwbEAIQCA</string>
+        <!--achievement AIN'T NO WAY DEV-->
+        <string name="achievement_aint_no_way_dev" translatable="false">CgkIvtnbpMwbEAIQCQ</string>
+        <!--achievement Done for today!-->
+        <string name="achievement_done_for_today" translatable="false">CgkIvtnbpMwbEAIQCg</string>
+        <!--achievement Who are you, that do not know your history?-->
+        <string name="achievement_who_are_you_that_do_not_know_your_history" translatable="false">CgkIvtnbpMwbEAIQCw</string>
+        <!--achievement Just load everything up with sixes and tens and kings-->
+        <string name="achievement_just_load_everything_up_with_sixes_and_tens_and_kings" translatable="false">CgkIvtnbpMwbEAIQDA</string>
+        <!--achievement Bravo.-->
+        <string name="achievement_bravo." translatable="false">CgkIvtnbpMwbEAIQDQ</string>
+        <!--achievement Look-a-Like-->
+        <string name="achievement_lookalike" translatable="false">CgkIvtnbpMwbEAIQDg</string>
+        <!--achievement Winner-winner, brahmin dinner!-->
+        <string name="achievement_winnerwinner_brahmin_dinner" translatable="false">CgkIvtnbpMwbEAIQDw</string>
+        <!--achievement Float like a Butterfly...-->
+        <string name="achievement_float_like_a_butterfly..." translatable="false">CgkIvtnbpMwbEAIQEA</string>
+
+
     <string name="achievements">Achievements</string>
+
+
+    <string name="your_barter_stat">Your Barter stat: %1$s</string>
+    <string name="your_caps_in_hand">Your caps in hand: %1$s</string>
+    <string name="hi_my_name_is">Hi! My name is %1$s!!</string>
+    <string name="style_buy">Style: %1$s</string>
+    <string name="buy_for_caps">Buy for %1$s caps</string>
+
+    <string name="enemy_name">Enemy: %1$s</string>
+    <string name="enemy_s_bet">Enemy\'s bet: %1$s</string>
+    <string name="enter_your_bet">Enter your bet (between %1$s and %2$s), or leave empty to play for free:</string>
+    <string name="your_expected_reward">Your expected reward: %1$s caps.</string>
+    <string name="your_reward_reward_caps">\nYour reward: %1$s caps!!</string>
+    <string name="your_reward_card">\nYour reward: card %1$s!!</string>
+    <string name="prize_caps">%1$s caps</string>
+    <string name="you_have_won">\nYou have won: %1$s.</string>
+
+    <string name="daily_update_head">It\'s a beautiful day!</string>
+    <string name="daily_update_body">Challenges, bottlecaps of enemies and inventory of traders are refreshed!\n\nAnd you have found 10 bottlecaps!</string>
+
+    <string name="time_limit_anyone">Time limit anyone?</string>
+    <string name="let_s_go">LET\'S GO!</string>
+
+    <string name="deck_o_54">Deck o\' 54</string>
+    <string name="custom_deck">Custom Deck</string>
+    <string name="wild_wasteland">Wild Wasteland</string>
+    <string name="tba">TBA</string>
+    <string name="coming_soon">COMING SOON!!?</string>
+
+    <string name="use_custom_deck">Use custom deck</string>
+    <string name="use_wild_wasteland_cards">Use Wild Wasteland cards</string>
 
 </resources>

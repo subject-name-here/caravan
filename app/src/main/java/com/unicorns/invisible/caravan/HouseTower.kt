@@ -125,7 +125,6 @@ fun TowerScreen(
             levelMemory = 0
             saveData(activity)
             when (level) {
-                // TODO: check achievements
                 6 -> {
                     activity.achievementsClient?.unlock(activity.getString(R.string.achievement_five_down_five_to_go))
                 }

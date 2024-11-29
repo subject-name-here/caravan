@@ -145,6 +145,10 @@ class CResources(private val deck: CustomDeck) {
                 numOfNumbers >= MIN_NUM_OF_NUMBERS
     }
 
+    fun isDeckCourier6(): Boolean {
+        return deck.toList().all { it.rank in listOf(Rank.SIX, Rank.TEN, Rank.KING) }
+    }
+
     companion object {
         const val MAX_NUMBER_OF_DECKS = 6
         const val MIN_DECK_SIZE = 30
