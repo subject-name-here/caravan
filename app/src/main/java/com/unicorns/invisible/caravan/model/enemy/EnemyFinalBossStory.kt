@@ -32,7 +32,7 @@ class EnemyFinalBossStory(@Transient private var update: Int = 0) : Enemy {
             return
         }
 
-        // TODO: makeMoveInner(game)
+        makeMoveInner(game)
 
         if (game.enemyCResources.deckSize == 0) {
             playAlarm()
