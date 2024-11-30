@@ -22,7 +22,7 @@ data object EnemyTheManInTheMirror : Enemy {
             return
         }
 
-        // TODO
+        // TODO: reflect player moves if possible and if makes sense
 
         game.enemyCResources.dropCardFromHand(hand.withIndex().minBy {
             when (it.value.rank) {

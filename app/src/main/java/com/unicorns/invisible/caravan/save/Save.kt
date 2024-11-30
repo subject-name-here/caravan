@@ -121,10 +121,11 @@ class Save(val isUsable: Boolean) {
     @EncodeDefault
     var prize2Activated = false
     @EncodeDefault
-    var papaSmurfActive = false
-
+    var prize4Activated = false
     @EncodeDefault
-    var oliverStatus = 0
+    var papaSmurfActive = false
+    @EncodeDefault
+    var sixtyNineActive = false
 
     @EncodeDefault
     val enemyCapsLeft = HashMap<Int, Int>()

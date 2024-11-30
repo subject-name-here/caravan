@@ -42,7 +42,7 @@ class CResources(private val deck: CustomDeck) {
             handMutable.addAll(tmpHand)
         } else {
             var tmpHand = deck.toList().take(8)
-            while (tmpHand.count { it.isFace() } > maxNumOfFaces && tmpHand.any { it.isWildWasteland() }) {
+            while (tmpHand.count { it.isFace() } > maxNumOfFaces || tmpHand.any { it.isWildWasteland() }) {
                 shuffleDeck()
                 tmpHand = deck.toList().take(8)
             }

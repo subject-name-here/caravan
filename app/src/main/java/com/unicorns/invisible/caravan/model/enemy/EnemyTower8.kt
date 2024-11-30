@@ -12,19 +12,29 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data object EnemyTower8 : Enemy {
-    override fun createDeck() = CResources(CustomDeck().apply {
-        listOf(CardBack.TOPS, CardBack.GOMORRAH, CardBack.ULTRA_LUXE, CardBack.LUCKY_38)
-            .forEach { back ->
-                Suit.entries.forEach { suit ->
-                    add(Card(Rank.SIX, suit, back, false))
-                    add(Card(Rank.JACK, suit, back, true))
-                    add(Card(Rank.QUEEN, suit, back, true))
-                    add(Card(Rank.KING, suit, back, false))
+    override fun createDeck(): CResources = CResources(CustomDeck().apply {
+        listOf(
+            CardBack.STANDARD, CardBack.TOPS, CardBack.GOMORRAH,
+            CardBack.ULTRA_LUXE, CardBack.LUCKY_38, CardBack.VAULT_21
+        ).forEach { back ->
+            Rank.entries.forEach { rank ->
+                if (rank == Rank.JOKER) {
+                    add(Card(Rank.JOKER, Suit.HEARTS, back, false))
+                    add(Card(Rank.JOKER, Suit.CLUBS, back, false))
+                } else if (!rank.isFace()) {
+                    listOf(Suit.HEARTS).forEach { suit ->
+                        add(Card(rank, suit, back, false))
+                    }
+                } else if (rank != Rank.QUEEN) {
+                    Suit.entries.forEach { suit ->
+                        add(Card(rank, suit, back, false))
+                    }
                 }
             }
+        }
     })
 
     override fun makeMove(game: Game) {
-        TODO("Not yet implemented")
+        EnemyHanlon.makeMove(game)
     }
 }

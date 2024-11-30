@@ -38,7 +38,7 @@
     <string name="tops_trader_name">Макс</string>
     <string name="tops_trader_condition">Победите Бенни 7 раз. (%1$s/7)</string>
     <string name="gomorrah_trader_name">Бен Бродсон</string>
-    <string name="gomorrah_trader_condition">Победите Вульпеса Инкульту.</string>
+    <string name="gomorrah_trader_condition">Победите Вульпеса Инкульту 8 раз. (%1$s/8)</string>
     <string name="vault_21_trader_name">Мелани Мартинез</string>
     <string name="vault_21_trader_condition">Выиграйте 21 игру или приходите 21-го числа любого месяца.</string>
     <string name="lucky_38_trader_name">Мэрилин и Джейн</string>

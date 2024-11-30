@@ -10,14 +10,14 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 class GomorrahTrader : Trader {
-    var isVulpesDefeated = false
-    override fun isOpen() = isVulpesDefeated
+    var isVulpesDefeated = 0
+    override fun isOpen() = isVulpesDefeated >= 8
     override fun openingCondition(activity: MainActivity) =
-        activity.getString(R.string.gomorrah_trader_condition)
+        activity.getString(R.string.gomorrah_trader_condition, isVulpesDefeated.toString())
 
     override fun getName(): Int = R.string.gomorrah_trader_name
 
-    override fun getCards(): List<Pair<Card, Int>> = getCards(CardBack.GOMORRAH, 9)
+    override fun getCards(): List<Pair<Card, Int>> = getCards(CardBack.GOMORRAH, 11)
 
     override fun getStyles(): List<Style> = listOf(Style.PIP_GIRL)
 }

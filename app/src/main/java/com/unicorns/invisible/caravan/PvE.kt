@@ -129,12 +129,17 @@ fun ShowSelectPvE(
             return
         }
         showTutorial -> {
+            showTutorial = false
+            showAlertDialog("[CLOSED]", "Better tutorial is on the way.", null)
             // TODO
             // return
         }
         showStory -> {
-            ShowStoryList(activity, showAlertDialog) { showStory = false }
-            return
+            // TODO
+            showStory = false
+            showAlertDialog("[CLOSED]", "Story enemies are getting an upgrade.", null)
+//            ShowStoryList(activity, showAlertDialog) { showStory = false }
+//            return
         }
     }
 
@@ -346,9 +351,6 @@ fun ShowPvE(
     var showGameLuc10 by rememberSaveable { mutableStateOf(false) }
     var showGameDrMobius by rememberSaveable { mutableStateOf(false) }
     var showGameTheManInTheMirror by rememberSaveable { mutableStateOf(false) }
-
-    var showOliverWarning by rememberSaveable { mutableStateOf(false) }
-    var oliverStatus by rememberSaveable { mutableIntStateOf(save.oliverStatus) }
 
     var selectedTab by rememberSaveable { mutableIntStateOf(0) }
 
@@ -800,9 +802,6 @@ fun StartGame(
             playWinSound(activity)
             save.gamesFinished++
             save.wins++
-            if (enemy is EnemyOliver) {
-                save.oliverStatus = 2
-            }
 
             if (isBettingEnemy) {
                 save.capsInHand += reward

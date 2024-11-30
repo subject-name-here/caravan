@@ -2,7 +2,6 @@ package com.unicorns.invisible.caravan.model.enemy
 
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
-import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJoker
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.Card
 import com.unicorns.invisible.caravan.model.primitives.CustomDeck
@@ -112,13 +111,6 @@ data object EnemyNoBark : Enemy {
                         .cards
                         .last()
                         .addModifier(game.enemyCResources.removeFromHand(cardIndex))
-                    return
-                }
-            }
-
-            if (card.rank == Rank.JOKER) {
-                if (StrategyJoker.move(game)) {
-                    game.jokerPlayedSound()
                     return
                 }
             }

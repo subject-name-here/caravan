@@ -39,7 +39,7 @@
     <string name="tops_trader_name">Max</string>
     <string name="tops_trader_condition">Defeat Benny 7 times. (%1$s/7)</string>
     <string name="gomorrah_trader_name">Ben Broadson</string>
-    <string name="gomorrah_trader_condition">Defeat Vulpes Inculta.</string>
+    <string name="gomorrah_trader_condition">Defeat Vulpes Inculta 8 times. (%1$s/8)</string>
     <string name="vault_21_trader_name">Melanie Martinez</string>
     <string name="vault_21_trader_condition">Win 21 games or visit every 21st day of month.</string>
     <string name="lucky_38_trader_name">Marylin &amp; Jane</string>

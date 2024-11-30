@@ -242,6 +242,17 @@ fun ShowTrueSettings(
                                             playPimpBoySound(activity)
                                         }
 
+                                        50224 -> {
+                                            save.let {
+                                                if (!it.prize4Activated) {
+                                                    it.prize4Activated = true
+                                                    it.capsInHand += 5000
+                                                    saveData(activity)
+                                                    playYesBeep(activity)
+                                                }
+                                            }
+                                        }
+
                                         62869 -> {
                                             save.let {
                                                 if (!it.prize1Activated) {
@@ -268,6 +279,23 @@ fun ShowTrueSettings(
                                             save.let {
                                                 it.storyChaptersProgress = 0
                                                 it.altStoryChaptersProgress = 0
+                                                saveData(activity)
+                                                playYesBeep(activity)
+                                            }
+                                        }
+
+                                        4002 -> {
+                                            save.let {
+                                                listOf(Suit.HEARTS, Suit.SPADES).forEach { suit ->
+                                                    Rank.entries.forEach { rank ->
+                                                        if (rank != Rank.JOKER) {
+                                                            it.availableCards.add(Card(
+                                                                rank, suit, CardBack.STANDARD, true
+                                                            ))
+                                                        }
+                                                    }
+                                                }
+
                                                 saveData(activity)
                                                 playYesBeep(activity)
                                             }
@@ -303,6 +331,12 @@ fun ShowTrueSettings(
 
                                         110811 -> {
                                             save.papaSmurfActive = !save.papaSmurfActive
+                                            saveData(activity)
+                                            playYesBeep(activity)
+                                        }
+
+                                        69 -> {
+                                            save.sixtyNineActive = !save.sixtyNineActive
                                             saveData(activity)
                                             playYesBeep(activity)
                                         }

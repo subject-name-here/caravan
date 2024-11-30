@@ -55,6 +55,7 @@ import com.unicorns.invisible.caravan.MainActivity
 import com.unicorns.invisible.caravan.R
 import com.unicorns.invisible.caravan.model.getCardName
 import com.unicorns.invisible.caravan.model.primitives.Card
+import com.unicorns.invisible.caravan.save
 
 
 @Composable
@@ -426,9 +427,13 @@ fun TextCustom(
     textAlign: TextAlign,
 ) {
     val strokeWidth = getStrokeWidth(textSize)
+    val textRedacted = if (save.sixtyNineActive)
+        text.replace("TOPS", "BOTTOMS", ignoreCase = true)
+    else
+        text
     Box(modifier, contentAlignment = contentAlignment) {
         Text(
-            text = text, color = textColor,
+            text = textRedacted, color = textColor,
             fontFamily = FontFamily(font),
             style = TextStyle(
                 color = textColor,
@@ -442,7 +447,7 @@ fun TextCustom(
             return@Box
         }
         Text(
-            text = text, color = strokeColor,
+            text = textRedacted, color = strokeColor,
             fontFamily = FontFamily(font),
             style = TextStyle(
                 color = strokeColor,

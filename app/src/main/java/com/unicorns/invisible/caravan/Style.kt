@@ -121,6 +121,9 @@ fun getStyleCities(style: Style): List<String> {
     }
 }
 
+
+// TODO: review the skins!!!! ALL OF THEM!!!
+
 @Composable
 fun BoxWithConstraintsScope.StylePicture(
     activity: MainActivity,

@@ -21,7 +21,7 @@ data object EnemyMadnessCardinal : Enemy {
             return
         }
 
-        // TODO
+        // TODO: make them cleverer than Snuffles
 
         game.enemyCResources.dropCardFromHand(hand.withIndex().minBy {
             when (it.value.rank) {

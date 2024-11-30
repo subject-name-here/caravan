@@ -7,7 +7,6 @@ import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJoker
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyRush
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyTime
 import com.unicorns.invisible.caravan.model.primitives.CResources
-import com.unicorns.invisible.caravan.model.primitives.Rank
 import kotlinx.serialization.Serializable
 
 
@@ -50,6 +49,6 @@ data object EnemyVictor : Enemy {
             return
         }
 
-        // TODO: make move
+        EnemyHanlon.makeMove(game)
     }
 }

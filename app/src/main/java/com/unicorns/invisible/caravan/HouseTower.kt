@@ -209,7 +209,7 @@ fun TowerScreen(
                 level = levelMemory + 1
                 save.towerLevel = levelMemory + 1
                 levelMemory = 0
-                save.capsInHand = capsMemory
+                save.capsInHand += capsMemory
                 saveData(activity)
                 stopRadio()
                 playFrankPhrase(activity, R.raw.frank_on_defeat)
@@ -495,6 +495,10 @@ fun TowerScreen(
                                     if (level > 0) {
                                         level = 0
                                         frankSequencePlayed = false
+                                        if (soundReduced) {
+                                            soundReduced = false
+                                            nextSong(activity)
+                                        }
                                         save.towerLevel = 0
                                         save.capsInHand += inBank
                                         saveData(activity)
@@ -507,6 +511,7 @@ fun TowerScreen(
                                             ),
                                             null
                                         )
+
                                     }
                                 }
                                 .background(getTextBackgroundColor(activity))

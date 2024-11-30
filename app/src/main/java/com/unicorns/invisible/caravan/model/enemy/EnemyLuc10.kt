@@ -9,7 +9,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data object EnemyLuc10 : Enemy {
-    override fun createDeck() = CResources(CardBack.LUCKY_38, false)
+    override fun createDeck() = CResources(CardBack.LUCKY_38, true)
     override fun getBankNumber() = 15
 
     override fun makeMove(game: Game) {
@@ -22,7 +22,7 @@ data object EnemyLuc10 : Enemy {
             return
         }
 
-        // TODO
+        // TODO:
 
         game.enemyCResources.dropCardFromHand(hand.withIndex().minBy {
             when (it.value.rank) {

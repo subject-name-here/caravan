@@ -127,6 +127,6 @@ class EnemyFinalBossStory(@Transient private var update: Int = 0) : Enemy {
                 }
         }
 
-        // TODO: make move
+        EnemyUlysses.makeMove(game)
     }
 }

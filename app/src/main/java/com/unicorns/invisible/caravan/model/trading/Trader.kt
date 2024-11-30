@@ -17,6 +17,7 @@ sealed interface Trader {
     fun getName(): Int
     fun getCards(): List<Pair<Card, Int>>
     fun getStyles(): List<Style>
+    // TODO: make trader talk!!!
 
     fun getCards(back: CardBack, cards1Number: Int): List<Pair<Card, Int>> {
         val rand = Random(save.challengesHash)

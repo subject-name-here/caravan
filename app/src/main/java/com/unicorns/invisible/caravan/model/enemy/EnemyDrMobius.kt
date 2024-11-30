@@ -23,6 +23,7 @@ data object EnemyDrMobius : Enemy {
         }
 
         // TODO
+        // Infinite deck => chance of any card is the same
 
         game.enemyCResources.dropCardFromHand(hand.withIndex().minBy {
             when (it.value.rank) {

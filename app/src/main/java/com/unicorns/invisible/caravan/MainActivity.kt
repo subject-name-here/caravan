@@ -556,15 +556,12 @@ class MainActivity : SaveDataActivity() {
                     showRules -> {
                         ShowRules(this@MainActivity) { showRules = false }
                     }
-
                     deckSelection -> {
                         DeckSelection(this@MainActivity) { deckSelection = false }
                     }
-
                     showAbout -> {
                         ShowAbout(this@MainActivity) { showAbout = false }
                     }
-
                     showPvE -> {
                         if (!CResources(save.getCustomDeckCopy()).isCustomDeckValid()) {
                             showAlertDialog(
@@ -577,7 +574,6 @@ class MainActivity : SaveDataActivity() {
                             ShowSelectPvE(this@MainActivity, ::showAlertDialog) { showPvE = false }
                         }
                     }
-
                     showPvP -> {
                         if (!CResources(save.getCustomDeckCopy()).isCustomDeckValid()) {
                             showAlertDialog(
@@ -597,7 +593,6 @@ class MainActivity : SaveDataActivity() {
                             ShowPvP(this@MainActivity, ::showAlertDialog) { showPvP = false }
                         }
                     }
-
                     showVision -> {
                         ShowStyles(activity = this@MainActivity, {
                             styleIdForTop = Style.entries[it]
@@ -605,19 +600,15 @@ class MainActivity : SaveDataActivity() {
                             saveData(this@MainActivity)
                         }) { showVision = false }
                     }
-
                     showSettings -> {
                         ShowTrueSettings(this@MainActivity) { showSettings = false }
                     }
-
                     showDailys -> {
                         ShowDailys(this@MainActivity) { showDailys = false }
                     }
-
                     showMarket -> {
                         ShowTraders(this@MainActivity) { showMarket = false }
                     }
-
                     else -> {
                         LaunchedEffect(Unit) {
                             val currentHash = save.getCurrentDateHashCode()

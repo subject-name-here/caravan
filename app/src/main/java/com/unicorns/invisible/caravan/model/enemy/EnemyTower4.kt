@@ -12,19 +12,12 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data object EnemyTower4 : Enemy {
-    override fun createDeck() = CResources(CustomDeck().apply {
-        listOf(CardBack.TOPS, CardBack.GOMORRAH, CardBack.ULTRA_LUXE, CardBack.LUCKY_38)
-            .forEach { back ->
-                Suit.entries.forEach { suit ->
-                    add(Card(Rank.SIX, suit, back, false))
-                    add(Card(Rank.JACK, suit, back, true))
-                    add(Card(Rank.QUEEN, suit, back, true))
-                    add(Card(Rank.KING, suit, back, false))
-                }
-            }
+    override fun createDeck(): CResources = CResources(CustomDeck(CardBack.STANDARD, false).apply {
+        addAll(CustomDeck(CardBack.STANDARD, true))
+        removeAll(toList().filter { it.rank == Rank.JOKER })
     })
 
     override fun makeMove(game: Game) {
-        TODO("Not yet implemented")
+        EnemyTower3.makeMove(game)
     }
 }

@@ -23,8 +23,10 @@ class ChallengeWinByMarriage : Challenge {
                 .filter { it.isOrdinary() && it.rank == Rank.QUEEN && it.suit == move.handCard.suit }
             if (queens.isNotEmpty()) {
                 wasLastMoveMarriage = true
+                return
             }
         }
+        wasLastMoveMarriage = false
     }
 
     override fun processGameResult(game: Game) {
