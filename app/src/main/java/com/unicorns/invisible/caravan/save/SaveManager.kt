@@ -31,6 +31,9 @@ private fun getLocalSaveFile(activity: MainActivity): File {
 }
 
 fun saveData(activity: MainActivity) {
+    if (!save.isUsable) {
+        return
+    }
     val localSave = getLocalSaveFile(activity)
     try {
         val text = json.encodeToString(save)
@@ -94,7 +97,7 @@ private fun loadLocalSave(activity: MainActivity): Save? {
 }
 
 fun processOldSave(activity: MainActivity) {
-    CoroutineScope(Dispatchers.IO).launch {
+    CoroutineScope(Dispatchers.IO).launch { try {
         val oldSaveString = activity.fetchOldSaveFromDrive()?.toString(StandardCharsets.UTF_8) ?: return@launch
         val jsonObject = JSONObject(oldSaveString)
         val cards = jsonObject.getJSONArray("availableCards")
@@ -129,11 +132,20 @@ fun processOldSave(activity: MainActivity) {
             val style = ownedStyles.getString(it)
             try {
                 save.ownedStyles.add(Style.valueOf(style))
-            } catch (_: Exception) {}
+            } catch (_: Exception) {
+            }
         }
         val caps = jsonObject.getInt("caps")
         save.capsInHand += caps
         val tickets = jsonObject.getInt("tickets")
         save.tickets += tickets
-    }
+    } catch (_: Exception) {
+        MainScope().launch {
+            Toast.makeText(
+                activity,
+                "No save from earlier versions!!",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+    } }
 }
