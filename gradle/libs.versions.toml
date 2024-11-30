@@ -46,7 +46,7 @@ ac2 = { group = "androidx.credentials", name = "credentials-play-services-auth",
 ac1 = { group = "androidx.credentials", name = "credentials", version.ref = "ac" }
 ac3 = { group = "com.google.android.libraries.identity.googleid", name = "googleid", version.ref = "ac3" }
 
-resaca = { group = "io.github.sebaslogen", name = "resaca", version = "4.3.2" }
+resaca = { group = "io.github.sebaslogen", name = "resaca", version = "4.3.6" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

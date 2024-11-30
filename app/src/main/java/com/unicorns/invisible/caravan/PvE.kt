@@ -129,15 +129,15 @@ fun ShowSelectPvE(
             return
         }
         showTutorial -> {
-            showTutorial = false
             showAlertDialog("[CLOSED]", "Better tutorial is on the way.", null)
+            showTutorial = false
             // TODO
             // return
         }
         showStory -> {
             // TODO
-            showStory = false
             showAlertDialog("[CLOSED]", "Story enemies are getting an upgrade.", null)
+            showStory = false
 //            ShowStoryList(activity, showAlertDialog) { showStory = false }
 //            return
         }
@@ -703,17 +703,26 @@ fun ShowPvE(
                                 OpponentItem(stringResource(R.string.crooker)) { playVatsEnter(activity); showGameCrooker = true }
                             }
                             2 -> {
-                                OpponentItem(stringResource(R.string.snuffles)) { playVatsEnter(activity); showGameSnuffles = true }
-                                Spacer(modifier = Modifier.height(10.dp))
-                                OpponentItem(stringResource(R.string.easy_pete)) { playVatsEnter(activity); showGameEasyPete = true }
-                                Spacer(modifier = Modifier.height(10.dp))
-                                OpponentItem(stringResource(R.string.madness_cardinal)) { playVatsEnter(activity); showGameMadnessCardinal = true }
-                                Spacer(modifier = Modifier.height(10.dp))
-                                OpponentItem(stringResource(R.string.luc10)) { playVatsEnter(activity); showGameLuc10 = true }
-                                Spacer(modifier = Modifier.height(10.dp))
-                                OpponentItem(stringResource(R.string.dr_mobius)) { playVatsEnter(activity); showGameDrMobius = true }
-                                Spacer(modifier = Modifier.height(10.dp))
-                                OpponentItem(stringResource(R.string.man_in_the_mirror)) { playVatsEnter(activity); showGameTheManInTheMirror = true }
+                                TextFallout(
+                                    stringResource(R.string.coming_soon),
+                                    getTextColor(activity),
+                                    getTextStrokeColor(activity),
+                                    16.sp,
+                                    Alignment.Center,
+                                    Modifier.padding(4.dp),
+                                    TextAlign.Center
+                                )
+//                                OpponentItem(stringResource(R.string.snuffles)) { playVatsEnter(activity); showGameSnuffles = true }
+//                                Spacer(modifier = Modifier.height(10.dp))
+//                                OpponentItem(stringResource(R.string.easy_pete)) { playVatsEnter(activity); showGameEasyPete = true }
+//                                Spacer(modifier = Modifier.height(10.dp))
+//                                OpponentItem(stringResource(R.string.madness_cardinal)) { playVatsEnter(activity); showGameMadnessCardinal = true }
+//                                Spacer(modifier = Modifier.height(10.dp))
+//                                OpponentItem(stringResource(R.string.luc10)) { playVatsEnter(activity); showGameLuc10 = true }
+//                                Spacer(modifier = Modifier.height(10.dp))
+//                                OpponentItem(stringResource(R.string.dr_mobius)) { playVatsEnter(activity); showGameDrMobius = true }
+//                                Spacer(modifier = Modifier.height(10.dp))
+//                                OpponentItem(stringResource(R.string.man_in_the_mirror)) { playVatsEnter(activity); showGameTheManInTheMirror = true }
                             }
                             3 -> {
                                 TextFallout(
