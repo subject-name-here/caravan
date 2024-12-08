@@ -2,9 +2,11 @@ package com.unicorns.invisible.caravan.model.enemy
 
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
+import com.unicorns.invisible.caravan.model.enemy.strategy.CardDropSelect
 import com.unicorns.invisible.caravan.model.enemy.strategy.DropSelection
 import com.unicorns.invisible.caravan.model.enemy.strategy.SelectCard
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyDropCaravan
+import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyDropCard
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyInitStage
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJoker
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyKingRuiner
@@ -45,7 +47,6 @@ data object EnemyElijah : Enemy {
 
     override fun makeMove(game: Game) {
         val hand = game.enemyCResources.hand
-        val overWeightCaravans = game.enemyCaravans.filter { it.getValue() > 26 }
         val under26Caravans = game.enemyCaravans.filterIndexed { index, it ->
             it.getValue() in (21..25) && game.playerCaravans[index].getValue() >= it.getValue()
         }
@@ -164,8 +165,7 @@ data object EnemyElijah : Enemy {
             return
         }
 
-        val handSorted = hand.withIndex().sortedBy { it.value.rank.value }
-        game.enemyCResources.dropCardFromHand(handSorted.first().index)
+        StrategyDropCard(CardDropSelect.MIN_VALUE).move(game)
     }
 
     override fun onVictory() {

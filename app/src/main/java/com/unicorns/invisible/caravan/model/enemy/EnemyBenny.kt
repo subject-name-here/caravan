@@ -2,9 +2,11 @@ package com.unicorns.invisible.caravan.model.enemy
 
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
+import com.unicorns.invisible.caravan.model.enemy.strategy.CardDropSelect
 import com.unicorns.invisible.caravan.model.enemy.strategy.DropSelection
 import com.unicorns.invisible.caravan.model.enemy.strategy.SelectCard
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyDropCaravan
+import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyDropCard
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyInitStage
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJoker
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJokerBennyCheater
@@ -233,24 +235,7 @@ data object EnemyBenny : Enemy {
             return
         }
 
-        game.enemyCResources.dropCardFromHand(hand.withIndex().minByOrNull { (_, cardInHand) ->
-            when (cardInHand.rank) {
-                Rank.ACE -> 2
-                Rank.TWO -> 3
-                Rank.THREE -> 3
-                Rank.FOUR -> 4
-                Rank.FIVE -> 5
-                Rank.SIX -> 5
-                Rank.SEVEN -> 6
-                Rank.EIGHT -> 7
-                Rank.NINE -> 7
-                Rank.TEN -> 6
-                Rank.JACK -> 12
-                Rank.QUEEN -> 4
-                Rank.KING -> 13
-                Rank.JOKER -> 14
-            }
-        }!!.index)
+        StrategyDropCard(CardDropSelect.ULYSSES_ORDER).move(game)
     }
 
     override fun onVictory() {

@@ -28,6 +28,11 @@ class StrategyInitStage(private val selection: SelectCard) : Strategy {
                 val caravan = game.enemyCaravans.filter { it.isEmpty() }.random()
                 caravan.putCardOnTop(game.enemyCResources.removeFromHand(cardIndex))
             }
+            SelectCard.RANDOM_TO_LTR -> {
+                val cardIndex = hand.withIndex().filter { !it.value.isFace() }.random().index
+                val caravan = game.enemyCaravans.first { it.cards.isEmpty() }
+                caravan.putCardOnTop(game.enemyCResources.removeFromHand(cardIndex))
+            }
         }
 
         return true

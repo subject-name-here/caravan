@@ -2,9 +2,11 @@ package com.unicorns.invisible.caravan.model.enemy
 
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
+import com.unicorns.invisible.caravan.model.enemy.strategy.CardDropSelect
 import com.unicorns.invisible.caravan.model.enemy.strategy.DropSelection
 import com.unicorns.invisible.caravan.model.enemy.strategy.SelectCard
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyDropCaravan
+import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyDropCard
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyInitStage
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJokerSimple
 import com.unicorns.invisible.caravan.model.primitives.CResources
@@ -179,11 +181,6 @@ data object EnemyCrooker : Enemy {
             return
         }
 
-        game.enemyCResources.dropCardFromHand(hand.withIndex().minBy {
-            when (it.value.rank) {
-                Rank.QUEEN -> 0
-                else -> it.value.rank.value
-            }
-        }.index)
+        StrategyDropCard(CardDropSelect.MIN_VALUE_Q0).move(game)
     }
 }

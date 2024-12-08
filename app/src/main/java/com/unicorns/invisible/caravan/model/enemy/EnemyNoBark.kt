@@ -2,7 +2,11 @@ package com.unicorns.invisible.caravan.model.enemy
 
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
+import com.unicorns.invisible.caravan.model.enemy.strategy.CardDropSelect
+import com.unicorns.invisible.caravan.model.enemy.strategy.DropSelection
 import com.unicorns.invisible.caravan.model.enemy.strategy.SelectCard
+import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyDropCaravan
+import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyDropCard
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyInitStage
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.Card
@@ -116,16 +120,10 @@ data object EnemyNoBark : Enemy {
             }
         }
 
-        if (overWeightCaravans.isNotEmpty()) {
-            overWeightCaravans.random().dropCaravan()
+        if (StrategyDropCaravan(DropSelection.RANDOM).move(game)) {
             return
         }
 
-        game.enemyCResources.dropCardFromHand(hand.withIndex().minByOrNull {
-            when (it.value.rank) {
-                Rank.QUEEN -> 0
-                else -> it.value.rank.value
-            }
-        }!!.index)
+        StrategyDropCard(CardDropSelect.MIN_VALUE_Q0).move(game)
     }
 }

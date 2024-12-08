@@ -2,7 +2,11 @@ package com.unicorns.invisible.caravan.model.enemy
 
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
+import com.unicorns.invisible.caravan.model.enemy.strategy.CardDropSelect
+import com.unicorns.invisible.caravan.model.enemy.strategy.DropSelection
 import com.unicorns.invisible.caravan.model.enemy.strategy.SelectCard
+import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyDropCaravan
+import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyDropCard
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyInitStage
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.Rank
@@ -91,21 +95,10 @@ data object EnemyVeronica : Enemy {
             }
         }
 
-        val overWeightCaravans = game.enemyCaravans.filter { it.getValue() > 26 }
-        if (overWeightCaravans.isNotEmpty()) {
-            overWeightCaravans.random().dropCaravan()
+        if (StrategyDropCaravan(DropSelection.RANDOM).move(game)) {
             return
         }
 
-        game.enemyCResources.dropCardFromHand(hand.withIndex().minBy {
-            when (it.value.rank) {
-                Rank.JOKER -> 7
-                Rank.JACK -> 6
-                Rank.QUEEN -> 4
-                Rank.KING -> 5
-                Rank.ACE -> 3
-                else -> it.value.rank.value
-            }
-        }.index)
+        StrategyDropCard(CardDropSelect.VERONICA_ORDER).move(game)
     }
 }

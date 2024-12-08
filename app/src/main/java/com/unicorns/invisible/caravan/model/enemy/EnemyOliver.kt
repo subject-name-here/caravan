@@ -2,7 +2,9 @@ package com.unicorns.invisible.caravan.model.enemy
 
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
+import com.unicorns.invisible.caravan.model.enemy.strategy.CardDropSelect
 import com.unicorns.invisible.caravan.model.enemy.strategy.SelectCard
+import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyDropCard
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyInitStage
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.Rank
@@ -90,6 +92,6 @@ data object EnemyOliver : Enemy {
             }
         }
 
-        game.enemyCResources.dropCardFromHand(hand.indices.random())
+        StrategyDropCard(CardDropSelect.RANDOM).move(game)
     }
 }

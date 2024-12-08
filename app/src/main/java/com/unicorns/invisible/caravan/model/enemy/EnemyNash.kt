@@ -2,10 +2,12 @@ package com.unicorns.invisible.caravan.model.enemy
 
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
+import com.unicorns.invisible.caravan.model.enemy.strategy.CardDropSelect
 import com.unicorns.invisible.caravan.model.enemy.strategy.DropSelection
 import com.unicorns.invisible.caravan.model.enemy.strategy.SelectCard
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyDestructive
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyDropCaravan
+import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyDropCard
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyInitStage
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.Caravan
@@ -188,14 +190,6 @@ data object EnemyNash : Enemy {
                 }
         }
 
-        game.enemyCResources.dropCardFromHand(hand.withIndex().minByOrNull {
-            when (it.value.rank) {
-                Rank.JACK -> 0
-                Rank.QUEEN -> 1
-                Rank.SIX -> 2
-                Rank.KING -> 3
-                else -> 0
-            }
-        }!!.index)
+        StrategyDropCard(CardDropSelect.NASH_ORDER).move(game)
     }
 }

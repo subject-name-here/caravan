@@ -2,7 +2,11 @@ package com.unicorns.invisible.caravan.model.enemy
 
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
+import com.unicorns.invisible.caravan.model.enemy.strategy.CardDropSelect
+import com.unicorns.invisible.caravan.model.enemy.strategy.DropSelection
 import com.unicorns.invisible.caravan.model.enemy.strategy.SelectCard
+import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyDropCaravan
+import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyDropCard
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyInitStage
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJoker
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyQueen
@@ -366,31 +370,11 @@ data object EnemyFrank : Enemy {
             return
         }
 
-        if (overWeightCaravans.isNotEmpty()) {
-            overWeightCaravans.maxBy { it.getValue() }.dropCaravan()
+        if (StrategyDropCaravan(DropSelection.MAX_WEIGHT).move(game)) {
             return
         }
 
-        game.enemyCResources.dropCardFromHand(hand.withIndex().minByOrNull { (_, cardInHand) ->
-            if (cardInHand.isNuclear())
-                15
-            else when (cardInHand.rank) {
-                Rank.ACE -> 4
-                Rank.TWO -> 3
-                Rank.THREE -> 3
-                Rank.FOUR -> 4
-                Rank.FIVE -> 5
-                Rank.SIX -> 5
-                Rank.SEVEN -> 6
-                Rank.EIGHT -> 6
-                Rank.NINE -> 7
-                Rank.TEN -> 8
-                Rank.JACK -> 12
-                Rank.QUEEN -> 6
-                Rank.KING -> 13
-                Rank.JOKER -> 14
-            }
-        }!!.index)
+        StrategyDropCard(CardDropSelect.ULYSSES_ORDER).move(game)
     }
 
     override fun onVictory() {

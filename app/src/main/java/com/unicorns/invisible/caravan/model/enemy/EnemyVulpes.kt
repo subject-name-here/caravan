@@ -2,7 +2,11 @@ package com.unicorns.invisible.caravan.model.enemy
 
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
+import com.unicorns.invisible.caravan.model.enemy.strategy.CardDropSelect
+import com.unicorns.invisible.caravan.model.enemy.strategy.DropSelection
 import com.unicorns.invisible.caravan.model.enemy.strategy.SelectCard
+import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyDropCaravan
+import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyDropCard
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyInitStage
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJoker
 import com.unicorns.invisible.caravan.model.primitives.CResources
@@ -105,12 +109,11 @@ data object EnemyVulpes : Enemy {
             }
         }
 
-        if (overWeightCaravans.isNotEmpty()) {
-            overWeightCaravans.maxBy { it.getValue() }.dropCaravan()
+        if (StrategyDropCaravan(DropSelection.MAX_WEIGHT).move(game)) {
             return
         }
 
-        game.enemyCResources.dropCardFromHand(hand.withIndex().minBy { it.value.rank.value }.index)
+        StrategyDropCard(CardDropSelect.MIN_VALUE).move(game)
     }
 
     override fun onVictory() {
