@@ -169,7 +169,6 @@ fun BoxWithConstraintsScope.StylePicture(
                     .build()
             )
 
-
             Row(
                 Modifier
                     .fillMaxWidth()
@@ -262,6 +261,14 @@ fun BoxWithConstraintsScope.StylePicture(
                             alignment = Alignment.TopStart,
                             modifier = Modifier
                                 .rotate(rotation.value)
+                                .clickable {
+                                    if (rotation.value.toInt() in 85..95) {
+                                        playYesBeep(activity)
+                                        save.capsInHand++
+                                    } else {
+                                        playNoBeep(activity)
+                                    }
+                                }
                         )
                     }
                 }

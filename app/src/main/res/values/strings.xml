@@ -749,7 +749,7 @@
     <string name="you_have_won">\nYou have won: %1$s.</string>
 
     <string name="daily_update_head">It\'s a beautiful day!</string>
-    <string name="daily_update_body">Challenges, bottlecaps of enemies and inventory of traders are refreshed!\n\nAnd you have found 10 bottlecaps!</string>
+    <string name="daily_update_body">Challenges, bottlecaps of enemies and inventory of traders are refreshed!\n\nAnd you have found %1$s bottlecaps!</string>
 
     <string name="time_limit_anyone">Time limit anyone?</string>
     <string name="let_s_go">LET\'S GO!</string>

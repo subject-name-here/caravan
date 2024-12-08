@@ -2,6 +2,8 @@ package com.unicorns.invisible.caravan.model.enemy
 
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
+import com.unicorns.invisible.caravan.model.enemy.strategy.DropSelection
+import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyDropCaravan
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJoker
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyKingRuiner
 import com.unicorns.invisible.caravan.model.primitives.CResources
@@ -154,8 +156,7 @@ data object EnemyElijah : Enemy {
             return
         }
 
-        if (overWeightCaravans.isNotEmpty()) {
-            overWeightCaravans.random().dropCaravan()
+        if (StrategyDropCaravan(DropSelection.RANDOM).move(game)) {
             return
         }
         if (under26Caravans.isNotEmpty()) {

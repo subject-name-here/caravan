@@ -698,7 +698,7 @@
     <string name="you_have_won">\nВаш выигрыш: %1$s.</string>
 
     <string name="daily_update_head">Какой чудесный день!</string>
-    <string name="daily_update_body">Испытания, крышечки врагов и инвентарь торговцев обновлены!\n\nА ещё вы нашли 10 крышечек!</string>
+    <string name="daily_update_body">Испытания, крышечки врагов и инвентарь торговцев обновлены!\n\nА ещё вы нашли %1$s крышечек!</string>
 
     <string name="time_limit_anyone">Ограничить время?</string>
     <string name="let_s_go">ВПЕРЁД!</string>

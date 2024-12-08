@@ -37,7 +37,6 @@ data object EnemyTabitha : Enemy {
     })
     override fun getBankNumber() = 8
 
-
     override fun makeMove(game: Game) {
         val overWeightCaravans = game.enemyCaravans.filter { it.getValue() > 26 }
         val playersReadyCaravans = game.playerCaravans.filter { it.getValue() in (21..26) }

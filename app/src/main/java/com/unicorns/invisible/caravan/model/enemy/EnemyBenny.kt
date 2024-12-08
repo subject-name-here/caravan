@@ -2,6 +2,8 @@ package com.unicorns.invisible.caravan.model.enemy
 
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
+import com.unicorns.invisible.caravan.model.enemy.strategy.DropSelection
+import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyDropCaravan
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJoker
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJokerBennyCheater
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJokerSimple
@@ -27,7 +29,6 @@ data object EnemyBenny : Enemy {
     var cheatCounter = 0
 
     override fun makeMove(game: Game) {
-        val overWeightCaravans = game.enemyCaravans.filter { it.getValue() > 26 }
         val hand = game.enemyCResources.hand
 
         if (game.isInitStage()) {
@@ -163,10 +164,10 @@ data object EnemyBenny : Enemy {
             }
         }
 
-        if (overWeightCaravans.isNotEmpty()) {
-            overWeightCaravans.maxBy { it.getValue() }.dropCaravan()
+        if (StrategyDropCaravan(DropSelection.MAX_WEIGHT).move(game)) {
             return
         }
+
 
         // 4) only then try to put card on our caravan.
         game.enemyCaravans
