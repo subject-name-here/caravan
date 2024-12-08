@@ -2,7 +2,9 @@ package com.unicorns.invisible.caravan.model.enemy
 
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
+import com.unicorns.invisible.caravan.model.enemy.strategy.SelectCard
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyDestructive
+import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyInitStage
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJoker
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyRush
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyTime
@@ -16,6 +18,10 @@ data object EnemyVictor : Enemy {
     override fun getBankNumber() = 2
 
     override fun makeMove(game: Game) {
+        if (game.isInitStage()) {
+            StrategyInitStage(SelectCard.MAX_TO_LTR).move(game)
+            return
+        }
 
         fun check(p0: Int, e0: Int): Float {
             return when {

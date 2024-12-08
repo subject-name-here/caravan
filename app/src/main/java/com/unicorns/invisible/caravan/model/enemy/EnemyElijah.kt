@@ -3,7 +3,9 @@ package com.unicorns.invisible.caravan.model.enemy
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.enemy.strategy.DropSelection
+import com.unicorns.invisible.caravan.model.enemy.strategy.SelectCard
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyDropCaravan
+import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyInitStage
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJoker
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyKingRuiner
 import com.unicorns.invisible.caravan.model.primitives.CResources
@@ -49,9 +51,7 @@ data object EnemyElijah : Enemy {
         }
 
         if (game.isInitStage()) {
-            val card = hand.filter { !it.isFace() }.maxBy { it.rank.value }
-            val caravan = game.enemyCaravans.first { it.cards.isEmpty() }
-            caravan.putCardOnTop(game.enemyCResources.removeFromHand(hand.indexOf(card)))
+            StrategyInitStage(SelectCard.MAX_TO_LTR).move(game)
             return
         }
 

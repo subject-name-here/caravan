@@ -3,8 +3,10 @@ package com.unicorns.invisible.caravan.model.enemy
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.enemy.strategy.DropSelection
+import com.unicorns.invisible.caravan.model.enemy.strategy.SelectCard
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyDestructive
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyDropCaravan
+import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyInitStage
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.Caravan
 import com.unicorns.invisible.caravan.model.primitives.Card
@@ -49,9 +51,7 @@ data object EnemyNash : Enemy {
                     .toSet()
 
         if (game.isInitStage()) {
-            val card = hand.filter { !it.isFace() }.random()
-            val caravan = game.enemyCaravans.first { it.cards.isEmpty() }
-            caravan.putCardOnTop(game.enemyCResources.removeFromHand(hand.indexOf(card)))
+            StrategyInitStage(SelectCard.RANDOM_TO_LTR).move(game)
             return
         }
 

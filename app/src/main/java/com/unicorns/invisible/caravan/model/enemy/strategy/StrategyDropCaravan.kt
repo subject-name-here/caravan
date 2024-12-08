@@ -20,9 +20,6 @@ class StrategyDropCaravan(private val selection: DropSelection) : Strategy {
             }
         }
 
-
-
-
         return false
     }
 }

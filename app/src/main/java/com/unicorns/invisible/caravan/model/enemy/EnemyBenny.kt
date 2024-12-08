@@ -3,7 +3,9 @@ package com.unicorns.invisible.caravan.model.enemy
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.enemy.strategy.DropSelection
+import com.unicorns.invisible.caravan.model.enemy.strategy.SelectCard
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyDropCaravan
+import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyInitStage
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJoker
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJokerBennyCheater
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJokerSimple
@@ -33,9 +35,7 @@ data object EnemyBenny : Enemy {
 
         if (game.isInitStage()) {
             cheatCounter = 0
-            val card = hand.filter { !it.isFace() }.minBy { it.rank.value }
-            val caravan = game.enemyCaravans.filter { it.isEmpty() }.random()
-            caravan.putCardOnTop(game.enemyCResources.removeFromHand(hand.indexOf(card)))
+            StrategyInitStage(SelectCard.MIN_TO_RANDOM).move(game)
             return
         }
 

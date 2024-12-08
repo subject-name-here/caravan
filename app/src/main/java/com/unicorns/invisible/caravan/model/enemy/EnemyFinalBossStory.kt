@@ -2,6 +2,8 @@ package com.unicorns.invisible.caravan.model.enemy
 
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
+import com.unicorns.invisible.caravan.model.enemy.strategy.SelectCard
+import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyInitStage
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.Card
 import com.unicorns.invisible.caravan.model.primitives.CardWithModifier
@@ -23,12 +25,8 @@ class EnemyFinalBossStory(@Transient private var update: Int = 0) : Enemy {
     var sayThing: (Int) -> Unit = {}
 
     override fun makeMove(game: Game) {
-        val hand = game.enemyCResources.hand
-
         if (game.isInitStage()) {
-            val card = hand.shuffled().filter { it.isOrdinary() }.filter { !it.isFace() }.minBy { it.rank.value }
-            val caravan = game.enemyCaravans.filter { it.isEmpty() }.random()
-            caravan.putCardOnTop(game.enemyCResources.removeFromHand(hand.indexOf(card)))
+            StrategyInitStage(SelectCard.MIN_TO_RANDOM).move(game)
             return
         }
 
