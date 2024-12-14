@@ -19,7 +19,7 @@ sealed interface Trader {
     fun getStyles(): List<Style>
 
     fun getCards(back: CardBack, cards1Number: Int): List<Pair<Card, Int>> {
-        val rand = Random(save.challengesHash)
+        val rand = Random(save.challengesHash xor (back.ordinal * 31 + 22229))
         val deck1 = CustomDeck(back, false).toList().shuffled(rand)
         var cards1 = deck1.take(cards1Number)
         if (cards1.all { save.isCardAvailableAlready(it) }) {

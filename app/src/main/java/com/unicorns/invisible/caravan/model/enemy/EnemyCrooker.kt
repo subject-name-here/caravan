@@ -22,6 +22,7 @@ import kotlin.math.abs
 @Serializable
 data object EnemyCrooker : Enemy {
     override fun getBankNumber() = 11
+
     override fun createDeck(): CResources = CResources(CustomDeck().apply {
         listOf(CardBack.VAULT_21, CardBack.LUCKY_38).forEach { back ->
             Rank.entries.forEach { rank ->

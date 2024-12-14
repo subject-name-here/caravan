@@ -37,6 +37,7 @@ import com.unicorns.invisible.caravan.model.primitives.Card
 import com.unicorns.invisible.caravan.model.primitives.Rank
 import com.unicorns.invisible.caravan.model.primitives.Suit
 import com.unicorns.invisible.caravan.model.trading.ChineseTrader
+import com.unicorns.invisible.caravan.save.processOldSave
 import com.unicorns.invisible.caravan.save.saveData
 import com.unicorns.invisible.caravan.utils.MenuItemOpen
 import com.unicorns.invisible.caravan.utils.SwitchCustomUsualBackground
@@ -284,24 +285,7 @@ fun ShowTrueSettings(
                                             }
                                         }
 
-                                        4002 -> {
-                                            save.let {
-                                                listOf(Suit.HEARTS, Suit.SPADES).forEach { suit ->
-                                                    Rank.entries.forEach { rank ->
-                                                        if (rank != Rank.JOKER) {
-                                                            it.availableCards.add(Card(
-                                                                rank, suit, CardBack.STANDARD, true
-                                                            ))
-                                                        }
-                                                    }
-                                                }
-
-                                                saveData(activity)
-                                                playYesBeep(activity)
-                                            }
-                                        }
-
-                                        9009 -> {
+                                        4002, 9009 -> {
                                             save.let {
                                                 listOf(Suit.HEARTS, Suit.SPADES).forEach { suit ->
                                                     Rank.entries.forEach { rank ->
@@ -337,6 +321,12 @@ fun ShowTrueSettings(
 
                                         69 -> {
                                             save.sixtyNineActive = !save.sixtyNineActive
+                                            saveData(activity)
+                                            playYesBeep(activity)
+                                        }
+
+                                        140597 -> {
+                                            processOldSave(activity)
                                             saveData(activity)
                                             playYesBeep(activity)
                                         }

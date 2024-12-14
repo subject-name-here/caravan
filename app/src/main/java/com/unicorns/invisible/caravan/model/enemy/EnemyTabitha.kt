@@ -59,7 +59,7 @@ data object EnemyTabitha : Enemy {
                     Rank.JOKER -> 38
                     Rank.JACK, Rank.KING -> 30
                     Rank.TEN, Rank.NINE, Rank.SEVEN, Rank.SIX -> 20
-                    Rank.QUEEN -> 4
+                    Rank.QUEEN -> 10
                     else -> it.value.rank.value
                 }
             } else {
@@ -72,17 +72,16 @@ data object EnemyTabitha : Enemy {
             }
         }.forEach { (cardIndex, card) ->
             if (card.rank == Rank.JACK) {
-                val caravan =
-                    game.playerCaravans.withIndex().filter { it.value.getValue() in (12..26) }
-                        .randomOrNull()
+                val caravan = game.playerCaravans.withIndex()
+                        .filter { it.value.getValue() in (12..26) }
+                        .maxByOrNull { v -> v.value.getValue() }
                 val cardToJack = caravan?.value?.cards?.maxByOrNull { it.getValue() }
                 if (cardToJack != null && cardToJack.canAddModifier(card)) {
                     val futureValue = caravan.value.getValue() - cardToJack.getValue()
                     val enemyValue = game.enemyCaravans[caravan.index].getValue()
-                    if (!(checkMoveOnDefeat(
-                            game,
-                            caravan.index
-                        ) && enemyValue in (21..26) && (enemyValue > futureValue || futureValue > 26))
+                    if (!(checkMoveOnDefeat(game, caravan.index) &&
+                                enemyValue in (21..26) &&
+                                (enemyValue > futureValue || futureValue > 26))
                     ) {
                         cardToJack.addModifier(game.enemyCResources.removeFromHand(cardIndex))
                         return
@@ -138,9 +137,8 @@ data object EnemyTabitha : Enemy {
                 game.enemyCaravans
                     .sortedByDescending { it.getValue() }
                     .forEachIndexed { caravanIndex, caravan ->
-                        if (caravan.getValue() + card.rank.value <= 26 && caravan.canPutCardOnTop(
-                                card
-                            )
+                        if (caravan.getValue() + card.rank.value <= 26 &&
+                            caravan.canPutCardOnTop(card)
                         ) {
                             if (!(checkMoveOnDefeat(
                                     game,

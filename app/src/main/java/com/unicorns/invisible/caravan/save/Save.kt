@@ -133,7 +133,7 @@ class Save(val isUsable: Boolean) {
         val random = Random(challengesHash)
         repeat(30) {
             enemyCapsLeft[it] = if (it % 6 == 5) {
-                100
+                75
             } else {
                 random.nextInt(15, 50)
             }

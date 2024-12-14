@@ -9,29 +9,29 @@ class StrategyInitStage(private val selection: SelectCard) : Strategy {
 
         when (selection) {
             SelectCard.MIN_TO_RANDOM -> {
-                val card = hand.filter { !it.isFace() }.minBy { it.rank.value }
+                val card = hand.filter { !it.isFace() && !it.isNuclear() }.minBy { it.rank.value }
                 val caravan = game.enemyCaravans.filter { it.isEmpty() }.random()
                 caravan.putCardOnTop(game.enemyCResources.removeFromHand(hand.indexOf(card)))
             }
             SelectCard.MAX_TO_RANDOM -> {
-                val card = hand.filter { !it.isFace() }.maxBy { it.rank.value }
+                val card = hand.filter { !it.isFace() && !it.isNuclear() }.maxBy { it.rank.value }
                 val caravan = game.enemyCaravans.filter { it.isEmpty() }.random()
                 caravan.putCardOnTop(game.enemyCResources.removeFromHand(hand.indexOf(card)))
             }
             SelectCard.MAX_TO_LTR -> {
-                val card = hand.filter { !it.isFace() }.maxBy { it.rank.value }
+                val card = hand.filter { !it.isFace() && !it.isNuclear() }.maxBy { it.rank.value }
                 val caravan = game.enemyCaravans.first { it.cards.isEmpty() }
                 caravan.putCardOnTop(game.enemyCResources.removeFromHand(hand.indexOf(card)))
             }
             SelectCard.RANDOM_TO_RANDOM -> {
-                val cardIndex = hand.withIndex().filter { !it.value.isFace() }.random().index
+                val card = hand.filter { !it.isFace() && !it.isNuclear() }.random()
                 val caravan = game.enemyCaravans.filter { it.isEmpty() }.random()
-                caravan.putCardOnTop(game.enemyCResources.removeFromHand(cardIndex))
+                caravan.putCardOnTop(game.enemyCResources.removeFromHand(hand.indexOf(card)))
             }
             SelectCard.RANDOM_TO_LTR -> {
-                val cardIndex = hand.withIndex().filter { !it.value.isFace() }.random().index
+                val card = hand.filter { !it.isFace() && !it.isNuclear() }.random()
                 val caravan = game.enemyCaravans.first { it.cards.isEmpty() }
-                caravan.putCardOnTop(game.enemyCResources.removeFromHand(cardIndex))
+                caravan.putCardOnTop(game.enemyCResources.removeFromHand(hand.indexOf(card)))
             }
         }
 

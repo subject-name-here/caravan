@@ -72,7 +72,7 @@ data object EnemyVeronica : Enemy {
 
             if (card.rank == Rank.QUEEN) {
                 val caravan = game.playerCaravans
-                    .filterNot { it.isEmpty() }
+                    .filter { it.size >= 2 }
                     .randomOrNull()
                 if (caravan != null) {
                     val cardToQueen = caravan.cards.last()
@@ -90,6 +90,7 @@ data object EnemyVeronica : Enemy {
                     .randomOrNull()
                 if (cardToJoker != null) {
                     cardToJoker.addModifier(game.enemyCResources.removeFromHand(cardIndex))
+                    game.jokerPlayedSound()
                     return
                 }
             }

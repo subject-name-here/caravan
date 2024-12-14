@@ -2,38 +2,84 @@ package com.unicorns.invisible.caravan.model.enemy
 
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
+import com.unicorns.invisible.caravan.model.enemy.strategy.SelectCard
+import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyDestructive
+import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyInitStage
+import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJoker
+import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyRush
+import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyTime
 import com.unicorns.invisible.caravan.model.primitives.CResources
+import com.unicorns.invisible.caravan.model.primitives.Card
+import com.unicorns.invisible.caravan.model.primitives.CustomDeck
 import com.unicorns.invisible.caravan.model.primitives.Rank
+import com.unicorns.invisible.caravan.model.primitives.Suit
 import kotlinx.serialization.Serializable
+import kotlin.random.Random
 
 
 @Serializable
 data object EnemyDrMobius : Enemy {
-    override fun createDeck() = CResources(CardBack.STANDARD, true)
+    override fun createDeck() = CResources(CustomDeck().apply {
+        repeat(8) {
+            add(generateCard())
+        }
+    })
     override fun getBankNumber() = 16
 
     override fun makeMove(game: Game) {
-        val hand = game.enemyCResources.hand
+        makeMoveInner(game)
+        if (game.enemyCResources.hand.size < 5) {
+            game.enemyCResources.addOnTop(generateCard())
+        }
+    }
 
+    private fun makeMoveInner(game: Game) {
         if (game.isInitStage()) {
-            val cardIndex = hand.withIndex().filter { !it.value.isFace() }.random().index
-            val caravan = game.enemyCaravans.filter { it.isEmpty() }.random()
-            caravan.putCardOnTop(game.enemyCResources.removeFromHand(cardIndex))
+            StrategyInitStage(SelectCard.RANDOM_TO_RANDOM).move(game)
             return
         }
 
-        // TODO
-        // Infinite deck => chance of any card is the same
-
-        game.enemyCResources.dropCardFromHand(hand.withIndex().minBy {
-            when (it.value.rank) {
-                Rank.JOKER -> 7
-                Rank.JACK -> 6
-                Rank.QUEEN -> 4
-                Rank.KING -> 5
-                Rank.ACE -> 3
-                else -> it.value.rank.value
+        fun check(p0: Int, e0: Int): Float {
+            return when {
+                p0 in (21..26) && (p0 > e0 || e0 > 26) -> 2f
+                p0 > 11 && (e0 != 26 || e0 == p0) -> 0.5f
+                else -> 0f
             }
-        }.index)
+        }
+
+        val score = game.playerCaravans.indices.map {
+            check(
+                game.playerCaravans[it].getValue(),
+                game.enemyCaravans[it].getValue()
+            )
+        }
+        if (score.sum() > 2f || Random.nextBoolean() && score.sum() == 2f) {
+            if (StrategyJoker.move(game)) {
+                game.jokerPlayedSound()
+                return
+            }
+            if (StrategyDestructive.move(game)) {
+                return
+            }
+        } else if (2f !in score) {
+            if (StrategyRush.move(game)) {
+                return
+            }
+        }
+
+        if (StrategyTime.move(game)) {
+            return
+        }
+
+        EnemyUlysses.makeMove(game)
+    }
+
+    fun generateCard(): Card {
+        val rank = Rank.entries.random()
+        return if (rank == Rank.JOKER) {
+            Card(rank, listOf(Suit.HEARTS, Suit.CLUBS).random(), CardBack.STANDARD, false)
+        } else {
+            Card(rank, Suit.entries.random(), CardBack.STANDARD, true)
+        }
     }
 }

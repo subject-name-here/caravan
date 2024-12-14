@@ -122,18 +122,15 @@ fun ShowSelectPvE(
             TowerScreen(activity, showAlertDialog) { showTower = false }
             return
         }
+        showStory -> {
+            ShowStoryList(activity, showAlertDialog) { showStory = false }
+            return
+        }
         showTutorial -> {
             showAlertDialog("[CLOSED]", "Better tutorial is on the way.", null)
             showTutorial = false
             // TODO
             // return
-        }
-        showStory -> {
-            // TODO
-            showAlertDialog("[CLOSED]", "Story enemies are getting an upgrade.", null)
-            showStory = false
-//            ShowStoryList(activity, showAlertDialog) { showStory = false }
-//            return
         }
     }
 
@@ -337,7 +334,7 @@ fun ShowPvE(
     var showGameTabitha by rememberSaveable { mutableStateOf(false) }
     var showGameVulpes by rememberSaveable { mutableStateOf(false) }
     var showGameElijah by rememberSaveable { mutableStateOf(false) }
-    var showGameCrooker by rememberSaveable { mutableStateOf(false) }
+    var showGameCrocker by rememberSaveable { mutableStateOf(false) }
 
     var showGameSnuffles by rememberSaveable { mutableStateOf(false) }
     var showGameEasyPete by rememberSaveable { mutableStateOf(false) }
@@ -471,14 +468,14 @@ fun ShowPvE(
             }
             return
         }
-        showGameCrooker -> {
+        showGameCrocker -> {
             StartGame(
                 activity = activity,
                 playerCResources = CResources(save.getCustomDeckCopy()),
                 enemy = EnemyCrooker,
                 showAlertDialog = showAlertDialog
             ) {
-                showGameCrooker = false
+                showGameCrocker = false
             }
             return
         }
@@ -694,29 +691,20 @@ fun ShowPvE(
                                 Spacer(modifier = Modifier.height(10.dp))
                                 OpponentItem(stringResource(R.string.elijah)) { playVatsEnter(activity); showGameElijah = true }
                                 Spacer(modifier = Modifier.height(10.dp))
-                                OpponentItem(stringResource(R.string.crooker)) { playVatsEnter(activity); showGameCrooker = true }
+                                OpponentItem(stringResource(R.string.crooker)) { playVatsEnter(activity); showGameCrocker = true }
                             }
                             2 -> {
-                                TextFallout(
-                                    stringResource(R.string.coming_soon),
-                                    getTextColor(activity),
-                                    getTextStrokeColor(activity),
-                                    16.sp,
-                                    Alignment.Center,
-                                    Modifier.padding(4.dp),
-                                    TextAlign.Center
-                                )
-//                                OpponentItem(stringResource(R.string.snuffles)) { playVatsEnter(activity); showGameSnuffles = true }
-//                                Spacer(modifier = Modifier.height(10.dp))
-//                                OpponentItem(stringResource(R.string.easy_pete)) { playVatsEnter(activity); showGameEasyPete = true }
-//                                Spacer(modifier = Modifier.height(10.dp))
-//                                OpponentItem(stringResource(R.string.madness_cardinal)) { playVatsEnter(activity); showGameMadnessCardinal = true }
-//                                Spacer(modifier = Modifier.height(10.dp))
-//                                OpponentItem(stringResource(R.string.luc10)) { playVatsEnter(activity); showGameLuc10 = true }
-//                                Spacer(modifier = Modifier.height(10.dp))
-//                                OpponentItem(stringResource(R.string.dr_mobius)) { playVatsEnter(activity); showGameDrMobius = true }
-//                                Spacer(modifier = Modifier.height(10.dp))
-//                                OpponentItem(stringResource(R.string.man_in_the_mirror)) { playVatsEnter(activity); showGameTheManInTheMirror = true }
+                                OpponentItem(stringResource(R.string.snuffles)) { playVatsEnter(activity); showGameSnuffles = true }
+                                Spacer(modifier = Modifier.height(10.dp))
+                                OpponentItem(stringResource(R.string.easy_pete)) { playVatsEnter(activity); showGameEasyPete = true }
+                                Spacer(modifier = Modifier.height(10.dp))
+                                OpponentItem(stringResource(R.string.madness_cardinal)) { playVatsEnter(activity); showGameMadnessCardinal = true }
+                                Spacer(modifier = Modifier.height(10.dp))
+                                OpponentItem(stringResource(R.string.luc10)) { playVatsEnter(activity); showGameLuc10 = true }
+                                Spacer(modifier = Modifier.height(10.dp))
+                                OpponentItem(stringResource(R.string.dr_mobius)) { playVatsEnter(activity); showGameDrMobius = true }
+                                Spacer(modifier = Modifier.height(10.dp))
+                                OpponentItem(stringResource(R.string.man_in_the_mirror)) { playVatsEnter(activity); showGameTheManInTheMirror = true }
                             }
                             3 -> {
                                 TextFallout(

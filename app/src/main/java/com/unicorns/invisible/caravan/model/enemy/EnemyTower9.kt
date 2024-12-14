@@ -33,6 +33,6 @@ data object EnemyTower9 : Enemy {
     })
 
     override fun makeMove(game: Game) {
-        EnemyUlysses.makeMove(game)
+        EnemyVulpes.makeMove(game)
     }
 }

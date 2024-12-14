@@ -428,7 +428,7 @@ fun TextCustom(
 ) {
     val strokeWidth = getStrokeWidth(textSize)
     val textRedacted = if (save.sixtyNineActive)
-        text.replace("TOPS", "BOTTOMS", ignoreCase = true)
+        text.replace("TOPS", "Bottoms", ignoreCase = true)
     else
         text
     Box(modifier, contentAlignment = contentAlignment) {

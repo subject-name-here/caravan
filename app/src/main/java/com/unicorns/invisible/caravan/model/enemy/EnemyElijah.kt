@@ -26,6 +26,8 @@ import kotlin.random.Random
 
 @Serializable
 data object EnemyElijah : Enemy {
+    override fun getBankNumber(): Int = 12
+
     override fun createDeck(): CResources = CResources(CustomDeck().apply {
         listOf(
             CardBack.STANDARD,

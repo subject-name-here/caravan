@@ -8,6 +8,7 @@ import com.unicorns.invisible.caravan.model.enemy.strategy.SelectCard
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyDropCaravan
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyDropCard
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyInitStage
+import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJackOnSelf
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJoker
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJokerBennyCheater
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJokerSimple
@@ -48,17 +49,13 @@ data object EnemyBenny : Enemy {
             val lowerBound = max(21, rivalCaravanValue + 1)
             if (isWinningMovePossible) {
                 // If caravan is overweight, check on Jacks
+                if (StrategyJackOnSelf(it.value) { card ->
+                    it.value.getValue() - card.getValue() in (lowerBound..26)
+                }.move(game)) {
+                    return
+                }
                 val jack = hand.withIndex().find { card -> card.value.rank == Rank.JACK }
                 if (jack != null) {
-                    it.value.cards
-                        .filter { card -> card.canAddModifier(jack.value) }
-                        .sortedBy { card -> card.getValue() }
-                        .forEach { card ->
-                            if (it.value.getValue() - card.getValue() in (lowerBound..26)) {
-                                card.addModifier(game.enemyCResources.removeFromHand(jack.index))
-                                return
-                            }
-                        }
                     if (checkMoveOnImminentVictory(game, it.index) && rivalCaravanValue > 26 || it.value.getValue() == rivalCaravanValue) {
                         game.playerCaravans.forEach { playerCaravan ->
                             playerCaravan.cards.forEach { card ->
@@ -169,7 +166,6 @@ data object EnemyBenny : Enemy {
         if (StrategyDropCaravan(DropSelection.MAX_WEIGHT).move(game)) {
             return
         }
-
 
         // 4) only then try to put card on our caravan.
         game.enemyCaravans

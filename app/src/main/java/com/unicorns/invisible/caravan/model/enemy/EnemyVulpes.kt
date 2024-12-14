@@ -63,9 +63,7 @@ data object EnemyVulpes : Enemy {
                                 && !checkMoveOnDefeat(game, index)
                             ) {
                                 caravanCard.addModifier(
-                                    game.enemyCResources.removeFromHand(
-                                        cardIndex
-                                    )
+                                    game.enemyCResources.removeFromHand(cardIndex)
                                 )
                                 return
                             }
