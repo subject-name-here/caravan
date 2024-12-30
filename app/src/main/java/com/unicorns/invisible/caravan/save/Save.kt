@@ -17,6 +17,7 @@ import com.unicorns.invisible.caravan.model.trading.TopsTrader
 import com.unicorns.invisible.caravan.model.trading.Trader
 import com.unicorns.invisible.caravan.model.trading.UltraLuxeTrader
 import com.unicorns.invisible.caravan.model.trading.Vault21Trader
+import com.unicorns.invisible.caravan.utils.playDailyCompleted
 import kotlinx.serialization.EncodeDefault
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
@@ -39,11 +40,19 @@ class Save(val isUsable: Boolean) {
     val customDeck: CustomDeck = CustomDeck(CardBack.STANDARD, false)
 
     @EncodeDefault
-    val availableCards: MutableSet<Card> = HashSet(CustomDeck(CardBack.STANDARD, false).toList())
+    private val availableCards: MutableSet<Card> = HashSet(CustomDeck(CardBack.STANDARD, false).toList())
     fun isCardAvailableAlready(it: Card): Boolean {
         return availableCards.any { ac ->
             ac.rank == it.rank && ac.suit == it.suit && ac.back == it.back && ac.isAlt == it.isAlt
         }
+    }
+    fun addCard(card: Card) {
+        if (!isCardAvailableAlready(card)) {
+            availableCards.add(card)
+        }
+    }
+    fun clearAvailableCards() {
+        availableCards.clear()
     }
 
     val ownedDecks
@@ -167,6 +176,7 @@ class Save(val isUsable: Boolean) {
         barterStatProgress += Random.nextDouble(0.175, 0.225)
         if (barterStatProgress >= 1.0 && barterStat < 100) {
             barterStat++
+            playDailyCompleted(activity)
             barterStatProgress = 0.0
         }
         saveData(activity)

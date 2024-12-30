@@ -35,8 +35,8 @@ fun saveData(activity: MainActivity) {
         return
     }
     val localSave = getLocalSaveFile(activity)
+    val text = json.encodeToString(save)
     try {
-        val text = json.encodeToString(save)
         localSave.bufferedWriter().use {
             it.write(text)
         }
@@ -50,14 +50,14 @@ fun saveData(activity: MainActivity) {
         }
     }
 
-    saveOnGD(activity)
+    saveOnGD(activity, text)
 }
 
-private fun saveOnGD(activity: MainActivity) {
+private fun saveOnGD(activity: MainActivity, text: String) {
     if (snapshotsClient == null)
         return
 
-    val bytes = json.encodeToString(save).toByteArray(StandardCharsets.UTF_8)
+    val bytes = text.toByteArray(StandardCharsets.UTF_8)
     CoroutineScope(Dispatchers.IO).launch { activity.uploadDataToDrive(bytes) }
 }
 
@@ -102,8 +102,7 @@ fun processOldSave(activity: MainActivity) {
         val jsonObject = JSONObject(oldSaveString)
         val cards = jsonObject.getJSONArray("availableCards")
         val cardsLength = cards.length()
-        val availableCards = save.availableCards
-        availableCards.clear()
+        save.clearAvailableCards()
         repeat(cardsLength) {
             val cardJSONObject = cards.getJSONObject(it)
             val rank = Rank.valueOf(cardJSONObject.getString("rank"))
@@ -121,10 +120,10 @@ fun processOldSave(activity: MainActivity) {
             val isAlt = cardJSONObject.optBoolean("isAlt", false)
             if (back == CardBack.MADNESS) {
                 if (isAlt) {
-                    availableCards.add(Card(rank, suit, back, false))
+                    save.addCard(Card(rank, suit, back, false))
                 }
             } else {
-                availableCards.add(Card(rank, suit, back, isAlt))
+                save.addCard(Card(rank, suit, back, isAlt))
             }
         }
         val ownedStyles = jsonObject.getJSONArray("ownedStyles")

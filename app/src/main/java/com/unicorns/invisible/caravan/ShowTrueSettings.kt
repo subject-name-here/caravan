@@ -290,8 +290,25 @@ fun ShowTrueSettings(
                                                 listOf(Suit.HEARTS, Suit.SPADES).forEach { suit ->
                                                     Rank.entries.forEach { rank ->
                                                         if (rank != Rank.JOKER) {
-                                                            it.availableCards.add(Card(
+                                                            it.addCard(Card(
                                                                 rank, suit, CardBack.STANDARD, true
+                                                            ))
+                                                        }
+                                                    }
+                                                }
+
+                                                saveData(activity)
+                                                playYesBeep(activity)
+                                            }
+                                        }
+
+                                        2077 -> {
+                                            save.let {
+                                                listOf(Suit.HEARTS, Suit.CLUBS).forEach { suit ->
+                                                    Rank.entries.forEach { rank ->
+                                                        if (rank != Rank.JOKER) {
+                                                            it.addCard(Card(
+                                                                rank, suit, CardBack.ENCLAVE, false
                                                             ))
                                                         }
                                                     }

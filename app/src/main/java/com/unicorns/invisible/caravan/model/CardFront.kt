@@ -32,11 +32,6 @@ private fun getSmCleanName(card: Card): String {
     return "sm_clean/${getStandardName(card)}"
 }
 
-private fun getEnclaveName(card: Card): String {
-    // TODO
-    return "sm_clean/${getStandardName(card)}"
-}
-
 private fun getGomorrahName(card: Card): String {
     return when (card.rank to card.suit) {
         Rank.TWO to Suit.CLUBS -> "FNV_2_of_Clubs_-_Gomorrah.webp"
@@ -303,4 +298,21 @@ private fun getChineseName(card: Card): String {
     }
     val suit = card.suit.name.first()
     return "chinese/${letter}_$suit.webp"
+}
+
+private fun getEnclaveName(card: Card): String {
+    if (card.rank == Rank.JOKER) {
+        return if (card.suit == Suit.HEARTS) {
+            "enclave/Joker_1.webp"
+        } else {
+            "enclave/Joker_2.webp"
+        }
+    }
+
+    val letter = when (card.rank.value) {
+        in (1..10) -> card.rank.value.toString()
+        else -> card.rank.name.first().toString()
+    }
+    val suit = card.suit.name.first()
+    return "enclave/${letter}_$suit.webp"
 }

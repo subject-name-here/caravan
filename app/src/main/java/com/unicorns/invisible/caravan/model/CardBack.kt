@@ -42,7 +42,7 @@ enum class CardBack {
             VAULT_21 -> "standard_alt.webp"
             SIERRA_MADRE -> "FNV_Caravan_card_back_-_Sierra_Madre.webp"
             CHINESE -> "ccp_back.webp"
-            ENCLAVE -> "FNV_Caravan_card_back_-_st_alt.webp" // TODO
+            ENCLAVE -> "enclave_back.webp"
             MADNESS -> "madness_back.webp"
         }
     }

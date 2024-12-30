@@ -1101,7 +1101,7 @@ fun winCard(
     }
 
     val message = if (card != null) {
-        save.availableCards.add(card)
+        save.addCard(card)
         "${activity.getString(card.rank.nameId)} ${activity.getString(card.suit.nameId)}, ${activity.getString(back.getDeckName())}"
     } else {
         val prize = if (isAlt) 50 else 15

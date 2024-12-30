@@ -427,7 +427,7 @@
     <string name="en_garde">En garde!</string>
 
     <string name="frank_think_header">THIS IS THE LAST WARNING!!!</string>
-    <string name="frank_think_body">If you lose, then you die, and Frank Horrigan will loot your body.</string>
+    <string name="frank_think_body">If you lose, then you die, and Frank Horrigan will loot all the caps from your body.</string>
     <string name="frank_start_button">Let\'s get this over with.</string>
     <string name="frank_think_button">Let me think…</string>
 

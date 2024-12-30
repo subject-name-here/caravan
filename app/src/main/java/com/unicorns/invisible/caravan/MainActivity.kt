@@ -125,6 +125,7 @@ class MainActivity : SaveDataActivity() {
     }
 
     override fun onSnapshotClientInitialized() {
+        // TODO: split local save loading (right at the beginning) and GD save loading (if local save loading has failed)
         CoroutineScope(Dispatchers.IO).launch {
             if (!save.isUsable) {
                 val loadedSave = loadSave(this@MainActivity)
@@ -282,12 +283,12 @@ class MainActivity : SaveDataActivity() {
         var showAlertDialog2 by remember { mutableStateOf(false) }
         var alertDialogHeader by remember { mutableStateOf("") }
         var alertDialogMessage by remember { mutableStateOf("") }
-        var alertGoBack by rememberScoped { mutableStateOf({} to false) }
+        var alertGoBack: (() -> Unit)? by rememberScoped { mutableStateOf(null) }
 
         fun showAlertDialog(header: String, message: String, goBack: (() -> Unit)?) {
             alertDialogHeader = header
             alertDialogMessage = message
-            alertGoBack = if (goBack == null) ({} to false) else (goBack to true)
+            alertGoBack = goBack
             showAlertDialog = true
         }
 
@@ -320,7 +321,7 @@ class MainActivity : SaveDataActivity() {
                         )
                     },
                     dismissButton = {
-                        if (alertGoBack.second) {
+                        if (alertGoBack != null) {
                             TextFallout(
                                 stringResource(R.string.back_to_menu),
                                 getDialogBackground(this),
@@ -329,7 +330,7 @@ class MainActivity : SaveDataActivity() {
                                     .background(getDialogTextColor(this))
                                     .clickableCancel(this) {
                                         hideAlertDialog()
-                                        alertGoBack.first()
+                                        alertGoBack?.invoke()
                                     }
                                     .padding(4.dp),
                                 TextAlign.Center

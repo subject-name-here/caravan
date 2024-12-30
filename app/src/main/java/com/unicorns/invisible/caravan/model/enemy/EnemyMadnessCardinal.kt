@@ -10,6 +10,8 @@ import com.unicorns.invisible.caravan.model.primitives.Card
 import com.unicorns.invisible.caravan.model.primitives.CustomDeck
 import com.unicorns.invisible.caravan.model.primitives.Rank
 import com.unicorns.invisible.caravan.model.primitives.Suit
+import com.unicorns.invisible.caravan.utils.checkMoveOnDefeat
+import com.unicorns.invisible.caravan.utils.checkMoveOnShouldYouDoSmth
 import kotlinx.serialization.Serializable
 import kotlin.math.abs
 import kotlin.random.Random
@@ -18,7 +20,6 @@ import kotlin.random.Random
 @Serializable
 data object EnemyMadnessCardinal : Enemy {
     override fun createDeck(): CResources = CResources(CustomDeck().apply {
-
         Rank.entries.forEach { rank ->
             if (rank == Rank.JOKER) {
                 add(Card(Rank.JOKER, Suit.HEARTS, CardBack.MADNESS, false))
@@ -54,6 +55,16 @@ data object EnemyMadnessCardinal : Enemy {
             return
         }
 
+        // 2) If not and if player is abt to win, destroy player ready and almost ready caravans (on right columns!)
+        var isLosingAny = false
+        game.enemyCaravans.withIndex().forEach { (caravanIndex, caravan) ->
+            val isLosing = checkMoveOnDefeat(game, caravanIndex) || checkMoveOnShouldYouDoSmth(game, caravanIndex)
+            if (isLosing) {
+                isLosingAny = true
+            }
+        }
+
+
         val specials = hand.withIndex().filter { !it.value.isOrdinary() }
         specials.forEach { (index, special) ->
             when (special.getWildWastelandCardType()) {
@@ -75,7 +86,7 @@ data object EnemyMadnessCardinal : Enemy {
                     val candidate = (game.playerCaravans + game.enemyCaravans)
                         .flatMap { it.cards }
                         .firstOrNull { it.canAddModifier(special) }
-                    if (candidate != null) {
+                    if (candidate != null && isLosingAny) {
                         candidate.addModifier(game.enemyCResources.removeFromHand(index))
                         game.wildWastelandSound()
                         return
@@ -85,7 +96,7 @@ data object EnemyMadnessCardinal : Enemy {
                     val candidate = game.playerCaravans
                         .flatMap { it.cards }
                         .sortedBy { it.card.rank.value }
-                        .firstOrNull { it.canAddModifier(special) }
+                        .firstOrNull { it.canAddModifier(special) && it.card.rank.value <= 4 }
                     if (candidate != null) {
                         candidate.addModifier(game.enemyCResources.removeFromHand(index))
                         game.wildWastelandSound()
@@ -138,10 +149,11 @@ data object EnemyMadnessCardinal : Enemy {
                 null -> {
                     if (special.isNuclear()) {
                         val candidate = game.enemyCaravans
-                            .flatMap { it.cards }
-                            .shuffled()
-                            .firstOrNull { it.canAddModifier(special) }
-                        if (candidate != null) {
+                            .filter { !it.isEmpty() }
+                            .filter { it.cards.any { card -> card.canAddModifier(special) } }
+                            .maxByOrNull { abs(26 - it.getValue()) }
+                            ?.cards?.find { it.canAddModifier(special) }
+                        if (candidate != null && isLosingAny) {
                             candidate.addModifier(game.enemyCResources.removeFromHand(index))
                             game.nukeBlownSound()
                             return
@@ -215,7 +227,7 @@ data object EnemyMadnessCardinal : Enemy {
                 15
             } else {
                 when (it.value.rank) {
-                    Rank.ACE -> 3
+                    Rank.ACE -> 2
                     Rank.TWO -> 2
                     Rank.THREE -> 2
                     Rank.FOUR -> 3

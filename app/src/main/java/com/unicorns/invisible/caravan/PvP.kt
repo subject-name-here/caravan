@@ -20,7 +20,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -72,7 +71,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.serialization.encodeToString
+import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
 
 
 fun customDeckToInts(customDeck: CustomDeck): List<ULong> {
@@ -110,6 +110,9 @@ fun isRoomNumberIncorrect(roomNumber: String): Boolean {
 }
 
 
+@OptIn(ExperimentalUuidApi::class)
+val id = Uuid.random().toHexString()
+
 @Composable
 fun ShowPvP(
     activity: MainActivity,
@@ -123,12 +126,7 @@ fun ShowPvP(
     var isRoomCreated by rememberSaveable { mutableIntStateOf(0) }
     var isCreator by rememberSaveable { mutableStateOf(false) }
 
-    var enemyDeck by rememberSaveable(stateSaver = Saver(
-        save = { json.encodeToString(it) },
-        restore = { json.decodeFromString<CustomDeck>(it) }
-    )) {
-        mutableStateOf(CustomDeck())
-    }
+    var enemyDeck by rememberScoped { mutableStateOf(CustomDeck()) }
 
     fun showFailure(s: String) {
         showAlertDialog(activity.getString(R.string.failure_2), s, null)
@@ -227,7 +225,7 @@ fun ShowPvP(
                     "&is_private=${checkedPrivateRoom.toPythonBool()}" +
                     "&is_new=True" +
                     "&is_wild=${checkedWild.toPythonBool()}" +
-                    "&cid=${save.hashCode()}" +
+                    "&cid=$id" +
                     "&deck0=${deckCodes[0]}" +
                     "&deck1=${deckCodes[1]}" +
                     "&deck2=${deckCodes[2]}" +
@@ -260,7 +258,7 @@ fun ShowPvP(
         val deckCodes = customDeckToInts(save.getCustomDeckCopy())
         sendRequest(
             "${crvnUrl}/crvn/join?room=$isRoomCreated" +
-                    "&jid=${save.hashCode()}" +
+                    "&jid=$id" +
                     "&back=${save.selectedDeck.first.ordinal}" +
                     "&is_alt=${save.selectedDeck.second.toPythonBool()}" +
                     "&deck0=${deckCodes[0]}" +
@@ -273,6 +271,7 @@ fun ShowPvP(
                     "&deck7=${deckCodes[7]}" +
                     "&deck8=${deckCodes[8]}"
         ) { result ->
+            // TODO: do we still support the creation via Join?
             val responseIfCreator = try {
                 json.decodeFromString<Int>(result.getString("body"))
             } catch (_: Exception) {
@@ -297,6 +296,20 @@ fun ShowPvP(
     }
 
     if (enemyDeck.size >= 10) {
+        fun makeDeckWild(deck: CustomDeck) {
+            deck.apply {
+                add(Card(Rank.ACE, Suit.HEARTS, CardBack.ENCLAVE, true))
+                add(Card(Rank.ACE, Suit.CLUBS, CardBack.ENCLAVE, true))
+                add(Card(Rank.ACE, Suit.DIAMONDS, CardBack.ENCLAVE, true))
+                add(Card(Rank.KING, Suit.HEARTS, CardBack.MADNESS, true))
+                add(Card(Rank.KING, Suit.CLUBS, CardBack.MADNESS, true))
+                add(Card(Rank.KING, Suit.DIAMONDS, CardBack.MADNESS, true))
+                add(Card(Rank.KING, Suit.SPADES, CardBack.MADNESS, true))
+                add(Card(Rank.JACK, Suit.HEARTS, CardBack.MADNESS, true))
+                add(Card(Rank.QUEEN, Suit.HEARTS, CardBack.MADNESS, true))
+            }
+        }
+
         StartPvP(
             activity = activity,
             playerCResources = run {
@@ -306,17 +319,7 @@ fun ShowPvP(
                     CustomDeck(save.selectedDeck.first, save.selectedDeck.second)
 
                 if (checkedWild) {
-                    deck.apply {
-                        add(Card(Rank.ACE, Suit.HEARTS, CardBack.ENCLAVE, true))
-                        add(Card(Rank.ACE, Suit.CLUBS, CardBack.ENCLAVE, true))
-                        add(Card(Rank.ACE, Suit.DIAMONDS, CardBack.ENCLAVE, true))
-                        add(Card(Rank.KING, Suit.HEARTS, CardBack.MADNESS, true))
-                        add(Card(Rank.KING, Suit.CLUBS, CardBack.MADNESS, true))
-                        add(Card(Rank.KING, Suit.DIAMONDS, CardBack.MADNESS, true))
-                        add(Card(Rank.KING, Suit.SPADES, CardBack.MADNESS, true))
-                        add(Card(Rank.JACK, Suit.HEARTS, CardBack.MADNESS, true))
-                        add(Card(Rank.QUEEN, Suit.HEARTS, CardBack.MADNESS, true))
-                    }
+                    makeDeckWild(deck)
                 }
 
                 CResources(deck)
@@ -327,17 +330,7 @@ fun ShowPvP(
                     deck.add(enemyDeck[it])
                 }
                 if (checkedWild) {
-                    deck.apply {
-                        add(Card(Rank.ACE, Suit.HEARTS, CardBack.ENCLAVE, true))
-                        add(Card(Rank.ACE, Suit.CLUBS, CardBack.ENCLAVE, true))
-                        add(Card(Rank.ACE, Suit.DIAMONDS, CardBack.ENCLAVE, true))
-                        add(Card(Rank.KING, Suit.HEARTS, CardBack.MADNESS, true))
-                        add(Card(Rank.KING, Suit.CLUBS, CardBack.MADNESS, true))
-                        add(Card(Rank.KING, Suit.DIAMONDS, CardBack.MADNESS, true))
-                        add(Card(Rank.KING, Suit.SPADES, CardBack.MADNESS, true))
-                        add(Card(Rank.JACK, Suit.HEARTS, CardBack.MADNESS, true))
-                        add(Card(Rank.QUEEN, Suit.HEARTS, CardBack.MADNESS, true))
-                    }
+                    makeDeckWild(deck)
                 }
                 deck
             },

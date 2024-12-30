@@ -181,7 +181,7 @@ fun ShowTraders(activity: MainActivity, goBack: () -> Unit) {
                                                 playNoBeep(activity)
                                             } else {
                                                 save.capsInHand -= price
-                                                save.availableCards.add(card)
+                                                save.addCard(card)
                                                 save.onCardBuying(activity)
                                                 playCashSound(activity)
                                                 saveData(activity)

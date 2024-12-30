@@ -18,8 +18,12 @@ sealed interface Trader {
     fun getCards(): List<Pair<Card, Int>>
     fun getStyles(): List<Style>
 
+//    fun invest(caps: Int)
+//    fun getProfitFromInvestment(): Int
+
     fun getCards(back: CardBack, cards1Number: Int): List<Pair<Card, Int>> {
-        val rand = Random(save.challengesHash xor (back.ordinal * 31 + 22229))
+        val b = back.ordinal
+        val rand = Random(save.challengesHash xor (b * 31 + 22229) xor (b * b * b + 13))
         val deck1 = CustomDeck(back, false).toList().shuffled(rand)
         var cards1 = deck1.take(cards1Number)
         if (cards1.all { save.isCardAvailableAlready(it) }) {

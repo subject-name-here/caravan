@@ -99,17 +99,7 @@ fun TowerScreen(
         return
     }
 
-    var showGameLevel1 by rememberSaveable { mutableStateOf(false) }
-    var showGameLevel2 by rememberSaveable { mutableStateOf(false) }
-    var showGameLevel3 by rememberSaveable { mutableStateOf(false) }
-    var showGameLevel4 by rememberSaveable { mutableStateOf(false) }
-    var showGameLevel5 by rememberSaveable { mutableStateOf(false) }
-    var showGameLevel6 by rememberSaveable { mutableStateOf(false) }
-    var showGameLevel7 by rememberSaveable { mutableStateOf(false) }
-    var showGameLevel8 by rememberSaveable { mutableStateOf(false) }
-    var showGameLevel9 by rememberSaveable { mutableStateOf(false) }
-    var showGameLevel10 by rememberSaveable { mutableStateOf(false) }
-
+    var showGameLevel by rememberScoped { mutableIntStateOf(0) }
     var levelMemory by rememberScoped { mutableIntStateOf(0) }
 
     @Composable
@@ -139,62 +129,26 @@ fun TowerScreen(
             saveData(activity)
         }, goBack)
     }
-    when {
-        showGameLevel1 -> {
-            showTower(EnemyTower1) {
-                showGameLevel1 = false
+    when (showGameLevel) {
+        in 1..9 -> {
+            showTower(
+                when (showGameLevel) {
+                    1 -> EnemyTower1
+                    2 -> EnemyTower2
+                    3 -> EnemyTower3
+                    4 -> EnemyTower4
+                    5 -> EnemyTower5
+                    6 -> EnemyTower6
+                    7 -> EnemyTower7
+                    8 -> EnemyTower8
+                    else -> EnemyTower9
+                }
+            ) {
+                showGameLevel = 0
             }
             return
         }
-        showGameLevel2 -> {
-            showTower(EnemyTower2) {
-                showGameLevel2 = false
-            }
-            return
-        }
-        showGameLevel3 -> {
-            showTower(EnemyTower3) {
-                showGameLevel3 = false
-            }
-            return
-        }
-        showGameLevel4 -> {
-            showTower(EnemyTower4) {
-                showGameLevel4 = false
-            }
-            return
-        }
-        showGameLevel5 -> {
-            showTower(EnemyTower5) {
-                showGameLevel5 = false
-            }
-            return
-        }
-        showGameLevel6 -> {
-            showTower(EnemyTower6) {
-                showGameLevel6 = false
-            }
-            return
-        }
-        showGameLevel7 -> {
-            showTower(EnemyTower7) {
-                showGameLevel7 = false
-            }
-            return
-        }
-        showGameLevel8 -> {
-            showTower(EnemyTower8) {
-                showGameLevel8 = false
-            }
-            return
-        }
-        showGameLevel9 -> {
-            showTower(EnemyTower9) {
-                showGameLevel9 = false
-            }
-            return
-        }
-        showGameLevel10 -> {
+        10 -> {
             var capsMemory by rememberScoped { mutableIntStateOf(0) }
             StartTowerGame(activity, EnemyFrank, showAlertDialog, {
                 startLevel11Theme(activity)
@@ -221,7 +175,7 @@ fun TowerScreen(
                 saveData(activity)
                 stopRadio()
             }) {
-                showGameLevel10 = false
+                showGameLevel = 0
                 soundReduced = false
                 frankSequencePlayed = false
 
@@ -394,8 +348,8 @@ fun TowerScreen(
                         4 -> 32
                         5 -> 64
                         6 -> 128
-                        7 -> 256
-                        8 -> 384
+                        7 -> 255
+                        8 -> 383
                         9 -> 512
                         10 -> 1024
                         else -> 2077
@@ -529,15 +483,9 @@ fun TowerScreen(
                                 modifier = Modifier
                                     .clickableOk(activity) {
                                         when (level) {
-                                            1 -> { showGameLevel1 = true }
-                                            2 -> { showGameLevel2 = true }
-                                            3 -> { showGameLevel3 = true }
-                                            4 -> { showGameLevel4 = true }
-                                            5 -> { showGameLevel5 = true }
-                                            6 -> { showGameLevel6 = true }
-                                            7 -> { showGameLevel7 = true }
-                                            8 -> { showGameLevel8 = true }
-                                            9 -> { showGameLevel9 = true }
+                                            in 1..9 -> {
+                                                showGameLevel = level
+                                            }
                                             10 -> {
                                                 if (!frankSequencePlayed) {
                                                     startFrank = true
@@ -574,7 +522,7 @@ fun TowerScreen(
                         Modifier
                             .background(Color(activity.getColor(R.color.colorText)))
                             .clickableOk(activity) {
-                                showFrankWarning = false; showGameLevel10 = true
+                                showFrankWarning = false; showGameLevel = 10
                             }
                             .padding(4.dp),
                         TextAlign.Center
@@ -773,7 +721,7 @@ fun StartTowerGame(
         if (game.isOver()) {
             onQuitPressed()
         } else {
-            val body = if (enemy is EnemyFrank) {
+            val body = if (isFrankSequence) {
                 activity.getString(R.string.check_back_to_menu_body_tower_frank)
             } else {
                 activity.getString(R.string.check_back_to_menu_body_tower)
