@@ -79,6 +79,7 @@ import com.unicorns.invisible.caravan.utils.nextSong
 import com.unicorns.invisible.caravan.utils.playHeartbeatSound
 import com.unicorns.invisible.caravan.utils.playJokerSounds
 import com.unicorns.invisible.caravan.utils.playLoseSound
+import com.unicorns.invisible.caravan.utils.playNoBeep
 import com.unicorns.invisible.caravan.utils.playNoCardAlarm
 import com.unicorns.invisible.caravan.utils.playNotificationSound
 import com.unicorns.invisible.caravan.utils.playNukeBlownSound
@@ -333,7 +334,6 @@ fun getDeck(chapterNumber: Int): CustomDeck {
     }
 }
 
-// TODO: test it all!!
 @Composable
 fun ShowStoryChapter1(
     activity: MainActivity,
@@ -1410,6 +1410,8 @@ fun ShowStoryChapter8(
                         painterResource(
                             id = if (gameResult < 0) {
                                 R.drawable.black_back
+                            } else if (gameResult == 2) {
+                                R.drawable.ch8_1
                             } else {
                                 when (lineNumber) {
                                     0 -> R.drawable.ch8_0
@@ -1520,7 +1522,7 @@ fun ShowStoryChapter9(
             while (isActive && timeOnTimer > 0) {
                 timeOnTimer--
                 if (timeOnTimer < 10) {
-                    playYesBeep(activity)
+                    playNoBeep(activity)
                 }
                 delay(1000L)
             }
@@ -2202,7 +2204,7 @@ fun StartStoryFinalBossGame(
     }
 
 
-    ShowGame(activity, game, isBlitz = true, onMove = { card ->
+    ShowGame(activity, game, onMove = { card ->
         when (card?.rank) {
             Rank.QUEEN -> {
                 addTime(2)
@@ -2229,7 +2231,7 @@ fun StartStoryFinalBossGame(
         }
         showAlertDialog(
             activity.getString(R.string.check_back_to_menu),
-            "If you quit, Supreme Leader kills you.",
+            activity.getString(R.string.if_you_quit_supreme_leader_kills_you),
             goBack
         )
     }

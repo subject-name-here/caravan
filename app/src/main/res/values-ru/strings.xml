@@ -713,4 +713,6 @@
     <string name="use_custom_deck">Использовать сборную колоду</string>
     <string name="use_wild_wasteland_cards">Использовать карты Дикой Пустоши</string>
 
+    <string name="if_you_quit_supreme_leader_kills_you">Если вы покинете игру, Верховный Лидер убьет вас.</string>
+
 </resources>

@@ -263,7 +263,16 @@ fun ShowGame(
     )
 
     if (isBlitz) {
-        var timeOnTimer by rememberSaveable { mutableIntStateOf(game.playerCResources.deckSize * 4 / 3) }
+        var timeOnTimer by rememberSaveable { mutableIntStateOf(
+            if (
+                game.enemyCResources.deckSize < game.playerCResources.deckSize &&
+                game.enemyCResources.deckSize > 20
+            ) {
+                game.enemyCResources.deckSize * 4 / 3
+            } else {
+                game.playerCResources.deckSize * 4 / 3
+            }
+        ) }
         game.specialGameOverCondition = { if (timeOnTimer <= 0f) -1 else 0 }
 
         LaunchedEffect(Unit) {
@@ -829,7 +838,7 @@ fun RowScope.CaravanOnField(
             delay(95L)
         }
     }
-    val trueWidth = (width - 3.5f * 10.dp.dpToPx())
+    val trueWidth = (width - 3.025f * 14.dp.dpToPx())
     val scale = (trueWidth / 183.toFloat()).coerceAtMost(1.2f)
     Column(
         Modifier
@@ -884,7 +893,7 @@ fun RowScope.CaravanOnField(
                                 .layout { measurable, constraints ->
                                     val placeable = measurable.measure(constraints)
                                     val modifierOffset =
-                                        ((if (isEnemy) (-10).dp else 10.dp) * (modifierIndex + 1)).toPx()
+                                        ((if (isEnemy) (-14).dp else 14.dp) * (modifierIndex + 1)).toPx()
                                             .toInt()
                                     layout((placeable.width * scale).toInt().coerceAtLeast(0), 0) {
                                         placeable.place(modifierOffset, 0)
@@ -1043,7 +1052,7 @@ fun RowScope.CaravanOnField(
                                     val placeableHeight = (placeable.height * scale).toInt()
                                     val placeableWidth = (placeable.width * scale).toInt()
                                     val modifierOffset =
-                                        ((if (isEnemy) (-10).dp else 10.dp) * (modifierIndex + 1)).toPx()
+                                        ((if (isEnemy) (-14).dp else 14.dp) * (modifierIndex + 1)).toPx()
                                             .toInt()
                                     layout(placeableWidth.coerceAtLeast(0), 0) {
                                         placeable.place(

@@ -15,7 +15,7 @@ class Card(val rank: Rank, val suit: Suit, val back: CardBack, val isAlt: Boolea
     fun isFace() = rank.isFace()
 
     override fun toString(): String {
-        return "${this.hashCode()}; ${this.rank.ordinal}; ${this.suit.ordinal}; ${this.back.ordinal}; ${this.isAlt};"
+        return "${this.hashCode() % 22229}; ${this.rank.ordinal}; ${this.suit.ordinal}; ${this.back.ordinal}; ${this.isAlt};"
     }
 
     enum class AnimationMark {

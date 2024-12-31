@@ -36,10 +36,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.draw.paint
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.SpanStyle
@@ -76,6 +80,7 @@ import com.unicorns.invisible.caravan.utils.getDividerColor
 import com.unicorns.invisible.caravan.utils.getKnobColor
 import com.unicorns.invisible.caravan.utils.getMusicPanelColor
 import com.unicorns.invisible.caravan.utils.getMusicTextColor
+import com.unicorns.invisible.caravan.utils.getPictureColor
 import com.unicorns.invisible.caravan.utils.getTextBackgroundColor
 import com.unicorns.invisible.caravan.utils.getTextColor
 import com.unicorns.invisible.caravan.utils.getTextStrokeColor
@@ -192,10 +197,8 @@ class MainActivity : SaveDataActivity() {
         ).random()
 
         setContent {
-            val (textColor, backgroundColor, strokeColor) = Triple(
-                getTextColor(this),
-                getBackgroundColor(this),
-                getTextStrokeColor(this),
+            val (textColor, strokeColor, backgroundColor) = Triple(
+                getTextColor(this), getTextStrokeColor(this), getBackgroundColor(this)
             )
             var isIntroScreen by rememberScoped { mutableStateOf(true) }
 
@@ -214,52 +217,103 @@ class MainActivity : SaveDataActivity() {
                     val k by isSaveLoaded.observeAsState()
                     key(k) {
                         Column(
-                            Modifier
-                                .fillMaxSize()
-                                .padding(4.dp),
+                            Modifier.fillMaxSize(),
                             horizontalAlignment = Alignment.CenterHorizontally,
                             verticalArrangement = Arrangement.Center
                         ) {
-                            if (save.isUsable) {
-                                TextFallout(
-                                    "CARAVAN",
-                                    textColor,
-                                    strokeColor,
-                                    40.sp,
-                                    Alignment.Center,
-                                    Modifier.padding(4.dp),
-                                    TextAlign.Center
+                            Column(
+                                Modifier
+                                    .fillMaxSize()
+                                    .padding(4.dp),
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.Center
+                            ) {
+                                Box(Modifier.fillMaxWidth().weight(0.25f).padding(vertical = 4.dp)) {
+                                    Column(
+                                        Modifier.fillMaxSize(),
+                                        verticalArrangement = Arrangement.Bottom,
+                                        horizontalAlignment = Alignment.CenterHorizontally
+                                    ) {
+                                        if (save.isUsable) {
+                                            TextFallout(
+                                                "CARAVAN",
+                                                textColor,
+                                                strokeColor,
+                                                40.sp,
+                                                Alignment.TopCenter,
+                                                Modifier.padding(top = 8.dp),
+                                                TextAlign.Center
+                                            )
+                                            TextFallout(
+                                                stringResource(R.string.tap_to_play),
+                                                textColor,
+                                                strokeColor,
+                                                24.sp,
+                                                Alignment.TopCenter,
+                                                Modifier.padding(4.dp),
+                                                TextAlign.Center
+                                            )
+                                        } else {
+                                            TextFallout(
+                                                "PLEASE\nSTAND BY",
+                                                textColor,
+                                                strokeColor,
+                                                32.sp,
+                                                Alignment.TopCenter,
+                                                Modifier.padding(4.dp),
+                                                TextAlign.Center
+                                            )
+                                        }
+                                        Spacer(Modifier.height(8.dp))
+                                        TextFallout(
+                                            getString(advice),
+                                            textColor,
+                                            strokeColor,
+                                            18.sp,
+                                            Alignment.Center,
+                                            Modifier.padding(vertical = 4.dp, horizontal = 12.dp),
+                                            TextAlign.Center
+                                        )
+                                    }
+                                }
+
+                                Box(
+                                    Modifier.fillMaxWidth().weight(0.70f)
+                                        .paint(
+                                            painterResource(id = R.drawable.caravan_main2),
+                                            contentScale = ContentScale.Fit
+                                        )
                                 )
-                                TextFallout(
-                                    stringResource(R.string.tap_to_play),
-                                    textColor,
-                                    strokeColor,
-                                    24.sp,
-                                    Alignment.Center,
-                                    Modifier.padding(4.dp),
-                                    TextAlign.Center
-                                )
-                                Spacer(Modifier.height(8.dp))
-                            } else {
-                                TextFallout(
-                                    "PLEASE\nSTAND BY",
-                                    textColor,
-                                    strokeColor,
-                                    32.sp,
-                                    Alignment.Center,
-                                    Modifier.padding(4.dp),
-                                    TextAlign.Center
-                                )
+
+                                Box(Modifier.fillMaxWidth().weight(0.05f)) {
+                                    val annotatedString = buildAnnotatedString {
+                                        append("Pic creator: ")
+                                        withLink(
+                                            link = LinkAnnotation.Url(
+                                                url = "https://steamcommunity.com/profiles/76561199409356196/",
+                                                styles = TextLinkStyles(
+                                                    style = SpanStyle(
+                                                        color = textColor,
+                                                        fontFamily = FontFamily(Font(R.font.monofont)),
+                                                        textDecoration = TextDecoration.Underline
+                                                    )
+                                                )
+                                            ),
+                                        ) {
+                                            append("bunkeran")
+                                        }
+                                    }
+                                    TextFallout(
+                                        annotatedString,
+                                        textColor,
+                                        strokeColor,
+                                        12.sp,
+                                        Alignment.BottomEnd,
+                                        Modifier.fillMaxSize(),
+                                        TextAlign.End
+                                    )
+                                }
                             }
-                            TextFallout(
-                                getString(advice),
-                                textColor,
-                                strokeColor,
-                                18.sp,
-                                Alignment.Center,
-                                Modifier.padding(vertical = 4.dp, horizontal = 12.dp),
-                                TextAlign.Center
-                            )
                         }
                     }
                 }

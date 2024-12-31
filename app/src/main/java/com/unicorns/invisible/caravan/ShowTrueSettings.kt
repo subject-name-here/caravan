@@ -367,8 +367,6 @@ fun ShowTrueSettings(
                                             saveData(activity)
                                             playYesBeep(activity)
                                         }
-
-                                        // TODO: hints in different themes
                                     }
                                 }
                                 .background(getTextBackgroundColor(activity))

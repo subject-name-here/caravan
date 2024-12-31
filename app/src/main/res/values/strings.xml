@@ -764,4 +764,6 @@
     <string name="use_custom_deck">Use custom deck</string>
     <string name="use_wild_wasteland_cards">Use Wild Wasteland cards</string>
 
+    <string name="if_you_quit_supreme_leader_kills_you">If you quit, Supreme Leader kills you.</string>
+
 </resources>

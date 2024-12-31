@@ -26,7 +26,7 @@ import kotlin.random.Random
 
 @Serializable
 data object EnemyElijah : Enemy {
-    override fun getBankNumber(): Int = 12
+    override fun getBankNumber(): Int = 10
 
     override fun createDeck(): CResources = CResources(CustomDeck().apply {
         listOf(
@@ -93,7 +93,9 @@ data object EnemyElijah : Enemy {
                     if (
                         caravan.canPutCardOnTop(card) &&
                         checkMoveOnPossibleVictory(game, caravanIndex) &&
-                        futureValue in (21..26) && (futureValue > playerValue || playerValue > 26)
+                        futureValue in (21..26) && (futureValue > playerValue || playerValue > 26) &&
+                        !(checkMoveOnProbableDefeat(game, caravanIndex) && caravan.getValue() + card.rank.value in (21..26)) &&
+                        !(checkMoveOnDefeat(game, caravanIndex) && caravan.getValue() + card.rank.value in (21..26))
                     ) {
                         caravan.putCardOnTop(game.enemyCResources.removeFromHand(cardIndex))
                         return

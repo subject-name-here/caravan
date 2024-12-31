@@ -18,8 +18,11 @@ import com.unicorns.invisible.caravan.model.primitives.Suit
 import com.unicorns.invisible.caravan.utils.checkMoveOnDefeat
 import com.unicorns.invisible.caravan.utils.checkMoveOnPossibleVictory
 import com.unicorns.invisible.caravan.utils.checkMoveOnProbableDefeat
+import kotlinx.serialization.Serializable
 import kotlin.random.Random
 
+
+@Serializable
 data object EnemyStory7 : Enemy {
     override fun createDeck(): CResources = CResources(CustomDeck().apply {
         Rank.entries.forEach { rank ->

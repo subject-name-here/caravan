@@ -17,9 +17,11 @@ import com.unicorns.invisible.caravan.model.primitives.Rank
 import com.unicorns.invisible.caravan.model.primitives.Suit
 import com.unicorns.invisible.caravan.utils.checkMoveOnDefeat
 import com.unicorns.invisible.caravan.utils.checkMoveOnShouldYouDoSmth
+import kotlinx.serialization.Serializable
 import kotlin.math.abs
 
 
+@Serializable
 data object EnemyStory9A : Enemy {
     override fun createDeck(): CResources = CResources(CustomDeck().apply {
         Rank.entries.forEach { rank ->

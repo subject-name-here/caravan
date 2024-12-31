@@ -25,18 +25,15 @@ import kotlin.math.abs
 data object EnemyEasyPete : Enemy {
     override fun createDeck() = CResources(CustomDeck().apply {
         Rank.entries.forEach { rank ->
-            if (rank == Rank.JOKER) {
-                add(Card(Rank.JOKER, Suit.HEARTS, CardBack.LUCKY_38, true))
-                add(Card(Rank.JOKER, Suit.CLUBS, CardBack.LUCKY_38, true))
-            } else {
+            if (rank != Rank.JOKER) {
                 Suit.entries.forEach { suit ->
                     add(Card(rank, suit, CardBack.TOPS, false))
                 }
             }
         }
 
-        add(Card(Rank.ACE, Suit.HEARTS, CardBack.ENCLAVE, true))
         add(Card(Rank.ACE, Suit.CLUBS, CardBack.ENCLAVE, true))
+        add(Card(Rank.ACE, Suit.SPADES, CardBack.ENCLAVE, true))
         add(Card(Rank.KING, Suit.SPADES, CardBack.MADNESS, true))
     })
 

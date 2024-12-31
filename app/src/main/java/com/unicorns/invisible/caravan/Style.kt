@@ -124,8 +124,6 @@ fun getStyleCities(style: Style): List<String> {
 }
 
 
-// TODO: review the skins!!!! ALL OF THEM!!!
-
 @Composable
 fun BoxWithConstraintsScope.StylePicture(
     activity: MainActivity,
@@ -226,6 +224,10 @@ fun BoxWithConstraintsScope.StylePicture(
                     }
 
                     val rotation = remember { Animatable(0f) }
+                    val smurfRandCode by rememberScoped { mutableIntStateOf((0..10).random(rand)) }
+                    val smurfRandCode2 by rememberScoped { mutableIntStateOf((0..11).random(rand)) }
+                    val smurfRandCode3 by rememberScoped { mutableIntStateOf((0..11).random(rand)) }
+                    val smurfRandCode4 by rememberScoped { mutableFloatStateOf(rand.nextFloat()) }
                     LaunchedEffect(Unit) {
                         while (isActive) {
                             val newOffset = getOffset()
@@ -243,6 +245,34 @@ fun BoxWithConstraintsScope.StylePicture(
                                 TweenSpec((save.animationSpeed.delay.toInt()).coerceAtLeast(95) * 10)
                             )
                             offset.animateTo(newOffset, TweenSpec(length.toInt()))
+                        }
+                    }
+
+                    if (smurfRandCode == 0) {
+                        val text = "Papa Smurf Easter egg: \"The Smurfs\" release date???"
+                        Row(
+                            Modifier
+                                .fillMaxWidth()
+                                .align(Alignment.CenterEnd)
+                                .padding(top = 48.dp, bottom = 48.dp, end = 8.dp)
+                        ) {
+                            Box(Modifier.weight(1f))
+                            Box(Modifier.weight(1f), contentAlignment = Alignment.Center) {
+                                Text(
+                                    text = text,
+                                    textAlign = TextAlign.Center,
+                                    color = Color.Black,
+                                    fontFamily = FontFamily(Font(R.font.help)),
+                                    modifier = Modifier
+                                        .align(Alignment.Center)
+                                        .rotate(-40f + smurfRandCode4 * 40f)
+                                        .offset(
+                                            x = (smurfRandCode2.dp),
+                                            y = (smurfRandCode3.dp)
+                                        ),
+                                    fontSize = 12.sp,
+                                )
+                            }
                         }
                     }
 
@@ -328,6 +358,34 @@ fun BoxWithConstraintsScope.StylePicture(
                         alignment = Alignment.TopStart
                     )
                     currentWidth += curMossUp.second.width.pxOrElse { 0 }
+                }
+            }
+
+            if ((0..10).random(rand) == 0) {
+                val text = "On that day, humanity received a grim reminder.\n\n845."
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .align(Alignment.CenterEnd)
+                        .padding(top = 48.dp, bottom = 48.dp, end = 8.dp)
+                ) {
+                    Box(Modifier.weight(1f))
+                    Box(Modifier.weight(1f), contentAlignment = Alignment.Center) {
+                        Text(
+                            text = text,
+                            textAlign = TextAlign.Center,
+                            color = Color.White,
+                            fontFamily = FontFamily(Font(R.font.help)),
+                            modifier = Modifier
+                                .align(Alignment.Center)
+                                .rotate(-40f + rand.nextFloat() * 40f)
+                                .offset(
+                                    x = ((-11..11).random(rand).dp),
+                                    y = ((-11..11).random(rand).dp)
+                                ),
+                            fontSize = 12.sp,
+                        )
+                    }
                 }
             }
         }
@@ -829,6 +887,34 @@ fun BoxWithConstraintsScope.StylePicture(
                             painter = painter6,
                             contentDescription = "",
                             Modifier.scale(scale)
+                        )
+                    }
+                }
+            }
+
+            if ((0..9).random(rand) == 0) {
+                val text = "V R 1337"
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .align(Alignment.CenterEnd)
+                        .padding(top = 48.dp, bottom = 48.dp, end = 8.dp)
+                ) {
+                    Box(Modifier.weight(1f))
+                    Box(Modifier.weight(1f), contentAlignment = Alignment.Center) {
+                        Text(
+                            text = text,
+                            textAlign = TextAlign.Center,
+                            color = Color.Red,
+                            fontFamily = FontFamily(Font(R.font.help)),
+                            modifier = Modifier
+                                .align(Alignment.Center)
+                                .rotate(-69f + rand.nextFloat() * 69f)
+                                .offset(
+                                    x = ((-11..11).random(rand).dp),
+                                    y = ((-11..11).random(rand).dp)
+                                ),
+                            fontSize = 12.sp,
                         )
                     }
                 }

@@ -20,9 +20,14 @@ import kotlin.random.Random
 @Serializable
 data object EnemyDrMobius : Enemy {
     override fun createDeck() = CResources(CustomDeck().apply {
-        repeat(8) {
-            add(generateCard())
+        var cards = mutableListOf<Card>()
+        while (cards.count { card -> !card.isFace() } < 3) {
+            cards = mutableListOf()
+            repeat(8) {
+                cards.add(generateCard())
+            }
         }
+        cards.forEach { t -> add(t) }
     })
     override fun getBankNumber() = 16
 

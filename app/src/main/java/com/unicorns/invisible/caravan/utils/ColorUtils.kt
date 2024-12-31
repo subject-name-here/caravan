@@ -234,6 +234,23 @@ fun getGameSelectionColor(activity: MainActivity): Color {
     }
 }
 
+fun getPictureColor(activity: MainActivity): Color {
+    return when (activity.styleId) {
+        Style.DESERT -> Color(activity.getColor(R.color.desertTextBackground))
+        Style.PIP_BOY -> Color(activity.getColor(R.color.colorTextStroke))
+        Style.ALASKA_FRONTIER -> Color(activity.getColor(R.color.alaskaBlue))
+        Style.PIP_GIRL -> Color(activity.getColor(R.color.pipGirlPink))
+        Style.OLD_WORLD -> Color(activity.getColor(R.color.oldWorldTextBack))
+        Style.NEW_WORLD -> Color(activity.getColor(R.color.newWorldText))
+        Style.SIERRA_MADRE -> Color(activity.getColor(R.color.sierraMadreText))
+        Style.MADRE_ROJA -> Color(activity.getColor(R.color.madreRojaTextBack))
+        Style.VAULT_21 -> Color(activity.getColor(R.color.vault21Back))
+        Style.VAULT_22 -> Color(activity.getColor(R.color.vault22Stroke))
+        Style.ENCLAVE -> Color(activity.getColor(R.color.enclaveText))
+        Style.BLACK -> Color.White
+    }
+}
+
 fun getGrayTransparent(activity: MainActivity): Color {
     return Color(activity.getColor(R.color.grayHalfTransparent))
 }

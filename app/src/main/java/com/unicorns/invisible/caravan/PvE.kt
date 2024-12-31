@@ -225,7 +225,7 @@ fun ShowStats(
                         text,
                         getTextColor(activity),
                         getTextStrokeColor(activity),
-                        14.sp,
+                        16.sp,
                         Alignment.Center,
                         Modifier,
                         TextAlign.Center,
@@ -578,7 +578,7 @@ fun ShowPvE(
                             name,
                             getTextColor(activity),
                             getTextStrokeColor(activity),
-                            16.sp,
+                            18.sp,
                             Alignment.Center,
                             Modifier
                                 .clickable { onClick() }
@@ -741,14 +741,27 @@ fun StartGame(
 
     val isBettingEnemy = enemy !is EnemyMadnessCardinal
 
-    // TODO: substract money from enemy
-
     var showBettingScreen: Boolean by rememberScoped { mutableStateOf(isBettingEnemy) }
+
+    val capsLeft by rememberScoped {
+        mutableIntStateOf(save.enemyCapsLeft[enemy.getBankNumber()] ?: 0)
+    }
+
+    var enemyBet: Int by rememberScoped { mutableIntStateOf(
+        if (capsLeft < 10) {
+            capsLeft
+        } else {
+            min(capsLeft / 2, 50)
+        }
+    ) }
 
     if (showBettingScreen) {
         ShowBettingScreen(
-            activity, enemy, { bet = it }, { isBlitz = it }, { reward = it },
-            { showBettingScreen = false; goBack() }, { showBettingScreen = false }
+            activity, enemy, enemyBet, { bet = it }, { isBlitz = it }, { reward = it },
+            { showBettingScreen = false; goBack() }, {
+                save.enemyCapsLeft[enemy.getBankNumber()] = capsLeft - enemyBet + reward
+                showBettingScreen = false
+            }
         )
         return
     }
@@ -768,13 +781,7 @@ fun StartGame(
     }
 
     LaunchedEffect(Unit) { startAmbient(activity) }
-    val onQuitPressed = {
-        if (!game.isOver() && isBettingEnemy) {
-            val enemyCaps = save.enemyCapsLeft[enemy.getBankNumber()] ?: 0
-            save.enemyCapsLeft[enemy.getBankNumber()] = ((enemyCaps + reward) * 0.85).toInt()
-        }
-        stopAmbient(); goBack()
-    }
+    val onQuitPressed = { stopAmbient(); goBack() }
 
     game.also {
         it.onWin = {
@@ -797,6 +804,8 @@ fun StartGame(
             save.wins++
 
             if (isBettingEnemy) {
+                val enemyCaps = save.enemyCapsLeft[enemy.getBankNumber()] ?: 0
+                save.enemyCapsLeft[enemy.getBankNumber()] = enemyCaps - reward
                 save.capsInHand += reward
                 save.capsWon += reward
 
@@ -861,6 +870,7 @@ fun StartGame(
 fun ShowBettingScreen(
     activity: MainActivity,
     enemy: Enemy,
+    enemyBet: Int,
     setBet: (Int) -> Unit,
     setIsBlitz: (Boolean) -> Unit,
     setReward: (Int) -> Unit,
@@ -889,14 +899,6 @@ fun ShowBettingScreen(
         else -> "?!?"
     }
     var bet by rememberScoped { mutableStateOf("") }
-    var enemyBet: Int by rememberScoped { mutableIntStateOf(run {
-        val capsLeft = save.enemyCapsLeft[enemy.getBankNumber()] ?: 0
-        if (capsLeft < 10) {
-            capsLeft
-        } else {
-            min(capsLeft / 2, 50)
-        }
-    }) }
     var isBlitz: Boolean by rememberScoped { mutableStateOf(false) }
 
     fun countRewardLocal(): Int {
