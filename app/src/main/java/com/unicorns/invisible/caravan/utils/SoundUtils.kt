@@ -134,6 +134,8 @@ fun playWWSound(activity: MainActivity) = playEffectPlayerSound(activity, R.raw.
 fun playHeartbeatSound(activity: MainActivity) = playEffectPlayerSound(activity, R.raw.sfx_heartbeat)
 fun playSlideSound(activity: MainActivity) = playEffectPlayerSound(activity, R.raw.slide)
 fun playMinigunSound(activity: MainActivity) = playEffectPlayerSound(activity, R.raw.minigun_f2)
+fun playGlitchSound(activity: MainActivity) = playEffectPlayerSound(activity, R.raw.glitch_effect)
+fun playHorrorMusic(activity: MainActivity) = playEffectPlayerSound(activity, R.raw.horror)
 
 private val ambientPlayers = HashSet<MediaPlayer>()
 private val ambientPlayersLock = ReentrantLock()
@@ -372,10 +374,18 @@ fun playTheme(activity: MainActivity, themeId: Int) {
         }
 }
 fun startLevel11Theme(activity: MainActivity) {
-    playTheme(activity, R.raw.frank_theme)
+    if (save.isHeroic) {
+        playTheme(activity, R.raw.final_heroic)
+    } else {
+        playTheme(activity, R.raw.frank_theme)
+    }
 }
 fun startFinalBossTheme(activity: MainActivity) {
-    playTheme(activity, R.raw.final_boss)
+    if (save.isHeroic) {
+        playTheme(activity, R.raw.final_heroic)
+    } else {
+        playTheme(activity, R.raw.final_boss)
+    }
 }
 
 fun playFrankPhrase(activity: MainActivity, phraseId: Int) {

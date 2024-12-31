@@ -741,6 +741,8 @@ fun StartGame(
 
     val isBettingEnemy = enemy !is EnemyMadnessCardinal
 
+    // TODO: substract money from enemy
+
     var showBettingScreen: Boolean by rememberScoped { mutableStateOf(isBettingEnemy) }
 
     if (showBettingScreen) {
@@ -811,10 +813,7 @@ fun StartGame(
 
                 showAlertDialog(
                     activity.getString(R.string.result),
-                    activity.getString(R.string.you_win) + activity.getString(
-                        R.string.your_reward_card,
-                        rewardCard
-                    ),
+                    activity.getString(R.string.you_win) + rewardCard,
                     onQuitPressed
                 )
             }

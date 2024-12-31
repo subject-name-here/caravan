@@ -32,7 +32,7 @@ class CResources(private val deck: CustomDeck) {
         shuffleDeck()
         if (initHand) {
             var tmpHand = getTopHand()
-            while (tmpHand.count { it.isFace() } > maxNumOfFaces) {
+            while (tmpHand.count { it.isFace() || it.isNuclear() } > maxNumOfFaces) {
                 shuffleDeck()
                 tmpHand = getTopHand()
             }

@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.unicorns.invisible.caravan.model.primitives.Card
 import com.unicorns.invisible.caravan.model.primitives.Rank
+import com.unicorns.invisible.caravan.model.trading.Lucky38Trader
 import com.unicorns.invisible.caravan.save.saveData
 import com.unicorns.invisible.caravan.utils.MenuItemOpen
 import com.unicorns.invisible.caravan.utils.TextFallout
@@ -202,7 +203,10 @@ fun ShowTraders(activity: MainActivity, goBack: () -> Unit) {
                             ) {
                                 TextFallout(
                                     stringResource(
-                                        R.string.hi_my_name_is,
+                                        if (selectedTrader is Lucky38Trader)
+                                            R.string.hi_our_name_is
+                                        else
+                                            R.string.hi_my_name_is,
                                         stringResource(selectedTrader.getName())
                                     ),
                                     getTextColor(activity),
@@ -212,8 +216,6 @@ fun ShowTraders(activity: MainActivity, goBack: () -> Unit) {
                                     Modifier.padding(4.dp),
                                     TextAlign.Center
                                 )
-
-                                // TODO: Bank deposit by investment in trader!!!
 
                                 selectedTrader.getStyles().filter { it !in save.ownedStyles }.forEach {
                                     Spacer(modifier = Modifier.height(4.dp))
@@ -274,6 +276,9 @@ fun ShowTraders(activity: MainActivity, goBack: () -> Unit) {
                                         Modifier.padding(4.dp),
                                         TextAlign.Center
                                     )
+
+                                    // TODO: INVESTMENT!!!!
+
                                 } else {
                                     cards.forEach {
                                         Spacer(modifier = Modifier.height(4.dp))

@@ -51,6 +51,7 @@ import com.unicorns.invisible.caravan.utils.getTextStrokeColor
 import com.unicorns.invisible.caravan.utils.getTrackColor
 import com.unicorns.invisible.caravan.utils.playClickSound
 import com.unicorns.invisible.caravan.utils.playCloseSound
+import com.unicorns.invisible.caravan.utils.playGlitchSound
 import com.unicorns.invisible.caravan.utils.playPimpBoySound
 import com.unicorns.invisible.caravan.utils.playYesBeep
 import com.unicorns.invisible.caravan.utils.scrollbar
@@ -330,7 +331,7 @@ fun ShowTrueSettings(
                                             }
                                         }
 
-                                        110811 -> {
+                                        72911 -> {
                                             save.papaSmurfActive = !save.papaSmurfActive
                                             saveData(activity)
                                             playYesBeep(activity)
@@ -348,7 +349,26 @@ fun ShowTrueSettings(
                                             playYesBeep(activity)
                                         }
 
-                                        // TODO: more cheats
+                                        131313 -> {
+                                            if (Style.BLACK !in save.ownedStyles) {
+                                                save.ownedStyles.add(Style.BLACK)
+                                                saveData(activity)
+                                                playGlitchSound(activity)
+                                            }
+                                        }
+
+                                        696969 -> {
+                                            isHorror.value = true
+                                            // TODO
+                                        }
+
+                                        845 -> {
+                                            save.isHeroic = !save.isHeroic
+                                            saveData(activity)
+                                            playYesBeep(activity)
+                                        }
+
+                                        // TODO: hints in different themes
                                     }
                                 }
                                 .background(getTextBackgroundColor(activity))

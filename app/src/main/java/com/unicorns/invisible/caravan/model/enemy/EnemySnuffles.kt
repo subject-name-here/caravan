@@ -31,12 +31,8 @@ data object EnemySnuffles : Enemy {
                 }
             }
         }
-        Rank.entries.forEach { rank ->
-            if (rank.value <= 4) {
-                Suit.entries.forEach { suit ->
-                    add(Card(rank, suit, CardBack.ENCLAVE, true))
-                }
-            }
+        Suit.entries.forEach { suit ->
+            add(Card(Rank.TEN, suit, CardBack.ENCLAVE, true))
         }
         add(Card(Rank.KING, Suit.HEARTS, CardBack.MADNESS, true))
         add(Card(Rank.KING, Suit.CLUBS, CardBack.MADNESS, true))

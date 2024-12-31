@@ -62,29 +62,20 @@ private fun saveOnGD(activity: MainActivity, text: String) {
 }
 
 
-suspend fun loadSave(activity: MainActivity): Save? {
-    try {
-        return loadLocalSave(activity) ?: run {
-            val data = activity.fetchDataFromDrive()?.toString(StandardCharsets.UTF_8)
-            if (data != null && data != "" && data != "null") {
-                json.decodeFromString<Save>(data)
-            } else {
-                null
-            }
+suspend fun loadGDSave(activity: MainActivity): Save? {
+    return try {
+        val data = activity.fetchDataFromDrive()?.toString(StandardCharsets.UTF_8)
+        if (data != null && data != "" && data != "null") {
+            json.decodeFromString<Save>(data)
+        } else {
+            null
         }
     } catch (_: Exception) {
-        MainScope().launch {
-            Toast.makeText(
-                activity,
-                "Failed to load save!!",
-                Toast.LENGTH_SHORT
-            ).show()
-        }
-        return null
+        null
     }
 }
 
-private fun loadLocalSave(activity: MainActivity): Save? {
+fun loadLocalSave(activity: MainActivity): Save? {
     val saveFile = getLocalSaveFile(activity)
     return try {
         saveFile.bufferedReader().use {

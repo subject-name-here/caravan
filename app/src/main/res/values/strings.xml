@@ -45,7 +45,7 @@
     <string name="lucky_38_trader_name">Marylin &amp; Jane</string>
     <string name="lucky_38_trader_cond">Beat Mr. House in Tower.</string>
     <string name="sierra_madre_trader_name">Sierra Madre BottleCaps Exchange Machine</string>
-    <string name="sierra_madre_trader_cond">Beat Father Elijah 10 times and complete Chapter 1 of the Story mode.</string>
+    <string name="sierra_madre_trader_cond">Beat Father Elijah 10 times (%1$s/10) and complete Chapter 1 of the Story mode.</string>
     <string name="chinese_trader_name">Warlord Li Xuan</string>
     <string name="chinese_trader_condition">First of all, finish chapters 9 and 9A of the Story mode. By the way, what year CCP was established?</string>
     <string name="enclave_trader_name">Savanth</string>
@@ -319,6 +319,7 @@
     <string name="style_madre_roja">Madre Roja</string>
     <string name="style_vault_21">Vault 21</string>
     <string name="style_vault_22">Vault 22</string>
+    <string name="style_black">Darkness (test)</string>
     <string name="style_enclave">Enclave</string>
 
     <string name="pip_boy_main_screen">Device #50724: Luck-o-Meter.</string>
@@ -736,6 +737,7 @@
     <string name="your_barter_stat">Your Barter stat: %1$s</string>
     <string name="your_caps_in_hand">Your caps in hand: %1$s</string>
     <string name="hi_my_name_is">Hi! My name is %1$s!!</string>
+    <string name="hi_our_name_is">Hi! We are %1$s!!</string>
     <string name="style_buy">Style: %1$s</string>
     <string name="buy_for_caps">Buy for %1$s caps</string>
 
@@ -744,9 +746,8 @@
     <string name="enter_your_bet">Enter your bet (between %1$s and %2$s), or leave empty to play for free:</string>
     <string name="your_expected_reward">Your expected reward: %1$s caps.</string>
     <string name="your_reward_reward_caps">\nYour reward: %1$s caps!!</string>
-    <string name="your_reward_card">\nYour reward: card %1$s!!</string>
     <string name="prize_caps">%1$s caps</string>
-    <string name="you_have_won">\nYou have won: %1$s.</string>
+    <string name="you_have_won">\nYou have obtained: %1$s.</string>
 
     <string name="daily_update_head">It\'s a beautiful day!</string>
     <string name="daily_update_body">Challenges, bottlecaps of enemies and inventory of traders are refreshed!\n\nAnd you have found %1$s bottlecaps!</string>

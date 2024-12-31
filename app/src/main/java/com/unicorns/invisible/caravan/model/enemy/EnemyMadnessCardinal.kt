@@ -2,7 +2,11 @@ package com.unicorns.invisible.caravan.model.enemy
 
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
+import com.unicorns.invisible.caravan.model.enemy.strategy.CardDropSelect
+import com.unicorns.invisible.caravan.model.enemy.strategy.DropSelection
 import com.unicorns.invisible.caravan.model.enemy.strategy.SelectCard
+import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyDropCaravan
+import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyDropCard
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyInitStage
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJokerSimple
 import com.unicorns.invisible.caravan.model.primitives.CResources
@@ -19,31 +23,18 @@ import kotlin.random.Random
 
 @Serializable
 data object EnemyMadnessCardinal : Enemy {
-    override fun createDeck(): CResources = CResources(CustomDeck().apply {
-        Rank.entries.forEach { rank ->
-            if (rank == Rank.JOKER) {
-                add(Card(Rank.JOKER, Suit.HEARTS, CardBack.MADNESS, false))
-                add(Card(Rank.JOKER, Suit.CLUBS, CardBack.MADNESS, false))
-            } else {
-                Suit.entries.forEach { suit ->
-                    add(Card(rank, suit, CardBack.MADNESS, false))
-                }
-            }
-        }
+    override fun createDeck(): CResources = CResources(CustomDeck(CardBack.MADNESS, false).apply {
+        add(Card(Rank.ACE, Suit.HEARTS, CardBack.ENCLAVE, true))
+        add(Card(Rank.ACE, Suit.CLUBS, CardBack.ENCLAVE, true))
+        add(Card(Rank.ACE, Suit.DIAMONDS, CardBack.ENCLAVE, true))
+        add(Card(Rank.ACE, Suit.SPADES, CardBack.ENCLAVE, true))
 
-        listOf(Rank.ACE, Rank.TWO, Rank.THREE).forEach { rank ->
-            Suit.entries.forEach { suit ->
-                add(Card(rank, suit, CardBack.ENCLAVE, true))
-            }
-        }
         add(Card(Rank.KING, Suit.HEARTS, CardBack.MADNESS, true))
         add(Card(Rank.KING, Suit.CLUBS, CardBack.MADNESS, true))
         add(Card(Rank.KING, Suit.DIAMONDS, CardBack.MADNESS, true))
         add(Card(Rank.KING, Suit.SPADES, CardBack.MADNESS, true))
         add(Card(Rank.JACK, Suit.HEARTS, CardBack.MADNESS, true))
         add(Card(Rank.JACK, Suit.CLUBS, CardBack.MADNESS, true))
-        add(Card(Rank.JACK, Suit.DIAMONDS, CardBack.MADNESS, true))
-        add(Card(Rank.JACK, Suit.SPADES, CardBack.MADNESS, true))
         add(Card(Rank.QUEEN, Suit.HEARTS, CardBack.MADNESS, true))
     })
 
@@ -71,7 +62,12 @@ data object EnemyMadnessCardinal : Enemy {
                 Card.WildWastelandCardType.CAZADOR -> {
                     val candidate = game.playerCaravans
                         .filter { it.getValue() in (11..26) }
-                        .filter { !it.cards.any { card -> card.isProtectedByMuggy } }
+                        .filter { !it.cards.any { card ->
+                            val mods = card.modifiersCopy()
+                            card.isProtectedByMuggy || mods.any { mod ->
+                                mod.getWildWastelandCardType() == Card.WildWastelandCardType.CAZADOR
+                            }
+                        } }
                         .maxByOrNull { it.size }
                         ?.cards
                         ?.filter { it.canAddModifier(special) }
@@ -140,7 +136,7 @@ data object EnemyMadnessCardinal : Enemy {
                     val candidate = (game.playerCaravans + game.enemyCaravans)
                         .flatMap { it.cards }
                         .firstOrNull { it.canAddModifier(special) }
-                    if (candidate != null) {
+                    if (candidate != null && isLosingAny) {
                         candidate.addModifier(game.enemyCResources.removeFromHand(index))
                         game.wildWastelandSound()
                         return
@@ -163,52 +159,116 @@ data object EnemyMadnessCardinal : Enemy {
             }
         }
 
+        val overWeightCaravans = game.enemyCaravans.filter { it.getValue() > 26 }
+        val playersReadyCaravans = game.playerCaravans.filter { it.getValue() in (21..26) }
 
-        hand.withIndex().filter { it.value.isOrdinary() }.shuffled().forEach { (cardIndex, card) ->
-            if (!card.rank.isFace()) {
-                game.enemyCaravans.shuffled().forEach { caravan ->
-                    if (caravan.getValue() + card.rank.value <= 26) {
-                        if (caravan.canPutCardOnTop(card)) {
-                            caravan.putCardOnTop(game.enemyCResources.removeFromHand(cardIndex))
-                            return
-                        }
-                    }
+        hand.withIndex().filter { it.value.isOrdinary() }.shuffled().sortedByDescending {
+            if (playersReadyCaravans.isNotEmpty()) {
+                when (it.value.rank) {
+                    Rank.JOKER -> 38
+                    Rank.JACK, Rank.KING -> 30
+                    Rank.TEN, Rank.NINE, Rank.EIGHT, Rank.SEVEN, Rank.SIX -> 20
+                    Rank.QUEEN -> 2
+                    else -> it.value.rank.value
+                }
+            } else {
+                when (it.value.rank) {
+                    Rank.TEN, Rank.NINE, Rank.EIGHT, Rank.SEVEN, Rank.SIX -> 20
+                    Rank.QUEEN -> 3
+                    Rank.JACK, Rank.KING, Rank.JOKER -> 2
+                    else -> it.value.rank.value
                 }
             }
+        }.forEach { (cardIndex, card) ->
             if (card.rank == Rank.JACK) {
                 val caravan =
-                    game.playerCaravans.filter { it.getValue() in (21..26) }.randomOrNull()
-                if (caravan != null) {
-                    val cardToAdd = caravan.cards.maxBy { it.getValue() }
-                    if (cardToAdd.canAddModifier(card)) {
-                        cardToAdd.addModifier(game.enemyCResources.removeFromHand(cardIndex))
+                    game.playerCaravans.withIndex().filter { it.value.getValue() in (12..26) }
+                        .randomOrNull()
+                val cardToJack = caravan?.value?.cards?.maxByOrNull { it.getValue() }
+                if (cardToJack != null && cardToJack.canAddModifier(card)) {
+                    val futureValue = caravan.value.getValue() - cardToJack.getValue()
+                    val enemyValue = game.enemyCaravans[caravan.index].getValue()
+                    if (!(checkMoveOnDefeat(
+                            game,
+                            caravan.index
+                        ) && enemyValue in (21..26) && (enemyValue > futureValue || futureValue > 26))
+                    ) {
+                        cardToJack.addModifier(game.enemyCResources.removeFromHand(cardIndex))
                         return
                     }
                 }
             }
             if (card.rank == Rank.KING) {
-                val caravan =
-                    game.playerCaravans.filter { it.getValue() in (21..26) }.randomOrNull()
-                if (caravan != null) {
-                    val cardToKing = caravan.cards.filter { it.canAddModifier(card) }
-                        .maxByOrNull { it.card.rank.value }
-                    if (cardToKing != null && cardToKing.canAddModifier(card)) {
+                val caravan = game.playerCaravans.minBy { abs(26 - it.getValue()) }
+                val caravanIndex = game.playerCaravans.indexOf(caravan)
+                val cardToKing = caravan.cards
+                    .filter { caravan.getValue() + it.getValue() !in (21..26) }
+                    .maxByOrNull { it.getValue() }
+
+                if (cardToKing != null && cardToKing.canAddModifier(card)) {
+                    val futureValue = caravan.getValue() + cardToKing.getValue()
+                    val enemyValue = game.enemyCaravans[caravanIndex].getValue()
+                    if (!(checkMoveOnDefeat(
+                            game,
+                            caravanIndex
+                        ) && enemyValue in (21..26) && (enemyValue > futureValue || futureValue > 26))
+                    ) {
                         cardToKing.addModifier(game.enemyCResources.removeFromHand(cardIndex))
                         return
                     }
                 }
+
+                game.enemyCaravans
+                    .flatMap { c -> c.cards.map { it to c } }
+                    .sortedByDescending { it.first.getValue() }
+                    .forEach {
+                        if (it.second.getValue() + it.first.getValue() in (13..26)) {
+                            if (it.first.canAddModifier(card)) {
+                                val futureValue = it.second.getValue() + it.first.getValue()
+                                val playerValue = caravan.getValue()
+                                if (!(checkMoveOnDefeat(
+                                        game,
+                                        caravanIndex
+                                    ) && futureValue in (21..26) && (futureValue > playerValue || playerValue > 26))
+                                ) {
+                                    it.first.addModifier(
+                                        game.enemyCResources.removeFromHand(
+                                            cardIndex
+                                        )
+                                    )
+                                    return
+                                }
+                            }
+                        }
+                    }
+            }
+
+            if (!card.rank.isFace()) {
+                game.enemyCaravans
+                    .sortedByDescending { it.getValue() }
+                    .forEachIndexed { caravanIndex, caravan ->
+                        if (caravan.getValue() + card.rank.value <= 26 && caravan.canPutCardOnTop(card)) {
+                            if (!(checkMoveOnDefeat(
+                                    game,
+                                    caravanIndex
+                                ) && caravan.getValue() + card.rank.value in (21..26))
+                            ) {
+                                caravan.putCardOnTop(game.enemyCResources.removeFromHand(cardIndex))
+                                return
+                            }
+                        }
+                    }
             }
 
             if (card.rank == Rank.QUEEN) {
                 val possibleQueenCaravans = game.enemyCaravans
                     .filter { c ->
-                        c.size >= 2 &&
-                                hand.all { !c.canPutCardOnTop(it) } &&
-                                c.cards.last().canAddModifier(card)
+                        c.size >= 2 && c.getValue() < 21 && hand.all { !c.canPutCardOnTop(it) } && c.cards.last()
+                            .canAddModifier(card)
                     }
                 if (possibleQueenCaravans.isNotEmpty()) {
                     possibleQueenCaravans
-                        .first()
+                        .random()
                         .cards
                         .last()
                         .addModifier(game.enemyCResources.removeFromHand(cardIndex))
@@ -216,33 +276,27 @@ data object EnemyMadnessCardinal : Enemy {
                 }
             }
 
-            if (StrategyJokerSimple.move(game)) {
-                game.jokerPlayedSound()
-                return
+            if (card.rank == Rank.JOKER) {
+                if (StrategyJokerSimple.move(game)) {
+                    game.jokerPlayedSound()
+                    return
+                }
+            }
+
+            if (card.rank == Rank.JACK && overWeightCaravans.isNotEmpty()) {
+                val enemyCaravan = overWeightCaravans.random()
+                val cardToDelete = enemyCaravan.cards.maxBy { it.getValue() }
+                if (cardToDelete.canAddModifier(card)) {
+                    cardToDelete.addModifier(game.enemyCResources.removeFromHand(cardIndex))
+                    return
+                }
             }
         }
 
-        game.enemyCResources.dropCardFromHand(hand.withIndex().minByOrNull {
-            if (!it.value.isOrdinary()) {
-                15
-            } else {
-                when (it.value.rank) {
-                    Rank.ACE -> 2
-                    Rank.TWO -> 2
-                    Rank.THREE -> 2
-                    Rank.FOUR -> 3
-                    Rank.FIVE -> 3
-                    Rank.SIX -> 4
-                    Rank.SEVEN -> 5
-                    Rank.EIGHT -> 5
-                    Rank.NINE -> 5
-                    Rank.TEN -> 5
-                    Rank.JACK -> 6
-                    Rank.QUEEN -> 4
-                    Rank.KING -> 6
-                    Rank.JOKER -> 7
-                }
-            }
-        }!!.index)
+        if (StrategyDropCaravan(DropSelection.RANDOM).move(game)) {
+            return
+        }
+
+        StrategyDropCard(CardDropSelect.MIN_VALUE).move(game)
     }
 }

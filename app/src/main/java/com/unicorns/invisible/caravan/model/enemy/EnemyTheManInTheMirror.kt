@@ -23,16 +23,5 @@ data object EnemyTheManInTheMirror : Enemy {
         }
 
         // TODO: reflect player moves if possible and if makes sense
-
-        game.enemyCResources.dropCardFromHand(hand.withIndex().minBy {
-            when (it.value.rank) {
-                Rank.JOKER -> 7
-                Rank.JACK -> 6
-                Rank.QUEEN -> 4
-                Rank.KING -> 5
-                Rank.ACE -> 3
-                else -> it.value.rank.value
-            }
-        }.index)
     }
 }

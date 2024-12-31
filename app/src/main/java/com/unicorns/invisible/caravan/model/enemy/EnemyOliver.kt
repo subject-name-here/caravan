@@ -8,7 +8,9 @@ import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyDropCard
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyInitStage
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.Rank
+import com.unicorns.invisible.caravan.utils.checkMoveOnDefeat
 import kotlinx.serialization.Serializable
+import kotlin.math.abs
 
 
 @Serializable
@@ -41,29 +43,27 @@ data object EnemyOliver : Enemy {
                     }
                 }
             }
-            if (card.rank == Rank.JACK) {
-                val caravan = game.playerCaravans
-                    .filter { it.getValue() in (21..26) }
-                    .randomOrNull()
-                if (caravan != null) {
-                    val cardToAdd = caravan.cards.maxBy { it.getValue() }
-                    if (cardToAdd.canAddModifier(card)) {
-                        cardToAdd.addModifier(game.enemyCResources.removeFromHand(cardIndex))
-                        return
-                    }
-                }
-            }
+
             if (card.rank == Rank.KING) {
-                val caravan = game.playerCaravans
-                    .filter { it.getValue() in (21..26) }
-                    .randomOrNull()
-                if (caravan != null) {
-                    val cardToKing = caravan.cards.filter { it.canAddModifier(card) }
-                        .maxByOrNull { it.card.rank.value }
-                    if (cardToKing != null && cardToKing.canAddModifier(card)) {
-                        cardToKing.addModifier(game.enemyCResources.removeFromHand(cardIndex))
-                        return
+                game.enemyCaravans
+                    .flatMap { c -> c.cards.map { it to c } }
+                    .sortedByDescending { it.first.getValue() }
+                    .forEach {
+                        if (it.second.getValue() + it.first.getValue() in (13..26)) {
+                            if (it.first.canAddModifier(card)) {
+                                it.first.addModifier(game.enemyCResources.removeFromHand(cardIndex))
+                                return
+                            }
+                        }
                     }
+            }
+
+            if (card.rank == Rank.JACK && overWeightCaravans.isNotEmpty()) {
+                val enemyCaravan = overWeightCaravans.random()
+                val cardToDelete = enemyCaravan.cards.maxBy { it.getValue() }
+                if (cardToDelete.canAddModifier(card)) {
+                    cardToDelete.addModifier(game.enemyCResources.removeFromHand(cardIndex))
+                    return
                 }
             }
 

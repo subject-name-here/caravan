@@ -59,7 +59,8 @@ import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.challenge.Challenge
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.save.Save
-import com.unicorns.invisible.caravan.save.loadSave
+import com.unicorns.invisible.caravan.save.loadLocalSave
+import com.unicorns.invisible.caravan.save.loadGDSave
 import com.unicorns.invisible.caravan.save.processOldSave
 import com.unicorns.invisible.caravan.save.saveData
 import com.unicorns.invisible.caravan.utils.SliderCustom
@@ -106,6 +107,8 @@ var soundReduced: Boolean = false
     }
 private val soundReducedLiveData = MutableLiveData(soundReduced)
 
+val isHorror = MutableLiveData(false)
+
 @Suppress("MoveLambdaOutsideParentheses")
 class MainActivity : SaveDataActivity() {
     val styleId
@@ -125,16 +128,20 @@ class MainActivity : SaveDataActivity() {
     }
 
     override fun onSnapshotClientInitialized() {
-        // TODO: split local save loading (right at the beginning) and GD save loading (if local save loading has failed)
         CoroutineScope(Dispatchers.IO).launch {
             if (!save.isUsable) {
-                val loadedSave = loadSave(this@MainActivity)
-                if (loadedSave != null) {
-                    save = loadedSave
+                val localSave = loadLocalSave(this@MainActivity)
+                if (localSave != null) {
+                    save = localSave
                 } else {
-                    save = Save(isUsable = true)
-                    processOldSave(this@MainActivity)
-                    saveData(this@MainActivity)
+                    val loadedSave = loadGDSave(this@MainActivity)
+                    if (loadedSave != null) {
+                        save = loadedSave
+                    } else {
+                        save = Save(isUsable = true)
+                        processOldSave(this@MainActivity)
+                        saveData(this@MainActivity)
+                    }
                 }
 
                 isSaveLoaded.postValue(true)
@@ -615,7 +622,7 @@ class MainActivity : SaveDataActivity() {
                         LaunchedEffect(Unit) {
                             val currentHash = save.getCurrentDateHashCode()
                             if (currentHash != save.challengesHash) {
-                                val capsFound = Random.nextInt(10, 20)
+                                val capsFound = Random.nextInt(15, 25)
                                 showAlertDialog(
                                     getString(R.string.daily_update_head),
                                     getString(R.string.daily_update_body, capsFound.toString()),

@@ -90,7 +90,7 @@ data object EnemyEasyPete : Enemy {
         }
 
 
-        hand.withIndex().sortedByDescending {
+        hand.withIndex().filter { it.value.isOrdinary() }.sortedByDescending {
             when (it.value.rank) {
                 Rank.JOKER -> 14
                 Rank.JACK -> 8

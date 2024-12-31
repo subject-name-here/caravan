@@ -52,8 +52,8 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
-import coil.decode.SvgDecoder
-import coil.request.ImageRequest
+import coil.decode.SvgDecoder.*
+import coil.request.ImageRequest.*
 import coil.size.Size
 import coil.size.pxOrElse
 import com.sebaslogen.resaca.rememberScoped
@@ -97,6 +97,7 @@ enum class Style(val styleNameId: Int, val price: Int) {
     MADRE_ROJA(R.string.style_madre_roja, 2277),
     VAULT_21(R.string.style_vault_21, 2100),
     VAULT_22(R.string.style_vault_22, 2200),
+    BLACK(R.string.style_black, 413),
     ENCLAVE(R.string.style_enclave, 1776);
 }
 
@@ -117,6 +118,7 @@ fun getStyleCities(style: Style): List<String> {
         VAULT_21 -> listOf("LONG 15", "PRIMM", "NOVAK", "188", "NEW VEGAS", "HOOVER DAM")
         VAULT_22 -> listOf("GRRRRR", "BRRRR", "VRRR", "MRR", "HRRRRRRR", "DRRRRRR")
         ENCLAVE -> listOf("NAVARRO", "AUSTIN", "WASHINGTON", "SEATTLE", "CHICAGO", "NEW YORK")
+        Style.BLACK -> listOf("YOU ARE", "TOO LATE", "TO SCREAM", "IT IS", "ALREADY ON", "YOUR BACK")
         else -> listOf("BONEYARD", "REDDING", "VAULT CITY", "DAYGLOW", "NEW RENO", "THE HUB")
     }
 }
@@ -138,26 +140,26 @@ fun BoxWithConstraintsScope.StylePicture(
         OLD_WORLD -> {
             val flagPainter = listOf(
                 rememberAsyncImagePainter(
-                    ImageRequest.Builder(activity)
+                    Builder(activity)
                         .size(424, 256)
                         .data(prefix + "old_world/china.webp")
                         .build()
                 ),
                 rememberAsyncImagePainter(
-                    ImageRequest.Builder(activity)
+                    Builder(activity)
                         .size(522, 256)
                         .data(prefix + "old_world/usa.webp")
                         .build()
                 ),
                 rememberAsyncImagePainter(
-                    ImageRequest.Builder(activity)
+                    Builder(activity)
                         .size(396, 256)
                         .data(prefix + "old_world/nevada_flag.webp")
                         .build()
                 )
             ).random(rand)
             val painter3 = rememberAsyncImagePainter(
-                ImageRequest.Builder(activity)
+                Builder(activity)
                     .size(512, 256)
                     .data(
                         prefix + listOf(
@@ -251,10 +253,10 @@ fun BoxWithConstraintsScope.StylePicture(
                     ) {
                         Image(
                             painter = rememberAsyncImagePainter(
-                                ImageRequest.Builder(activity)
+                                Builder(activity)
                                     .size(238, 207)
                                     .data(prefix + "old_world/decal1.webp")
-                                    .decoderFactory(SvgDecoder.Factory())
+                                    .decoderFactory(Factory())
                                     .build()
                             ),
                             contentDescription = "",
@@ -269,7 +271,7 @@ fun BoxWithConstraintsScope.StylePicture(
 
         VAULT_22 -> {
             val painter = rememberAsyncImagePainter(
-                ImageRequest.Builder(activity)
+                Builder(activity)
                     .size(512, 356)
                     .data(prefix + "vault_22/v22sign.webp")
                     .build()
@@ -306,7 +308,7 @@ fun BoxWithConstraintsScope.StylePicture(
                 while (currentWidth < width) {
                     val curMossUp = mossUp.random(rand)
                     val painter2 = rememberAsyncImagePainter(
-                        ImageRequest.Builder(activity)
+                        Builder(activity)
                             .size(curMossUp.second)
                             .data(prefix + curMossUp.first)
                             .build()
@@ -332,13 +334,13 @@ fun BoxWithConstraintsScope.StylePicture(
 
         SIERRA_MADRE -> {
             val painter = rememberAsyncImagePainter(
-                ImageRequest.Builder(activity)
+                Builder(activity)
                     .size(512, 512)
                     .data(prefix + "sierra_madre/mosaic.webp")
                     .build()
             )
             val painterLogo = rememberAsyncImagePainter(
-                ImageRequest.Builder(activity)
+                Builder(activity)
                     .size(512, 512)
                     .data(prefix + "sierra_madre/logo1.webp")
                     .build()
@@ -373,7 +375,7 @@ fun BoxWithConstraintsScope.StylePicture(
             }
 
             val painterFrame = rememberAsyncImagePainter(
-                ImageRequest.Builder(activity)
+                Builder(activity)
                     .size(256, 256)
                     .data(prefix + "sierra_madre/frame.webp")
                     .build()
@@ -396,13 +398,13 @@ fun BoxWithConstraintsScope.StylePicture(
             }
 
             val painterPostcard1 = rememberAsyncImagePainter(
-                ImageRequest.Builder(activity)
+                Builder(activity)
                     .size(195, 256)
                     .data(prefix + "sierra_madre/postcard1.webp")
                     .build()
             )
             val painterPostcard2 = rememberAsyncImagePainter(
-                ImageRequest.Builder(activity)
+                Builder(activity)
                     .size(197, 256)
                     .data(prefix + "sierra_madre/postcard2.webp")
                     .build()
@@ -421,7 +423,7 @@ fun BoxWithConstraintsScope.StylePicture(
 
         MADRE_ROJA -> {
             val painterDrip = rememberAsyncImagePainter(
-                ImageRequest.Builder(activity)
+                Builder(activity)
                     .size(256, 256)
                     .data(prefix + "madre_roja/drip.webp")
                     .build()
@@ -436,7 +438,7 @@ fun BoxWithConstraintsScope.StylePicture(
 
             Image(
                 painter = rememberAsyncImagePainter(
-                    ImageRequest.Builder(activity)
+                    Builder(activity)
                         .size(256, 128)
                         .data(prefix + "madre_roja/graffiti_${(1..2).random(rand)}.webp")
                         .build()
@@ -483,7 +485,7 @@ fun BoxWithConstraintsScope.StylePicture(
                     }
                     Image(
                         painter = rememberAsyncImagePainter(
-                            ImageRequest.Builder(activity)
+                            Builder(activity)
                                 .size(graffiti.second)
                                 .data(prefix + graffiti.first)
                                 .build()
@@ -503,7 +505,7 @@ fun BoxWithConstraintsScope.StylePicture(
 
         DESERT -> {
             val painterMain = rememberAsyncImagePainter(
-                ImageRequest.Builder(activity)
+                Builder(activity)
                     .size(512, 512)
                     .data(prefix + "desert/nv_graffiti_02.webp")
                     .build(),
@@ -511,19 +513,19 @@ fun BoxWithConstraintsScope.StylePicture(
 
             val graffitiPainter = listOf(
                 rememberAsyncImagePainter(
-                    ImageRequest.Builder(activity)
+                    Builder(activity)
                         .size(293, 107)
                         .data(prefix + "desert/ligas.webp")
                         .build(),
                 ),
                 rememberAsyncImagePainter(
-                    ImageRequest.Builder(activity)
+                    Builder(activity)
                         .size(289, 105)
                         .data(prefix + "desert/raders_ahead.webp")
                         .build(),
                 ),
                 rememberAsyncImagePainter(
-                    ImageRequest.Builder(activity)
+                    Builder(activity)
                         .size(499, 100)
                         .data(prefix + "desert/stop_whining.webp")
                         .build(),
@@ -566,7 +568,7 @@ fun BoxWithConstraintsScope.StylePicture(
 
         ALASKA_FRONTIER -> {
             val painterFrame = rememberAsyncImagePainter(
-                ImageRequest.Builder(activity)
+                Builder(activity)
                     .size(128, 128)
                     .data(prefix + "alaska/dlcanchredstar.jpg")
                     .build()
@@ -574,13 +576,13 @@ fun BoxWithConstraintsScope.StylePicture(
             if (rand.nextBoolean()) {
                 val painter = listOf(
                     rememberAsyncImagePainter(
-                        ImageRequest.Builder(activity)
+                        Builder(activity)
                             .size(339, 512)
                             .data(prefix + "alaska/america_prop_1.webp")
                             .build(),
                     ),
                     rememberAsyncImagePainter(
-                        ImageRequest.Builder(activity)
+                        Builder(activity)
                             .size(512, 512)
                             .data(prefix + "alaska/america_prop_2.webp")
                             .build(),
@@ -635,13 +637,13 @@ fun BoxWithConstraintsScope.StylePicture(
             } else {
                 val painter = listOf(
                     rememberAsyncImagePainter(
-                        ImageRequest.Builder(activity)
+                        Builder(activity)
                             .size(412, 512)
                             .data(prefix + "alaska/china_prop_1.webp")
                             .build(),
                     ),
                     rememberAsyncImagePainter(
-                        ImageRequest.Builder(activity)
+                        Builder(activity)
                             .size(409, 512)
                             .data(prefix + "alaska/china_prop_2.webp")
                             .build(),
@@ -688,25 +690,25 @@ fun BoxWithConstraintsScope.StylePicture(
 
         NEW_WORLD -> {
             val painter4 = rememberAsyncImagePainter(
-                ImageRequest.Builder(activity)
+                Builder(activity)
                     .size(327, 75)
                     .data(prefix + "new_world/ghoul_and_loving_it.webp")
                     .build()
             )
             val painter5_1 = rememberAsyncImagePainter(
-                ImageRequest.Builder(activity)
+                Builder(activity)
                     .size(128, 128)
                     .data(prefix + "new_world/nvgraffitisierra03.webp")
                     .build()
             )
             val painter5_2 = rememberAsyncImagePainter(
-                ImageRequest.Builder(activity)
+                Builder(activity)
                     .size(256, 128)
                     .data(prefix + "new_world/nvgraffitisierra07.webp")
                     .build()
             )
             val painter5_3 = rememberAsyncImagePainter(
-                ImageRequest.Builder(activity)
+                Builder(activity)
                     .size(256, 128)
                     .data(prefix + "new_world/wwromanes.webp")
                     .build()
@@ -737,7 +739,7 @@ fun BoxWithConstraintsScope.StylePicture(
 
             if (rand.nextBoolean()) {
                 val painter3 = rememberAsyncImagePainter(
-                    ImageRequest.Builder(activity)
+                    Builder(activity)
                         .size(287, 185)
                         .data(prefix + "new_world/graffiti_cool.webp")
                         .build()
@@ -764,13 +766,13 @@ fun BoxWithConstraintsScope.StylePicture(
                 }
             } else if (rand.nextBoolean()) {
                 val objPainter = rememberAsyncImagePainter(
-                    ImageRequest.Builder(activity)
+                    Builder(activity)
                         .size(235, 501)
                         .data(prefix + "new_world/legion1.webp")
                         .build()
                 )
                 val painter3 = rememberAsyncImagePainter(
-                    ImageRequest.Builder(activity)
+                    Builder(activity)
                         .size(287, 185)
                         .data(prefix + "new_world/graffiti_cool.webp")
                         .build()
@@ -805,7 +807,7 @@ fun BoxWithConstraintsScope.StylePicture(
                 }
             } else {
                 val painter6 = rememberAsyncImagePainter(
-                    ImageRequest.Builder(activity)
+                    Builder(activity)
                         .size(577, 676)
                         .data(prefix + "new_world/graffiti_coolest.webp")
                         .build()
@@ -941,13 +943,13 @@ fun BoxWithConstraintsScope.StylePicture(
             )
             val painters = listOf(
                 rememberAsyncImagePainter(
-                    ImageRequest.Builder(activity)
+                    Builder(activity)
                         .size(256, 256)
                         .data(prefix + "pip_girl/vault_girl1.webp")
                         .build()
                 ),
                 rememberAsyncImagePainter(
-                    ImageRequest.Builder(activity)
+                    Builder(activity)
                         .size(256, 256)
                         .data(prefix + "pip_girl/vault_girl2.webp")
                         .build()
@@ -1013,19 +1015,19 @@ fun BoxWithConstraintsScope.StylePicture(
                     .fillMaxSize()
                     .padding(vertical = 48.dp), Alignment.CenterEnd) {
                 val painter1 = rememberAsyncImagePainter(
-                    ImageRequest.Builder(activity)
+                    Builder(activity)
                         .size(256, 256)
                         .data(prefix + "vault_21/load_roulette_wheel.webp")
                         .build()
                 )
                 val painter0 = rememberAsyncImagePainter(
-                    ImageRequest.Builder(activity)
+                    Builder(activity)
                         .size(16, 256)
                         .data(prefix + "vault_21/load_roulette_ball.webp")
                         .build()
                 )
                 val painter2 = rememberAsyncImagePainter(
-                    ImageRequest.Builder(activity)
+                    Builder(activity)
                         .size(768, 768)
                         .data(prefix + "vault_21/load_bars.webp")
                         .build()
@@ -1080,21 +1082,21 @@ fun BoxWithConstraintsScope.StylePicture(
 
         ENCLAVE -> {
             val flagPainter = rememberAsyncImagePainter(
-                ImageRequest.Builder(activity)
+                Builder(activity)
                     .size(1000, 527)
                     .data(prefix + "enclave/enclave_flag.webp")
                     .build()
             )
             val posterPainter = if (height > width) {
                 rememberAsyncImagePainter(
-                    ImageRequest.Builder(activity)
+                    Builder(activity)
                         .size(195, 512)
                         .data(prefix + "enclave/enclave_poster_v.webp")
                         .build()
                 )
             } else {
                 rememberAsyncImagePainter(
-                    ImageRequest.Builder(activity)
+                    Builder(activity)
                         .size(512, 256)
                         .data(prefix + "enclave/enclave_poster_h.webp")
                         .build()
@@ -1133,7 +1135,7 @@ fun BoxWithConstraintsScope.StylePicture(
 
 
             val painterSeal = rememberAsyncImagePainter(
-                ImageRequest.Builder(activity)
+                Builder(activity)
                     .size(400, 400)
                     .data(prefix + "enclave/enclave_seal.webp")
                     .build()
@@ -1155,5 +1157,7 @@ fun BoxWithConstraintsScope.StylePicture(
                 )
             }
         }
+
+        Style.BLACK -> {}
     }
 }

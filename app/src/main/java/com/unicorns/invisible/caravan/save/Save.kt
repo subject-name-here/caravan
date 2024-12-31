@@ -135,6 +135,8 @@ class Save(val isUsable: Boolean) {
     var papaSmurfActive = false
     @EncodeDefault
     var sixtyNineActive = false
+    @EncodeDefault
+    var isHeroic = false
 
     @EncodeDefault
     val enemyCapsLeft = HashMap<Int, Int>()
@@ -144,7 +146,7 @@ class Save(val isUsable: Boolean) {
             enemyCapsLeft[it] = if (it % 6 == 5) {
                 75
             } else {
-                random.nextInt(15, 50)
+                random.nextInt(15, 30)
             }
         }
     }

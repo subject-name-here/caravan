@@ -44,7 +44,7 @@
     <string name="lucky_38_trader_name">Мэрилин и Джейн</string>
     <string name="lucky_38_trader_cond">Одолейте Мистера Хауса в БАШНЕ.</string>
     <string name="sierra_madre_trader_name">Приёмник бутылочных крышек Сьерра-Мадре</string>
-    <string name="sierra_madre_trader_cond">Победите Элайджу 10 раз и завершите главу 1 сюжета.</string>
+    <string name="sierra_madre_trader_cond">Победите Элайджу 10 раз (%1$s/10) и завершите главу 1 сюжета.</string>
     <string name="chinese_trader_name">Военачальник Ли Чжоу</string>
     <string name="chinese_trader_condition">Для начала, завершите главы 9 и 9А Сюжета. Кстати, в каком году была образована КПК?</string>
     <string name="enclave_trader_name">Савант</string>
@@ -315,6 +315,7 @@
     <string name="style_madre_roja">Мадре-Роха</string>
     <string name="style_vault_21">Убежище 21</string>
     <string name="style_vault_22">Убежище 22</string>
+    <string name="style_black">Тьма (тест)</string>
     <string name="style_enclave">Анклав</string>
 
     <string name="beat_enemies_1_name">Отцы и дети</string>
@@ -684,7 +685,8 @@
 
     <string name="your_barter_stat">Бартер: %1$s</string>
     <string name="your_caps_in_hand">Крышечки на руках: %1$s</string>
-    <string name="hi_my_name_is">Привет! Меня зовут %1$s!!</string>
+    <string name="hi_my_name_is">Привет! Я %1$s!!</string>
+    <string name="hi_our_name_is">Привет! Нас зовут %1$s!!</string>
     <string name="style_buy">Скин: %1$s</string>
     <string name="buy_for_caps">Купить за %1$s крышечек</string>
 
@@ -693,9 +695,8 @@
     <string name="enter_your_bet">Введите свою ставку (от %1$s до %2$s), или не вводите ничего, чтобы сыграть ради интереса:</string>
     <string name="your_expected_reward">Ожидаемый выигрыш: %1$s крышечек.</string>
     <string name="your_reward_reward_caps">\nВаш выигрыш: %1$s крышечек!!</string>
-    <string name="your_reward_card">\nВаш выигрыш: карты %1$s!!</string>
     <string name="prize_caps">%1$s крышечек</string>
-    <string name="you_have_won">\nВаш выигрыш: %1$s.</string>
+    <string name="you_have_won">\nВы получили: %1$s.</string>
 
     <string name="daily_update_head">Какой чудесный день!</string>
     <string name="daily_update_body">Испытания, крышечки врагов и инвентарь торговцев обновлены!\n\nА ещё вы нашли %1$s крышечек!</string>

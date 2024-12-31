@@ -11,9 +11,9 @@ import kotlin.random.Random
 
 @Serializable
 data object EnemyStory6 : Enemy {
-    override fun createDeck(): CResources = CResources(CustomDeck())
+    override fun createDeck(): CResources = CResources(CustomDeck(CardBack.STANDARD, false))
 
     override fun makeMove(game: Game) {
-        TODO("Not yet implemented")
+        EnemyVeronica.makeMove(game)
     }
 }

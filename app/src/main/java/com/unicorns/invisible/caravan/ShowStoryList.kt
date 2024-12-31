@@ -1073,16 +1073,31 @@ fun ShowStoryChapter6(
 
     if (isGame) {
         val enemy by rememberScoped { mutableStateOf(EnemyStory6) }
+        var cardsPut by rememberScoped { mutableIntStateOf(0) }
         StartStoryGame(
             activity,
             enemy,
             CResources(getDeck(5)),
             showAlertDialog,
-            {},
+            {
+                if (it != null) {
+                    cardsPut++
+                    when (cardsPut) {
+                        1 -> {
+                            messageNumber = 1
+                        }
+                        3 -> {
+                            messageNumber = 2
+                        }
+                        4 -> {
+                            messageNumber = 3
+                        }
+                    }
+                }
+            },
             { gameResult = 2 },
             {
-                // TODO: fix this
-                if (false) {
+                if (cardsPut > 3) {
                     gameResult = -1
                 } else {
                     gameResult = 1
@@ -1345,6 +1360,7 @@ fun ShowStoryChapter8(
     var lineNumber by rememberSaveable { mutableIntStateOf(0) }
     var isGame by rememberSaveable { mutableStateOf(false) }
     var gameResult by rememberSaveable { mutableIntStateOf(0) }
+    var cardsPut by rememberScoped { mutableIntStateOf(0) }
     if (isGame) {
         val enemy by rememberScoped { mutableStateOf(EnemyStory8) }
         StartStoryGame(
@@ -1352,10 +1368,10 @@ fun ShowStoryChapter8(
             enemy,
             CResources(getDeck(7)),
             showAlertDialog,
-            {},
+            { if (it != null) cardsPut++ },
             { gameResult = 1; advanceChapter() },
             {
-                if (false) {
+                if (cardsPut > 3) {
                     gameResult = -1
                 } else {
                     gameResult = 2
@@ -2074,7 +2090,7 @@ fun StartStoryGame(
     enemy: Enemy,
     playerCResources: CResources,
     showAlertDialog: (String, String, (() -> Unit)?) -> Unit,
-    onStart: () -> Unit,
+    onMove: (Card?) -> Unit = {},
     onWin: () -> Unit,
     onLose: () -> Unit,
     goBack: () -> Unit,
@@ -2084,7 +2100,6 @@ fun StartStoryGame(
             playerCResources,
             enemy
         ).also {
-            onStart()
             it.startGame()
         }
     }
@@ -2124,7 +2139,7 @@ fun StartStoryGame(
         it.nukeBlownSound = { playNukeBlownSound(activity) }
     }
 
-    ShowGame(activity, game) {
+    ShowGame(activity, game, onMove = onMove) {
         if (game.isOver()) {
             goBack()
             return@ShowGame

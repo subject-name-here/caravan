@@ -23,7 +23,5 @@ class UltraLuxeTrader : Trader {
 
     override fun getCards(): List<Pair<Card, Int>> = getCards(CardBack.ULTRA_LUXE, 12)
 
-    override fun getStyles(): List<Style> {
-        return listOf(Style.OLD_WORLD)
-    }
+    override fun getStyles() = listOf(Style.OLD_WORLD, Style.BLACK)
 }

@@ -77,9 +77,9 @@ data object EnemyDrMobius : Enemy {
     fun generateCard(): Card {
         val rank = Rank.entries.random()
         return if (rank == Rank.JOKER) {
-            Card(rank, listOf(Suit.HEARTS, Suit.CLUBS).random(), CardBack.STANDARD, false)
+            Card(rank, listOf(Suit.HEARTS, Suit.CLUBS).random(), CardBack.LUCKY_38, false)
         } else {
-            Card(rank, Suit.entries.random(), CardBack.STANDARD, true)
+            Card(rank, Suit.entries.random(), CardBack.STANDARD, Random.nextBoolean())
         }
     }
 }

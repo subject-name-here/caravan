@@ -2,11 +2,13 @@ package com.unicorns.invisible.caravan.model
 
 import com.unicorns.invisible.caravan.AnimationSpeed
 import com.unicorns.invisible.caravan.model.enemy.Enemy
+import com.unicorns.invisible.caravan.model.enemy.EnemyMadnessCardinal
 import com.unicorns.invisible.caravan.model.enemy.EnemyTheManInTheMirror
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.Caravan
 import com.unicorns.invisible.caravan.model.primitives.Card
 import com.unicorns.invisible.caravan.model.primitives.CardWithModifier
+import com.unicorns.invisible.caravan.model.primitives.CustomDeck
 import com.unicorns.invisible.caravan.model.primitives.Rank
 import com.unicorns.invisible.caravan.model.primitives.Suit
 import kotlinx.coroutines.CoroutineScope
@@ -69,6 +71,11 @@ class Game(
     }
 
     fun startGame(maxNumOfFaces: Int = 5) {
+        if (enemy is EnemyMadnessCardinal) {
+            while (enemyCResources.deckSize < playerCResources.deckSize + 10) {
+                enemyCResources.addNewDeck(CustomDeck(CardBack.MADNESS, false))
+            }
+        }
         initDeck(playerCResources, maxNumOfFaces)
         initDeck(enemyCResources, maxNumOfFaces)
         if (enemy is EnemyTheManInTheMirror) {
