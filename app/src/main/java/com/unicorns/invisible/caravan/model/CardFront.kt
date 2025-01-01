@@ -8,12 +8,12 @@ import com.unicorns.invisible.caravan.model.primitives.Suit
 fun getCardName(card: Card): String {
     return when (card.back) {
         CardBack.STANDARD -> getStandardName(card)
-        CardBack.VAULT_21 -> if (card.isAlt) getVault21AltName(card) else getVault21Name(card)
         CardBack.GOMORRAH -> getGomorrahName(card)
         CardBack.TOPS -> getTopsName(card)
         CardBack.ULTRA_LUXE -> getUltraLuxeName(card)
-        CardBack.LUCKY_38 -> if (card.isAlt) getLucky38AltName(card) else getLucky38Name(card)
-        CardBack.SIERRA_MADRE -> if (card.isAlt) getSmCleanName(card) else getStandardName(card)
+        CardBack.LUCKY_38 -> if (!card.isAlt) getLucky38Name(card) else getLucky38AltName(card)
+        CardBack.VAULT_21 -> if (!card.isAlt) getVault21Name(card) else getVault21AltName(card)
+        CardBack.SIERRA_MADRE -> if (!card.isAlt) getStandardName(card) else getSmCleanName(card)
 
         CardBack.CHINESE -> if (!card.isAlt) getChineseName(card) else getCcpAltCard()
         CardBack.ENCLAVE -> if (!card.isAlt) getEnclaveName(card) else getEnclaveAltCard()
@@ -206,38 +206,23 @@ private fun getLucky38AltName(card: Card): String {
             "lucky38ALT/2J.webp"
         }
     }
-
-    val letter = when (card.rank.value) {
-        in (2..9) -> card.rank.value.toString()
-        else -> card.rank.name.first().toString()
-    }
-    val suit = card.suit.name.first()
-    return "lucky38ALT/$letter$suit.svg"
+    return getSvgName(card, "lucky38ALT")
 }
 
 private fun getVault21AltName(card: Card): String {
-    if (card.rank == Rank.JOKER) {
-        return if (card.suit == Suit.HEARTS) {
-            "vault21ALT/1J.svg"
-        } else {
-            "vault21ALT/2J.svg"
-        }
-    }
-
-    val letter = when (card.rank.value) {
-        in (2..9) -> card.rank.value.toString()
-        else -> card.rank.name.first().toString()
-    }
-    val suit = card.suit.name.first()
-    return "vault21ALT/$letter$suit.svg"
+    return getSvgName(card, "vault21ALT")
 }
 
 private fun getVault21Name(card: Card): String {
+    return getSvgName(card, "vault21")
+}
+
+private fun getSvgName(card: Card, dirName: String): String {
     if (card.rank == Rank.JOKER) {
         return if (card.suit == Suit.HEARTS) {
-            "vault21/1J.svg"
+            "$dirName/1J.svg"
         } else {
-            "vault21/2J.svg"
+            "$dirName/2J.svg"
         }
     }
 
@@ -246,7 +231,7 @@ private fun getVault21Name(card: Card): String {
         else -> card.rank.name.first().toString()
     }
     val suit = card.suit.name.first()
-    return "vault21/$letter$suit.svg"
+    return "$dirName/$letter$suit.svg"
 }
 
 private fun getWildWastelandName(card: Card): String {
@@ -267,45 +252,21 @@ private fun getWildWastelandName(card: Card): String {
 }
 
 private fun getMadnessName(card: Card): String {
-    if (card.rank == Rank.JOKER) {
-        return if (card.suit == Suit.HEARTS) {
-            "madness/Joker_1.webp"
-        } else {
-            "madness/Joker_2.webp"
-        }
-    }
-
-    val letter = when (card.rank.value) {
-        in (1..10) -> card.rank.value.toString()
-        else -> card.rank.name.first().toString()
-    }
-    val suit = card.suit.name.first()
-    return "madness/${letter}_$suit.webp"
+    return getOGCardName(card, "madness")
 }
-
 private fun getChineseName(card: Card): String {
-    if (card.rank == Rank.JOKER) {
-        return if (card.suit == Suit.HEARTS) {
-            "chinese/Joker_1.webp"
-        } else {
-            "chinese/Joker_2.webp"
-        }
-    }
-
-    val letter = when (card.rank.value) {
-        in (1..10) -> card.rank.value.toString()
-        else -> card.rank.name.first().toString()
-    }
-    val suit = card.suit.name.first()
-    return "chinese/${letter}_$suit.webp"
+    return getOGCardName(card, "chinese")
+}
+private fun getEnclaveName(card: Card): String {
+    return getOGCardName(card, "enclave")
 }
 
-private fun getEnclaveName(card: Card): String {
+private fun getOGCardName(card: Card, dirName: String): String {
     if (card.rank == Rank.JOKER) {
         return if (card.suit == Suit.HEARTS) {
-            "enclave/Joker_1.webp"
+            "$dirName/Joker_1.webp"
         } else {
-            "enclave/Joker_2.webp"
+            "$dirName/Joker_2.webp"
         }
     }
 
@@ -314,5 +275,5 @@ private fun getEnclaveName(card: Card): String {
         else -> card.rank.name.first().toString()
     }
     val suit = card.suit.name.first()
-    return "enclave/${letter}_$suit.webp"
+    return "$dirName/${letter}_$suit.webp"
 }

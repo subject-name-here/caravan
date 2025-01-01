@@ -37,9 +37,9 @@ class Caravan {
         removeAll { it.card.suit == card.suit && !it.hasActiveJoker }
     }
 
-    fun getCazadorPoison(isReversed: Boolean = false) {
+    fun getCazadorPoison(isReversed: Boolean) {
         if (!isReversed) {
-            removeAll { it.card.rank.ordinal == 0 }
+            removeAll { it.card.rank.value == 1 }
         }
 
         cardsMutable.forEach { it.card.caravanAnimationMark = Card.AnimationMark.MOVED_OUT }
@@ -49,11 +49,11 @@ class Caravan {
         copy.forEach {
             val mods = it.modifiersCopy()
             val newOrdinal = (changeOrdinal(it.card.rank.ordinal)).coerceIn(0, 9)
-            cardsMutable.add(CardWithModifier(
-                Card(Rank.entries[newOrdinal], it.card.suit, CardBack.MADNESS, true)
-            ).apply {
-                copyModifiersFrom(mods)
-            })
+            cardsMutable.add(
+                CardWithModifier(
+                    Card(Rank.entries[newOrdinal], it.card.suit, CardBack.MADNESS, true)
+                ).apply { copyModifiersFrom(mods) }
+            )
         }
     }
     fun getPetePower() {
@@ -62,11 +62,11 @@ class Caravan {
         cardsMutable.clear()
         copy.forEach {
             val mods = it.modifiersCopy()
-            cardsMutable.add(CardWithModifier(
-                Card(Rank.TEN, it.card.suit, CardBack.MADNESS, true)
-            ).apply {
-                copyModifiersFrom(mods)
-            })
+            cardsMutable.add(
+                CardWithModifier(
+                    Card(Rank.TEN, it.card.suit, CardBack.MADNESS, true)
+                ).apply { copyModifiersFrom(mods) }
+            )
         }
     }
     fun getUfo(seed: Int) {
@@ -75,12 +75,11 @@ class Caravan {
     }
 
     fun getValue(): Int {
-        if (cards.flatMap{ it.modifiersCopy() }.any { mod ->
-            mod.getWildWastelandCardType() == Card.WildWastelandCardType.YES_MAN
-        }) {
-            return 26
+        return if (cards.any { it.hasActiveYesMan }) {
+            26
+        } else {
+            cards.sumOf { it.getValue() }
         }
-        return cards.sumOf { it.getValue() }
     }
 
     fun canPutCardOnTop(card: Card): Boolean {

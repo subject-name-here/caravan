@@ -49,12 +49,19 @@ import com.unicorns.invisible.caravan.utils.getTextBackgroundColor
 import com.unicorns.invisible.caravan.utils.getTextColor
 import com.unicorns.invisible.caravan.utils.getTextStrokeColor
 import com.unicorns.invisible.caravan.utils.getTrackColor
+import com.unicorns.invisible.caravan.utils.launchHorrorSequence
 import com.unicorns.invisible.caravan.utils.playClickSound
 import com.unicorns.invisible.caravan.utils.playCloseSound
 import com.unicorns.invisible.caravan.utils.playGlitchSound
 import com.unicorns.invisible.caravan.utils.playPimpBoySound
 import com.unicorns.invisible.caravan.utils.playYesBeep
 import com.unicorns.invisible.caravan.utils.scrollbar
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlin.system.exitProcess
 
 
 @Composable
@@ -358,8 +365,20 @@ fun ShowTrueSettings(
                                         }
 
                                         696969 -> {
-                                            isHorror.value = true
-                                            // TODO
+                                            // TODO: hint on it
+                                            if (activity.styleId == Style.BLACK && !save.glitchDefeated) {
+                                                launchHorrorSequence(activity)
+                                                MainScope().launch {
+                                                    delay(1000L)
+                                                    isHorror.value = true
+                                                    restartSwitch.postValue(true)
+                                                }
+                                                CoroutineScope(Dispatchers.Unconfined).launch {
+                                                    delay(666000L)
+                                                    saveData(activity)
+                                                    exitProcess(0)
+                                                }
+                                            }
                                         }
 
                                         845 -> {

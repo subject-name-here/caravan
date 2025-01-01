@@ -45,7 +45,7 @@
     <string name="lucky_38_trader_name">Marylin &amp; Jane</string>
     <string name="lucky_38_trader_cond">Beat Mr. House in Tower.</string>
     <string name="sierra_madre_trader_name">Sierra Madre BottleCaps Exchange Machine</string>
-    <string name="sierra_madre_trader_cond">Beat Father Elijah 10 times (%1$s/10) and complete Chapter 1 of the Story mode.</string>
+    <string name="sierra_madre_trader_cond">Beat Father Elijah 6 times (%1$s/6) and complete Chapter 1 of the Story mode.</string>
     <string name="chinese_trader_name">Warlord Li Xuan</string>
     <string name="chinese_trader_condition">First of all, finish chapters 9 and 9A of the Story mode. By the way, what year CCP was established?</string>
     <string name="enclave_trader_name">Savanth</string>

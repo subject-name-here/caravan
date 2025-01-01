@@ -21,7 +21,7 @@ class UltraLuxeTrader : Trader {
 
     override fun getName(): Int = R.string.ultra_luxe_trader_name
 
-    override fun getCards(): List<Pair<Card, Int>> = getCards(CardBack.ULTRA_LUXE, 12)
+    override fun getCards(): List<Pair<Card, Int>> = getCards(CardBack.ULTRA_LUXE, 11)
 
     override fun getStyles() = listOf(Style.OLD_WORLD, Style.BLACK)
 }

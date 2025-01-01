@@ -27,13 +27,20 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.paint
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorMatrix
+import androidx.compose.ui.graphics.ColorMatrixColorFilter
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
@@ -51,6 +58,7 @@ import com.unicorns.invisible.caravan.model.enemy.EnemyCrooker
 import com.unicorns.invisible.caravan.model.enemy.EnemyDrMobius
 import com.unicorns.invisible.caravan.model.enemy.EnemyEasyPete
 import com.unicorns.invisible.caravan.model.enemy.EnemyElijah
+import com.unicorns.invisible.caravan.model.enemy.EnemyGlitch
 import com.unicorns.invisible.caravan.model.enemy.EnemyHanlon
 import com.unicorns.invisible.caravan.model.enemy.EnemyLuc10
 import com.unicorns.invisible.caravan.model.enemy.EnemyMadnessCardinal
@@ -92,9 +100,11 @@ import com.unicorns.invisible.caravan.utils.playWinSound
 import com.unicorns.invisible.caravan.utils.scrollbar
 import com.unicorns.invisible.caravan.utils.startAmbient
 import com.unicorns.invisible.caravan.utils.stopAmbient
+import kotlinx.coroutines.delay
 import java.util.Locale
 import kotlin.math.min
 import kotlin.math.pow
+import kotlin.system.exitProcess
 
 
 @Composable
@@ -108,6 +118,22 @@ fun ShowSelectPvE(
     var showSelectEnemy by rememberScoped { mutableStateOf(false) }
     var showTower by rememberScoped { mutableStateOf(false) }
     var showTutorial by rememberScoped { mutableStateOf(false) }
+
+    if (isHorror.value == true && (showStats || showStory || showSelectEnemy || showTower || showTutorial)) {
+        StartGame(
+            activity = activity,
+            playerCResources = CResources(save.selectedDeck.first, save.selectedDeck.second),
+            enemy = EnemyGlitch(),
+            showAlertDialog = showAlertDialog
+        ) {
+            saveData(activity)
+            if (save.glitchDefeated) {
+                // TODO: achievement
+            }
+            exitProcess(0)
+        }
+        return
+    }
 
     when {
         showStats -> {
@@ -127,7 +153,6 @@ fun ShowSelectPvE(
             return
         }
         showTutorial -> {
-            showAlertDialog("[CLOSED]", "Better tutorial is on the way.", null)
             showTutorial = false
             // TODO
             // return
@@ -573,9 +598,9 @@ fun ShowPvE(
                     Spacer(modifier = Modifier.height(16.dp))
 
                     @Composable
-                    fun OpponentItem(name: String, onClick: () -> Unit) {
+                    fun OpponentItem(name: String, number: Int, onClick: () -> Unit) {
                         TextFallout(
-                            name,
+                            "$name (${save.enemyCapsLeft[number] ?: 0})",
                             getTextColor(activity),
                             getTextStrokeColor(activity),
                             18.sp,
@@ -668,43 +693,43 @@ fun ShowPvE(
                         Spacer(modifier = Modifier.height(16.dp))
                         when (selectedTab) {
                             0 -> {
-                                OpponentItem(stringResource(R.string.pve_enemy_oliver_real)) { playVatsEnter(activity); showGameOliver = true }
+                                OpponentItem(stringResource(R.string.pve_enemy_oliver_real), 0) { playVatsEnter(activity); showGameOliver = true }
                                 Spacer(modifier = Modifier.height(10.dp))
-                                OpponentItem(stringResource(R.string.pve_enemy_veronica)) { playVatsEnter(activity); showGameVeronica = true }
+                                OpponentItem(stringResource(R.string.pve_enemy_veronica), 1) { playVatsEnter(activity); showGameVeronica = true }
                                 Spacer(modifier = Modifier.height(10.dp))
-                                OpponentItem(stringResource(R.string.pve_enemy_victor)) { playVatsEnter(activity); showGameVictor = true }
+                                OpponentItem(stringResource(R.string.pve_enemy_victor), 2) { playVatsEnter(activity); showGameVictor = true }
                                 Spacer(modifier = Modifier.height(10.dp))
-                                OpponentItem(stringResource(R.string.pve_enemy_chief_hanlon)) { playVatsEnter(activity); showGameChiefHanlon = true }
+                                OpponentItem(stringResource(R.string.pve_enemy_chief_hanlon), 3) { playVatsEnter(activity); showGameChiefHanlon = true }
                                 Spacer(modifier = Modifier.height(10.dp))
-                                OpponentItem(stringResource(R.string.pve_enemy_ulysses)) { playVatsEnter(activity); showGameUlysses = true }
+                                OpponentItem(stringResource(R.string.pve_enemy_ulysses), 4) { playVatsEnter(activity); showGameUlysses = true }
                                 Spacer(modifier = Modifier.height(10.dp))
-                                OpponentItem(stringResource(R.string.benny)) { playVatsEnter(activity); showGameBenny = true }
+                                OpponentItem(stringResource(R.string.benny), 5) { playVatsEnter(activity); showGameBenny = true }
                             }
                             1 -> {
-                                OpponentItem(stringResource(R.string.no_bark)) { playVatsEnter(activity); showGameNoBark = true }
+                                OpponentItem(stringResource(R.string.no_bark), 6) { playVatsEnter(activity); showGameNoBark = true }
                                 Spacer(modifier = Modifier.height(10.dp))
-                                OpponentItem(stringResource(R.string.johnson_nash)) { playVatsEnter(activity); showGameNash = true }
+                                OpponentItem(stringResource(R.string.johnson_nash), 7) { playVatsEnter(activity); showGameNash = true }
                                 Spacer(modifier = Modifier.height(10.dp))
-                                OpponentItem(stringResource(R.string.tabitha)) { playVatsEnter(activity); showGameTabitha = true }
+                                OpponentItem(stringResource(R.string.tabitha), 8) { playVatsEnter(activity); showGameTabitha = true }
                                 Spacer(modifier = Modifier.height(10.dp))
-                                OpponentItem(stringResource(R.string.vulpes)) { playVatsEnter(activity); showGameVulpes = true }
+                                OpponentItem(stringResource(R.string.vulpes), 9) { playVatsEnter(activity); showGameVulpes = true }
                                 Spacer(modifier = Modifier.height(10.dp))
-                                OpponentItem(stringResource(R.string.elijah)) { playVatsEnter(activity); showGameElijah = true }
+                                OpponentItem(stringResource(R.string.elijah), 10) { playVatsEnter(activity); showGameElijah = true }
                                 Spacer(modifier = Modifier.height(10.dp))
-                                OpponentItem(stringResource(R.string.crooker)) { playVatsEnter(activity); showGameCrocker = true }
+                                OpponentItem(stringResource(R.string.crooker), 11) { playVatsEnter(activity); showGameCrocker = true }
                             }
                             2 -> {
-                                OpponentItem(stringResource(R.string.snuffles)) { playVatsEnter(activity); showGameSnuffles = true }
+                                OpponentItem(stringResource(R.string.snuffles), 12) { playVatsEnter(activity); showGameSnuffles = true }
                                 Spacer(modifier = Modifier.height(10.dp))
-                                OpponentItem(stringResource(R.string.easy_pete)) { playVatsEnter(activity); showGameEasyPete = true }
+                                OpponentItem(stringResource(R.string.easy_pete), 13) { playVatsEnter(activity); showGameEasyPete = true }
                                 Spacer(modifier = Modifier.height(10.dp))
-                                OpponentItem(stringResource(R.string.madness_cardinal)) { playVatsEnter(activity); showGameMadnessCardinal = true }
+                                OpponentItem(stringResource(R.string.madness_cardinal), 14) { playVatsEnter(activity); showGameMadnessCardinal = true }
                                 Spacer(modifier = Modifier.height(10.dp))
-                                OpponentItem(stringResource(R.string.luc10)) { playVatsEnter(activity); showGameLuc10 = true }
+                                OpponentItem(stringResource(R.string.luc10), 15) { playVatsEnter(activity); showGameLuc10 = true }
                                 Spacer(modifier = Modifier.height(10.dp))
-                                OpponentItem(stringResource(R.string.dr_mobius)) { playVatsEnter(activity); showGameDrMobius = true }
+                                OpponentItem(stringResource(R.string.dr_mobius), 16) { playVatsEnter(activity); showGameDrMobius = true }
                                 Spacer(modifier = Modifier.height(10.dp))
-                                OpponentItem(stringResource(R.string.man_in_the_mirror)) { playVatsEnter(activity); showGameTheManInTheMirror = true }
+                                OpponentItem(stringResource(R.string.man_in_the_mirror), 17) { playVatsEnter(activity); showGameTheManInTheMirror = true }
                             }
                             3 -> {
                                 TextFallout(
@@ -739,7 +764,7 @@ fun StartGame(
     var reward: Int by rememberScoped { mutableIntStateOf(0) }
     var isBlitz: Boolean by rememberScoped { mutableStateOf(false) }
 
-    val isBettingEnemy = enemy !is EnemyMadnessCardinal
+    val isBettingEnemy = enemy !is EnemyMadnessCardinal && enemy !is EnemyGlitch
 
     var showBettingScreen: Boolean by rememberScoped { mutableStateOf(isBettingEnemy) }
 
@@ -828,7 +853,6 @@ fun StartGame(
             }
 
             enemy.onVictory()
-
             saveData(activity)
 
         }
@@ -861,6 +885,38 @@ fun StartGame(
                 activity.getString(R.string.check_back_to_menu_body),
                 onQuitPressed
             )
+        }
+    }
+
+    if (enemy is EnemyGlitch) {
+        var flag1 by remember { mutableStateOf(false) }
+        var flag0 by remember { mutableStateOf(false) }
+        enemy.showBrother = { if (it == 0) flag0 = true else flag1 = true }
+
+        key(flag0, flag1) {
+            if (flag0) {
+                LaunchedEffect(Unit) { delay(666L); flag0 = false }
+                Box(Modifier
+                    .fillMaxSize()
+                    .background(Color.Black)
+                    .paint(painterResource(R.drawable.brother))
+                )
+            } else if (flag1) {
+                LaunchedEffect(Unit) { delay(666L); flag1 = false }
+                Box(Modifier
+                    .fillMaxSize()
+                    .background(Color.Black)
+                    .paint(painterResource(R.drawable.brother),
+                        colorFilter = ColorMatrixColorFilter(ColorMatrix(
+                            floatArrayOf(
+                                0f, 1f, 0f, 0f, 0f,
+                                1f, 0f, 0f, 0f, 0f,
+                                0f, 0f, 1f, 0f, 0f,
+                                0f, 0f, 0f, 1f, 0f
+                            )
+                        )))
+                )
+            }
         }
     }
 }

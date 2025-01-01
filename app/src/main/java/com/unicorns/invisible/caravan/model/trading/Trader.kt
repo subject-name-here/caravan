@@ -18,27 +18,21 @@ sealed interface Trader {
     fun getCards(): List<Pair<Card, Int>>
     fun getStyles(): List<Style>
 
-//    fun invest(caps: Int)
-//    fun getProfitFromInvestment(): Int
+    fun getCards(back: CardBack, nBig: Int): List<Pair<Card, Int>> {
+        fun takeCardsFromDeck(deck: List<Card>, n: Int): List<Card> {
+            return (deck.take(n) + deck.takeLast(n)).distinct().take(n)
+        }
 
-    fun getCards(back: CardBack, cards1Number: Int): List<Pair<Card, Int>> {
         val b = back.ordinal
         val rand = Random(save.challengesHash xor (b * 31 + 22229) xor (b * b * b + 13))
-        val deck1 = CustomDeck(back, false).toList().shuffled(rand)
-        var cards1 = deck1.take(cards1Number)
-        if (cards1.all { save.isCardAvailableAlready(it) }) {
-            cards1 = deck1.takeLast(cards1Number)
+
+        val cards1 = takeCardsFromDeck(CustomDeck(back, false).toList().shuffled(rand), nBig)
+        val cards2 = if (back.hasAltPlayable()) {
+            takeCardsFromDeck(CustomDeck(back, true).toList().shuffled(rand), nBig / 2)
+        } else {
+            emptyList()
         }
 
-        if (!back.hasAltPlayable()) {
-            return cards1.map { card -> card to save.getPriceOfCard(card) }
-        }
-
-        val deck2 = CustomDeck(back, true).toList().shuffled(rand)
-        var cards2 = deck2.take(cards1Number / 2)
-        if (cards2.all { save.isCardAvailableAlready(it) }) {
-            cards2 = deck2.takeLast(cards1Number / 2)
-        }
         return (cards1 + cards2).map { card -> card to save.getPriceOfCard(card) }
     }
 }

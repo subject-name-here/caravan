@@ -49,18 +49,12 @@ fun getTextStrokeColor(activity: MainActivity): Color {
 }
 
 fun getStrokeColorByStyle(activity: MainActivity, styleId: Style) = when (styleId) {
-    Style.DESERT -> getTextColorByStyle(activity, styleId)
     Style.PIP_BOY -> Color(activity.getColor(R.color.colorTextStroke))
-    Style.ALASKA_FRONTIER -> getTextColorByStyle(activity, styleId)
-    Style.PIP_GIRL -> getTextColorByStyle(activity, styleId)
-    Style.OLD_WORLD -> getTextColorByStyle(activity, styleId)
     Style.NEW_WORLD -> Color(activity.getColor(R.color.newWorldStroke))
-    Style.SIERRA_MADRE -> getTextColorByStyle(activity, styleId)
-    Style.MADRE_ROJA -> getTextColorByStyle(activity, styleId)
     Style.VAULT_21 -> Color(activity.getColor(R.color.vault21Stroke))
     Style.VAULT_22 -> Color(activity.getColor(R.color.vault22Stroke))
     Style.ENCLAVE -> Color(activity.getColor(R.color.enclaveStroke))
-    Style.BLACK -> getTextColorByStyle(activity, styleId)
+    else -> getTextColorByStyle(activity, styleId)
 }
 
 fun getTextBackgroundColor(activity: MainActivity): Color {
@@ -98,7 +92,7 @@ fun getSelectionColorByStyle(activity: MainActivity, styleId: Style) = when (sty
     Style.VAULT_21 -> Color(activity.getColor(R.color.vault21Accent))
     Style.VAULT_22 -> Color(activity.getColor(R.color.vault22Stroke))
     Style.ENCLAVE -> Color(activity.getColor(R.color.enclaveAccent))
-    Style.BLACK -> Color.LightGray
+    Style.BLACK -> Color.White
 }
 
 fun getMusicPanelColor(activity: MainActivity): Color {
@@ -231,23 +225,6 @@ fun getGameSelectionColor(activity: MainActivity): Color {
         Style.MADRE_ROJA -> Color(activity.getColor(R.color.madreRojaTextBack))
         Style.VAULT_21 -> Color(activity.getColor(R.color.vault21Accent))
         else -> getTextColor(activity)
-    }
-}
-
-fun getPictureColor(activity: MainActivity): Color {
-    return when (activity.styleId) {
-        Style.DESERT -> Color(activity.getColor(R.color.desertTextBackground))
-        Style.PIP_BOY -> Color(activity.getColor(R.color.colorTextStroke))
-        Style.ALASKA_FRONTIER -> Color(activity.getColor(R.color.alaskaBlue))
-        Style.PIP_GIRL -> Color(activity.getColor(R.color.pipGirlPink))
-        Style.OLD_WORLD -> Color(activity.getColor(R.color.oldWorldTextBack))
-        Style.NEW_WORLD -> Color(activity.getColor(R.color.newWorldText))
-        Style.SIERRA_MADRE -> Color(activity.getColor(R.color.sierraMadreText))
-        Style.MADRE_ROJA -> Color(activity.getColor(R.color.madreRojaTextBack))
-        Style.VAULT_21 -> Color(activity.getColor(R.color.vault21Back))
-        Style.VAULT_22 -> Color(activity.getColor(R.color.vault22Stroke))
-        Style.ENCLAVE -> Color(activity.getColor(R.color.enclaveText))
-        Style.BLACK -> Color.White
     }
 }
 

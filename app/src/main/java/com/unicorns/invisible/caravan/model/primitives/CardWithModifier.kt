@@ -17,6 +17,9 @@ class CardWithModifier(val card: Card) {
                 Card.WildWastelandCardType.DIFFICULT_PETE -> hasActivePete = true
                 Card.WildWastelandCardType.FEV -> hasActiveFev = true
                 Card.WildWastelandCardType.UFO -> hasActiveUfo = true
+                Card.WildWastelandCardType.CAZADOR -> hasActiveCazador = true
+                Card.WildWastelandCardType.MUGGY -> hasActiveMuggy = true
+                Card.WildWastelandCardType.YES_MAN -> hasActiveYesMan = true
                 else -> {}
             }
         } else if (card.rank == Rank.JOKER) {
@@ -29,7 +32,7 @@ class CardWithModifier(val card: Card) {
 
     fun canAddModifier(card: Card): Boolean {
         val isOrdinaryJack = card.rank == Rank.JACK && card.isOrdinary()
-        return (card.isFace() || card.isNuclear()) && !isProtectedByMuggy && (modifiers.size < 3 || isOrdinaryJack)
+        return card.isFace() && !isProtectedByMuggy && (modifiers.size < 3 || isOrdinaryJack)
     }
 
     var hasActiveJoker: Boolean = false
@@ -44,6 +47,12 @@ class CardWithModifier(val card: Card) {
     var hasActiveFev: Boolean = false
         private set
     var hasActivePete: Boolean = false
+        private set
+    var hasActiveCazador: Boolean = false
+        private set
+    var hasActiveMuggy: Boolean = false
+        private set
+    var hasActiveYesMan: Boolean = false
         private set
 
     fun deactivateJoker() {

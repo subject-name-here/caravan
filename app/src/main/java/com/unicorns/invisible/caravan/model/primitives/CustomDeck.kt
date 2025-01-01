@@ -40,6 +40,10 @@ class CustomDeck() {
     fun removeAll(elements: Collection<Card>) = elements.forEach { cardToRemove ->
         cards.removeAll(getEqPredicate(cardToRemove))
     }
+    fun removeAllOnce(elements: Collection<Card>) = elements.forEach { cardToRemove ->
+        val card = cards.find(getEqPredicate(cardToRemove))
+        cards.remove(card)
+    }
 
     operator fun contains(card: Card): Boolean {
         return cards.any(getEqPredicate(card))

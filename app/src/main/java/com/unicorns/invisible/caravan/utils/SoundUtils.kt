@@ -114,6 +114,10 @@ fun playJokerSounds(activity: MainActivity) {
     if (soundReduced) return
     playEffectPlayerSound(activity, R.raw.mus_mysteriousstranger_a_02, 2)
 }
+fun playWWSound(activity: MainActivity) {
+    if (soundReduced) return
+    playEffectPlayerSound(activity, R.raw.ui_wildwasteland)
+}
 
 fun playCloseSound(activity: MainActivity) = playEffectPlayerSound(activity, R.raw.ui_menu_cancel)
 fun playClickSound(activity: MainActivity) = playEffectPlayerSound(activity, R.raw.ui_menu_ok)
@@ -130,12 +134,10 @@ fun playTowerCompleted(activity: MainActivity) = playEffectPlayerSound(activity,
 fun playTowerFailed(activity: MainActivity) = playEffectPlayerSound(activity, R.raw.death)
 fun playDailyCompleted(activity: MainActivity) = playEffectPlayerSound(activity, R.raw.ui_levelup)
 fun playNukeBlownSound(activity: MainActivity) = playEffectPlayerSound(activity, R.raw.nuke_big)
-fun playWWSound(activity: MainActivity) = playEffectPlayerSound(activity, R.raw.ui_wildwasteland)
 fun playHeartbeatSound(activity: MainActivity) = playEffectPlayerSound(activity, R.raw.sfx_heartbeat)
 fun playSlideSound(activity: MainActivity) = playEffectPlayerSound(activity, R.raw.slide)
 fun playMinigunSound(activity: MainActivity) = playEffectPlayerSound(activity, R.raw.minigun_f2)
 fun playGlitchSound(activity: MainActivity) = playEffectPlayerSound(activity, R.raw.glitch_effect)
-fun playHorrorMusic(activity: MainActivity) = playEffectPlayerSound(activity, R.raw.horror)
 
 private val ambientPlayers = HashSet<MediaPlayer>()
 private val ambientPlayersLock = ReentrantLock()
@@ -264,7 +266,15 @@ private fun playSongFromRadio(activity: MainActivity, songName: String) {
             setOnCompletionListener {
                 nextSong(activity)
             }
-            prepare()
+            try {
+                prepare()
+            } catch (_: Exception) {
+                stopRadio()
+                radioStartedFlag = false
+                startRadio(activity)
+                return
+            }
+
             setVolume(vol, vol)
             radioLock.withLock {
                 radioPlayers.add(this)
@@ -407,6 +417,47 @@ fun playFrankPhrase(activity: MainActivity, phraseId: Int) {
                 stopSoundEffects()
                 effectPlayers.add(this)
                 start()
+            }
+        }
+}
+
+fun launchHorrorSequence(activity: MainActivity) {
+    stopRadio()
+    stopAmbient()
+    stopSoundEffects()
+    soundReduced = true
+    val vol = 1f
+    MediaPlayer.create(activity, R.raw.horror)
+        .apply {
+            isLooping = false
+            setVolume(vol, vol)
+            radioLock.withLock {
+                radioPlayers.add(this)
+                if (radioState != RadioState.PAUSED_BY_LEAVING_ACTIVITY) {
+                    start()
+                }
+            }
+            setOnCompletionListener {
+                radioLock.withLock {
+                    it.stop()
+                    radioPlayers.remove(it)
+                    it.release()
+                    setGlitchOnRepeat(activity)
+                }
+            }
+        }
+}
+private fun setGlitchOnRepeat(activity: MainActivity) {
+    val vol = 1f
+    MediaPlayer.create(activity, R.raw.glitch_effect)
+        .apply {
+            isLooping = true
+            setVolume(vol, vol)
+            radioLock.withLock {
+                radioPlayers.add(this)
+                if (radioState != RadioState.PAUSED_BY_LEAVING_ACTIVITY) {
+                    start()
+                }
             }
         }
 }

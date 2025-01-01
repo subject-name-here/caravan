@@ -20,5 +20,5 @@ class EnclaveTrader : Trader {
 
     override fun getCards(): List<Pair<Card, Int>> = getCards(CardBack.ENCLAVE, 10)
 
-    override fun getStyles(): List<Style> = emptyList()
+    override fun getStyles(): List<Style> = listOf(Style.ENCLAVE)
 }

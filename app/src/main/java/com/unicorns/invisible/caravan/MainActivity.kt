@@ -38,7 +38,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.paint
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.drawscope.Stroke
@@ -80,7 +79,6 @@ import com.unicorns.invisible.caravan.utils.getDividerColor
 import com.unicorns.invisible.caravan.utils.getKnobColor
 import com.unicorns.invisible.caravan.utils.getMusicPanelColor
 import com.unicorns.invisible.caravan.utils.getMusicTextColor
-import com.unicorns.invisible.caravan.utils.getPictureColor
 import com.unicorns.invisible.caravan.utils.getTextBackgroundColor
 import com.unicorns.invisible.caravan.utils.getTextColor
 import com.unicorns.invisible.caravan.utils.getTextStrokeColor
@@ -113,6 +111,7 @@ var soundReduced: Boolean = false
 private val soundReducedLiveData = MutableLiveData(soundReduced)
 
 val isHorror = MutableLiveData(false)
+val restartSwitch = MutableLiveData(false)
 
 @Suppress("MoveLambdaOutsideParentheses")
 class MainActivity : SaveDataActivity() {
@@ -202,6 +201,11 @@ class MainActivity : SaveDataActivity() {
             )
             var isIntroScreen by rememberScoped { mutableStateOf(true) }
 
+            val restartSwitchState by restartSwitch.observeAsState()
+            if (restartSwitchState == true) {
+                isIntroScreen = true
+            }
+
             if (isIntroScreen) {
                 Box(
                     Modifier
@@ -209,6 +213,7 @@ class MainActivity : SaveDataActivity() {
                         .background(backgroundColor)
                         .clickableOk(this) {
                             if (save.isUsable) {
+                                restartSwitch.postValue(false)
                                 isIntroScreen = false
                             }
                         },
@@ -277,10 +282,11 @@ class MainActivity : SaveDataActivity() {
                                     }
                                 }
 
+                                // TODO: test landscape
                                 Box(
                                     Modifier.fillMaxWidth().weight(0.70f)
                                         .paint(
-                                            painterResource(id = R.drawable.caravan_main2),
+                                            painterResource(id = if (isHorror.value == true) R.drawable.brother else R.drawable.caravan_main2),
                                             contentScale = ContentScale.Fit
                                         )
                                 )
@@ -427,7 +433,7 @@ class MainActivity : SaveDataActivity() {
             showSoundSettings2 = false
             showSoundSettings = false
         }
-        if (showSoundSettings) {
+        if (showSoundSettings && isHorror.value != true) {
             LaunchedEffect(Unit) {
                 delay(50L)
                 playNotificationSound(this@MainActivity) { showSoundSettings2 = true }
@@ -556,6 +562,9 @@ class MainActivity : SaveDataActivity() {
                                 .weight(1f)
                                 .wrapContentWidth()
                                 .clickableOk(this@MainActivity) {
+                                    if (isHorror.value == true) {
+                                        return@clickableOk
+                                    }
                                     if (!isPaused && !soundReduced) {
                                         nextSong(this@MainActivity)
                                     }
@@ -579,7 +588,7 @@ class MainActivity : SaveDataActivity() {
                                 .weight(1f)
                                 .wrapContentWidth()
                                 .clickableOk(this@MainActivity) {
-                                    if (soundReduced) {
+                                    if (soundReduced || isHorror.value == true) {
                                         return@clickableOk
                                     }
                                     if (isPaused) {
@@ -887,6 +896,9 @@ class MainActivity : SaveDataActivity() {
                                 .padding(horizontal = 4.dp)
                                 .background(getTextBackgroundColor(this@MainActivity))
                                 .clickableOk(this@MainActivity) {
+                                    if (isHorror.value == true) {
+                                        return@clickableOk
+                                    }
                                     showVision()
                                 }
                                 .padding(4.dp),
@@ -903,6 +915,9 @@ class MainActivity : SaveDataActivity() {
                                 .background(getBackgroundColor(this@MainActivity))
                                 .padding(horizontal = 4.dp)
                                 .clickableOk(this@MainActivity) {
+                                    if (isHorror.value == true) {
+                                        return@clickableOk
+                                    }
                                     showSettings()
                                 }
                                 .background(getTextBackgroundColor(this@MainActivity))
@@ -920,6 +935,9 @@ class MainActivity : SaveDataActivity() {
                                 .background(getBackgroundColor(this@MainActivity))
                                 .padding(horizontal = 4.dp)
                                 .clickableOk(this@MainActivity) {
+                                    if (isHorror.value == true) {
+                                        return@clickableOk
+                                    }
                                     showAbout()
                                 }
                                 .background(getTextBackgroundColor(this@MainActivity))
@@ -957,7 +975,7 @@ class MainActivity : SaveDataActivity() {
                         verticalArrangement = Arrangement.Center
                     ) {
                         @Composable
-                        fun MenuItem(text: String, onClick: () -> Unit) {
+                        fun MenuItem(text: String, onClick: () -> Unit, isHorrorClickable: Boolean = false) {
                             TextFallout(
                                 text,
                                 getTextColor(this@MainActivity),
@@ -965,14 +983,19 @@ class MainActivity : SaveDataActivity() {
                                 20.sp,
                                 Alignment.CenterStart,
                                 Modifier
-                                    .clickableOk(this@MainActivity) { onClick() }
+                                    .clickableOk(this@MainActivity) {
+                                        if (isHorror.value == true && !isHorrorClickable) {
+                                            return@clickableOk
+                                        }
+                                        onClick()
+                                    }
                                     .background(getTextBackgroundColor(this@MainActivity))
                                     .padding(8.dp),
                                 TextAlign.Start
                             )
                         }
                         Spacer(Modifier.height(32.dp))
-                        MenuItem(stringResource(R.string.menu_pve), showPvE)
+                        MenuItem(stringResource(R.string.menu_pve), showPvE, isHorrorClickable = true)
                         Spacer(modifier = Modifier.height(16.dp))
                         MenuItem(stringResource(R.string.menu_pvp), showPvP)
                         Spacer(modifier = Modifier.height(16.dp))

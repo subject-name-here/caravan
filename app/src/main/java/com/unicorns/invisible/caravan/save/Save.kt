@@ -121,6 +121,9 @@ class Save(val isUsable: Boolean) {
     var towerLevel: Int = 0
 
     @EncodeDefault
+    var glitchDefeated = false
+
+    @EncodeDefault
     var storyChaptersProgress = 0
     @EncodeDefault
     var altStoryChaptersProgress = 0
@@ -157,17 +160,17 @@ class Save(val isUsable: Boolean) {
     var barterStatProgress = 0.0
 
     fun getPriceOfCard(card: Card): Int {
-        val base = if (card.isAlt) 50 else 15
+        val base = if (card.isAlt) 45 else 15
         val barterMult = 2.5 - barterStat.toDouble() / 50.0
         val rankMult = when (card.rank) {
-            Rank.ACE -> 1.0
-            Rank.TWO, Rank.THREE, Rank.FOUR -> 0.75
+            Rank.ACE -> 0.95
+            Rank.TWO, Rank.THREE, Rank.FOUR -> 0.8
             Rank.FIVE, Rank.SIX, Rank.SEVEN -> 1.0
-            Rank.EIGHT, Rank.NINE, Rank.TEN -> 1.25
-            Rank.JACK -> 1.5
-            Rank.QUEEN -> 1.0
-            Rank.KING -> 2.0
-            Rank.JOKER -> 3.0
+            Rank.EIGHT, Rank.NINE, Rank.TEN -> 1.2
+            Rank.JACK -> 1.25
+            Rank.QUEEN -> 1.1
+            Rank.KING -> 1.75
+            Rank.JOKER -> 2.5
         }
         val backCount = availableCards.count { c -> c.back == card.back && c.isAlt == card.isAlt }
         val rarityMult = (backCount + 26.0) / 52.0

@@ -219,9 +219,7 @@ fun ShowGame(
                         handCard = card
                     ), game)
                     caravan.cards[position].addModifier(
-                        game.playerCResources.removeFromHand(
-                            cardIndex
-                        )
+                        game.playerCResources.removeFromHand(cardIndex)
                     )
                     onCaravanCardInserted()
                 }

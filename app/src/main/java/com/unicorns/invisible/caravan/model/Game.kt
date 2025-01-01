@@ -37,7 +37,6 @@ class Game(
 
     @Transient
     var onWin: () -> Unit = {}
-
     @Transient
     var onLose: () -> Unit = {}
 
@@ -50,10 +49,11 @@ class Game(
 
     var isGameOver = 0
         private set(value) {
-            field = value
-            when (value) {
-                -1 -> onLose()
-                1 -> onWin()
+            if (field == 0) {
+                when (value) {
+                    -1 -> { onLose(); field = -1 }
+                    1 -> { onWin(); field = 1 }
+                }
             }
         }
 
@@ -72,7 +72,7 @@ class Game(
 
     fun startGame(maxNumOfFaces: Int = 5) {
         if (enemy is EnemyMadnessCardinal) {
-            while (enemyCResources.deckSize < playerCResources.deckSize + 10) {
+            while (enemyCResources.deckSize < playerCResources.deckSize + 13) {
                 enemyCResources.addNewDeck(CustomDeck(CardBack.MADNESS, false))
             }
         }
@@ -98,7 +98,6 @@ class Game(
         if (cards.any { it.hasJacks() || it.hasActiveJoker }) {
             processJacks()
             processJoker()
-
             flag = true
         }
 
@@ -111,26 +110,16 @@ class Game(
 
         caravans.forEach {
             val caravanCards = it.cards
-            val mods = caravanCards.flatMap { card -> card.modifiersCopy() }
-            val isMuggyHere = mods.any { mod ->
-                mod.getWildWastelandCardType() == Card.WildWastelandCardType.MUGGY
-            }
+            val isMuggyHere = caravanCards.any { it.hasActiveMuggy }
             it.cards.forEach { card ->
                 card.isProtectedByMuggy = isMuggyHere
             }
 
-            val cazadorCards = mods.filter { mod ->
-                mod.getWildWastelandCardType() == Card.WildWastelandCardType.CAZADOR
-            }
-            val cazadorOwners = caravanCards.filter {
-                card -> card.modifiersCopy().any { mod -> mod in cazadorCards }
-            }
-            val queensAffected = cazadorOwners.sumOf {
-                owner -> owner.modifiersCopy().count { m -> m.rank == Rank.QUEEN && m.isOrdinary() }
-            }
+            val cazadorOwners = caravanCards.filter { it.hasActiveCazador }
+            val queensBlock = cazadorOwners.all { owner -> owner.isQueenReversingSequence() }
 
-            if (cazadorCards.isNotEmpty()) {
-                it.getCazadorPoison(queensAffected % 2 == 1)
+            if (cazadorOwners.isNotEmpty()) {
+                it.getCazadorPoison(queensBlock)
                 flag = true
             }
         }

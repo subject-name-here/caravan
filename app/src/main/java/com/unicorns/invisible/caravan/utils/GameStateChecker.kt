@@ -3,6 +3,8 @@ package com.unicorns.invisible.caravan.utils
 import com.unicorns.invisible.caravan.model.Game
 
 
+// TODO: refactor this.
+
 // Returns true if the selling of enemy caravan with caravanIndex will end game in favour of player.
 // Set caravanIndex as -1 to get true if 2 out of 3 caravans are sold.
 fun checkMoveOnDefeat(game: Game, caravanIndex: Int): Boolean {

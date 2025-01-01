@@ -12,10 +12,12 @@ class Card(val rank: Rank, val suit: Suit, val back: CardBack, val isAlt: Boolea
     @Transient
     var caravanAnimationMark = AnimationMark.STABLE
 
-    fun isFace() = rank.isFace()
+    fun isFace() = rank.isFace() || isNuclear()
 
     override fun toString(): String {
-        return "${this.hashCode() % 22229}; ${this.rank.ordinal}; ${this.suit.ordinal}; ${this.back.ordinal}; ${this.isAlt};"
+        return "${this.hashCode() % 22229}; " +
+                "${this.rank.name}; ${this.suit.name}; ${this.back.name};" +
+                "${if (this.isAlt) " ALT!" else ""};"
     }
 
     enum class AnimationMark {
@@ -42,7 +44,7 @@ class Card(val rank: Rank, val suit: Suit, val back: CardBack, val isAlt: Boolea
     }
 
     fun isWildWasteland(): Boolean {
-        return back == CardBack.MADNESS && isAlt
+        return back == CardBack.MADNESS && isAlt && rank.isFace()
     }
 
     fun isOrdinary(): Boolean {

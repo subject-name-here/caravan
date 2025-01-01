@@ -15,29 +15,29 @@ class CResources(private val deck: CustomDeck) {
     /**
      * Two conditions on starting hand:
      * 1) no Wild Wasteland cards in the hand
-     * 2) if there is a bomb in a deck, there should be one in the hand
+     * 2) if there is a bomb in a deck, there must be exactly one in the hand
      */
     private fun getTopHand(): List<Card> {
         val cards = deck.toList().toMutableList()
-        cards.removeAll { it.isWildWasteland() }
+        val nuclears = cards.filter { it.isNuclear() }
+        cards.removeAll { !it.isOrdinary() }
 
-        val bomb = cards.find { it.isNuclear() }
-        return if (bomb != null) {
-            (cards - bomb).take(7) + bomb
+        return if (nuclears.isNotEmpty()) {
+            cards.take(7) + nuclears.first()
         } else {
             cards.take(8)
         }
     }
-    fun initResources(maxNumOfFaces: Int, initHand: Boolean = true) {
+    fun initResources(maxNumOfFaces: Int, initHand: Boolean) {
         shuffleDeck()
         if (initHand) {
             var tmpHand = getTopHand()
-            while (tmpHand.count { it.isFace() || it.isNuclear() } > maxNumOfFaces) {
+            while (tmpHand.count { it.isFace() } > maxNumOfFaces) {
                 shuffleDeck()
                 tmpHand = getTopHand()
             }
 
-            deck.removeAll(tmpHand)
+            deck.removeAllOnce(tmpHand)
             tmpHand.forEach { it.handAnimationMark = Card.AnimationMark.MOVING_IN }
             handMutable.addAll(tmpHand)
         } else {
@@ -101,11 +101,9 @@ class CResources(private val deck: CustomDeck) {
         handMutable.removeAt(index)
     }
 
-    fun getDeckBack() = deck.firstOrNull()?.run { this.back to this.isAlt }
+    fun getDeckBack() = deck.firstOrNull()?.let { it.back to it.isAlt }
 
-    fun shuffleDeck() {
-        deck.shuffle()
-    }
+    fun shuffleDeck() = deck.shuffle()
 
     val deckSize: Int
         get() = deck.size
@@ -139,7 +137,7 @@ class CResources(private val deck: CustomDeck) {
     }
 
     fun isCustomDeckValid(): Boolean {
-        val numOfDecks = deck.toList().groupBy { it.back }.keys.size
+        val numOfDecks = deck.toList().distinctBy { it.back }.size
         return numOfDecks <= MAX_NUMBER_OF_DECKS &&
                 deckSize >= MIN_DECK_SIZE &&
                 numOfNumbers >= MIN_NUM_OF_NUMBERS

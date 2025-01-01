@@ -44,7 +44,7 @@
     <string name="lucky_38_trader_name">Мэрилин и Джейн</string>
     <string name="lucky_38_trader_cond">Одолейте Мистера Хауса в БАШНЕ.</string>
     <string name="sierra_madre_trader_name">Приёмник бутылочных крышек Сьерра-Мадре</string>
-    <string name="sierra_madre_trader_cond">Победите Элайджу 10 раз (%1$s/10) и завершите главу 1 сюжета.</string>
+    <string name="sierra_madre_trader_cond">Победите Элайджу 6 раз (%1$s/6) и завершите главу 1 Сюжета.</string>
     <string name="chinese_trader_name">Военачальник Ли Чжоу</string>
     <string name="chinese_trader_condition">Для начала, завершите главы 9 и 9А Сюжета. Кстати, в каком году была образована КПК?</string>
     <string name="enclave_trader_name">Савант</string>

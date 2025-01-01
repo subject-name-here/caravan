@@ -1244,6 +1244,34 @@ fun BoxWithConstraintsScope.StylePicture(
             }
         }
 
-        Style.BLACK -> {}
+        Style.BLACK -> {
+            if ((0..9).random(rand) == 0) {
+                val text = "696969"
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .align(Alignment.CenterEnd)
+                        .padding(top = 48.dp, bottom = 48.dp, end = 8.dp)
+                ) {
+                    Box(Modifier.weight(1f))
+                    Box(Modifier.weight(1f), contentAlignment = Alignment.Center) {
+                        Text(
+                            text = text,
+                            textAlign = TextAlign.Center,
+                            color = Color.White,
+                            fontFamily = FontFamily(Font(R.font.help)),
+                            modifier = Modifier
+                                .align(Alignment.Center)
+                                .rotate(90f)
+                                .offset(
+                                    x = ((-11..11).random(rand).dp),
+                                    y = ((-11..11).random(rand).dp)
+                                ),
+                            fontSize = 12.sp,
+                        )
+                    }
+                }
+            }
+        }
     }
 }
