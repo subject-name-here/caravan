@@ -1,5 +1,6 @@
 package com.unicorns.invisible.caravan.model.enemy
 
+import com.unicorns.invisible.caravan.isHorror
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.primitives.CResources
@@ -28,7 +29,7 @@ class EnemyGlitch : Enemy {
 
     override fun makeMove(game: Game) {
         if (!game.isInitStage()) {
-            if ((0..5).random() == 0) {
+            if ((0..6).random() == 0) {
                 showBrother(1)
                 if (game.enemyCResources.hand.all { it.isOrdinary() }) {
                     game.enemyCResources.addOnTop(Card(Rank.KING, Suit.SPADES, CardBack.MADNESS, true))
@@ -41,6 +42,7 @@ class EnemyGlitch : Enemy {
     }
 
     override fun onVictory() {
+        isHorror.postValue(false)
         save.glitchDefeated = true
     }
 }

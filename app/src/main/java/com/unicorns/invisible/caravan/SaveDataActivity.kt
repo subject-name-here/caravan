@@ -112,7 +112,7 @@ abstract class SaveDataActivity : AppCompatActivity() {
                 if (task.result.isConflict) {
                     return@continueWith null
                 }
-                return@continueWith task.result.data
+                task.result.data
             }.await()
     }
 

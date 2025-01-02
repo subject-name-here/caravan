@@ -277,8 +277,7 @@ fun ShowTraders(activity: MainActivity, goBack: () -> Unit) {
                                         TextAlign.Center
                                     )
 
-                                    // TODO: INVESTMENT!!!!
-
+                                    // TODO: INVESTMENT!!!!????
                                 } else {
                                     cards.forEach {
                                         Spacer(modifier = Modifier.height(4.dp))

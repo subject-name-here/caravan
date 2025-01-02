@@ -89,4 +89,10 @@ class CardWithModifier(val card: Card) {
     fun getTopSuit(): Suit {
         return modifiers.findLast { it.isOrdinary() && it.rank == Rank.QUEEN }?.suit ?: card.suit
     }
+
+    fun copyWild(src: CardWithModifier) {
+        hasActiveCazador = src.hasActiveCazador
+        hasActiveMuggy = src.hasActiveMuggy
+        hasActiveYesMan = src.hasActiveYesMan
+    }
 }

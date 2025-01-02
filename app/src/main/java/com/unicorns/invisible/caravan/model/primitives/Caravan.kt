@@ -52,7 +52,10 @@ class Caravan {
             cardsMutable.add(
                 CardWithModifier(
                     Card(Rank.entries[newOrdinal], it.card.suit, CardBack.MADNESS, true)
-                ).apply { copyModifiersFrom(mods) }
+                ).apply {
+                    copyModifiersFrom(mods)
+
+                }
             )
         }
     }

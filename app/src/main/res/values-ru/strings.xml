@@ -56,7 +56,7 @@
     <string name="menu_deck">Настройка колоды</string>
     <string name="market">Торговцы</string>
     <string name="menu_vision">Визуал!</string>
-    <string name="menu_about">О Караване</string>
+    <string name="menu_about">О приложении</string>
     <string name="menu_settings">Настройки</string>
 
     <string name="select_enemy">Выбор соперника</string>
@@ -408,7 +408,8 @@
     <string name="congratulations">Поздравляем!</string>
     <string name="en_garde">К барьеру!</string>
     <string name="you_re_not_a_hero_you_re_just_a_walking_corpse">Ты никакой не герой. Ты всего лишь ходячий труп.</string>
-    <string name="now_playing_loyalty_to_your_people_neon_light_man">Сейчас играет: Loyalty to Your People - Neon Light Man.</string>
+    <string name="now_playing_loyalty_to_your_people_neon_light_man">Сейчас играет: \"Loyalty to Your People\" - Neon Light Man.</string>
+    <string name="now_playing_alt">Сейчас играет: \"Vogel im Kafig\" - Cyua, Hiroyuki Sawano.</string>
     <string name="finish">[ЗАВЕРШИТЬ]</string>
 
     <string name="tower_enemy_1">Санни Смайлс</string>
@@ -714,5 +715,141 @@
     <string name="use_wild_wasteland_cards">Использовать карты Дикой Пустоши</string>
 
     <string name="if_you_quit_supreme_leader_kills_you">Если вы покинете игру, Верховный Лидер убьет вас.</string>
+
+    <string name="og_rules">Правила</string>
+    <string name="better_rules">Правила (подробные)</string>
+    <string name="faq">FAQ</string>
+
+    <string name="better_rules_body_1">
+
+Правила Каравана в приложении!
+\n\n
+1.0 СИСТЕМНЫЕ ТРЕБОВАНИЯ
+\n\n
+1.1) Два игрока.
+\n
+1.2) Одно из следующих:
+\n
+- две колоды с 54 картами; одна колода на игрока
+\n
+- сборная колода, в которой хотя бы 30 карт, хотя бы 15 числовых карт, использовано не более 6 разных колод, а также колода не содержит двух одинаковых карт из одной и той же колоды (например, две Тройки Бубей из стандартной колоды). Максимальное число карт выводится из максимального числа колод (6) и равно 54 * 6 = 324.
+
+    </string>
+
+    <string name="better_rules_body_2">
+
+2.0 РАСКЛАД
+\n\n
+Игрок 1
+\n
+Караван 1 	Караван 2 	Караван 3
+\n\n
+Караван 1 	Караван 2 	Караван 3
+\n
+Игрок 2
+\n\n
+2.1) В игре Караван 1 первого Игрока соревнуется/соперничает с Караваном 1 второго Игрока - то же самое для Караванов 2 и 3.
+
+    </string>
+
+    <string name="better_rules_body_3">
+
+3.0 ПРОДАЖА КАРАВАНОВ
+\n\n
+3.1) У караванов есть \"вес\". Вес каравана определяется суммой всех числовых карт (с Королями; см. 5.36) в этом караване.
+\n\n
+3.2) Караван считается проданным, если его вес находится в промежутке от 21 до 26; вес выше или ниже делает караван непроданным.
+\n\n
+3.3) Можно добавлять карты на уже проданный караван, чтобы увеличить его вес.
+
+    </string>
+
+    <string name="better_rules_body_4">
+
+4.0 ДЕБЮТ!
+\n\n
+4.1) В начале каждый игрок вытягивает из размешанной колоды 8 карт.
+\n\n
+4.2) Во время дебюта можно размещать только числовые карты (Тузы или 2-10). Дебют состоит из трёх ходов для каждого игрока, где они используют ход, чтобы положить карту на каждый из караванов.
+\n\n
+4.3) Во время дебюта нельзя сбрасывать карты. Колода размешана и рука выбрана так, что всегда можно совершить три хода числовыми картами.
+\n\n
+4.4) Во время дебюта нельзя вытягивать карты. После дебюта каждый игрок остается с пятью картами.
+
+    </string>
+
+    <string name="better_rules_body_5">
+
+
+5.0 ГЕЙМПЛЕЙ
+\n\n
+5.1) После дебюта можно играть любую карту. Ход чередуется между игрокам, которые могут делать одно из следующих действий:
+\n
+    - Сыграть карту из руки, затем вытянуть карту из колоды.
+\n
+    - Сбросить карту из руки, затем вытянуть карту из колоды.
+\n
+    - Распустить один из караванов. Это убирает карты из одного каравана.
+\n\n
+5.2) Числовые карты (Туз (A)=1, 2-10=цифра на карте)
+\n\n
+5.21) To play a number card refer to the last card played in the selected caravan - it must follow a suit or a numerical (ascending or descending) sequence. If there is only one card in the caravan, then the next number card played sets the numerical direction and determines the suit. From here, as long as a number card matches the suit or follows the numerical sequence, then it\'s allowed to be played in that caravan.
+\n\n
+5.22) Numerical sequences don\'t need to be directly connected - you can go up from a three to a seven, or down from a seven to a three. In the latter case, the sequence is descending, so only a deuce or ace could be played as a number card.
+\n\n
+5.23) If playing a card that matches suit is contrary to the current numerical sequence of that caravan, then the new card establishes a new numerical sequence for that caravan.
+\n\n
+5.24) Нельзя ни при каких обстоятельствах класть числовую карту на карту такого же достоинства (например, 10 на 10).
+\n\n
+5.25) Числовые карты можно играть только на своих караванах.
+\n\n\n
+5.3) КАРТИНКИ (J (Валет), Q (Дама), K (Король), Joker (Джокер))
+\n\n
+5.31) У картинок есть специальные эффекты. Unlike number cards, which are played overlapping each other downwards, these cards are attached to the side of and overlapping the card it is played on.
+\n\n
+5.32) Face cards and Jokers can be played on both your and your opponent\'s caravans.
+\n\n
+5.33) Face cards and Jokers don\'t need to follow suit or sequence, and can be played on any number card no matter the card\'s location in the caravan.
+\n\n
+5.34) ВАЛЕТ - Removes the card the Jack is played on as well as any face cards/Jokers attached.
+\n
+5.35) ДАМА - Reverses the current numerical direction of the caravan, and changes the suit of the caravan to that of the Queen. Multiple Queens can be used on the same card to reverse the effects.
+\n
+5.36) КОРОЛЬ - Doubles the value of the card the King is played on. Multiple Kings can be used on the same card (e.g. 10+K = 20; 10+K+K = 40).
+\n
+5.37) ДЖОКЕР:
+        \n
+        - If played on an ace, it removes all other number cards from both player\'s caravans that share the same suit of the ace (Queens altering the suit of a caravan will not save the card - the suit is considered what is printed on the number card).
+        \n
+        - If played on a number card that is not an ace, it removes all other number cards of the same value/instance from both player\'s caravans. A played Joker only affects cards that have been played before it. In any case, the number card the Joker is played on is spared. All attaching face cards of the removed cards are also removed.
+\n\n
+5.38) Face cards and Jokers can be played/attached with full effect on cards with other face cards and Jokers attached. There can be no more than three face cards or Jokers attached/played to a single number card at one time. The exception is a Jack: it can be used to remove a number card that already has three face cards or Jokers attached to it.
+\n\n
+5.4) If in the event that a Jack or Joker removes a card, leaving a caravan sequence stuck with two identical number cards, then the sequence is considered undefined, and number card of any value (except the last card value) can be played.
+\n\n
+5.5) После дебюта, если один из караванов лишается всех карт, необязательно класть туда карту немедленно. Технически, возможно выиграть игру всего с двумя караванами.
+
+    </string>
+
+    <string name="better_rules_body_6">
+
+6.0 ПОБЕДА
+\n\n
+6.1) Чтобы посчитать вес каравана, нужно просуммировать значения числовых карт каравана, не забывая о Королях.
+\n\n
+6.2) Условия для победы: игра заканчивается, когда в каждой паре соперничающих караванов один из них продан с большим весом, чем другой. Победителем считается тот, кто продал 2 или 3 каравана с бОльшим весом.
+\n
+6.2.1) Важно заметить: если соперничающие караваны проданы с одинаковым весом, ни один караван не считается проданным. В этом случае, игра продолжается, пока ничья не будет разбита.
+\n\n
+6.3) Если у игрока заканчиваются карты в руке во время его хода, его противник автоматически считается победителем.
+
+    </string>
+
+    <string name="better_rules_body_finale">
+
+Если этот гайд помог вам понять игру, поблагодарите автора Кайла! Чтобы сделать это, в пункте \"О приложении\" найдите ссылку на пост на Реддите, поставьте плюсик и напишите в комментариях что-нибудь позитивное!
+
+    </string>
+
 
 </resources>

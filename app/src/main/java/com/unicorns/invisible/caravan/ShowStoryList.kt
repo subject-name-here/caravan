@@ -83,13 +83,11 @@ import com.unicorns.invisible.caravan.utils.playNoBeep
 import com.unicorns.invisible.caravan.utils.playNoCardAlarm
 import com.unicorns.invisible.caravan.utils.playNotificationSound
 import com.unicorns.invisible.caravan.utils.playNukeBlownSound
-import com.unicorns.invisible.caravan.utils.playSelectSound
 import com.unicorns.invisible.caravan.utils.playSlideSound
 import com.unicorns.invisible.caravan.utils.playTowerCompleted
 import com.unicorns.invisible.caravan.utils.playTowerFailed
 import com.unicorns.invisible.caravan.utils.playWWSound
 import com.unicorns.invisible.caravan.utils.playWinSound
-import com.unicorns.invisible.caravan.utils.playYesBeep
 import com.unicorns.invisible.caravan.utils.scrollbar
 import com.unicorns.invisible.caravan.utils.startFinalBossTheme
 import com.unicorns.invisible.caravan.utils.stopRadio
@@ -98,6 +96,7 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
 
+// TODO: test
 @Composable
 fun ShowStoryList(
     activity: MainActivity,
@@ -220,7 +219,7 @@ fun ShowStoryList(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 @Composable
-                fun Chapter(number: Int, isAlt: Boolean = false, onClick: () -> Unit) {
+                fun Chapter(number: Int, isAlt: Boolean = false) {
                     val isAvailable = number <= save.storyChaptersProgress
                     val text = if (!isAvailable && !isAlt) {
                         "???"
@@ -246,7 +245,7 @@ fun ShowStoryList(
                         Alignment.Center,
                         if (isAvailable || isAlt) {
                             Modifier
-                                .clickable { onClick() }
+                                .clickableSelect(activity) { showChapter = number }
                                 .background(getTextBackgroundColor(activity))
                         } else {
                             Modifier
@@ -254,6 +253,7 @@ fun ShowStoryList(
                             .padding(4.dp),
                         TextAlign.Center
                     )
+                    Spacer(modifier = Modifier.height(10.dp))
                 }
 
                 val chaptersRevealed = when (save.storyChaptersProgress) {
@@ -264,12 +264,10 @@ fun ShowStoryList(
                     else -> 10
                 }
                 repeat(chaptersRevealed) {
-                    Chapter(it) { playSelectSound(activity); showChapter = it }
-                    Spacer(modifier = Modifier.height(10.dp))
+                    Chapter(it)
                 }
                 if (save.altStoryChaptersProgress > 0) {
-                    Chapter(10, isAlt = true) { playSelectSound(activity); showChapter = 10 }
-                    Spacer(modifier = Modifier.height(10.dp))
+                    Chapter(10, isAlt = true)
                 }
             }
         }
@@ -1455,7 +1453,6 @@ fun ShowStoryChapter8(
                     2 -> {
                         text = stringResource(R.string.ch8_give_up)
                         lineNumber = -1
-                        gameResult = 0
                     }
                     else -> {}
                 }
@@ -2148,7 +2145,7 @@ fun StartStoryGame(
         }
         showAlertDialog(
             activity.getString(R.string.check_back_to_menu),
-            "This game will be counted as lost!!",
+            activity.getString(R.string.this_game_will_be_counted_as_lost),
             goBack
         )
     }
@@ -2212,13 +2209,13 @@ fun StartStoryFinalBossGame(
             Rank.JOKER -> {
                 addTime(3)
                 game.playerCResources.addOnTop(Card(
-                    Rank.entries.filter { it.value <= 10 }.random(),
+                    Rank.entries.filter { !it.isFace() }.random(),
                     Suit.entries.random(), CardBack.MADNESS, true
                 ))
             }
             Rank.JACK -> {
                 game.playerCResources.addOnTop(Card(
-                    Rank.entries.filter { it.value <= 10 }.random(),
+                    Rank.entries.filter { !it.isFace() }.random(),
                     Suit.entries.random(), CardBack.MADNESS, true
                 ))
             }

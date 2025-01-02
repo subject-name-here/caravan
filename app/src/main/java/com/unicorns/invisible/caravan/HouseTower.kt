@@ -143,9 +143,7 @@ fun TowerScreen(
                     8 -> EnemyTower8
                     else -> EnemyTower9
                 }
-            ) {
-                showGameLevel = 0
-            }
+            ) { showGameLevel = 0 }
             return
         }
         10 -> {
@@ -342,14 +340,14 @@ fun TowerScreen(
                     )
                 } else {
                     val inBank = when (level) {
-                        1 -> 4
-                        2 -> 8
-                        3 -> 16
-                        4 -> 32
-                        5 -> 64
-                        6 -> 128
-                        7 -> 255
-                        8 -> 383
+                        1 -> 2
+                        2 -> 4
+                        3 -> 8
+                        4 -> 16
+                        5 -> 32
+                        6 -> 64
+                        7 -> 128
+                        8 -> 256
                         9 -> 512
                         10 -> 1024
                         else -> 2077
@@ -399,7 +397,6 @@ fun TowerScreen(
                             } else {
                                 showTowerCard(stringResource(R.string.tower_enemy_3))
                             }
-
                         }
                         4 -> {
                             showTowerCard(stringResource(R.string.tower_enemy_4))
@@ -609,7 +606,13 @@ fun StartTowerGame(
             },
             text = {
                 TextClassic(
-                    stringResource(R.string.now_playing_loyalty_to_your_people_neon_light_man),
+                    stringResource(
+                        if (!save.isHeroic) {
+                            R.string.now_playing_loyalty_to_your_people_neon_light_man
+                        } else {
+                            R.string.now_playing_alt
+                        }
+                    ),
                     Color(activity.getColor(R.color.colorText)),
                     Color(activity.getColor(R.color.colorText)),
                     16.sp, Alignment.CenterStart, Modifier,

@@ -4,6 +4,10 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.compose.setContent
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -38,10 +42,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.paint
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorMatrix
+import androidx.compose.ui.graphics.ColorMatrixColorFilter
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.FixedScale
+import androidx.compose.ui.layout.ScaleFactor
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.LinkAnnotation
@@ -96,7 +104,9 @@ import com.unicorns.invisible.caravan.utils.startRadio
 import com.unicorns.invisible.caravan.utils.stopSoundEffects
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.NonCancellable.isActive
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import org.chromium.net.CronetEngine
 import kotlin.random.Random
@@ -134,6 +144,7 @@ class MainActivity : SaveDataActivity() {
     override fun onSnapshotClientInitialized() {
         CoroutineScope(Dispatchers.IO).launch {
             if (!save.isUsable) {
+                // When we change profile, we should use save from GD
                 val localSave = loadLocalSave(this@MainActivity)
                 if (localSave != null) {
                     save = localSave
@@ -283,13 +294,34 @@ class MainActivity : SaveDataActivity() {
                                 }
 
                                 // TODO: test landscape
-                                Box(
-                                    Modifier.fillMaxWidth().weight(0.70f)
-                                        .paint(
-                                            painterResource(id = if (isHorror.value == true) R.drawable.brother else R.drawable.caravan_main2),
-                                            contentScale = ContentScale.Fit
-                                        )
-                                )
+                                if (isHorror.value == true) {
+                                    Box(
+                                        Modifier.fillMaxWidth().weight(0.70f)
+                                            .paint(
+                                                painterResource(R.drawable.brother),
+                                                contentScale = ContentScale.Fit,
+                                                colorFilter = ColorMatrixColorFilter(
+                                                    ColorMatrix(
+                                                        floatArrayOf(
+                                                            0f, 0f, 1f, 0f, 0f,
+                                                            0f, 1f, 0f, 0f, 0f,
+                                                            1f, 0f, 0f, 0f, 0f,
+                                                            0f, 0f, 0f, 1f, 0f
+                                                        )
+                                                    )
+                                                )
+                                            )
+                                    )
+                                } else {
+                                    Box(
+                                        Modifier.fillMaxWidth().weight(0.70f)
+                                            .paint(
+                                                painterResource(R.drawable.caravan_main2),
+                                                contentScale = ContentScale.Fit
+                                            )
+                                    )
+                                }
+
 
                                 Box(Modifier.fillMaxWidth().weight(0.05f)) {
                                     val annotatedString = buildAnnotatedString {
@@ -325,6 +357,54 @@ class MainActivity : SaveDataActivity() {
                 }
             } else {
                 Screen()
+
+                if (isHorror.value == true) {
+                    var visible by remember { mutableStateOf(false) }
+                    var alignment by remember { mutableStateOf(Alignment.Center) }
+                    fun updateAlignment() {
+                        alignment = listOf(
+                            Alignment.Center,
+                            Alignment.CenterStart,
+                            Alignment.CenterEnd,
+                            Alignment.TopStart,
+                            Alignment.TopCenter,
+                            Alignment.TopEnd,
+                            Alignment.BottomStart,
+                            Alignment.BottomCenter,
+                            Alignment.BottomEnd,
+                        ).random()
+                    }
+
+                    LaunchedEffect(Unit) {
+                        while (isActive) {
+                            delay(Random.nextInt(2000, 4750).toLong())
+                            updateAlignment()
+                            visible = true
+                            delay(150L)
+                            visible = false
+                            delay(750L)
+                            updateAlignment()
+                            visible = true
+                            delay(150L)
+                            visible = false
+                        }
+                    }
+
+                    Box(Modifier.fillMaxSize().padding(top = 48.dp, end = 8.dp, bottom = 48.dp), contentAlignment = alignment) {
+                        AnimatedVisibility(
+                            visible = visible,
+                            enter = fadeIn(tween(100)), exit = fadeOut(tween(333))
+                        ) {
+                            Box(
+                                Modifier
+                                    .paint(
+                                        painterResource(R.drawable.brother2),
+                                        contentScale = FixedScale(0.69f),
+                                    )
+                            )
+                        }
+                    }
+                }
             }
         }
     }

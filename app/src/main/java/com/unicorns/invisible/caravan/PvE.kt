@@ -75,6 +75,7 @@ import com.unicorns.invisible.caravan.model.enemy.EnemyVulpes
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.Card
 import com.unicorns.invisible.caravan.model.primitives.CustomDeck
+import com.unicorns.invisible.caravan.model.primitives.Rank
 import com.unicorns.invisible.caravan.save.saveData
 import com.unicorns.invisible.caravan.utils.CheckboxCustom
 import com.unicorns.invisible.caravan.utils.MenuItemOpen
@@ -153,6 +154,7 @@ fun ShowSelectPvE(
             return
         }
         showTutorial -> {
+            showAlertDialog("[CLOSED]", "Better tutorial is on the way.", null)
             showTutorial = false
             // TODO
             // return
@@ -175,8 +177,6 @@ fun ShowSelectPvE(
             state = state
         ) {
             item {
-                Spacer(modifier = Modifier.height(16.dp))
-
                 @Composable
                 fun SubMenuItem(name: String, onClick: () -> Unit) {
                     TextFallout(
@@ -201,7 +201,7 @@ fun ShowSelectPvE(
                 Spacer(modifier = Modifier.height(12.dp))
                 SubMenuItem(stringResource(R.string.pve_stats)) { showStats = true }
                 Spacer(modifier = Modifier.height(12.dp))
-                SubMenuItem(stringResource(R.string.tutorial)) {  }
+                SubMenuItem(stringResource(R.string.tutorial)) { showTutorial = true }
             }
         }
     }
@@ -256,31 +256,15 @@ fun ShowStats(
                         TextAlign.Center,
                     )
                 }
-                StatsItem(
-                    text = stringResource(
-                        R.string.pve_games_started,
-                        started
-                    )
-                )
+                StatsItem(text = stringResource(R.string.pve_games_started, started))
                 Spacer(modifier = Modifier.height(8.dp))
-                StatsItem(
-                    text = stringResource(
-                        R.string.pve_games_finished,
-                        finished
-                    ),
-                )
+                StatsItem(text = stringResource(R.string.pve_games_finished, finished))
                 Spacer(modifier = Modifier.height(8.dp))
-                StatsItem(
-                    text = stringResource(R.string.pve_games_won, won),
-                )
+                StatsItem(text = stringResource(R.string.pve_games_won, won))
                 Spacer(modifier = Modifier.height(8.dp))
-                StatsItem(
-                    text = stringResource(R.string.pve_caps_bet, save.capsBet),
-                )
+                StatsItem(text = stringResource(R.string.pve_caps_bet, save.capsBet))
                 Spacer(modifier = Modifier.height(8.dp))
-                StatsItem(
-                    text = stringResource(R.string.pve_caps_won, save.capsWon),
-                )
+                StatsItem(text = stringResource(R.string.pve_caps_won, save.capsWon))
                 Spacer(modifier = Modifier.height(12.dp))
                 TextFallout(
                     stringResource(R.string.pve_percentiles),
@@ -370,205 +354,90 @@ fun ShowPvE(
 
     var selectedTab by rememberSaveable { mutableIntStateOf(0) }
 
+    @Composable
+    fun StartWithEnemy(enemy: Enemy, isEven: Boolean, goBack: () -> Unit) {
+        StartGame(
+            activity, if (isEven)
+                CResources(save.selectedDeck.first, save.selectedDeck.second)
+            else
+                CResources(save.getCustomDeckCopy()),
+            enemy, showAlertDialog, goBack
+        )
+    }
+
     when {
         showGameOliver -> {
-            StartGame(
-                activity = activity,
-                playerCResources = CResources(save.selectedDeck.first, save.selectedDeck.second),
-                enemy = EnemyOliver,
-                showAlertDialog = showAlertDialog
-            ) {
-                showGameOliver = false
-            }
+            StartWithEnemy(EnemyOliver, true) { showGameOliver = false }
             return
         }
         showGameVeronica -> {
-            StartGame(
-                activity = activity,
-                playerCResources = CResources(save.selectedDeck.first, save.selectedDeck.second),
-                enemy = EnemyVeronica,
-                showAlertDialog = showAlertDialog
-            ) {
-                showGameVeronica = false
-            }
+            StartWithEnemy(EnemyVeronica, true) { showGameVeronica = false }
             return
         }
         showGameVictor -> {
-            StartGame(
-                activity = activity,
-                playerCResources = CResources(save.selectedDeck.first, save.selectedDeck.second),
-                enemy = EnemyVictor,
-                showAlertDialog = showAlertDialog
-            ) {
-                showGameVictor = false
-            }
+            StartWithEnemy(EnemyVictor, true) { showGameVictor = false }
             return
         }
         showGameChiefHanlon -> {
-            StartGame(
-                activity = activity,
-                playerCResources = CResources(save.selectedDeck.first, save.selectedDeck.second),
-                enemy = EnemyHanlon,
-                showAlertDialog = showAlertDialog
-            ) {
-                showGameChiefHanlon = false
-            }
+            StartWithEnemy(EnemyHanlon, true) { showGameChiefHanlon = false }
             return
         }
         showGameUlysses -> {
-            StartGame(
-                activity = activity,
-                playerCResources = CResources(save.selectedDeck.first, save.selectedDeck.second),
-                enemy = EnemyUlysses,
-                showAlertDialog = showAlertDialog
-            ) {
-                showGameUlysses = false
-            }
+            StartWithEnemy(EnemyUlysses, true) { showGameUlysses = false }
             return
         }
         showGameBenny -> {
-            StartGame(
-                activity = activity,
-                playerCResources = CResources(save.selectedDeck.first, save.selectedDeck.second),
-                enemy = EnemyBenny,
-                showAlertDialog = showAlertDialog
-            ) {
-                showGameBenny = false
-            }
+            StartWithEnemy(EnemyBenny, true) { showGameBenny = false }
             return
         }
 
         showGameNoBark -> {
-            StartGame(
-                activity = activity,
-                playerCResources = CResources(save.getCustomDeckCopy()),
-                enemy = EnemyNoBark,
-                showAlertDialog = showAlertDialog
-            ) {
-                showGameNoBark = false
-            }
+            StartWithEnemy(EnemyNoBark, false) { showGameNoBark = false }
             return
         }
         showGameNash -> {
-            StartGame(
-                activity = activity,
-                playerCResources = CResources(save.getCustomDeckCopy()),
-                enemy = EnemyNash,
-                showAlertDialog = showAlertDialog
-            ) {
-                showGameNash = false
-            }
+            StartWithEnemy(EnemyNash, false) { showGameNash = false }
             return
         }
         showGameTabitha -> {
-            StartGame(
-                activity = activity,
-                playerCResources = CResources(save.getCustomDeckCopy()),
-                enemy = EnemyTabitha,
-                showAlertDialog = showAlertDialog
-            ) {
-                showGameTabitha = false
-            }
+            StartWithEnemy(EnemyTabitha, false) { showGameTabitha = false }
             return
         }
         showGameVulpes -> {
-            StartGame(
-                activity = activity,
-                playerCResources = CResources(save.getCustomDeckCopy()),
-                enemy = EnemyVulpes,
-                showAlertDialog = showAlertDialog
-            ) {
-                showGameVulpes = false
-            }
+            StartWithEnemy(EnemyVulpes, false) { showGameVulpes = false }
             return
         }
         showGameElijah -> {
-            StartGame(
-                activity = activity,
-                playerCResources = CResources(save.getCustomDeckCopy()),
-                enemy = EnemyElijah,
-                showAlertDialog = showAlertDialog
-            ) {
-                showGameElijah = false
-            }
+            StartWithEnemy(EnemyElijah, false) { showGameElijah = false }
             return
         }
         showGameCrocker -> {
-            StartGame(
-                activity = activity,
-                playerCResources = CResources(save.getCustomDeckCopy()),
-                enemy = EnemyCrooker,
-                showAlertDialog = showAlertDialog
-            ) {
-                showGameCrocker = false
-            }
+            StartWithEnemy(EnemyCrooker, false) { showGameCrocker = false }
             return
         }
 
         showGameSnuffles -> {
-            StartGame(
-                activity = activity,
-                playerCResources = CResources(save.getCustomDeckCopy()),
-                enemy = EnemySnuffles,
-                showAlertDialog = showAlertDialog
-            ) {
-                showGameSnuffles = false
-            }
+            StartWithEnemy(EnemySnuffles, false) { showGameSnuffles = false }
             return
         }
         showGameEasyPete -> {
-            StartGame(
-                activity = activity,
-                playerCResources = CResources(save.selectedDeck.first, save.selectedDeck.second),
-                enemy = EnemyEasyPete,
-                showAlertDialog = showAlertDialog
-            ) {
-                showGameEasyPete = false
-            }
+            StartWithEnemy(EnemyEasyPete, true) { showGameEasyPete = false }
             return
         }
         showGameMadnessCardinal -> {
-            StartGame(
-                activity = activity,
-                playerCResources = CResources(save.getCustomDeckCopy()),
-                enemy = EnemyMadnessCardinal,
-                showAlertDialog = showAlertDialog
-            ) {
-                showGameMadnessCardinal = false
-            }
+            StartWithEnemy(EnemyMadnessCardinal, false) { showGameMadnessCardinal = false }
             return
         }
         showGameLuc10 -> {
-            StartGame(
-                activity = activity,
-                playerCResources = CResources(save.selectedDeck.first, save.selectedDeck.second),
-                enemy = EnemyLuc10,
-                showAlertDialog = showAlertDialog
-            ) {
-                showGameLuc10 = false
-            }
+            StartWithEnemy(EnemyLuc10, true) { showGameLuc10 = false }
             return
         }
         showGameDrMobius -> {
-            StartGame(
-                activity = activity,
-                playerCResources = CResources(save.getCustomDeckCopy()),
-                enemy = EnemyDrMobius,
-                showAlertDialog = showAlertDialog
-            ) {
-                showGameDrMobius = false
-            }
+            StartWithEnemy(EnemyDrMobius, false) { showGameDrMobius = false }
             return
         }
         showGameTheManInTheMirror -> {
-            StartGame(
-                activity = activity,
-                playerCResources = CResources(save.getCustomDeckCopy()),
-                enemy = EnemyTheManInTheMirror,
-                showAlertDialog = showAlertDialog
-            ) {
-                showGameTheManInTheMirror = false
-            }
+            StartWithEnemy(EnemyTheManInTheMirror, false) { showGameTheManInTheMirror = false }
             return
         }
     }
@@ -596,11 +465,10 @@ fun ShowPvE(
             ) {
                 item {
                     Spacer(modifier = Modifier.height(16.dp))
-
                     @Composable
                     fun OpponentItem(name: String, number: Int, onClick: () -> Unit) {
                         TextFallout(
-                            "$name (${save.enemyCapsLeft[number] ?: 0})",
+                            stringResource(R.string.enemy_with_caps, name, save.enemyCapsLeft[number] ?: -1),
                             getTextColor(activity),
                             getTextStrokeColor(activity),
                             18.sp,
@@ -723,7 +591,7 @@ fun ShowPvE(
                                 Spacer(modifier = Modifier.height(10.dp))
                                 OpponentItem(stringResource(R.string.easy_pete), 13) { playVatsEnter(activity); showGameEasyPete = true }
                                 Spacer(modifier = Modifier.height(10.dp))
-                                OpponentItem(stringResource(R.string.madness_cardinal), 14) { playVatsEnter(activity); showGameMadnessCardinal = true }
+                                OpponentItem(stringResource(R.string.madness_cardinal), -1) { playVatsEnter(activity); showGameMadnessCardinal = true }
                                 Spacer(modifier = Modifier.height(10.dp))
                                 OpponentItem(stringResource(R.string.luc10), 15) { playVatsEnter(activity); showGameLuc10 = true }
                                 Spacer(modifier = Modifier.height(10.dp))
@@ -765,7 +633,6 @@ fun StartGame(
     var isBlitz: Boolean by rememberScoped { mutableStateOf(false) }
 
     val isBettingEnemy = enemy !is EnemyMadnessCardinal && enemy !is EnemyGlitch
-
     var showBettingScreen: Boolean by rememberScoped { mutableStateOf(isBettingEnemy) }
 
     val capsLeft by rememberScoped {
@@ -773,10 +640,10 @@ fun StartGame(
     }
 
     var enemyBet: Int by rememberScoped { mutableIntStateOf(
-        if (capsLeft < 10) {
+        if (capsLeft <= 10) {
             capsLeft
         } else {
-            min(capsLeft / 2, 50)
+            min(capsLeft * 2 / 3, 50)
         }
     ) }
 
@@ -784,7 +651,9 @@ fun StartGame(
         ShowBettingScreen(
             activity, enemy, enemyBet, { bet = it }, { isBlitz = it }, { reward = it },
             { showBettingScreen = false; goBack() }, {
-                save.enemyCapsLeft[enemy.getBankNumber()] = capsLeft - enemyBet + reward
+                if (isBettingEnemy && reward > 0) {
+                    save.enemyCapsLeft[enemy.getBankNumber()] = capsLeft - enemyBet + reward
+                }
                 showBettingScreen = false
             }
         )
@@ -817,7 +686,6 @@ fun StartGame(
             } else if (enemy is EnemyTheManInTheMirror) {
                 activity.achievementsClient?.unlock(activity.getString(R.string.achievement_lookalike))
             }
-
             if (isDeckCourier6) {
                 activity.achievementsClient?.unlock(activity.getString(R.string.achievement_just_load_everything_up_with_sixes_and_tens_and_kings))
             }
@@ -830,7 +698,9 @@ fun StartGame(
 
             if (isBettingEnemy) {
                 val enemyCaps = save.enemyCapsLeft[enemy.getBankNumber()] ?: 0
-                save.enemyCapsLeft[enemy.getBankNumber()] = enemyCaps - reward
+                if (reward > 0) {
+                    save.enemyCapsLeft[enemy.getBankNumber()] = enemyCaps - reward
+                }
                 save.capsInHand += reward
                 save.capsWon += reward
 
@@ -842,12 +712,18 @@ fun StartGame(
                     ),
                     onQuitPressed
                 )
-            } else {
+            } else if (enemy is EnemyMadnessCardinal) {
                 val rewardCard = winCard(activity, CardBack.MADNESS, false)
 
                 showAlertDialog(
                     activity.getString(R.string.result),
                     activity.getString(R.string.you_win) + rewardCard,
+                    onQuitPressed
+                )
+            } else {
+                showAlertDialog(
+                    activity.getString(R.string.result),
+                    activity.getString(R.string.you_win),
                     onQuitPressed
                 )
             }
@@ -859,10 +735,6 @@ fun StartGame(
         it.onLose = {
             playLoseSound(activity)
             save.gamesFinished++
-            if (isBettingEnemy) {
-                val enemyCaps = save.enemyCapsLeft[enemy.getBankNumber()] ?: 0
-                save.enemyCapsLeft[enemy.getBankNumber()] = ((enemyCaps + reward) * 0.85).toInt()
-            }
             saveData(activity)
 
             showAlertDialog(
@@ -906,15 +778,19 @@ fun StartGame(
                 Box(Modifier
                     .fillMaxSize()
                     .background(Color.Black)
-                    .paint(painterResource(R.drawable.brother),
-                        colorFilter = ColorMatrixColorFilter(ColorMatrix(
-                            floatArrayOf(
-                                0f, 1f, 0f, 0f, 0f,
-                                1f, 0f, 0f, 0f, 0f,
-                                0f, 0f, 1f, 0f, 0f,
-                                0f, 0f, 0f, 1f, 0f
+                    .paint(
+                        painterResource(R.drawable.brother),
+                        colorFilter = ColorMatrixColorFilter(
+                            ColorMatrix(
+                                floatArrayOf(
+                                    0f, 1f, 0f, 0f, 0f,
+                                    1f, 0f, 0f, 0f, 0f,
+                                    0f, 0f, 1f, 0f, 0f,
+                                    0f, 0f, 0f, 1f, 0f
+                                )
                             )
-                        )))
+                        )
+                    )
                 )
             }
         }
@@ -941,7 +817,6 @@ fun ShowBettingScreen(
         EnemyElijah -> stringResource(R.string.elijah)
         EnemyHanlon -> stringResource(R.string.pve_enemy_chief_hanlon)
         EnemyLuc10 -> stringResource(R.string.luc10)
-        EnemyMadnessCardinal -> stringResource(R.string.madness_cardinal)
         EnemyNash -> stringResource(R.string.johnson_nash)
         EnemyNoBark -> stringResource(R.string.no_bark)
         EnemyOliver -> stringResource(R.string.pve_enemy_oliver_real)
@@ -1034,9 +909,7 @@ fun ShowBettingScreen(
                     singleLine = true,
                     enabled = true,
                     value = bet,
-                    onValueChange = {
-                        bet = it
-                    },
+                    onValueChange = { bet = it },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     textStyle = TextStyle(
                         fontSize = 14.sp,
@@ -1101,7 +974,6 @@ fun ShowBettingScreen(
                             setReward(countRewardLocal())
 
                             save.capsInHand -= (bet.toIntOrNull() ?: 0)
-                            save.enemyCapsLeft -= enemyBet
                             saveData(activity)
 
                             goForward()
@@ -1134,16 +1006,13 @@ fun countReward(playerBet: Int, enemyBet: Int, isBlitz: Boolean): Int {
     } else if (!isBlitz) {
         playerBet + enemyBet
     } else {
+        // Gain is O(log^2(k))
         val k = (playerBet + enemyBet).toDouble()
         k.pow(k.pow(1.0 / k)).toInt()
     }
 }
 
-fun winCard(
-    activity: MainActivity,
-    back: CardBack,
-    isAlt: Boolean
-): String {
+fun winCard(activity: MainActivity, back: CardBack, isAlt: Boolean): String {
     fun isCardNew(card: Card): Boolean {
         return !save.isCardAvailableAlready(card)
     }
@@ -1159,7 +1028,13 @@ fun winCard(
 
     val message = if (card != null) {
         save.addCard(card)
-        "${activity.getString(card.rank.nameId)} ${activity.getString(card.suit.nameId)}, ${activity.getString(back.getDeckName())}"
+        val suit = if (card.rank == Rank.JOKER) {
+            (card.suit.ordinal + 1).toString()
+        } else {
+            activity.getString(card.suit.nameId)
+        }
+        val isAlt = if (isAlt) " (ALT!)" else ""
+        "${activity.getString(card.rank.nameId)} $suit, ${activity.getString(back.getDeckName())}$isAlt"
     } else {
         val prize = if (isAlt) 50 else 15
         save.capsInHand += prize

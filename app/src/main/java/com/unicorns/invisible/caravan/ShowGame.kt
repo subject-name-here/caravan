@@ -53,6 +53,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.sebaslogen.resaca.rememberScoped
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.challenge.Challenge
 import com.unicorns.invisible.caravan.model.primitives.CResources
@@ -82,6 +83,7 @@ import com.unicorns.invisible.caravan.utils.playCardFlipSound
 import com.unicorns.invisible.caravan.utils.playCloseSound
 import com.unicorns.invisible.caravan.utils.playJokerReceivedSounds
 import com.unicorns.invisible.caravan.utils.playJokerSounds
+import com.unicorns.invisible.caravan.utils.playNoBeep
 import com.unicorns.invisible.caravan.utils.playNoCardAlarm
 import com.unicorns.invisible.caravan.utils.playNukeBlownSound
 import com.unicorns.invisible.caravan.utils.playSelectSound
@@ -106,21 +108,15 @@ fun ShowGame(
     onMove: (Card?) -> Unit = {},
     goBack: () -> Unit
 ) {
-    var selectedCard by remember { mutableStateOf<Int?>(null) }
+    var selectedCard by remember { mutableIntStateOf(-1) }
     var selectedCaravan by remember { mutableIntStateOf(-1) }
 
     var caravansKey by rememberSaveable { mutableIntStateOf(0) }
     var enemyHandKey by rememberSaveable { mutableIntStateOf(0) }
     var playerHandKey by rememberSaveable { mutableIntStateOf(0) }
-    fun updateCaravans() {
-        caravansKey++
-    }
-    fun updateEnemyHand() {
-        enemyHandKey++
-    }
-    fun updatePlayerHand() {
-        playerHandKey++
-    }
+    fun updateCaravans() { caravansKey++ }
+    fun updateEnemyHand() { enemyHandKey++ }
+    fun updatePlayerHand() { playerHandKey++ }
 
     val animationSpeed by rememberSaveable { mutableStateOf(
         if (isBlitz) AnimationSpeed.NONE else save.animationSpeed
@@ -131,14 +127,11 @@ fun ShowGame(
             return
         }
         selectedCard = if (index == selectedCard || index !in game.playerCResources.hand.indices) {
-            null
-        } else {
-            index
-        }
-        if (selectedCard == null) {
             playCloseSound(activity)
+            -1
         } else {
             playSelectSound(activity)
+            index
         }
         selectedCaravan = -1
     }
@@ -153,17 +146,18 @@ fun ShowGame(
         } else {
             playSelectSound(activity)
         }
-        selectedCard = null
+        selectedCard = -1
         updateCaravans()
     }
 
     fun resetSelected() {
         selectedCaravan = -1
-        selectedCard = null
+        selectedCard = -1
     }
 
     fun dropCardFromHand() {
-        val selectedCardNN = selectedCard ?: return
+        val selectedCardNN = selectedCard
+        if (selectedCardNN !in game.playerCResources.hand.indices) return
         playVatsReady(activity)
         game.playerCResources.dropCardFromHand(selectedCardNN)
         resetSelected()
@@ -177,7 +171,7 @@ fun ShowGame(
 
     fun dropCaravan() {
         val selectedCaravanNN = selectedCaravan
-        if (selectedCaravanNN == -1) return
+        if (selectedCaravanNN !in game.playerCaravans.indices) return
         playVatsReady(activity)
         activity.processChallengesMove(Challenge.Move(moveCode = 1), game)
         game.playerCaravans[selectedCaravanNN].dropCaravan()
@@ -192,7 +186,7 @@ fun ShowGame(
 
     fun addCardToCaravan(caravan: Caravan, position: Int, isEnemy: Boolean) {
         val cardIndex = selectedCard
-        val card = cardIndex?.let { game.playerCResources.hand[it] }
+        val card = game.playerCResources.hand.getOrNull(cardIndex) ?: return
         fun onCaravanCardInserted() {
             resetSelected()
             updatePlayerHand()
@@ -202,9 +196,9 @@ fun ShowGame(
                 animationSpeed
             )
         }
-        if (card != null && game.isPlayerTurn && !game.isOver() && !(game.isInitStage() && card.isFace())) {
+        if (game.isPlayerTurn && !game.isOver() && !(game.isInitStage() && card.isFace())) {
             if (card.isFace()) {
-                if (position in caravan.cards.indices && caravan.cards[position].canAddModifier(card)) {
+                if (caravan.cards.getOrNull(position)?.canAddModifier(card) == true) {
                     playCardFlipSound(activity)
                     if (card.isOrdinary() && card.rank == Rank.JOKER) {
                         playJokerSounds(activity)
@@ -245,13 +239,9 @@ fun ShowGame(
         game,
         goBack,
         animationSpeed,
-        { "" },
-        { "" },
-        {},
-        ::onCardClicked,
-        selectedCard,
-        getSelectedCaravan = { selectedCaravan },
-        setSelectedCaravan = ::onCaravanClicked,
+        { "" }, { "" }, {},
+        { selectedCard }, ::onCardClicked,
+        { selectedCaravan }, ::onCaravanClicked,
         { a1, _, a3, a4 -> addCardToCaravan(a1, a3, a4) },
         ::dropCardFromHand,
         ::dropCaravan,
@@ -261,7 +251,7 @@ fun ShowGame(
     )
 
     if (isBlitz) {
-        var timeOnTimer by rememberSaveable { mutableIntStateOf(
+        var timeOnTimer by rememberScoped { mutableIntStateOf(
             if (
                 game.enemyCResources.deckSize < game.playerCResources.deckSize &&
                 game.enemyCResources.deckSize > 20
@@ -277,7 +267,7 @@ fun ShowGame(
             while (isActive && timeOnTimer > 0 && !game.isOver()) {
                 timeOnTimer--
                 if (timeOnTimer < 10) {
-                    playYesBeep(activity)
+                    playNoBeep(activity)
                 }
                 delay(1000L)
             }
@@ -320,8 +310,8 @@ fun ShowGameRaw(
     getEnemySymbol: () -> String,
     getMySymbol: () -> String,
     setMySymbol: () -> Unit,
-    onCardClicked: (Int) -> Unit,
-    selectedCard: Int?,
+    getSelectedCard: () -> Int,
+    setSelectedCard: (Int) -> Unit,
     getSelectedCaravan: () -> Int,
     setSelectedCaravan: (Int) -> Unit,
     addCardToCaravan: (Caravan, Int, Int, Boolean) -> Unit,
@@ -350,18 +340,13 @@ fun ShowGameRaw(
         MainScope().launch {
             val caravan = game.enemyCaravans[caravanNum]
             when (caravanNum) {
-                0 -> state1Enemy.scrollToItem(
-                    0,
+                0 -> state1Enemy.scrollToItem(0,
                     (stateToSizeOfItem(state1Enemy).toFloat() * (caravan.size - position - 1) / caravan.size).toInt()
                 )
-
-                1 -> state2Enemy.scrollToItem(
-                    0,
+                1 -> state2Enemy.scrollToItem(0,
                     (stateToSizeOfItem(state2Enemy).toFloat() * (caravan.size - position - 1) / caravan.size).toInt()
                 )
-
-                2 -> state3Enemy.scrollToItem(
-                    0,
+                2 -> state3Enemy.scrollToItem(0,
                     (stateToSizeOfItem(state3Enemy).toFloat() * (caravan.size - position - 1) / caravan.size).toInt()
                 )
             }
@@ -373,18 +358,13 @@ fun ShowGameRaw(
         MainScope().launch {
             val caravan = game.playerCaravans[caravanNum]
             when (caravanNum) {
-                0 -> state1Player.scrollToItem(
-                    0,
+                0 -> state1Player.scrollToItem(0,
                     (stateToSizeOfItem(state1Player).toFloat() * position / caravan.size).toInt()
                 )
-
-                1 -> state2Player.scrollToItem(
-                    0,
+                1 -> state2Player.scrollToItem(0,
                     (stateToSizeOfItem(state2Player).toFloat() * position / caravan.size).toInt()
                 )
-
-                2 -> state3Player.scrollToItem(
-                    0,
+                2 -> state3Player.scrollToItem(0,
                     (stateToSizeOfItem(state3Player).toFloat() * position / caravan.size).toInt()
                 )
             }
@@ -428,11 +408,9 @@ fun ShowGameRaw(
                 Modifier
                     .fillMaxSize()
                     .padding(innerPadding)
-                    .rotate(180f)) {
-                Box(
-                    Modifier
-                        .fillMaxSize()
-                        .getTableBackground()) {}
+                    .rotate(180f)
+            ) {
+                Box(Modifier.fillMaxSize().getTableBackground()) {}
             }
             BoxWithConstraints(Modifier.padding(innerPadding)) {
                 if (maxWidth > maxHeight) {
@@ -442,22 +420,14 @@ fun ShowGameRaw(
                             horizontalAlignment = Alignment.CenterHorizontally,
                             modifier = Modifier.fillMaxWidth(0.5f)
                         ) {
-                            EnemySide(
-                                activity,
-                                animationSpeed,
-                                isPvP,
-                                getEnemySymbol,
-                                game,
-                                fillHeight = 0.45f,
-                                enemyHandKey
-                            )
-                            PlayerSide(activity, animationSpeed, isPvP, game, selectedCard, onCardClicked, getMySymbol, setMySymbol, playerHandKey)
+                            EnemySide(activity, animationSpeed, isPvP, getEnemySymbol, game, fillHeight = 0.45f, enemyHandKey)
+                            PlayerSide(activity, animationSpeed, isPvP, game, getSelectedCard(), setSelectedCard, getMySymbol, setMySymbol, playerHandKey)
                         }
                         Caravans(
                             activity,
                             animationSpeed,
-                            { selectedCard },
-                            { selectedCard?.let { game.playerCResources.hand.getOrNull(it) } },
+                            getSelectedCard,
+                            { game.playerCResources.hand.getOrNull(getSelectedCard()) },
                             getSelectedCaravan,
                             setSelectedCaravan,
                             isMaxHeight = true,
@@ -486,20 +456,12 @@ fun ShowGameRaw(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         modifier = Modifier.fillMaxSize()
                     ) {
-                        EnemySide(
-                            activity,
-                            animationSpeed,
-                            isPvP,
-                            getEnemySymbol,
-                            game,
-                            fillHeight = 0.15f,
-                            enemyHandKey
-                        )
+                        EnemySide(activity, animationSpeed, isPvP, getEnemySymbol, game, fillHeight = 0.15f, enemyHandKey)
                         Caravans(
                             activity,
                             animationSpeed,
-                            { selectedCard },
-                            { selectedCard?.let { game.playerCResources.hand.getOrNull(it) } },
+                            getSelectedCard,
+                            { game.playerCResources.hand.getOrNull(getSelectedCard()) },
                             getSelectedCaravan,
                             setSelectedCaravan,
                             isMaxHeight = false,
@@ -521,7 +483,7 @@ fun ShowGameRaw(
                             { num -> game.enemyCaravans[num] },
                             caravansKey
                         )
-                        PlayerSide(activity, animationSpeed, isPvP, game, selectedCard, onCardClicked, getMySymbol, setMySymbol, playerHandKey)
+                        PlayerSide(activity, animationSpeed, isPvP, game, getSelectedCard(), setSelectedCard, getMySymbol, setMySymbol, playerHandKey)
                     }
                 }
             }
@@ -577,15 +539,13 @@ fun PlayerSide(
     animationSpeed: AnimationSpeed,
     isPvP: Boolean,
     game: Game,
-    selectedCard: Int?,
+    selectedCard: Int,
     onCardClicked: (Int) -> Unit,
     getMySymbol: () -> String, setMySymbol: () -> Unit,
     playerHandKey: Int,
 ) {
     val selectedCardColor = getGameSelectionColor(activity)
-    Row(
-        verticalAlignment = Alignment.Bottom, modifier = Modifier.fillMaxSize()
-    ) {
+    Row(verticalAlignment = Alignment.Bottom, modifier = Modifier.fillMaxSize()) {
         PlayerCards(
             activity,
             animationSpeed,
@@ -628,7 +588,7 @@ fun PlayerCards(
     activity: MainActivity,
     animationSpeed: AnimationSpeed,
     cards: List<Card>,
-    selectedCard: Int?,
+    selectedCard: Int,
     selectedCardColor: Color,
     onClick: (Int) -> Unit
 ) {
@@ -640,7 +600,7 @@ fun RowOfEnemyCards(activity: MainActivity, animationSpeed: AnimationSpeed, card
     Hand(activity, animationSpeed, true, cards, -1, Color.Transparent) {}
 }
 
-
+// TODO: test animations!!!!
 @SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
 fun Hand(
@@ -836,7 +796,7 @@ fun RowScope.CaravanOnField(
             delay(95L)
         }
     }
-    val trueWidth = (width - 3.025f * 14.dp.dpToPx())
+    val trueWidth = (width - 3f * 13.dp.dpToPx())
     val scale = (trueWidth / 183.toFloat()).coerceAtMost(1.2f)
     Column(
         Modifier
@@ -891,7 +851,7 @@ fun RowScope.CaravanOnField(
                                 .layout { measurable, constraints ->
                                     val placeable = measurable.measure(constraints)
                                     val modifierOffset =
-                                        ((if (isEnemy) (-14).dp else 14.dp) * (modifierIndex + 1)).toPx()
+                                        ((if (isEnemy) (-13).dp else 13.dp) * (modifierIndex + 1)).toPx()
                                             .toInt()
                                     layout((placeable.width * scale).toInt().coerceAtLeast(0), 0) {
                                         placeable.place(modifierOffset, 0)
@@ -914,17 +874,17 @@ fun RowScope.CaravanOnField(
                                     val scaleHeightOffset = placeable.height / 2 - placeableHeight / 2
                                     val layoutFullHeight = if (isEnemy) {
                                         max(
-                                            placeableHeight / 3 * (caravan.size + 2),
+                                            placeableHeight * 3 / 7 * caravan.size + placeableHeight * 4 / 7,
                                             state.layoutInfo.viewportSize.height - 1
                                         )
                                     } else {
-                                        placeableHeight / 3 * (caravan.size + 3)
+                                        placeableHeight * 3 / 7 * (caravan.size + 1) + placeableHeight * 4 / 7
                                     }
                                     val offsetWidth = constraints.maxWidth / 2 - placeable.width / 2
                                     val antiOffsetHeight = if (isEnemy)
-                                        (layoutFullHeight - placeableHeight / 3 * index - placeableHeight)
+                                        (layoutFullHeight - placeableHeight * 3 / 7 * index - placeableHeight)
                                     else
-                                        (placeableHeight / 3 * index)
+                                        (placeableHeight * 3 / 7 * index)
                                     layout(constraints.maxWidth, layoutFullHeight.coerceAtLeast(0)) {
                                         placeable.place(
                                             offsetWidth,
@@ -1050,7 +1010,7 @@ fun RowScope.CaravanOnField(
                                     val placeableHeight = (placeable.height * scale).toInt()
                                     val placeableWidth = (placeable.width * scale).toInt()
                                     val modifierOffset =
-                                        ((if (isEnemy) (-14).dp else 14.dp) * (modifierIndex + 1)).toPx()
+                                        ((if (isEnemy) (-13).dp else 13.dp) * (modifierIndex + 1)).toPx()
                                             .toInt()
                                     layout(placeableWidth.coerceAtLeast(0), 0) {
                                         placeable.place(
@@ -1095,17 +1055,17 @@ fun RowScope.CaravanOnField(
                                     val placeableWidth = (placeable.width * scale).toInt()
                                     val layoutFullHeight = if (isEnemy) {
                                         max(
-                                            placeableHeight / 3 * (memCards.size + 2),
+                                            placeableHeight * 3 / 7 * memCards.size + placeableHeight * 4 / 7,
                                             state.layoutInfo.viewportSize.height - 1
                                         )
                                     } else {
-                                        placeableHeight / 3 * (memCards.size + 3)
+                                        placeableHeight * 3 / 7 * (memCards.size + 1) + placeableHeight * 4 / 7
                                     }
                                     val offsetWidth = constraints.maxWidth / 2 - placeable.width / 2
                                     val antiOffsetHeight = if (isEnemy)
-                                        (layoutFullHeight - placeableHeight / 3 * index - placeableHeight)
+                                        (layoutFullHeight - placeableHeight * 3 / 7 * index - placeableHeight)
                                     else
-                                        (placeableHeight / 3 * index)
+                                        (placeableHeight * 3 / 7 * index)
                                     val scaleHeightOffset = placeable.height / 2 - placeableHeight / 2
                                     layout(constraints.maxWidth, layoutFullHeight.coerceAtLeast(0)) {
                                         placeable.place(
@@ -1258,7 +1218,7 @@ fun RowScope.Score(activity: MainActivity, num: Int, caravan: Caravan, opposingV
 fun Caravans(
     activity: MainActivity,
     animationSpeed: AnimationSpeed,
-    getSelectedCardInt: () -> Int?,
+    getSelectedCardInt: () -> Int,
     getSelectedCard: () -> Card?,
     getSelectedCaravan: () -> Int,
     setSelectedCaravan: (Int) -> Unit,
@@ -1353,25 +1313,22 @@ fun Caravans(
                     isGameOver() -> stringResource(R.string.can_t_act)
                     !isPlayersTurn() -> stringResource(R.string.wait)
                     getIsInitStage() -> stringResource(R.string.init_stage)
-                    getSelectedCardInt() != null -> {
+                    getSelectedCard() != null -> {
                         stringResource(R.string.discard_card)
                     }
-
                     getSelectedCaravan() in (0..2) -> {
                         stringResource(R.string.drop_caravan, getSelectedCaravan() + 1)
                     }
-
                     else -> stringResource(R.string.your_turn)
                 }
                 val modifier =
-                    if (canDiscard() && (getSelectedCardInt() != null || getSelectedCaravan() in (0..2))) {
+                    if (canDiscard() && (getSelectedCard() != null || getSelectedCaravan() in (0..2))) {
                         Modifier
                             .fillMaxWidth()
                             .height(52.dp)
                             .clickable {
                                 if (!canDiscard()) return@clickable
-                                val selectedCard = getSelectedCardInt()
-                                if (selectedCard != null) {
+                                if (getSelectedCard() != null) {
                                     dropCardFromHand()
                                 } else if (getSelectedCaravan() in (0..2)) {
                                     dropSelectedCaravan()
@@ -1433,11 +1390,7 @@ fun Caravans(
                             }
                         )
                     },
-                    { card ->
-                        if (isPlayersTurn()) {
-                            addCardToPlayerCaravan(it, card)
-                        }
-                    },
+                    { card -> if (isPlayersTurn()) { addCardToPlayerCaravan(it, card) } },
                     caravansKey
                 )
             }

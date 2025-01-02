@@ -1,5 +1,6 @@
 package com.unicorns.invisible.caravan.model.enemy
 
+import com.unicorns.invisible.caravan.getDeck
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.enemy.strategy.CardDropSelect
@@ -9,7 +10,6 @@ import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyDropCaravan
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyDropCard
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyInitStage
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJoker
-import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJokerSimple
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.Card
 import com.unicorns.invisible.caravan.model.primitives.CustomDeck
@@ -57,9 +57,13 @@ data object EnemyStory9A : Enemy {
             return
         }
 
+        if (game.playerCResources.deckSize == 0) {
+            game.playerCResources.addNewDeck(getDeck(10))
+        }
+
         // 2) If not and if player is abt to win, destroy player ready and almost ready caravans (on right columns!)
         var isLosingAny = false
-        game.enemyCaravans.withIndex().forEach { (caravanIndex, caravan) ->
+        game.enemyCaravans.withIndex().forEach { (caravanIndex, _) ->
             val isLosing = checkMoveOnDefeat(game, caravanIndex) || checkMoveOnShouldYouDoSmth(game, caravanIndex)
             if (isLosing) {
                 isLosingAny = true

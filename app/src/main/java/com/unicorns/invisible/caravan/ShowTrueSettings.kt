@@ -50,11 +50,14 @@ import com.unicorns.invisible.caravan.utils.getTextColor
 import com.unicorns.invisible.caravan.utils.getTextStrokeColor
 import com.unicorns.invisible.caravan.utils.getTrackColor
 import com.unicorns.invisible.caravan.utils.launchHorrorSequence
+import com.unicorns.invisible.caravan.utils.nextSong
+import com.unicorns.invisible.caravan.utils.pauseRadio
 import com.unicorns.invisible.caravan.utils.playClickSound
 import com.unicorns.invisible.caravan.utils.playCloseSound
 import com.unicorns.invisible.caravan.utils.playGlitchSound
 import com.unicorns.invisible.caravan.utils.playPimpBoySound
 import com.unicorns.invisible.caravan.utils.playYesBeep
+import com.unicorns.invisible.caravan.utils.resumeRadio
 import com.unicorns.invisible.caravan.utils.scrollbar
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -189,7 +192,7 @@ fun ShowTrueSettings(
                             }
                         }
                     }
-                    Spacer(Modifier.height(12.dp))
+                    Spacer(Modifier.height(8.dp))
                     Row(
                         Modifier.fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically
@@ -248,7 +251,13 @@ fun ShowTrueSettings(
 //                                        }
 
                                         1337 -> {
+                                            pauseRadio()
                                             playPimpBoySound(activity)
+                                            MainScope().launch {
+                                                delay(2000L)
+                                                resumeRadio()
+                                                nextSong(activity)
+                                            }
                                         }
 
                                         50224 -> {
@@ -295,13 +304,10 @@ fun ShowTrueSettings(
 
                                         4002, 9009 -> {
                                             save.let {
-                                                listOf(Suit.HEARTS, Suit.SPADES).forEach { suit ->
-                                                    Rank.entries.forEach { rank ->
-                                                        if (rank != Rank.JOKER) {
-                                                            it.addCard(Card(
-                                                                rank, suit, CardBack.STANDARD, true
-                                                            ))
-                                                        }
+                                                Rank.entries.forEach { rank ->
+                                                    if (rank != Rank.JOKER) {
+                                                        it.addCard(Card(rank, Suit.HEARTS, CardBack.STANDARD, true))
+                                                        it.addCard(Card(rank, Suit.SPADES, CardBack.STANDARD, true))
                                                     }
                                                 }
 
@@ -312,14 +318,9 @@ fun ShowTrueSettings(
 
                                         2077 -> {
                                             save.let {
-                                                listOf(Suit.HEARTS, Suit.CLUBS).forEach { suit ->
-                                                    Rank.entries.forEach { rank ->
-                                                        if (rank != Rank.JOKER) {
-                                                            it.addCard(Card(
-                                                                rank, suit, CardBack.ENCLAVE, false
-                                                            ))
-                                                        }
-                                                    }
+                                                Rank.entries.forEach { rank ->
+                                                    it.addCard(Card(rank, Suit.HEARTS, CardBack.ENCLAVE, false))
+                                                    it.addCard(Card(rank, Suit.CLUBS, CardBack.ENCLAVE, false))
                                                 }
 
                                                 saveData(activity)
@@ -365,8 +366,7 @@ fun ShowTrueSettings(
                                         }
 
                                         696969 -> {
-                                            // TODO: hint on it
-                                            if (activity.styleId == Style.BLACK && !save.glitchDefeated) {
+                                            if (activity.styleId == Style.BLACK && (!save.glitchDefeated)) {
                                                 launchHorrorSequence(activity)
                                                 MainScope().launch {
                                                     delay(1000L)
@@ -378,6 +378,14 @@ fun ShowTrueSettings(
                                                     saveData(activity)
                                                     exitProcess(0)
                                                 }
+                                            }
+                                        }
+
+                                        696970 -> {
+                                            if (activity.styleId == Style.BLACK) {
+                                                launchHorrorSequence(activity)
+                                                isHorror.value = true
+                                                restartSwitch.postValue(true)
                                             }
                                         }
 

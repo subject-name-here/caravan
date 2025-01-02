@@ -200,8 +200,7 @@ fun ShowGamePvP(
     goBack: () -> Unit,
 ) {
     val speed = save.animationSpeed
-    var selectedCard by remember { mutableStateOf<Int?>(null) }
-
+    var selectedCard by remember { mutableIntStateOf(-1) }
     var selectedCaravan by remember { mutableIntStateOf(-1) }
 
     var chosenSymbol by rememberSaveable { mutableIntStateOf(0) }
@@ -230,14 +229,11 @@ fun ShowGamePvP(
             return
         }
         selectedCard = if (index == selectedCard) {
-            null
-        } else {
-            index
-        }
-        if (selectedCard == null) {
             playCloseSound(activity)
+            -1
         } else {
             playSelectSound(activity)
+            index
         }
         selectedCaravan = -1
     }
@@ -255,13 +251,14 @@ fun ShowGamePvP(
 
     fun resetSelected() {
         selectedCaravan = -1
-        selectedCard = null
+        selectedCard = -1
         timeOnTimer = 0
     }
 
     fun dropCardFromHand() {
         if (game.isExchangingCards) return
-        val selectedCardNN = selectedCard ?: return
+        val selectedCardNN = selectedCard
+        if (selectedCardNN !in game.playerCResources.hand.indices) return
         playVatsReady(activity)
         game.playerCResources.dropCardFromHand(selectedCardNN)
         resetSelected()
@@ -377,8 +374,8 @@ fun ShowGamePvP(
         }
 
         val cardIndex = selectedCard
-        val card = cardIndex?.let { game.playerCResources.hand[cardIndex] }
-        if (card != null && game.isPlayerTurn && !game.isOver() && (!game.isInitStage() || !card.isFace())) {
+        val card = game.playerCResources.hand.getOrNull(cardIndex) ?: return
+        if (game.isPlayerTurn && !game.isOver() && (!game.isInitStage() || !card.isFace())) {
             if (!card.isFace()) {
                 if (position == caravan.cards.size && !isEnemy) {
                     if (caravan.canPutCardOnTop(card)) {
@@ -441,8 +438,8 @@ fun ShowGamePvP(
         getEnemySymbol = { symbols[enemyChosenSymbol.coerceIn(0, symbols.size - 1)] },
         getMySymbol = { symbols[chosenSymbol.coerceIn(0, symbols.size - 1)] },
         setMySymbol = { chosenSymbol = (chosenSymbol + 1) % symbols.size },
+        { selectedCard },
         ::onCardClicked,
-        selectedCard,
         getSelectedCaravan = { selectedCaravan },
         setSelectedCaravan = lambda@ {
             if (game.isOver()) {
@@ -454,7 +451,7 @@ fun ShowGamePvP(
             } else {
                 playSelectSound(activity)
             }
-            selectedCard = null
+            selectedCard = -1
             updateCaravans()
         },
         ::addCardToCaravan,

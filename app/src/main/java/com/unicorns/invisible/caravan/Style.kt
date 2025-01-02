@@ -1,9 +1,14 @@
 package com.unicorns.invisible.caravan
 
+import android.annotation.SuppressLint
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.AnimationVector2D
 import androidx.compose.animation.core.TweenSpec
 import androidx.compose.animation.core.TwoWayConverter
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -104,10 +109,7 @@ enum class Style(val styleNameId: Int, val price: Int) {
 
 @Composable
 fun Modifier.getTableBackground(): Modifier {
-    return paint(
-        painterResource(id = R.drawable.table_wood),
-        contentScale = ContentScale.Crop,
-    )
+    return paint(painterResource(id = R.drawable.table_wood), contentScale = ContentScale.Crop)
 }
 
 fun getStyleCities(style: Style): List<String> {
@@ -124,6 +126,7 @@ fun getStyleCities(style: Style): List<String> {
 }
 
 
+@SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
 fun BoxWithConstraintsScope.StylePicture(
     activity: MainActivity,
@@ -131,9 +134,8 @@ fun BoxWithConstraintsScope.StylePicture(
     width: Int,
     height: Int
 ) {
-    val key by rememberScoped { mutableIntStateOf(Random.nextInt()) }
     val prefix = "file:///android_asset/menu_items/"
-    val rand = Random(key)
+    val rand by rememberScoped { mutableStateOf(Random(Random.nextInt())) }
     when (style) {
         OLD_WORLD -> {
             val flagPainter = listOf(
@@ -225,8 +227,8 @@ fun BoxWithConstraintsScope.StylePicture(
 
                     val rotation = remember { Animatable(0f) }
                     val smurfRandCode by rememberScoped { mutableIntStateOf((0..10).random(rand)) }
-                    val smurfRandCode2 by rememberScoped { mutableIntStateOf((0..11).random(rand)) }
-                    val smurfRandCode3 by rememberScoped { mutableIntStateOf((0..11).random(rand)) }
+                    val smurfRandCode2 by rememberScoped { mutableIntStateOf((0..10).random(rand)) }
+                    val smurfRandCode3 by rememberScoped { mutableIntStateOf((0..10).random(rand)) }
                     val smurfRandCode4 by rememberScoped { mutableFloatStateOf(rand.nextFloat()) }
                     LaunchedEffect(Unit) {
                         while (isActive) {
@@ -1246,7 +1248,7 @@ fun BoxWithConstraintsScope.StylePicture(
 
         Style.BLACK -> {
             if ((0..9).random(rand) == 0) {
-                val text = "696969"
+                val text = "69 69 69"
                 Row(
                     Modifier
                         .fillMaxWidth()
@@ -1264,8 +1266,8 @@ fun BoxWithConstraintsScope.StylePicture(
                                 .align(Alignment.Center)
                                 .rotate(90f)
                                 .offset(
-                                    x = ((-11..11).random(rand).dp),
-                                    y = ((-11..11).random(rand).dp)
+                                    x = ((-69..69).random(rand).dp),
+                                    y = ((-69..69).random(rand).dp)
                                 ),
                             fontSize = 12.sp,
                         )

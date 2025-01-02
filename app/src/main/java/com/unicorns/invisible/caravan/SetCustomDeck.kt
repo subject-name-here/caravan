@@ -63,9 +63,7 @@ fun SetCustomDeck(
     activity: MainActivity,
     goBack: () -> Unit,
 ) {
-    fun isInCustomDeck(card: Card): Boolean {
-        return card in save.customDeck
-    }
+    fun isInCustomDeck(card: Card) = card in save.customDeck
 
     fun toggleToCustomDeck(card: Card) {
         save.customDeck.let { deck ->
@@ -88,6 +86,7 @@ fun SetCustomDeck(
         Column(Modifier
             .fillMaxSize()
             .background(getBackgroundColor(activity))) {
+            // TODO: 4 custom decks variants (please, add renaming)
             key (updater) {
                 ShowCharacteristics(activity)
             }
@@ -138,53 +137,40 @@ fun SetCustomDeck(
                                 .padding(horizontal = 8.dp)
                                 .fillMaxWidth(0.5f)
                         ) {
-                            TextFallout(
-                                activity.getString(R.string.select_all),
-                                getTextColor(activity),
-                                getTextStrokeColor(activity),
-                                18.sp,
-                                Alignment.Center,
-                                Modifier
-                                    .fillMaxWidth()
-                                    .background(getTextBackgroundColor(activity))
-                                    .padding(vertical = 4.dp)
-                                    .clickableSelect(activity) {
-                                        updaterLocal = !updaterLocal
-                                        updater = !updater
-                                        CustomDeck(back, check).toList()
-                                            .filter { isAvailable(it) }
-                                            .forEach {
-                                                if (!isInCustomDeck(it)) {
-                                                    toggleToCustomDeck(it)
-                                                }
-                                            }
-                                    },
-                                TextAlign.Center
-                            )
+                            @Composable
+                            fun Button(text: String, action: (Card) -> Unit) {
+                                TextFallout(
+                                    text,
+                                    getTextColor(activity),
+                                    getTextStrokeColor(activity),
+                                    18.sp,
+                                    Alignment.Center,
+                                    Modifier
+                                        .fillMaxWidth()
+                                        .background(getTextBackgroundColor(activity))
+                                        .padding(vertical = 4.dp)
+                                        .clickableSelect(activity) {
+                                            updaterLocal = !updaterLocal
+                                            updater = !updater
+                                            CustomDeck(back, check).toList()
+                                                .filter { isAvailable(it) }
+                                                .forEach(action)
+                                        },
+                                    TextAlign.Center
+                                )
+                            }
+
+                            Button(activity.getString(R.string.select_all)) {
+                                if (!isInCustomDeck(it)) {
+                                    toggleToCustomDeck(it)
+                                }
+                            }
                             HorizontalDivider(color = getDividerColor(activity))
-                            TextFallout(
-                                activity.getString(R.string.deselect_all),
-                                getTextColor(activity),
-                                getTextStrokeColor(activity),
-                                18.sp,
-                                Alignment.Center,
-                                Modifier
-                                    .fillMaxWidth()
-                                    .background(getTextBackgroundColor(activity))
-                                    .padding(vertical = 4.dp)
-                                    .clickableCancel(activity) {
-                                        updaterLocal = !updaterLocal
-                                        updater = !updater
-                                        CustomDeck(back, check).toList()
-                                            .filter { isAvailable(it) }
-                                            .forEach {
-                                                if (isInCustomDeck(it)) {
-                                                    toggleToCustomDeck(it)
-                                                }
-                                            }
-                                    },
-                                TextAlign.Center
-                            )
+                            Button(activity.getString(R.string.deselect_all)) {
+                                if (isInCustomDeck(it)) {
+                                    toggleToCustomDeck(it)
+                                }
+                            }
                         }
                         Column(
                             Modifier
@@ -204,8 +190,7 @@ fun SetCustomDeck(
                                     TextAlign.Center
                                 )
                                 CheckboxCustom(
-                                    activity,
-                                    { check },
+                                    activity, { check },
                                     {
                                         check = !check
                                         save.altDecksChosen[back] = check
@@ -260,7 +245,7 @@ fun SetCustomDeck(
                                             color = getSelectionColor(activity)
                                         )
                                         .padding(4.dp)
-                                        .alpha(if (isSelected) 1f else 0.5f))
+                                        .alpha(if (isSelected) 1f else 0.55f))
                                 } else {
                                     ShowCardBack(activity, card, Modifier
                                         .padding(4.dp)
@@ -282,12 +267,12 @@ fun ShowCharacteristics(activity: MainActivity) {
             .fillMaxWidth()
             .wrapContentHeight()
     ) {
+        val deck = save.getCustomDeckCopy()
         Row(
             Modifier
                 .padding(8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            val deck = save.getCustomDeckCopy()
             val deckSizeMin = CResources.MIN_DECK_SIZE
             val color1 = if (deck.size < deckSizeMin) Color.Red else getTextColor(activity)
             val color2 = if (deck.size < deckSizeMin) Color.Red else getTextStrokeColor(activity)
@@ -321,8 +306,7 @@ fun ShowCharacteristics(activity: MainActivity) {
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center
         ) {
-            val deck = save.getCustomDeckCopy()
-            val decksUsed = deck.toList().groupBy { it.back }.keys.size
+            val decksUsed = deck.toList().distinctBy { it.back }.size
             val decksUsedMax = CResources.MAX_NUMBER_OF_DECKS
             val color1 = if (decksUsed > decksUsedMax) Color.Red else getTextColor(activity)
             val color2 = if (decksUsed > decksUsedMax) Color.Red else getTextStrokeColor(activity)
