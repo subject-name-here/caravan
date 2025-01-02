@@ -11,7 +11,6 @@ import com.unicorns.invisible.caravan.model.primitives.Suit
 import com.unicorns.invisible.caravan.utils.checkMoveOnDefeat
 import kotlinx.serialization.Serializable
 import kotlin.math.abs
-import kotlin.random.Random
 
 
 @Serializable

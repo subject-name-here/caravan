@@ -75,6 +75,7 @@ import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
 
+// TODO: test MP!!
 fun customDeckToInts(customDeck: CustomDeck): List<ULong> {
     val result = ArrayList<ULong>()
 

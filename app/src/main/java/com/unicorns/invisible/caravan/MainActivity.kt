@@ -49,7 +49,6 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.FixedScale
-import androidx.compose.ui.layout.ScaleFactor
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.LinkAnnotation
@@ -70,8 +69,8 @@ import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.challenge.Challenge
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.save.Save
-import com.unicorns.invisible.caravan.save.loadLocalSave
 import com.unicorns.invisible.caravan.save.loadGDSave
+import com.unicorns.invisible.caravan.save.loadLocalSave
 import com.unicorns.invisible.caravan.save.processOldSave
 import com.unicorns.invisible.caravan.save.saveData
 import com.unicorns.invisible.caravan.utils.SliderCustom
@@ -104,7 +103,6 @@ import com.unicorns.invisible.caravan.utils.startRadio
 import com.unicorns.invisible.caravan.utils.stopSoundEffects
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.NonCancellable.isActive
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
@@ -144,7 +142,7 @@ class MainActivity : SaveDataActivity() {
     override fun onSnapshotClientInitialized() {
         CoroutineScope(Dispatchers.IO).launch {
             if (!save.isUsable) {
-                // When we change profile, we should use save from GD
+                // TODO: When we change profile, we should use save from GD
                 val localSave = loadLocalSave(this@MainActivity)
                 if (localSave != null) {
                     save = localSave

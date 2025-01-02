@@ -793,11 +793,9 @@
 \n\n
 5.2) Числовые карты (Туз (A)=1, 2-10=цифра на карте)
 \n\n
-5.21) To play a number card refer to the last card played in the selected caravan - it must follow a suit or a numerical (ascending or descending) sequence. If there is only one card in the caravan, then the next number card played sets the numerical direction and determines the suit. From here, as long as a number card matches the suit or follows the numerical sequence, then it\'s allowed to be played in that caravan.
+5.21) Числовая карта должна быть либо той же масти, что и последняя карта каравана, либо следовать направлению карт (убывающему или возрастающему). Если в караване только одна карта, тогда следующая карта определяет направление карт и масть.
 \n\n
-5.22) Numerical sequences don\'t need to be directly connected - you can go up from a three to a seven, or down from a seven to a three. In the latter case, the sequence is descending, so only a deuce or ace could be played as a number card.
-\n\n
-5.23) If playing a card that matches suit is contrary to the current numerical sequence of that caravan, then the new card establishes a new numerical sequence for that caravan.
+5.23) Если у сыгранной карты совпадает масть, но она не следует направлению, тогда новая карта определяет направление.
 \n\n
 5.24) Нельзя ни при каких обстоятельствах класть числовую карту на карту такого же достоинства (например, 10 на 10).
 \n\n
@@ -805,27 +803,27 @@
 \n\n\n
 5.3) КАРТИНКИ (J (Валет), Q (Дама), K (Король), Joker (Джокер))
 \n\n
-5.31) У картинок есть специальные эффекты. Unlike number cards, which are played overlapping each other downwards, these cards are attached to the side of and overlapping the card it is played on.
+5.31) У картинок есть специальные эффекты. В отличие от числовых карт, картинки кладутся на числовые карты в горизонтальном направлении, прикрывая их.
 \n\n
-5.32) Face cards and Jokers can be played on both your and your opponent\'s caravans.
+5.32) Картинки могут быть сыграны на караванах любого игрока.
 \n\n
-5.33) Face cards and Jokers don\'t need to follow suit or sequence, and can be played on any number card no matter the card\'s location in the caravan.
+5.33) Картинки могут быть сыграны на любой карте в караване.
 \n\n
-5.34) ВАЛЕТ - Removes the card the Jack is played on as well as any face cards/Jokers attached.
+5.34) ВАЛЕТ - Убирает карту, на которой Валет сыгран.
 \n
-5.35) ДАМА - Reverses the current numerical direction of the caravan, and changes the suit of the caravan to that of the Queen. Multiple Queens can be used on the same card to reverse the effects.
+5.35) ДАМА - Меняет масть каравана на масть Дамы, а также меняет числовое направление. Если на карте сыграно несколько Дам, имеет значение лишь масть последней, а направление опрееделяется четностью количества сыгранных дам.
 \n
-5.36) КОРОЛЬ - Doubles the value of the card the King is played on. Multiple Kings can be used on the same card (e.g. 10+K = 20; 10+K+K = 40).
+5.36) КОРОЛЬ - Удваивает стоимость карты, на которой Король сыгран. Несколько Королей могут быть сыграны на одной карте (e.g. 10+K = 20; 10+K+K = 40).
 \n
 5.37) ДЖОКЕР:
         \n
-        - If played on an ace, it removes all other number cards from both player\'s caravans that share the same suit of the ace (Queens altering the suit of a caravan will not save the card - the suit is considered what is printed on the number card).
+        - Если сыгран на Тузе, убирает все числовые карты той же масти, что и Туз, из караванов обоих игроков. (Дамы не влияют на масть убираемой карты.)
         \n
-        - If played on a number card that is not an ace, it removes all other number cards of the same value/instance from both player\'s caravans. A played Joker only affects cards that have been played before it. In any case, the number card the Joker is played on is spared. All attaching face cards of the removed cards are also removed.
+        - Если сыгран на числовой карте, но не на Тузе, убирает все числовые карты того же значения, что и карта, на которой Джокер сыгран, из караванов обоих игроков.
 \n\n
-5.38) Face cards and Jokers can be played/attached with full effect on cards with other face cards and Jokers attached. There can be no more than three face cards or Jokers attached/played to a single number card at one time. The exception is a Jack: it can be used to remove a number card that already has three face cards or Jokers attached to it.
+5.38) На числовой карте может быть не более трёх картинок. Исключение - Валет: он может быть использован, чтобы убрать карту, на которой уже есть три картинки.
 \n\n
-5.4) If in the event that a Jack or Joker removes a card, leaving a caravan sequence stuck with two identical number cards, then the sequence is considered undefined, and number card of any value (except the last card value) can be played.
+5.4) Если последние две карты каравана одного значения, последовательность считается неопределенной, и тогда числовая карта любого значения (кроме значения последней карты каравана) может быть сыграна на этом караване.
 \n\n
 5.5) После дебюта, если один из караванов лишается всех карт, необязательно класть туда карту немедленно. Технически, возможно выиграть игру всего с двумя караванами.
 
@@ -851,5 +849,7 @@
 
     </string>
 
+    <string name="this_game_will_be_counted_as_lost">Партия будет считаться проигранной!!</string>
+    <string name="enemy_with_caps">%1$s (%2$s крышек)</string>
 
 </resources>

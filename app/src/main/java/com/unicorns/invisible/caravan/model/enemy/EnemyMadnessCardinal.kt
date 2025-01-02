@@ -18,7 +18,6 @@ import com.unicorns.invisible.caravan.utils.checkMoveOnDefeat
 import com.unicorns.invisible.caravan.utils.checkMoveOnShouldYouDoSmth
 import kotlinx.serialization.Serializable
 import kotlin.math.abs
-import kotlin.random.Random
 
 
 @Serializable

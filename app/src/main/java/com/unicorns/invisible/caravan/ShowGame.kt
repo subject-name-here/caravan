@@ -89,7 +89,6 @@ import com.unicorns.invisible.caravan.utils.playNukeBlownSound
 import com.unicorns.invisible.caravan.utils.playSelectSound
 import com.unicorns.invisible.caravan.utils.playVatsReady
 import com.unicorns.invisible.caravan.utils.playWWSound
-import com.unicorns.invisible.caravan.utils.playYesBeep
 import com.unicorns.invisible.caravan.utils.pxToDp
 import com.unicorns.invisible.caravan.utils.scrollbar
 import kotlinx.coroutines.MainScope
@@ -600,7 +599,6 @@ fun RowOfEnemyCards(activity: MainActivity, animationSpeed: AnimationSpeed, card
     Hand(activity, animationSpeed, true, cards, -1, Color.Transparent) {}
 }
 
-// TODO: test animations!!!!
 @SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
 fun Hand(

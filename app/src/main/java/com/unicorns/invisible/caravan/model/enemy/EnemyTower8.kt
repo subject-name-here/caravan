@@ -16,7 +16,6 @@ import com.unicorns.invisible.caravan.model.primitives.Rank
 import com.unicorns.invisible.caravan.model.primitives.Suit
 import com.unicorns.invisible.caravan.utils.checkMoveOnDefeat
 import kotlinx.serialization.Serializable
-import kotlin.math.abs
 
 
 @Serializable

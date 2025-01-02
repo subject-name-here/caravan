@@ -1,14 +1,10 @@
 package com.unicorns.invisible.caravan
 
 import android.annotation.SuppressLint
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.AnimationVector2D
 import androidx.compose.animation.core.TweenSpec
 import androidx.compose.animation.core.TwoWayConverter
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -57,8 +53,8 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
-import coil.decode.SvgDecoder.*
-import coil.request.ImageRequest.*
+import coil.decode.SvgDecoder.Factory
+import coil.request.ImageRequest.Builder
 import coil.size.Size
 import coil.size.pxOrElse
 import com.sebaslogen.resaca.rememberScoped

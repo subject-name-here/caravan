@@ -96,7 +96,6 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
 
-// TODO: test
 @Composable
 fun ShowStoryList(
     activity: MainActivity,
