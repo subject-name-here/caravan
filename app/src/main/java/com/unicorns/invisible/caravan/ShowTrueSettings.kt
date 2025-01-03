@@ -88,7 +88,6 @@ fun ShowTrueSettings(
             Modifier
                 .fillMaxSize()
                 .background(getBackgroundColor(activity))
-                .padding(horizontal = 16.dp)
                 .scrollbar(
                     mainState,
                     horizontal = false,

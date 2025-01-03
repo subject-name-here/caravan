@@ -16,7 +16,7 @@ class EnemyStory3 : Enemy {
         removeAll(toList().filter { it.isFace() && it.rank != Rank.JACK })
     })
 
-    private var cazadorsAdded = false
+    private var cazadorsAdded = 0
     override fun makeMove(game: Game) {
         val hand = game.enemyCResources.hand
 
@@ -25,10 +25,10 @@ class EnemyStory3 : Enemy {
             val caravan = game.enemyCaravans.filter { it.isEmpty() }.random()
             caravan.putCardOnTop(game.enemyCResources.removeFromHand(hand.indexOf(card)))
             return
-        } else if (!cazadorsAdded) {
-            cazadorsAdded = true
+        } else if (cazadorsAdded % 13 == 0) {
             game.enemyCResources.addOnTop(Card(Rank.QUEEN, Suit.HEARTS, CardBack.MADNESS, true))
         }
+        cazadorsAdded++
 
         val specials = hand.withIndex().filter { it.value.isWildWasteland() }
         specials.forEach { (index, special) ->

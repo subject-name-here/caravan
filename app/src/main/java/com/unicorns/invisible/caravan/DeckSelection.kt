@@ -94,7 +94,7 @@ fun DeckSelection(
             verticalArrangement = Arrangement.Top,
         ) {
             item {
-                Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier.height(16.dp))
                 TextFallout(
                     stringResource(R.string.deck_custom),
                     getTextColor(activity),
@@ -110,9 +110,9 @@ fun DeckSelection(
                     TextAlign.Center
                 )
 
-                Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(16.dp))
                 HorizontalDivider(color = getDividerColor(activity))
-                Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
                 TextFallout(
                     stringResource(R.string.deck_select),
@@ -133,7 +133,7 @@ fun DeckSelection(
                                 contentDescription = "",
                                 modifier = getModifier(back, false).clip(RoundedCornerShape(6f))
                             )
-                            Spacer(modifier = Modifier.width(12.dp))
+                            Spacer(modifier = Modifier.width(8.dp))
                             AsyncImage(
                                 model = "file:///android_asset/caravan_cards_back/" + back.getCardBackAltAsset(),
                                 contentDescription = "",
@@ -160,7 +160,9 @@ fun DeckSelection(
                 showDeckBackRow(CardBack.SIERRA_MADRE)
                 Row {
                     showDeckBackRow(CardBack.MADNESS)
+                    Spacer(modifier = Modifier.width(8.dp))
                     showDeckBackRow(CardBack.ENCLAVE)
+                    Spacer(modifier = Modifier.width(8.dp))
                     showDeckBackRow(CardBack.CHINESE)
                 }
             }

@@ -56,12 +56,11 @@ fun ShowRules(activity: MainActivity, goBack: () -> Unit) {
                     horizontal = false,
                     knobColor = getKnobColor(activity),
                     trackColor = getTrackColor(activity),
-                    padding = 4.dp
                 ), state = state
         ) {
             item {
                 Spacer(Modifier.height(8.dp))
-                Column(verticalArrangement = Arrangement.Top, horizontalAlignment = Alignment.CenterHorizontally) {
+                Column(Modifier.padding(horizontal = 4.dp), verticalArrangement = Arrangement.Top, horizontalAlignment = Alignment.CenterHorizontally) {
                     TabRow(
                         selectedTab, Modifier.fillMaxWidth(),
                         containerColor = getBackgroundColor(activity),

@@ -53,7 +53,6 @@ fun ShowDailys(
                 Modifier
                     .fillMaxSize()
                     .background(getBackgroundColor(activity))
-                    .padding(horizontal = 16.dp)
                     .scrollbar(
                         mainState,
                         horizontal = false,
@@ -103,7 +102,7 @@ fun ShowDailys(
 
 @Composable
 fun ShowChallenge(activity: MainActivity, challenge: Challenge, isCompleted: Boolean, updater: () -> Unit) {
-    Column(Modifier.fillMaxWidth()) {
+    Column(Modifier.fillMaxWidth().padding(horizontal = 8.dp)) {
         Row {
             TextFallout(
                 challenge.getName(activity),

@@ -1,5 +1,6 @@
 package com.unicorns.invisible.caravan
 
+import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.widget.Toast
@@ -14,6 +15,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -94,6 +96,7 @@ import com.unicorns.invisible.caravan.utils.nextSong
 import com.unicorns.invisible.caravan.utils.pauseActivitySound
 import com.unicorns.invisible.caravan.utils.pauseRadio
 import com.unicorns.invisible.caravan.utils.playNotificationSound
+import com.unicorns.invisible.caravan.utils.pxToDp
 import com.unicorns.invisible.caravan.utils.resumeActivitySound
 import com.unicorns.invisible.caravan.utils.resumeRadio
 import com.unicorns.invisible.caravan.utils.scrollbar
@@ -164,6 +167,7 @@ class MainActivity : SaveDataActivity() {
         }
     }
 
+    @SuppressLint("UnusedBoxWithConstraintsScope")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -202,7 +206,7 @@ class MainActivity : SaveDataActivity() {
             R.string.intro_tip_33,
             R.string.intro_tip_34,
             R.string.intro_tip_35,
-        ).random()
+        ).random(Random(id.hashCode()))
 
         setContent {
             val (textColor, strokeColor, backgroundColor) = Triple(
@@ -229,125 +233,147 @@ class MainActivity : SaveDataActivity() {
                     contentAlignment = Alignment.Center
                 ) {
                     val k by isSaveLoaded.observeAsState()
-                    key(k) {
-                        Column(
-                            Modifier.fillMaxSize(),
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Center
-                        ) {
+
+                    @Composable
+                    fun ColumnScope.CaravanTitle(weight: Float) {
+                        Box(Modifier.fillMaxWidth().weight(weight).padding(vertical = 4.dp)) {
                             Column(
-                                Modifier
-                                    .fillMaxSize()
-                                    .padding(4.dp),
-                                horizontalAlignment = Alignment.CenterHorizontally,
-                                verticalArrangement = Arrangement.Center
+                                Modifier.fillMaxSize(),
+                                verticalArrangement = Arrangement.Center,
+                                horizontalAlignment = Alignment.CenterHorizontally
                             ) {
-                                Box(Modifier.fillMaxWidth().weight(0.25f).padding(vertical = 4.dp)) {
-                                    Column(
-                                        Modifier.fillMaxSize(),
-                                        verticalArrangement = Arrangement.Bottom,
-                                        horizontalAlignment = Alignment.CenterHorizontally
-                                    ) {
-                                        if (save.isUsable) {
-                                            TextFallout(
-                                                "CARAVAN",
-                                                textColor,
-                                                strokeColor,
-                                                40.sp,
-                                                Alignment.TopCenter,
-                                                Modifier.padding(top = 8.dp),
-                                                TextAlign.Center
-                                            )
-                                            TextFallout(
-                                                stringResource(R.string.tap_to_play),
-                                                textColor,
-                                                strokeColor,
-                                                24.sp,
-                                                Alignment.TopCenter,
-                                                Modifier.padding(4.dp),
-                                                TextAlign.Center
-                                            )
-                                        } else {
-                                            TextFallout(
-                                                "PLEASE\nSTAND BY",
-                                                textColor,
-                                                strokeColor,
-                                                32.sp,
-                                                Alignment.TopCenter,
-                                                Modifier.padding(4.dp),
-                                                TextAlign.Center
-                                            )
-                                        }
-                                        Spacer(Modifier.height(8.dp))
-                                        TextFallout(
-                                            getString(advice),
-                                            textColor,
-                                            strokeColor,
-                                            18.sp,
-                                            Alignment.Center,
-                                            Modifier.padding(vertical = 4.dp, horizontal = 12.dp),
-                                            TextAlign.Center
-                                        )
-                                    }
-                                }
-
-                                // TODO: test landscape
-                                if (isHorror.value == true) {
-                                    Box(
-                                        Modifier.fillMaxWidth().weight(0.70f)
-                                            .paint(
-                                                painterResource(R.drawable.brother),
-                                                contentScale = ContentScale.Fit,
-                                                colorFilter = ColorMatrixColorFilter(
-                                                    ColorMatrix(
-                                                        floatArrayOf(
-                                                            0f, 0f, 1f, 0f, 0f,
-                                                            0f, 1f, 0f, 0f, 0f,
-                                                            1f, 0f, 0f, 0f, 0f,
-                                                            0f, 0f, 0f, 1f, 0f
-                                                        )
-                                                    )
-                                                )
-                                            )
-                                    )
-                                } else {
-                                    Box(
-                                        Modifier.fillMaxWidth().weight(0.70f)
-                                            .paint(
-                                                painterResource(R.drawable.caravan_main2),
-                                                contentScale = ContentScale.Fit
-                                            )
-                                    )
-                                }
-
-
-                                Box(Modifier.fillMaxWidth().weight(0.05f)) {
-                                    val annotatedString = buildAnnotatedString {
-                                        append("Pic creator: ")
-                                        withLink(
-                                            link = LinkAnnotation.Url(
-                                                url = "https://steamcommunity.com/profiles/76561199409356196/",
-                                                styles = TextLinkStyles(
-                                                    style = SpanStyle(
-                                                        color = textColor,
-                                                        fontFamily = FontFamily(Font(R.font.monofont)),
-                                                        textDecoration = TextDecoration.Underline
-                                                    )
-                                                )
-                                            ),
-                                        ) {
-                                            append("bunkeran")
-                                        }
-                                    }
+                                if (save.isUsable) {
                                     TextFallout(
-                                        annotatedString,
+                                        "CARAVAN",
                                         textColor,
                                         strokeColor,
-                                        12.sp,
-                                        Alignment.BottomEnd,
-                                        Modifier.fillMaxSize(),
-                                        TextAlign.End
+                                        40.sp,
+                                        Alignment.TopCenter,
+                                        Modifier.padding(top = 8.dp),
+                                        TextAlign.Center
                                     )
+                                    TextFallout(
+                                        stringResource(R.string.tap_to_play),
+                                        textColor,
+                                        strokeColor,
+                                        24.sp,
+                                        Alignment.TopCenter,
+                                        Modifier.padding(4.dp),
+                                        TextAlign.Center
+                                    )
+                                } else {
+                                    TextFallout(
+                                        "PLEASE\nSTAND BY",
+                                        textColor,
+                                        strokeColor,
+                                        32.sp,
+                                        Alignment.TopCenter,
+                                        Modifier.padding(4.dp),
+                                        TextAlign.Center
+                                    )
+                                }
+                                Spacer(Modifier.height(8.dp))
+                                TextFallout(
+                                    getString(advice),
+                                    textColor,
+                                    strokeColor,
+                                    18.sp,
+                                    Alignment.Center,
+                                    Modifier.padding(vertical = 4.dp, horizontal = 12.dp),
+                                    TextAlign.Center
+                                )
+                            }
+                        }
+                    }
+                    @Composable
+                    fun ColumnScope.Picture(weight: Float) {
+                        if (isHorror.value == true) {
+                            Box(
+                                Modifier.fillMaxWidth().weight(weight)
+                                    .paint(
+                                        painterResource(R.drawable.brother),
+                                        contentScale = ContentScale.Fit,
+                                        colorFilter = ColorMatrixColorFilter(ColorMatrix(
+                                            floatArrayOf(
+                                                0f, 0f, 1f, 0f, 0f,
+                                                0f, 1f, 0f, 0f, 0f,
+                                                1f, 0f, 0f, 0f, 0f,
+                                                0f, 0f, 0f, 1f, 0f
+                                            )
+                                        ))
+                                    )
+                            )
+                        } else {
+                            Box(
+                                Modifier.fillMaxWidth().weight(weight)
+                                    .paint(
+                                        painterResource(R.drawable.caravan_main2),
+                                        contentScale = ContentScale.Fit
+                                    )
+                            )
+                        }
+                    }
+                    @Composable
+                    fun ColumnScope.PicAuthorLink(weight: Float) {
+                        Box(Modifier.fillMaxWidth().weight(weight)) {
+                            val annotatedString = buildAnnotatedString {
+                                append("Pic creator: ")
+                                withLink(
+                                    link = LinkAnnotation.Url(
+                                        url = "https://steamcommunity.com/profiles/76561199409356196/",
+                                        styles = TextLinkStyles(
+                                            style = SpanStyle(
+                                                color = textColor,
+                                                fontFamily = FontFamily(Font(R.font.monofont)),
+                                                textDecoration = TextDecoration.Underline
+                                            )
+                                        )
+                                    ),
+                                ) {
+                                    append("bunkeran")
+                                }
+                            }
+                            TextFallout(
+                                annotatedString,
+                                textColor,
+                                strokeColor,
+                                14.sp,
+                                Alignment.BottomEnd,
+                                Modifier.fillMaxSize(),
+                                TextAlign.End
+                            )
+                        }
+                    }
+                    key(k) {
+                        BoxWithConstraints(Modifier.fillMaxSize()) {
+                            if (maxHeight > maxWidth) {
+                                Column(
+                                    Modifier.fillMaxSize().padding(4.dp),
+                                    horizontalAlignment = Alignment.CenterHorizontally,
+                                    verticalArrangement = Arrangement.Center
+                                ) {
+                                    CaravanTitle(0.25f)
+                                    Picture(0.70f)
+                                    PicAuthorLink(0.05f)
+                                }
+                            } else {
+                                Row(Modifier.fillMaxSize()) {
+                                    Column(
+                                        Modifier.fillMaxHeight().weight(2f),
+                                        horizontalAlignment = Alignment.CenterHorizontally,
+                                        verticalArrangement = Arrangement.Center
+                                    ) {
+                                        CaravanTitle(1f)
+                                    }
+                                    Column(
+                                        Modifier.fillMaxHeight().weight(1f),
+                                        horizontalAlignment = Alignment.CenterHorizontally,
+                                        verticalArrangement = Arrangement.Center
+                                    ) {
+                                        Box(Modifier.weight(0.05f))
+                                        Picture(0.9f)
+                                        PicAuthorLink(0.05f)
+                                    }
                                 }
                             }
                         }
@@ -393,13 +419,10 @@ class MainActivity : SaveDataActivity() {
                             visible = visible,
                             enter = fadeIn(tween(100)), exit = fadeOut(tween(333))
                         ) {
-                            Box(
-                                Modifier
-                                    .paint(
-                                        painterResource(R.drawable.brother2),
-                                        contentScale = FixedScale(0.69f),
-                                    )
-                            )
+                            Box(Modifier.paint(
+                                painterResource(R.drawable.brother2),
+                                contentScale = FixedScale(0.69f)
+                            ))
                         }
                     }
                 }
@@ -1036,6 +1059,7 @@ class MainActivity : SaveDataActivity() {
                     .fillMaxWidth(0.5f)
                     .fillMaxHeight()
                     .padding(bottom = 48.dp, top = 32.dp)
+                    .padding(horizontal = 12.dp - 4.pxToDp())
                     .scrollbar(
                         state,
                         alignEnd = false,
@@ -1047,9 +1071,7 @@ class MainActivity : SaveDataActivity() {
             ) {
                 item {
                     Column(
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(start = 16.dp),
+                        Modifier.fillMaxWidth().padding(horizontal = 8.dp),
                         verticalArrangement = Arrangement.Center
                     ) {
                         @Composable

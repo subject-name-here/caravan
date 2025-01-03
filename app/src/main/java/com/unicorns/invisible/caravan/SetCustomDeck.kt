@@ -6,8 +6,10 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
@@ -89,6 +91,10 @@ fun SetCustomDeck(
             key (updater) {
                 ShowCharacteristics(activity)
             }
+
+            Spacer(modifier = Modifier.height(12.dp))
+            HorizontalDivider(color = getDividerColor(activity))
+            Spacer(modifier = Modifier.height(12.dp))
 
             LazyColumn(
                 Modifier
@@ -268,8 +274,7 @@ fun ShowCharacteristics(activity: MainActivity) {
     ) {
         val deck = save.getCustomDeckCopy()
         Row(
-            Modifier
-                .padding(8.dp),
+            Modifier.padding(vertical = 8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             val deckSizeMin = CResources.MIN_DECK_SIZE

@@ -193,6 +193,7 @@ fun ShowSelectPvE(
                     )
                 }
 
+                Spacer(modifier = Modifier.height(12.dp))
                 SubMenuItem(stringResource(R.string.select_enemy)) { showSelectEnemy = true }
                 Spacer(modifier = Modifier.height(12.dp))
                 SubMenuItem(stringResource(R.string.tower)) { showTower = true }
@@ -202,6 +203,7 @@ fun ShowSelectPvE(
                 SubMenuItem(stringResource(R.string.pve_stats)) { showStats = true }
                 Spacer(modifier = Modifier.height(12.dp))
                 SubMenuItem(stringResource(R.string.tutorial)) { showTutorial = true }
+                Spacer(modifier = Modifier.height(12.dp))
             }
         }
     }
@@ -223,7 +225,6 @@ fun ShowStats(
             modifier = Modifier
                 .fillMaxSize()
                 .background(getBackgroundColor(activity))
-                .padding(horizontal = 16.dp, vertical = 16.dp)
                 .scrollbar(
                     state2,
                     knobColor = getKnobColor(activity), trackColor = getTrackColor(activity),
@@ -234,6 +235,7 @@ fun ShowStats(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             item {
+                Spacer(modifier = Modifier.height(12.dp))
                 TextFallout(
                     stringResource(R.string.pve_stats),
                     getTextColor(activity),
@@ -319,6 +321,7 @@ fun ShowStats(
                         )
                     ),
                 )
+                Spacer(modifier = Modifier.height(12.dp))
             }
         }
     }
@@ -836,164 +839,147 @@ fun ShowBettingScreen(
         return bet.toIntOrNull()?.let { countReward(it, enemyBet, isBlitz) } ?: 0
     }
 
-    Scaffold(bottomBar = {
-        Row(
-            modifier = Modifier
-                .wrapContentHeight()
-                .fillMaxWidth()
-                .background(getBackgroundColor(activity))
-        ) {
-            TextFallout(
-                stringResource(R.string.back_to_menu),
-                getTextColor(activity),
-                getTextStrokeColor(activity),
-                16.sp,
-                Alignment.Center,
+    val state = rememberLazyListState()
+    MenuItemOpen(activity, "$$$", "<-", { goBack() }) {
+        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            Box(Modifier.fillMaxSize().rotate(180f)) {
+                Box(Modifier.fillMaxSize().getTableBackground()) {}
+            }
+            LazyColumn(
                 Modifier
-                    .fillMaxWidth()
-                    .clickableCancel(activity) {
-                        goBack()
-                    }
-                    .padding(8.dp),
-                TextAlign.Center
-            )
-        }
-    }) { innerPadding ->
-        Box(
-            Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .rotate(180f)) {
-            Box(
-                Modifier
-                    .fillMaxSize()
-                    .getTableBackground()) {}
-        }
-        Box(Modifier
-            .fillMaxSize()
-            .padding(innerPadding)) {
-            Column(
-                Modifier
-                    .wrapContentSize()
-                    .background(getBackgroundColor(activity)),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) {
-                TextFallout(
-                    stringResource(R.string.enemy_name, enemyName),
-                    getTextColor(activity),
-                    getTextStrokeColor(activity),
-                    16.sp,
-                    Alignment.Center,
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(8.dp),
-                    TextAlign.Center
-                )
-                TextFallout(
-                    stringResource(R.string.enemy_s_bet, enemyBet),
-                    getTextColor(activity),
-                    getTextStrokeColor(activity),
-                    16.sp,
-                    Alignment.Center,
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(8.dp),
-                    TextAlign.Center
-                )
-
-                Spacer(Modifier.height(16.dp))
-
-                TextField(
-                    modifier = Modifier.fillMaxWidth(0.5f),
-                    singleLine = true,
-                    enabled = true,
-                    value = bet,
-                    onValueChange = { bet = it },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    textStyle = TextStyle(
-                        fontSize = 14.sp,
-                        color = getTextColor(activity),
-                        fontFamily = FontFamily(Font(R.font.monofont))
+                    .background(getBackgroundColor(activity))
+                    .scrollbar(
+                        state,
+                        knobColor = getKnobColor(activity), trackColor = getTrackColor(activity),
+                        horizontal = false,
                     ),
-                    label = {
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally,
+                state = state
+            ) {
+                item {
+                    Column(
+                        Modifier.background(getBackgroundColor(activity)),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
                         TextFallout(
-                            text = stringResource(
-                                R.string.enter_your_bet,
-                                enemyBet,
-                                save.capsInHand
-                            ),
+                            stringResource(R.string.enemy_name, enemyName),
                             getTextColor(activity),
                             getTextStrokeColor(activity),
-                            14.sp,
+                            16.sp,
                             Alignment.Center,
-                            Modifier,
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(8.dp),
                             TextAlign.Center
                         )
-                    },
-                    colors = TextFieldDefaults.colors().copy(
-                        cursorColor = getTextColor(activity),
-                        focusedContainerColor = getTextBackgroundColor(activity),
-                        unfocusedContainerColor = getTextBackgroundColor(activity),
-                        disabledContainerColor = getBackgroundColor(activity),
-                    )
-                )
+                        TextFallout(
+                            stringResource(R.string.enemy_s_bet, enemyBet),
+                            getTextColor(activity),
+                            getTextStrokeColor(activity),
+                            16.sp,
+                            Alignment.Center,
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(8.dp),
+                            TextAlign.Center
+                        )
 
-                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
-                    TextFallout(
-                        stringResource(R.string.time_limit_anyone),
-                        getTextColor(activity),
-                        getTextStrokeColor(activity),
-                        18.sp,
-                        Alignment.Center,
-                        Modifier
-                            .padding(8.dp),
-                        TextAlign.Center
-                    )
-                    CheckboxCustom(activity, { isBlitz }, { isBlitz = it }) { true }
+                        Spacer(Modifier.height(16.dp))
 
-                }
+                        TextField(
+                            modifier = Modifier.fillMaxWidth(0.5f),
+                            singleLine = true,
+                            enabled = true,
+                            value = bet,
+                            onValueChange = { bet = it },
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                            textStyle = TextStyle(
+                                fontSize = 14.sp,
+                                color = getTextColor(activity),
+                                fontFamily = FontFamily(Font(R.font.monofont))
+                            ),
+                            label = {
+                                TextFallout(
+                                    text = stringResource(
+                                        R.string.enter_your_bet,
+                                        enemyBet,
+                                        save.capsInHand
+                                    ),
+                                    getTextColor(activity),
+                                    getTextStrokeColor(activity),
+                                    14.sp,
+                                    Alignment.Center,
+                                    Modifier,
+                                    TextAlign.Center
+                                )
+                            },
+                            colors = TextFieldDefaults.colors().copy(
+                                cursorColor = getTextColor(activity),
+                                focusedContainerColor = getTextBackgroundColor(activity),
+                                unfocusedContainerColor = getTextBackgroundColor(activity),
+                                disabledContainerColor = getBackgroundColor(activity),
+                            )
+                        )
 
-                TextFallout(
-                    stringResource(R.string.your_expected_reward, countRewardLocal()),
-                    getTextColor(activity),
-                    getTextStrokeColor(activity),
-                    18.sp,
-                    Alignment.Center,
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(8.dp),
-                    TextAlign.Center
-                )
+                        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
+                            TextFallout(
+                                stringResource(R.string.time_limit_anyone),
+                                getTextColor(activity),
+                                getTextStrokeColor(activity),
+                                18.sp,
+                                Alignment.Center,
+                                Modifier
+                                    .padding(8.dp),
+                                TextAlign.Center
+                            )
+                            CheckboxCustom(activity, { isBlitz }, { isBlitz = it }) { true }
 
-                val modifier = if (bet == "" || bet.toIntOrNull().let { it != null && it >= enemyBet && it <= save.capsInHand }) {
-                    Modifier
-                        .clickableOk(activity) {
-                            setIsBlitz(isBlitz)
-                            setBet(bet.toIntOrNull() ?: 0)
-                            setReward(countRewardLocal())
-
-                            save.capsInHand -= (bet.toIntOrNull() ?: 0)
-                            saveData(activity)
-
-                            goForward()
                         }
-                        .background(getTextBackgroundColor(activity))
-                        .padding(8.dp)
-                } else {
-                    Modifier
-                        .padding(8.dp)
+
+                        TextFallout(
+                            stringResource(R.string.your_expected_reward, countRewardLocal()),
+                            getTextColor(activity),
+                            getTextStrokeColor(activity),
+                            18.sp,
+                            Alignment.Center,
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(8.dp),
+                            TextAlign.Center
+                        )
+
+                        val modifier = if (bet == "" || bet.toIntOrNull().let { it != null && it >= enemyBet && it <= save.capsInHand }) {
+                            Modifier
+                                .clickableOk(activity) {
+                                    setIsBlitz(isBlitz)
+                                    setBet(bet.toIntOrNull() ?: 0)
+                                    setReward(countRewardLocal())
+
+                                    save.capsInHand -= (bet.toIntOrNull() ?: 0)
+                                    saveData(activity)
+
+                                    goForward()
+                                }
+                                .background(getTextBackgroundColor(activity))
+                                .padding(8.dp)
+                        } else {
+                            Modifier
+                                .padding(8.dp)
+                        }
+                        TextFallout(
+                            stringResource(R.string.let_s_go),
+                            getTextColor(activity),
+                            getTextStrokeColor(activity),
+                            24.sp,
+                            Alignment.Center,
+                            modifier,
+                            TextAlign.Center
+                        )
+                        Spacer(Modifier.height(12.dp))
+                    }
                 }
-                TextFallout(
-                    stringResource(R.string.let_s_go),
-                    getTextColor(activity),
-                    getTextStrokeColor(activity),
-                    24.sp,
-                    Alignment.Center,
-                    modifier,
-                    TextAlign.Center
-                )
-                Spacer(Modifier.height(12.dp))
             }
         }
     }

@@ -52,11 +52,10 @@ fun ShowAbout(activity: MainActivity, goBack: () -> Unit) {
                     horizontal = false,
                     knobColor = getKnobColor(activity),
                     trackColor = getTrackColor(activity),
-                    padding = 4.dp
                 )
                 .fillMaxSize()
                 .background(getBackgroundColor(activity))
-                .padding(horizontal = 16.dp)
+                .padding(horizontal = 8.dp)
         ) {
             item {
                 Spacer(modifier = Modifier.height(16.dp))

@@ -115,14 +115,14 @@ fun Modifier.scrollbar(
     state: LazyListState,
     horizontal: Boolean,
     alignEnd: Boolean = true,
-    thickness: Dp = 4.dp,
-    knobCornerRadius: Dp = 4.dp,
-    trackCornerRadius: Dp = 2.dp,
+    thickness: Dp = 8.pxToDp(),
+    knobCornerRadius: Dp = 2.dp,
+    trackCornerRadius: Dp = 4.dp,
     knobColor: Color,
     trackColor: Color,
     padding: Dp = 0.dp,
     visibleAlpha: Float = 1f,
-    hiddenAlpha: Float = 0.8f,
+    hiddenAlpha: Float = 0.75f,
     fadeInAnimationDurationMs: Int = 150,
     fadeOutAnimationDurationMs: Int = 500,
     fadeOutAnimationDelayMs: Int = 1000,
@@ -584,7 +584,8 @@ fun MenuItemOpen(
             }
         }
     }) { innerPadding ->
-        Box(Modifier.padding(innerPadding)) {
+        Box(Modifier.padding(innerPadding).background(getBackgroundColor(activity)).padding(horizontal = 12.dp - 4.pxToDp())) {
+            // TODO: maybe include lazy column here??
             mainBlock()
         }
     }

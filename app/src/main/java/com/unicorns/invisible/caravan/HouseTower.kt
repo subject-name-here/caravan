@@ -199,7 +199,7 @@ fun TowerScreen(
             Modifier
                 .fillMaxSize()
                 .background(getBackgroundColor(activity))
-                .padding(horizontal = 16.dp, vertical = 8.dp)
+                .padding(vertical = 8.dp)
                 .scrollbar(
                     state2,
                     knobColor = getKnobColor(activity), trackColor = getTrackColor(activity),

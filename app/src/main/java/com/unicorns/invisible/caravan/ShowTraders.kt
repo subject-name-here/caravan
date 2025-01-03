@@ -65,7 +65,6 @@ fun ShowTraders(activity: MainActivity, goBack: () -> Unit) {
                     horizontal = false,
                     knobColor = getKnobColor(activity),
                     trackColor = getTrackColor(activity),
-                    padding = 4.dp
                 ), state = state
         ) {
             item {
@@ -74,7 +73,7 @@ fun ShowTraders(activity: MainActivity, goBack: () -> Unit) {
                 var selectedTab by rememberSaveable { mutableIntStateOf(0) }
                 var update by remember { mutableStateOf(false) }
                 key(update) {
-                    Column(verticalArrangement = Arrangement.Top, horizontalAlignment = Alignment.CenterHorizontally) {
+                    Column(Modifier.padding(horizontal = 4.dp), verticalArrangement = Arrangement.Top, horizontalAlignment = Alignment.CenterHorizontally) {
                         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
                             TextFallout(
                                 stringResource(R.string.your_barter_stat, save.barterStat),
