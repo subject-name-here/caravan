@@ -125,7 +125,7 @@ fun ShowSelectPvE(
         ) {
             saveData(activity)
             if (save.glitchDefeated) {
-                // TODO: achievement
+                activity.achievementsClient?.unlock(activity.getString(R.string.achievement_the_internet_has_you))
             }
             exitProcess(0)
         }
@@ -153,7 +153,6 @@ fun ShowSelectPvE(
             showAlertDialog("[CLOSED]", "Better tutorial is on the way.", null)
             showTutorial = false
             // TODO
-            // return
         }
     }
 

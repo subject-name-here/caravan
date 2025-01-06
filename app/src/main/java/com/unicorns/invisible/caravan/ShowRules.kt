@@ -187,7 +187,16 @@ fun ShowRules(activity: MainActivity, goBack: () -> Unit) {
                                     Modifier.padding(horizontal = 8.dp),
                                     TextAlign.Start
                                 )
-                                // TODO: Wild wasteland rules!!!!!!!!
+                                Spacer(modifier = Modifier.height(32.dp))
+                                TextFallout(
+                                    stringResource(R.string.better_rules_body_7),
+                                    getTextColor(activity),
+                                    getTextStrokeColor(activity),
+                                    20.sp,
+                                    Alignment.CenterStart,
+                                    Modifier.padding(horizontal = 8.dp),
+                                    TextAlign.Start
+                                )
                                 Spacer(modifier = Modifier.height(16.dp))
                                 HorizontalDivider(color = getDividerColor(activity))
                                 Spacer(modifier = Modifier.height(16.dp))

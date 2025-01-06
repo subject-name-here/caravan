@@ -701,39 +701,40 @@
     <string name="so_back_header" translatable="false">Go back to main menu?</string>
     <string name="so_back_body" translatable="false">This will kill your significant other.</string>
 
-
-        <!--achievement Test Achievement-->
-        <string name="achievement_test_achievement" translatable="false">CgkIvtnbpMwbEAIQAQ</string>
-        <!--achievement Madre Roja-->
-        <string name="achievement_madre_roja" translatable="false">CgkIvtnbpMwbEAIQAg</string>
-        <!--achievement What Do We Say To The God of Death?-->
-        <string name="achievement_what_do_we_say_to_the_god_of_death" translatable="false">CgkIvtnbpMwbEAIQAw</string>
-        <!--achievement Penultimatum-->
-        <string name="achievement_penultimatum" translatable="false">CgkIvtnbpMwbEAIQBA</string>
-        <!--achievement You Can Be Hero-->
-        <string name="achievement_you_can_be_hero" translatable="false">CgkIvtnbpMwbEAIQBQ</string>
-        <!--achievement You Can Be So Much More-->
-        <string name="achievement_you_can_be_so_much_more" translatable="false">CgkIvtnbpMwbEAIQBg</string>
-        <!--achievement Five Down, Five To Go-->
-        <string name="achievement_five_down_five_to_go" translatable="false">CgkIvtnbpMwbEAIQBw</string>
-        <!--achievement 10/10-->
-        <string name="achievement_1010" translatable="false">CgkIvtnbpMwbEAIQCA</string>
-        <!--achievement AIN'T NO WAY DEV-->
-        <string name="achievement_aint_no_way_dev" translatable="false">CgkIvtnbpMwbEAIQCQ</string>
-        <!--achievement Done for today!-->
-        <string name="achievement_done_for_today" translatable="false">CgkIvtnbpMwbEAIQCg</string>
-        <!--achievement Who are you, that do not know your history?-->
-        <string name="achievement_who_are_you_that_do_not_know_your_history" translatable="false">CgkIvtnbpMwbEAIQCw</string>
-        <!--achievement Just load everything up with sixes and tens and kings-->
-        <string name="achievement_just_load_everything_up_with_sixes_and_tens_and_kings" translatable="false">CgkIvtnbpMwbEAIQDA</string>
-        <!--achievement Bravo.-->
-        <string name="achievement_bravo." translatable="false">CgkIvtnbpMwbEAIQDQ</string>
-        <!--achievement Look-a-Like-->
-        <string name="achievement_lookalike" translatable="false">CgkIvtnbpMwbEAIQDg</string>
-        <!--achievement Winner-winner, brahmin dinner!-->
-        <string name="achievement_winnerwinner_brahmin_dinner" translatable="false">CgkIvtnbpMwbEAIQDw</string>
-        <!--achievement Float like a Butterfly...-->
-        <string name="achievement_float_like_a_butterfly..." translatable="false">CgkIvtnbpMwbEAIQEA</string>
+    <!--achievement Test Achievement-->
+    <string name="achievement_test_achievement" translatable="false">CgkIvtnbpMwbEAIQAQ</string>
+    <!--achievement Madre Roja-->
+    <string name="achievement_madre_roja" translatable="false">CgkIvtnbpMwbEAIQAg</string>
+    <!--achievement What Do We Say To The God of Death?-->
+    <string name="achievement_what_do_we_say_to_the_god_of_death" translatable="false">CgkIvtnbpMwbEAIQAw</string>
+    <!--achievement Penultimatum-->
+    <string name="achievement_penultimatum" translatable="false">CgkIvtnbpMwbEAIQBA</string>
+    <!--achievement You Can Be Hero-->
+    <string name="achievement_you_can_be_hero" translatable="false">CgkIvtnbpMwbEAIQBQ</string>
+    <!--achievement You Can Be So Much More-->
+    <string name="achievement_you_can_be_so_much_more" translatable="false">CgkIvtnbpMwbEAIQBg</string>
+    <!--achievement Five Down, Five To Go-->
+    <string name="achievement_five_down_five_to_go" translatable="false">CgkIvtnbpMwbEAIQBw</string>
+    <!--achievement 10/10-->
+    <string name="achievement_1010" translatable="false">CgkIvtnbpMwbEAIQCA</string>
+    <!--achievement AIN'T NO WAY DEV-->
+    <string name="achievement_aint_no_way_dev" translatable="false">CgkIvtnbpMwbEAIQCQ</string>
+    <!--achievement Done for today!-->
+    <string name="achievement_done_for_today" translatable="false">CgkIvtnbpMwbEAIQCg</string>
+    <!--achievement Who are you, that do not know your history?-->
+    <string name="achievement_who_are_you_that_do_not_know_your_history" translatable="false">CgkIvtnbpMwbEAIQCw</string>
+    <!--achievement Just load everything up with sixes and tens and kings-->
+    <string name="achievement_just_load_everything_up_with_sixes_and_tens_and_kings" translatable="false">CgkIvtnbpMwbEAIQDA</string>
+    <!--achievement Bravo.-->
+    <string name="achievement_bravo." translatable="false">CgkIvtnbpMwbEAIQDQ</string>
+    <!--achievement Look-a-Like-->
+    <string name="achievement_lookalike" translatable="false">CgkIvtnbpMwbEAIQDg</string>
+    <!--achievement Winner-winner, brahmin dinner!-->
+    <string name="achievement_winnerwinner_brahmin_dinner" translatable="false">CgkIvtnbpMwbEAIQDw</string>
+    <!--achievement Float like a Butterfly...-->
+    <string name="achievement_float_like_a_butterfly..." translatable="false">CgkIvtnbpMwbEAIQEA</string>
+    <!--achievement THE INTERNET HAS YOU-->
+    <string name="achievement_the_internet_has_you" translatable="false">CgkIvtnbpMwbEAIQEQ</string>
 
 
     <string name="achievements">Achievements</string>
@@ -897,6 +898,28 @@ Player 2
 6.2.1) It is important to note that if competing caravans are both sold at equal bids, then with that tie, neither caravan is considered sold. In this case, the game continues until there is no tie between competing caravans.
 \n\n
 6.3) If you run out of cards to play before meeting the criteria of winning, then your opponent automatically wins the game.
+
+    </string>
+
+    <string name="better_rules_body_7">
+
+7.0 WILD WASTELAND
+\n\n
+7.1) Sometimes you might see weird cards. They have black-and-green coloring, have a non-standard rank and no suit. Those are Wild Wasteland cards:
+\n
+7.11) CAZADOR - when put on a caravan, it decreases rank of every number card in this caravan every turn, with every Ace just disappearing. If combined with ordinary Queen, it will be increasing rank of every number card (except 10) in this caravan every turn.
+\n
+7.12) UFO - when it is put on a field, every card (except the card UFO is put) has a chance of disappearing.
+\n
+7.13) MUGGY - when put on a caravan, no one can put any face card on any card of this caravan. Also protects from nuclear explosion.
+\n
+7.14) DIFFICULT PETE - when it is put on a field, all number cards are turning into 10s. Suit and face cards are saved.
+\n
+7.15) YES MAN - if there is a YES MAN card on any card of the caravan, the bid of this caravan is 26, no matter what cards are there.
+\n
+7.16) FEV - if it is put on a card from one of the player's/enemy's caravans, all cards in hand of the player/enemy are turned into the FEV-host card.
+\n\n
+7.2) Wild Wasteland cards cannot be added in custom deck or in the deck o\' 54 by player. However, in multiplayer it can be done; also, some AI enemies have the Wild Wasteland cards in their deck.
 
     </string>
 

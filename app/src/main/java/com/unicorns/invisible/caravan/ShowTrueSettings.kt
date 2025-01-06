@@ -393,6 +393,8 @@ fun ShowTrueSettings(
                                             saveData(activity)
                                             playYesBeep(activity)
                                         }
+
+                                        // TODO: show what cheats do!!
                                     }
                                 }
                                 .background(getTextBackgroundColor(activity))

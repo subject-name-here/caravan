@@ -724,6 +724,16 @@ class MainActivity : SaveDataActivity() {
                 }
             }
         ) { innerPadding ->
+            @Composable
+            fun showAlertCustomDeck() {
+                // TODO: button that leads to Set Custom Deck
+                showAlertDialog(
+                    stringResource(R.string.custom_deck_is_illegal),
+                    stringResource(R.string.deck_illegal_body),
+                    null
+                )
+            }
+
             Box(Modifier.padding(innerPadding)) {
                 when {
                     showRules -> {
@@ -737,11 +747,7 @@ class MainActivity : SaveDataActivity() {
                     }
                     showPvE -> {
                         if (!CResources(save.getCustomDeckCopy()).isCustomDeckValid()) {
-                            showAlertDialog(
-                                stringResource(R.string.custom_deck_is_illegal),
-                                stringResource(R.string.deck_illegal_body),
-                                null
-                            )
+                            showAlertCustomDeck()
                             showPvE = false
                         } else {
                             ShowSelectPvE(this@MainActivity, ::showAlertDialog) { showPvE = false }
@@ -749,11 +755,7 @@ class MainActivity : SaveDataActivity() {
                     }
                     showPvP -> {
                         if (!CResources(save.getCustomDeckCopy()).isCustomDeckValid()) {
-                            showAlertDialog(
-                                stringResource(R.string.custom_deck_is_illegal),
-                                stringResource(R.string.deck_illegal_body),
-                                null
-                            )
+                            showAlertCustomDeck()
                             showPvP = false
                         } else if (cronetEngine == null) {
                             Toast.makeText(
