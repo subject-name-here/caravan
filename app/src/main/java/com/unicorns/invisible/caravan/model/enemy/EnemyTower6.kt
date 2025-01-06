@@ -139,6 +139,6 @@ data object EnemyTower6 : Enemy {
                     }
             }
 
-        StrategyDropCard(CardDropSelect.ULYSSES_ORDER).move(game)
+        StrategyDropCard(CardDropSelect.VERONICA_ORDER).move(game)
     }
 }

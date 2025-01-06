@@ -56,6 +56,7 @@ import androidx.compose.ui.unit.sp
 import com.sebaslogen.resaca.rememberScoped
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.challenge.Challenge
+import com.unicorns.invisible.caravan.model.enemy.EnemyFinalBossStory
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.Caravan
 import com.unicorns.invisible.caravan.model.primitives.Card
@@ -117,9 +118,14 @@ fun ShowGame(
     fun updateEnemyHand() { enemyHandKey++ }
     fun updatePlayerHand() { playerHandKey++ }
 
-    val animationSpeed by rememberSaveable { mutableStateOf(
-        if (isBlitz) AnimationSpeed.NONE else save.animationSpeed
-    ) }
+    val animationSpeed by rememberSaveable {
+        mutableStateOf(
+            if (isBlitz || game.enemy is EnemyFinalBossStory)
+                AnimationSpeed.NONE
+            else
+                save.animationSpeed
+        )
+    }
 
     fun onCardClicked(index: Int) {
         if (game.isOver()) {

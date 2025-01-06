@@ -11,13 +11,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.TabRowDefaults
@@ -80,7 +77,6 @@ import com.unicorns.invisible.caravan.save.saveData
 import com.unicorns.invisible.caravan.utils.CheckboxCustom
 import com.unicorns.invisible.caravan.utils.MenuItemOpen
 import com.unicorns.invisible.caravan.utils.TextFallout
-import com.unicorns.invisible.caravan.utils.clickableCancel
 import com.unicorns.invisible.caravan.utils.clickableOk
 import com.unicorns.invisible.caravan.utils.clickableSelect
 import com.unicorns.invisible.caravan.utils.getBackgroundColor
@@ -596,11 +592,11 @@ fun ShowPvE(
                                 Spacer(modifier = Modifier.height(10.dp))
                                 OpponentItem(stringResource(R.string.madness_cardinal), -1) { playVatsEnter(activity); showGameMadnessCardinal = true }
                                 Spacer(modifier = Modifier.height(10.dp))
-                                OpponentItem(stringResource(R.string.luc10), 15) { playVatsEnter(activity); showGameLuc10 = true }
+                                OpponentItem(stringResource(R.string.man_in_the_mirror), 15) { playVatsEnter(activity); showGameTheManInTheMirror = true }
                                 Spacer(modifier = Modifier.height(10.dp))
                                 OpponentItem(stringResource(R.string.dr_mobius), 16) { playVatsEnter(activity); showGameDrMobius = true }
                                 Spacer(modifier = Modifier.height(10.dp))
-                                OpponentItem(stringResource(R.string.man_in_the_mirror), 17) { playVatsEnter(activity); showGameTheManInTheMirror = true }
+                                OpponentItem(stringResource(R.string.luc10), 17) { playVatsEnter(activity); showGameLuc10 = true }
                             }
                             3 -> {
                                 TextFallout(

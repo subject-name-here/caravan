@@ -11,16 +11,14 @@ class StrategyDropCaravan(private val selection: DropSelection) : Strategy {
             when (selection) {
                 DropSelection.RANDOM -> {
                     overWeightCaravans.random().dropCaravan()
-                    return true
                 }
                 DropSelection.MAX_WEIGHT -> {
                     overWeightCaravans.maxBy { it.getValue() }.dropCaravan()
-                    return true
                 }
             }
         }
 
-        return false
+        return overWeightCaravans.isNotEmpty()
     }
 }
 

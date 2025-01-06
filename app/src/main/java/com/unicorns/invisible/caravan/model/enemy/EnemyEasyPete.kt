@@ -154,6 +154,6 @@ data object EnemyEasyPete : Enemy {
             return
         }
 
-        StrategyDropCard(CardDropSelect.NASH_ORDER).move(game)
+        StrategyDropCard(CardDropSelect.MIN_VALUE).move(game)
     }
 }

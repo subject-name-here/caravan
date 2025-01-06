@@ -584,8 +584,11 @@ fun MenuItemOpen(
             }
         }
     }) { innerPadding ->
-        Box(Modifier.padding(innerPadding).background(getBackgroundColor(activity)).padding(horizontal = 12.dp - 4.pxToDp())) {
-            // TODO: maybe include lazy column here??
+        Box(Modifier
+            .padding(innerPadding)
+            .background(getBackgroundColor(activity))
+            .padding(horizontal = 12.dp - 4.pxToDp())
+        ) {
             mainBlock()
         }
     }

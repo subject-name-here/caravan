@@ -7,7 +7,6 @@ import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyDestructive
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyInitStage
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJoker
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyRush
-import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyTime
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.Card
 import com.unicorns.invisible.caravan.model.primitives.CustomDeck
@@ -20,14 +19,11 @@ import kotlin.random.Random
 @Serializable
 data object EnemyDrMobius : Enemy {
     override fun createDeck() = CResources(CustomDeck().apply {
-        var cards = mutableListOf<Card>()
+        var cards = arrayOf<Card>()
         while (cards.count { card -> !card.isFace() } < 3) {
-            cards = mutableListOf()
-            repeat(8) {
-                cards.add(generateCard())
-            }
+            cards = Array<Card>(8) { generateCard() }
         }
-        cards.forEach { t -> add(t) }
+        cards.forEach { add(it) }
     })
     override fun getBankNumber() = 16
 
@@ -66,13 +62,13 @@ data object EnemyDrMobius : Enemy {
             if (StrategyDestructive.move(game)) {
                 return
             }
-        } else if (2f !in score) {
-            if (StrategyRush.move(game)) {
-                return
-            }
         }
 
-        if (StrategyTime.move(game)) {
+        if (StrategyRush.move(game)) {
+            return
+        }
+        if (StrategyJoker.move(game)) {
+            game.jokerPlayedSound()
             return
         }
 

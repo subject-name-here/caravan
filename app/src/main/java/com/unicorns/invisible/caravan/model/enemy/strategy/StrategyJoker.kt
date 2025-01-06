@@ -95,7 +95,7 @@ object StrategyJoker : Strategy {
                 return 0
             }
 
-            val jokerApplicant = cards.maxByOrNull { potentialCardToJoker ->
+            val jokerApplicant = cards.shuffled().maxByOrNull { potentialCardToJoker ->
                 joke(potentialCardToJoker)
             }
             if (jokerApplicant != null && joke(jokerApplicant) > 0) {

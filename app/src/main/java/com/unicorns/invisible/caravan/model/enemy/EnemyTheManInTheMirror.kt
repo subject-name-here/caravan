@@ -8,19 +8,20 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data object EnemyTheManInTheMirror : Enemy {
-    override fun getBankNumber() = 17
+    override fun getBankNumber() = 15
     override fun createDeck() = CResources(CustomDeck())
 
     override fun makeMove(game: Game) {
-        val hand = game.enemyCResources.hand
-
         if (game.isInitStage()) {
-            val cardIndex = hand.withIndex().filter { !it.value.isFace() }.random().index
-            val caravan = game.enemyCaravans.filter { it.isEmpty() }.random()
-            caravan.putCardOnTop(game.enemyCResources.removeFromHand(cardIndex))
+            val caravan = game.enemyCaravans.withIndex().find {
+                it.value.isEmpty() && !game.playerCaravans[it.index].isEmpty()
+            }!!
+            val card = game.playerCaravans[caravan.index].cards.first().card
+            val cardInHand = game.enemyCResources.hand.find { it.rank == card.rank && it.suit == card.suit }
+            val cardInHandIndex = game.enemyCResources.hand.indexOf(cardInHand)
+            caravan.value.putCardOnTop(game.enemyCResources.removeFromHand(cardInHandIndex))
             return
         }
-
-        // TODO: reflect player moves if possible and if makes sense
+        EnemyFrank.makeMove(game)
     }
 }

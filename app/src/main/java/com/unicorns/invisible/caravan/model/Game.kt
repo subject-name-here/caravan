@@ -51,8 +51,8 @@ class Game(
         private set(value) {
             if (field == 0) {
                 when (value) {
-                    -1 -> { onLose(); field = -1 }
-                    1 -> { onWin(); field = 1 }
+                    -1 -> { field = -1; onLose() }
+                    1 -> { field = 1; onWin() }
                 }
             }
         }

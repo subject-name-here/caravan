@@ -54,10 +54,7 @@ data object EnemyNoBark : Enemy {
                         .randomOrNull()
                 val cardToJack = caravan?.value?.cards?.maxByOrNull { it.getValue() }
                 if (cardToJack != null && cardToJack.canAddModifier(card) &&
-                    !(checkMoveOnDefeat(
-                        game,
-                        caravan.index
-                    ) && caravan.value.getValue() == game.enemyCaravans[caravan.index].getValue() && caravan.value.getValue() in (21..26))
+                    !(checkMoveOnDefeat(game, caravan.index) && caravan.value.getValue() == game.enemyCaravans[caravan.index].getValue() && caravan.value.getValue() in (21..26))
                 ) {
                     cardToJack.addModifier(game.enemyCResources.removeFromHand(cardIndex))
                     return

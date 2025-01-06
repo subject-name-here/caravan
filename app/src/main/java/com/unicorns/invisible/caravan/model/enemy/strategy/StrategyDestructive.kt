@@ -18,10 +18,9 @@ object StrategyDestructive : Strategy {
                     .maxByOrNull { it.getValue() }
                 if (cardToKing != null) {
                     val futureValue = caravan.getValue() + cardToKing.getValue()
-                    val enemyValue =
-                        game.enemyCaravans[game.playerCaravans.indexOf(caravan)].getValue()
-                    if (!(checkMoveOnDefeat(game, game.playerCaravans.indexOf(caravan)) &&
-                                enemyValue in (21..26) &&
+                    val caravanIndex = game.playerCaravans.indexOf(caravan)
+                    val enemyValue = game.enemyCaravans[caravanIndex].getValue()
+                    if (!(checkMoveOnDefeat(game, caravanIndex) && enemyValue in (21..26) &&
                                 (enemyValue > futureValue || futureValue > 26))
                     ) {
                         cardToKing.addModifier(game.enemyCResources.removeFromHand(king.index))
@@ -39,11 +38,10 @@ object StrategyDestructive : Strategy {
                 caravan?.cards?.filter { it.canAddModifier(jack.value) }?.maxByOrNull { it.getValue() }
             if (cardToJack != null) {
                 val futureValue = caravan.getValue() - cardToJack.getValue()
-                val enemyValue = game.enemyCaravans[game.playerCaravans.indexOf(caravan)].getValue()
-                if (!(checkMoveOnDefeat(
-                        game,
-                        game.playerCaravans.indexOf(caravan)
-                    ) && enemyValue in (21..26) && (enemyValue > futureValue || futureValue > 26))
+                val caravanIndex = game.playerCaravans.indexOf(caravan)
+                val enemyValue = game.enemyCaravans[caravanIndex].getValue()
+                if (!(checkMoveOnDefeat(game, caravanIndex) && enemyValue in (21..26) &&
+                            (enemyValue > futureValue || futureValue > 26))
                 ) {
                     cardToJack.addModifier(game.enemyCResources.removeFromHand(jack.index))
                     return true

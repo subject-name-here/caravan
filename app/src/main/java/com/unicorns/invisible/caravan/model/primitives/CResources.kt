@@ -9,7 +9,7 @@ class CResources(private val deck: CustomDeck) {
     constructor(back: CardBack, isAlt: Boolean) : this(CustomDeck(back, isAlt))
 
     private val handMutable: MutableList<Card> = mutableListOf()
-    val hand
+    val hand: List<Card>
         get() = handMutable.toList()
 
     /**
@@ -128,6 +128,7 @@ class CResources(private val deck: CustomDeck) {
     fun addOnTop(card: Card) {
         deck.addOnTop(card)
     }
+    fun moveOnTop(rank: Rank, suit: Suit) = deck.moveOnTop(rank, suit)
 
     fun copyFrom(cResources: CResources) {
         addNewDeck(cResources.deck.copy())

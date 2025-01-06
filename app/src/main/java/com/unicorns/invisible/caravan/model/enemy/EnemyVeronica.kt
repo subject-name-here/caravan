@@ -11,6 +11,7 @@ import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyInitStage
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.Rank
 import kotlinx.serialization.Serializable
+import kotlin.random.Random
 
 
 @Serializable
@@ -46,7 +47,7 @@ data object EnemyVeronica : Enemy {
                     }
                 }
             }
-            if (card.rank == Rank.JACK) {
+            if (card.rank == Rank.JACK && Random.nextBoolean()) {
                 val caravans = game.playerCaravans.filter { it.getValue() in (21..26) }
                 if (caravans.isNotEmpty()) {
                     val caravan = caravans.maxBy { it.getValue() }
@@ -57,7 +58,7 @@ data object EnemyVeronica : Enemy {
                     }
                 }
             }
-            if (card.rank == Rank.KING) {
+            if (card.rank == Rank.KING && Random.nextBoolean()) {
                 val caravans = game.playerCaravans.filter { it.getValue() in (21..26) }
                 if (caravans.isNotEmpty()) {
                     val caravan = caravans.maxBy { it.getValue() }

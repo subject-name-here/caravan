@@ -10,6 +10,7 @@ import com.unicorns.invisible.caravan.model.primitives.Suit
 import com.unicorns.invisible.caravan.save.json
 import kotlinx.serialization.encodeToString
 
+
 data object StrategyJokerBennyCheater : Strategy {
     override fun move(game: Game): Boolean {
         if (game.enemy !is EnemyBenny || game.enemy.cheatCounter >= 2) {

@@ -40,10 +40,7 @@ class ChallengeBeatEnemies(private val code: Int) : Challenge {
         }
     private val isBeaten = Array(enemyList.size) { false }
 
-    override fun processMove(
-        move: Challenge.Move,
-        game: Game
-    ) {}
+    override fun processMove(move: Challenge.Move, game: Game) {}
 
     override fun processGameResult(game: Game) {
         if (game.isGameOver == 1) {
