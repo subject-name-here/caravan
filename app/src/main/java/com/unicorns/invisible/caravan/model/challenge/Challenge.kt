@@ -29,8 +29,7 @@ sealed interface Challenge {
             val rand = Random(seed)
             val challenges = mutableListOf<Challenge>()
 
-            val rank = Rank.entries.random(rand)
-            challenges.add(ChallengePlayCard(rank))
+            challenges.add(ChallengePlayCard(Rank.entries.random(rand)))
             challenges.add(ChallengeDoNotPlayCards((1..7).random(rand)))
             challenges.add(ChallengeBeatEnemies((1..8).random(rand)))
 

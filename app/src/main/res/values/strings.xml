@@ -344,18 +344,18 @@
     <string name="beat_enemies_6_desc">Beat Ulysses and Dr. Mobius.</string>
     <string name="beat_enemies_7_name">V means Victory</string>
     <string name="beat_enemies_7_desc">Beat Veronica, Victor and Vulpes Inculta.</string>
-    <string name="beat_enemies_8_name">Meet The Cameos!!</string>
+    <string name="beat_enemies_8_name">Heaven Sent?</string>
     <string name="beat_enemies_8_desc">Beat Madness Cardinal and The Man In The Mirror.</string>
 
     <string name="play_cards_of_rank">Play %1$s cards of rank %2$s.</string>
     <string name="ace_in_the_hole">Ace in the Hole</string>
-    <string name="always_bet_on_jack">Always bet on Jack</string>
+    <string name="always_bet_on_jack">Hi-Jacking</string>
     <string name="queen_s_gambit">Queen\'s Gambit</string>
-    <string name="king_of_the_hill">King of the Hill</string>
+    <string name="king_of_the_hill">Long Live the King</string>
     <string name="wild_card">Wild Card</string>
-    <string name="two_is_enough">Two is Enough</string>
-    <string name="good_things_come_in_threes">Good Things Come In Threes</string>
-    <string name="four_flush">Four Flush</string>
+    <string name="two_is_enough">Road 2 Heaven</string>
+    <string name="good_things_come_in_threes">Three-dom!</string>
+    <string name="four_flush">I Can Only Count To Four</string>
     <string name="high_five">High Five!</string>
     <string name="in_dice_i_would_have_won">In Dice I Would Have Won</string>
     <string name="lucky_seven">Lucky Seven</string>
@@ -382,8 +382,8 @@
     <string name="play_only_even">Avenged Even-fold</string>
     <string name="no_jacks">Hit The Road Jack</string>
     <string name="no_kings">French Revolution</string>
-    <string name="only_black">Put It All On Black!</string>
-    <string name="only_red">Put It All On Red!</string>
+    <string name="only_black">A Black Day!</string>
+    <string name="only_red">Red Letter Day</string>
     <string name="father_pucci">To Keep Your Composure</string>
     <string name="play_only_odd_descr">Win a game playing only aces, face cards and odd number cards. (Init stage is not counted.)</string>
     <string name="play_only_even_descr">Win a game playing only aces, face cards and even number cards. (Init stage is not counted.)</string>
@@ -917,7 +917,7 @@ Player 2
 \n
 7.15) YES MAN - if there is a YES MAN card on any card of the caravan, the bid of this caravan is 26, no matter what cards are there.
 \n
-7.16) FEV - if it is put on a card from one of the player's/enemy's caravans, all cards in hand of the player/enemy are turned into the FEV-host card.
+7.16) FEV - if it is put on a card from one of the player\'s/enemy\'s caravans, all cards in hand of the player/enemy are turned into the FEV-host card.
 \n\n
 7.2) Wild Wasteland cards cannot be added in custom deck or in the deck o\' 54 by player. However, in multiplayer it can be done; also, some AI enemies have the Wild Wasteland cards in their deck.
 

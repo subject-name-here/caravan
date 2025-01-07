@@ -14,20 +14,20 @@ class ChallengePlayCard(val rank: Rank) : Challenge {
 
     @Transient
     private val target = when (rank) {
-        Rank.ACE -> 5
-        Rank.TWO -> 5
-        Rank.THREE -> 5
-        Rank.FOUR -> 5
-        Rank.FIVE -> 5
-        Rank.SIX -> 6
-        Rank.SEVEN -> 7
-        Rank.EIGHT -> 8
-        Rank.NINE -> 9
-        Rank.TEN -> 10
-        Rank.JACK -> 12
-        Rank.QUEEN -> 6
-        Rank.KING -> 12
-        Rank.JOKER -> 5
+        Rank.ACE -> 11
+        Rank.TWO -> 12
+        Rank.THREE -> 13
+        Rank.FOUR -> 14
+        Rank.FIVE -> 15
+        Rank.SIX -> 16
+        Rank.SEVEN -> 17
+        Rank.EIGHT -> 18
+        Rank.NINE -> 19
+        Rank.TEN -> 20
+        Rank.JACK -> 22
+        Rank.QUEEN -> 16
+        Rank.KING -> 24
+        Rank.JOKER -> 13
     }
     override fun processMove(move: Challenge.Move, game: Game) {
         if (move.moveCode == 3 || move.moveCode == 4) {

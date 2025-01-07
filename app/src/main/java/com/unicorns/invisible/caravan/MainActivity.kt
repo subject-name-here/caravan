@@ -113,7 +113,9 @@ import org.chromium.net.CronetEngine
 import kotlin.random.Random
 
 
-var save = Save(isUsable = false)
+var save = Save(null)
+val isSaveLoaded = MutableLiveData(false)
+
 var soundReduced: Boolean = false
     set(value) {
         field = value
@@ -129,8 +131,6 @@ class MainActivity : SaveDataActivity() {
     val styleId
         get() = Style.entries.getOrElse(save.styleId) { Style.PIP_BOY }
 
-    val isSaveLoaded = MutableLiveData(save.isUsable)
-
     override fun onPause() {
         super.onPause()
         pauseActivitySound(save.playRadioInBack)
@@ -144,24 +144,24 @@ class MainActivity : SaveDataActivity() {
 
     override fun onSnapshotClientInitialized() {
         CoroutineScope(Dispatchers.IO).launch {
-            if (!save.isUsable) {
-                // TODO: When we change profile, we should use save from GD
+            if (save.playerId == null) {
+                val playerId = getPlayerId()
+
                 val localSave = loadLocalSave(this@MainActivity)
-                if (localSave != null) {
+                if (localSave != null && localSave.playerId == playerId) {
                     save = localSave
                 } else {
                     val loadedSave = loadGDSave(this@MainActivity)
                     if (loadedSave != null) {
                         save = loadedSave
                     } else {
-                        save = Save(isUsable = true)
+                        save = Save(playerId)
                         processOldSave(this@MainActivity)
                         saveData(this@MainActivity)
                     }
                 }
 
                 isSaveLoaded.postValue(true)
-
                 startRadio(this@MainActivity)
             }
         }
@@ -225,7 +225,7 @@ class MainActivity : SaveDataActivity() {
                         .fillMaxSize()
                         .background(backgroundColor)
                         .clickableOk(this) {
-                            if (save.isUsable) {
+                            if (isSaveLoaded.value == true) {
                                 restartSwitch.postValue(false)
                                 isIntroScreen = false
                             }
@@ -242,7 +242,7 @@ class MainActivity : SaveDataActivity() {
                                 verticalArrangement = Arrangement.Center,
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
-                                if (save.isUsable) {
+                                if (k == true) {
                                     TextFallout(
                                         "CARAVAN",
                                         textColor,
@@ -730,7 +730,7 @@ class MainActivity : SaveDataActivity() {
                 showAlertDialog(
                     stringResource(R.string.custom_deck_is_illegal),
                     stringResource(R.string.deck_illegal_body),
-                    null
+                    {  }
                 )
             }
 
@@ -776,7 +776,7 @@ class MainActivity : SaveDataActivity() {
                         }) { showVision = false }
                     }
                     showSettings -> {
-                        ShowTrueSettings(this@MainActivity) { showSettings = false }
+                        ShowTrueSettings(this@MainActivity, ::showAlertDialog) { showSettings = false }
                     }
                     showDailys -> {
                         ShowDailys(this@MainActivity) { showDailys = false }

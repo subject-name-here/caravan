@@ -29,7 +29,7 @@ import kotlin.random.Random
 
 @OptIn(ExperimentalSerializationApi::class)
 @Serializable
-class Save(val isUsable: Boolean) {
+class Save(val playerId: String?) {
     @EncodeDefault
     var selectedDeck: Pair<CardBack, Boolean> = CardBack.STANDARD to false
 

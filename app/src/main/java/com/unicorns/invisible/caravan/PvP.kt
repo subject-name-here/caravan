@@ -272,19 +272,6 @@ fun ShowPvP(
                     "&deck7=${deckCodes[7]}" +
                     "&deck8=${deckCodes[8]}"
         ) { result ->
-            // TODO: do we still support the creation via Join?
-            val responseIfCreator = try {
-                json.decodeFromString<Int>(result.getString("body"))
-            } catch (_: Exception) {
-                0
-            }
-            if (responseIfCreator != 0) {
-                isCreator = true
-                checkedCustomDeck = responseIfCreator == 1
-                checkRoomForJoiner()
-                return@sendRequest
-            }
-
             val response = try {
                 json.decodeFromString<List<ULong>>(result.getString("body"))
             } catch (_: Exception) {

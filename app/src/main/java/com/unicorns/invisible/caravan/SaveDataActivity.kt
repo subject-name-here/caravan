@@ -81,6 +81,10 @@ abstract class SaveDataActivity : AppCompatActivity() {
             }
     }
 
+    suspend fun getPlayerId(): String {
+        return PlayGames.getPlayersClient(this).currentPlayerId.await()
+    }
+
     suspend fun fetchDataFromDrive(): ByteArray? {
         return fetchFileFromDrive(SAVE_FILE_NAME)
     }

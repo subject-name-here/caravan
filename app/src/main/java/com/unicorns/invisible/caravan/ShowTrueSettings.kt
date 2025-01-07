@@ -70,6 +70,7 @@ import kotlin.system.exitProcess
 @Composable
 fun ShowTrueSettings(
     activity: MainActivity,
+    showAlertDialog: (String, String, (() -> Unit)?) -> Unit,
     goBack: () -> Unit
 ) {
     val mainState = rememberLazyListState()
@@ -266,6 +267,11 @@ fun ShowTrueSettings(
                                                     it.capsInHand += 5000
                                                     saveData(activity)
                                                     playYesBeep(activity)
+                                                    showAlertDialog(
+                                                        "Congrats!",
+                                                        "You have found a secret! +5000 caps!",
+                                                        null
+                                                    )
                                                 }
                                             }
                                         }
@@ -277,6 +283,11 @@ fun ShowTrueSettings(
                                                     it.capsInHand += 1969
                                                     saveData(activity)
                                                     playYesBeep(activity)
+                                                    showAlertDialog(
+                                                        "Congrats!",
+                                                        "You have found a secret! +1969 caps!",
+                                                        null
+                                                    )
                                                 }
                                             }
                                         }
@@ -288,6 +299,11 @@ fun ShowTrueSettings(
                                                     it.capsInHand += 2024
                                                     saveData(activity)
                                                     playYesBeep(activity)
+                                                    showAlertDialog(
+                                                        "Congrats!",
+                                                        "You have found a secret! +2024 caps!",
+                                                        null
+                                                    )
                                                 }
                                             }
                                         }
@@ -298,6 +314,11 @@ fun ShowTrueSettings(
                                                 it.altStoryChaptersProgress = 0
                                                 saveData(activity)
                                                 playYesBeep(activity)
+                                                showAlertDialog(
+                                                    "...",
+                                                    "Story progress is deleted.",
+                                                    null
+                                                )
                                             }
                                         }
 
@@ -312,6 +333,11 @@ fun ShowTrueSettings(
 
                                                 saveData(activity)
                                                 playYesBeep(activity)
+                                                showAlertDialog(
+                                                    "Congrats!",
+                                                    "You have found cards from Standard ALT deck!",
+                                                    null
+                                                )
                                             }
                                         }
 
@@ -324,6 +350,11 @@ fun ShowTrueSettings(
 
                                                 saveData(activity)
                                                 playYesBeep(activity)
+                                                showAlertDialog(
+                                                    "Congrats!",
+                                                    "You have found cards from Enclave deck!",
+                                                    null
+                                                )
                                             }
                                         }
 
@@ -335,6 +366,12 @@ fun ShowTrueSettings(
 
                                                 saveData(activity)
                                                 playYesBeep(activity)
+
+                                                showAlertDialog(
+                                                    "!!!",
+                                                    "1921 is the year CCP was formed.",
+                                                    null
+                                                )
                                             }
                                         }
 
@@ -342,12 +379,40 @@ fun ShowTrueSettings(
                                             save.papaSmurfActive = !save.papaSmurfActive
                                             saveData(activity)
                                             playYesBeep(activity)
+
+                                            if (save.papaSmurfActive) {
+                                                showAlertDialog(
+                                                    "Easter egg!",
+                                                    "Papa Khan was replaced by Papa Smurf.",
+                                                    null
+                                                )
+                                            } else {
+                                                showAlertDialog(
+                                                    "Easter egg!",
+                                                    "Papa Smurf was replaced by Papa Khan.",
+                                                    null
+                                                )
+                                            }
                                         }
 
                                         69 -> {
                                             save.sixtyNineActive = !save.sixtyNineActive
                                             saveData(activity)
                                             playYesBeep(activity)
+
+                                            if (save.sixtyNineActive) {
+                                                showAlertDialog(
+                                                    "Easter egg!",
+                                                    "Tops are replaced by Bottoms.",
+                                                    null
+                                                )
+                                            } else {
+                                                showAlertDialog(
+                                                    "Easter egg!",
+                                                    "Bottoms are replaced by Tops.",
+                                                    null
+                                                )
+                                            }
                                         }
 
                                         140597 -> {
@@ -361,6 +426,12 @@ fun ShowTrueSettings(
                                                 save.ownedStyles.add(Style.BLACK)
                                                 saveData(activity)
                                                 playGlitchSound(activity)
+
+                                                showAlertDialog(
+                                                    "xjjmxdjmxccjmx,m,k",
+                                                    "D__k__ss theme was added to your NOT_FOUND",
+                                                    null
+                                                )
                                             }
                                         }
 
@@ -392,9 +463,21 @@ fun ShowTrueSettings(
                                             save.isHeroic = !save.isHeroic
                                             saveData(activity)
                                             playYesBeep(activity)
-                                        }
 
-                                        // TODO: show what cheats do!!
+                                            if (save.isHeroic) {
+                                                showAlertDialog(
+                                                    "Easter egg!",
+                                                    "Supreme Leader and Tower boss have new music!",
+                                                    null
+                                                )
+                                            } else {
+                                                showAlertDialog(
+                                                    "Easter egg!",
+                                                    "Supreme Leader and Tower boss have default music!",
+                                                    null
+                                                )
+                                            }
+                                        }
                                     }
                                 }
                                 .background(getTextBackgroundColor(activity))

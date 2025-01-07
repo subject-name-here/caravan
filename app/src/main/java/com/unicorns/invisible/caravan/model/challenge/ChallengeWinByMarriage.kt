@@ -18,12 +18,12 @@ class ChallengeWinByMarriage : Challenge {
         if (isCardKing) {
             val kingOwner = (game.enemyCaravans + game.playerCaravans)
                 .flatMap { it.cards }
-                .find { move.handCard in it.modifiersCopy() } ?: return
-            val queens = kingOwner.modifiersCopy()
-                .filter { it.isOrdinary() && it.rank == Rank.QUEEN && it.suit == move.handCard.suit }
-            if (queens.isNotEmpty()) {
-                wasLastMoveMarriage = true
-                return
+                .find { move.handCard in it.modifiersCopy() }
+            if (kingOwner != null) {
+                val queens = kingOwner.modifiersCopy().filter {
+                    it.isOrdinary() && it.rank == Rank.QUEEN && it.suit == move.handCard.suit
+                }
+                wasLastMoveMarriage = queens.isNotEmpty()
             }
         }
         wasLastMoveMarriage = false

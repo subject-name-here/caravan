@@ -14,41 +14,48 @@ class ChallengeDoNotPlayCards(private val code: Int) : Challenge {
     @Transient
     private var notPlayed = true
     override fun processMove(move: Challenge.Move, game: Game) {
-        if (!game.isInitStage()) {
-            if (move.moveCode in listOf(3, 4)) {
-                val playedCard = move.handCard ?: return
-                val predicate: () -> Boolean = when (code) {
-                    1 -> {
-                        { playedCard.rank in listOf(Rank.TWO, Rank.FOUR, Rank.SIX, Rank.EIGHT, Rank.TEN) }
-                    }
-                    2 -> {
-                        { playedCard.rank in listOf(Rank.THREE, Rank.FIVE, Rank.SEVEN, Rank.NINE) }
-                    }
-                    3 -> {
-                        { playedCard.rank == Rank.JACK }
-                    }
-                    4 -> {
-                        { playedCard.rank == Rank.KING }
-                    }
-                    5 -> {
-                        { playedCard.suit == Suit.HEARTS || playedCard.suit == Suit.DIAMONDS }
-                    }
-                    6 -> {
-                        { playedCard.suit == Suit.SPADES || playedCard.suit == Suit.CLUBS }
-                    }
-                    7 -> {
-                        { playedCard.rank in listOf(Rank.FOUR, Rank.SIX, Rank.EIGHT, Rank.NINE, Rank.TEN) }
-                    }
-                    else -> {
-                        { true }
-                    }
+        if (game.isInitStage()) {
+            notPlayed = true
+            return
+        }
+        if (move.moveCode in listOf(3, 4)) {
+            val playedCard = move.handCard ?: return
+            val predicate: () -> Boolean = when (code) {
+                1 -> {
+                    { playedCard.rank in listOf(Rank.TWO, Rank.FOUR, Rank.SIX, Rank.EIGHT, Rank.TEN) }
                 }
-                if (playedCard.isOrdinary() && playedCard.rank != Rank.JOKER && predicate()) {
-                    notPlayed = false
+
+                2 -> {
+                    { playedCard.rank in listOf(Rank.THREE, Rank.FIVE, Rank.SEVEN, Rank.NINE) }
+                }
+
+                3 -> {
+                    { playedCard.rank == Rank.JACK }
+                }
+
+                4 -> {
+                    { playedCard.rank == Rank.KING }
+                }
+
+                5 -> {
+                    { playedCard.suit == Suit.HEARTS || playedCard.suit == Suit.DIAMONDS }
+                }
+
+                6 -> {
+                    { playedCard.suit == Suit.SPADES || playedCard.suit == Suit.CLUBS }
+                }
+
+                7 -> {
+                    { playedCard.rank in listOf(Rank.FOUR, Rank.SIX, Rank.EIGHT, Rank.NINE, Rank.TEN) }
+                }
+
+                else -> {
+                    { true }
                 }
             }
-        } else {
-            notPlayed = true
+            if (playedCard.isOrdinary() && playedCard.rank != Rank.JOKER && predicate()) {
+                notPlayed = false
+            }
         }
     }
 

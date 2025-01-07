@@ -3,6 +3,7 @@ package com.unicorns.invisible.caravan.save
 import android.widget.Toast
 import com.unicorns.invisible.caravan.MainActivity
 import com.unicorns.invisible.caravan.Style
+import com.unicorns.invisible.caravan.isSaveLoaded
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.primitives.Card
 import com.unicorns.invisible.caravan.model.primitives.Rank
@@ -31,7 +32,7 @@ private fun getLocalSaveFile(activity: MainActivity): File {
 }
 
 fun saveData(activity: MainActivity) {
-    if (!save.isUsable) {
+    if (isSaveLoaded.value != true) {
         return
     }
     val localSave = getLocalSaveFile(activity)

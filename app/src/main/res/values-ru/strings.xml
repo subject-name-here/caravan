@@ -335,19 +335,19 @@
     <string name="beat_enemies_6_desc">Одолейте Улисса и Доктора Мёбиуса.</string>
     <string name="beat_enemies_7_name">В значит Виктория</string>
     <string name="beat_enemies_7_desc">Одолейте Веронику, Виктора and Вульпеса Инкульту.</string>
-    <string name="beat_enemies_8_name">Камео!!</string>
+    <string name="beat_enemies_8_name">Посланные Свыше?</string>
     <string name="beat_enemies_8_desc">Одолейте Кардинала Безумия и Человека-в-Зеркале.</string>
 
     <string name="play_cards_of_rank">Сыграйте %1$s карт ранга %2$s.</string>
 
     <string name="ace_in_the_hole">Туз в рукаве</string>
-    <string name="always_bet_on_jack">Всегда ставь на Валета</string>
+    <string name="always_bet_on_jack">Памфлеты про Валета</string>
     <string name="queen_s_gambit">Дамы вперед</string>
     <string name="king_of_the_hill">Да здравствует Король!</string>
     <string name="wild_card">Джокер!</string>
-    <string name="two_is_enough">Двоих достаточно</string>
-    <string name="good_things_come_in_threes">Бог любит Тройку</string>
-    <string name="four_flush">Четвертование</string>
+    <string name="two_is_enough">Садись, два!</string>
+    <string name="good_things_come_in_threes">Вот мчится Тройка удалая…</string>
+    <string name="four_flush">Крепкая Четвёрка</string>
     <string name="high_five">Дай пять!</string>
     <string name="in_dice_i_would_have_won">Если бы мы играли в кости…</string>
     <string name="lucky_seven">Счастливое число</string>
