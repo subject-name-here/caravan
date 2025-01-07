@@ -241,14 +241,6 @@ fun ShowTrueSettings(
                                             saveData(activity)
                                             playYesBeep(activity)
                                         }
-//
-//                                        666 -> {
-//                                            save?.let {
-//                                                it.soOpen = true
-//                                                saveOnGD(activity)
-//                                                playYesBeep(activity)
-//                                            }
-//                                        }
 
                                         1337 -> {
                                             pauseRadio()
@@ -268,8 +260,8 @@ fun ShowTrueSettings(
                                                     saveData(activity)
                                                     playYesBeep(activity)
                                                     showAlertDialog(
-                                                        "Congrats!",
-                                                        "You have found a secret! +5000 caps!",
+                                                        activity.getString(R.string.congrats),
+                                                        activity.getString(R.string.prize4_body),
                                                         null
                                                     )
                                                 }
@@ -284,8 +276,8 @@ fun ShowTrueSettings(
                                                     saveData(activity)
                                                     playYesBeep(activity)
                                                     showAlertDialog(
-                                                        "Congrats!",
-                                                        "You have found a secret! +1969 caps!",
+                                                        activity.getString(R.string.congrats),
+                                                        activity.getString(R.string.prize1_body),
                                                         null
                                                     )
                                                 }
@@ -300,8 +292,8 @@ fun ShowTrueSettings(
                                                     saveData(activity)
                                                     playYesBeep(activity)
                                                     showAlertDialog(
-                                                        "Congrats!",
-                                                        "You have found a secret! +2024 caps!",
+                                                        activity.getString(R.string.congrats),
+                                                        activity.getString(R.string.prize2_body),
                                                         null
                                                     )
                                                 }
@@ -316,7 +308,7 @@ fun ShowTrueSettings(
                                                 playYesBeep(activity)
                                                 showAlertDialog(
                                                     "...",
-                                                    "Story progress is deleted.",
+                                                    activity.getString(R.string.story_progress_is_deleted),
                                                     null
                                                 )
                                             }
@@ -326,16 +318,30 @@ fun ShowTrueSettings(
                                             save.let {
                                                 Rank.entries.forEach { rank ->
                                                     if (rank != Rank.JOKER) {
-                                                        it.addCard(Card(rank, Suit.HEARTS, CardBack.STANDARD, true))
-                                                        it.addCard(Card(rank, Suit.SPADES, CardBack.STANDARD, true))
+                                                        it.addCard(
+                                                            Card(
+                                                                rank,
+                                                                Suit.HEARTS,
+                                                                CardBack.STANDARD,
+                                                                true
+                                                            )
+                                                        )
+                                                        it.addCard(
+                                                            Card(
+                                                                rank,
+                                                                Suit.SPADES,
+                                                                CardBack.STANDARD,
+                                                                true
+                                                            )
+                                                        )
                                                     }
                                                 }
 
                                                 saveData(activity)
                                                 playYesBeep(activity)
                                                 showAlertDialog(
-                                                    "Congrats!",
-                                                    "You have found cards from Standard ALT deck!",
+                                                    activity.getString(R.string.congrats),
+                                                    activity.getString(R.string.you_have_found_cards_from_standard_alt_deck),
                                                     null
                                                 )
                                             }
@@ -344,15 +350,29 @@ fun ShowTrueSettings(
                                         2077 -> {
                                             save.let {
                                                 Rank.entries.forEach { rank ->
-                                                    it.addCard(Card(rank, Suit.HEARTS, CardBack.ENCLAVE, false))
-                                                    it.addCard(Card(rank, Suit.CLUBS, CardBack.ENCLAVE, false))
+                                                    it.addCard(
+                                                        Card(
+                                                            rank,
+                                                            Suit.HEARTS,
+                                                            CardBack.ENCLAVE,
+                                                            false
+                                                        )
+                                                    )
+                                                    it.addCard(
+                                                        Card(
+                                                            rank,
+                                                            Suit.CLUBS,
+                                                            CardBack.ENCLAVE,
+                                                            false
+                                                        )
+                                                    )
                                                 }
 
                                                 saveData(activity)
                                                 playYesBeep(activity)
                                                 showAlertDialog(
-                                                    "Congrats!",
-                                                    "You have found cards from Enclave deck!",
+                                                    activity.getString(R.string.congrats),
+                                                    activity.getString(R.string.you_have_found_cards_from_enclave_deck),
                                                     null
                                                 )
                                             }
@@ -369,7 +389,7 @@ fun ShowTrueSettings(
 
                                                 showAlertDialog(
                                                     "!!!",
-                                                    "1921 is the year CCP was formed.",
+                                                    activity.getString(R.string._1921_is_the_year_ccp_was_formed),
                                                     null
                                                 )
                                             }
@@ -382,14 +402,14 @@ fun ShowTrueSettings(
 
                                             if (save.papaSmurfActive) {
                                                 showAlertDialog(
-                                                    "Easter egg!",
-                                                    "Papa Khan was replaced by Papa Smurf.",
+                                                    activity.getString(R.string.easter_egg),
+                                                    activity.getString(R.string.papa_khan_was_replaced_by_papa_smurf),
                                                     null
                                                 )
                                             } else {
                                                 showAlertDialog(
-                                                    "Easter egg!",
-                                                    "Papa Smurf was replaced by Papa Khan.",
+                                                    activity.getString(R.string.easter_egg),
+                                                    activity.getString(R.string.papa_smurf_was_replaced_by_papa_khan),
                                                     null
                                                 )
                                             }
@@ -402,14 +422,14 @@ fun ShowTrueSettings(
 
                                             if (save.sixtyNineActive) {
                                                 showAlertDialog(
-                                                    "Easter egg!",
-                                                    "Tops are replaced by Bottoms.",
+                                                    activity.getString(R.string.easter_egg),
+                                                    activity.getString(R.string.tops_are_replaced_by_bottoms),
                                                     null
                                                 )
                                             } else {
                                                 showAlertDialog(
-                                                    "Easter egg!",
-                                                    "Bottoms are replaced by Tops.",
+                                                    activity.getString(R.string.easter_egg),
+                                                    activity.getString(R.string.bottoms_are_replaced_by_tops),
                                                     null
                                                 )
                                             }
@@ -429,7 +449,7 @@ fun ShowTrueSettings(
 
                                                 showAlertDialog(
                                                     "xjjmxdjmxccjmx,m,k",
-                                                    "D__k__ss theme was added to your NOT_FOUND",
+                                                    "L_ght 404",
                                                     null
                                                 )
                                             }
@@ -466,14 +486,14 @@ fun ShowTrueSettings(
 
                                             if (save.isHeroic) {
                                                 showAlertDialog(
-                                                    "Easter egg!",
-                                                    "Supreme Leader and Tower boss have new music!",
+                                                    activity.getString(R.string.easter_egg),
+                                                    activity.getString(R.string.supreme_leader_and_tower_boss_have_new_music),
                                                     null
                                                 )
                                             } else {
                                                 showAlertDialog(
-                                                    "Easter egg!",
-                                                    "Supreme Leader and Tower boss have default music!",
+                                                    activity.getString(R.string.easter_egg),
+                                                    activity.getString(R.string.supreme_leader_and_tower_boss_have_default_music),
                                                     null
                                                 )
                                             }

@@ -435,6 +435,7 @@ class MainActivity : SaveDataActivity() {
         var showPvE by rememberSaveable { mutableStateOf(false) }
         var showPvP by rememberSaveable { mutableStateOf(false) }
         var deckSelection by rememberSaveable { mutableStateOf(false) }
+        var customDeckSelection by rememberSaveable { mutableStateOf(false) }
         var showRules by rememberSaveable { mutableStateOf(false) }
         var showDailys by rememberSaveable { mutableStateOf(false) }
         var showMarket by rememberSaveable { mutableStateOf(false) }
@@ -452,6 +453,7 @@ class MainActivity : SaveDataActivity() {
         var alertDialogHeader by remember { mutableStateOf("") }
         var alertDialogMessage by remember { mutableStateOf("") }
         var alertGoBack: (() -> Unit)? by rememberScoped { mutableStateOf(null) }
+        var isCustomDeckAlert by remember { mutableStateOf(false) }
 
         fun showAlertDialog(header: String, message: String, goBack: (() -> Unit)?) {
             alertDialogHeader = header
@@ -463,6 +465,7 @@ class MainActivity : SaveDataActivity() {
         fun hideAlertDialog() {
             showAlertDialog = false
             showAlertDialog2 = false
+            isCustomDeckAlert = false
         }
 
         if (showAlertDialog) {
@@ -491,7 +494,11 @@ class MainActivity : SaveDataActivity() {
                     dismissButton = {
                         if (alertGoBack != null) {
                             TextFallout(
-                                stringResource(R.string.back_to_menu),
+                                if (isCustomDeckAlert) {
+                                    stringResource(R.string.deck_custom)
+                                } else {
+                                    stringResource(R.string.back_to_menu)
+                                },
                                 getDialogBackground(this),
                                 getDialogBackground(this), 18.sp, Alignment.Center,
                                 Modifier
@@ -726,11 +733,11 @@ class MainActivity : SaveDataActivity() {
         ) { innerPadding ->
             @Composable
             fun showAlertCustomDeck() {
-                // TODO: button that leads to Set Custom Deck
+                isCustomDeckAlert = true
                 showAlertDialog(
                     stringResource(R.string.custom_deck_is_illegal),
                     stringResource(R.string.deck_illegal_body),
-                    {  }
+                    { customDeckSelection = true }
                 )
             }
 
@@ -738,6 +745,10 @@ class MainActivity : SaveDataActivity() {
                 when {
                     showRules -> {
                         ShowRules(this@MainActivity) { showRules = false }
+                    }
+                    customDeckSelection -> {
+                        isCustomDeckAlert = false
+                        SetCustomDeck(this@MainActivity) { customDeckSelection = false }
                     }
                     deckSelection -> {
                         DeckSelection(this@MainActivity) { deckSelection = false }

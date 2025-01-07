@@ -930,5 +930,20 @@ If this helped you understand the game, thank the author Kyle! To do this, go to
     </string>
     <string name="this_game_will_be_counted_as_lost">This game will be counted as lost!!</string>
     <string name="enemy_with_caps">%1$s (%2$s caps)</string>
+    <string name="congrats">Congrats!</string>
+    <string name="prize4_body">You have found a secret! +5000 caps!</string>
+    <string name="prize1_body">You have found a secret! +1969 caps!</string>
+    <string name="prize2_body">You have found a secret! +2024 caps!</string>
+    <string name="story_progress_is_deleted">Story progress is deleted.</string>
+    <string name="you_have_found_cards_from_standard_alt_deck">You have found cards from Standard ALT deck!</string>
+    <string name="you_have_found_cards_from_enclave_deck">You have found cards from Enclave deck!</string>
+    <string name="_1921_is_the_year_ccp_was_formed">1921 is the year CCP was formed.</string>
+    <string name="easter_egg">Easter egg!</string>
+    <string name="papa_khan_was_replaced_by_papa_smurf">Papa Khan was replaced by Papa Smurf.</string>
+    <string name="papa_smurf_was_replaced_by_papa_khan">Papa Smurf was replaced by Papa Khan.</string>
+    <string name="tops_are_replaced_by_bottoms">Tops are replaced by Bottoms.</string>
+    <string name="bottoms_are_replaced_by_tops">Bottoms are replaced by Tops.</string>
+    <string name="supreme_leader_and_tower_boss_have_new_music">Supreme Leader and Tower boss have new music!</string>
+    <string name="supreme_leader_and_tower_boss_have_default_music">Supreme Leader and Tower boss have default music!</string>
 
 </resources>
