@@ -638,7 +638,7 @@ fun StartGame(
     var showBettingScreen: Boolean by rememberScoped { mutableStateOf(isBettingEnemy) }
 
     val capsLeft by rememberScoped {
-        mutableIntStateOf(save.enemyCapsLeft[enemy.getBankNumber()] ?: 0)
+        mutableIntStateOf(save.enemyCapsLeft.getOrNull(enemy.getBankNumber()) ?: 0)
     }
 
     var enemyBet: Int by rememberScoped { mutableIntStateOf(
@@ -653,7 +653,7 @@ fun StartGame(
         ShowBettingScreen(
             activity, enemy, enemyBet, { bet = it }, { isBlitz = it }, { reward = it },
             { showBettingScreen = false; goBack() }, {
-                if (isBettingEnemy && reward > 0) {
+                if (isBettingEnemy && reward > 0 && enemy.getBankNumber() in save.enemyCapsLeft.indices) {
                     save.enemyCapsLeft[enemy.getBankNumber()] = capsLeft - enemyBet + reward
                 }
                 showBettingScreen = false
@@ -699,8 +699,8 @@ fun StartGame(
             save.wins++
 
             if (isBettingEnemy) {
-                val enemyCaps = save.enemyCapsLeft[enemy.getBankNumber()] ?: 0
-                if (reward > 0) {
+                val enemyCaps = save.enemyCapsLeft.getOrNull(enemy.getBankNumber()) ?: 0
+                if (reward > 0 && enemy.getBankNumber() in save.enemyCapsLeft.indices) {
                     save.enemyCapsLeft[enemy.getBankNumber()] = enemyCaps - reward
                 }
                 save.capsInHand += reward
