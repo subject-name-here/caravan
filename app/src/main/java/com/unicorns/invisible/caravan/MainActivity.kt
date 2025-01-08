@@ -148,7 +148,7 @@ class MainActivity : SaveDataActivity() {
                 val playerId = getPlayerId()
 
                 val localSave = loadLocalSave(this@MainActivity)
-                if (localSave != null && localSave.playerId == playerId) {
+                if (localSave != null && (localSave.playerId == playerId || localSave.playerId == "" || localSave.playerId == null)) {
                     save = localSave
                 } else {
                     val loadedSave = loadGDSave(this@MainActivity)

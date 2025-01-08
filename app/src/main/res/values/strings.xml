@@ -559,11 +559,11 @@
     <string name="ch6_q2">What was in the boxes?</string>
     <string name="ch6_t3">Most of them had the Caravan card decks, some of them artificially aged. The Prospector understood everything: of course, how could the food and such unnecessary and quick to decay things as cards could be found in the wastes, if they were not dropped out by the Chinese?</string>
     <string name="ch6_q3">[INT 6/8] But why flooding America with food and stuff?</string>
-    <string name="ch6_t4">Pfft, that\'s obvious. I am not even gonna explain it to you, that\'s how obvious it is.</string>
+    <string name="ch6_t4">[FAILURE] Pfft, that\'s obvious. I am not even gonna explain it to you, that\'s how obvious it is.</string>
     <string name="ch6_q4">What did the Prospector do? Has he killed everyone and saved the world?</string>
     <string name="ch6_t5">Not quite. The Prospector had thought it was too late to go back, and so he decided to wait for the dark and sneak onto one of the returning cargo ships.</string>
     <string name="ch6_q5">[Sneak 69/70] Yay, ninja time!</string>
-    <string name="ch6_t6">Unfortunately, the Prospector was noticed by one of the guards, who has alerted all the soldiers around.</string>
+    <string name="ch6_t6">[FAILURE] Unfortunately, the Prospector was noticed by one of the guards, who has alerted all the soldiers around.</string>
     <string name="ch6_q6">And then he defeated everyone?</string>
     <string name="ch6_t7">See for yourself.</string>
 
@@ -633,11 +633,11 @@
     <string name="ch9_q8">I submit.</string>
     <string name="ch9_t9">\"You traitor!\" The Prospector felt warmth inside the body. It was plasma pistol projectile melting all his organs together in a green goo. Paladin was killed by Leader\'s robots, but for the Prospector it was too late.</string>
     <string name="ch9_q9">[Speech 90] Okay, but what are you, exactly?</string>
-    <string name="ch9_t10">\"The Chinese Communist Party knew of the coming Great War, and knew that it was unable to prevent it. The Americans went insane in their hunger for power, deciding to buy off nukes and launch them all over the world. The invasion of the mainland USA had proven futile, as the Americans put a fierce fight. And then, the brilliant minds of Chinese political science decided to not prevent the sickness, but to cure what survives. They made the Supreme Leader.\"</string>
+    <string name="ch9_t10">[SUCCESS] \"The Chinese Communist Party knew of the coming Great War, and knew that it was unable to prevent it. The Americans went insane in their hunger for power, deciding to buy off nukes and launch them all over the world. The invasion of the mainland USA had proven futile, as the Americans put a fierce fight. And then, the brilliant minds of Chinese political science decided to not prevent the sickness, but to cure what survives. They made the Supreme Leader.\"</string>
     <string name="ch9_q10">Go on.</string>
     <string name="ch9_t11">\"Supreme Leader is a network of bots that would identify all tribes and survivor groups of people all around the world after the Great War and collect their brains, connecting them, fusing memories and identities together. This way not a single personality is lost, but every person learns what the other side has gone through.\"\n\nLeader stopped for a second.</string>
     <string name="ch9_q11">[Speech 95] Is something wrong?</string>
-    <string name="ch9_t12">Just imagine: all the love, pride, hate, fear. I have to deal with it. I may look like a machine, but I am as much capable of feeling as you. This is why what will happen to you will hurt me.</string>
+    <string name="ch9_t12">[SUCCESS] Just imagine: all the love, pride, hate, fear. I have to deal with it. I may look like a machine, but I am as much capable of feeling as you. This is why what will happen to you will hurt me.</string>
     <string name="ch9_q12">So, what will happen to me?</string>
     <string name="ch9_t13">You will lose your identity once you merge with me, and thus you will repay your debt towards China. My China. Our China. You cannot leave, you cannot die either. You can only submit. After all, you stand here, which proves you are resourceful, and China needs more and more resources every second…</string>
     <string name="ch9_q13">And why should the world be united by China, and not by, let\'s say, NCR?</string>
@@ -645,7 +645,7 @@
     <string name="ch9_q14">And how are you gonna protect your utopia from, for example, Brotherhood of Steel?</string>
     <string name="ch9_t15">The CCP knew that there would be no nation remaining after the Great War, so they instructed the bots to create nuclear arsenal all anew, for they knew that an all-understanding leadership is just a bluff if it is not supported by the ultimate argument.</string>
     <string name="ch9_q15">[Speech 100] Last question: why drop food and cards all over America?</string>
-    <string name="ch9_t16">To maintain people\'s life, of course. If not us, Americans outside the vaults would die of hunger and radiation. I, Supreme Leader, accept everyone into my fold, even Laowais such as you, if they prove useful and submissive.</string>
+    <string name="ch9_t16">[SUCCESS] To maintain people\'s life, of course. If not us, Americans outside the vaults would die of hunger and radiation. I, Supreme Leader, accept everyone into my fold, even Laowais such as you, if they prove useful and submissive.</string>
     <string name="ch9_q16">And cards? How blackjack or Caravan would help you?</string>
     <string name="ch9_t17">You underestimate the power of a card game. It develops your skills, while also giving you unique experience. Yes, people may lose fortune in blackjack, but understanding this feeling, this idea is valuable for me, for us.\nAnd Caravan is a good metaphor of life. You know it, don\'t you? I have seen you forging your path with it.\n\nAfter all, what is a game, if not a life in miniature? And what is our life, if not a complicated game?</string>
     <string name="ch9_q17">I will not submit.</string>
@@ -735,6 +735,8 @@
     <string name="achievement_float_like_a_butterfly..." translatable="false">CgkIvtnbpMwbEAIQEA</string>
     <!--achievement THE INTERNET HAS YOU-->
     <string name="achievement_the_internet_has_you" translatable="false">CgkIvtnbpMwbEAIQEQ</string>
+    <!--achievement Pyrrhic victory-->
+    <string name="achievement_pyrrhic_victory" translatable="false">CgkIvtnbpMwbEAIQEg</string>
 
 
     <string name="achievements">Achievements</string>
@@ -788,7 +790,7 @@ Rules of Caravan in the App!
 \n
 - two 54-card decks with one deck for each player
 \n
-- customized deck provided that it consists of at least 30 cards, at least 15 non-face cards, at most 6 playing decks are used, and deck doesn\'t contain two of the same card from the same playing deck (e.g. two 3 of diamonds from identical decks). The maximum amount of cards is derived from the maximum number of playing decks (6) and is 54 * 6 = 324.
+- customized deck provided that it consists of at least 30 cards, at least 15 non-face cards, at most 6 playing decks are used, and the deck doesn\'t contain two of the same card with the same back (e.g. two 3 of diamonds with Tops deck). The maximum amount of cards is derived from the maximum number of playing decks (6) and is 54 * 6 = 324.
 
     </string>
 
@@ -826,11 +828,11 @@ Player 2
 \n\n
 4.1) To start, each player draws eight cards from their shuffled deck.
 \n\n
-4.2) During this opening round you can only place number cards (2-10) or aces. The opening round in its entirety consists of three, alternating turns for each player, in which each player must use those turns to play a card face-up to start off each of their three caravans.
+4.2) During this init stage you can only place number cards (2-10) or aces. The init stage in its entirety consists of three alternating turns for each player, in which they must use those turns to play a card face-up to start off each of their three caravans.
 \n\n
 4.3) You are not allowed to discard cards during this phase. The deck is shuffled and the hand is selected the way that always allows to place three number cards or aces.
 \n\n
-4.4) Once each player has taken turns placing their three cards, the opening round is over. During this opening round you do not re-draw cards, and after this phase ends both players will be continuing with five cards.
+4.4) During this phase you do not re-draw cards. Once each player has taken turns placing their three cards, the init stage is over. After this phase ends both players will be continuing with five cards.
 
     </string>
 
@@ -867,7 +869,7 @@ Player 2
 \n\n
 5.33) Face cards and Jokers don\'t need to follow suit or sequence, and can be played on any number card no matter the card\'s location in the caravan.
 \n\n
-5.34) JACK- Removes the card the Jack is played on as well as any face cards/Jokers attached.
+5.34) JACK - Removes the card it is played on as well as any face cards/Jokers attached.
 \n
 5.35) QUEEN - Reverses the current numerical direction of the caravan, and changes the suit of the caravan to that of the Queen. Multiple Queens can be used on the same card to reverse the effects.
 \n
@@ -875,11 +877,11 @@ Player 2
 \n
 5.37) JOKER:
         \n
-        - If played on an ace, it removes all other number cards from both player\'s caravans that share the same suit of the ace (Queens altering the suit of a caravan will not save the card - the suit is considered what is printed on the number card).
+        - If played on an ace, it removes from both player\'s caravans all other number cards that share the suit of the ace (Queens altering the suit of a caravan will not save the card - the suit is considered what is printed on the number card).
         \n
-        - If played on a number card that is not an ace, it removes all other number cards of the same value/instance from both player\'s caravans. A played Joker only affects cards that have been played before it. In any case, the number card the Joker is played on is spared. All attaching face cards of the removed cards are also removed.
+        - If played on a number card that is not an ace, it removes from both player\'s caravans all other number cards of the same value/instance. A played Joker only affects cards that have been played before it. In any case, the number card the Joker is played on is spared. All attaching face cards of the removed cards are also removed.
 \n\n
-5.38) Face cards and Jokers can be played/attached with full effect on cards with other face cards and Jokers attached. There can be no more than three face cards or Jokers attached/played to a single number card at one time. The exception is a Jack: it can be used to remove a number card that already has three face cards or Jokers attached to it.
+5.38) Face cards and Jokers can be played/attached with full effect on cards with other face cards and Jokers attached. There can be no more than three face cards or Jokers attached/played to a single number card at one time. The exception is a Jack: it can be attached as a fourth face card.
 \n\n
 5.4) If in the event that a Jack or Joker removes a card, leaving a caravan sequence stuck with two identical number cards, then the sequence is considered undefined, and number card of any value (except the last card value) can be played.
 \n\n
@@ -905,21 +907,23 @@ Player 2
 
 7.0 WILD WASTELAND
 \n\n
-7.1) Sometimes you might see weird cards. They have black-and-green coloring, have a non-standard rank and no suit. Those are Wild Wasteland cards:
+7.1) Sometimes you might see some weird cards. They have black-and-green coloring, have a non-standard rank and no suit. Those are the Wild Wasteland cards:
 \n
-7.11) CAZADOR - when put on a caravan, it decreases rank of every number card in this caravan every turn, with every Ace just disappearing. If combined with ordinary Queen, it will be increasing rank of every number card (except 10) in this caravan every turn.
+7.11) CAZADOR - when it\'s put on a caravan, decreases rank of every number card in this caravan every turn, with every Ace just disappearing. If combined with an ordinary Queen, it increases rank of every number card (except 10) in this caravan every turn.
 \n
-7.12) UFO - when it is put on a field, every card (except the card UFO is put) has a chance of disappearing.
+7.12) UFO - when it is put on a field, every card (except the card UFO is put on) has a chance of disappearing.
 \n
-7.13) MUGGY - when put on a caravan, no one can put any face card on any card of this caravan. Also protects from nuclear explosion.
+7.13) MUGGY - when it is put on a caravan, no one can put any face card on any card of this caravan. Also protects from nuclear explosion.
 \n
-7.14) DIFFICULT PETE - when it is put on a field, all number cards are turning into 10s. Suit and face cards are saved.
+7.14) DIFFICULT PETE - when it is put on a field, all number cards are turning into 10s. Suit and attached face cards remain the same.
 \n
 7.15) YES MAN - if there is a YES MAN card on any card of the caravan, the bid of this caravan is 26, no matter what cards are there.
 \n
 7.16) FEV - if it is put on a card from one of the player\'s/enemy\'s caravans, all cards in hand of the player/enemy are turned into the FEV-host card.
 \n\n
-7.2) Wild Wasteland cards cannot be added in custom deck or in the deck o\' 54 by player. However, in multiplayer it can be done; also, some AI enemies have the Wild Wasteland cards in their deck.
+7.17) NUCLEAR EXPLOSION - when it is put on a caravan X, every caravan is dropped, except caravan X (and caravans that are protected by Muggy).
+\n\n
+7.2) Wild Wasteland cards cannot be added in custom deck or in the deck o\' 54 by player. However, they can be added in multiplayer by selecting the checkbox; also, some AI enemies have the Wild Wasteland cards in their deck.
 
     </string>
 
@@ -930,10 +934,12 @@ If this helped you understand the game, thank the author Kyle! To do this, go to
     </string>
     <string name="this_game_will_be_counted_as_lost">This game will be counted as lost!!</string>
     <string name="enemy_with_caps">%1$s (%2$s caps)</string>
+    <string name="enemy_without_caps">%1$s</string>
+
     <string name="congrats">Congrats!</string>
-    <string name="prize4_body">You have found a secret! +5000 caps!</string>
-    <string name="prize1_body">You have found a secret! +1969 caps!</string>
-    <string name="prize2_body">You have found a secret! +2024 caps!</string>
+    <string name="prize4_body">You have found a secret stash! +5000 caps!</string>
+    <string name="prize1_body">You have found a secret stash! +1969 caps!</string>
+    <string name="prize2_body">You have found a secret stash! +2024 caps!</string>
     <string name="story_progress_is_deleted">Story progress is deleted.</string>
     <string name="you_have_found_cards_from_standard_alt_deck">You have found cards from Standard ALT deck!</string>
     <string name="you_have_found_cards_from_enclave_deck">You have found cards from Enclave deck!</string>

@@ -307,7 +307,7 @@ fun ShowTrueSettings(
                                                 saveData(activity)
                                                 playYesBeep(activity)
                                                 showAlertDialog(
-                                                    "...",
+                                                    ".",
                                                     activity.getString(R.string.story_progress_is_deleted),
                                                     null
                                                 )
@@ -318,22 +318,18 @@ fun ShowTrueSettings(
                                             save.let {
                                                 Rank.entries.forEach { rank ->
                                                     if (rank != Rank.JOKER) {
-                                                        it.addCard(
-                                                            Card(
-                                                                rank,
-                                                                Suit.HEARTS,
-                                                                CardBack.STANDARD,
-                                                                true
-                                                            )
-                                                        )
-                                                        it.addCard(
-                                                            Card(
-                                                                rank,
-                                                                Suit.SPADES,
-                                                                CardBack.STANDARD,
-                                                                true
-                                                            )
-                                                        )
+                                                        it.addCard(Card(
+                                                            rank,
+                                                            Suit.HEARTS,
+                                                            CardBack.STANDARD,
+                                                            true
+                                                        ))
+                                                        it.addCard(Card(
+                                                            rank,
+                                                            Suit.SPADES,
+                                                            CardBack.STANDARD,
+                                                            true
+                                                        ))
                                                     }
                                                 }
 
@@ -479,6 +475,12 @@ fun ShowTrueSettings(
                                             }
                                         }
 
+                                        1721 -> {
+                                            save.challengesHash = 0
+                                            saveData(activity)
+                                            playYesBeep(activity)
+                                        }
+
                                         845 -> {
                                             save.isHeroic = !save.isHeroic
                                             saveData(activity)
@@ -497,6 +499,10 @@ fun ShowTrueSettings(
                                                     null
                                                 )
                                             }
+                                        }
+
+                                        else -> {
+                                            playCloseSound(activity)
                                         }
                                     }
                                 }

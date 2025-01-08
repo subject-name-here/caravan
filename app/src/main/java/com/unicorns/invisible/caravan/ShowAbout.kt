@@ -78,7 +78,6 @@ fun ShowAbout(activity: MainActivity, goBack: () -> Unit) {
                     Modifier,
                     TextAlign.Center
                 )
-
                 Spacer(modifier = Modifier.height(16.dp))
 
                 val annotatedString = buildAnnotatedString {
@@ -99,7 +98,6 @@ fun ShowAbout(activity: MainActivity, goBack: () -> Unit) {
                     }
                     append(stringResource(R.string.about_4_2))
                 }
-
                 TextFallout(
                     annotatedString,
                     getTextColor(activity),
@@ -110,7 +108,6 @@ fun ShowAbout(activity: MainActivity, goBack: () -> Unit) {
                     TextAlign.Center
                 )
                 Spacer(modifier = Modifier.height(24.dp))
-
                 TextFallout(
                     stringResource(R.string.about_3_0),
                     getTextColor(activity),
@@ -149,7 +146,6 @@ fun ShowAbout(activity: MainActivity, goBack: () -> Unit) {
                     }
                     append(stringResource(R.string.about_3_2))
                 }
-
                 TextFallout(
                     annotatedString0,
                     getTextColor(activity),
@@ -170,7 +166,6 @@ fun ShowAbout(activity: MainActivity, goBack: () -> Unit) {
                     TextAlign.Center
                 )
                 Spacer(modifier = Modifier.height(12.dp))
-
                 val annotatedString2 = buildAnnotatedString {
                     append(stringResource(R.string.about_3_4_1))
                     withLink(
@@ -198,7 +193,6 @@ fun ShowAbout(activity: MainActivity, goBack: () -> Unit) {
                     Modifier,
                     TextAlign.Center
                 )
-
                 Spacer(modifier = Modifier.height(12.dp))
 
                 val annotatedStringCFF = buildAnnotatedString {

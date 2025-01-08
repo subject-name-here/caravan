@@ -87,7 +87,7 @@ fun SetCustomDeck(
         Column(Modifier
             .fillMaxSize()
             .background(getBackgroundColor(activity))) {
-            // TODO: 4 custom decks variants (please, add renaming)
+            // TODO: for 2.1: 4 custom decks variants (please, add renaming)
             key (updater) {
                 ShowCharacteristics(activity)
             }

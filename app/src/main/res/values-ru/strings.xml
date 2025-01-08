@@ -125,7 +125,7 @@
     <string name="about_3_0">Благодарности:</string>
     <string name="about_3_1">Kat - за помощь с дизайном;</string>
     <string name="about_3_2">" - за помощь с Дикой Пустошью, Сюжетом, колодами - короче, за половину приложения!!;"</string>
-    <string name="about_3_3">bigcman123 - за ихображения Vault-Girl;</string>
+    <string name="about_3_3">bigcman123 - за изображения Vault-Girl;</string>
     <string name="about_3_4_1">"Kyle - за "</string>
     <string name="about_3_4_2">этот пост на Реддите</string>
     <string name="about_3_4_3">" с правилами Каравана;"</string>
@@ -865,6 +865,8 @@
 \n
 7.16) ВРЭ - когда эта карта сыграна на караване игрока/оппонента, все карты в руке игрока/оппонента превращаются в карту, на которой лежит ВРЭ. Картинки сохраняются.
 \n\n
+7.17) ЯДЕРНЫЙ ВЗРЫВ - когда карта сыграна на караване X, все караваны, кроме каравана X и караванов, защищенных Кружками, сбрасываются.
+\n\n
 7.2) Карты Дикой Пустоши могут быть использованы игроком только в мультиплеере. У некоторых ИИ также есть карты Дикой Пустоши в колоде.
 
     </string>
@@ -877,5 +879,23 @@
 
     <string name="this_game_will_be_counted_as_lost">Партия будет считаться проигранной!!</string>
     <string name="enemy_with_caps">%1$s (%2$s крышек)</string>
+
+
+    <string name="congrats">Поздравляю!</string>
+    <string name="prize4_body">Вы нашли тайник! +5000 крышечек!</string>
+    <string name="prize1_body">Вы нашли тайник! +1969 крышечек!</string>
+    <string name="prize2_body">Вы нашли тайник! +2024 крышечек!</string>
+    <string name="story_progress_is_deleted">Прогресс в Сюжете удалён.</string>
+    <string name="you_have_found_cards_from_standard_alt_deck">Вы нашли карты из стандартной ALT колоды!</string>
+    <string name="you_have_found_cards_from_enclave_deck">Вы нашли карты из колоды Анклава!</string>
+    <string name="_1921_is_the_year_ccp_was_formed">1921 - год основания КПК.</string>
+    <string name="easter_egg">Пасхальное яйцо!</string>
+    <string name="papa_khan_was_replaced_by_papa_smurf">Замена: вместо Папы Хана выходит Папа Смурф.</string>
+    <string name="papa_smurf_was_replaced_by_papa_khan">Замена: вместо Папы Смурфа выходит Папа Хан.</string>
+    <string name="tops_are_replaced_by_bottoms">Tops заменяются на Bottoms.</string>
+    <string name="bottoms_are_replaced_by_tops">Bottoms заменяются на Tops.</string>
+    <string name="supreme_leader_and_tower_boss_have_new_music">Верховный Лидер и босс БАШНИ получили новую музыкальную тему!</string>
+    <string name="supreme_leader_and_tower_boss_have_default_music">Верховный Лидер и босс БАШНИ получили их стандартную тему!</string>
+
 
 </resources>

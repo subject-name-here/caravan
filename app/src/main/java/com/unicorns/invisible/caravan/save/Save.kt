@@ -29,7 +29,7 @@ import kotlin.random.Random
 
 @OptIn(ExperimentalSerializationApi::class)
 @Serializable
-class Save(val playerId: String?) {
+class Save(val playerId: String? = null) {
     @EncodeDefault
     var selectedDeck: Pair<CardBack, Boolean> = CardBack.STANDARD to false
 
@@ -107,7 +107,7 @@ class Save(val playerId: String?) {
     var animationSpeed = AnimationSpeed.NORMAL
 
     @EncodeDefault
-    var challengesHash = getCurrentDateHashCode()
+    var challengesHash = 0
     fun getCurrentDateHashCode(): Int {
         return SimpleDateFormat("yyyyMMdd", Locale.ENGLISH).format(Date()).hashCode()
     }
@@ -142,7 +142,7 @@ class Save(val playerId: String?) {
     var isHeroic = false
 
     @EncodeDefault
-    val enemyCapsLeft = HashMap<Int, Int>()
+    val enemyCapsLeft = Array<Int>(30) { 0 }
     fun updateDailyStats() {
         val random = Random(challengesHash)
         repeat(30) {
@@ -174,7 +174,7 @@ class Save(val playerId: String?) {
         }
         val backCount = availableCards.count { c -> c.back == card.back && c.isAlt == card.isAlt }
         val rarityMult = (backCount + 26.0) / 52.0
-        val bsMult = Random(challengesHash).nextDouble(0.8, 1.2)
+        val bsMult = Random(challengesHash).nextDouble(0.85, 1.15)
         return (base.toDouble() * barterMult * rankMult * rarityMult * bsMult).toInt()
     }
     fun onCardBuying(activity: MainActivity) {

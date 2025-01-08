@@ -276,11 +276,9 @@ fun ShowStoryList(
 @Composable
 fun DialogLine(activity: MainActivity, line: String, isSelect: Boolean = true, onClick: () -> Unit) {
     val modifier = if (isSelect) {
-        Modifier
-            .clickableSelect(activity) { onClick() }
+        Modifier.clickableSelect(activity) { onClick() }
     } else {
-        Modifier
-            .clickable { onClick() }
+        Modifier.clickable { onClick() }
     }
     TextClassic(
         line,
@@ -1092,7 +1090,10 @@ fun ShowStoryChapter6(
                     }
                 }
             },
-            { gameResult = 2 },
+            {
+                activity.achievementsClient?.unlock(activity.getString(R.string.achievement_pyrrhic_victory))
+                gameResult = 2
+            },
             {
                 if (cardsPut > 3) {
                     gameResult = -1
@@ -1135,11 +1136,9 @@ fun ShowStoryChapter6(
                                 in listOf(-1, 2) -> {
                                     R.drawable.black_back
                                 }
-
                                 1 -> {
                                     R.drawable.ch6_5
                                 }
-
                                 else -> {
                                     when (lineNumber) {
                                         0, 3 -> R.drawable.ch6_1

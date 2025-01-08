@@ -88,8 +88,8 @@ import kotlin.random.Random
 
 
 enum class Style(val styleNameId: Int, val price: Int) {
-    DESERT(R.string.style_desert, 500),
-    ALASKA_FRONTIER(R.string.style_alaska, 500),
+    DESERT(R.string.style_desert, 250),
+    ALASKA_FRONTIER(R.string.style_alaska, 250),
     PIP_BOY(R.string.style_pip_boy, 0),
     PIP_GIRL(R.string.style_pip_girl, 1969),
     OLD_WORLD(R.string.style_old_world, 2077),

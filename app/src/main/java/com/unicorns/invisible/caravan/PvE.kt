@@ -465,8 +465,12 @@ fun ShowPvE(
                     Spacer(modifier = Modifier.height(16.dp))
                     @Composable
                     fun OpponentItem(name: String, number: Int, onClick: () -> Unit) {
+                        val line = if (number !in save.enemyCapsLeft.indices)
+                            stringResource(R.string.enemy_without_caps, name)
+                        else
+                            stringResource(R.string.enemy_with_caps, name, save.enemyCapsLeft[number])
                         TextFallout(
-                            stringResource(R.string.enemy_with_caps, name, save.enemyCapsLeft[number] ?: -1),
+                            line,
                             getTextColor(activity),
                             getTextStrokeColor(activity),
                             18.sp,
