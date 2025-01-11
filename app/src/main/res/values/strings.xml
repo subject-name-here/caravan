@@ -934,7 +934,7 @@ If this helped you understand the game, thank the author Kyle! To do this, go to
     </string>
     <string name="this_game_will_be_counted_as_lost">This game will be counted as lost!!</string>
     <string name="enemy_with_caps">%1$s (%2$s caps)</string>
-    <string name="enemy_without_caps">%1$s</string>
+    <string name="enemy_without_caps" translatable="false">%1$s</string>
 
     <string name="congrats">Congrats!</string>
     <string name="prize4_body">You have found a secret stash! +5000 caps!</string>
@@ -951,5 +951,19 @@ If this helped you understand the game, thank the author Kyle! To do this, go to
     <string name="bottoms_are_replaced_by_tops">Bottoms are replaced by Tops.</string>
     <string name="supreme_leader_and_tower_boss_have_new_music">Supreme Leader and Tower boss have new music!</string>
     <string name="supreme_leader_and_tower_boss_have_default_music">Supreme Leader and Tower boss have default music!</string>
+
+    <string name="faq_q1">Q1: Are there differences with original Caravan from New Vegas?</string>
+    <string name="faq_a1">A1: Yes, but they are minor. For example, cards discarding during init stage is allowed in FNV, but disallowed here.</string>
+    <string name="faq_q2">Q2: I have two caravans sold, but the game has not ended with my victory!</string>
+    <string name="faq_a2">A2: The game ends when in each pair of competing caravans one is sold with higher bid. In your case, probably, the third caravan pair has no sold caravan or both caravans have same bid.</string>
+    <string name="faq_q3">Q3: The enemies are too hard! How do I win over them?</string>
+    <string name="faq_a3">A3: If you find the game too hard, remember: Oliver Swanick is supposed to be easy. Try beating him first. Then try Veronica.</string>
+    <string name="faq_q4">Q4: The enemies are cheating! Their decks are unfair!</string>
+    <string name="faq_a4">A4: Almost all enemies are obeying the rules, just as you do. If you find the enemy deck unfair, build your own unfair deck!</string>
+    <string name="faq_q5">Q5: How do I get cards for custom deck?</string>
+    <string name="faq_a5">A5: Well, from the beginning you have standard deck available. Then, most of the cards are bought from traders.
+        The exceptions are Standard deck ALT (cards are dropped in multiplayer) and Madness deck (cards are dropped for defeating Madness Cardinal).</string>
+    <string name="faq_ql">Q: I have a question, but cannot find the answer here or in the rules!!!</string>
+    <string name="faq_al">A: Well, you can send the question in Discord (link in the main menu in the top right corner) or to me directly by email (link in About section).</string>
 
 </resources>

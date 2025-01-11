@@ -65,6 +65,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withLink
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
 import androidx.lifecycle.MutableLiveData
 import com.sebaslogen.resaca.rememberScoped
 import com.unicorns.invisible.caravan.model.CardBack
@@ -237,7 +238,7 @@ class MainActivity : SaveDataActivity() {
 
                     @Composable
                     fun ColumnScope.CaravanTitle(weight: Float) {
-                        Box(Modifier.fillMaxWidth().weight(weight).padding(vertical = 4.dp)) {
+                        Box(Modifier.fillMaxWidth().weight(weight).padding(vertical = 4.dp).zIndex(5f)) {
                             Column(
                                 Modifier.fillMaxSize(),
                                 verticalArrangement = Arrangement.Center,

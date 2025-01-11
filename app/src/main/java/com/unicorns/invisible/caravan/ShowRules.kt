@@ -223,12 +223,121 @@ fun ShowRules(activity: MainActivity, goBack: () -> Unit) {
                             )
                         }
                         2 -> {
-                            // TODO: !!!!
                             TextFallout(
-                                stringResource(R.string.coming_soon),
+                                stringResource(R.string.faq_q1),
                                 getTextColor(activity),
                                 getTextStrokeColor(activity),
-                                20.sp,
+                                18.sp,
+                                Alignment.Center,
+                                Modifier.padding(horizontal = 8.dp),
+                                TextAlign.Center
+                            )
+                            Spacer(Modifier.height(8.dp))
+                            TextFallout(
+                                stringResource(R.string.faq_a1),
+                                getTextColor(activity),
+                                getTextStrokeColor(activity),
+                                18.sp,
+                                Alignment.Center,
+                                Modifier.padding(horizontal = 8.dp),
+                                TextAlign.Center
+                            )
+                            Spacer(Modifier.height(16.dp))
+                            TextFallout(
+                                stringResource(R.string.faq_q2),
+                                getTextColor(activity),
+                                getTextStrokeColor(activity),
+                                18.sp,
+                                Alignment.Center,
+                                Modifier.padding(horizontal = 8.dp),
+                                TextAlign.Center
+                            )
+                            Spacer(Modifier.height(8.dp))
+                            TextFallout(
+                                stringResource(R.string.faq_a2),
+                                getTextColor(activity),
+                                getTextStrokeColor(activity),
+                                18.sp,
+                                Alignment.Center,
+                                Modifier.padding(horizontal = 8.dp),
+                                TextAlign.Center
+                            )
+                            Spacer(Modifier.height(16.dp))
+                            TextFallout(
+                                stringResource(R.string.faq_q3),
+                                getTextColor(activity),
+                                getTextStrokeColor(activity),
+                                18.sp,
+                                Alignment.Center,
+                                Modifier.padding(horizontal = 8.dp),
+                                TextAlign.Center
+                            )
+                            Spacer(Modifier.height(8.dp))
+                            TextFallout(
+                                stringResource(R.string.faq_a3),
+                                getTextColor(activity),
+                                getTextStrokeColor(activity),
+                                18.sp,
+                                Alignment.Center,
+                                Modifier.padding(horizontal = 8.dp),
+                                TextAlign.Center
+                            )
+                            Spacer(Modifier.height(16.dp))
+                            TextFallout(
+                                stringResource(R.string.faq_q4),
+                                getTextColor(activity),
+                                getTextStrokeColor(activity),
+                                18.sp,
+                                Alignment.Center,
+                                Modifier.padding(horizontal = 8.dp),
+                                TextAlign.Center
+                            )
+                            Spacer(Modifier.height(8.dp))
+                            TextFallout(
+                                stringResource(R.string.faq_a4),
+                                getTextColor(activity),
+                                getTextStrokeColor(activity),
+                                18.sp,
+                                Alignment.Center,
+                                Modifier.padding(horizontal = 8.dp),
+                                TextAlign.Center
+                            )
+                            Spacer(Modifier.height(16.dp))
+                            TextFallout(
+                                stringResource(R.string.faq_q5),
+                                getTextColor(activity),
+                                getTextStrokeColor(activity),
+                                18.sp,
+                                Alignment.Center,
+                                Modifier.padding(horizontal = 8.dp),
+                                TextAlign.Center
+                            )
+                            Spacer(Modifier.height(8.dp))
+                            TextFallout(
+                                stringResource(R.string.faq_a5),
+                                getTextColor(activity),
+                                getTextStrokeColor(activity),
+                                18.sp,
+                                Alignment.Center,
+                                Modifier.padding(horizontal = 8.dp),
+                                TextAlign.Center
+                            )
+                            Spacer(Modifier.height(16.dp))
+                            TextFallout(
+                                stringResource(R.string.faq_ql),
+                                getTextColor(activity),
+                                getTextStrokeColor(activity),
+                                18.sp,
+                                Alignment.Center,
+                                Modifier.padding(horizontal = 8.dp),
+                                TextAlign.Center
+                            )
+                            Spacer(Modifier.height(8.dp))
+                            TextFallout(
+                                stringResource(R.string.faq_al),
+                                getTextColor(activity),
+                                getTextStrokeColor(activity),
+                                18.sp,
                                 Alignment.Center,
                                 Modifier.padding(horizontal = 8.dp),
                                 TextAlign.Center
