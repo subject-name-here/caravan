@@ -147,9 +147,8 @@ fun ShowSelectPvE(
             return
         }
         showTutorial -> {
-            showAlertDialog("[CLOSED]", "Better tutorial is on the way.", null)
-            showTutorial = false
-            // TODO
+            Tutorial(activity) { showTutorial = false }
+            return
         }
     }
 
@@ -194,9 +193,8 @@ fun ShowSelectPvE(
                 Spacer(modifier = Modifier.height(12.dp))
                 SubMenuItem(stringResource(R.string.pve_stats)) { showStats = true }
                 Spacer(modifier = Modifier.height(12.dp))
-                // TODO
-//                SubMenuItem(stringResource(R.string.tutorial)) { showTutorial = true }
-//                Spacer(modifier = Modifier.height(12.dp))
+                SubMenuItem(stringResource(R.string.tutorial)) { showTutorial = true }
+                Spacer(modifier = Modifier.height(12.dp))
             }
         }
     }

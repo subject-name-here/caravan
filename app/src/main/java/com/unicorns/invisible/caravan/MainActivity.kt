@@ -150,7 +150,8 @@ class MainActivity : SaveDataActivity() {
                 val playerId = getPlayerId()
 
                 val localSave = loadLocalSave(this@MainActivity)
-                if (localSave != null && (localSave.playerId == playerId || localSave.playerId == "" || localSave.playerId == null)) {
+                val isPlayerUndefined = playerId == ""
+                if (localSave != null && (localSave.playerId == playerId || isPlayerUndefined)) {
                     save = localSave
                 } else {
                     val loadedSave = loadGDSave(this@MainActivity)
@@ -161,6 +162,11 @@ class MainActivity : SaveDataActivity() {
                         processOldSave(this@MainActivity)
                         saveData(this@MainActivity)
                     }
+                }
+
+                if (save.playerId == "" && playerId != "") {
+                    save.playerId = playerId
+                    saveData(this@MainActivity)
                 }
 
                 isSaveLoaded.postValue(true)
@@ -208,6 +214,11 @@ class MainActivity : SaveDataActivity() {
             R.string.intro_tip_33,
             R.string.intro_tip_34,
             R.string.intro_tip_35,
+            R.string.intro_tip_36,
+            R.string.intro_tip_37,
+            R.string.intro_tip_38,
+            R.string.intro_tip_l10,
+            R.string.intro_tip_l11,
         ).random(Random(id.hashCode()))
 
         setContent {
@@ -811,23 +822,6 @@ class MainActivity : SaveDataActivity() {
                                 save.updateChallenges()
                                 save.updateDailyStats()
                                 save.capsInHand += capsFound
-                                saveData(this@MainActivity)
-                            }
-                        }
-
-                        // TODO: remove for release
-                        LaunchedEffect(Unit) {
-                            if (!save.betaReward) {
-                                showAlertDialog(
-                                    "Hello, my dearest beta tester.",
-                                    "As far as I am aware, 2.0.KQ erased all the progress you've made in beta.\n" +
-                                            "To make up for this, I wanna give you reward: 2025 caps and access to shops of Lucky 38 and Ultra-Luxe.\n" +
-                                            "Also have this code: 200300. Use it in settings.",
-                                    null
-                                )
-
-                                save.capsInHand += 2025
-                                save.betaReward = true
                                 saveData(this@MainActivity)
                             }
                         }

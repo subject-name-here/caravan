@@ -30,6 +30,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -1161,6 +1162,37 @@ fun BoxWithConstraintsScope.StylePicture(
                         }
                     }
                 }
+            }
+
+
+            var playedTime by remember { mutableLongStateOf(0L) }
+            LaunchedEffect(Unit) {
+                playedTime = activity.getPlayedTime() ?: return@LaunchedEffect
+                while (isActive) {
+                    delay(2000L)
+                    playedTime += 2000L
+                }
+            }
+            fun longToTime(millis: Long): String {
+                val t = millis / 1000
+                if (t == 0L) {
+                    return "Time played: ??:??"
+                }
+                // val seconds = (t % 60).toString().padStart(2, '0')
+                val minutes = ((t / 60) % 60).toString().padStart(2, '0')
+                val hours = (t / 3600).toString().padStart(2, '0')
+                return "Time played: $hours:$minutes"
+            }
+
+            Box(Modifier.fillMaxSize().padding(top = 48.dp, end = 12.dp), contentAlignment = Alignment.TopEnd) {
+                Text(
+                    text = longToTime(playedTime),
+                    textAlign = TextAlign.Center,
+                    color = Color.White,
+                    fontFamily = FontFamily(Font(R.font.classic)),
+                    modifier = Modifier,
+                    fontSize = 12.sp,
+                )
             }
         }
 

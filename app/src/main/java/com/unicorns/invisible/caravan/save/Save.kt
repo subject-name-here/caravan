@@ -21,15 +21,18 @@ import com.unicorns.invisible.caravan.utils.playDailyCompleted
 import kotlinx.serialization.EncodeDefault
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 import kotlin.random.Random
 
 
+// PlayerId == null => save is not loaded
+// PlayerId == ""   => playerId is unknown
 @OptIn(ExperimentalSerializationApi::class)
 @Serializable
-class Save(val playerId: String? = null) {
+class Save(var playerId: String? = null) {
     @EncodeDefault
     var selectedDeck: Pair<CardBack, Boolean> = CardBack.STANDARD to false
 
@@ -200,4 +203,7 @@ class Save(val playerId: String? = null) {
         EnclaveTrader(),
         ChineseTrader(),
     )
+
+    @Transient
+    var lastSaveTime = Date().time
 }

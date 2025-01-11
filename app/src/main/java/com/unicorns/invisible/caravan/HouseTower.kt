@@ -350,7 +350,7 @@ fun TowerScreen(
                         8 -> 256
                         9 -> 512
                         10 -> 1024
-                        else -> 2077
+                        else -> 2048
                     }
                     @Composable
                     fun showTowerCard(enemyName: String) {

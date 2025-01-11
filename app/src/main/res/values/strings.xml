@@ -164,8 +164,8 @@
     <string name="tutorial_7">In balanced rules both players start with a full deck o\' 54. It is more - you guessed it - balanced.</string>
     <string name="tutorial_8_1">Each player has three caravans - left, central and right.\n</string>
     <string name="tutorial_9_1">The game starts like this: we take 8 cards from our decks to our hand.\n</string>
-    <string name="tutorial_9_2">Then we have to start the caravans by placing an ace or 2\-10 card on top of each of our caravans.</string>
-    <string name="tutorial_10">To place a card on top of a caravan, select it in your hand and then click the brown rectangle with yellow border.</string>
+    <string name="tutorial_9_2">Then we have to start each caravan by placing an ace or 2\-10 card on top.</string>
+    <string name="tutorial_10">To place a card on top of a caravan, select it in your hand and then click the green rectangle. If it is not green or it is missing, you cannot place card on top.</string>
     <string name="tutorial_11">Now start your caravans.</string>
     <string name="tutorial_12">Good job.</string>
     <string name="tutorial_13">You might ask: \'What if all 8 cards are, let\'s say, Jacks and Kings, and no aces or 2\-10?\'</string>
@@ -190,13 +190,11 @@
     <string name="tutorial_27_1">Numerical sequence is determined by the top two cards of the caravan.\n</string>
     <string name="tutorial_27_2">If the top rank is greater than the pre-top card rank, the new card must have a value greater than the top.\n</string>
     <string name="tutorial_27_3">If the top rank is less than the pre-top card rank, the new card must have a value less than the top.\n\n</string>
-    <string name="tutorial_27_4">In raider\'s terms: if it\'s bigger - go even bigger, if it\'s smaller - go even smaller.</string>
+    <string name="tutorial_27_4">In raider\'s terms: if it grows - go bigger, if it shrinks - go smaller.</string>
     <string name="tutorial_28">Now put all non-face cards onto caravans. Try to build a long one. Show me how you understood the rules.</string>
-    <string name="tutorial_hint">Hint!</string>
-    <string name="tutorial_29">You can discard cards, Kyle won\'t notice.</string>
     <string name="tutorial_30">Well done. Building a caravan is the most difficult part of the game.</string>
     <string name="tutorial_31">You can also disband caravans. You should do it, if its value is too big to handle with Jacks and Jokers.</string>
-    <string name="tutorial_32">To disband a caravan, tap its value. To your right the button will appear. Press it, and the caravan is gone.</string>
+    <string name="tutorial_32">To disband a caravan tap DISBAND! button above caravan, then tap button that says DISBAND CARAVAN on the right.</string>
     <string name="tutorial_33">Disband all your caravans.</string>
     <string name="tutorial_34">Now let us talk about Jacks, Queens, Kings and Jokers.</string>
     <string name="tutorial_35">You put them not on top of a caravan, but on one of the caravan\'s cards. Hell, even on the cards from my caravan.</string>
@@ -207,7 +205,7 @@
     <string name="tutorial_40">Finally, Joker. It is like Jack, but way more powerful.</string>
     <string name="tutorial_41">If you put Joker onto an ace of some suit, all other number cards from all caravans that share the same suit of the ace are removed.</string>
     <string name="tutorial_42">If you put Joker onto a 2\-10 card, all other number cards of the same rank from all caravans are removed.</string>
-    <string name="tutorial_43">The card you have put Joker onto is safe for now. However, if any other Joker is played, that card can be removed.</string>
+    <string name="tutorial_43">The card you have put Joker onto is safe for now. However, if any other Joker is played, that card is removed.</string>
     <string name="tutorial_44">Hard, I know. But it is the hardest part - remembering what face cards do.</string>
     <string name="tutorial_45">Now get rid of all cards from your hand. Use face cards on my cards.</string>
     <string name="tutorial_46">Congratulations! You have lost!</string>
@@ -290,6 +288,9 @@
     <string name="intro_tip_33">People of East Coast probably never heard of Caravan.</string>
     <string name="intro_tip_34">In 2275 NCR has held annual Caravan tournament. Craig Muffin was declared winner, for the third time in a row.</string>
     <string name="intro_tip_35">There are many ways to get bottlecaps. Tickets, however, can be received only for completing daily Challenges GRA.</string>
+    <string name="intro_tip_36">Chinese soldiers are known for sparing the enemy who is not moving.</string>
+    <string name="intro_tip_37">Cold fusion is a myth.</string>
+    <string name="intro_tip_38">One of the enemies with deck o\' 54 is cheating. But who and how?</string>
 
     <string name="intro_tip_l10">The name LUC10 means Luck is 10 out of 10. But don\'t be deceived - this opponent has skill too.</string>
     <string name="intro_tip_l11">Some say that the Benny was the teacher of LUC10…</string>

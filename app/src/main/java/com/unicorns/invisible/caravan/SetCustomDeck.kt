@@ -87,7 +87,7 @@ fun SetCustomDeck(
         Column(Modifier
             .fillMaxSize()
             .background(getBackgroundColor(activity))) {
-            // TODO: for 2.1: 4 custom decks variants (please, add renaming)
+            // TODO: for 2.1: 4 custom decks variants (add renaming?)
             key (updater) {
                 ShowCharacteristics(activity)
             }
@@ -166,15 +166,11 @@ fun SetCustomDeck(
                             }
 
                             Button(activity.getString(R.string.select_all)) {
-                                if (!isInCustomDeck(it)) {
-                                    toggleToCustomDeck(it)
-                                }
+                                if (!isInCustomDeck(it)) { toggleToCustomDeck(it) }
                             }
                             HorizontalDivider(color = getDividerColor(activity))
                             Button(activity.getString(R.string.deselect_all)) {
-                                if (isInCustomDeck(it)) {
-                                    toggleToCustomDeck(it)
-                                }
+                                if (isInCustomDeck(it)) { toggleToCustomDeck(it) }
                             }
                         }
                         Column(

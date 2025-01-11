@@ -75,7 +75,6 @@ import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
 
-// TODO: test MP!!
 fun customDeckToInts(customDeck: CustomDeck): List<ULong> {
     val result = ArrayList<ULong>()
 
@@ -104,7 +103,6 @@ fun customDeckToInts(customDeck: CustomDeck): List<ULong> {
 fun Boolean.toPythonBool(): String {
     return this.toString().replaceFirstChar { it.uppercase() }
 }
-
 
 fun isRoomNumberIncorrect(roomNumber: String): Boolean {
     return roomNumber.toIntOrNull() !in (10..22229)
@@ -235,7 +233,8 @@ fun ShowPvP(
                     "&deck5=${deckCodes[5]}" +
                     "&deck6=${deckCodes[6]}" +
                     "&deck7=${deckCodes[7]}" +
-                    "&deck8=${deckCodes[8]}"
+                    "&deck8=${deckCodes[8]}" +
+                    "&deck9=${deckCodes[9]}"
         ) { result ->
             val response = result.toString()
             if (response.contains("exists")) {
@@ -270,7 +269,8 @@ fun ShowPvP(
                     "&deck5=${deckCodes[5]}" +
                     "&deck6=${deckCodes[6]}" +
                     "&deck7=${deckCodes[7]}" +
-                    "&deck8=${deckCodes[8]}"
+                    "&deck8=${deckCodes[8]}" +
+                    "&deck9=${deckCodes[9]}"
         ) { result ->
             val response = try {
                 json.decodeFromString<List<ULong>>(result.getString("body"))

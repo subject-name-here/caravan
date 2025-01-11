@@ -9,7 +9,6 @@ import com.unicorns.invisible.caravan.model.primitives.Card
 import com.unicorns.invisible.caravan.model.primitives.Rank
 import com.unicorns.invisible.caravan.model.primitives.Suit
 import com.unicorns.invisible.caravan.save
-import com.unicorns.invisible.caravan.snapshotsClient
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
@@ -19,6 +18,7 @@ import kotlinx.serialization.json.Json
 import org.json.JSONObject
 import java.io.File
 import java.nio.charset.StandardCharsets
+import java.util.Date
 
 
 val json = Json {
@@ -35,9 +35,10 @@ fun saveData(activity: MainActivity) {
     if (isSaveLoaded.value != true) {
         return
     }
-    val localSave = getLocalSaveFile(activity)
+
     val text = json.encodeToString(save)
     try {
+        val localSave = getLocalSaveFile(activity)
         localSave.bufferedWriter().use {
             it.write(text)
         }
@@ -55,9 +56,6 @@ fun saveData(activity: MainActivity) {
 }
 
 private fun saveOnGD(activity: MainActivity, text: String) {
-    if (snapshotsClient == null)
-        return
-
     val bytes = text.toByteArray(StandardCharsets.UTF_8)
     CoroutineScope(Dispatchers.IO).launch { activity.uploadDataToDrive(bytes) }
 }
