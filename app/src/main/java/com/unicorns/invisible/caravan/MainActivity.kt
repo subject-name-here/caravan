@@ -67,6 +67,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.MutableLiveData
 import com.sebaslogen.resaca.rememberScoped
+import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.challenge.Challenge
 import com.unicorns.invisible.caravan.model.primitives.CResources
@@ -175,7 +176,7 @@ class MainActivity : SaveDataActivity() {
             try {
                 val myBuilder = CronetEngine.Builder(this)
                 cronetEngine = myBuilder.build()
-            } catch (_: Exception) {
+            } catch (_: Throwable) {
                 Toast.makeText(
                     this,
                     "Failed to init CronetEngine. Multiplayer is unavailable.",
@@ -352,8 +353,8 @@ class MainActivity : SaveDataActivity() {
                                     horizontalAlignment = Alignment.CenterHorizontally,
                                     verticalArrangement = Arrangement.Center
                                 ) {
-                                    CaravanTitle(0.25f)
-                                    Picture(0.70f)
+                                    CaravanTitle(0.29f)
+                                    Picture(0.66f)
                                     PicAuthorLink(0.05f)
                                 }
                             } else {
@@ -809,6 +810,23 @@ class MainActivity : SaveDataActivity() {
                                 save.updateChallenges()
                                 save.updateDailyStats()
                                 save.capsInHand += capsFound
+                                saveData(this@MainActivity)
+                            }
+                        }
+
+                        // TODO: remove for release
+                        LaunchedEffect(Unit) {
+                            if (!save.betaReward) {
+                                showAlertDialog(
+                                    "Hello, my dearest beta tester.",
+                                    "As far as I am aware, 2.0.KQ erased all the progress you've made in beta.\n" +
+                                            "To make up for this, I wanna give you reward: 2025 caps and access to shops of Lucky 38 and Ultra-Luxe.\n" +
+                                            "Also have this code: 200300. Use it in settings.",
+                                    null
+                                )
+
+                                save.capsInHand += 2025
+                                save.betaReward = true
                                 saveData(this@MainActivity)
                             }
                         }

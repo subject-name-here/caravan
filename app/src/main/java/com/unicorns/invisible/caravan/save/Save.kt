@@ -135,6 +135,8 @@ class Save(val playerId: String? = null) {
     @EncodeDefault
     var prize4Activated = false
     @EncodeDefault
+    var betaReward = false
+    @EncodeDefault
     var papaSmurfActive = false
     @EncodeDefault
     var sixtyNineActive = false

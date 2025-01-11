@@ -44,7 +44,6 @@ import com.unicorns.invisible.caravan.utils.scrollbar
 fun ShowRules(activity: MainActivity, goBack: () -> Unit) {
     var selectedTab by rememberSaveable { mutableIntStateOf(0) }
     val rules = stringResource(R.string.rules)
-    // TODO: test Russian version!!
     MenuItemOpen(activity, stringResource(R.string.menu_rules), "<-", goBack) {
         val state = rememberLazyListState()
         LazyColumn(

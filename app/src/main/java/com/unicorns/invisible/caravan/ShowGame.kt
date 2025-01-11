@@ -223,7 +223,7 @@ fun ShowGame(
                     onCaravanCardInserted()
                 }
             } else {
-                if (!isEnemy) {
+                if (!isEnemy && !(game.isInitStage() && !caravan.isEmpty())) {
                     if (caravan.canPutCardOnTop(card)) {
                         playCardFlipSound(activity)
                         activity.processChallengesMove(Challenge.Move(

@@ -87,6 +87,7 @@ import com.unicorns.invisible.caravan.utils.getTextBackgroundColor
 import com.unicorns.invisible.caravan.utils.getTextColor
 import com.unicorns.invisible.caravan.utils.getTextStrokeColor
 import com.unicorns.invisible.caravan.utils.getTrackColor
+import com.unicorns.invisible.caravan.utils.nextSong
 import com.unicorns.invisible.caravan.utils.playJokerSounds
 import com.unicorns.invisible.caravan.utils.playLoseSound
 import com.unicorns.invisible.caravan.utils.playNukeBlownSound
@@ -123,11 +124,7 @@ fun ShowSelectPvE(
             enemy = EnemyGlitch(),
             showAlertDialog = showAlertDialog
         ) {
-            saveData(activity)
-            if (save.glitchDefeated) {
-                activity.achievementsClient?.unlock(activity.getString(R.string.achievement_the_internet_has_you))
-            }
-            exitProcess(0)
+            restartSwitch.postValue(true)
         }
         return
     }
@@ -197,8 +194,9 @@ fun ShowSelectPvE(
                 Spacer(modifier = Modifier.height(12.dp))
                 SubMenuItem(stringResource(R.string.pve_stats)) { showStats = true }
                 Spacer(modifier = Modifier.height(12.dp))
-                SubMenuItem(stringResource(R.string.tutorial)) { showTutorial = true }
-                Spacer(modifier = Modifier.height(12.dp))
+                // TODO
+//                SubMenuItem(stringResource(R.string.tutorial)) { showTutorial = true }
+//                Spacer(modifier = Modifier.height(12.dp))
             }
         }
     }
@@ -687,6 +685,13 @@ fun StartGame(
                 activity.achievementsClient?.unlock(activity.getString(R.string.achievement_bravo_))
             } else if (enemy is EnemyTheManInTheMirror) {
                 activity.achievementsClient?.unlock(activity.getString(R.string.achievement_lookalike))
+            } else if (enemy is EnemyGlitch) {
+                save.glitchDefeated = true
+                saveData(activity)
+                activity.achievementsClient?.unlock(activity.getString(R.string.achievement_the_internet_has_you))
+                soundReduced = false
+                nextSong(activity)
+                isHorror.postValue(false)
             }
             if (isDeckCourier6) {
                 activity.achievementsClient?.unlock(activity.getString(R.string.achievement_just_load_everything_up_with_sixes_and_tens_and_kings))
@@ -738,6 +743,10 @@ fun StartGame(
             playLoseSound(activity)
             save.gamesFinished++
             saveData(activity)
+
+            if (enemy is EnemyGlitch) {
+                exitProcess(0)
+            }
 
             showAlertDialog(
                 activity.getString(R.string.result),

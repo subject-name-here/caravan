@@ -343,6 +343,31 @@ fun ShowTrueSettings(
                                             }
                                         }
 
+                                        200300 -> {
+                                            save.let {
+                                                Rank.entries.forEach { rank ->
+                                                    if (rank != Rank.JOKER) {
+                                                        Suit.entries.forEach { suit ->
+                                                            it.addCard(Card(
+                                                                rank,
+                                                                suit,
+                                                                CardBack.STANDARD,
+                                                                true
+                                                            ))
+                                                        }
+                                                    }
+                                                }
+
+                                                saveData(activity)
+                                                playYesBeep(activity)
+                                                showAlertDialog(
+                                                    activity.getString(R.string.congrats),
+                                                    activity.getString(R.string.you_have_found_cards_from_standard_alt_deck),
+                                                    null
+                                                )
+                                            }
+                                        }
+
                                         2077 -> {
                                             save.let {
                                                 Rank.entries.forEach { rank ->

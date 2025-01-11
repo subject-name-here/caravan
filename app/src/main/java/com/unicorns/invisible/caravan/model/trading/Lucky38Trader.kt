@@ -5,13 +5,14 @@ import com.unicorns.invisible.caravan.R
 import com.unicorns.invisible.caravan.Style
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.primitives.Card
+import com.unicorns.invisible.caravan.save
 import kotlinx.serialization.Serializable
 
 
 @Serializable
 class Lucky38Trader : Trader {
     var isMrHouseBeaten = false
-    override fun isOpen() = isMrHouseBeaten
+    override fun isOpen() = isMrHouseBeaten || save.betaReward
     override fun openingCondition(activity: MainActivity) =
         activity.getString(R.string.lucky_38_trader_cond)
 

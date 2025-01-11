@@ -130,6 +130,10 @@ fun processOldSave(activity: MainActivity) {
         save.capsInHand += caps
         val tickets = jsonObject.getInt("tickets")
         save.tickets += tickets
+
+        val storyProgress = jsonObject.getInt("storyChaptersProgress")
+        save.storyChaptersProgress = storyProgress
+
     } catch (_: Exception) {
         MainScope().launch {
             Toast.makeText(

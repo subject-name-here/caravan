@@ -15,8 +15,8 @@ android {
         applicationId = "com.unicorns.invisible.caravan"
         minSdk = 23
         targetSdk = 35
-        versionCode = 79
-        versionName = "2.0.KQ"
+        versionCode = 80
+        versionName = "2.0.Z"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }

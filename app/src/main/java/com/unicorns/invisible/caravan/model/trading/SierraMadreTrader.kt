@@ -12,7 +12,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 class SierraMadreTrader : Trader {
     var elijahBeaten = 0
-    override fun isOpen() = elijahBeaten >= 6 && save.storyChaptersProgress >= 1
+    override fun isOpen() = elijahBeaten >= 5 && save.storyChaptersProgress >= 1
     override fun openingCondition(activity: MainActivity) =
         activity.getString(R.string.sierra_madre_trader_cond, elijahBeaten.toString())
 

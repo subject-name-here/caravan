@@ -82,7 +82,20 @@ abstract class SaveDataActivity : AppCompatActivity() {
     }
 
     suspend fun getPlayerId(): String {
-        return PlayGames.getPlayersClient(this).currentPlayerId.await()
+        return try {
+            PlayGames.getPlayersClient(this).currentPlayerId
+                .addOnFailureListener { e ->
+                    Toast.makeText(this, e.toString(), Toast.LENGTH_LONG).show()
+                }
+                .continueWith { task ->
+                    if (task.exception != null) {
+                        return@continueWith null
+                    }
+                    task.result
+                }.await() ?: ""
+        } catch (_: Exception) {
+            ""
+        }
     }
 
     suspend fun fetchDataFromDrive(): ByteArray? {

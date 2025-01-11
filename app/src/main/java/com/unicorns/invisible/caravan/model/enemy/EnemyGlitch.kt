@@ -40,9 +40,4 @@ class EnemyGlitch : Enemy {
         }
         EnemyEasyPete.makeMove(game)
     }
-
-    override fun onVictory() {
-        isHorror.postValue(false)
-        save.glitchDefeated = true
-    }
 }

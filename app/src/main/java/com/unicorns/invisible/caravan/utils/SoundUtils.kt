@@ -289,9 +289,9 @@ fun stopRadio() {
     radioLock.withLock {
         radioPlayers.forEach {
             it.stop()
-            radioPlayers.remove(it)
             it.release()
         }
+        radioPlayers.clear()
     }
 }
 

@@ -11,7 +11,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 class GomorrahTrader : Trader {
     var isVulpesDefeated = 0
-    override fun isOpen() = isVulpesDefeated >= 8
+    override fun isOpen() = isVulpesDefeated >= 6
     override fun openingCondition(activity: MainActivity) =
         activity.getString(R.string.gomorrah_trader_condition, isVulpesDefeated.toString())
 
