@@ -223,125 +223,43 @@ fun ShowRules(activity: MainActivity, goBack: () -> Unit) {
                             )
                         }
                         2 -> {
-                            TextFallout(
-                                stringResource(R.string.faq_q1),
-                                getTextColor(activity),
-                                getTextStrokeColor(activity),
-                                18.sp,
-                                Alignment.Center,
-                                Modifier.padding(horizontal = 8.dp),
-                                TextAlign.Center
-                            )
+                            @Composable
+                            fun showQA(line: String) {
+                                TextFallout(
+                                    line,
+                                    getTextColor(activity),
+                                    getTextStrokeColor(activity),
+                                    18.sp,
+                                    Alignment.Center,
+                                    Modifier.padding(horizontal = 8.dp),
+                                    TextAlign.Center
+                                )
+                            }
+                            Spacer(Modifier.height(20.dp))
+                            showQA(stringResource(R.string.faq_q1))
                             Spacer(Modifier.height(8.dp))
-                            TextFallout(
-                                stringResource(R.string.faq_a1),
-                                getTextColor(activity),
-                                getTextStrokeColor(activity),
-                                18.sp,
-                                Alignment.Center,
-                                Modifier.padding(horizontal = 8.dp),
-                                TextAlign.Center
-                            )
-                            Spacer(Modifier.height(16.dp))
-                            TextFallout(
-                                stringResource(R.string.faq_q2),
-                                getTextColor(activity),
-                                getTextStrokeColor(activity),
-                                18.sp,
-                                Alignment.Center,
-                                Modifier.padding(horizontal = 8.dp),
-                                TextAlign.Center
-                            )
+                            showQA(stringResource(R.string.faq_a1))
+                            Spacer(Modifier.height(20.dp))
+                            showQA(stringResource(R.string.faq_q2))
                             Spacer(Modifier.height(8.dp))
-                            TextFallout(
-                                stringResource(R.string.faq_a2),
-                                getTextColor(activity),
-                                getTextStrokeColor(activity),
-                                18.sp,
-                                Alignment.Center,
-                                Modifier.padding(horizontal = 8.dp),
-                                TextAlign.Center
-                            )
-                            Spacer(Modifier.height(16.dp))
-                            TextFallout(
-                                stringResource(R.string.faq_q3),
-                                getTextColor(activity),
-                                getTextStrokeColor(activity),
-                                18.sp,
-                                Alignment.Center,
-                                Modifier.padding(horizontal = 8.dp),
-                                TextAlign.Center
-                            )
+                            showQA(stringResource(R.string.faq_a2))
+                            Spacer(Modifier.height(20.dp))
+                            showQA(stringResource(R.string.faq_q3))
                             Spacer(Modifier.height(8.dp))
-                            TextFallout(
-                                stringResource(R.string.faq_a3),
-                                getTextColor(activity),
-                                getTextStrokeColor(activity),
-                                18.sp,
-                                Alignment.Center,
-                                Modifier.padding(horizontal = 8.dp),
-                                TextAlign.Center
-                            )
-                            Spacer(Modifier.height(16.dp))
-                            TextFallout(
-                                stringResource(R.string.faq_q4),
-                                getTextColor(activity),
-                                getTextStrokeColor(activity),
-                                18.sp,
-                                Alignment.Center,
-                                Modifier.padding(horizontal = 8.dp),
-                                TextAlign.Center
-                            )
+                            showQA(stringResource(R.string.faq_a3))
+                            Spacer(Modifier.height(20.dp))
+                            showQA(stringResource(R.string.faq_q4))
                             Spacer(Modifier.height(8.dp))
-                            TextFallout(
-                                stringResource(R.string.faq_a4),
-                                getTextColor(activity),
-                                getTextStrokeColor(activity),
-                                18.sp,
-                                Alignment.Center,
-                                Modifier.padding(horizontal = 8.dp),
-                                TextAlign.Center
-                            )
-                            Spacer(Modifier.height(16.dp))
-                            TextFallout(
-                                stringResource(R.string.faq_q5),
-                                getTextColor(activity),
-                                getTextStrokeColor(activity),
-                                18.sp,
-                                Alignment.Center,
-                                Modifier.padding(horizontal = 8.dp),
-                                TextAlign.Center
-                            )
+                            showQA(stringResource(R.string.faq_a4))
+                            Spacer(Modifier.height(20.dp))
+                            showQA(stringResource(R.string.faq_q5))
                             Spacer(Modifier.height(8.dp))
-                            TextFallout(
-                                stringResource(R.string.faq_a5),
-                                getTextColor(activity),
-                                getTextStrokeColor(activity),
-                                18.sp,
-                                Alignment.Center,
-                                Modifier.padding(horizontal = 8.dp),
-                                TextAlign.Center
-                            )
-                            Spacer(Modifier.height(16.dp))
-                            TextFallout(
-                                stringResource(R.string.faq_ql),
-                                getTextColor(activity),
-                                getTextStrokeColor(activity),
-                                18.sp,
-                                Alignment.Center,
-                                Modifier.padding(horizontal = 8.dp),
-                                TextAlign.Center
-                            )
+                            showQA(stringResource(R.string.faq_a5))
+                            Spacer(Modifier.height(20.dp))
+                            showQA(stringResource(R.string.faq_ql))
                             Spacer(Modifier.height(8.dp))
-                            TextFallout(
-                                stringResource(R.string.faq_al),
-                                getTextColor(activity),
-                                getTextStrokeColor(activity),
-                                18.sp,
-                                Alignment.Center,
-                                Modifier.padding(horizontal = 8.dp),
-                                TextAlign.Center
-                            )
+                            showQA(stringResource(R.string.faq_al))
+                            Spacer(Modifier.height(20.dp))
                         }
                     }
                 }
