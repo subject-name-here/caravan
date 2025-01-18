@@ -14,18 +14,18 @@ class ChallengePlayCard(val rank: Rank) : Challenge {
 
     @Transient
     private val target = when (rank) {
-        Rank.ACE -> 11
-        Rank.TWO -> 12
-        Rank.THREE -> 13
-        Rank.FOUR -> 14
-        Rank.FIVE -> 15
-        Rank.SIX -> 16
-        Rank.SEVEN -> 17
-        Rank.EIGHT -> 18
-        Rank.NINE -> 19
+        Rank.ACE -> 10
+        Rank.TWO -> 10
+        Rank.THREE -> 10
+        Rank.FOUR -> 10
+        Rank.FIVE -> 10
+        Rank.SIX -> 12
+        Rank.SEVEN -> 14
+        Rank.EIGHT -> 16
+        Rank.NINE -> 18
         Rank.TEN -> 20
         Rank.JACK -> 22
-        Rank.QUEEN -> 16
+        Rank.QUEEN -> 15
         Rank.KING -> 24
         Rank.JOKER -> 13
     }

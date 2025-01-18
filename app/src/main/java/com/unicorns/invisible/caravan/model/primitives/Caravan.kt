@@ -37,37 +37,33 @@ class Caravan {
         removeAll { it.card.suit == card.suit && !it.hasActiveJoker }
     }
 
+    private fun replaceCards(getCard: (CardWithModifier) -> Pair<Rank, Suit>) {
+        cardsMutable.forEach { it.card.caravanAnimationMark = Card.AnimationMark.MOVED_OUT }
+        val copy = cardsMutable.toList()
+        cardsMutable.clear()
+        copy.forEach {
+            val mods = it.modifiersCopy()
+            val card = getCard(it)
+            cardsMutable.add(
+                CardWithModifier(Card(card.first, card.second, CardBack.MADNESS, true)).apply {
+                    copyModifiersFrom(mods); copyWild(it)
+                }
+            )
+        }
+    }
     fun getCazadorPoison(isReversed: Boolean) {
         if (!isReversed) {
             removeAll { it.card.rank.value == 1 }
         }
 
-        cardsMutable.forEach { it.card.caravanAnimationMark = Card.AnimationMark.MOVED_OUT }
-        val copy = cardsMutable.toList()
-        cardsMutable.clear()
         val changeOrdinal: (Int) -> Int = if (isReversed) Int::inc else Int::dec
-        copy.forEach {
-            val mods = it.modifiersCopy()
+        replaceCards {
             val newOrdinal = (changeOrdinal(it.card.rank.ordinal)).coerceIn(0, 9)
-            cardsMutable.add(
-                CardWithModifier(
-                    Card(Rank.entries[newOrdinal], it.card.suit, CardBack.MADNESS, true)
-                ).apply { copyModifiersFrom(mods); copyWild(it) }
-            )
+            Rank.entries[newOrdinal] to it.card.suit
         }
     }
     fun getPetePower() {
-        cardsMutable.forEach { it.card.caravanAnimationMark = Card.AnimationMark.MOVED_OUT }
-        val copy = cardsMutable.toList()
-        cardsMutable.clear()
-        copy.forEach {
-            val mods = it.modifiersCopy()
-            cardsMutable.add(
-                CardWithModifier(
-                    Card(Rank.TEN, it.card.suit, CardBack.MADNESS, true)
-                ).apply { copyModifiersFrom(mods); copyWild(it) }
-            )
-        }
+        replaceCards { Rank.TEN to it.card.suit }
     }
     fun getUfo(seed: Int) {
         val rand = Random(seed)

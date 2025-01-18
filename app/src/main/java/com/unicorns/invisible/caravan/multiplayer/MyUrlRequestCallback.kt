@@ -49,7 +49,7 @@ abstract class MyUrlRequestCallback(
 
         var responseBodyString = String(bytes)
 
-        //Properly format the response String
+        // Properly format the response String
         responseBodyString = responseBodyString.trim { it <= ' ' }
             .replace("(\r\n|\n\r|\r|\n|\r0|\n0)".toRegex(), "")
         if (responseBodyString.endsWith("0") && responseBodyString[0] !in ('0'..'9')) {

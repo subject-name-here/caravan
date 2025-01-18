@@ -18,7 +18,7 @@ class EnclaveTrader : Trader {
 
     override fun getName(): Int = R.string.enclave_trader_name
 
-    override fun getCards(): List<Pair<Card, Int>> = getCards(CardBack.ENCLAVE, 10)
+    override fun getCards(): List<Pair<Card, Int>> = getCards(CardBack.ENCLAVE)
 
     override fun getStyles(): List<Style> = listOf(Style.ENCLAVE)
 }

@@ -17,7 +17,7 @@ class TopsTrader : Trader {
 
     override fun getName(): Int = R.string.tops_trader_name
 
-    override fun getCards(): List<Pair<Card, Int>> = getCards(CardBack.TOPS, 10)
+    override fun getCards(): List<Pair<Card, Int>> = getCards(CardBack.TOPS)
 
     override fun getStyles(): List<Style> = listOf(Style.NEW_WORLD)
 }

@@ -15,7 +15,6 @@ import kotlin.math.abs
 import kotlin.random.Random
 
 
-@Serializable
 data object EnemySnuffles : Enemy {
     override fun getBankNumber() = 12
     override fun createDeck(): CResources = CResources(CustomDeck().apply {

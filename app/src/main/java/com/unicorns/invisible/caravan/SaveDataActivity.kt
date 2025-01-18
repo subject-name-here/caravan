@@ -128,6 +128,7 @@ abstract class SaveDataActivity : AppCompatActivity() {
             }.await()
     }
 
+    var lastPlayedTimeCache = 0L
     suspend fun getPlayedTime(): Long? {
         val snapshot = getSnapshot(SAVE_FILE_NAME)
         return try {
@@ -137,7 +138,7 @@ abstract class SaveDataActivity : AppCompatActivity() {
                 0L
             } else {
                 lastPlayedTime + (Date().time - lastSaveTime)
-            }
+            }.also { lastPlayedTimeCache = it }
         } catch (_: Exception) {
             null
         }

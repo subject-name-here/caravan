@@ -18,7 +18,9 @@ sealed interface Trader {
     fun getCards(): List<Pair<Card, Int>>
     fun getStyles(): List<Style>
 
-    fun getCards(back: CardBack, nBig: Int): List<Pair<Card, Int>> {
+    fun getCards(back: CardBack): List<Pair<Card, Int>> {
+        val nBig = 10
+
         fun takeCardsFromDeck(deck: List<Card>, n: Int): List<Card> {
             return (deck.take(n) + deck.takeLast(n)).distinct().take(n)
         }

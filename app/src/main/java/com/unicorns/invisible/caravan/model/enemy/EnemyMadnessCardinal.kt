@@ -34,7 +34,7 @@ data object EnemyMadnessCardinal : Enemy {
         add(Card(Rank.KING, Suit.SPADES, CardBack.MADNESS, true))
         add(Card(Rank.JACK, Suit.HEARTS, CardBack.MADNESS, true))
         add(Card(Rank.JACK, Suit.CLUBS, CardBack.MADNESS, true))
-        add(Card(Rank.QUEEN, Suit.HEARTS, CardBack.MADNESS, true))
+        add(Card(Rank.QUEEN, Suit.SPADES, CardBack.MADNESS, true))
     })
 
     override fun makeMove(game: Game) {

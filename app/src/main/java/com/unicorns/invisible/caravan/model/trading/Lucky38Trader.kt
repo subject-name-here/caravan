@@ -18,7 +18,7 @@ class Lucky38Trader : Trader {
 
     override fun getName(): Int = R.string.lucky_38_trader_name
 
-    override fun getCards(): List<Pair<Card, Int>> = getCards(CardBack.LUCKY_38, 12)
+    override fun getCards(): List<Pair<Card, Int>> = getCards(CardBack.LUCKY_38)
 
     override fun getStyles(): List<Style> = listOf(Style.DESERT, Style.ALASKA_FRONTIER)
 }

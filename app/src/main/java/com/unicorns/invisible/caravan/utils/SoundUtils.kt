@@ -19,6 +19,7 @@ private val effectPlayersLock = ReentrantLock()
 fun stopSoundEffects() {
     effectPlayersLock.withLock {
         effectPlayers.forEach { if (it.isPlaying) it.stop() }
+        effectPlayers.clear()
     }
 }
 
@@ -161,14 +162,8 @@ fun startAmbient(activity: MainActivity) {
     MediaPlayer
         .create(
             activity, listOf(
-                R.raw.ambient1,
-                R.raw.ambient2,
-                R.raw.ambient3,
-                R.raw.ambient4,
-                R.raw.ambient5,
-                R.raw.ambient6,
-                R.raw.ambient7,
-                R.raw.ambient8
+                R.raw.ambient1, R.raw.ambient2, R.raw.ambient3, R.raw.ambient4,
+                R.raw.ambient5, R.raw.ambient6, R.raw.ambient7, R.raw.ambient8
             ).random()
         ).apply {
             setVolume(vol, vol)

@@ -18,7 +18,7 @@ class SierraMadreTrader : Trader {
 
     override fun getName(): Int = R.string.sierra_madre_trader_name
 
-    override fun getCards(): List<Pair<Card, Int>> = getCards(CardBack.SIERRA_MADRE, 12)
+    override fun getCards(): List<Pair<Card, Int>> = getCards(CardBack.SIERRA_MADRE)
 
     override fun getStyles(): List<Style> = listOf(Style.SIERRA_MADRE, Style.MADRE_ROJA)
 }

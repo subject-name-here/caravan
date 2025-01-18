@@ -20,7 +20,7 @@ class ChineseTrader : Trader {
 
     override fun getName(): Int = R.string.chinese_trader_name
 
-    override fun getCards(): List<Pair<Card, Int>> = getCards(CardBack.CHINESE, 10)
+    override fun getCards(): List<Pair<Card, Int>> = getCards(CardBack.CHINESE)
 
     override fun getStyles(): List<Style> = emptyList()
 }

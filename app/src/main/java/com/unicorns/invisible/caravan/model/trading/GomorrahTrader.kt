@@ -17,7 +17,7 @@ class GomorrahTrader : Trader {
 
     override fun getName(): Int = R.string.gomorrah_trader_name
 
-    override fun getCards(): List<Pair<Card, Int>> = getCards(CardBack.GOMORRAH, 13)
+    override fun getCards(): List<Pair<Card, Int>> = getCards(CardBack.GOMORRAH)
 
     override fun getStyles(): List<Style> = listOf(Style.PIP_GIRL)
 }

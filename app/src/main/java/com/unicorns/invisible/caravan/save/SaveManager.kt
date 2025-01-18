@@ -67,6 +67,13 @@ suspend fun loadGDSave(activity: MainActivity): Save? {
         if (data != null && data != "" && data != "null") {
             json.decodeFromString<Save>(data)
         } else {
+            MainScope().launch {
+                Toast.makeText(
+                    activity,
+                    "Failed to load from GD :(",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
             null
         }
     } catch (_: Exception) {
@@ -82,6 +89,13 @@ fun loadLocalSave(activity: MainActivity): Save? {
             json.decodeFromString<Save>(text)
         }
     } catch (_: Exception) {
+        MainScope().launch {
+            Toast.makeText(
+                activity,
+                "Failed to load local save :(",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
         null
     }
 }
@@ -121,8 +135,7 @@ fun processOldSave(activity: MainActivity) {
             val style = ownedStyles.getString(it)
             try {
                 save.ownedStyles.add(Style.valueOf(style))
-            } catch (_: Exception) {
-            }
+            } catch (_: Exception) {}
         }
         val caps = jsonObject.getInt("caps")
         save.capsInHand += caps
@@ -131,7 +144,8 @@ fun processOldSave(activity: MainActivity) {
 
         val storyProgress = jsonObject.getInt("storyChaptersProgress")
         save.storyChaptersProgress = storyProgress
-
+        val altStoryProgress = jsonObject.getInt("altStoryChaptersProgress")
+        save.altStoryChaptersProgress = altStoryProgress
     } catch (_: Exception) {
         MainScope().launch {
             Toast.makeText(

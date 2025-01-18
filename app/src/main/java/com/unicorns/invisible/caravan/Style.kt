@@ -1169,19 +1169,18 @@ fun BoxWithConstraintsScope.StylePicture(
             LaunchedEffect(Unit) {
                 playedTime = activity.getPlayedTime() ?: return@LaunchedEffect
                 while (isActive) {
-                    delay(2000L)
-                    playedTime += 2000L
+                    delay(2500L)
+                    playedTime += 2500L
                 }
             }
             fun longToTime(millis: Long): String {
-                val t = millis / 1000
+                var t = millis / 1000
                 if (t == 0L) {
-                    return "Time played: ??:??"
+                    t = activity.lastPlayedTimeCache / 1000
                 }
-                // val seconds = (t % 60).toString().padStart(2, '0')
                 val minutes = ((t / 60) % 60).toString().padStart(2, '0')
-                val hours = (t / 3600).toString().padStart(2, '0')
-                return "Time played: $hours:$minutes"
+                val hours = (t / 3600).toString()
+                return "Time played: $hours hours $minutes minutes"
             }
 
             Box(Modifier.fillMaxSize().padding(top = 48.dp, end = 12.dp), contentAlignment = Alignment.TopEnd) {

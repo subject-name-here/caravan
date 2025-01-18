@@ -22,6 +22,7 @@ data object EnemyTheManInTheMirror : Enemy {
             caravan.value.putCardOnTop(game.enemyCResources.removeFromHand(cardInHandIndex))
             return
         }
+        // TODO: maybe make his own tactics?? or move to the same caravan?
         EnemyFrank.makeMove(game)
     }
 }

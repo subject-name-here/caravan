@@ -75,7 +75,7 @@ fun Dp.dpToPx() = with(LocalDensity.current) { this@dpToPx.toPx() }
 
 
 @Composable
-fun ShowCard(activity: MainActivity, card: Card, modifier: Modifier, toModify: Boolean = true) {
+fun ShowCard(activity: MainActivity, card: Card, modifier: Modifier) {
     val painter = rememberAsyncImagePainter(
         ImageRequest.Builder(activity)
             .size(183, 256)
@@ -86,19 +86,18 @@ fun ShowCard(activity: MainActivity, card: Card, modifier: Modifier, toModify: B
     Image(
         painter = painter,
         contentDescription = "",
-        modifier = if (toModify) modifier.clip(RoundedCornerShape(5)) else modifier,
+        modifier = modifier.clip(RoundedCornerShape(5)),
         colorFilter = card.back.getFilter(card.isAlt)
     )
 }
 
 @Composable
 fun ShowCardBack(activity: MainActivity, card: Card, modifier: Modifier) {
+    val asset = if (card.isAlt) card.back.getCardBackAltAsset() else card.back.getCardBackAsset()
     val painter2 = rememberAsyncImagePainter(
         ImageRequest.Builder(activity)
             .size(183, 256)
-            .data("file:///android_asset/caravan_cards_back/${
-                if (card.isAlt) card.back.getCardBackAltAsset() else card.back.getCardBackAsset()
-            }")
+            .data("file:///android_asset/caravan_cards_back/$asset")
             .decoderFactory(SvgDecoder.Factory())
             .build()
     )
@@ -109,6 +108,7 @@ fun ShowCardBack(activity: MainActivity, card: Card, modifier: Modifier) {
         contentScale = ContentScale.Fit
     )
 }
+
 
 @Composable
 fun Modifier.scrollbar(

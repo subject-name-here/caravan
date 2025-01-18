@@ -28,6 +28,13 @@ data object EnemyLuc10 : Enemy {
         val hand = game.enemyCResources.hand.withIndex()
 
         val playerReadyCaravans = playerScores.filter { it.value in (21..26) }.shuffled()
+        if (playerReadyCaravans.isNotEmpty()) {
+            if (StrategyJoker.move(game)) {
+                game.jokerPlayedSound()
+                return
+            }
+        }
+
         val kings = hand.filter { it.value.rank == Rank.KING }
         val jacks = hand.filter { it.value.rank == Rank.JACK }
         playerReadyCaravans.forEach { (caravanIndex, caravanValue) ->
@@ -63,26 +70,12 @@ data object EnemyLuc10 : Enemy {
                 }
             }
         }
-        if (playerReadyCaravans.isNotEmpty()) {
-            if (StrategyJoker.move(game)) {
-                game.jokerPlayedSound()
-                return
-            }
-        }
 
         EnemyBenny.makeMove(game)
 
         // The deck is L-U-C-K-Y!
 
         if (playerReadyCaravans.isNotEmpty()) {
-            if ((0..3).random() == 0) {
-                if (
-                    game.enemyCResources.moveOnTop(Rank.JOKER, Suit.HEARTS) ||
-                    game.enemyCResources.moveOnTop(Rank.JOKER, Suit.CLUBS)
-                ) {
-                    return
-                }
-            }
             Suit.entries.forEach { suit ->
                 val ranks = if (Random.nextBoolean()) {
                     listOf(Rank.JACK, Rank.KING)
@@ -95,9 +88,17 @@ data object EnemyLuc10 : Enemy {
                     }
                 }
             }
+            if (Random.nextBoolean()) {
+                if (
+                    game.enemyCResources.moveOnTop(Rank.JOKER, Suit.HEARTS) ||
+                    game.enemyCResources.moveOnTop(Rank.JOKER, Suit.CLUBS)
+                ) {
+                    return
+                }
+            }
         }
 
-        game.enemyCaravans.shuffled().forEach { caravan ->
+        game.enemyCaravans.sortedByDescending { it.getValue() }.forEach { caravan ->
             Suit.entries.shuffled().forEach { suit ->
                 Rank.entries.reversed().filter { !it.isFace() }.forEach { rank ->
                     if (caravan.canPutCardOnTop(Card(rank, suit, CardBack.STANDARD, false))) {

@@ -768,9 +768,7 @@ fun Hand(
                             width = if (index == (selectedCard ?: -1)) 3.dp else (-1).dp,
                             color = selectedCardColor
                         )
-                        .padding(4.dp)
-                        .clip(RoundedCornerShape(12f)),
-                    toModify = false
+                        .padding(4.dp),
                 )
             }
         }
