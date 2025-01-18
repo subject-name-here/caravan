@@ -114,9 +114,6 @@ abstract class SaveDataActivity : AppCompatActivity() {
         if (snapshotsClient == null) return null
         val conflictResolutionPolicy = SnapshotsClient.RESOLUTION_POLICY_LONGEST_PLAYTIME
         return snapshotsClient!!.open(fileName, true, conflictResolutionPolicy)
-            .addOnFailureListener { e ->
-                Toast.makeText(this, e.toString(), Toast.LENGTH_LONG).show()
-            }
             .continueWith { task ->
                 if (task.exception != null) {
                     return@continueWith null

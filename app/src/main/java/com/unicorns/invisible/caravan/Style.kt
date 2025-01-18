@@ -1180,7 +1180,7 @@ fun BoxWithConstraintsScope.StylePicture(
                 }
                 val minutes = ((t / 60) % 60).toString().padStart(2, '0')
                 val hours = (t / 3600).toString()
-                return "Time played: $hours hours $minutes minutes"
+                return "Time played: ${hours}h ${minutes}m"
             }
 
             Box(Modifier.fillMaxSize().padding(top = 48.dp, end = 12.dp), contentAlignment = Alignment.TopEnd) {
