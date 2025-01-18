@@ -68,7 +68,6 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.lifecycle.MutableLiveData
 import com.sebaslogen.resaca.rememberScoped
-import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.challenge.Challenge
 import com.unicorns.invisible.caravan.model.primitives.CResources

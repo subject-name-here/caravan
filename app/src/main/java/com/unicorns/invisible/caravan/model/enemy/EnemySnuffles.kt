@@ -10,7 +10,6 @@ import com.unicorns.invisible.caravan.model.primitives.Card
 import com.unicorns.invisible.caravan.model.primitives.CustomDeck
 import com.unicorns.invisible.caravan.model.primitives.Rank
 import com.unicorns.invisible.caravan.model.primitives.Suit
-import kotlinx.serialization.Serializable
 import kotlin.math.abs
 import kotlin.random.Random
 
