@@ -288,13 +288,7 @@
 
     <string name="tap_to_play">Нажмите, чтобы играть</string>
 
-    <string name="caps_earned">\nКрышычек получено: %1$s.\n</string>
-    <string name="caps">КРЫШКИ: %1$s</string>
-    <string name="transaction_succeeded">Успешно!</string>
-    <string name="you_have_bought_style">Вы купили тему %1$s!</string>
     <string name="transaction_failed">Ошибка!</string>
-    <string name="not_enough_caps">Недостаточно крышечек!</string>
-    <string name="cost_caps">" крышечек"</string>
     <string name="animation_length">Время на анимацию</string>
     <string name="themes">Темы</string>
 
@@ -303,7 +297,6 @@
     <string name="buy">КУПИТЬ</string>
 
     <string name="response_has_wrong_size">Неправильный размер отклика!</string>
-    <string name="failure_2">Ошибка!</string>
     <string name="no_room_to_join">Нет номера, в который можно вступить! Создайте свой собственный!</string>
     <string name="failed_to_start_the_game">Не смог начать игру!</string>
     <string name="pip_boy_main_screen">Прибор #50724: измерь свою удачу!</string>

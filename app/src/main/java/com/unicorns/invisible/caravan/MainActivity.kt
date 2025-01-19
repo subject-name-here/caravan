@@ -811,7 +811,7 @@ class MainActivity : SaveDataActivity() {
                         LaunchedEffect(Unit) {
                             val currentHash = save.getCurrentDateHashCode()
                             if (currentHash != save.challengesHash) {
-                                val capsFound = Random.nextInt(15, 25)
+                                val capsFound = Random.nextInt(15, 30)
                                 showAlertDialog(
                                     getString(R.string.daily_update_head),
                                     getString(R.string.daily_update_body, capsFound.toString()),

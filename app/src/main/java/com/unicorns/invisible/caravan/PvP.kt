@@ -128,7 +128,7 @@ fun ShowPvP(
     var enemyDeck by rememberScoped { mutableStateOf(CustomDeck()) }
 
     fun showFailure(s: String) {
-        showAlertDialog(activity.getString(R.string.failure_2), s, null)
+        showAlertDialog(activity.getString(R.string.failure), s, null)
         isRoomCreated = 2
         CoroutineScope(Dispatchers.Unconfined).launch {
             delay(3800L)

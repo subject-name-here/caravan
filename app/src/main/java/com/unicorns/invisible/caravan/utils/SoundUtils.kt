@@ -70,7 +70,7 @@ private fun playEffectPlayerSound(activity: MainActivity, soundId: Int, volumeFr
 }
 
 fun playCardFlipSound(activity: MainActivity) =
-    playEffectPlayerSound(activity, getRandomCardFlipSound())
+    playEffectPlayerSound(activity, getRandomCardFlipSound(), 2)
 
 fun getRandomCardFlipSound(): Int {
     return listOf(

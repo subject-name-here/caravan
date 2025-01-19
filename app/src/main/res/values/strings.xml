@@ -102,11 +102,12 @@
 
     <string name="snuffles">Snuffles</string>
     <string name="easy_pete">Easy Pete</string>
-    <string name="enemy_significant_other" translatable="false">EXPERIMENT #666: Significant Other</string>
     <string name="madness_cardinal">Madness Cardinal</string>
     <string name="luc10" translatable="false">LUC10</string>
     <string name="dr_mobius">Dr. Mobius</string>
     <string name="man_in_the_mirror" translatable="false">ЯОЯЯIM ЭHT ИI ИAM</string>
+
+    <string name="enemy_significant_other" translatable="false">EXPERIMENT #666: Significant Other</string>
 
     <string name="pve_games_started">Games started: %1$s</string>
     <string name="pve_games_finished">Games finished: %1$s</string>
@@ -242,7 +243,6 @@
     </string>
     <string name="room_exists_already">Room exists already!!!</string>
     <string name="response_has_wrong_size">Response has wrong size!</string>
-    <string name="failure_2">Failure!</string>
     <string name="no_room_to_join">No room to join! Create your own room!</string>
     <string name="failed_to_start_the_game">Failed to start the game!</string>
 
@@ -295,24 +295,15 @@
     <string name="intro_tip_l10">The name LUC10 means Luck is 10 out of 10. But don\'t be deceived - this opponent has skill too.</string>
     <string name="intro_tip_l11">Some say that the Benny was the teacher of LUC10…</string>
 
-
     <string name="tap_to_play">Tap to Play</string>
 
-
-    <string name="caps_earned">\nCaps earned: %1$s.\n</string>
-    <string name="caps">CAPS: %1$s</string>
-    <string name="transaction_succeeded">Transaction succeeded!</string>
-    <string name="you_have_bought_style">You have bought %1$s style!</string>
     <string name="transaction_failed">Transaction failed!</string>
-    <string name="not_enough_caps">Not enough caps!</string>
-    <string name="cost_caps">" caps"</string>
 
     <string name="animation_length">Animation Length</string>
     <string name="themes">Styles</string>
 
     <string name="select">SELECT</string>
     <string name="buy">BUY</string>
-
 
     <string name="style_desert">Desert</string>
     <string name="style_pip_boy">Pip-Boy</string>
