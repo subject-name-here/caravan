@@ -33,21 +33,22 @@
     <string name="madness_deck_name">Madness deck</string>
     <string name="chinese_deck_name">Chinese deck</string>
     <string name="enclave_deck_name">Enclave deck</string>
+    <string name="viking_deck_name">Viking deck</string>
 
     <string name="ultra_luxe_trader_name">Martin Luther</string>
     <string name="ultra_luxe_trader_condition">Ultra-Luxe card market is open only on Mondays and Thursdays. We apologize for any inconvenience.</string>
     <string name="tops_trader_name">Max</string>
-    <string name="tops_trader_condition">Defeat Benny 4 times. (%1$s/4)</string>
+    <string name="tops_trader_condition">Defeat Benny, LUC10 and Victor. (%1$s, %2$s, %3$s)</string>
     <string name="gomorrah_trader_name">Ben Broadson</string>
-    <string name="gomorrah_trader_condition">Defeat Vulpes Inculta 6 times. (%1$s/6)</string>
+    <string name="gomorrah_trader_condition">Defeat Vulpes Inculta, Oliver Swanick and Madness Cardinal. (%1$s, %2$s, %3$s)</string>
     <string name="vault_21_trader_name">Melanie Martinez</string>
     <string name="vault_21_trader_condition">Win 21 games or visit every 21st day of month.</string>
     <string name="lucky_38_trader_name">Marylin &amp; Jane</string>
     <string name="lucky_38_trader_cond">Beat Mr. House in Tower.</string>
     <string name="sierra_madre_trader_name">Sierra Madre BottleCaps Exchange Machine</string>
-    <string name="sierra_madre_trader_cond">Beat Father Elijah 5 times (%1$s/5) and complete Chapter 1 of the Story mode.</string>
+    <string name="sierra_madre_trader_cond">Defeat Elijah, Ulysses and Dr. Mobius. (%1$s, %2$s, %3$s)</string>
     <string name="chinese_trader_name">Warlord Li Xuan</string>
-    <string name="chinese_trader_condition">First of all, finish chapters 9 and 9A of the Story mode. By the way, what year CCP was established?</string>
+    <string name="chinese_trader_condition">Finish chapter 9 of the Story mode and answer the question: what year CCP was established?</string>
     <string name="enclave_trader_name">Savanth</string>
     <string name="enclave_trader_cond">Complete the Tower.</string>
 
@@ -385,8 +386,8 @@
     <string name="only_red_descr">Win a game playing only Hearts, Diamonds and Jokers. (Init stage is not counted.)</string>
     <string name="father_pucci_descr">Win a game playing only aces, face cards and prime number cards (2, 3, 5, 7). (Init stage is not counted.)</string>
 
-    <string name="claim_caps">Claim 15 Caps</string>
-    <string name="claim_tickets">Claim 1 Ticket</string>
+    <string name="claim_caps">Claim 30 Caps</string>
+    <string name="claim_tickets">Claim 2 Tickets</string>
 
     <string name="tower_presents">VAULT-TEC\nproudly presents</string>
     <string name="tower">TOWER!</string>
@@ -410,7 +411,7 @@
     <string name="tower_enemy_3">Papa Khan</string>
     <string name="tower_enemy_3A">Papa Smurf</string>
     <string name="tower_enemy_4">Jason Bright</string>
-    <string name="tower_enemy_5">King</string>
+    <string name="tower_enemy_5">The King</string>
     <string name="tower_enemy_6">Dean Domino</string>
     <string name="tower_enemy_7">Mr. House</string>
     <string name="tower_enemy_8">Cook-Cook</string>
@@ -932,6 +933,7 @@ If this helped you understand the game, thank the author Kyle! To do this, go to
     <string name="prize4_body">You have found a secret stash! +5000 caps!</string>
     <string name="prize1_body">You have found a secret stash! +1969 caps!</string>
     <string name="prize2_body">You have found a secret stash! +2024 caps!</string>
+    <string name="prize3_body">You have found a secret stash! +1234 caps!</string>
     <string name="story_progress_is_deleted">Story progress is deleted.</string>
     <string name="you_have_found_cards_from_standard_alt_deck">You have found cards from Standard ALT deck!</string>
     <string name="you_have_found_cards_from_enclave_deck">You have found cards from Enclave deck!</string>
@@ -957,5 +959,6 @@ If this helped you understand the game, thank the author Kyle! To do this, go to
         The exceptions are Standard deck ALT (cards are dropped in multiplayer) and Madness deck (cards are dropped for defeating Madness Cardinal).</string>
     <string name="faq_ql">Q: I have a question, but cannot find the answer here or in the rules!!!</string>
     <string name="faq_al">A: Well, you can send the question in Discord (link in the main menu in the top right corner) or to me directly by email (link in About section).</string>
+    <string name="sorry_no_new_cards">Sorry, no new cards!!</string>
 
 </resources>

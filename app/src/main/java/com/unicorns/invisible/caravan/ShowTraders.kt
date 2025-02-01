@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.sp
 import com.unicorns.invisible.caravan.model.primitives.Card
 import com.unicorns.invisible.caravan.model.primitives.Rank
 import com.unicorns.invisible.caravan.model.trading.Lucky38Trader
+import com.unicorns.invisible.caravan.model.trading.Trader
 import com.unicorns.invisible.caravan.save.saveData
 import com.unicorns.invisible.caravan.utils.MenuItemOpen
 import com.unicorns.invisible.caravan.utils.TextFallout
@@ -73,28 +74,20 @@ fun ShowTraders(activity: MainActivity, goBack: () -> Unit) {
                 var selectedTab by rememberSaveable { mutableIntStateOf(0) }
                 var update by remember { mutableStateOf(false) }
                 key(update) {
-                    Column(Modifier.padding(horizontal = 4.dp), verticalArrangement = Arrangement.Top, horizontalAlignment = Alignment.CenterHorizontally) {
-                        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
-                            TextFallout(
-                                stringResource(R.string.your_barter_stat, save.barterStat),
-                                getTextColor(activity),
-                                getTextStrokeColor(activity),
-                                16.sp,
-                                Alignment.Center,
-                                Modifier.padding(4.dp),
-                                TextAlign.Center
-                            )
-
-                            TextFallout(
-                                stringResource(R.string.your_caps_in_hand, save.capsInHand),
-                                getTextColor(activity),
-                                getTextStrokeColor(activity),
-                                16.sp,
-                                Alignment.Center,
-                                Modifier.padding(4.dp),
-                                TextAlign.Center
-                            )
-                        }
+                    Column(
+                        Modifier.padding(horizontal = 4.dp),
+                        verticalArrangement = Arrangement.Top,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        TextFallout(
+                            stringResource(R.string.your_caps_in_hand, save.capsInHand),
+                            getTextColor(activity),
+                            getTextStrokeColor(activity),
+                            16.sp,
+                            Alignment.Center,
+                            Modifier.padding(4.dp),
+                            TextAlign.Center
+                        )
 
                         TabRow(
                             selectedTab, Modifier.fillMaxWidth(),
@@ -112,23 +105,13 @@ fun ShowTraders(activity: MainActivity, goBack: () -> Unit) {
                             }
                         ) {
                             @Composable
-                            fun TraderTab(tabNumber: Int) {
+                            fun TraderTab(tabNumber: Int, trader: Trader) {
                                 Tab(selectedTab == tabNumber, { selectedTab = tabNumber; playSelectSound(activity) },
                                     selectedContentColor = getSelectionColor(activity),
                                     unselectedContentColor = getTextBackgroundColor(activity)
                                 ) {
                                     TextFallout(
-                                        when (tabNumber) {
-                                            0 -> "UL"
-                                            1 -> "T"
-                                            2 -> "G"
-                                            3 -> "38"
-                                            4 -> "21"
-                                            5 -> "SM"
-                                            6 -> "E"
-                                            7 -> "•"
-                                            else -> "?"
-                                        },
+                                        trader.getSymbol(),
                                         getTextColor(activity),
                                         getTextStrokeColor(activity),
                                         12.sp,
@@ -139,7 +122,7 @@ fun ShowTraders(activity: MainActivity, goBack: () -> Unit) {
                                 }
                             }
                             save.traders.forEachIndexed { index, t ->
-                                TraderTab(index)
+                                TraderTab(index, t)
                             }
                         }
 
@@ -148,10 +131,10 @@ fun ShowTraders(activity: MainActivity, goBack: () -> Unit) {
 
                         @Composable
                         fun CardToBuy(card: Card, price: Int) {
-                            val suit = if (card.rank != Rank.JOKER)
-                                stringResource(card.suit.nameId)
-                            else
+                            val suit = if (card.rank == Rank.JOKER)
                                 (card.suit.ordinal + 1).toString()
+                            else
+                                stringResource(card.suit.nameId)
                             Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                                 TextFallout(
                                     stringResource(card.rank.nameId) + " " + suit +
@@ -182,7 +165,6 @@ fun ShowTraders(activity: MainActivity, goBack: () -> Unit) {
                                             } else {
                                                 save.capsInHand -= price
                                                 save.addCard(card)
-                                                save.onCardBuying(activity)
                                                 playCashSound(activity)
                                                 saveData(activity)
                                                 update = !update
@@ -267,7 +249,7 @@ fun ShowTraders(activity: MainActivity, goBack: () -> Unit) {
                                 if (cards.isEmpty()) {
                                     Spacer(modifier = Modifier.height(4.dp))
                                     TextFallout(
-                                        "Sorry, no new cards!!",
+                                        stringResource(R.string.sorry_no_new_cards),
                                         getTextColor(activity),
                                         getTextStrokeColor(activity),
                                         18.sp,
@@ -275,8 +257,6 @@ fun ShowTraders(activity: MainActivity, goBack: () -> Unit) {
                                         Modifier.padding(4.dp),
                                         TextAlign.Center
                                     )
-
-                                    // TODO: investment (for 2.1 or even 2.2)
                                 } else {
                                     cards.forEach {
                                         Spacer(modifier = Modifier.height(4.dp))
@@ -291,9 +271,7 @@ fun ShowTraders(activity: MainActivity, goBack: () -> Unit) {
                                 getTextStrokeColor(activity),
                                 18.sp,
                                 Alignment.Center,
-                                Modifier
-                                    .fillMaxWidth()
-                                    .padding(4.dp),
+                                Modifier.fillMaxWidth().padding(4.dp),
                                 TextAlign.Center
                             )
                         }

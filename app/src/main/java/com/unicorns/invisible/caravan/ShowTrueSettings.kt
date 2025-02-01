@@ -49,22 +49,17 @@ import com.unicorns.invisible.caravan.utils.getTextBackgroundColor
 import com.unicorns.invisible.caravan.utils.getTextColor
 import com.unicorns.invisible.caravan.utils.getTextStrokeColor
 import com.unicorns.invisible.caravan.utils.getTrackColor
-import com.unicorns.invisible.caravan.utils.launchHorrorSequence
 import com.unicorns.invisible.caravan.utils.nextSong
 import com.unicorns.invisible.caravan.utils.pauseRadio
 import com.unicorns.invisible.caravan.utils.playClickSound
 import com.unicorns.invisible.caravan.utils.playCloseSound
-import com.unicorns.invisible.caravan.utils.playGlitchSound
 import com.unicorns.invisible.caravan.utils.playPimpBoySound
 import com.unicorns.invisible.caravan.utils.playYesBeep
 import com.unicorns.invisible.caravan.utils.resumeRadio
 import com.unicorns.invisible.caravan.utils.scrollbar
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlin.system.exitProcess
 
 
 @Composable
@@ -300,10 +295,26 @@ fun ShowTrueSettings(
                                             }
                                         }
 
+                                        1234 -> {
+                                            save.let {
+                                                if (!it.prize3Activated) {
+                                                    it.prize3Activated = true
+                                                    it.capsInHand += 1234
+                                                    saveData(activity)
+                                                    playYesBeep(activity)
+                                                    showAlertDialog(
+                                                        activity.getString(R.string.congrats),
+                                                        activity.getString(R.string.prize3_body),
+                                                        null
+                                                    )
+                                                }
+                                            }
+                                        }
+
                                         404 -> {
                                             save.let {
-                                                it.storyChaptersProgress = 0
-                                                it.altStoryChaptersProgress = 0
+                                                it.storyProgress = 0
+                                                it.altStoryProgress = 0
                                                 saveData(activity)
                                                 playYesBeep(activity)
                                                 showAlertDialog(
@@ -458,50 +469,6 @@ fun ShowTrueSettings(
 
                                         140597 -> {
                                             processOldSave(activity)
-                                            saveData(activity)
-                                            playYesBeep(activity)
-                                        }
-
-                                        131313 -> {
-                                            if (Style.BLACK !in save.ownedStyles) {
-                                                save.ownedStyles.add(Style.BLACK)
-                                                saveData(activity)
-                                                playGlitchSound(activity)
-
-                                                showAlertDialog(
-                                                    "xjjmxdjmxccjmx,m,k",
-                                                    "L_ght 404",
-                                                    null
-                                                )
-                                            }
-                                        }
-
-                                        696969 -> {
-                                            if (activity.styleId == Style.BLACK && (!save.glitchDefeated)) {
-                                                launchHorrorSequence(activity)
-                                                MainScope().launch {
-                                                    delay(1000L)
-                                                    isHorror.value = true
-                                                    restartSwitch.postValue(true)
-                                                }
-                                                CoroutineScope(Dispatchers.Unconfined).launch {
-                                                    delay(666000L)
-                                                    saveData(activity)
-                                                    exitProcess(0)
-                                                }
-                                            }
-                                        }
-
-                                        696970 -> {
-                                            if (activity.styleId == Style.BLACK) {
-                                                launchHorrorSequence(activity)
-                                                isHorror.value = true
-                                                restartSwitch.postValue(true)
-                                            }
-                                        }
-
-                                        1721 -> {
-                                            save.challengesHash = 0
                                             saveData(activity)
                                             playYesBeep(activity)
                                         }

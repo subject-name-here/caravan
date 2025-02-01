@@ -173,6 +173,6 @@ data object EnemyElijah : Enemy {
     }
 
     override fun onVictory() {
-        save.traders.filterIsInstance<SierraMadreTrader>().forEach { it.elijahBeaten++ }
+        save.traders.filterIsInstance<SierraMadreTrader>().forEach { it.elijahBeaten = true }
     }
 }

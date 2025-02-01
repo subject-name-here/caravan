@@ -108,20 +108,20 @@ fun ShowStoryList(
         when (showChapter) {
             0 -> {
                 ShowStoryChapter1(activity, showAlertDialog, {
-                    save.storyChaptersProgress = maxOf(save.storyChaptersProgress, 1)
+                    save.storyProgress = maxOf(save.storyProgress, 1)
                     saveData(activity)
                     activity.achievementsClient?.unlock(activity.getString(R.string.achievement_madre_roja))
                 }) { showChapter = null }
             }
             1 -> {
                 ShowStoryChapter2(activity, showAlertDialog, {
-                    save.storyChaptersProgress = maxOf(save.storyChaptersProgress, 2)
+                    save.storyProgress = maxOf(save.storyProgress, 2)
                     saveData(activity)
                 }) { showChapter = null }
             }
             2 -> {
                 ShowStoryChapter3(activity, showAlertDialog, {
-                    save.storyChaptersProgress = maxOf(save.storyChaptersProgress, 3)
+                    save.storyProgress = maxOf(save.storyProgress, 3)
                     saveData(activity)
                 }) { showChapter = null }
             }
@@ -131,36 +131,36 @@ fun ShowStoryList(
                     soundReduced = true
                 }
                 ShowStoryChapter4(activity, showAlertDialog, {
-                    save.storyChaptersProgress = maxOf(save.storyChaptersProgress, 4)
+                    save.storyProgress = maxOf(save.storyProgress, 4)
                     saveData(activity)
                     activity.achievementsClient?.unlock(activity.getString(R.string.achievement_what_do_we_say_to_the_god_of_death))
                 }) { showChapter = null; soundReduced = false; nextSong(activity) }
             }
             4 -> {
                 ShowStoryChapter5(activity, showAlertDialog, {
-                    save.storyChaptersProgress = maxOf(save.storyChaptersProgress, 5)
+                    save.storyProgress = maxOf(save.storyProgress, 5)
                     saveData(activity)
                 }) { showChapter = null }
             }
             5 -> {
                 ShowStoryChapter6(activity, showAlertDialog, {
-                    save.storyChaptersProgress = maxOf(save.storyChaptersProgress, 6)
+                    save.storyProgress = maxOf(save.storyProgress, 6)
                     saveData(activity)
                 }) { showChapter = null }
             }
             6 -> {
                 ShowStoryChapter7(activity, showAlertDialog, {
-                    save.storyChaptersProgress = maxOf(save.storyChaptersProgress, 7)
+                    save.storyProgress = maxOf(save.storyProgress, 7)
                     saveData(activity)
                 }) { showChapter = null }
             }
             7 -> {
                 ShowStoryChapter8(activity, showAlertDialog, {
-                    save.storyChaptersProgress = maxOf(save.storyChaptersProgress, 8)
+                    save.storyProgress = maxOf(save.storyProgress, 8)
                     saveData(activity)
                     activity.achievementsClient?.unlock(activity.getString(R.string.achievement_penultimatum))
                 }, {
-                    save.altStoryChaptersProgress = maxOf(save.altStoryChaptersProgress, 1)
+                    save.altStoryProgress = maxOf(save.altStoryProgress, 1)
                     saveData(activity)
                 }) { showChapter = null }
             }
@@ -170,7 +170,7 @@ fun ShowStoryList(
                     soundReduced = true
                 }
                 ShowStoryChapter9(activity, showAlertDialog, {
-                    save.storyChaptersProgress = maxOf(save.storyChaptersProgress, 9)
+                    save.storyProgress = maxOf(save.storyProgress, 9)
                     saveData(activity)
                     activity.achievementsClient?.unlock(activity.getString(R.string.achievement_you_can_be_hero))
                 }) { showChapter = null; soundReduced = false; nextSong(activity) }
@@ -219,7 +219,7 @@ fun ShowStoryList(
 
                 @Composable
                 fun Chapter(number: Int, isAlt: Boolean = false) {
-                    val isAvailable = number <= save.storyChaptersProgress
+                    val isAvailable = number <= save.storyProgress
                     val text = if (!isAvailable && !isAlt) {
                         "???"
                     } else when (number) {
@@ -255,7 +255,7 @@ fun ShowStoryList(
                     Spacer(modifier = Modifier.height(10.dp))
                 }
 
-                val chaptersRevealed = when (save.storyChaptersProgress) {
+                val chaptersRevealed = when (save.storyProgress) {
                     in (0..2) -> 3
                     3 -> 4
                     in (4..7) -> 8
@@ -265,7 +265,7 @@ fun ShowStoryList(
                 repeat(chaptersRevealed) {
                     Chapter(it)
                 }
-                if (save.altStoryChaptersProgress > 0) {
+                if (save.altStoryProgress > 0) {
                     Chapter(10, isAlt = true)
                 }
             }
@@ -1017,7 +1017,7 @@ fun ShowStoryChapter6(
 
     var messageNumber by rememberSaveable { mutableIntStateOf(-1) }
     if (messageNumber > 0) {
-        LaunchedEffect(Unit) { playNotificationSound(activity) {} }
+        LaunchedEffect(Unit) { playNotificationSound(activity) }
         AlertDialog(
             modifier = Modifier.border(width = 4.dp, color = Color(activity.getColor(R.color.colorText))),
             onDismissRequest = { messageNumber = -1 },
@@ -1509,13 +1509,16 @@ fun ShowStoryChapter9(
     var lineNumber by rememberSaveable { mutableIntStateOf(0) }
     var isGame by rememberSaveable { mutableStateOf(false) }
     var gameResult by rememberSaveable { mutableIntStateOf(0) }
+    var dialogText by rememberSaveable { mutableIntStateOf(-1) }
 
     val time = 404
     var timeOnTimer by rememberScoped { mutableIntStateOf(-1000) }
     if (timeOnTimer > 0) {
         LaunchedEffect(Unit) {
             while (isActive && timeOnTimer > 0) {
-                timeOnTimer--
+                if (dialogText == -1) {
+                    timeOnTimer--
+                }
                 if (timeOnTimer < 10) {
                     playNoBeep(activity)
                 }
@@ -1523,8 +1526,6 @@ fun ShowStoryChapter9(
             }
         }
     }
-
-    var dialogText by rememberSaveable { mutableIntStateOf(-1) }
 
     if (dialogText != -1) {
         AlertDialog(

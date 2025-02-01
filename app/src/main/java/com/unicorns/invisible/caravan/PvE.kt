@@ -24,20 +24,13 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.paint
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorMatrix
-import androidx.compose.ui.graphics.ColorMatrixColorFilter
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
@@ -55,7 +48,6 @@ import com.unicorns.invisible.caravan.model.enemy.EnemyCrooker
 import com.unicorns.invisible.caravan.model.enemy.EnemyDrMobius
 import com.unicorns.invisible.caravan.model.enemy.EnemyEasyPete
 import com.unicorns.invisible.caravan.model.enemy.EnemyElijah
-import com.unicorns.invisible.caravan.model.enemy.EnemyGlitch
 import com.unicorns.invisible.caravan.model.enemy.EnemyHanlon
 import com.unicorns.invisible.caravan.model.enemy.EnemyLuc10
 import com.unicorns.invisible.caravan.model.enemy.EnemyMadnessCardinal
@@ -87,7 +79,6 @@ import com.unicorns.invisible.caravan.utils.getTextBackgroundColor
 import com.unicorns.invisible.caravan.utils.getTextColor
 import com.unicorns.invisible.caravan.utils.getTextStrokeColor
 import com.unicorns.invisible.caravan.utils.getTrackColor
-import com.unicorns.invisible.caravan.utils.nextSong
 import com.unicorns.invisible.caravan.utils.playJokerSounds
 import com.unicorns.invisible.caravan.utils.playLoseSound
 import com.unicorns.invisible.caravan.utils.playNukeBlownSound
@@ -98,11 +89,9 @@ import com.unicorns.invisible.caravan.utils.playWinSound
 import com.unicorns.invisible.caravan.utils.scrollbar
 import com.unicorns.invisible.caravan.utils.startAmbient
 import com.unicorns.invisible.caravan.utils.stopAmbient
-import kotlinx.coroutines.delay
 import java.util.Locale
 import kotlin.math.min
 import kotlin.math.pow
-import kotlin.system.exitProcess
 
 
 @Composable
@@ -116,18 +105,6 @@ fun ShowSelectPvE(
     var showSelectEnemy by rememberScoped { mutableStateOf(false) }
     var showTower by rememberScoped { mutableStateOf(false) }
     var showTutorial by rememberScoped { mutableStateOf(false) }
-
-    if (isHorror.value == true && (showStats || showStory || showSelectEnemy || showTower || showTutorial)) {
-        StartGame(
-            activity = activity,
-            playerCResources = CResources(save.selectedDeck.first, save.selectedDeck.second),
-            enemy = EnemyGlitch(),
-            showAlertDialog = showAlertDialog
-        ) {
-            restartSwitch.postValue(true)
-        }
-        return
-    }
 
     when {
         showStats -> {
@@ -630,7 +607,7 @@ fun StartGame(
     var reward: Int by rememberScoped { mutableIntStateOf(0) }
     var isBlitz: Boolean by rememberScoped { mutableStateOf(false) }
 
-    val isBettingEnemy = enemy !is EnemyMadnessCardinal && enemy !is EnemyGlitch
+    val isBettingEnemy = enemy !is EnemyMadnessCardinal
     var showBettingScreen: Boolean by rememberScoped { mutableStateOf(isBettingEnemy) }
 
     val capsLeft by rememberScoped {
@@ -638,10 +615,10 @@ fun StartGame(
     }
 
     var enemyBet: Int by rememberScoped { mutableIntStateOf(
-        if (capsLeft <= 10) {
-            capsLeft
+        if (enemy.getBankNumber() % 6 == 5) {
+            30
         } else {
-            min(capsLeft * 2 / 3, 50)
+            min(capsLeft, 10)
         }
     ) }
 
@@ -683,13 +660,6 @@ fun StartGame(
                 activity.achievementsClient?.unlock(activity.getString(R.string.achievement_bravo_))
             } else if (enemy is EnemyTheManInTheMirror) {
                 activity.achievementsClient?.unlock(activity.getString(R.string.achievement_lookalike))
-            } else if (enemy is EnemyGlitch) {
-                save.glitchDefeated = true
-                saveData(activity)
-                activity.achievementsClient?.unlock(activity.getString(R.string.achievement_the_internet_has_you))
-                soundReduced = false
-                nextSong(activity)
-                isHorror.postValue(false)
             }
             if (isDeckCourier6) {
                 activity.achievementsClient?.unlock(activity.getString(R.string.achievement_just_load_everything_up_with_sixes_and_tens_and_kings))
@@ -735,16 +705,11 @@ fun StartGame(
 
             enemy.onVictory()
             saveData(activity)
-
         }
         it.onLose = {
             playLoseSound(activity)
             save.gamesFinished++
             saveData(activity)
-
-            if (enemy is EnemyGlitch) {
-                exitProcess(0)
-            }
 
             showAlertDialog(
                 activity.getString(R.string.result),
@@ -766,42 +731,6 @@ fun StartGame(
                 activity.getString(R.string.check_back_to_menu_body),
                 onQuitPressed
             )
-        }
-    }
-
-    if (enemy is EnemyGlitch) {
-        var flag1 by remember { mutableStateOf(false) }
-        var flag0 by remember { mutableStateOf(false) }
-        enemy.showBrother = { if (it == 0) flag0 = true else flag1 = true }
-
-        key(flag0, flag1) {
-            if (flag0) {
-                LaunchedEffect(Unit) { delay(666L); flag0 = false }
-                Box(Modifier
-                    .fillMaxSize()
-                    .background(Color.Black)
-                    .paint(painterResource(R.drawable.brother))
-                )
-            } else if (flag1) {
-                LaunchedEffect(Unit) { delay(666L); flag1 = false }
-                Box(Modifier
-                    .fillMaxSize()
-                    .background(Color.Black)
-                    .paint(
-                        painterResource(R.drawable.brother),
-                        colorFilter = ColorMatrixColorFilter(
-                            ColorMatrix(
-                                floatArrayOf(
-                                    0f, 1f, 0f, 0f, 0f,
-                                    1f, 0f, 0f, 0f, 0f,
-                                    0f, 0f, 1f, 0f, 0f,
-                                    0f, 0f, 0f, 1f, 0f
-                                )
-                            )
-                        )
-                    )
-                )
-            }
         }
     }
 }
@@ -1009,7 +938,7 @@ fun winCard(activity: MainActivity, back: CardBack, isAlt: Boolean): String {
         return !save.isCardAvailableAlready(card)
     }
 
-    val isNew = if (back == CardBack.STANDARD) true else ((0..2).random() > 0)
+    val isNew = if (back == CardBack.STANDARD) true else ((0..3).random() > 0)
     val deck = CustomDeck(back, isAlt)
     deck.shuffle()
     val card = if (isNew) {

@@ -505,7 +505,7 @@ fun TowerScreen(
 
         if (showFrankWarning) {
             LaunchedEffect(Unit) {
-                playNotificationSound(activity) {}
+                playNotificationSound(activity)
             }
             AlertDialog(
                 modifier = Modifier.border(width = 4.dp, color = Color(activity.getColor(R.color.colorText))),
@@ -578,7 +578,7 @@ fun StartTowerGame(
     var showIntro by rememberSaveable { mutableStateOf(false) }
     var showFrankOutro by rememberSaveable { mutableStateOf(false) }
     if (showIntro) {
-        playNotificationSound(activity) {}
+        playNotificationSound(activity)
         AlertDialog(
             modifier = Modifier.border(width = 4.dp, color = Color(activity.getColor(R.color.colorText))),
             onDismissRequest = { showIntro = false },
@@ -626,7 +626,7 @@ fun StartTowerGame(
     }
 
     if (showFrankOutro) {
-        playNotificationSound(activity) {}
+        playNotificationSound(activity)
         AlertDialog(
             modifier = Modifier.border(width = 4.dp, color = Color(activity.getColor(R.color.colorText))),
             onDismissRequest = { showFrankOutro = false },

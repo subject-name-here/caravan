@@ -17,9 +17,14 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRow
+import androidx.compose.material3.TabRowDefaults
+import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -64,10 +69,10 @@ fun SetCustomDeck(
     activity: MainActivity,
     goBack: () -> Unit,
 ) {
-    fun isInCustomDeck(card: Card) = card in save.customDeck
+    fun isInCustomDeck(card: Card) = card in save.getCurrentCustomDeck()
 
     fun toggleToCustomDeck(card: Card) {
-        save.customDeck.let { deck ->
+        save.getCurrentCustomDeck().let { deck ->
             if (card in deck) {
                 deck.removeAll(listOf(card))
             } else {
@@ -83,11 +88,58 @@ fun SetCustomDeck(
 
     val mainState = rememberLazyListState()
     var updater by remember { mutableStateOf(false) }
+    var selectedDeck by rememberSaveable { mutableIntStateOf(save.activeCustomDeck) }
+
+    fun getSelectedDeckIndex() = selectedDeck - 1
+    fun selectDeck(d: Int) {
+        selectedDeck = d
+        save.activeCustomDeck = d
+        saveData(activity)
+    }
+
     MenuItemOpen(activity, stringResource(R.string.deck_custom), "<-", goBack) {
         Column(Modifier
             .fillMaxSize()
             .background(getBackgroundColor(activity))) {
-            // TODO: for 2.1: 4 custom decks variants (add renaming?)
+            TabRow(
+                getSelectedDeckIndex(), Modifier.fillMaxWidth(),
+                containerColor = getBackgroundColor(activity),
+                indicator = { tabPositions ->
+                    if (getSelectedDeckIndex() < tabPositions.size) {
+                        TabRowDefaults.SecondaryIndicator(
+                            Modifier.tabIndicatorOffset(tabPositions[getSelectedDeckIndex()]),
+                            color = getSelectionColor(activity)
+                        )
+                    }
+                },
+                divider = {
+                    HorizontalDivider(color = getDividerColor(activity))
+                }
+            ) {
+                @Composable
+                fun CustomDeckTab(d: Int) {
+                    Tab(
+                        selectedDeck == d, { playSelectSound(activity); selectDeck(d) },
+                        selectedContentColor = getSelectionColor(activity),
+                        unselectedContentColor = getTextBackgroundColor(activity)
+                    ) {
+                        TextFallout(
+                            d.toString(),
+                            getTextColor(activity),
+                            getTextStrokeColor(activity),
+                            16.sp,
+                            Alignment.Center,
+                            Modifier.padding(4.dp),
+                            TextAlign.Center
+                        )
+                    }
+                }
+                CustomDeckTab(1)
+                CustomDeckTab(2)
+                CustomDeckTab(3)
+                CustomDeckTab(4)
+            }
+
             key (updater) {
                 ShowCharacteristics(activity)
             }
@@ -108,7 +160,7 @@ fun SetCustomDeck(
                 mainState
             ) {
                 items(CardBack.entries) { back ->
-                    var check by rememberSaveable { mutableStateOf(save.altDecksChosen[back] == true) }
+                    var check by rememberSaveable { mutableStateOf(save.getAltDecksChosenMap()[back] == true) }
                     var updaterLocal by remember { mutableStateOf(false) }
                     Row(
                         Modifier
@@ -194,7 +246,7 @@ fun SetCustomDeck(
                                     activity, { check },
                                     {
                                         check = !check
-                                        save.altDecksChosen[back] = check
+                                        save.getAltDecksChosenMap()[back] = check
                                         saveData(activity)
                                         if (check) {
                                             playClickSound(activity)

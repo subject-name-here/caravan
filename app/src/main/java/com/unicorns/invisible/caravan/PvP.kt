@@ -565,7 +565,7 @@ fun StartPvP(
         ).also {
             it.isPlayerTurn = false
             it.isExchangingCards = true
-            it.initDeck(playerCResources, maxNumOfFaces = 4, initHand = false)
+            playerCResources.shuffleDeck()
             currentGameId = it.id
         }
     },
@@ -673,12 +673,9 @@ fun StartPvP(
     }
 
     fun sendHandCard() {
-        val card = game.playerCResources.addCardToHandPvPInit()
+        game.playerCResources.addToHand()
+        val card = game.playerCResources.hand.last()
         updatePlayerHand()
-        if (card == null) {
-            game.isCorrupted = true
-            return
-        }
 
         val link = "${crvnUrl}/crvn/move?room=$roomNumber" +
                 "&is_creators_move=${isCreator.toPythonBool()}" +

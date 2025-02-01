@@ -21,11 +21,7 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchColors
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.key
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -42,7 +38,6 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
@@ -56,15 +51,11 @@ import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import coil.decode.SvgDecoder
 import coil.request.ImageRequest
-import com.sebaslogen.resaca.rememberScoped
 import com.unicorns.invisible.caravan.MainActivity
 import com.unicorns.invisible.caravan.R
-import com.unicorns.invisible.caravan.isHorror
 import com.unicorns.invisible.caravan.model.getCardName
 import com.unicorns.invisible.caravan.model.primitives.Card
 import com.unicorns.invisible.caravan.save
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.isActive
 
 
 @Composable
@@ -104,7 +95,7 @@ fun ShowCardBack(activity: MainActivity, card: Card, modifier: Modifier) {
     Image(
         painter = painter2,
         contentDescription = "",
-        modifier.clip(RoundedCornerShape(5)),
+        modifier = modifier.clip(RoundedCornerShape(5)),
         contentScale = ContentScale.Fit
     )
 }
@@ -269,8 +260,6 @@ fun CheckboxCustom(
     )
 }
 
-// Both these Slider and Switch have colors chosen out of the assumption that the background color is Selection color
-
 @Composable
 fun SliderCustom(
     activity: MainActivity,
@@ -347,36 +336,6 @@ fun TextFallout(
 }
 
 @Composable
-private fun getHorrorString(): String {
-    var cnt by rememberScoped { mutableIntStateOf(0) }
-
-    LaunchedEffect(Unit) {
-        while (isActive) {
-            delay(666L)
-            cnt++
-        }
-    }
-
-    return key(cnt) {
-        listOf(
-            "",
-            stringResource(R.string.none),
-            stringResource(R.string.close),
-            stringResource(R.string.failure),
-            stringResource(R.string.joker_name),
-            stringResource(R.string.you_lose),
-            stringResource(R.string.discard),
-            stringResource(R.string.can_t_act),
-            stringResource(R.string.check_back_to_menu_body),
-            stringResource(R.string.transaction_failed),
-            stringResource(R.string.you_don_t_have_a_ticket_on_you),
-            stringResource(R.string.finish),
-            stringResource(R.string.ch_end),
-        ).random()
-    }
-}
-
-@Composable
 fun TextSymbola(
     text: String,
     textColor: Color,
@@ -387,8 +346,6 @@ fun TextSymbola(
 ) {
     val textRedacted = if (save.sixtyNineActive)
         text.replace("TOPS", "Bottoms", ignoreCase = true)
-    else if (isHorror.value == true)
-        getHorrorString()
     else
         text
     Box(modifier, contentAlignment = contentAlignment) {
@@ -415,10 +372,7 @@ fun TextFallout(
     modifier: Modifier,
     textAlign: TextAlign,
 ) {
-    val textRedacted = if (isHorror.value == true)
-        AnnotatedString(getHorrorString())
-    else
-        text
+    val textRedacted = text
     val strokeWidth = getStrokeWidth(textSize)
     Box(modifier, contentAlignment = contentAlignment) {
         Text(
@@ -477,8 +431,6 @@ fun TextCustom(
     val strokeWidth = getStrokeWidth(textSize)
     val textRedacted = if (save.sixtyNineActive)
         text.replace("TOPS", "Bottoms", ignoreCase = true)
-    else if (isHorror.value == true)
-        getHorrorString()
     else
         text
     Box(modifier, contentAlignment = contentAlignment) {

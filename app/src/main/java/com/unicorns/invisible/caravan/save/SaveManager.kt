@@ -51,10 +51,6 @@ fun saveData(activity: MainActivity) {
         }
     }
 
-    saveOnGD(activity, text)
-}
-
-private fun saveOnGD(activity: MainActivity, text: String) {
     val bytes = text.toByteArray(StandardCharsets.UTF_8)
     CoroutineScope(Dispatchers.IO).launch { activity.uploadDataToDrive(bytes) }
 }
@@ -98,6 +94,7 @@ fun loadLocalSave(activity: MainActivity): Save? {
         null
     }
 }
+
 
 fun processOldSave(activity: MainActivity) {
     CoroutineScope(Dispatchers.IO).launch { try {

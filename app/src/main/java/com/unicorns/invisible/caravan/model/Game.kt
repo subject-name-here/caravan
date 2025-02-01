@@ -66,18 +66,14 @@ class Game(
         return playerCResources.hand.size > 5 || enemyCResources.hand.size > 5
     }
 
-    fun initDeck(cResources: CResources, maxNumOfFaces: Int, initHand: Boolean = true) {
-        cResources.initResources(maxNumOfFaces, initHand)
-    }
-
-    fun startGame(maxNumOfFaces: Int = 5) {
+    fun startGame() {
         if (enemy is EnemyMadnessCardinal) {
-            while (enemyCResources.deckSize < playerCResources.deckSize + 13) {
+            while (enemyCResources.deckSize < playerCResources.deckSize + 27) {
                 enemyCResources.addNewDeck(CustomDeck(CardBack.MADNESS, false))
             }
         }
-        initDeck(playerCResources, maxNumOfFaces)
-        initDeck(enemyCResources, maxNumOfFaces)
+        playerCResources.initResources()
+        enemyCResources.initResources()
         if (enemy is EnemyTheManInTheMirror) {
             enemyCResources.copyFrom(playerCResources)
         }
@@ -158,8 +154,8 @@ class Game(
         }
 
         CoroutineScope(Dispatchers.Default).launch {
-            isPlayerTurn = false
             processMove(playerCResources)
+            isPlayerTurn = false
 
             if (checkOnGameOver()) {
                 updateView()
@@ -354,14 +350,14 @@ class Game(
     }
     private fun processPete() {
         (playerCaravans + enemyCaravans).forEach { caravan ->
-            caravan.cards.filter {
-                it.hasActivePete
-            }.forEach { card ->
-                (playerCaravans + enemyCaravans).forEach {
-                    it.getPetePower()
+            caravan.cards
+                .filter { it.hasActivePete }
+                .forEach { card ->
+                    (playerCaravans + enemyCaravans).forEach {
+                        it.getPetePower()
+                    }
+                    card.deactivatePete()
                 }
-                card.deactivatePete()
-            }
         }
     }
 

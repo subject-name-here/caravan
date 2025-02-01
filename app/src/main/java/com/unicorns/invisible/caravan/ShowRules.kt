@@ -126,89 +126,29 @@ fun ShowRules(activity: MainActivity, goBack: () -> Unit) {
                     when (selectedTab) {
                         0 -> {
                             Column {
-                                Spacer(modifier = Modifier.height(8.dp))
-                                TextFallout(
-                                    stringResource(R.string.better_rules_body_1),
-                                    getTextColor(activity),
-                                    getTextStrokeColor(activity),
-                                    20.sp,
-                                    Alignment.CenterStart,
-                                    Modifier.padding(horizontal = 8.dp),
-                                    TextAlign.Start
-                                )
-                                Spacer(modifier = Modifier.height(32.dp))
-                                TextFallout(
-                                    stringResource(R.string.better_rules_body_2),
-                                    getTextColor(activity),
-                                    getTextStrokeColor(activity),
-                                    20.sp,
-                                    Alignment.CenterStart,
-                                    Modifier.padding(horizontal = 8.dp),
-                                    TextAlign.Start
-                                )
-                                Spacer(modifier = Modifier.height(32.dp))
-                                TextFallout(
-                                    stringResource(R.string.better_rules_body_3),
-                                    getTextColor(activity),
-                                    getTextStrokeColor(activity),
-                                    20.sp,
-                                    Alignment.CenterStart,
-                                    Modifier.padding(horizontal = 8.dp),
-                                    TextAlign.Start
-                                )
-                                Spacer(modifier = Modifier.height(32.dp))
-                                TextFallout(
-                                    stringResource(R.string.better_rules_body_4),
-                                    getTextColor(activity),
-                                    getTextStrokeColor(activity),
-                                    20.sp,
-                                    Alignment.CenterStart,
-                                    Modifier.padding(horizontal = 8.dp),
-                                    TextAlign.Start
-                                )
-                                Spacer(modifier = Modifier.height(32.dp))
-                                TextFallout(
-                                    stringResource(R.string.better_rules_body_5),
-                                    getTextColor(activity),
-                                    getTextStrokeColor(activity),
-                                    20.sp,
-                                    Alignment.CenterStart,
-                                    Modifier.padding(horizontal = 8.dp),
-                                    TextAlign.Start
-                                )
-                                Spacer(modifier = Modifier.height(32.dp))
-                                TextFallout(
-                                    stringResource(R.string.better_rules_body_6),
-                                    getTextColor(activity),
-                                    getTextStrokeColor(activity),
-                                    20.sp,
-                                    Alignment.CenterStart,
-                                    Modifier.padding(horizontal = 8.dp),
-                                    TextAlign.Start
-                                )
-                                Spacer(modifier = Modifier.height(32.dp))
-                                TextFallout(
-                                    stringResource(R.string.better_rules_body_7),
-                                    getTextColor(activity),
-                                    getTextStrokeColor(activity),
-                                    20.sp,
-                                    Alignment.CenterStart,
-                                    Modifier.padding(horizontal = 8.dp),
-                                    TextAlign.Start
-                                )
-                                Spacer(modifier = Modifier.height(16.dp))
+                                @Composable
+                                fun ShowRulesSection(s: String) {
+                                    Spacer(modifier = Modifier.height(16.dp))
+                                    TextFallout(
+                                        s,
+                                        getTextColor(activity),
+                                        getTextStrokeColor(activity),
+                                        20.sp,
+                                        Alignment.CenterStart,
+                                        Modifier.padding(horizontal = 8.dp),
+                                        TextAlign.Start
+                                    )
+                                    Spacer(modifier = Modifier.height(16.dp))
+                                }
+                                ShowRulesSection(stringResource(R.string.better_rules_body_1))
+                                ShowRulesSection(stringResource(R.string.better_rules_body_2))
+                                ShowRulesSection(stringResource(R.string.better_rules_body_3))
+                                ShowRulesSection(stringResource(R.string.better_rules_body_4))
+                                ShowRulesSection(stringResource(R.string.better_rules_body_5))
+                                ShowRulesSection(stringResource(R.string.better_rules_body_6))
+                                ShowRulesSection(stringResource(R.string.better_rules_body_7))
                                 HorizontalDivider(color = getDividerColor(activity))
-                                Spacer(modifier = Modifier.height(16.dp))
-                                TextFallout(
-                                    stringResource(R.string.better_rules_body_finale),
-                                    getTextColor(activity),
-                                    getTextStrokeColor(activity),
-                                    20.sp,
-                                    Alignment.CenterStart,
-                                    Modifier.padding(horizontal = 8.dp),
-                                    TextAlign.Start
-                                )
-                                Spacer(modifier = Modifier.height(8.dp))
+                                ShowRulesSection(stringResource(R.string.better_rules_body_finale))
                             }
                         }
                         1 -> {

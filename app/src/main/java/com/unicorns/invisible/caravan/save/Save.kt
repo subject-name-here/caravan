@@ -1,7 +1,6 @@
 package com.unicorns.invisible.caravan.save
 
 import com.unicorns.invisible.caravan.AnimationSpeed
-import com.unicorns.invisible.caravan.MainActivity
 import com.unicorns.invisible.caravan.Style
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.challenge.Challenge
@@ -17,11 +16,9 @@ import com.unicorns.invisible.caravan.model.trading.TopsTrader
 import com.unicorns.invisible.caravan.model.trading.Trader
 import com.unicorns.invisible.caravan.model.trading.UltraLuxeTrader
 import com.unicorns.invisible.caravan.model.trading.Vault21Trader
-import com.unicorns.invisible.caravan.utils.playDailyCompleted
 import kotlinx.serialization.EncodeDefault
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.Transient
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -36,11 +33,31 @@ class Save(var playerId: String? = null) {
     @EncodeDefault
     var selectedDeck: Pair<CardBack, Boolean> = CardBack.STANDARD to false
 
-    @EncodeDefault
-    val altDecksChosen = CardBack.entries.associateWith { false }.toMutableMap()
+    private val customDeck: CustomDeck = CustomDeck(CardBack.STANDARD, false)
+    private val altDecksChosen = CardBack.entries.associateWith { false }.toMutableMap()
 
-    @EncodeDefault
-    val customDeck: CustomDeck = CustomDeck(CardBack.STANDARD, false)
+    private val customDeck2: CustomDeck = CustomDeck(CardBack.STANDARD, false)
+    private val altDecksChosen2 = CardBack.entries.associateWith { false }.toMutableMap()
+
+    private val customDeck3: CustomDeck = CustomDeck(CardBack.STANDARD, false)
+    private val altDecksChosen3 = CardBack.entries.associateWith { false }.toMutableMap()
+
+    private val customDeck4: CustomDeck = CustomDeck(CardBack.STANDARD, false)
+    private val altDecksChosen4 = CardBack.entries.associateWith { false }.toMutableMap()
+
+    var activeCustomDeck = 1
+    fun getCurrentCustomDeck(): CustomDeck = when (activeCustomDeck) {
+        2 -> customDeck2
+        3 -> customDeck3
+        4 -> customDeck4
+        else -> customDeck
+    }
+    fun getAltDecksChosenMap() = when (activeCustomDeck) {
+        2 -> altDecksChosen2
+        3 -> altDecksChosen3
+        4 -> altDecksChosen4
+        else -> altDecksChosen
+    }
 
     @EncodeDefault
     private val availableCards: MutableSet<Card> = HashSet(CustomDeck(CardBack.STANDARD, false).toList())
@@ -65,9 +82,9 @@ class Save(var playerId: String? = null) {
 
     fun getCustomDeckCopy(): CustomDeck {
         val deck = CustomDeck()
-        customDeck.toList().forEach {
-            if (it.isAlt == altDecksChosen[it.back]) {
-                deck.add(it)
+        getCurrentCustomDeck().toList().forEach {
+            if (it.isAlt == getAltDecksChosenMap()[it.back]) {
+                deck.add(Card(it.rank, it.suit, it.back, it.isAlt))
             }
         }
         return deck
@@ -101,10 +118,10 @@ class Save(var playerId: String? = null) {
     var playRadioInBack = false
 
     @EncodeDefault
-    var capsInHand = 100
+    var capsInHand = 150
 
     @EncodeDefault
-    var tickets = 3
+    var tickets = 5
 
     @EncodeDefault
     var animationSpeed = AnimationSpeed.NORMAL
@@ -124,17 +141,16 @@ class Save(var playerId: String? = null) {
     var towerLevel: Int = 0
 
     @EncodeDefault
-    var glitchDefeated = false
-
+    var storyProgress = 0
     @EncodeDefault
-    var storyChaptersProgress = 0
-    @EncodeDefault
-    var altStoryChaptersProgress = 0
+    var altStoryProgress = 0
 
     @EncodeDefault
     var prize1Activated = false
     @EncodeDefault
     var prize2Activated = false
+    @EncodeDefault
+    var prize3Activated = false
     @EncodeDefault
     var prize4Activated = false
     @EncodeDefault
@@ -152,44 +168,26 @@ class Save(var playerId: String? = null) {
         val random = Random(challengesHash)
         repeat(30) {
             enemyCapsLeft[it] = if (it % 6 == 5) {
-                75
+                90
             } else {
-                random.nextInt(15, 30)
+                random.nextInt(15, 20)
             }
         }
     }
 
-    @EncodeDefault
-    var barterStat = 10
-    @EncodeDefault
-    var barterStatProgress = 0.0
-
     fun getPriceOfCard(card: Card): Int {
-        val base = if (card.isAlt) 45 else 15
-        val barterMult = 2.5 - barterStat.toDouble() / 50.0
+        val base = if (card.isAlt) 30 else 10
         val rankMult = when (card.rank) {
-            Rank.ACE -> 0.95
-            Rank.TWO, Rank.THREE, Rank.FOUR -> 0.8
-            Rank.FIVE, Rank.SIX, Rank.SEVEN -> 1.0
-            Rank.EIGHT, Rank.NINE, Rank.TEN -> 1.2
-            Rank.JACK -> 1.25
-            Rank.QUEEN -> 1.1
-            Rank.KING -> 1.75
-            Rank.JOKER -> 2.5
+            Rank.ACE, Rank.SIX, Rank.QUEEN -> 1.0
+            Rank.TWO, Rank.THREE -> 0.8
+            Rank.FOUR, Rank.FIVE -> 0.9
+            Rank.SEVEN, Rank.EIGHT, Rank.NINE -> 1.1
+            Rank.TEN -> 1.2
+            Rank.JACK -> 1.3
+            Rank.KING -> 1.4
+            Rank.JOKER -> 1.5
         }
-        val backCount = availableCards.count { c -> c.back == card.back && c.isAlt == card.isAlt }
-        val rarityMult = (backCount + 26.0) / 52.0
-        val bsMult = Random(challengesHash).nextDouble(0.85, 1.15)
-        return (base.toDouble() * barterMult * rankMult * rarityMult * bsMult).toInt()
-    }
-    fun onCardBuying(activity: MainActivity) {
-        barterStatProgress += Random.nextDouble(0.175, 0.225)
-        if (barterStatProgress >= 1.0 && barterStat < 100) {
-            barterStat++
-            playDailyCompleted(activity)
-            barterStatProgress = 0.0
-        }
-        saveData(activity)
+        return (base.toDouble() * rankMult).toInt()
     }
 
     @EncodeDefault
@@ -203,7 +201,4 @@ class Save(var playerId: String? = null) {
         EnclaveTrader(),
         ChineseTrader(),
     )
-
-    @Transient
-    var lastSaveTime = Date().time
 }

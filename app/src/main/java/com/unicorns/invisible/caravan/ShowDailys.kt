@@ -159,7 +159,7 @@ fun ShowChallenge(activity: MainActivity, challenge: Challenge, isCompleted: Boo
                     Modifier
                         .background(getTextBackgroundColor(activity))
                         .clickableOk(activity) {
-                            save.tickets++
+                            save.tickets += 2
                             dailyCompleted(save)
                         }
                         .padding(8.dp),
@@ -174,7 +174,7 @@ fun ShowChallenge(activity: MainActivity, challenge: Challenge, isCompleted: Boo
                     Modifier
                         .background(getTextBackgroundColor(activity))
                         .clickableOk(activity) {
-                            save.capsInHand += 15
+                            save.capsInHand += 30
                             dailyCompleted(save)
                         }
                         .padding(8.dp),

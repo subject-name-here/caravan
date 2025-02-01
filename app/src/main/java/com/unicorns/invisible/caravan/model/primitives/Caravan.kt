@@ -41,12 +41,12 @@ class Caravan {
         cardsMutable.forEach { it.card.caravanAnimationMark = Card.AnimationMark.MOVED_OUT }
         val copy = cardsMutable.toList()
         cardsMutable.clear()
-        copy.forEach {
-            val mods = it.modifiersCopy()
-            val card = getCard(it)
+        copy.forEach { cardCopy ->
+            val mods = cardCopy.modifiersCopy()
+            val card = getCard(cardCopy)
             cardsMutable.add(
                 CardWithModifier(Card(card.first, card.second, CardBack.MADNESS, true)).apply {
-                    copyModifiersFrom(mods); copyWild(it)
+                    copyModifiersFrom(mods); copyWild(cardCopy)
                 }
             )
         }

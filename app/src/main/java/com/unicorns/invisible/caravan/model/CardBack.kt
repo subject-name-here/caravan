@@ -15,7 +15,8 @@ enum class CardBack {
     SIERRA_MADRE,
     CHINESE,
     ENCLAVE,
-    MADNESS;
+    MADNESS,
+    VIKING;
 
     fun getDeckName(): Int = when (this) {
         STANDARD -> R.string.standard_deck_name
@@ -28,9 +29,10 @@ enum class CardBack {
         MADNESS -> R.string.madness_deck_name
         CHINESE -> R.string.chinese_deck_name
         ENCLAVE -> R.string.enclave_deck_name
+        VIKING -> R.string.viking_deck_name
     }
 
-    fun hasAltPlayable(): Boolean = this !in listOf(CHINESE, ENCLAVE, MADNESS)
+    fun hasAltPlayable(): Boolean = this !in listOf(CHINESE, ENCLAVE, MADNESS, VIKING)
 
     fun getCardBackAsset(): String {
         return when (this) {
@@ -44,6 +46,7 @@ enum class CardBack {
             CHINESE -> "ccp_back.webp"
             ENCLAVE -> "enclave_back.webp"
             MADNESS -> "madness_back.webp"
+            VIKING -> "viking_back.webp"
         }
     }
 
@@ -59,6 +62,7 @@ enum class CardBack {
             CHINESE -> "ccp_alt_back.webp"
             ENCLAVE -> "nuclear_back.webp"
             MADNESS -> "ww_back.webp"
+            VIKING -> "TODO" // TODO: decks for RAD Infinitum
         }
     }
 

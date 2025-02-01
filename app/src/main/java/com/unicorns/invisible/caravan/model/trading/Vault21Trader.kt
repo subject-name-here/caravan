@@ -21,6 +21,7 @@ class Vault21Trader : Trader {
         activity.getString(R.string.vault_21_trader_condition)
 
     override fun getName(): Int = R.string.vault_21_trader_name
+    override fun getSymbol() = "21"
 
     override fun getCards(): List<Pair<Card, Int>> = getCards(CardBack.VAULT_21)
     override fun getStyles(): List<Style> = listOf(Style.VAULT_21, Style.VAULT_22)

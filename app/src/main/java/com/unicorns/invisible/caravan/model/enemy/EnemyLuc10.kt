@@ -9,6 +9,9 @@ import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.Card
 import com.unicorns.invisible.caravan.model.primitives.Rank
 import com.unicorns.invisible.caravan.model.primitives.Suit
+import com.unicorns.invisible.caravan.model.trading.SierraMadreTrader
+import com.unicorns.invisible.caravan.model.trading.TopsTrader
+import com.unicorns.invisible.caravan.save
 import com.unicorns.invisible.caravan.utils.checkMoveOnDefeat
 import kotlinx.serialization.Serializable
 import kotlin.random.Random
@@ -117,5 +120,9 @@ data object EnemyLuc10 : Enemy {
                 return
             }
         }
+    }
+
+    override fun onVictory() {
+        save.traders.filterIsInstance<TopsTrader>().forEach { it.isLuc10Defeated = true }
     }
 }

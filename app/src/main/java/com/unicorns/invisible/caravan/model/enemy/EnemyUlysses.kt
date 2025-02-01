@@ -12,6 +12,8 @@ import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJokerSimple
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyQueen
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.Rank
+import com.unicorns.invisible.caravan.model.trading.SierraMadreTrader
+import com.unicorns.invisible.caravan.save
 import com.unicorns.invisible.caravan.utils.checkMoveOnDefeat
 import com.unicorns.invisible.caravan.utils.checkMoveOnImminentVictory
 import com.unicorns.invisible.caravan.utils.checkMoveOnPossibleVictory
@@ -326,5 +328,9 @@ data object EnemyUlysses : Enemy {
         }
 
         StrategyDropCard(CardDropSelect.ULYSSES_ORDER).move(game)
+    }
+
+    override fun onVictory() {
+        save.traders.filterIsInstance<SierraMadreTrader>().forEach { it.ulyssesBeaten = true }
     }
 }

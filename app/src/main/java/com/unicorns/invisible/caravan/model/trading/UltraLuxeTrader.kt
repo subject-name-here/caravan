@@ -21,8 +21,8 @@ class UltraLuxeTrader : Trader {
     override fun openingCondition(activity: MainActivity) = activity.getString(R.string.ultra_luxe_trader_condition)
 
     override fun getName(): Int = R.string.ultra_luxe_trader_name
+    override fun getSymbol() = "UL"
 
     override fun getCards(): List<Pair<Card, Int>> = getCards(CardBack.ULTRA_LUXE)
-
-    override fun getStyles() = listOf(Style.OLD_WORLD, Style.BLACK)
+    override fun getStyles() = listOf(Style.DESERT, Style.ALASKA_FRONTIER)
 }

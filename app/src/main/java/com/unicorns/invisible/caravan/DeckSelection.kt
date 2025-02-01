@@ -159,11 +159,15 @@ fun DeckSelection(
                 showDeckBackRow(CardBack.VAULT_21)
                 showDeckBackRow(CardBack.SIERRA_MADRE)
                 Row {
-                    showDeckBackRow(CardBack.MADNESS)
-                    Spacer(modifier = Modifier.width(8.dp))
                     showDeckBackRow(CardBack.ENCLAVE)
                     Spacer(modifier = Modifier.width(8.dp))
                     showDeckBackRow(CardBack.CHINESE)
+                }
+                Spacer(modifier = Modifier.height(8.dp))
+                Row {
+                    showDeckBackRow(CardBack.MADNESS)
+                    Spacer(modifier = Modifier.width(8.dp))
+                    showDeckBackRow(CardBack.VIKING)
                 }
             }
         }

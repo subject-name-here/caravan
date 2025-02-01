@@ -12,6 +12,9 @@ import com.unicorns.invisible.caravan.model.primitives.Card
 import com.unicorns.invisible.caravan.model.primitives.CustomDeck
 import com.unicorns.invisible.caravan.model.primitives.Rank
 import com.unicorns.invisible.caravan.model.primitives.Suit
+import com.unicorns.invisible.caravan.model.trading.SierraMadreTrader
+import com.unicorns.invisible.caravan.model.trading.TopsTrader
+import com.unicorns.invisible.caravan.save
 import kotlinx.serialization.Serializable
 import kotlin.random.Random
 
@@ -82,5 +85,9 @@ data object EnemyDrMobius : Enemy {
         } else {
             Card(rank, Suit.entries.random(), CardBack.STANDARD, Random.nextBoolean())
         }
+    }
+
+    override fun onVictory() {
+        save.traders.filterIsInstance<SierraMadreTrader>().forEach { it.drMobiusBeaten = true }
     }
 }

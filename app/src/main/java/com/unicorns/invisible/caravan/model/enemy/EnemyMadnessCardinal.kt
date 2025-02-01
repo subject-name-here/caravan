@@ -14,6 +14,9 @@ import com.unicorns.invisible.caravan.model.primitives.Card
 import com.unicorns.invisible.caravan.model.primitives.CustomDeck
 import com.unicorns.invisible.caravan.model.primitives.Rank
 import com.unicorns.invisible.caravan.model.primitives.Suit
+import com.unicorns.invisible.caravan.model.trading.GomorrahTrader
+import com.unicorns.invisible.caravan.model.trading.SierraMadreTrader
+import com.unicorns.invisible.caravan.save
 import com.unicorns.invisible.caravan.utils.checkMoveOnDefeat
 import com.unicorns.invisible.caravan.utils.checkMoveOnShouldYouDoSmth
 import kotlinx.serialization.Serializable
@@ -297,5 +300,9 @@ data object EnemyMadnessCardinal : Enemy {
         }
 
         StrategyDropCard(CardDropSelect.MIN_VALUE).move(game)
+    }
+
+    override fun onVictory() {
+        save.traders.filterIsInstance<GomorrahTrader>().forEach { it.isCardinalDefeated = true }
     }
 }

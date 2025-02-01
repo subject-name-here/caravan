@@ -23,30 +23,6 @@ fun stopSoundEffects() {
     }
 }
 
-fun playNotificationSound(activity: MainActivity, onPrepared: () -> Unit) {
-    val volume = save.soundVolume
-    MediaPlayer
-        .create(activity, R.raw.notification)
-        .apply {
-            if (this == null) {
-                onPrepared()
-                return
-            }
-            setVolume(volume, volume)
-            setOnPreparedListener { onPrepared() }
-            setOnCompletionListener {
-                effectPlayersLock.withLock {
-                    effectPlayers.remove(this)
-                    release()
-                }
-            }
-            effectPlayersLock.withLock {
-                effectPlayers.add(this)
-                start()
-            }
-        }
-}
-
 private fun playEffectPlayerSound(activity: MainActivity, soundId: Int, volumeFraction: Int = 1) {
     val vol = save.soundVolume / volumeFraction
     MediaPlayer
@@ -94,10 +70,6 @@ fun playLoseSound(activity: MainActivity) {
 fun playWinSoundAlone(activity: MainActivity) {
     playEffectPlayerSound(activity, listOf(R.raw.win1, R.raw.win2).random(), 2)
 }
-fun playCashSound(activity: MainActivity) {
-    playEffectPlayerSound(activity, R.raw.win_caps, 2)
-}
-
 fun playWinSound(activity: MainActivity) {
     CoroutineScope(Dispatchers.Unconfined).launch {
         playCashSound(activity)
@@ -110,7 +82,6 @@ fun playJokerReceivedSounds(activity: MainActivity) {
     if (soundReduced) return
     playEffectPlayerSound(activity, R.raw.mus_mysteriousstranger_a_01, 2)
 }
-
 fun playJokerSounds(activity: MainActivity) {
     if (soundReduced) return
     playEffectPlayerSound(activity, R.raw.mus_mysteriousstranger_a_02, 2)
@@ -120,6 +91,7 @@ fun playWWSound(activity: MainActivity) {
     playEffectPlayerSound(activity, R.raw.ui_wildwasteland)
 }
 
+fun playCashSound(activity: MainActivity) = playEffectPlayerSound(activity, R.raw.win_caps, 2)
 fun playCloseSound(activity: MainActivity) = playEffectPlayerSound(activity, R.raw.ui_menu_cancel)
 fun playClickSound(activity: MainActivity) = playEffectPlayerSound(activity, R.raw.ui_menu_ok)
 fun playSelectSound(activity: MainActivity) = playEffectPlayerSound(activity, R.raw.ui_vats_move, 3)
@@ -138,7 +110,7 @@ fun playNukeBlownSound(activity: MainActivity) = playEffectPlayerSound(activity,
 fun playHeartbeatSound(activity: MainActivity) = playEffectPlayerSound(activity, R.raw.sfx_heartbeat)
 fun playSlideSound(activity: MainActivity) = playEffectPlayerSound(activity, R.raw.slide)
 fun playMinigunSound(activity: MainActivity) = playEffectPlayerSound(activity, R.raw.minigun_f2)
-fun playGlitchSound(activity: MainActivity) = playEffectPlayerSound(activity, R.raw.glitch_effect)
+fun playNotificationSound(activity: MainActivity) = playEffectPlayerSound(activity, R.raw.notification)
 
 private val ambientPlayers = HashSet<MediaPlayer>()
 private val ambientPlayersLock = ReentrantLock()
@@ -183,49 +155,51 @@ fun startAmbient(activity: MainActivity) {
         }
 }
 
-private val songList = ("MUS_Aint_That_A_Kick_In_the_Head.amr\n" +
-        "MUS_American_Swing.amr\n" +
-        "MUS_Big_Iron.amr\n" +
-        "MUS_Blue_Moon.amr\n" +
-        "MUS_Blues_For_You.amr\n" +
-        "MUS_Cobwebs_and_Rainbows.amr\n" +
-        "MUS_EddyArnold_Rca_ItsASin.amr\n" +
-        "MUS_Goin_Under.amr\n" +
-        "MUS_Hallo_Mister_X.amr\n" +
-        "MUS_Happy_Times.amr\n" +
-        "MUS_Heartaches_by_the_Number.amr\n" +
-        "MUS_HomeOnTheWastes.amr\n" +
-        "MUS_I_m_Movin_Out.amr\n" +
-        "MUS_I_m_So_Blue.amr\n" +
-        "MUS_In_The_Shadow_Of_The_Valley.amr\n" +
-        "MUS_Its_A_Sin_To_Tell_A_Lie.amr\n" +
-        "MUS_Jazz_Blues_GT.amr\n" +
-        "MUS_Jazz_Club_Blues_CAS.amr\n" +
-        "MUS_Jingle_Jangle_Jingle.amr\n" +
-        "MUS_Joe_Cool_CAS.amr\n" +
-        "MUS_Johnny_Guitar.amr\n" +
-        "MUS_Lazy_Day_Blues.amr\n" +
-        "MUS_Let_s_Ride_Into_The_Sunset_Together.amr\n" +
-        "MUS_Lone_Star.amr\n" +
-        "MUS_Love_Me_As_Though_No_Tomorrow.amr\n" +
-        "MUS_Mad_About_The_Boy.amr\n" +
-        "MUS_Manhattan.amr\n" +
-        "MUS_NewVegasValley.amr\n" +
-        "MUS_Roundhouse_Rock.amr\n" +
-        "MUS_Sit_And_Dream.amr\n" +
-        "MUS_Sleepy_Town_Blues_CAS.amr\n" +
-        "MUS_Slow_Bounce.amr\n" +
-        "MUS_Slow_Sax_KOS.amr\n" +
-        "MUS_Somethings_Gotta_Give.amr\n" +
-        "MUS_Stars_Of_The_Midnight_Range.amr\n" +
-        "MUS_Strahlende_Trompete.amr\n" +
-        "MUS_StreetsOfNewReno.amr\n" +
-        "MUS_Von_Spanien_Nach_S_damerika.amr\n" +
-        "MUS_Where_Have_You_Been_All_My_Life.amr\n" +
-        "MUS_Why_Dont_You_Do_Right.amr").split("\n")
+// TODO: now playing
+private val songList = arrayOf(
+    "MUS_Aint_That_A_Kick_In_the_Head.amr" to "",
+    "MUS_American_Swing.amr" to "",
+    "MUS_Big_Iron.amr" to "",
+    "MUS_Blue_Moon.amr" to "",
+    "MUS_Blues_For_You.amr" to "",
+    "MUS_Cobwebs_and_Rainbows.amr" to "",
+    "MUS_EddyArnold_Rca_ItsASin.amr" to "",
+    "MUS_Goin_Under.amr" to "",
+    "MUS_Hallo_Mister_X.amr" to "",
+    "MUS_Happy_Times.amr" to "",
+    "MUS_Heartaches_by_the_Number.amr" to "",
+    "MUS_HomeOnTheWastes.amr" to "",
+    "MUS_I_m_Movin_Out.amr" to "",
+    "MUS_I_m_So_Blue.amr" to "",
+    "MUS_In_The_Shadow_Of_The_Valley.amr" to "",
+    "MUS_Its_A_Sin_To_Tell_A_Lie.amr" to "",
+    "MUS_Jazz_Blues_GT.amr" to "",
+    "MUS_Jazz_Club_Blues_CAS.amr" to "",
+    "MUS_Jingle_Jangle_Jingle.amr" to "",
+    "MUS_Joe_Cool_CAS.amr" to "",
+    "MUS_Johnny_Guitar.amr" to "",
+    "MUS_Lazy_Day_Blues.amr" to "",
+    "MUS_Let_s_Ride_Into_The_Sunset_Together.amr" to "",
+    "MUS_Lone_Star.amr" to "",
+    "MUS_Love_Me_As_Though_No_Tomorrow.amr" to "",
+    "MUS_Mad_About_The_Boy.amr" to "",
+    "MUS_Manhattan.amr" to "",
+    "MUS_NewVegasValley.amr" to "",
+    "MUS_Roundhouse_Rock.amr" to "",
+    "MUS_Sit_And_Dream.amr" to "",
+    "MUS_Sleepy_Town_Blues_CAS.amr" to "",
+    "MUS_Slow_Bounce.amr" to "",
+    "MUS_Slow_Sax_KOS.amr" to "",
+    "MUS_Somethings_Gotta_Give.amr" to "",
+    "MUS_Stars_Of_The_Midnight_Range.amr" to "",
+    "MUS_Strahlende_Trompete.amr" to "",
+    "MUS_StreetsOfNewReno.amr" to "",
+    "MUS_Von_Spanien_Nach_S_damerika.amr" to "",
+    "MUS_Where_Have_You_Been_All_My_Life.amr" to "",
+    "MUS_Why_Dont_You_Do_Right.amr" to "",
+)
 
-private var pointer = songList.indices.random()
-private var usedIndices = mutableListOf<Int>()
+private var pointer = songList.size
 private var radioStartedFlag = false
 fun startRadio(activity: MainActivity) {
     if (radioStartedFlag) {
@@ -234,9 +208,9 @@ fun startRadio(activity: MainActivity) {
     radioStartedFlag = true
     if (save.useCaravanIntro) {
         if (activity.styleId == Style.SIERRA_MADRE || activity.styleId == Style.MADRE_ROJA) {
-            playSongFromRadio(activity, "begin_again.amr")
+            playSongFromRadio(activity, "begin_again.amr" to "")
         } else {
-            playSongFromRadio(activity, "MUS_caravan_whiplash.amr")
+            playSongFromRadio(activity, "MUS_caravan_whiplash.amr" to "")
         }
     } else {
         nextSong(activity)
@@ -252,11 +226,12 @@ enum class RadioState {
 private val radioPlayers = HashSet<MediaPlayer>()
 private val radioLock = ReentrantLock()
 private var radioState = RadioState.PLAYING
-private fun playSongFromRadio(activity: MainActivity, songName: String) {
+private fun playSongFromRadio(activity: MainActivity, songName: Pair<String, String>) {
     val vol = save.radioVolume
     MediaPlayer()
         .apply {
-            val afd = activity.assets.openFd("radio/$songName")
+            val afd = activity.assets.openFd("radio/${songName.first}")
+            // TODO: Now Playing: ....
             setDataSource(afd.fileDescriptor, afd.startOffset, afd.length)
             setOnCompletionListener {
                 nextSong(activity)
@@ -294,11 +269,10 @@ fun nextSong(activity: MainActivity) {
     stopRadio()
 
     if (pointer !in songList.indices) {
-        pointer = songList.indices.random()
+        songList.shuffle()
+        pointer = 0
     }
-    playSongFromRadio(activity, songList[pointer])
-    usedIndices.add(pointer)
-    pointer = (songList.indices - usedIndices.toSet()).randomOrNull() ?: -1
+    playSongFromRadio(activity, songList[pointer++])
 }
 
 fun resumeActivitySound() {
@@ -412,47 +386,6 @@ fun playFrankPhrase(activity: MainActivity, phraseId: Int) {
                 stopSoundEffects()
                 effectPlayers.add(this)
                 start()
-            }
-        }
-}
-
-fun launchHorrorSequence(activity: MainActivity) {
-    stopRadio()
-    stopAmbient()
-    stopSoundEffects()
-    soundReduced = true
-    val vol = 1f
-    MediaPlayer.create(activity, R.raw.horror)
-        .apply {
-            isLooping = false
-            setVolume(vol, vol)
-            radioLock.withLock {
-                radioPlayers.add(this)
-                if (radioState != RadioState.PAUSED_BY_LEAVING_ACTIVITY) {
-                    start()
-                }
-            }
-            setOnCompletionListener {
-                radioLock.withLock {
-                    it.stop()
-                    radioPlayers.remove(it)
-                    it.release()
-                    setGlitchOnRepeat(activity)
-                }
-            }
-        }
-}
-private fun setGlitchOnRepeat(activity: MainActivity) {
-    val vol = 1f
-    MediaPlayer.create(activity, R.raw.glitch_effect)
-        .apply {
-            isLooping = true
-            setVolume(vol, vol)
-            radioLock.withLock {
-                radioPlayers.add(this)
-                if (radioState != RadioState.PAUSED_BY_LEAVING_ACTIVITY) {
-                    start()
-                }
             }
         }
 }

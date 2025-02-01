@@ -2,6 +2,7 @@ package com.unicorns.invisible.caravan.model.primitives
 
 import com.unicorns.invisible.caravan.model.CardBack
 import kotlinx.serialization.Serializable
+import kotlin.random.Random
 
 
 @Serializable
@@ -17,36 +18,29 @@ class CResources(private val deck: CustomDeck) {
      * 1) no Wild Wasteland cards in the hand
      * 2) if there is a bomb in a deck, there must be exactly one in the hand
      */
-    private fun getTopHand(): List<Card> {
+    private fun getTopHand(facesLimit: Int = 6): List<Card> {
         val cards = deck.toList().toMutableList()
+        cards.removeAll { it.isWildWasteland() }
+
         val nuclears = cards.filter { it.isNuclear() }
-        cards.removeAll { !it.isOrdinary() }
+        val faces = cards.filter { it.isOrdinary() && it.isFace() }
+        val numbers = cards.filter { it.isOrdinary() && !it.isFace() }
 
-        return if (nuclears.isNotEmpty()) {
-            cards.take(7) + nuclears.first()
-        } else {
-            cards.take(8)
+        val startingHand = mutableListOf<Card>()
+        if (!nuclears.isEmpty()) {
+            startingHand.add(nuclears.first())
         }
+        startingHand.addAll(faces.take(Random.nextInt(0, facesLimit)))
+        val remaining = 8 - startingHand.size
+        startingHand.addAll(numbers.take(remaining))
+
+        return startingHand
     }
-    fun initResources(maxNumOfFaces: Int, initHand: Boolean) {
+    fun initResources() {
         shuffleDeck()
-        if (initHand) {
-            var tmpHand = getTopHand()
-            while (tmpHand.count { it.isFace() } > maxNumOfFaces) {
-                shuffleDeck()
-                tmpHand = getTopHand()
-            }
-
-            deck.removeAllOnce(tmpHand)
-            tmpHand.forEach { it.handAnimationMark = Card.AnimationMark.MOVING_IN }
-            handMutable.addAll(tmpHand)
-        } else {
-            var tmpHand = deck.toList().take(8)
-            while (tmpHand.count { it.isFace() } > maxNumOfFaces || tmpHand.any { it.isWildWasteland() }) {
-                shuffleDeck()
-                tmpHand = deck.toList().take(8)
-            }
-        }
+        val tmpHand = getTopHand()
+        deck.removeAllOnce(tmpHand)
+        tmpHand.forEach { addCardToHand(it) }
     }
 
     private fun addCardToHand(card: Card) {
@@ -63,19 +57,8 @@ class CResources(private val deck: CustomDeck) {
         processHandAddedCard(card)
     }
 
-    fun addCardToHandPvPInit(): Card? {
-        if (deck.size == 0) {
-            return null
-        }
-        val card = deck.removeFirst()
-        addCardToHand(card)
-        return card
-    }
-
     fun addCardToHandDirect(card: Card) {
-        if (deck.size > 0) {
-            deck.removeFirst()
-        }
+        deck.removeAllOnce(listOf(card))
         addCardToHand(card)
         processHandAddedCard(card)
     }
@@ -108,9 +91,6 @@ class CResources(private val deck: CustomDeck) {
     val deckSize: Int
         get() = deck.size
 
-    val numOfNumbers: Int
-        get() = deck.count { !it.rank.isFace() }
-
     fun mutateFev(card: Card) {
         val cards = handMutable.size
         handMutable.forEach { it.handAnimationMark = Card.AnimationMark.MOVED_OUT }
@@ -121,13 +101,9 @@ class CResources(private val deck: CustomDeck) {
     }
 
     fun addNewDeck(newDeck: CustomDeck) {
-        newDeck.toList().reversed().forEach {
-            deck.addOnTop(it)
-        }
+        newDeck.toList().reversed().forEach { deck.addOnTop(it) }
     }
-    fun addOnTop(card: Card) {
-        deck.addOnTop(card)
-    }
+    fun addOnTop(card: Card) = deck.addOnTop(card)
     fun moveOnTop(rank: Rank, suit: Suit) = deck.moveOnTop(rank, suit)
 
     fun copyFrom(cResources: CResources) {
@@ -139,6 +115,7 @@ class CResources(private val deck: CustomDeck) {
 
     fun isCustomDeckValid(): Boolean {
         val numOfDecks = deck.toList().distinctBy { it.back }.size
+        val numOfNumbers = deck.count { it.isOrdinary() && !it.rank.isFace() }
         return numOfDecks <= MAX_NUMBER_OF_DECKS &&
                 deckSize >= MIN_DECK_SIZE &&
                 numOfNumbers >= MIN_NUM_OF_NUMBERS

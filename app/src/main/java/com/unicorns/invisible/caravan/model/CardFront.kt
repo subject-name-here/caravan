@@ -18,6 +18,7 @@ fun getCardName(card: Card): String {
         CardBack.CHINESE -> if (!card.isAlt) getChineseName(card) else getCcpAltCard()
         CardBack.ENCLAVE -> if (!card.isAlt) getEnclaveName(card) else getEnclaveAltCard()
         CardBack.MADNESS -> if (!card.isAlt) getMadnessName(card) else getWildWastelandName(card)
+        CardBack.VIKING -> if (!card.isAlt) getVikingName(card) else "TODO" // TODO: RAD Infinitum cards
     }
 }
 
@@ -259,6 +260,9 @@ private fun getChineseName(card: Card): String {
 }
 private fun getEnclaveName(card: Card): String {
     return getOGCardName(card, "enclave")
+}
+private fun getVikingName(card: Card): String {
+    return getOGCardName(card, "viking")
 }
 
 private fun getOGCardName(card: Card, dirName: String): String {

@@ -89,18 +89,18 @@ import kotlin.random.Random
 
 
 enum class Style(val styleNameId: Int, val price: Int) {
-    DESERT(R.string.style_desert, 250),
-    ALASKA_FRONTIER(R.string.style_alaska, 500),
+    DESERT(R.string.style_desert, 500),
+    ALASKA_FRONTIER(R.string.style_alaska, 625),
     PIP_BOY(R.string.style_pip_boy, 0),
-    PIP_GIRL(R.string.style_pip_girl, 1969),
-    OLD_WORLD(R.string.style_old_world, 2077),
-    NEW_WORLD(R.string.style_new_world, 2277),
-    SIERRA_MADRE(R.string.style_sierra_madre, 2077),
-    MADRE_ROJA(R.string.style_madre_roja, 2277),
-    VAULT_21(R.string.style_vault_21, 2100),
-    VAULT_22(R.string.style_vault_22, 2200),
-    BLACK(R.string.style_black, 413),
-    ENCLAVE(R.string.style_enclave, 1776);
+    PIP_GIRL(R.string.style_pip_girl, 845),
+    OLD_WORLD(R.string.style_old_world, 575),
+    NEW_WORLD(R.string.style_new_world, 875),
+    SIERRA_MADRE(R.string.style_sierra_madre, 625),
+    MADRE_ROJA(R.string.style_madre_roja, 1000),
+    VAULT_21(R.string.style_vault_21, 605),
+    VAULT_22(R.string.style_vault_22, 610),
+    BLACK(R.string.style_black, 565),
+    ENCLAVE(R.string.style_enclave, 888);
 }
 
 
@@ -1163,36 +1163,6 @@ fun BoxWithConstraintsScope.StylePicture(
                     }
                 }
             }
-
-
-            var playedTime by remember { mutableLongStateOf(0L) }
-            LaunchedEffect(Unit) {
-                playedTime = activity.getPlayedTime() ?: return@LaunchedEffect
-                while (isActive) {
-                    delay(2500L)
-                    playedTime += 2500L
-                }
-            }
-            fun longToTime(millis: Long): String {
-                var t = millis / 1000
-                if (t == 0L) {
-                    t = activity.lastPlayedTimeCache / 1000
-                }
-                val minutes = ((t / 60) % 60).toString().padStart(2, '0')
-                val hours = (t / 3600).toString()
-                return "Time played: ${hours}h ${minutes}m"
-            }
-
-            Box(Modifier.fillMaxSize().padding(top = 48.dp, end = 12.dp), contentAlignment = Alignment.TopEnd) {
-                Text(
-                    text = longToTime(playedTime),
-                    textAlign = TextAlign.Center,
-                    color = Color.White,
-                    fontFamily = FontFamily(Font(R.font.classic)),
-                    modifier = Modifier,
-                    fontSize = 12.sp,
-                )
-            }
         }
 
         ENCLAVE -> {
@@ -1273,34 +1243,6 @@ fun BoxWithConstraintsScope.StylePicture(
             }
         }
 
-        Style.BLACK -> {
-            if ((0..9).random(rand) == 0) {
-                val text = "69 69 69"
-                Row(
-                    Modifier
-                        .fillMaxWidth()
-                        .align(Alignment.CenterEnd)
-                        .padding(top = 48.dp, bottom = 48.dp, end = 8.dp)
-                ) {
-                    Box(Modifier.weight(1f))
-                    Box(Modifier.weight(1f), contentAlignment = Alignment.Center) {
-                        Text(
-                            text = text,
-                            textAlign = TextAlign.Center,
-                            color = Color.White,
-                            fontFamily = FontFamily(Font(R.font.help)),
-                            modifier = Modifier
-                                .align(Alignment.Center)
-                                .rotate(90f)
-                                .offset(
-                                    x = ((-69..69).random(rand).dp),
-                                    y = ((-69..69).random(rand).dp)
-                                ),
-                            fontSize = 12.sp,
-                        )
-                    }
-                }
-            }
-        }
+        Style.BLACK -> {}
     }
 }

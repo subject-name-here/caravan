@@ -17,8 +17,8 @@ class EnclaveTrader : Trader {
         activity.getString(R.string.enclave_trader_cond)
 
     override fun getName(): Int = R.string.enclave_trader_name
+    override fun getSymbol() = "E"
 
     override fun getCards(): List<Pair<Card, Int>> = getCards(CardBack.ENCLAVE)
-
     override fun getStyles(): List<Style> = listOf(Style.ENCLAVE)
 }

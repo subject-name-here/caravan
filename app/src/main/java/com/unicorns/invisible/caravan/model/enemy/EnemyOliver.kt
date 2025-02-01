@@ -8,6 +8,9 @@ import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyDropCard
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyInitStage
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.Rank
+import com.unicorns.invisible.caravan.model.trading.GomorrahTrader
+import com.unicorns.invisible.caravan.model.trading.SierraMadreTrader
+import com.unicorns.invisible.caravan.save
 import kotlinx.serialization.Serializable
 
 
@@ -91,5 +94,9 @@ data object EnemyOliver : Enemy {
         }
 
         StrategyDropCard(CardDropSelect.RANDOM).move(game)
+    }
+
+    override fun onVictory() {
+        save.traders.filterIsInstance<GomorrahTrader>().forEach { it.isOliverDefeated = true }
     }
 }

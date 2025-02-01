@@ -74,7 +74,7 @@ fun Tutorial(
             EnemyTutorial().apply {
                 onRemoveFromHand = { updater = !updater }
             }
-        ).also { it.startGame(maxNumOfFaces = 4) }
+        ).also { it.startGame() }
     }
 
     ShowGame(activity = activity, game = game) { stopAmbient(); goBack() }

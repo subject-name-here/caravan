@@ -5,10 +5,6 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.compose.setContent
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -23,6 +19,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
@@ -44,13 +41,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.paint
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorMatrix
-import androidx.compose.ui.graphics.ColorMatrixColorFilter
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.layout.FixedScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.LinkAnnotation
@@ -107,8 +101,6 @@ import com.unicorns.invisible.caravan.utils.startRadio
 import com.unicorns.invisible.caravan.utils.stopSoundEffects
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import org.chromium.net.CronetEngine
 import kotlin.random.Random
@@ -123,9 +115,6 @@ var soundReduced: Boolean = false
         soundReducedLiveData.postValue(value)
     }
 private val soundReducedLiveData = MutableLiveData(soundReduced)
-
-val isHorror = MutableLiveData(false)
-val restartSwitch = MutableLiveData(false)
 
 @Suppress("MoveLambdaOutsideParentheses")
 class MainActivity : SaveDataActivity() {
@@ -143,14 +132,14 @@ class MainActivity : SaveDataActivity() {
         resumeActivitySound()
     }
 
-    override fun onSnapshotClientInitialized() {
+    override fun onSnapshotClientInitialized(isInited: Boolean) {
         CoroutineScope(Dispatchers.IO).launch {
+            // TODO: test
             if (save.playerId == null) {
-                val playerId = getPlayerId()
+                val playerId = if (isInited) getPlayerId() else ""
 
                 val localSave = loadLocalSave(this@MainActivity)
-                val isPlayerUndefined = playerId == ""
-                if (localSave != null && (localSave.playerId == playerId || isPlayerUndefined)) {
+                if (localSave != null && (localSave.playerId == playerId || playerId == "")) {
                     save = localSave
                 } else {
                     val loadedSave = loadGDSave(this@MainActivity)
@@ -220,223 +209,157 @@ class MainActivity : SaveDataActivity() {
             R.string.intro_tip_l11,
         ).random(Random(id.hashCode()))
 
+        val (textColor, strokeColor, backgroundColor) = Triple(
+            getTextColor(this), getTextStrokeColor(this), getBackgroundColor(this)
+        )
+
         setContent {
-            val (textColor, strokeColor, backgroundColor) = Triple(
-                getTextColor(this), getTextStrokeColor(this), getBackgroundColor(this)
-            )
-            var isIntroScreen by rememberScoped { mutableStateOf(true) }
-
-            val restartSwitchState by restartSwitch.observeAsState()
-            if (restartSwitchState == true) {
-                isIntroScreen = true
-            }
-
-            if (isIntroScreen) {
-                Box(
-                    Modifier
-                        .fillMaxSize()
-                        .background(backgroundColor)
-                        .clickableOk(this) {
-                            if (isSaveLoaded.value == true) {
-                                restartSwitch.postValue(false)
-                                isIntroScreen = false
-                            }
+            Box(Modifier.safeDrawingPadding()) {
+                var isIntroScreen by rememberScoped { mutableStateOf(true) }
+                if (isIntroScreen) {
+                    Box(
+                        if (isSaveLoaded.value == true) {
+                            Modifier
+                                .fillMaxSize()
+                                .background(backgroundColor)
+                                .clickableOk(this@MainActivity) {
+                                    isIntroScreen = false
+                                }
+                        } else {
+                            Modifier.fillMaxSize().background(backgroundColor)
                         },
-                    contentAlignment = Alignment.Center
-                ) {
-                    val k by isSaveLoaded.observeAsState()
+                        contentAlignment = Alignment.Center
+                    ) {
+                        val k by isSaveLoaded.observeAsState()
 
-                    @Composable
-                    fun ColumnScope.CaravanTitle(weight: Float) {
-                        Box(Modifier.fillMaxWidth().weight(weight).padding(vertical = 4.dp).zIndex(5f)) {
-                            Column(
-                                Modifier.fillMaxSize(),
-                                verticalArrangement = Arrangement.Center,
-                                horizontalAlignment = Alignment.CenterHorizontally
-                            ) {
-                                if (k == true) {
+                        @Composable
+                        fun ColumnScope.CaravanTitle(weight: Float) {
+                            Box(Modifier.fillMaxWidth().weight(weight).padding(vertical = 4.dp).zIndex(5f)) {
+                                Column(
+                                    Modifier.fillMaxSize(),
+                                    verticalArrangement = Arrangement.Center,
+                                    horizontalAlignment = Alignment.CenterHorizontally
+                                ) {
+                                    if (k == true) {
+                                        TextFallout(
+                                            "CARAVAN",
+                                            textColor,
+                                            strokeColor,
+                                            40.sp,
+                                            Alignment.TopCenter,
+                                            Modifier.padding(top = 8.dp),
+                                            TextAlign.Center
+                                        )
+                                        TextFallout(
+                                            stringResource(R.string.tap_to_play),
+                                            textColor,
+                                            strokeColor,
+                                            24.sp,
+                                            Alignment.TopCenter,
+                                            Modifier.padding(4.dp),
+                                            TextAlign.Center
+                                        )
+                                    } else {
+                                        TextFallout(
+                                            "PLEASE\nSTAND BY",
+                                            textColor,
+                                            strokeColor,
+                                            32.sp,
+                                            Alignment.TopCenter,
+                                            Modifier.padding(4.dp),
+                                            TextAlign.Center
+                                        )
+                                    }
+                                    Spacer(Modifier.height(8.dp))
                                     TextFallout(
-                                        "CARAVAN",
+                                        getString(advice),
                                         textColor,
                                         strokeColor,
-                                        40.sp,
-                                        Alignment.TopCenter,
-                                        Modifier.padding(top = 8.dp),
-                                        TextAlign.Center
-                                    )
-                                    TextFallout(
-                                        stringResource(R.string.tap_to_play),
-                                        textColor,
-                                        strokeColor,
-                                        24.sp,
-                                        Alignment.TopCenter,
-                                        Modifier.padding(4.dp),
-                                        TextAlign.Center
-                                    )
-                                } else {
-                                    TextFallout(
-                                        "PLEASE\nSTAND BY",
-                                        textColor,
-                                        strokeColor,
-                                        32.sp,
-                                        Alignment.TopCenter,
-                                        Modifier.padding(4.dp),
+                                        18.sp,
+                                        Alignment.Center,
+                                        Modifier.padding(vertical = 4.dp, horizontal = 12.dp),
                                         TextAlign.Center
                                     )
                                 }
-                                Spacer(Modifier.height(8.dp))
+                            }
+                        }
+                        @Composable
+                        fun ColumnScope.Picture(weight: Float) {
+                            Box(Modifier.fillMaxWidth().weight(weight)
+                                .paint(
+                                    painterResource(R.drawable.caravan_main2),
+                                    contentScale = ContentScale.Fit
+                                )
+                            )
+                        }
+                        @Composable
+                        fun ColumnScope.PicAuthorLink(weight: Float) {
+                            Box(Modifier.fillMaxWidth().weight(weight)) {
+                                val annotatedString = buildAnnotatedString {
+                                    append("Pic creator: ")
+                                    withLink(
+                                        link = LinkAnnotation.Url(
+                                            url = "https://steamcommunity.com/profiles/76561199409356196/",
+                                            styles = TextLinkStyles(
+                                                style = SpanStyle(
+                                                    color = textColor,
+                                                    fontFamily = FontFamily(Font(R.font.monofont)),
+                                                    textDecoration = TextDecoration.Underline
+                                                )
+                                            )
+                                        ),
+                                    ) {
+                                        append("bunkeran")
+                                    }
+                                }
                                 TextFallout(
-                                    getString(advice),
+                                    annotatedString,
                                     textColor,
                                     strokeColor,
-                                    18.sp,
-                                    Alignment.Center,
-                                    Modifier.padding(vertical = 4.dp, horizontal = 12.dp),
-                                    TextAlign.Center
+                                    14.sp,
+                                    Alignment.BottomEnd,
+                                    Modifier.fillMaxSize(),
+                                    TextAlign.End
                                 )
                             }
                         }
-                    }
-                    @Composable
-                    fun ColumnScope.Picture(weight: Float) {
-                        if (isHorror.value == true) {
-                            Box(
-                                Modifier.fillMaxWidth().weight(weight)
-                                    .paint(
-                                        painterResource(R.drawable.brother),
-                                        contentScale = ContentScale.Fit,
-                                        colorFilter = ColorMatrixColorFilter(ColorMatrix(
-                                            floatArrayOf(
-                                                0f, 0f, 1f, 0f, 0f,
-                                                0f, 1f, 0f, 0f, 0f,
-                                                1f, 0f, 0f, 0f, 0f,
-                                                0f, 0f, 0f, 1f, 0f
-                                            )
-                                        ))
-                                    )
-                            )
-                        } else {
-                            Box(
-                                Modifier.fillMaxWidth().weight(weight)
-                                    .paint(
-                                        painterResource(R.drawable.caravan_main2),
-                                        contentScale = ContentScale.Fit
-                                    )
-                            )
-                        }
-                    }
-                    @Composable
-                    fun ColumnScope.PicAuthorLink(weight: Float) {
-                        Box(Modifier.fillMaxWidth().weight(weight)) {
-                            val annotatedString = buildAnnotatedString {
-                                append("Pic creator: ")
-                                withLink(
-                                    link = LinkAnnotation.Url(
-                                        url = "https://steamcommunity.com/profiles/76561199409356196/",
-                                        styles = TextLinkStyles(
-                                            style = SpanStyle(
-                                                color = textColor,
-                                                fontFamily = FontFamily(Font(R.font.monofont)),
-                                                textDecoration = TextDecoration.Underline
-                                            )
-                                        )
-                                    ),
-                                ) {
-                                    append("bunkeran")
-                                }
-                            }
-                            TextFallout(
-                                annotatedString,
-                                textColor,
-                                strokeColor,
-                                14.sp,
-                                Alignment.BottomEnd,
-                                Modifier.fillMaxSize(),
-                                TextAlign.End
-                            )
-                        }
-                    }
-                    key(k) {
-                        BoxWithConstraints(Modifier.fillMaxSize()) {
-                            if (maxHeight > maxWidth) {
-                                Column(
-                                    Modifier.fillMaxSize().padding(4.dp),
-                                    horizontalAlignment = Alignment.CenterHorizontally,
-                                    verticalArrangement = Arrangement.Center
-                                ) {
-                                    CaravanTitle(0.29f)
-                                    Picture(0.66f)
-                                    PicAuthorLink(0.05f)
-                                }
-                            } else {
-                                Row(Modifier.fillMaxSize()) {
+                        key(k) {
+                            BoxWithConstraints(Modifier.fillMaxSize()) {
+                                if (maxHeight > maxWidth) {
                                     Column(
-                                        Modifier.fillMaxHeight().weight(2f),
+                                        Modifier.fillMaxSize().padding(4.dp),
                                         horizontalAlignment = Alignment.CenterHorizontally,
                                         verticalArrangement = Arrangement.Center
                                     ) {
-                                        CaravanTitle(1f)
-                                    }
-                                    Column(
-                                        Modifier.fillMaxHeight().weight(1f),
-                                        horizontalAlignment = Alignment.CenterHorizontally,
-                                        verticalArrangement = Arrangement.Center
-                                    ) {
-                                        Box(Modifier.weight(0.05f))
-                                        Picture(0.9f)
+                                        CaravanTitle(0.29f)
+                                        Picture(0.66f)
                                         PicAuthorLink(0.05f)
                                     }
+                                } else {
+                                    Row(Modifier.fillMaxSize()) {
+                                        Column(
+                                            Modifier.fillMaxHeight().weight(2f),
+                                            horizontalAlignment = Alignment.CenterHorizontally,
+                                            verticalArrangement = Arrangement.Center
+                                        ) {
+                                            CaravanTitle(1f)
+                                        }
+                                        Column(
+                                            Modifier.fillMaxHeight().weight(1f),
+                                            horizontalAlignment = Alignment.CenterHorizontally,
+                                            verticalArrangement = Arrangement.Center
+                                        ) {
+                                            Box(Modifier.weight(0.05f))
+                                            Picture(0.9f)
+                                            PicAuthorLink(0.05f)
+                                        }
+                                    }
                                 }
                             }
                         }
                     }
-                }
-            } else {
-                Screen()
-
-                if (isHorror.value == true) {
-                    var visible by remember { mutableStateOf(false) }
-                    var alignment by remember { mutableStateOf(Alignment.Center) }
-                    fun updateAlignment() {
-                        alignment = listOf(
-                            Alignment.Center,
-                            Alignment.CenterStart,
-                            Alignment.CenterEnd,
-                            Alignment.TopStart,
-                            Alignment.TopCenter,
-                            Alignment.TopEnd,
-                            Alignment.BottomStart,
-                            Alignment.BottomCenter,
-                            Alignment.BottomEnd,
-                        ).random()
-                    }
-
-                    LaunchedEffect(Unit) {
-                        while (isActive) {
-                            delay(Random.nextInt(2000, 4750).toLong())
-                            updateAlignment()
-                            visible = true
-                            delay(150L)
-                            visible = false
-                            delay(750L)
-                            updateAlignment()
-                            visible = true
-                            delay(150L)
-                            visible = false
-                        }
-                    }
-
-                    Box(Modifier.fillMaxSize().padding(top = 48.dp, end = 8.dp, bottom = 48.dp), contentAlignment = alignment) {
-                        AnimatedVisibility(
-                            visible = visible,
-                            enter = fadeIn(tween(100)), exit = fadeOut(tween(333))
-                        ) {
-                            Box(Modifier.paint(
-                                painterResource(R.drawable.brother2),
-                                contentScale = FixedScale(0.69f)
-                            ))
-                        }
-                    }
+                } else {
+                    Screen()
                 }
             }
         }
@@ -458,10 +381,8 @@ class MainActivity : SaveDataActivity() {
         var styleIdForTop by rememberSaveable { mutableStateOf(styleId) }
 
         var showSoundSettings by remember { mutableStateOf(false) }
-        var showSoundSettings2 by remember { mutableStateOf(false) }
 
         var showAlertDialog by remember { mutableStateOf(false) }
-        var showAlertDialog2 by remember { mutableStateOf(false) }
         var alertDialogHeader by remember { mutableStateOf("") }
         var alertDialogMessage by remember { mutableStateOf("") }
         var alertGoBack: (() -> Unit)? by rememberScoped { mutableStateOf(null) }
@@ -476,184 +397,154 @@ class MainActivity : SaveDataActivity() {
 
         fun hideAlertDialog() {
             showAlertDialog = false
-            showAlertDialog2 = false
             isCustomDeckAlert = false
         }
 
         if (showAlertDialog) {
             LaunchedEffect(Unit) {
-                delay(50L)
-                playNotificationSound(this@MainActivity) { showAlertDialog2 = true }
+                playNotificationSound(this@MainActivity)
             }
-
-            if (showAlertDialog2) {
-                AlertDialog(
-                    modifier = Modifier.border(width = 4.dp, color = getTextColor(this)),
-                    onDismissRequest = { hideAlertDialog() },
-                    confirmButton = {
+            AlertDialog(
+                modifier = Modifier.border(width = 4.dp, color = getTextColor(this)),
+                onDismissRequest = { hideAlertDialog() },
+                confirmButton = {
+                    TextFallout(
+                        stringResource(R.string.close),
+                        getDialogBackground(this),
+                        getDialogBackground(this),
+                        18.sp, Alignment.Center,
+                        Modifier
+                            .background(getDialogTextColor(this))
+                            .clickableCancel(this) { hideAlertDialog() }
+                            .padding(4.dp),
+                        TextAlign.Center
+                    )
+                },
+                dismissButton = {
+                    if (alertGoBack != null) {
                         TextFallout(
-                            stringResource(R.string.close),
+                            if (isCustomDeckAlert) {
+                                // TODO: test
+                                stringResource(R.string.deck_custom)
+                            } else {
+                                stringResource(R.string.back_to_menu)
+                            },
                             getDialogBackground(this),
-                            getDialogBackground(this),
-                            18.sp, Alignment.Center,
+                            getDialogBackground(this), 18.sp, Alignment.Center,
                             Modifier
                                 .background(getDialogTextColor(this))
-                                .clickableCancel(this) { hideAlertDialog() }
+                                .clickableCancel(this) {
+                                    hideAlertDialog()
+                                    alertGoBack?.invoke()
+                                }
                                 .padding(4.dp),
                             TextAlign.Center
                         )
-                    },
-                    dismissButton = {
-                        if (alertGoBack != null) {
-                            TextFallout(
-                                if (isCustomDeckAlert) {
-                                    stringResource(R.string.deck_custom)
-                                } else {
-                                    stringResource(R.string.back_to_menu)
-                                },
-                                getDialogBackground(this),
-                                getDialogBackground(this), 18.sp, Alignment.Center,
-                                Modifier
-                                    .background(getDialogTextColor(this))
-                                    .clickableCancel(this) {
-                                        hideAlertDialog()
-                                        alertGoBack?.invoke()
-                                    }
-                                    .padding(4.dp),
-                                TextAlign.Center
-                            )
-                        }
-                    },
-                    title = {
-                        TextFallout(
-                            alertDialogHeader,
-                            getDialogTextColor(this),
-                            getDialogTextColor(this),
-                            24.sp, Alignment.CenterStart, Modifier,
-                            TextAlign.Start
-                        )
-                    },
-                    text = {
-                        TextFallout(
-                            alertDialogMessage,
-                            getDialogTextColor(this),
-                            getDialogTextColor(this),
-                            16.sp, Alignment.CenterStart, Modifier,
+                    }
+                },
+                title = {
+                    TextFallout(
+                        alertDialogHeader,
+                        getDialogTextColor(this),
+                        getDialogTextColor(this),
+                        24.sp, Alignment.CenterStart, Modifier,
+                        TextAlign.Start
+                    )
+                },
+                text = {
+                    TextFallout(
+                        alertDialogMessage,
+                        getDialogTextColor(this),
+                        getDialogTextColor(this),
+                        16.sp, Alignment.CenterStart, Modifier,
                             TextAlign.Start
                         )
                     },
                     containerColor = getDialogBackground(this),
                     textContentColor = getDialogTextColor(this),
-                    shape = RectangleShape,
-                )
-            }
+                    shape = RectangleShape
+            )
         }
 
         fun hideSoundSettings() {
-            showSoundSettings2 = false
             showSoundSettings = false
         }
-        if (showSoundSettings && isHorror.value != true) {
+        if (showSoundSettings) {
             LaunchedEffect(Unit) {
-                delay(50L)
-                playNotificationSound(this@MainActivity) { showSoundSettings2 = true }
+                playNotificationSound(this@MainActivity)
             }
 
-            if (showSoundSettings2) {
-                AlertDialog(
-                    modifier = Modifier.border(width = 4.dp, color = getKnobColor(this)),
-                    onDismissRequest = { saveData(this); hideSoundSettings() },
-                    confirmButton = {
-                        TextFallout(
-                            stringResource(R.string.save),
-                            getDialogBackground(this),
-                            getDialogBackground(this),
-                            18.sp,
-                            Alignment.Center,
-                            Modifier
-                                .background(getDialogTextColor(this))
-                                .clickableCancel(this) { saveData(this); hideSoundSettings() }
-                                .padding(4.dp),
-                            TextAlign.Center
-                        )
-                    },
-                    title = {
-                        TextFallout(
-                            stringResource(R.string.sound),
-                            getDialogTextColor(this),
-                            getDialogTextColor(this),
-                            24.sp,
-                            Alignment.Center,
-                            Modifier,
-                            TextAlign.Center
-                        )
-                    },
-                    text = {
-                        var radioVolume by remember { mutableFloatStateOf(save.radioVolume) }
-                        var soundVolume by remember { mutableFloatStateOf(save.soundVolume) }
-                        var ambientVolume by remember { mutableFloatStateOf(save.ambientVolume) }
-                        Column {
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                TextFallout(
-                                    stringResource(R.string.radio),
-                                    getDialogTextColor(this@MainActivity),
-                                    getDialogTextColor(this@MainActivity),
-                                    16.sp,
-                                    Alignment.CenterStart,
-                                    modifier = Modifier.fillMaxWidth(0.33f),
-                                    TextAlign.Start,
-                                )
+            AlertDialog(
+                modifier = Modifier.border(width = 4.dp, color = getKnobColor(this)),
+                onDismissRequest = { saveData(this); hideSoundSettings() },
+                confirmButton = {
+                    TextFallout(
+                        stringResource(R.string.save),
+                        getDialogBackground(this),
+                        getDialogBackground(this),
+                        18.sp,
+                        Alignment.Center,
+                        Modifier
+                            .background(getDialogTextColor(this))
+                            .clickableCancel(this) { saveData(this); hideSoundSettings() }
+                            .padding(4.dp),
+                        TextAlign.Center
+                    )
+                },
+                title = {
+                    TextFallout(
+                        stringResource(R.string.sound),
+                        getDialogTextColor(this),
+                        getDialogTextColor(this),
+                        24.sp,
+                        Alignment.Center,
+                        Modifier,
+                        TextAlign.Center
+                    )
+                },
+                text = {
+                    var radioVolume by remember { mutableFloatStateOf(save.radioVolume) }
+                    var soundVolume by remember { mutableFloatStateOf(save.soundVolume) }
+                    var ambientVolume by remember { mutableFloatStateOf(save.ambientVolume) }
 
-                                SliderCustom(
-                                    this@MainActivity,
-                                    { radioVolume },
-                                    {
-                                        radioVolume = it
-                                        save.radioVolume = it
-                                        setRadioVolume(it)
-                                    }
-                                )
-                            }
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                TextFallout(
-                                    stringResource(R.string.ambient),
-                                    getDialogTextColor(this@MainActivity),
-                                    getDialogTextColor(this@MainActivity),
-                                    16.sp,
-                                    Alignment.CenterStart,
-                                    modifier = Modifier.fillMaxWidth(0.33f),
-                                    TextAlign.Start
-                                )
+                    @Composable
+                    fun Setting(title: String, get: () -> Float, set: (Float) -> Unit) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            TextFallout(
+                                title,
+                                getDialogTextColor(this@MainActivity),
+                                getDialogTextColor(this@MainActivity),
+                                16.sp,
+                                Alignment.CenterStart,
+                                modifier = Modifier.weight(1f),
+                                TextAlign.Start,
+                            )
 
-                                SliderCustom(this@MainActivity, { ambientVolume }, {
-                                    ambientVolume = it
-                                    save.ambientVolume = it
-                                    setAmbientVolume(it / 2)
-                                })
-                            }
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                TextFallout(
-                                    stringResource(R.string.sfx),
-                                    getDialogTextColor(this@MainActivity),
-                                    getDialogTextColor(this@MainActivity),
-                                    16.sp,
-                                    Alignment.CenterStart,
-                                    modifier = Modifier.fillMaxWidth(0.33f),
-                                    TextAlign.Start
-                                )
-
-                                SliderCustom(this@MainActivity, { soundVolume }, {
-                                    soundVolume = it
-                                    save.soundVolume = it
-                                }, { playNotificationSound(this@MainActivity) {} })
-                            }
+                            SliderCustom(this@MainActivity, get, set)
                         }
-                    },
-                    containerColor = getDialogBackground(this),
-                    textContentColor = getDialogTextColor(this),
-                    shape = RectangleShape,
-                )
-            }
+                    }
+
+                    Column {
+                        Setting(stringResource(R.string.radio), { radioVolume }) {
+                            radioVolume = it
+                            save.radioVolume = it
+                            setRadioVolume(it)
+                        }
+                        Setting(stringResource(R.string.ambient), { ambientVolume }) {
+                            ambientVolume = it
+                            save.ambientVolume = it
+                            setAmbientVolume(it / 2)
+                        }
+                        Setting(stringResource(R.string.sfx), { soundVolume }) {
+                            soundVolume = it
+                            save.soundVolume = it
+                        }
+                    }
+                },
+                containerColor = getDialogBackground(this),
+                textContentColor = getDialogTextColor(this),
+                shape = RectangleShape
+            )
         }
 
         Scaffold(
@@ -682,9 +573,6 @@ class MainActivity : SaveDataActivity() {
                                 .weight(1f)
                                 .wrapContentWidth()
                                 .clickableOk(this@MainActivity) {
-                                    if (isHorror.value == true) {
-                                        return@clickableOk
-                                    }
                                     if (!isPaused && !soundReduced) {
                                         nextSong(this@MainActivity)
                                     }
@@ -708,16 +596,15 @@ class MainActivity : SaveDataActivity() {
                                 .weight(1f)
                                 .wrapContentWidth()
                                 .clickableOk(this@MainActivity) {
-                                    if (soundReduced || isHorror.value == true) {
+                                    if (soundReduced) {
                                         return@clickableOk
                                     }
                                     if (isPaused) {
                                         resumeRadio()
-                                        isPaused = false
                                     } else {
                                         pauseRadio()
-                                        isPaused = true
                                     }
+                                    isPaused = !isPaused
                                 }
                                 .background(getTextBackgroundColor(this@MainActivity))
                                 .padding(4.dp),
@@ -811,7 +698,7 @@ class MainActivity : SaveDataActivity() {
                         LaunchedEffect(Unit) {
                             val currentHash = save.getCurrentDateHashCode()
                             if (currentHash != save.challengesHash) {
-                                val capsFound = Random.nextInt(15, 30)
+                                val capsFound = Random.nextInt(15, 31)
                                 showAlertDialog(
                                     getString(R.string.daily_update_head),
                                     getString(R.string.daily_update_body, capsFound.toString()),
@@ -1022,9 +909,6 @@ class MainActivity : SaveDataActivity() {
                                 .padding(horizontal = 4.dp)
                                 .background(getTextBackgroundColor(this@MainActivity))
                                 .clickableOk(this@MainActivity) {
-                                    if (isHorror.value == true) {
-                                        return@clickableOk
-                                    }
                                     showVision()
                                 }
                                 .padding(4.dp),
@@ -1041,9 +925,6 @@ class MainActivity : SaveDataActivity() {
                                 .background(getBackgroundColor(this@MainActivity))
                                 .padding(horizontal = 4.dp)
                                 .clickableOk(this@MainActivity) {
-                                    if (isHorror.value == true) {
-                                        return@clickableOk
-                                    }
                                     showSettings()
                                 }
                                 .background(getTextBackgroundColor(this@MainActivity))
@@ -1061,9 +942,6 @@ class MainActivity : SaveDataActivity() {
                                 .background(getBackgroundColor(this@MainActivity))
                                 .padding(horizontal = 4.dp)
                                 .clickableOk(this@MainActivity) {
-                                    if (isHorror.value == true) {
-                                        return@clickableOk
-                                    }
                                     showAbout()
                                 }
                                 .background(getTextBackgroundColor(this@MainActivity))
@@ -1100,7 +978,7 @@ class MainActivity : SaveDataActivity() {
                         verticalArrangement = Arrangement.Center
                     ) {
                         @Composable
-                        fun MenuItem(text: String, onClick: () -> Unit, isHorrorClickable: Boolean = false) {
+                        fun MenuItem(text: String, onClick: () -> Unit) {
                             TextFallout(
                                 text,
                                 getTextColor(this@MainActivity),
@@ -1109,9 +987,6 @@ class MainActivity : SaveDataActivity() {
                                 Alignment.CenterStart,
                                 Modifier
                                     .clickableOk(this@MainActivity) {
-                                        if (isHorror.value == true && !isHorrorClickable) {
-                                            return@clickableOk
-                                        }
                                         onClick()
                                     }
                                     .background(getTextBackgroundColor(this@MainActivity))
@@ -1120,7 +995,7 @@ class MainActivity : SaveDataActivity() {
                             )
                         }
                         Spacer(Modifier.height(32.dp))
-                        MenuItem(stringResource(R.string.menu_pve), showPvE, isHorrorClickable = true)
+                        MenuItem(stringResource(R.string.menu_pve), showPvE)
                         Spacer(modifier = Modifier.height(16.dp))
                         MenuItem(stringResource(R.string.menu_pvp), showPvP)
                         Spacer(modifier = Modifier.height(16.dp))

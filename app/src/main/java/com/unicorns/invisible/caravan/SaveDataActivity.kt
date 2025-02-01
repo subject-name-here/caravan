@@ -3,6 +3,7 @@ package com.unicorns.invisible.caravan
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.games.AchievementsClient
@@ -10,13 +11,11 @@ import com.google.android.gms.games.PlayGames
 import com.google.android.gms.games.PlayGamesSdk
 import com.google.android.gms.games.SnapshotsClient
 import com.google.android.gms.games.snapshot.Snapshot
-import com.google.android.gms.games.snapshot.SnapshotMetadata.PLAYED_TIME_UNKNOWN
 import com.google.android.gms.games.snapshot.SnapshotMetadataChange
 import com.google.android.gms.tasks.Task
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
-import java.util.Date
 
 
 private var snapshotsClient: SnapshotsClient? = null
@@ -27,11 +26,6 @@ abstract class SaveDataActivity : AppCompatActivity() {
         return try {
             snapshot!!.snapshotContents.writeBytes(data)
             val builder = SnapshotMetadataChange.Builder()
-            val time = getPlayedTime()
-            if (time != null) {
-                builder.setPlayedTimeMillis(time)
-                save.lastSaveTime = Date().time
-            }
             val metadataChange = builder.build()
             val result = snapshotsClient!!.commitAndClose(snapshot, metadataChange)
             result.isSuccessful
@@ -51,6 +45,8 @@ abstract class SaveDataActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        enableEdgeToEdge()
+
         achievementsClient = PlayGames.getAchievementsClient(this)
 
         if (snapshotsClient == null) {
@@ -59,7 +55,7 @@ abstract class SaveDataActivity : AppCompatActivity() {
         }
     }
 
-    protected abstract fun onSnapshotClientInitialized()
+    protected abstract fun onSnapshotClientInitialized(isInited: Boolean)
     private fun signInLoud() {
         val gamesSignInClient = PlayGames.getGamesSignInClient(this)
         gamesSignInClient.isAuthenticated()
@@ -67,11 +63,12 @@ abstract class SaveDataActivity : AppCompatActivity() {
                 val isAuthenticated = task.isSuccessful && task.result.isAuthenticated
                 if (isAuthenticated) {
                     snapshotsClient = PlayGames.getSnapshotsClient(this)
-                    onSnapshotClientInitialized()
+                    onSnapshotClientInitialized(true)
                 } else {
                     gamesSignInClient.signIn().addOnCompleteListener { task ->
                         if (task.isSuccessful && task.result.isAuthenticated) {
                             snapshotsClient = PlayGames.getSnapshotsClient(this)
+                            onSnapshotClientInitialized(true)
                         } else {
                             MainScope().launch {
                                 Toast.makeText(
@@ -80,8 +77,8 @@ abstract class SaveDataActivity : AppCompatActivity() {
                                     Toast.LENGTH_SHORT
                                 ).show()
                             }
+                            onSnapshotClientInitialized(false)
                         }
-                        onSnapshotClientInitialized()
                     }
                 }
             }
@@ -123,22 +120,6 @@ abstract class SaveDataActivity : AppCompatActivity() {
                 }
                 task.result.data
             }.await()
-    }
-
-    var lastPlayedTimeCache = 0L
-    suspend fun getPlayedTime(): Long? {
-        val snapshot = getSnapshot(SAVE_FILE_NAME)
-        return try {
-            val lastSaveTime = save.lastSaveTime
-            val lastPlayedTime = snapshot!!.metadata.playedTime
-            if (lastPlayedTime == PLAYED_TIME_UNKNOWN) {
-                0L
-            } else {
-                lastPlayedTime + (Date().time - lastSaveTime)
-            }.also { lastPlayedTimeCache = it }
-        } catch (_: Exception) {
-            null
-        }
     }
 
     companion object {
