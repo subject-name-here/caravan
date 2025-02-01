@@ -424,7 +424,6 @@ class MainActivity : SaveDataActivity() {
                     if (alertGoBack != null) {
                         TextFallout(
                             if (isCustomDeckAlert) {
-                                // TODO: test
                                 stringResource(R.string.deck_custom)
                             } else {
                                 stringResource(R.string.back_to_menu)

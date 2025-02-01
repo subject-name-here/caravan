@@ -88,12 +88,15 @@ fun SetCustomDeck(
 
     val mainState = rememberLazyListState()
     var updater by remember { mutableStateOf(false) }
+    var tabUpdater by remember { mutableStateOf(false) }
     var selectedDeck by rememberSaveable { mutableIntStateOf(save.activeCustomDeck) }
 
     fun getSelectedDeckIndex() = selectedDeck - 1
     fun selectDeck(d: Int) {
         selectedDeck = d
         save.activeCustomDeck = d
+        updater = !updater
+        tabUpdater = !tabUpdater
         saveData(activity)
     }
 
@@ -260,7 +263,7 @@ fun SetCustomDeck(
                         }
                     }
                     val state = rememberLazyListState()
-                    key(check, updaterLocal) {
+                    key(check, updaterLocal, tabUpdater) {
                         LazyRow(
                             Modifier
                                 .scrollbar(

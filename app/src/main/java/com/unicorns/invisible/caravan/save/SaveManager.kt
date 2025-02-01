@@ -139,9 +139,9 @@ fun processOldSave(activity: MainActivity) {
         save.tickets += tickets
 
         val storyProgress = jsonObject.getInt("storyChaptersProgress")
-        save.storyChaptersProgress = storyProgress
+        save.storyProgress = storyProgress
         val altStoryProgress = jsonObject.getInt("altStoryChaptersProgress")
-        save.altStoryChaptersProgress = altStoryProgress
+        save.altStoryProgress = altStoryProgress
     } catch (_: Exception) {
         MainScope().launch {
             Toast.makeText(
