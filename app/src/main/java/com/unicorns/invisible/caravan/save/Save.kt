@@ -45,6 +45,7 @@ class Save(var playerId: String? = null) {
     private val customDeck4: CustomDeck = CustomDeck(CardBack.STANDARD, false)
     private val altDecksChosen4 = CardBack.entries.associateWith { false }.toMutableMap()
 
+    @EncodeDefault
     var activeCustomDeck = 1
     fun getCurrentCustomDeck(): CustomDeck = when (activeCustomDeck) {
         2 -> customDeck2

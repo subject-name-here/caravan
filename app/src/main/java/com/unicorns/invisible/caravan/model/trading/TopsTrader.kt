@@ -11,14 +11,14 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 class TopsTrader : Trader {
-    var isBennyDefeated = false
+    var bennyDefeated = false
     var isLuc10Defeated = false
     var isVictorDefeated = false
-    override fun isOpen() = isBennyDefeated && isLuc10Defeated && isVictorDefeated
+    override fun isOpen() = bennyDefeated && isLuc10Defeated && isVictorDefeated
     override fun openingCondition(activity: MainActivity) =
         activity.getString(
             R.string.tops_trader_condition,
-            booleanToPlusOrMinus(isBennyDefeated),
+            booleanToPlusOrMinus(bennyDefeated),
             booleanToPlusOrMinus(isLuc10Defeated),
             booleanToPlusOrMinus(isVictorDefeated),
         )

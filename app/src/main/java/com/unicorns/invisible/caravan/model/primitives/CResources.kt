@@ -29,8 +29,11 @@ class CResources(private val deck: CustomDeck) {
         val startingHand = mutableListOf<Card>()
         if (!nuclears.isEmpty()) {
             startingHand.add(nuclears.first())
+            startingHand.addAll(faces.take(Random.nextInt(0, facesLimit - 1)))
+        } else {
+            startingHand.addAll(faces.take(Random.nextInt(0, facesLimit)))
         }
-        startingHand.addAll(faces.take(Random.nextInt(0, facesLimit)))
+
         val remaining = 8 - startingHand.size
         startingHand.addAll(numbers.take(remaining))
 

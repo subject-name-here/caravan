@@ -134,7 +134,6 @@ class MainActivity : SaveDataActivity() {
 
     override fun onSnapshotClientInitialized(isInited: Boolean) {
         CoroutineScope(Dispatchers.IO).launch {
-            // TODO: test
             if (save.playerId == null) {
                 val playerId = if (isInited) getPlayerId() else ""
 
@@ -209,12 +208,13 @@ class MainActivity : SaveDataActivity() {
             R.string.intro_tip_l11,
         ).random(Random(id.hashCode()))
 
-        val (textColor, strokeColor, backgroundColor) = Triple(
-            getTextColor(this), getTextStrokeColor(this), getBackgroundColor(this)
-        )
-
         setContent {
             Box(Modifier.safeDrawingPadding()) {
+                val (textColor, strokeColor, backgroundColor) = Triple(
+                    getTextColor(this@MainActivity),
+                    getTextStrokeColor(this@MainActivity),
+                    getBackgroundColor(this@MainActivity)
+                )
                 var isIntroScreen by rememberScoped { mutableStateOf(true) }
                 if (isIntroScreen) {
                     Box(
@@ -519,7 +519,9 @@ class MainActivity : SaveDataActivity() {
                                 TextAlign.Start,
                             )
 
-                            SliderCustom(this@MainActivity, get, set)
+                            Box(Modifier.weight(2.5f)) {
+                                SliderCustom(this@MainActivity, get, set)
+                            }
                         }
                     }
 

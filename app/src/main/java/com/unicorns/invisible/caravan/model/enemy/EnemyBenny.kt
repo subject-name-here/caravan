@@ -235,6 +235,6 @@ data object EnemyBenny : Enemy {
     }
 
     override fun onVictory() {
-        save.traders.filterIsInstance<TopsTrader>().forEach { it.isBennyDefeated = true }
+        save.traders.filterIsInstance<TopsTrader>().forEach { it.bennyDefeated = true }
     }
 }

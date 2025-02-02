@@ -115,6 +115,6 @@ data object EnemyVulpes : Enemy {
     }
 
     override fun onVictory() {
-        save.traders.filterIsInstance<GomorrahTrader>().forEach { it.isVulpesDefeated = true }
+        save.traders.filterIsInstance<GomorrahTrader>().forEach { it.vulpesDefeated = true }
     }
 }

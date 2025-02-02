@@ -57,21 +57,25 @@ fun saveData(activity: MainActivity) {
 
 
 suspend fun loadGDSave(activity: MainActivity): Save? {
+    fun failToLoad() {
+        MainScope().launch {
+            Toast.makeText(
+                activity,
+                "Failed to load from GD :(",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+    }
     return try {
         val data = activity.fetchDataFromDrive()?.toString(StandardCharsets.UTF_8)
         if (data != null && data != "" && data != "null") {
             json.decodeFromString<Save>(data)
         } else {
-            MainScope().launch {
-                Toast.makeText(
-                    activity,
-                    "Failed to load from GD :(",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
+            failToLoad()
             null
         }
     } catch (_: Exception) {
+        failToLoad()
         null
     }
 }

@@ -11,16 +11,16 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 class GomorrahTrader : Trader {
-    var isVulpesDefeated = false
-    var isOliverDefeated = false
-    var isCardinalDefeated = false
-    override fun isOpen() = isVulpesDefeated && isOliverDefeated && isCardinalDefeated
+    var vulpesDefeated = false
+    var oliverDefeated = false
+    var cardinalDefeated = false
+    override fun isOpen() = vulpesDefeated && oliverDefeated && cardinalDefeated
     override fun openingCondition(activity: MainActivity) =
         activity.getString(
             R.string.gomorrah_trader_condition,
-            booleanToPlusOrMinus(isVulpesDefeated),
-            booleanToPlusOrMinus(isOliverDefeated),
-            booleanToPlusOrMinus(isCardinalDefeated),
+            booleanToPlusOrMinus(vulpesDefeated),
+            booleanToPlusOrMinus(oliverDefeated),
+            booleanToPlusOrMinus(cardinalDefeated),
         )
 
     override fun getName(): Int = R.string.gomorrah_trader_name
