@@ -20,6 +20,10 @@ sealed interface Trader {
     fun getStyles(): List<Style>
 
     fun getCards(back: CardBack, nBig: Int = 13): List<Pair<Card, Int>> {
+        if (nBig <= 1) {
+            return emptyList()
+        }
+
         val b = back.ordinal
         val rand = Random(save.challengesHash xor (b * 31 + 22229) xor (b * b * b + 13))
 
@@ -30,7 +34,12 @@ sealed interface Trader {
             emptyList()
         }
 
-        return (cards1 + cards2).map { card -> card to save.getPriceOfCard(card) }
+        val cards = (cards1 + cards2).toMutableList()
+        return if (cards.all { save.isCardAvailableAlready(it) }) {
+            getCards(back, nBig / 2)
+        } else {
+            cards.map { card -> card to save.getPriceOfCard(card) }
+        }
     }
 
     companion object {
