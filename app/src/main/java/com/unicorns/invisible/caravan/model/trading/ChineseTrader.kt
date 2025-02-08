@@ -12,10 +12,11 @@ import kotlinx.serialization.Serializable
 @Serializable
 class ChineseTrader : Trader {
     var is1921Entered = false
-    override fun isOpen() = is1921Entered && save.storyProgress >= 9
+    override fun isOpen() = is1921Entered // TODO: 3.0 - && save.storyProgress >= 9
 
     override fun openingCondition(activity: MainActivity) =
-        activity.getString(R.string.chinese_trader_condition)
+        activity.getString(R.string.chinese_trader_condition_tmp)
+        // activity.getString(R.string.chinese_trader_condition)
 
     override fun getName(): Int = R.string.chinese_trader_name
     override fun getSymbol(): String = "•"

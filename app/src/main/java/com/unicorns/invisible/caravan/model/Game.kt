@@ -136,13 +136,15 @@ class Game(
             if (speed.delay != 0L) {
                 delay(speed.delay * 3) // Move card from hand; move card ontoField
             } else {
-                delay(285L)
+                delay(190L)
             }
 
             if (processField()) { // Remove cards; move cards within caravan
                 updateView()
                 if (speed.delay != 0L) {
                     delay(speed.delay * 2)
+                } else {
+                    delay(190L)
                 }
             }
             if (processHand(resources)) { // Take card into hand
@@ -154,6 +156,7 @@ class Game(
         }
 
         CoroutineScope(Dispatchers.Default).launch {
+            updateView()
             processMove(playerCResources)
             isPlayerTurn = false
 

@@ -49,6 +49,7 @@
     <string name="sierra_madre_trader_cond">Defeat Elijah, Ulysses and Dr. Mobius. (%1$s, %2$s, %3$s)</string>
     <string name="chinese_trader_name">Warlord Li Xuan</string>
     <string name="chinese_trader_condition">Finish chapter 9 of the Story mode and answer the question: what year CCP was established?</string>
+    <string name="chinese_trader_condition_tmp">Answer the question: what year CCP was established?</string>
     <string name="enclave_trader_name">Savanth</string>
     <string name="enclave_trader_cond">Complete the Tower.</string>
 

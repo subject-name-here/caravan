@@ -143,7 +143,7 @@ fun SetCustomDeck(
                 CustomDeckTab(4)
             }
 
-            key (updater) {
+            key (updater, tabUpdater) {
                 ShowCharacteristics(activity)
             }
 

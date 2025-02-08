@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.primitives.Card
+import com.unicorns.invisible.caravan.model.primitives.CustomDeck
 import com.unicorns.invisible.caravan.model.primitives.Rank
 import com.unicorns.invisible.caravan.model.primitives.Suit
 import com.unicorns.invisible.caravan.model.trading.ChineseTrader
@@ -488,6 +489,24 @@ fun ShowTrueSettings(
                                                 showAlertDialog(
                                                     activity.getString(R.string.easter_egg),
                                                     activity.getString(R.string.supreme_leader_and_tower_boss_have_default_music),
+                                                    null
+                                                )
+                                            }
+                                        }
+
+                                        1066 -> {
+                                            save.let {
+                                                CustomDeck(CardBack.VIKING, false)
+                                                    .toList()
+                                                    .forEach { card ->
+                                                        it.addCard(card)
+                                                    }
+
+                                                saveData(activity)
+                                                playYesBeep(activity)
+                                                showAlertDialog(
+                                                    activity.getString(R.string.congrats),
+                                                    "Vikings are gone, but the story remains.",
                                                     null
                                                 )
                                             }

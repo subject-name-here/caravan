@@ -234,7 +234,8 @@ fun ShowPvP(
                     "&deck6=${deckCodes[6]}" +
                     "&deck7=${deckCodes[7]}" +
                     "&deck8=${deckCodes[8]}" +
-                    "&deck9=${deckCodes[9]}"
+                    "&deck9=${deckCodes[9]}" +
+                    "&deck10=${deckCodes[10]}"
         ) { result ->
             val response = result.toString()
             if (response.contains("exists")) {
@@ -270,7 +271,8 @@ fun ShowPvP(
                     "&deck6=${deckCodes[6]}" +
                     "&deck7=${deckCodes[7]}" +
                     "&deck8=${deckCodes[8]}" +
-                    "&deck9=${deckCodes[9]}"
+                    "&deck9=${deckCodes[9]}" +
+                    "&deck10=${deckCodes[10]}"
         ) { result ->
             val response = try {
                 json.decodeFromString<List<ULong>>(result.getString("body"))

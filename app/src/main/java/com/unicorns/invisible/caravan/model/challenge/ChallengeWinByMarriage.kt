@@ -24,6 +24,7 @@ class ChallengeWinByMarriage : Challenge {
                     it.isOrdinary() && it.rank == Rank.QUEEN && it.suit == move.handCard.suit
                 }
                 wasLastMoveMarriage = queens.isNotEmpty()
+                return
             }
         }
         wasLastMoveMarriage = false

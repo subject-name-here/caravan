@@ -120,7 +120,9 @@ fun ShowSelectPvE(
             return
         }
         showStory -> {
-            ShowStoryList(activity, showAlertDialog) { showStory = false }
+            // ShowStoryList(activity, showAlertDialog) { showStory = false }
+            showAlertDialog("[CLOSED]", "The details of the story are being clarified. Please, stand by.", null)
+            showStory = false
             return
         }
         showTutorial -> {

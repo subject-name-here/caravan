@@ -429,7 +429,6 @@ fun ShowGameRaw(
                         Caravans(
                             activity,
                             animationSpeed,
-                            getSelectedCard,
                             { game.playerCResources.hand.getOrNull(getSelectedCard()) },
                             getSelectedCaravan,
                             setSelectedCaravan,
@@ -463,7 +462,6 @@ fun ShowGameRaw(
                         Caravans(
                             activity,
                             animationSpeed,
-                            getSelectedCard,
                             { game.playerCResources.hand.getOrNull(getSelectedCard()) },
                             getSelectedCaravan,
                             setSelectedCaravan,
@@ -1218,7 +1216,6 @@ fun RowScope.Score(activity: MainActivity, num: Int, caravan: Caravan, opposingV
 fun Caravans(
     activity: MainActivity,
     animationSpeed: AnimationSpeed,
-    getSelectedCardInt: () -> Int,
     getSelectedCard: () -> Card?,
     getSelectedCaravan: () -> Int,
     setSelectedCaravan: (Int) -> Unit,
