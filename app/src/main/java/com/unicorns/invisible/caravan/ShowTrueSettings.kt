@@ -330,18 +330,22 @@ fun ShowTrueSettings(
                                             save.let {
                                                 Rank.entries.forEach { rank ->
                                                     if (rank != Rank.JOKER) {
-                                                        it.addCard(Card(
-                                                            rank,
-                                                            Suit.HEARTS,
-                                                            CardBack.STANDARD,
-                                                            true
-                                                        ))
-                                                        it.addCard(Card(
-                                                            rank,
-                                                            Suit.SPADES,
-                                                            CardBack.STANDARD,
-                                                            true
-                                                        ))
+                                                        it.addCard(
+                                                            Card(
+                                                                rank,
+                                                                Suit.HEARTS,
+                                                                CardBack.STANDARD,
+                                                                true
+                                                            )
+                                                        )
+                                                        it.addCard(
+                                                            Card(
+                                                                rank,
+                                                                Suit.SPADES,
+                                                                CardBack.STANDARD,
+                                                                true
+                                                            )
+                                                        )
                                                     }
                                                 }
 
@@ -360,12 +364,14 @@ fun ShowTrueSettings(
                                                 Rank.entries.forEach { rank ->
                                                     if (rank != Rank.JOKER) {
                                                         Suit.entries.forEach { suit ->
-                                                            it.addCard(Card(
-                                                                rank,
-                                                                suit,
-                                                                CardBack.STANDARD,
-                                                                true
-                                                            ))
+                                                            it.addCard(
+                                                                Card(
+                                                                    rank,
+                                                                    suit,
+                                                                    CardBack.STANDARD,
+                                                                    true
+                                                                )
+                                                            )
                                                         }
                                                     }
                                                 }
@@ -494,19 +500,21 @@ fun ShowTrueSettings(
                                             }
                                         }
 
-                                        1066 -> {
-                                            save.let {
-                                                CustomDeck(CardBack.VIKING, false)
-                                                    .toList()
-                                                    .forEach { card ->
-                                                        it.addCard(card)
-                                                    }
+                                        809608 -> {
+                                            save.isRadioUsesPseudonyms = !save.isRadioUsesPseudonyms
+                                            saveData(activity)
+                                            playYesBeep(activity)
 
-                                                saveData(activity)
-                                                playYesBeep(activity)
+                                            if (save.isRadioUsesPseudonyms) {
                                                 showAlertDialog(
-                                                    activity.getString(R.string.congrats),
-                                                    "Vikings are gone, but the story remains.",
+                                                    activity.getString(R.string.easter_egg),
+                                                    activity.getString(R.string.radio_uses_pseudonyms_now),
+                                                    null
+                                                )
+                                            } else {
+                                                showAlertDialog(
+                                                    activity.getString(R.string.easter_egg),
+                                                    activity.getString(R.string.radio_uses_real_names_now),
                                                     null
                                                 )
                                             }

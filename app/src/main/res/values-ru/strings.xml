@@ -894,7 +894,8 @@
     <string name="bottoms_are_replaced_by_tops">Bottoms заменяются на Tops.</string>
     <string name="supreme_leader_and_tower_boss_have_new_music">Верховный Лидер и босс БАШНИ получили новую музыкальную тему!</string>
     <string name="supreme_leader_and_tower_boss_have_default_music">Верховный Лидер и босс БАШНИ получили их стандартную тему!</string>
-
+    <string name="radio_uses_pseudonyms_now">Радио использует вымышленные имена.</string>
+    <string name="radio_uses_real_names_now">Радио использует реальные имена.</string>
 
     <string name="faq_q1">Q1: Есть ли отличия правил от правил из оригинала (FNV)?</string>
     <string name="faq_a1">A1: Да, но небольшие. Например, в оригинале во время дебюта можно сбрасывать карты из руки, а здесь - нельзя.</string>

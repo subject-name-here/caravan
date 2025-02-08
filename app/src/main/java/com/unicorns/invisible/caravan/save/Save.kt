@@ -162,6 +162,8 @@ class Save(var playerId: String? = null) {
     var sixtyNineActive = false
     @EncodeDefault
     var isHeroic = false
+    @EncodeDefault
+    var isRadioUsesPseudonyms = false
 
     @EncodeDefault
     val enemyCapsLeft = Array<Int>(30) { 0 }

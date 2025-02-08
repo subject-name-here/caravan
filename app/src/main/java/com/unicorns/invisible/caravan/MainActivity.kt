@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
+import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -26,6 +27,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -115,6 +117,7 @@ var soundReduced: Boolean = false
         soundReducedLiveData.postValue(value)
     }
 private val soundReducedLiveData = MutableLiveData(soundReduced)
+val playingSongName = MutableLiveData("")
 
 @Suppress("MoveLambdaOutsideParentheses")
 class MainActivity : SaveDataActivity() {
@@ -552,81 +555,100 @@ class MainActivity : SaveDataActivity() {
             topBar = {
                 var isPaused by remember { mutableStateOf(false) }
                 val soundReducedObserver by soundReducedLiveData.observeAsState()
-                key(styleIdForTop, soundReducedObserver) {
-                    Row(
-                        Modifier
-                            .fillMaxWidth()
-                            .wrapContentHeight()
-                            .background(getMusicPanelColor(this))
-                            .padding(vertical = 8.dp),
-                        horizontalArrangement = Arrangement.SpaceAround
-                    ) {
-                        TextFallout(
-                            if (!isPaused && !soundReduced)
-                                stringResource(R.string.next_song)
-                            else
-                                stringResource(R.string.none),
-                            getMusicTextColor(this@MainActivity),
-                            getMusicTextColor(this@MainActivity),
-                            18.sp,
-                            Alignment.Center,
+                val songName by playingSongName.observeAsState()
+                key(styleIdForTop, soundReducedObserver, songName) {
+                    Column {
+                        Row(
                             Modifier
-                                .weight(1f)
-                                .wrapContentWidth()
-                                .clickableOk(this@MainActivity) {
-                                    if (!isPaused && !soundReduced) {
-                                        nextSong(this@MainActivity)
+                                .fillMaxWidth()
+                                .wrapContentHeight()
+                                .background(getMusicPanelColor(this@MainActivity))
+                                .padding(vertical = 4.dp),
+                            horizontalArrangement = Arrangement.SpaceAround
+                        ) {
+                            TextFallout(
+                                if (!isPaused && !soundReduced)
+                                    stringResource(R.string.next_song)
+                                else
+                                    stringResource(R.string.none),
+                                getMusicTextColor(this@MainActivity),
+                                getMusicTextColor(this@MainActivity),
+                                18.sp,
+                                Alignment.Center,
+                                Modifier
+                                    .weight(1f)
+                                    .wrapContentWidth()
+                                    .clickableOk(this@MainActivity) {
+                                        if (!isPaused && !soundReduced) {
+                                            nextSong(this@MainActivity)
+                                        }
                                     }
-                                }
-                                .background(getTextBackgroundColor(this@MainActivity))
-                                .padding(4.dp),
-                            TextAlign.Center
-                        )
+                                    .background(getTextBackgroundColor(this@MainActivity))
+                                    .padding(4.dp),
+                                TextAlign.Center
+                            )
 
-                        TextFallout(
-                            when {
-                                soundReduced -> stringResource(R.string.none)
-                                isPaused -> stringResource(R.string.resume_radio)
-                                else -> stringResource(R.string.pause_radio)
-                            },
-                            getMusicTextColor(this@MainActivity),
-                            getMusicTextColor(this@MainActivity),
-                            18.sp,
-                            Alignment.Center,
-                            Modifier
-                                .weight(1f)
-                                .wrapContentWidth()
-                                .clickableOk(this@MainActivity) {
-                                    if (soundReduced) {
-                                        return@clickableOk
+                            TextFallout(
+                                when {
+                                    soundReduced -> stringResource(R.string.none)
+                                    isPaused -> stringResource(R.string.resume_radio)
+                                    else -> stringResource(R.string.pause_radio)
+                                },
+                                getMusicTextColor(this@MainActivity),
+                                getMusicTextColor(this@MainActivity),
+                                18.sp,
+                                Alignment.Center,
+                                Modifier
+                                    .weight(1f)
+                                    .wrapContentWidth()
+                                    .clickableOk(this@MainActivity) {
+                                        if (soundReduced) {
+                                            return@clickableOk
+                                        }
+                                        if (isPaused) {
+                                            resumeRadio()
+                                        } else {
+                                            pauseRadio()
+                                        }
+                                        isPaused = !isPaused
                                     }
-                                    if (isPaused) {
-                                        resumeRadio()
-                                    } else {
-                                        pauseRadio()
+                                    .background(getTextBackgroundColor(this@MainActivity))
+                                    .padding(4.dp),
+                                TextAlign.Center
+                            )
+                            TextFallout(
+                                stringResource(R.string.sound),
+                                getMusicTextColor(this@MainActivity),
+                                getMusicTextColor(this@MainActivity),
+                                18.sp,
+                                Alignment.Center,
+                                Modifier
+                                    .weight(1f)
+                                    .wrapContentWidth()
+                                    .clickableOk(this@MainActivity) {
+                                        showSoundSettings = true
                                     }
-                                    isPaused = !isPaused
-                                }
-                                .background(getTextBackgroundColor(this@MainActivity))
-                                .padding(4.dp),
-                            TextAlign.Center
-                        )
-                        TextFallout(
-                            stringResource(R.string.sound),
-                            getMusicTextColor(this@MainActivity),
-                            getMusicTextColor(this@MainActivity),
-                            18.sp,
-                            Alignment.Center,
+                                    .background(getTextBackgroundColor(this@MainActivity))
+                                    .padding(4.dp),
+                                TextAlign.Center
+                            )
+                        }
+                        Row(
                             Modifier
-                                .weight(1f)
-                                .wrapContentWidth()
-                                .clickableOk(this@MainActivity) {
-                                    showSoundSettings = true
-                                }
-                                .background(getTextBackgroundColor(this@MainActivity))
-                                .padding(4.dp),
-                            TextAlign.Center
-                        )
+                                .fillMaxWidth()
+                                .wrapContentHeight()
+                                .background(getMusicPanelColor(this@MainActivity))
+                                .padding(vertical = 4.dp)
+                        ) {
+                            Text(
+                                text = songName.let { if (it.isNullOrEmpty() || isPaused) "[NONE]" else it },
+                                modifier = Modifier.fillMaxWidth().basicMarquee(Int.MAX_VALUE),
+                                color = getTextBackgroundColor(this@MainActivity),
+                                fontFamily = FontFamily(Font(R.font.monofont)),
+                                textAlign = TextAlign.Center,
+                                fontSize = 16.sp,
+                            )
+                        }
                     }
                 }
             }

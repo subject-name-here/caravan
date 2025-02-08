@@ -946,6 +946,8 @@ If this helped you understand the game, thank the author Kyle! To do this, go to
     <string name="bottoms_are_replaced_by_tops">Bottoms are replaced by Tops.</string>
     <string name="supreme_leader_and_tower_boss_have_new_music">Supreme Leader and Tower boss have new music!</string>
     <string name="supreme_leader_and_tower_boss_have_default_music">Supreme Leader and Tower boss have default music!</string>
+    <string name="radio_uses_pseudonyms_now">Radio uses fictional names now.</string>
+    <string name="radio_uses_real_names_now">Radio uses real world names now.</string>
 
     <string name="faq_q1">Q1: Are there differences with original Caravan from New Vegas?</string>
     <string name="faq_a1">A1: Yes, but they are minor. For example, cards discarding during init stage is allowed in FNV, but disallowed here.</string>

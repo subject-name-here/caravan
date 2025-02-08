@@ -4,6 +4,7 @@ import android.media.MediaPlayer
 import com.unicorns.invisible.caravan.MainActivity
 import com.unicorns.invisible.caravan.R
 import com.unicorns.invisible.caravan.Style
+import com.unicorns.invisible.caravan.playingSongName
 import com.unicorns.invisible.caravan.save
 import com.unicorns.invisible.caravan.soundReduced
 import kotlinx.coroutines.CoroutineScope
@@ -157,46 +158,66 @@ fun startAmbient(activity: MainActivity) {
 
 // TODO: now playing
 private val songList = arrayOf(
-    "MUS_Aint_That_A_Kick_In_the_Head.amr" to "",
-    "MUS_American_Swing.amr" to "",
-    "MUS_Big_Iron.amr" to "",
-    "MUS_Blue_Moon.amr" to "",
-    "MUS_Blues_For_You.amr" to "",
-    "MUS_Cobwebs_and_Rainbows.amr" to "",
-    "MUS_EddyArnold_Rca_ItsASin.amr" to "",
-    "MUS_Goin_Under.amr" to "",
-    "MUS_Hallo_Mister_X.amr" to "",
-    "MUS_Happy_Times.amr" to "",
-    "MUS_Heartaches_by_the_Number.amr" to "",
-    "MUS_HomeOnTheWastes.amr" to "",
-    "MUS_I_m_Movin_Out.amr" to "",
-    "MUS_I_m_So_Blue.amr" to "",
-    "MUS_In_The_Shadow_Of_The_Valley.amr" to "",
-    "MUS_Its_A_Sin_To_Tell_A_Lie.amr" to "",
-    "MUS_Jazz_Blues_GT.amr" to "",
-    "MUS_Jazz_Club_Blues_CAS.amr" to "",
-    "MUS_Jingle_Jangle_Jingle.amr" to "",
-    "MUS_Joe_Cool_CAS.amr" to "",
-    "MUS_Johnny_Guitar.amr" to "",
-    "MUS_Lazy_Day_Blues.amr" to "",
-    "MUS_Let_s_Ride_Into_The_Sunset_Together.amr" to "",
-    "MUS_Lone_Star.amr" to "",
-    "MUS_Love_Me_As_Though_No_Tomorrow.amr" to "",
-    "MUS_Mad_About_The_Boy.amr" to "",
-    "MUS_Manhattan.amr" to "",
-    "MUS_NewVegasValley.amr" to "",
-    "MUS_Roundhouse_Rock.amr" to "",
-    "MUS_Sit_And_Dream.amr" to "",
-    "MUS_Sleepy_Town_Blues_CAS.amr" to "",
-    "MUS_Slow_Bounce.amr" to "",
-    "MUS_Slow_Sax_KOS.amr" to "",
-    "MUS_Somethings_Gotta_Give.amr" to "",
-    "MUS_Stars_Of_The_Midnight_Range.amr" to "",
-    "MUS_Strahlende_Trompete.amr" to "",
-    "MUS_StreetsOfNewReno.amr" to "",
-    "MUS_Von_Spanien_Nach_S_damerika.amr" to "",
-    "MUS_Where_Have_You_Been_All_My_Life.amr" to "",
-    "MUS_Why_Dont_You_Do_Right.amr" to "",
+    "MUS_Aint_That_A_Kick_In_the_Head.amr" to "\"Ain't That a Kick in the Head?\" - Dean Martin",
+    "MUS_American_Swing.amr" to "\"American Swing\" - Gerhard Trede",
+    "MUS_Big_Iron.amr" to "\"Big Iron\" - Marty Robbins",
+    "MUS_Blue_Moon.amr" to "\"Blue Moon\" - Frank Sinatra",
+    "MUS_Blues_For_You.amr" to "\"Blues For You\" - Gabriel Pares",
+    if (save.isRadioUsesPseudonyms) {
+        "MUS_Cobwebs_and_Rainbows.amr" to "\"Cobwebs and Rainbows\" - Bruce Isaac"
+    } else {
+        "MUS_Cobwebs_and_Rainbows.amr" to "\"Cobwebs and Rainbows\" - Joshua Sawyer/Dick Stephen Walter"
+    },
+    "MUS_EddyArnold_Rca_ItsASin.amr" to "\"It's a Sin\" - Eddy Arnold",
+    "MUS_Goin_Under.amr" to "\"Goin' Under\" - Darrell Wayne Perry and Tommy Smith",
+    "MUS_Hallo_Mister_X.amr" to "\"Hallo Mister X\" - Gerhard Trede",
+    "MUS_Happy_Times.amr" to "\"Happy Times\" - Bert Weedon",
+    "MUS_Heartaches_by_the_Number.amr" to "\"Heartaches by the Number\" - Guy Mitchell",
+    if (save.isRadioUsesPseudonyms) {
+        "MUS_HomeOnTheWastes.amr" to "\"Home on the Wastes\" - Lonesome Drifter"
+    } else {
+        "MUS_HomeOnTheWastes.amr" to "\"Home on the Wastes\" - Joshua Sawyer/Nathaniel Chapman"
+    },
+    "MUS_I_m_Movin_Out.amr" to "\"I'm Movin' Out\" - The Roues Brothers",
+    "MUS_I_m_So_Blue.amr" to "\"I'm So Blue\" - Katie Thompson",
+    "MUS_In_The_Shadow_Of_The_Valley.amr" to "\"In the Shadow of the Valley\" - Lost Weekend Western Swing Band",
+    "MUS_Its_A_Sin_To_Tell_A_Lie.amr" to "\"It's a Sin to Tell a Lie\" - The Ink Spots",
+    "MUS_Jazz_Blues_GT.amr" to "\"Jazz Blues\" - Gerhard Trede",
+    "MUS_Jazz_Club_Blues_CAS.amr" to "\"Jazz Club Blues\" - Harry Bluestone",
+    "MUS_Jingle_Jangle_Jingle.amr" to "\"Jingle, Jangle, Jingle\" - The Kay Kyser Orchestra",
+    if (save.isRadioUsesPseudonyms) {
+        "MUS_Joe_Cool_CAS.amr" to "\"Joe Cool\" - Nino Nardini"
+    } else {
+        "MUS_Joe_Cool_CAS.amr" to "\"Joe Cool\" - Georges Teperin"
+    },
+    "MUS_Johnny_Guitar.amr" to "\"Johnny Guitar\" - Peggy Lee",
+    "MUS_Lazy_Day_Blues.amr" to "\"Lazy Day Blues\" - Bert Weedon",
+    "MUS_Let_s_Ride_Into_The_Sunset_Together.amr" to "\"Let's Ride Into the Sunset Together\" - Lost Weekend Western Swing Band, featuring Don Burham with Patty Kistner",
+    "MUS_Lone_Star.amr" to "\"Lone Star\" - Lost Weekend Western Swing Band",
+    "MUS_Love_Me_As_Though_No_Tomorrow.amr" to "\"Love Me as Though There Were No Tomorrow\" - Nat King Cole",
+    "MUS_Mad_About_The_Boy.amr" to "\"Mad About the Boy\" - Carmen Dragon and his Orchestra, featuring Helen Forrest",
+    "MUS_Manhattan.amr" to "\"Manhattan\" - Gerhard Trede",
+    if (save.isRadioUsesPseudonyms) {
+        "MUS_NewVegasValley.amr" to "\"New Vegas Valley\" - Lonesome Drifter"
+    } else {
+        "MUS_NewVegasValley.amr" to "\"New Vegas Valley\" - Joshua Sawyer/James Melilli"
+    },
+    "MUS_Roundhouse_Rock.amr" to "\"Roundhouse Rock\" - Bert Weedon",
+    "MUS_Sit_And_Dream.amr" to "\"Sit and Dream\" - Pete Thomas",
+    "MUS_Sleepy_Town_Blues_CAS.amr" to "\"Sleepy Town Blues\" - Harry Lubin",
+    "MUS_Slow_Bounce.amr" to "\"Slow Bounce\" - Gerhard Trede",
+    "MUS_Slow_Sax_KOS.amr" to "\"Slow Sax\" - Christof Dejean",
+    "MUS_Somethings_Gotta_Give.amr" to "\"Something's Gotta Give\" - Bing Crosby",
+    "MUS_Stars_Of_The_Midnight_Range.amr" to "\"Stars of the Midnight Range\" - Johnny Bond and his Red River Valley Boys",
+    "MUS_Strahlende_Trompete.amr" to "\"Strahlende Trompete\" - Gerhard Trede",
+    if (save.isRadioUsesPseudonyms) {
+        "MUS_StreetsOfNewReno.amr" to "\"Streets of New Reno\" - Lonesome Drifter"
+    } else {
+        "MUS_StreetsOfNewReno.amr" to "\"Streets of New Reno\" - Joshua Sawyer/Nathaniel Chapman"
+    },
+    "MUS_Von_Spanien_Nach_S_damerika.amr" to "\"Von Spanien Nach Südamerika\" - Gerhard Trede",
+    "MUS_Where_Have_You_Been_All_My_Life.amr" to "\"Where Have You Been All My Life?\" - Jeff Hooper",
+    "MUS_Why_Dont_You_Do_Right.amr" to "\"Why Don't You Do Right?\" - The Dave Barbour Quartet, featuring Peggy Lee",
 )
 
 private var pointer = songList.size
@@ -208,9 +229,17 @@ fun startRadio(activity: MainActivity) {
     radioStartedFlag = true
     if (save.useCaravanIntro) {
         if (activity.styleId == Style.SIERRA_MADRE || activity.styleId == Style.MADRE_ROJA) {
-            playSongFromRadio(activity, "begin_again.amr" to "")
+            if (save.isRadioUsesPseudonyms) {
+                playSongFromRadio(activity, "begin_again.amr" to "\"Begin Again\" - Vera Keyes")
+            } else {
+                playSongFromRadio(activity, "begin_again.amr" to "\"Begin Again\" - Justin E. Bell, Stephanie Dowling")
+            }
         } else {
-            playSongFromRadio(activity, "MUS_caravan_whiplash.amr" to "")
+            if (save.isRadioUsesPseudonyms) {
+                playSongFromRadio(activity, "MUS_caravan_whiplash.amr" to "\"Caravan\" - Shaffer Conservatory Studio Band")
+            } else {
+                playSongFromRadio(activity, "MUS_caravan_whiplash.amr" to "\"Caravan\" - John Wasson")
+            }
         }
     } else {
         nextSong(activity)
@@ -231,7 +260,7 @@ private fun playSongFromRadio(activity: MainActivity, songName: Pair<String, Str
     MediaPlayer()
         .apply {
             val afd = activity.assets.openFd("radio/${songName.first}")
-            // TODO: Now Playing: ....
+            playingSongName.postValue(songName.second)
             setDataSource(afd.fileDescriptor, afd.startOffset, afd.length)
             setOnCompletionListener {
                 nextSong(activity)

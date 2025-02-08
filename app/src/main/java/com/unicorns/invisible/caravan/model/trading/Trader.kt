@@ -36,6 +36,7 @@ sealed interface Trader {
 
         val cards = (cards1 + cards2).toMutableList()
         return if (cards.all { save.isCardAvailableAlready(it) }) {
+            // TODO: show invest thing
             getCards(back, nBig / 2)
         } else {
             cards.map { card -> card to save.getPriceOfCard(card) }
