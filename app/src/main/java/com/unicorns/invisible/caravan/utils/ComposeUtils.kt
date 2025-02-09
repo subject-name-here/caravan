@@ -39,11 +39,16 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Constraints
+import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
@@ -56,6 +61,7 @@ import com.unicorns.invisible.caravan.R
 import com.unicorns.invisible.caravan.model.getCardName
 import com.unicorns.invisible.caravan.model.primitives.Card
 import com.unicorns.invisible.caravan.save
+import kotlin.math.floor
 
 
 @Composable
@@ -544,4 +550,66 @@ fun MenuItemOpen(
             mainBlock()
         }
     }
+}
+
+@Composable
+fun Density.getFontSize(constraints: Constraints, text: String, style: TextStyle): TextUnit {
+    val stepSize = 0.25.sp.toPx()
+    val smallest = 8.sp.toPx()
+    val largest = 128.sp.toPx()
+    var min = smallest
+    var max = largest
+
+    var current = (min + max) / 2
+
+    while ((max - min) >= stepSize) {
+        val layoutResult = performLayout(constraints, text, current.toSp(), style)
+        val didOverflow =
+            when (layoutResult.layoutInput.overflow) {
+                TextOverflow.Clip,
+                TextOverflow.Visible -> {
+                    layoutResult.didOverflowWidth || layoutResult.didOverflowHeight
+                }
+                TextOverflow.StartEllipsis,
+                TextOverflow.MiddleEllipsis,
+                TextOverflow.Ellipsis -> {
+                    // If any line was ellipsized, we've overflowed.
+                    var lineIndex = 0
+                    while (lineIndex < layoutResult.lineCount) {
+                        if (layoutResult.isLineEllipsized(lineIndex)) break
+                        lineIndex++
+                    }
+                    lineIndex > 0
+                }
+                else ->
+                    throw IllegalArgumentException(
+                        "TextOverflow type" +
+                                " ${layoutResult.layoutInput.overflow} is not supported."
+                    )
+            }
+        if (didOverflow) {
+            max = current
+        } else {
+            min = current
+        }
+        current = (min + max) / 2
+    }
+    // used size minus minFontSize must be divisible by stepSize
+    current = (floor((min - smallest) / stepSize) * stepSize + smallest)
+
+    // We have found a size that fits, but we can still try one step up
+    if ((current + stepSize) <= largest) {
+        val layoutResult = performLayout(constraints, text, (current + stepSize).toSp(), style)
+        val didOverflow = layoutResult.didOverflowWidth || layoutResult.didOverflowHeight
+        if (!didOverflow) {
+            current += stepSize
+        }
+    }
+
+    return current.toSp()
+}
+
+@Composable
+private fun performLayout(constraints: Constraints, text: String, textSize: TextUnit, style: TextStyle): TextLayoutResult {
+    return rememberTextMeasurer(0).measure(text, style.copy(fontSize = textSize), constraints = constraints, maxLines = 1)
 }

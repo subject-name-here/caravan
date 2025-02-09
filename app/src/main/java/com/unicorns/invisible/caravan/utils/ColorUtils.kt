@@ -131,6 +131,23 @@ fun getMusicTextColor(activity: MainActivity): Color {
     }
 }
 
+fun getMusicMarqueesColor(activity: MainActivity): Color {
+    return when (activity.styleId) {
+        Style.DESERT -> Color(activity.getColor(R.color.desertText))
+        Style.PIP_BOY -> Color(activity.getColor(R.color.colorBack))
+        Style.ALASKA_FRONTIER -> Color(activity.getColor(R.color.alaskaYellow))
+        Style.PIP_GIRL -> Color(activity.getColor(R.color.pipGirlBlack))
+        Style.OLD_WORLD -> Color(activity.getColor(R.color.oldWorldText))
+        Style.NEW_WORLD -> Color(activity.getColor(R.color.newWorldText))
+        Style.SIERRA_MADRE -> Color(activity.getColor(R.color.sierraMadreTextBack))
+        Style.MADRE_ROJA -> Color(activity.getColor(R.color.madreRojaText))
+        Style.VAULT_21 -> Color(activity.getColor(R.color.vault21Text))
+        Style.VAULT_22 -> Color(activity.getColor(R.color.vault22Stroke))
+        Style.ENCLAVE -> Color(activity.getColor(R.color.enclaveTextBack))
+        Style.BLACK -> Color.Black
+    }
+}
+
 fun getDialogBackground(activity: MainActivity): Color {
     return when (activity.styleId) {
         Style.DESERT -> Color(activity.getColor(R.color.desertAccent))

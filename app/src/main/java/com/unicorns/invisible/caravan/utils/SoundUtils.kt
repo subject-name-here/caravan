@@ -156,8 +156,7 @@ fun startAmbient(activity: MainActivity) {
         }
 }
 
-// TODO: now playing
-private val songList = arrayOf(
+private fun getSongsArray() = arrayOf(
     "MUS_Aint_That_A_Kick_In_the_Head.amr" to "\"Ain't That a Kick in the Head?\" - Dean Martin",
     "MUS_American_Swing.amr" to "\"American Swing\" - Gerhard Trede",
     "MUS_Big_Iron.amr" to "\"Big Iron\" - Marty Robbins",
@@ -219,8 +218,9 @@ private val songList = arrayOf(
     "MUS_Where_Have_You_Been_All_My_Life.amr" to "\"Where Have You Been All My Life?\" - Jeff Hooper",
     "MUS_Why_Dont_You_Do_Right.amr" to "\"Why Don't You Do Right?\" - The Dave Barbour Quartet, featuring Peggy Lee",
 )
+private val songsIndices = getSongsArray().indices.toMutableList()
 
-private var pointer = songList.size
+private var pointer = getSongsArray().size
 private var radioStartedFlag = false
 fun startRadio(activity: MainActivity) {
     if (radioStartedFlag) {
@@ -297,11 +297,11 @@ fun stopRadio() {
 fun nextSong(activity: MainActivity) {
     stopRadio()
 
-    if (pointer !in songList.indices) {
-        songList.shuffle()
+    if (pointer !in getSongsArray().indices) {
+        songsIndices.shuffle()
         pointer = 0
     }
-    playSongFromRadio(activity, songList[pointer++])
+    playSongFromRadio(activity, getSongsArray()[songsIndices[pointer++]])
 }
 
 fun resumeActivitySound() {

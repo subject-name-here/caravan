@@ -21,7 +21,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -47,11 +46,13 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextLinkStyles
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -59,6 +60,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withLink
+import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
@@ -82,7 +84,9 @@ import com.unicorns.invisible.caravan.utils.getBackgroundColor
 import com.unicorns.invisible.caravan.utils.getDialogBackground
 import com.unicorns.invisible.caravan.utils.getDialogTextColor
 import com.unicorns.invisible.caravan.utils.getDividerColor
+import com.unicorns.invisible.caravan.utils.getFontSize
 import com.unicorns.invisible.caravan.utils.getKnobColor
+import com.unicorns.invisible.caravan.utils.getMusicMarqueesColor
 import com.unicorns.invisible.caravan.utils.getMusicPanelColor
 import com.unicorns.invisible.caravan.utils.getMusicTextColor
 import com.unicorns.invisible.caravan.utils.getTextBackgroundColor
@@ -229,7 +233,9 @@ class MainActivity : SaveDataActivity() {
                                     isIntroScreen = false
                                 }
                         } else {
-                            Modifier.fillMaxSize().background(backgroundColor)
+                            Modifier
+                                .fillMaxSize()
+                                .background(backgroundColor)
                         },
                         contentAlignment = Alignment.Center
                     ) {
@@ -237,7 +243,11 @@ class MainActivity : SaveDataActivity() {
 
                         @Composable
                         fun ColumnScope.CaravanTitle(weight: Float) {
-                            Box(Modifier.fillMaxWidth().weight(weight).padding(vertical = 4.dp).zIndex(5f)) {
+                            Box(Modifier
+                                .fillMaxWidth()
+                                .weight(weight)
+                                .padding(vertical = 4.dp)
+                                .zIndex(5f)) {
                                 Column(
                                     Modifier.fillMaxSize(),
                                     verticalArrangement = Arrangement.Center,
@@ -288,7 +298,9 @@ class MainActivity : SaveDataActivity() {
                         }
                         @Composable
                         fun ColumnScope.Picture(weight: Float) {
-                            Box(Modifier.fillMaxWidth().weight(weight)
+                            Box(Modifier
+                                .fillMaxWidth()
+                                .weight(weight)
                                 .paint(
                                     painterResource(R.drawable.caravan_main2),
                                     contentScale = ContentScale.Fit
@@ -297,7 +309,9 @@ class MainActivity : SaveDataActivity() {
                         }
                         @Composable
                         fun ColumnScope.PicAuthorLink(weight: Float) {
-                            Box(Modifier.fillMaxWidth().weight(weight)) {
+                            Box(Modifier
+                                .fillMaxWidth()
+                                .weight(weight)) {
                                 val annotatedString = buildAnnotatedString {
                                     append("Pic creator: ")
                                     withLink(
@@ -330,7 +344,9 @@ class MainActivity : SaveDataActivity() {
                             BoxWithConstraints(Modifier.fillMaxSize()) {
                                 if (maxHeight > maxWidth) {
                                     Column(
-                                        Modifier.fillMaxSize().padding(4.dp),
+                                        Modifier
+                                            .fillMaxSize()
+                                            .padding(4.dp),
                                         horizontalAlignment = Alignment.CenterHorizontally,
                                         verticalArrangement = Arrangement.Center
                                     ) {
@@ -341,14 +357,18 @@ class MainActivity : SaveDataActivity() {
                                 } else {
                                     Row(Modifier.fillMaxSize()) {
                                         Column(
-                                            Modifier.fillMaxHeight().weight(2f),
+                                            Modifier
+                                                .fillMaxHeight()
+                                                .weight(2f),
                                             horizontalAlignment = Alignment.CenterHorizontally,
                                             verticalArrangement = Arrangement.Center
                                         ) {
                                             CaravanTitle(1f)
                                         }
                                         Column(
-                                            Modifier.fillMaxHeight().weight(1f),
+                                            Modifier
+                                                .fillMaxHeight()
+                                                .weight(1f),
                                             horizontalAlignment = Alignment.CenterHorizontally,
                                             verticalArrangement = Arrangement.Center
                                         ) {
@@ -553,101 +573,119 @@ class MainActivity : SaveDataActivity() {
 
         Scaffold(
             topBar = {
-                var isPaused by remember { mutableStateOf(false) }
+                var isPaused by rememberScoped { mutableStateOf(false) }
                 val soundReducedObserver by soundReducedLiveData.observeAsState()
                 val songName by playingSongName.observeAsState()
+                var buttonTextSize by remember { mutableStateOf(0.sp) }
                 key(styleIdForTop, soundReducedObserver, songName) {
-                    Column {
+                    Row(
+                        Modifier
+                            .fillMaxWidth()
+                            .height(32.dp)
+                            .background(getMusicPanelColor(this@MainActivity))
+                            .padding(vertical = 4.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = songName.let { if (it.isNullOrEmpty() || isPaused || soundReduced) "[NONE]" else it },
+                            modifier = Modifier
+                                .fillMaxWidth(0.5f)
+                                .padding(horizontal = 2.dp)
+                                .basicMarquee(Int.MAX_VALUE),
+                            color = getMusicMarqueesColor(this@MainActivity),
+                            fontFamily = FontFamily(Font(R.font.monofont)),
+                            textAlign = TextAlign.Center,
+                            fontSize = 14.sp,
+                        )
                         Row(
-                            Modifier
-                                .fillMaxWidth()
-                                .wrapContentHeight()
-                                .background(getMusicPanelColor(this@MainActivity))
-                                .padding(vertical = 4.dp),
-                            horizontalArrangement = Arrangement.SpaceAround
+                            Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.Center,
+                            verticalAlignment = Alignment.CenterVertically
                         ) {
-                            TextFallout(
-                                if (!isPaused && !soundReduced)
+                            BoxWithConstraints(Modifier.fillMaxSize()) {
+                                val button1Text = if (!isPaused && !soundReduced)
                                     stringResource(R.string.next_song)
                                 else
-                                    stringResource(R.string.none),
-                                getMusicTextColor(this@MainActivity),
-                                getMusicTextColor(this@MainActivity),
-                                18.sp,
-                                Alignment.Center,
-                                Modifier
-                                    .weight(1f)
-                                    .wrapContentWidth()
-                                    .clickableOk(this@MainActivity) {
-                                        if (!isPaused && !soundReduced) {
-                                            nextSong(this@MainActivity)
-                                        }
-                                    }
-                                    .background(getTextBackgroundColor(this@MainActivity))
-                                    .padding(4.dp),
-                                TextAlign.Center
-                            )
-
-                            TextFallout(
-                                when {
+                                    stringResource(R.string.none)
+                                val button2Text = when {
                                     soundReduced -> stringResource(R.string.none)
                                     isPaused -> stringResource(R.string.resume_radio)
                                     else -> stringResource(R.string.pause_radio)
-                                },
-                                getMusicTextColor(this@MainActivity),
-                                getMusicTextColor(this@MainActivity),
-                                18.sp,
-                                Alignment.Center,
-                                Modifier
-                                    .weight(1f)
-                                    .wrapContentWidth()
-                                    .clickableOk(this@MainActivity) {
-                                        if (soundReduced) {
-                                            return@clickableOk
-                                        }
-                                        if (isPaused) {
-                                            resumeRadio()
-                                        } else {
-                                            pauseRadio()
-                                        }
-                                        isPaused = !isPaused
-                                    }
-                                    .background(getTextBackgroundColor(this@MainActivity))
-                                    .padding(4.dp),
-                                TextAlign.Center
-                            )
-                            TextFallout(
-                                stringResource(R.string.sound),
-                                getMusicTextColor(this@MainActivity),
-                                getMusicTextColor(this@MainActivity),
-                                18.sp,
-                                Alignment.Center,
-                                Modifier
-                                    .weight(1f)
-                                    .wrapContentWidth()
-                                    .clickableOk(this@MainActivity) {
-                                        showSoundSettings = true
-                                    }
-                                    .background(getTextBackgroundColor(this@MainActivity))
-                                    .padding(4.dp),
-                                TextAlign.Center
-                            )
-                        }
-                        Row(
-                            Modifier
-                                .fillMaxWidth()
-                                .wrapContentHeight()
-                                .background(getMusicPanelColor(this@MainActivity))
-                                .padding(vertical = 4.dp)
-                        ) {
-                            Text(
-                                text = songName.let { if (it.isNullOrEmpty() || isPaused) "[NONE]" else it },
-                                modifier = Modifier.fillMaxWidth().basicMarquee(Int.MAX_VALUE),
-                                color = getTextBackgroundColor(this@MainActivity),
-                                fontFamily = FontFamily(Font(R.font.monofont)),
-                                textAlign = TextAlign.Center,
-                                fontSize = 16.sp,
-                            )
+                                }
+                                val button3Text = stringResource(R.string.sound)
+
+                                val style = TextStyle(
+                                    color = getMusicTextColor(this@MainActivity),
+                                    fontFamily = FontFamily(Font(R.font.monofont)),
+                                    textAlign = TextAlign.Center,
+                                )
+
+                                val buttonWidth = constraints.maxWidth / 3
+                                val newConstraints = constraints.copy(maxWidth = buttonWidth, minWidth = buttonWidth)
+
+                                val sizes = listOf(
+                                    LocalDensity.current.getFontSize(newConstraints, button1Text, style),
+                                    LocalDensity.current.getFontSize(newConstraints, button2Text, style),
+                                    LocalDensity.current.getFontSize(newConstraints, button3Text, style)
+                                )
+
+                                if (buttonTextSize.value == 0f) {
+                                    buttonTextSize = sizes.minBy { it.value }
+                                }
+
+                                Row(
+                                    Modifier.fillMaxSize(),
+                                    horizontalArrangement = Arrangement.SpaceEvenly,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Text(
+                                        text = button1Text,
+                                        modifier = Modifier
+                                            .clickableOk(this@MainActivity) {
+                                                if (!isPaused && !soundReduced) {
+                                                    nextSong(this@MainActivity)
+                                                }
+                                            }
+                                            .background(getTextBackgroundColor(this@MainActivity))
+                                            .padding(2.dp),
+                                        style = style,
+                                        fontSize = buttonTextSize,
+                                        maxLines = 1
+                                    )
+                                    Text(
+                                        text = button2Text,
+                                        modifier = Modifier
+                                            .clickableOk(this@MainActivity) {
+                                                if (soundReduced) {
+                                                    return@clickableOk
+                                                }
+                                                if (isPaused) {
+                                                    resumeRadio()
+                                                } else {
+                                                    pauseRadio()
+                                                }
+                                                isPaused = !isPaused
+                                            }
+                                            .background(getTextBackgroundColor(this@MainActivity))
+                                            .padding(2.dp),
+                                        style = style,
+                                        fontSize = buttonTextSize,
+                                        maxLines = 1
+                                    )
+                                    Text(
+                                        text = button3Text,
+                                        modifier = Modifier
+                                            .clickableOk(this@MainActivity) {
+                                                showSoundSettings = true
+                                            }
+                                            .background(getTextBackgroundColor(this@MainActivity))
+                                            .padding(2.dp),
+                                        style = style,
+                                        fontSize = buttonTextSize,
+                                        maxLines = 1
+                                    )
+                                }
+                            }
                         }
                     }
                 }
@@ -997,7 +1035,9 @@ class MainActivity : SaveDataActivity() {
             ) {
                 item {
                     Column(
-                        Modifier.fillMaxWidth().padding(horizontal = 8.dp),
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 8.dp),
                         verticalArrangement = Arrangement.Center
                     ) {
                         @Composable
