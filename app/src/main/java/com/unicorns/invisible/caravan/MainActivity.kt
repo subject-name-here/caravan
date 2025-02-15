@@ -60,7 +60,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withLink
-import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
@@ -589,7 +588,7 @@ class MainActivity : SaveDataActivity() {
                         Text(
                             text = songName.let { if (it.isNullOrEmpty() || isPaused || soundReduced) "[NONE]" else it },
                             modifier = Modifier
-                                .fillMaxWidth(0.5f)
+                                .fillMaxWidth(0.45f)
                                 .padding(horizontal = 2.dp)
                                 .basicMarquee(Int.MAX_VALUE),
                             color = getMusicMarqueesColor(this@MainActivity),
@@ -603,6 +602,7 @@ class MainActivity : SaveDataActivity() {
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             BoxWithConstraints(Modifier.fillMaxSize()) {
+                                // TODO: better autosizing!!!
                                 val button1Text = if (!isPaused && !soundReduced)
                                     stringResource(R.string.next_song)
                                 else
@@ -620,17 +620,17 @@ class MainActivity : SaveDataActivity() {
                                     textAlign = TextAlign.Center,
                                 )
 
-                                val buttonWidth = constraints.maxWidth / 3
-                                val newConstraints = constraints.copy(maxWidth = buttonWidth, minWidth = buttonWidth)
+                                val eWidth = constraints.maxWidth * 2 / 5
+                                val eConstraints = constraints.copy(
+                                    maxWidth = eWidth, minWidth = eWidth
+                                )
 
-                                val sizes = listOf(
-                                    LocalDensity.current.getFontSize(newConstraints, button1Text, style),
-                                    LocalDensity.current.getFontSize(newConstraints, button2Text, style),
-                                    LocalDensity.current.getFontSize(newConstraints, button3Text, style)
+                                val eSize = LocalDensity.current.getFontSize(
+                                    eConstraints, stringResource(R.string.resume_radio), style
                                 )
 
                                 if (buttonTextSize.value == 0f) {
-                                    buttonTextSize = sizes.minBy { it.value }
+                                    buttonTextSize = eSize
                                 }
 
                                 Row(
@@ -638,52 +638,37 @@ class MainActivity : SaveDataActivity() {
                                     horizontalArrangement = Arrangement.SpaceEvenly,
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
-                                    Text(
-                                        text = button1Text,
-                                        modifier = Modifier
-                                            .clickableOk(this@MainActivity) {
-                                                if (!isPaused && !soundReduced) {
-                                                    nextSong(this@MainActivity)
-                                                }
-                                            }
-                                            .background(getTextBackgroundColor(this@MainActivity))
-                                            .padding(2.dp),
-                                        style = style,
-                                        fontSize = buttonTextSize,
-                                        maxLines = 1
-                                    )
-                                    Text(
-                                        text = button2Text,
-                                        modifier = Modifier
-                                            .clickableOk(this@MainActivity) {
-                                                if (soundReduced) {
-                                                    return@clickableOk
-                                                }
-                                                if (isPaused) {
-                                                    resumeRadio()
-                                                } else {
-                                                    pauseRadio()
-                                                }
-                                                isPaused = !isPaused
-                                            }
-                                            .background(getTextBackgroundColor(this@MainActivity))
-                                            .padding(2.dp),
-                                        style = style,
-                                        fontSize = buttonTextSize,
-                                        maxLines = 1
-                                    )
-                                    Text(
-                                        text = button3Text,
-                                        modifier = Modifier
-                                            .clickableOk(this@MainActivity) {
-                                                showSoundSettings = true
-                                            }
-                                            .background(getTextBackgroundColor(this@MainActivity))
-                                            .padding(2.dp),
-                                        style = style,
-                                        fontSize = buttonTextSize,
-                                        maxLines = 1
-                                    )
+                                    @Composable
+                                    fun PlayerButton(text: String, onClick: () -> Unit) {
+                                        Text(
+                                            text = text,
+                                            modifier = Modifier
+                                                .clickableOk(this@MainActivity, onClick)
+                                                .background(getTextBackgroundColor(this@MainActivity))
+                                                .padding(horizontal = 2.dp),
+                                            style = style,
+                                            fontSize = buttonTextSize,
+                                            maxLines = 1
+                                        )
+                                    }
+
+                                    PlayerButton(button1Text) {
+                                        if (!isPaused && !soundReduced) {
+                                            nextSong(this@MainActivity)
+                                        }
+                                    }
+                                    PlayerButton(button2Text) {
+                                        if (soundReduced) {
+                                            return@PlayerButton
+                                        }
+                                        if (isPaused) {
+                                            resumeRadio()
+                                        } else {
+                                            pauseRadio()
+                                        }
+                                        isPaused = !isPaused
+                                    }
+                                    PlayerButton(button3Text) { showSoundSettings = true }
                                 }
                             }
                         }

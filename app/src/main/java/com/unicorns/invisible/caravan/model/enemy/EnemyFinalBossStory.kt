@@ -29,6 +29,7 @@ import kotlin.math.max
 @Serializable
 class EnemyFinalBossStory(@Transient private var update: Int = 0) : Enemy {
     override fun createDeck(): CResources = CResources(CustomDeck(CardBack.CHINESE, false))
+    override fun isSpeedOverriding() = true
 
     @Transient
     var playAlarm: () -> Unit = {}

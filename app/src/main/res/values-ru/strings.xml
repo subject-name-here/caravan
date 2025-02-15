@@ -126,8 +126,7 @@
     <string name="about_2">Этот порт создан subject_name_here (это такой ник, это не баг!), который никак не связан с создателями оригинала.</string>
     <string name="about_3_0">Благодарности:</string>
     <string name="about_3_1">Kat - за помощь с дизайном;</string>
-    <string name="about_3_2">" - за помощь с Дикой Пустошью, Сюжетом, колодами - короче, за половину приложения!!;"</string>
-    <string name="about_3_3">bigcman123 - за изображения Vault-Girl;</string>
+    <string name="about_3_2">" - за помощь с Дикой Пустошью, Сюжетом, Китайской колодой и колодой Викингов - короче, за половину приложения!!;"</string>
     <string name="about_3_4_1">"Kyle - за "</string>
     <string name="about_3_4_2">этот пост на Реддите</string>
     <string name="about_3_4_3">" с правилами Каравана;"</string>
@@ -291,7 +290,7 @@
     <string name="tap_to_play">Нажмите, чтобы играть</string>
 
     <string name="transaction_failed">Ошибка!</string>
-    <string name="animation_length">Время на анимацию</string>
+    <string name="animation_in_game">Анимации в игре</string>
     <string name="themes">Темы</string>
 
     <string name="room_exists_already">Номер уже существует!!!</string>
@@ -882,7 +881,7 @@
     <string name="prize4_body">Вы нашли тайник! +5000 крышечек!</string>
     <string name="prize1_body">Вы нашли тайник! +1969 крышечек!</string>
     <string name="prize2_body">Вы нашли тайник! +2024 крышечек!</string>
-    <string name="prize3_body">Вы нашли тайник! +1234 крышечек!</string>
+    <string name="prize3_body">Вы нашли не очень хитро спрятанный тайник! +12 крышечек!</string>
     <string name="story_progress_is_deleted">Прогресс в Сюжете удалён.</string>
     <string name="you_have_found_cards_from_standard_alt_deck">Вы нашли карты из стандартной ALT колоды!</string>
     <string name="you_have_found_cards_from_enclave_deck">Вы нашли карты из колоды Анклава!</string>
@@ -896,6 +895,8 @@
     <string name="supreme_leader_and_tower_boss_have_default_music">Верховный Лидер и босс БАШНИ получили их стандартную тему!</string>
     <string name="radio_uses_pseudonyms_now">Радио использует вымышленные имена.</string>
     <string name="radio_uses_real_names_now">Радио использует реальные имена.</string>
+    <string name="laggy_speed_on">Скорость LAGGY включена!</string>
+    <string name="laggy_speed_off">Скорость LAGGY выключена! Установлена скорость NORMAL.</string>
 
     <string name="faq_q1">Q1: Есть ли отличия правил от правил из оригинала (FNV)?</string>
     <string name="faq_a1">A1: Да, но небольшие. Например, в оригинале во время дебюта можно сбрасывать карты из руки, а здесь - нельзя.</string>

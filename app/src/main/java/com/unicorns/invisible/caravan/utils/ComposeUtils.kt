@@ -293,7 +293,8 @@ fun SliderCustom(
 fun SwitchCustomUsualBackground(
     activity: MainActivity,
     checked: () -> Boolean,
-    onCheckedChange: (Boolean) -> Unit
+    onCheckedChange: (Boolean) -> Unit,
+    enabled: () -> Boolean = { true }
 ) {
     Switch(
         checked = checked(), onCheckedChange = onCheckedChange, colors = SwitchColors(
@@ -313,7 +314,8 @@ fun SwitchCustomUsualBackground(
             disabledUncheckedTrackColor = colorResource(R.color.white),
             disabledUncheckedBorderColor = Color.Transparent,
             disabledUncheckedIconColor = Color.Transparent,
-        )
+        ),
+        enabled = enabled()
     )
 }
 
@@ -350,13 +352,9 @@ fun TextSymbola(
     modifier: Modifier,
     textAlign: TextAlign,
 ) {
-    val textRedacted = if (save.sixtyNineActive)
-        text.replace("TOPS", "Bottoms", ignoreCase = true)
-    else
-        text
     Box(modifier, contentAlignment = contentAlignment) {
         Text(
-            text = textRedacted, color = textColor,
+            text = text, color = textColor,
             fontFamily = FontFamily(Font(R.font.symbola)),
             style = TextStyle(
                 color = textColor,
@@ -435,13 +433,9 @@ fun TextCustom(
     textAlign: TextAlign,
 ) {
     val strokeWidth = getStrokeWidth(textSize)
-    val textRedacted = if (save.sixtyNineActive)
-        text.replace("TOPS", "Bottoms", ignoreCase = true)
-    else
-        text
     Box(modifier, contentAlignment = contentAlignment) {
         Text(
-            text = textRedacted, color = textColor,
+            text = text, color = textColor,
             fontFamily = FontFamily(font),
             style = TextStyle(
                 color = textColor,
@@ -455,7 +449,7 @@ fun TextCustom(
             return@Box
         }
         Text(
-            text = textRedacted, color = strokeColor,
+            text = text, color = strokeColor,
             fontFamily = FontFamily(font),
             style = TextStyle(
                 color = strokeColor,

@@ -156,16 +156,6 @@ fun ShowAbout(activity: MainActivity, goBack: () -> Unit) {
                     TextAlign.Center
                 )
                 Spacer(modifier = Modifier.height(12.dp))
-                TextFallout(
-                    stringResource(R.string.about_3_3),
-                    getTextColor(activity),
-                    getTextStrokeColor(activity),
-                    20.sp,
-                    Alignment.Center,
-                    Modifier,
-                    TextAlign.Center
-                )
-                Spacer(modifier = Modifier.height(12.dp))
                 val annotatedString2 = buildAnnotatedString {
                     append(stringResource(R.string.about_3_4_1))
                     withLink(

@@ -10,6 +10,8 @@ sealed interface Enemy {
     fun createDeck(): CResources
     fun getBankNumber(): Int = -1
 
+    fun isSpeedOverriding(): Boolean = false
+
     fun makeMove(game: Game)
 
     fun onVictory() {}

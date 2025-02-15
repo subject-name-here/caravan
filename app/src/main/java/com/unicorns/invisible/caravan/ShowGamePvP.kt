@@ -47,6 +47,7 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
 
+// TODO: update this!!!
 fun afterPlayerMove(
     game: Game,
     speed: AnimationSpeed,
@@ -65,18 +66,18 @@ fun afterPlayerMove(
         game.isPlayerTurn = false
         val isNewCardAdded =
             game.playerCResources.deckSize > 0 && game.playerCResources.hand.size < 5
-        if (game.processField()) {
-            if (speed.delay != 0L) {
-                delay(speed.delay * 2) // Remove cards; move cards within caravan
-            }
-            updateView()
+
+        game.processField()
+        if (speed.delay != 0L) {
+            delay(speed.delay * 2) // Remove cards; move cards within caravan
         }
-        if (game.processHand(game.playerCResources)) {
-            if (speed.delay != 0L) {
-                delay(speed.delay) // Take card into hand
-            }
-            updateView()
+        updateView()
+
+        game.processHand(game.playerCResources)
+        if (speed.delay != 0L) {
+            delay(speed.delay) // Take card into hand
         }
+        updateView()
 
         if (isNewCardAdded) {
             val newCard = game.playerCResources.hand.last()
@@ -160,18 +161,19 @@ fun pingForMove(
             if (speed.delay != 0L) {
                 delay(speed.delay * 2) // Move card from hand; move card ontoField
             }
-            if (game.processField()) {
-                if (speed.delay != 0L) {
-                    delay(speed.delay * 2)
-                }
-                updateView()
+
+            game.processField()
+            if (speed.delay != 0L) {
+                delay(speed.delay * 2) // Remove cards; move cards within caravan
             }
-            if (game.processHand(game.enemyCResources)) {
-                if (speed.delay != 0L) {
-                    delay(speed.delay)
-                }
-                updateView()
+            updateView()
+
+            game.processHand(game.enemyCResources)
+            if (speed.delay != 0L) {
+                delay(speed.delay) // Take card into hand
             }
+            updateView()
+
             game.isPlayerTurn = true
             game.checkOnGameOver()
             updateView()

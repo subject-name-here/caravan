@@ -32,6 +32,7 @@ class Game(
     val enemyCResources = enemy.createDeck()
 
     var isPlayerTurn = true
+    var canPlayerMove = false
 
     var id = UUID.randomUUID().toString()
 
@@ -61,7 +62,6 @@ class Game(
 
     var isCorrupted = false
 
-    var isExchangingCards = false
     fun isInitStage(): Boolean {
         return playerCResources.hand.size > 5 || enemyCResources.hand.size > 5
     }
@@ -77,31 +77,29 @@ class Game(
         if (enemy is EnemyTheManInTheMirror) {
             enemyCResources.copyFrom(playerCResources)
         }
+
+        canPlayerMove = true
     }
 
-    fun processField(): Boolean {
+    fun processField() {
         val caravans = playerCaravans + enemyCaravans
         val cards = caravans.flatMap { it.cards }
-        var flag = false
 
         cards.forEach {
             if (it.hasBomb) {
                 processBomb(it)
-                flag = true
             }
         }
 
         if (cards.any { it.hasJacks() || it.hasActiveJoker }) {
             processJacks()
             processJoker()
-            flag = true
         }
 
         if (cards.any { it.hasActiveFev || it.hasActiveUfo || it.hasActivePete }) {
             processFev()
             processUfo()
             processPete()
-            flag = true
         }
 
         caravans.forEach {
@@ -116,48 +114,29 @@ class Game(
 
             if (cazadorOwners.isNotEmpty()) {
                 it.getCazadorPoison(queensBlock)
-                flag = true
             }
         }
-
-        return flag
     }
 
-    fun processHand(cResources: CResources): Boolean {
+    fun processHand(cResources: CResources) {
         if (cResources.hand.size < 5 && cResources.deckSize > 0) {
             cResources.addToHand()
-            return true
         }
-        return false
     }
 
     fun afterPlayerMove(updateView: () -> Unit, speed: AnimationSpeed) {
-        suspend fun processMove(resources: CResources) {
-            if (speed.delay != 0L) {
-                delay(speed.delay * 3) // Move card from hand; move card ontoField
-            } else {
-                delay(190L)
-            }
-
-            if (processField()) { // Remove cards; move cards within caravan
-                updateView()
-                if (speed.delay != 0L) {
-                    delay(speed.delay * 2)
-                } else {
-                    delay(190L)
-                }
-            }
-            if (processHand(resources)) { // Take card into hand
-                updateView()
-                if (speed.delay != 0L) {
-                    delay(speed.delay)
-                }
-            }
-        }
+        val delayLength = speed.delay.coerceAtLeast(95L)
 
         CoroutineScope(Dispatchers.Default).launch {
             updateView()
-            processMove(playerCResources)
+            delay(delayLength)
+
+            processField() // TODO: if no change, skip next two lines
+            updateView()
+            delay(delayLength)
+            processHand(playerCResources) // TODO: if no change, skip next two lines
+            updateView()
+            delay(delayLength)
             isPlayerTurn = false
 
             if (checkOnGameOver()) {
@@ -165,16 +144,19 @@ class Game(
                 return@launch
             }
 
-            if (speed.delay != 0L) {
-                delay(speed.delay * 2) // Just break.
-            } else {
-                delay(285L)
-            }
+            delay(delayLength * 2) // Just break.
 
             enemy.makeMove(this@Game)
             updateView()
+            delay(delayLength)
 
-            processMove(enemyCResources)
+            processField() // TODO: if no change, skip next two lines
+            updateView()
+            delay(delayLength)
+            processHand(enemyCResources) // TODO: if no change, skip next two lines
+            updateView()
+            delay(delayLength)
+
             isPlayerTurn = true
 
             checkOnGameOver()

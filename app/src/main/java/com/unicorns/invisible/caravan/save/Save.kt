@@ -147,19 +147,12 @@ class Save(var playerId: String? = null) {
     var altStoryProgress = 0
 
     @EncodeDefault
-    var prize1Activated = false
-    @EncodeDefault
-    var prize2Activated = false
-    @EncodeDefault
-    var prize3Activated = false
-    @EncodeDefault
-    var prize4Activated = false
+    val activatedPrizes = HashSet<Int>()
+
     @EncodeDefault
     var betaReward = false
     @EncodeDefault
     var papaSmurfActive = false
-    @EncodeDefault
-    var sixtyNineActive = false
     @EncodeDefault
     var isHeroic = false
     @EncodeDefault

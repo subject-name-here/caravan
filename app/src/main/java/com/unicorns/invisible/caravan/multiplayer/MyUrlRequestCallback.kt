@@ -70,7 +70,6 @@ abstract class MyUrlRequestCallback(
         delegate.onFinishRequest(results)
     }
 
-
     override fun onSucceeded(request: UrlRequest, info: UrlResponseInfo) {}
 
     override fun onFailed(request: UrlRequest, info: UrlResponseInfo?, error: CronetException) {
