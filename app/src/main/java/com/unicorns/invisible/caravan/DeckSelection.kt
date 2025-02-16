@@ -3,6 +3,7 @@ package com.unicorns.invisible.caravan
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -69,6 +70,7 @@ fun DeckSelection(
                 save.selectedDeck = cardBack to isAlt
                 saveData(activity)
             }
+            .clip(RoundedCornerShape(6f))
     }
 
     var setCustomDeck by rememberSaveable { mutableStateOf(false) }
@@ -125,50 +127,57 @@ fun DeckSelection(
                 )
 
                 @Composable
-                fun showDeckBackRow(back: CardBack) {
-                    if (back.hasAltPlayable()) {
-                        Row {
-                            AsyncImage(
-                                model = "file:///android_asset/caravan_cards_back/" + back.getCardBackAsset(),
-                                contentDescription = "",
-                                modifier = getModifier(back, false).clip(RoundedCornerShape(6f))
-                            )
-                            Spacer(modifier = Modifier.width(8.dp))
-                            AsyncImage(
-                                model = "file:///android_asset/caravan_cards_back/" + back.getCardBackAltAsset(),
-                                contentDescription = "",
-                                modifier = getModifier(back, true).clip(RoundedCornerShape(6f))
-                            )
-                        }
-                        Spacer(modifier = Modifier.height(8.dp))
+                fun showDeckBack(back: CardBack, isAlt: Boolean) {
+                    if (!isAlt) {
+                        AsyncImage(
+                            model = "file:///android_asset/caravan_cards_back/" + back.backFileName,
+                            contentDescription = "",
+                            modifier = getModifier(back, false)
+                        )
                     } else {
                         AsyncImage(
-                            model = "file:///android_asset/caravan_cards_back/" + back.getCardBackAsset(),
+                            model = "file:///android_asset/caravan_cards_back/" + back.altBackFileName,
                             contentDescription = "",
-                            modifier = getModifier(back, false).clip(RoundedCornerShape(6f))
+                            modifier = getModifier(back, true)
                         )
                     }
                 }
 
-                Spacer(modifier = Modifier.height(12.dp))
-                showDeckBackRow(CardBack.STANDARD)
-                showDeckBackRow(CardBack.TOPS)
-                showDeckBackRow(CardBack.ULTRA_LUXE)
-                showDeckBackRow(CardBack.GOMORRAH)
-                showDeckBackRow(CardBack.LUCKY_38)
-                showDeckBackRow(CardBack.VAULT_21)
-                showDeckBackRow(CardBack.SIERRA_MADRE)
-                Row {
-                    showDeckBackRow(CardBack.ENCLAVE)
-                    Spacer(modifier = Modifier.width(8.dp))
-                    showDeckBackRow(CardBack.CHINESE)
+                Spacer(modifier = Modifier.height(16.dp))
+                Row(
+                    Modifier,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Column(Modifier, verticalArrangement = Arrangement.Center) {
+                        showDeckBack(CardBack.STANDARD, false)
+                        showDeckBack(CardBack.TOPS, false)
+                        showDeckBack(CardBack.GOMORRAH, false)
+                        showDeckBack(CardBack.ULTRA_LUXE, false)
+                        showDeckBack(CardBack.LUCKY_38, false)
+                        showDeckBack(CardBack.VAULT_21, false)
+                        showDeckBack(CardBack.SIERRA_MADRE, false)
+                    }
+                    Spacer(Modifier.width(8.dp))
+                    Column(Modifier, verticalArrangement = Arrangement.Center) {
+                        showDeckBack(CardBack.MADNESS, false)
+                        showDeckBack(CardBack.NCR, false)
+                        showDeckBack(CardBack.LEGION, false)
+                        showDeckBack(CardBack.VIKING, false)
+                        showDeckBack(CardBack.ENCLAVE, false)
+                        showDeckBack(CardBack.CHINESE, false)
+                    }
+                    Spacer(Modifier.width(8.dp))
+                    Column(Modifier, verticalArrangement = Arrangement.Center) {
+                        showDeckBack(CardBack.STANDARD, true)
+                        showDeckBack(CardBack.TOPS, true)
+                        showDeckBack(CardBack.GOMORRAH, true)
+                        showDeckBack(CardBack.ULTRA_LUXE, true)
+                        showDeckBack(CardBack.LUCKY_38, true)
+                        showDeckBack(CardBack.VAULT_21, true)
+                        showDeckBack(CardBack.SIERRA_MADRE, true)
+                    }
                 }
-                Spacer(modifier = Modifier.height(8.dp))
-                Row {
-                    showDeckBackRow(CardBack.MADNESS)
-                    Spacer(modifier = Modifier.width(8.dp))
-                    showDeckBackRow(CardBack.VIKING)
-                }
+                Spacer(modifier = Modifier.height(16.dp))
             }
         }
     }

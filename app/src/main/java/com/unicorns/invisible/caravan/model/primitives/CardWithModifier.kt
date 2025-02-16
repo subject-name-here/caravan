@@ -12,18 +12,18 @@ class CardWithModifier(val card: Card) {
         card.caravanAnimationMark = Card.AnimationMark.MOVING_IN
         if (card.isNuclear()) {
             hasBomb = true
-        } else if (card.isWildWasteland()) {
-            when (card.getWildWastelandCardType()) {
-                Card.WildWastelandCardType.DIFFICULT_PETE -> hasActivePete = true
-                Card.WildWastelandCardType.FEV -> hasActiveFev = true
-                Card.WildWastelandCardType.UFO -> hasActiveUfo = true
-                Card.WildWastelandCardType.CAZADOR -> hasActiveCazador = true
-                Card.WildWastelandCardType.MUGGY -> hasActiveMuggy = true
-                Card.WildWastelandCardType.YES_MAN -> hasActiveYesMan = true
-                else -> {}
+        } else when (card.getWildWastelandType()) {
+            Card.WildWastelandCardType.DIFFICULT_PETE -> hasActivePete = true
+            Card.WildWastelandCardType.FEV -> hasActiveFev = true
+            Card.WildWastelandCardType.UFO -> hasActiveUfo = true
+            Card.WildWastelandCardType.CAZADOR -> hasActiveCazador = true
+            Card.WildWastelandCardType.MUGGY -> hasActiveMuggy = true
+            Card.WildWastelandCardType.YES_MAN -> hasActiveYesMan = true
+            else -> {
+                if (card.rank == Rank.JOKER) {
+                    hasActiveJoker = true
+                }
             }
-        } else if (card.rank == Rank.JOKER) {
-            hasActiveJoker = true
         }
     }
     fun copyModifiersFrom(mods: List<Card>) {
@@ -32,15 +32,13 @@ class CardWithModifier(val card: Card) {
 
     fun canAddModifier(card: Card): Boolean {
         val isOrdinaryJack = card.rank == Rank.JACK && card.isOrdinary()
-        return card.isFace() && !isProtectedByMuggy && (modifiers.size < 3 || isOrdinaryJack)
+        return card.isModifier() && !isProtectedByMuggy && (modifiers.size < 3 || isOrdinaryJack)
     }
 
     var hasActiveJoker: Boolean = false
         private set
     var hasBomb: Boolean = false
         private set
-
-    var isProtectedByMuggy: Boolean = false
 
     var hasActiveUfo: Boolean = false
         private set
@@ -54,6 +52,8 @@ class CardWithModifier(val card: Card) {
         private set
     var hasActiveYesMan: Boolean = false
         private set
+
+    var isProtectedByMuggy: Boolean = false
 
     fun deactivateJoker() {
         hasActiveJoker = false
@@ -79,7 +79,7 @@ class CardWithModifier(val card: Card) {
     fun modifiersCopy() = modifiers.toList()
 
     fun getValue(): Int {
-        return if (card.isFace()) {
+        return if (card.isModifier()) {
             0
         } else {
             card.rank.value * (2.0.pow(modifiers.count { it.isOrdinary() && it.rank == Rank.KING })).toInt()

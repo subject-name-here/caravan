@@ -15,17 +15,22 @@ fun getCardName(card: Card): String {
         CardBack.VAULT_21 -> if (!card.isAlt) getVault21Name(card) else getVault21AltName(card)
         CardBack.SIERRA_MADRE -> if (!card.isAlt) getStandardName(card) else getSmCleanName(card)
 
-        CardBack.CHINESE -> if (!card.isAlt) getChineseName(card) else getCcpAltCard()
-        CardBack.ENCLAVE -> if (!card.isAlt) getEnclaveName(card) else getEnclaveAltCard()
-        CardBack.MADNESS -> if (!card.isAlt) getMadnessName(card) else getWildWastelandName(card)
-        CardBack.VIKING -> if (!card.isAlt) getVikingName(card) else "TODO" // TODO: RAD Infinitum cards
+        CardBack.WILD_WASTELAND -> getWildWastelandName(card)
+        CardBack.NUCLEAR -> if (!card.isAlt) getNuclearCard() else getNuclearAltCard()
+
+        CardBack.CHINESE -> getChineseName(card)
+        CardBack.ENCLAVE -> getEnclaveName(card)
+        CardBack.MADNESS -> getMadnessName(card)
+        CardBack.VIKING -> getVikingName(card)
+        CardBack.NCR -> "TODO" // TODO
+        CardBack.LEGION -> "TODO" // TODO
     }
 }
 
-private fun getEnclaveAltCard(): String {
+private fun getNuclearCard(): String {
     return "wild/nuclear_front.webp"
 }
-private fun getCcpAltCard(): String {
+private fun getNuclearAltCard(): String {
     return "wild/ccp_nuclear_front.webp"
 }
 
@@ -241,14 +246,14 @@ private fun getWildWastelandName(card: Card): String {
         return "$prefix/${card.rank.value}_${card.suit.name.first().uppercase()}.webp"
     }
 
-    return "$prefix/" + when (card.getWildWastelandCardType()) {
+    return "$prefix/" + when (card.getWildWastelandType()) {
         Card.WildWastelandCardType.CAZADOR -> "cazador.webp"
         Card.WildWastelandCardType.DIFFICULT_PETE -> "difficult_pete.webp"
         Card.WildWastelandCardType.FEV -> "fev.webp"
         Card.WildWastelandCardType.MUGGY -> "muggy.webp"
         Card.WildWastelandCardType.UFO -> "ufo.webp"
         Card.WildWastelandCardType.YES_MAN -> "yes_man.webp"
-        null -> ""
+        null -> "" // TODO: card not found!!
     }
 }
 

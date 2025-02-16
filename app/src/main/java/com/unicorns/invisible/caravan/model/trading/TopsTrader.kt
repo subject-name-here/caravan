@@ -2,10 +2,9 @@ package com.unicorns.invisible.caravan.model.trading
 
 import com.unicorns.invisible.caravan.MainActivity
 import com.unicorns.invisible.caravan.R
-import com.unicorns.invisible.caravan.Style
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.primitives.Card
-import com.unicorns.invisible.caravan.model.trading.Trader.Companion.booleanToPlusOrMinus
+import com.unicorns.invisible.caravan.utils.booleanToPlusOrMinus
 import kotlinx.serialization.Serializable
 
 
@@ -23,9 +22,12 @@ class TopsTrader : Trader {
             booleanToPlusOrMinus(isVictorDefeated),
         )
 
-    override fun getName(): Int = R.string.tops_trader_name
+    override fun getUpdateRate() = 8
+
+    override fun getWelcomeMessage() = R.string.tops_trader_welcome
+    override fun getEmptyStoreMessage() = R.string.tops_trader_empty
+
     override fun getSymbol() = "T"
 
     override fun getCards(): List<Pair<Card, Int>> = getCards(CardBack.TOPS)
-    override fun getStyles(): List<Style> = listOf(Style.NEW_WORLD)
 }

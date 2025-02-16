@@ -47,8 +47,7 @@
     <string name="sierra_madre_trader_name">Приёмник бутылочных крышек Сьерра-Мадре</string>
     <string name="sierra_madre_trader_cond">Победите Элайджу, Улисса и Доктора Мёбиуса. (%1$s, %2$s, %3$s)</string>
     <string name="chinese_trader_name">Военачальник Ли Чжоу</string>
-    <string name="chinese_trader_condition">Завершите главу 9 Сюжета и ответьте на вопрос: в каком году была образована КПК?</string>
-    <string name="chinese_trader_condition_tmp">Ответьте на вопрос: в каком году была образована КПК?</string>
+    <string name="chinese_trader_condition">Завершите Сюжет и ответьте на вопрос: в каком году была образована КПК?</string>
     <string name="enclave_trader_name">Савант</string>
     <string name="enclave_trader_cond">Пройдите БАШНЮ.</string>
 
@@ -685,8 +684,6 @@
 
     <string name="your_barter_stat">Бартер: %1$s</string>
     <string name="your_caps_in_hand">Крышечки на руках: %1$s</string>
-    <string name="hi_my_name_is">Привет! Я %1$s!!</string>
-    <string name="hi_our_name_is">Привет! Нас зовут %1$s!!</string>
     <string name="style_buy">Скин: %1$s</string>
     <string name="buy_for_caps">Купить за %1$s крышечек</string>
 

@@ -5,66 +5,29 @@ import androidx.compose.ui.graphics.ColorMatrix
 import com.unicorns.invisible.caravan.R
 
 
-enum class CardBack {
-    STANDARD,
-    TOPS,
-    ULTRA_LUXE,
-    GOMORRAH,
-    LUCKY_38,
-    VAULT_21,
-    SIERRA_MADRE,
-    CHINESE,
-    ENCLAVE,
-    MADNESS,
-    VIKING;
+enum class CardBack(val deckName: Int?, val backFileName: String, val altBackFileName: String?) {
+    STANDARD(R.string.standard_deck_name, "FNV_Caravan_card_back_-_standard.webp", "FNV_Caravan_card_back_-_st_alt.webp"),
+    TOPS(R.string.tops_deck_name, "FNV_Caravan_card_back_-_Tops.webp", "tops_alt.webp"),
+    ULTRA_LUXE(R.string.ultra_luxe_deck_name, "FNV_Caravan_card_back_-_Ultra-Luxe.webp", "ultra_luxe_alt.webp"),
+    GOMORRAH(R.string.gomorrah_deck_name, "FNV_Caravan_card_back_-_Gomorrah.webp", "gomorrah_alt.webp"),
+    LUCKY_38(R.string.lucky_38_deck_name, "FNV_Caravan_card_back_-_Lucky_38.webp", "lucky_38_alt.webp"),
+    VAULT_21(R.string.vault_21_deck_name, "standard_alt.webp", "sm_alt.webp"),
+    SIERRA_MADRE(R.string.sierra_madre_deck_name, "FNV_Caravan_card_back_-_Sierra_Madre.webp", "sm_clean.webp"),
 
-    fun getDeckName(): Int = when (this) {
-        STANDARD -> R.string.standard_deck_name
-        TOPS -> R.string.tops_deck_name
-        ULTRA_LUXE -> R.string.ultra_luxe_deck_name
-        GOMORRAH -> R.string.gomorrah_deck_name
-        LUCKY_38 -> R.string.lucky_38_deck_name
-        VAULT_21 -> R.string.vault_21_deck_name
-        SIERRA_MADRE -> R.string.sierra_madre_deck_name
-        MADNESS -> R.string.madness_deck_name
-        CHINESE -> R.string.chinese_deck_name
-        ENCLAVE -> R.string.enclave_deck_name
-        VIKING -> R.string.viking_deck_name
-    }
+    // UNPLAYABLE!!
+    WILD_WASTELAND(null, "ww_back.webp", null),
+    NUCLEAR(null, "nuclear_back.webp", "ccp_alt_back.webp"),
 
-    fun hasAltPlayable(): Boolean = this !in listOf(CHINESE, ENCLAVE, MADNESS, VIKING)
+    // PLAYABLE, BUT NO ALT!
+    MADNESS(R.string.madness_deck_name, "madness_back.webp", null),
+    CHINESE(R.string.chinese_deck_name, "ccp_back.webp", null),
+    ENCLAVE(R.string.enclave_deck_name, "enclave_back.webp", null),
+    VIKING(R.string.viking_deck_name, "viking_back.webp", null),
+    NCR(R.string.ncr_deck_name, "TODO", null), // TODO
+    LEGION(R.string.legion_deck_name, "TODO", null); // TODO
 
-    fun getCardBackAsset(): String {
-        return when (this) {
-            STANDARD -> "FNV_Caravan_card_back_-_standard.webp"
-            TOPS -> "FNV_Caravan_card_back_-_Tops.webp"
-            ULTRA_LUXE -> "FNV_Caravan_card_back_-_Ultra-Luxe.webp"
-            GOMORRAH -> "FNV_Caravan_card_back_-_Gomorrah.webp"
-            LUCKY_38 -> "FNV_Caravan_card_back_-_Lucky_38.webp"
-            VAULT_21 -> "standard_alt.webp"
-            SIERRA_MADRE -> "FNV_Caravan_card_back_-_Sierra_Madre.webp"
-            CHINESE -> "ccp_back.webp"
-            ENCLAVE -> "enclave_back.webp"
-            MADNESS -> "madness_back.webp"
-            VIKING -> "viking_back.webp"
-        }
-    }
-
-    fun getCardBackAltAsset(): String {
-        return when (this) {
-            STANDARD -> "FNV_Caravan_card_back_-_st_alt.webp"
-            TOPS -> "tops_alt.webp"
-            ULTRA_LUXE -> "ultra_luxe_alt.webp"
-            GOMORRAH -> "gomorrah_alt.webp"
-            LUCKY_38 -> "lucky_38_alt.webp"
-            VAULT_21 -> "sm_alt.webp"
-            SIERRA_MADRE -> "sm_clean.webp"
-            CHINESE -> "ccp_alt_back.webp"
-            ENCLAVE -> "nuclear_back.webp"
-            MADNESS -> "ww_back.webp"
-            VIKING -> "TODO" // TODO: decks for RAD Infinitum
-        }
-    }
+    fun isPlayable() = deckName != null
+    fun hasAlt() = altBackFileName != null
 
     fun getFilter(isAlt: Boolean): ColorFilter {
         if (!isAlt) {

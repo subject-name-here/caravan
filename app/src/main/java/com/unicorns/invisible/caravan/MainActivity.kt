@@ -71,7 +71,6 @@ import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.save.Save
 import com.unicorns.invisible.caravan.save.loadGDSave
 import com.unicorns.invisible.caravan.save.loadLocalSave
-import com.unicorns.invisible.caravan.save.processOldSave
 import com.unicorns.invisible.caravan.save.saveData
 import com.unicorns.invisible.caravan.utils.SliderCustom
 import com.unicorns.invisible.caravan.utils.TextFallout
@@ -152,7 +151,6 @@ class MainActivity : SaveDataActivity() {
                         save = loadedSave
                     } else {
                         save = Save(playerId)
-                        processOldSave(this@MainActivity)
                         saveData(this@MainActivity)
                     }
                 }
@@ -743,14 +741,14 @@ class MainActivity : SaveDataActivity() {
                     else -> {
                         LaunchedEffect(Unit) {
                             val currentHash = save.getCurrentDateHashCode()
-                            if (currentHash != save.challengesHash) {
+                            if (currentHash != save.dailyHash) {
                                 val capsFound = Random.nextInt(15, 31)
                                 showAlertDialog(
                                     getString(R.string.daily_update_head),
                                     getString(R.string.daily_update_body, capsFound.toString()),
                                     null
                                 )
-                                save.challengesHash = currentHash
+                                save.dailyHash = currentHash
                                 save.updateChallenges()
                                 save.updateDailyStats()
                                 save.capsInHand += capsFound

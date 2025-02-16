@@ -34,23 +34,39 @@
     <string name="chinese_deck_name">Chinese deck</string>
     <string name="enclave_deck_name">Enclave deck</string>
     <string name="viking_deck_name">Viking deck</string>
+    <string name="ncr_deck_name">NCR deck</string>
+    <string name="legion_deck_name">Legion deck</string>
 
-    <string name="ultra_luxe_trader_name">Martin Luther</string>
+    <string name="ultra_luxe_trader_welcome">Greetings. I am Martin Luther. Welcome to Ultra-Luxe card market.</string>
+    <string name="ultra_luxe_trader_empty">Apologies, but there are no valuable items for you. Please, wait for a resupply.</string>
     <string name="ultra_luxe_trader_condition">Ultra-Luxe card market is open only on Mondays and Thursdays. We apologize for any inconvenience.</string>
-    <string name="tops_trader_name">Max</string>
-    <string name="tops_trader_condition">Defeat Benny, LUC10 and Victor. (%1$s, %2$s, %3$s)</string>
-    <string name="gomorrah_trader_name">Ben Broadson</string>
-    <string name="gomorrah_trader_condition">Defeat Vulpes Inculta, Oliver Swanick and Madness Cardinal. (%1$s, %2$s, %3$s)</string>
-    <string name="vault_21_trader_name">Melanie Martinez</string>
+
+    <string name="vault_21_trader_welcome">Hola, sweetheart!!! Name\'s Melanie Martinez, but you can call me Mel!</string>
+    <string name="vault_21_trader_empty">Oy, sorry! Nothing has arrived yet. Meanwhile, you can have fun playing Caravan!</string>
     <string name="vault_21_trader_condition">Win 21 games or visit every 21st day of month.</string>
-    <string name="lucky_38_trader_name">Marylin &amp; Jane</string>
-    <string name="lucky_38_trader_cond">Beat Mr. House in Tower.</string>
-    <string name="sierra_madre_trader_name">Sierra Madre BottleCaps Exchange Machine</string>
+
+    <string name="sierra_madre_trader_welcome">*welcoming beeping and celebratory looped music from Sierra Madre BottleCaps Exchange Machine*</string>
+    <string name="sierra_madre_trader_empty">*silence*</string>
     <string name="sierra_madre_trader_cond">Defeat Elijah, Ulysses and Dr. Mobius. (%1$s, %2$s, %3$s)</string>
-    <string name="chinese_trader_name">Warlord Li Xuan</string>
-    <string name="chinese_trader_condition">Finish chapter 9 of the Story mode and answer the question: what year CCP was established?</string>
-    <string name="chinese_trader_condition_tmp">Answer the question: what year CCP was established?</string>
-    <string name="enclave_trader_name">Savanth</string>
+
+    <string name="tops_trader_welcome">If you ask me \"Hey, Max, what is the swankiest-smoothiest card store?\", I will tell you, baby, that you are standing in it.</string>
+    <string name="tops_trader_empty">Hey, the store is empty, but that will change faster than the Mojave weather. Come again soooooon.</string>
+    <string name="tops_trader_condition">Defeat Benny, LUC10 and Victor. (%1$s, %2$s, %3$s)</string>
+
+    <string name="gomorrah_trader_welcome">My name is Ben Broadson. I sell cards. Who are you - I don\'t care.</string>
+    <string name="gomorrah_trader_empty">Come soon again. Restocks are happening very often.</string>
+    <string name="gomorrah_trader_condition">Defeat Vulpes Inculta, Oliver Swanick and Madness Cardinal. (%1$s, %2$s, %3$s)</string>
+
+    <string name="lucky_38_trader_welcome">Hello, sweetie, we are Marylin &amp; Jane - companions of Mr. House! We are so happy to see you!</string>
+    <string name="lucky_38_trader_empty">Sugar, come again tomorrow!</string>
+    <string name="lucky_38_trader_cond">Beat Mr. House in Tower.</string>
+
+    <string name="chinese_trader_welcome">Nihao! I am Warlord Li Xuan. Here is the loot from the peasants my army robbed yesterday.</string>
+    <string name="chinese_trader_empty">Laowai, wait until tomorrow for another portion of loot.</string>
+    <string name="chinese_trader_condition">Finish the Story mode and answer the question: what year CCP was established?</string>
+
+    <string name="enclave_trader_welcome">I am Savanth. Don\'t touch the merchandise.</string>
+    <string name="enclave_trader_empty">Come tomorrow.</string>
     <string name="enclave_trader_cond">Complete the Tower.</string>
 
 
@@ -405,6 +421,8 @@
     <string name="currently_in_bank_caps">Currently at stake: %1$s caps</string>
     <string name="enemy">Enemy: %1$s</string>
     <string name="your_reward_caps">Your reward: %1$s caps.</string>
+    <string name="your_reward_caps_2048">Cowardly running away, you managed to get: 2048 caps.</string>
+    <string name="your_reward_caps_4096">The final boss is defeated. By being a true hero, you have managed to earn: 4096 caps.</string>
 
     <string name="tower_enemy_1">Sunny Smiles</string>
     <string name="tower_enemy_2">Yes Man</string>
@@ -423,6 +441,7 @@
     <string name="take_the_cash_alt">Run away with cash!</string>
     <string name="congratulations">Congratulations!</string>
     <string name="en_garde">En garde!</string>
+    <string name="en_f_garde">En-fucking-garde.</string>
 
     <string name="frank_think_header">THIS IS THE LAST WARNING!!!</string>
     <string name="frank_think_body">If you lose, then you die, and Frank Horrigan will loot all the caps from your body.</string>
@@ -737,8 +756,6 @@
 
     <string name="your_barter_stat">Your Barter stat: %1$s</string>
     <string name="your_caps_in_hand">Your caps in hand: %1$s</string>
-    <string name="hi_my_name_is">Hi! My name is %1$s!!</string>
-    <string name="hi_our_name_is">Hi! We are %1$s!!</string>
     <string name="style_buy">Style: %1$s</string>
     <string name="buy_for_caps">Buy for %1$s caps</string>
 
@@ -963,6 +980,5 @@ If this helped you understand the game, thank the author Kyle! To do this, go to
         The exceptions are Standard deck ALT (cards are dropped in multiplayer) and Madness deck (cards are dropped for defeating Madness Cardinal).</string>
     <string name="faq_ql">Q: I have a question, but cannot find the answer here or in the rules!!!</string>
     <string name="faq_al">A: Well, you can send the question in Discord (link in the main menu in the top right corner) or to me directly by email (link in About section).</string>
-    <string name="sorry_no_new_cards">Sorry, no new cards!!</string>
 
 </resources>

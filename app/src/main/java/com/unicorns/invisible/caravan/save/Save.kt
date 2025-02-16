@@ -4,9 +4,26 @@ import com.unicorns.invisible.caravan.AnimationSpeed
 import com.unicorns.invisible.caravan.Style
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.challenge.Challenge
+import com.unicorns.invisible.caravan.model.enemy.EnemyBenny
+import com.unicorns.invisible.caravan.model.enemy.EnemyCrooker
+import com.unicorns.invisible.caravan.model.enemy.EnemyDrMobius
+import com.unicorns.invisible.caravan.model.enemy.EnemyEasyPete
+import com.unicorns.invisible.caravan.model.enemy.EnemyElijah
+import com.unicorns.invisible.caravan.model.enemy.EnemyHanlon
+import com.unicorns.invisible.caravan.model.enemy.EnemyLuc10
+import com.unicorns.invisible.caravan.model.enemy.EnemyMadnessCardinal
+import com.unicorns.invisible.caravan.model.enemy.EnemyNash
+import com.unicorns.invisible.caravan.model.enemy.EnemyNoBark
+import com.unicorns.invisible.caravan.model.enemy.EnemyOliver
+import com.unicorns.invisible.caravan.model.enemy.EnemySnuffles
+import com.unicorns.invisible.caravan.model.enemy.EnemyTabitha
+import com.unicorns.invisible.caravan.model.enemy.EnemyTheManInTheMirror
+import com.unicorns.invisible.caravan.model.enemy.EnemyUlysses
+import com.unicorns.invisible.caravan.model.enemy.EnemyVeronica
+import com.unicorns.invisible.caravan.model.enemy.EnemyVictor
+import com.unicorns.invisible.caravan.model.enemy.EnemyVulpes
 import com.unicorns.invisible.caravan.model.primitives.Card
 import com.unicorns.invisible.caravan.model.primitives.CustomDeck
-import com.unicorns.invisible.caravan.model.primitives.Rank
 import com.unicorns.invisible.caravan.model.trading.ChineseTrader
 import com.unicorns.invisible.caravan.model.trading.EnclaveTrader
 import com.unicorns.invisible.caravan.model.trading.GomorrahTrader
@@ -19,10 +36,6 @@ import com.unicorns.invisible.caravan.model.trading.Vault21Trader
 import kotlinx.serialization.EncodeDefault
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
-import kotlin.random.Random
 
 
 // PlayerId == null => save is not loaded
@@ -72,9 +85,6 @@ class Save(var playerId: String? = null) {
             availableCards.add(card)
         }
     }
-    fun clearAvailableCards() {
-        availableCards.clear()
-    }
 
     val ownedDecks
         get() = availableCards.filterNot { it.isAlt }.map { it.back }.distinct()
@@ -83,8 +93,9 @@ class Save(var playerId: String? = null) {
 
     fun getCustomDeckCopy(): CustomDeck {
         val deck = CustomDeck()
+        val alts = getAltDecksChosenMap()
         getCurrentCustomDeck().toList().forEach {
-            if (it.isAlt == getAltDecksChosenMap()[it.back]) {
+            if (it.isAlt == alts[it.back]) {
                 deck.add(Card(it.rank, it.suit, it.back, it.isAlt))
             }
         }
@@ -107,6 +118,7 @@ class Save(var playerId: String? = null) {
     var capsBet = 0
     @EncodeDefault
     var capsWon = 0
+    // TODO: more stats???
 
     @EncodeDefault
     var radioVolume = 1f
@@ -117,6 +129,7 @@ class Save(var playerId: String? = null) {
 
     var useCaravanIntro = true
     var playRadioInBack = false
+    var animationSpeed = AnimationSpeed.NORMAL
 
     @EncodeDefault
     var capsInHand = 150
@@ -125,18 +138,16 @@ class Save(var playerId: String? = null) {
     var tickets = 5
 
     @EncodeDefault
-    var animationSpeed = AnimationSpeed.NORMAL
-
+    var dailyHash = 0
     @EncodeDefault
-    var challengesHash = 0
-    fun getCurrentDateHashCode(): Int {
-        return SimpleDateFormat("yyyyMMdd", Locale.ENGLISH).format(Date()).hashCode()
-    }
-    @EncodeDefault
-    var challenges: MutableList<Challenge> = Challenge.initChallenges(challengesHash)
+    var challengesNew: MutableList<Challenge> = mutableListOf()
     fun updateChallenges() {
-        challenges = Challenge.initChallenges(challengesHash)
+        challengesNew = Challenge.initChallenges(dailyHash)
     }
+
+    // TODO: two more types of challenges: infinite easy and infinite hard
+    @EncodeDefault
+    val challengesInf: MutableList<Challenge> = mutableListOf()
 
     @EncodeDefault
     var towerLevel: Int = 0
@@ -145,6 +156,8 @@ class Save(var playerId: String? = null) {
     var storyProgress = 0
     @EncodeDefault
     var altStoryProgress = 0
+    @EncodeDefault
+    var storyCompleted = false
 
     @EncodeDefault
     val activatedPrizes = HashSet<Int>()
@@ -159,32 +172,44 @@ class Save(var playerId: String? = null) {
     var isRadioUsesPseudonyms = false
 
     @EncodeDefault
-    val enemyCapsLeft = Array<Int>(30) { 0 }
-    fun updateDailyStats() {
-        val random = Random(challengesHash)
-        repeat(30) {
-            enemyCapsLeft[it] = if (it % 6 == 5) {
-                90
-            } else {
-                random.nextInt(15, 20)
+    val enemiesGroups = listOf(
+        listOf(
+            EnemyOliver,
+            EnemyVeronica,
+            EnemyVictor,
+            EnemyHanlon,
+            EnemyUlysses,
+            EnemyBenny
+        ),
+        listOf(
+            EnemyNoBark,
+            EnemyNash,
+            EnemyTabitha,
+            EnemyVulpes,
+            EnemyElijah,
+            EnemyCrooker
+        ),
+        listOf(
+            EnemySnuffles,
+            EnemyEasyPete,
+            EnemyTheManInTheMirror,
+            EnemyMadnessCardinal,
+            EnemyDrMobius,
+            EnemyLuc10
+        )
+    )
+    fun updateEnemiesBanks() {
+        enemiesGroups.forEach { group ->
+            group.forEachIndexed { index, enemy ->
+                if (index != 4 && index != 6) {
+                    enemy.refreshBank(19)
+                } else if (index == 6) {
+                    enemy.refreshBank(90)
+                }
             }
         }
     }
 
-    fun getPriceOfCard(card: Card): Int {
-        val base = if (card.isAlt) 30 else 10
-        val rankMult = when (card.rank) {
-            Rank.ACE, Rank.SIX, Rank.QUEEN -> 1.0
-            Rank.TWO, Rank.THREE -> 0.8
-            Rank.FOUR, Rank.FIVE -> 0.9
-            Rank.SEVEN, Rank.EIGHT, Rank.NINE -> 1.1
-            Rank.TEN -> 1.2
-            Rank.JACK -> 1.3
-            Rank.KING -> 1.4
-            Rank.JOKER -> 1.5
-        }
-        return (base.toDouble() * rankMult).toInt()
-    }
 
     @EncodeDefault
     val traders = listOf<Trader>(

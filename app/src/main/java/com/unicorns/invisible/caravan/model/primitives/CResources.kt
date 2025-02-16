@@ -18,20 +18,20 @@ class CResources(private val deck: CustomDeck) {
      * 1) no Wild Wasteland cards in the hand
      * 2) if there is a bomb in a deck, there must be exactly one in the hand
      */
-    private fun getTopHand(facesLimit: Int = 6): List<Card> {
+    private fun getTopHand(facesLimitExcluded: Int = 6): List<Card> {
         val cards = deck.toList().toMutableList()
         cards.removeAll { it.isWildWasteland() }
 
         val nuclears = cards.filter { it.isNuclear() }
-        val faces = cards.filter { it.isOrdinary() && it.isFace() }
-        val numbers = cards.filter { it.isOrdinary() && !it.isFace() }
+        val faces = cards.filter { it.isOrdinary() && it.rank.isFace() }
+        val numbers = cards.filter { it.isOrdinary() && !it.rank.isFace() }
 
         val startingHand = mutableListOf<Card>()
         if (!nuclears.isEmpty()) {
             startingHand.add(nuclears.first())
-            startingHand.addAll(faces.take(Random.nextInt(0, facesLimit - 1)))
+            startingHand.addAll(faces.take(Random.nextInt(0, facesLimitExcluded - 1)))
         } else {
-            startingHand.addAll(faces.take(Random.nextInt(0, facesLimit)))
+            startingHand.addAll(faces.take(Random.nextInt(0, facesLimitExcluded)))
         }
 
         val remaining = 8 - startingHand.size
@@ -61,18 +61,18 @@ class CResources(private val deck: CustomDeck) {
     }
 
     fun addCardToHandDirect(card: Card) {
-        deck.removeAllOnce(listOf(card))
         addCardToHand(card)
         processHandAddedCard(card)
     }
 
     private fun processHandAddedCard(card: Card) {
-        if (card.getWildWastelandCardType() == Card.WildWastelandCardType.CAZADOR) {
+        val type = Card.WildWastelandCardType.CAZADOR
+        if (card.getWildWastelandType() == type) {
             val notSpecial = handMutable.filter { it.isOrdinary() }
             notSpecial.forEach { it.handAnimationMark = Card.AnimationMark.MOVED_OUT }
             handMutable.removeAll(notSpecial)
             repeat(notSpecial.size) {
-                handMutable.add(Card(Rank.QUEEN, Suit.HEARTS, CardBack.MADNESS, true))
+                handMutable.add(Card(type.rank, type.suit, CardBack.WILD_WASTELAND, false))
             }
         }
     }
@@ -95,11 +95,12 @@ class CResources(private val deck: CustomDeck) {
         get() = deck.size
 
     fun mutateFev(card: Card) {
-        val cards = handMutable.size
+        if (card.rank.isFace()) return
+        val handSize = handMutable.size
         handMutable.forEach { it.handAnimationMark = Card.AnimationMark.MOVED_OUT }
         handMutable.clear()
-        repeat(cards) {
-            handMutable.add(Card(card.rank, card.suit, CardBack.MADNESS, true))
+        repeat(handSize) {
+            handMutable.add(Card(card.rank, card.suit, CardBack.WILD_WASTELAND, true))
         }
     }
 
@@ -107,7 +108,6 @@ class CResources(private val deck: CustomDeck) {
         newDeck.toList().reversed().forEach { deck.addOnTop(it) }
     }
     fun addOnTop(card: Card) = deck.addOnTop(card)
-    fun moveOnTop(rank: Rank, suit: Suit) = deck.moveOnTop(rank, suit)
 
     fun copyFrom(cResources: CResources) {
         addNewDeck(cResources.deck.copy())

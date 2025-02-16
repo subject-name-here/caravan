@@ -30,8 +30,8 @@ sealed interface Challenge {
             val challenges = mutableListOf<Challenge>()
 
             challenges.add(ChallengePlayCard(Rank.entries.random(rand)))
-            challenges.add(ChallengeDoNotPlayCards((1..7).random(rand)))
-            challenges.add(ChallengeBeatEnemies((1..8).random(rand)))
+            challenges.add(ChallengeDoNotPlayCards((1..7).random(rand))) // TODO: add more
+            challenges.add(ChallengeBeatEnemies((1..8).random(rand))) // TODO: add more combinations
 
             val specialCode = (1..7).random(rand)
             when (specialCode) {

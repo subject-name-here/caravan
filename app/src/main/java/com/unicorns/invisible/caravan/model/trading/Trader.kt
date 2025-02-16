@@ -1,12 +1,12 @@
 package com.unicorns.invisible.caravan.model.trading
 
 import com.unicorns.invisible.caravan.MainActivity
-import com.unicorns.invisible.caravan.Style
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.primitives.Card
 import com.unicorns.invisible.caravan.model.primitives.CustomDeck
 import com.unicorns.invisible.caravan.save
 import kotlinx.serialization.Serializable
+import java.util.Calendar
 import kotlin.random.Random
 
 
@@ -14,38 +14,36 @@ import kotlin.random.Random
 sealed interface Trader {
     fun isOpen(): Boolean
     fun openingCondition(activity: MainActivity): String
-    fun getName(): Int
+
+    fun getUpdateRate(): Int
+    fun getUpdatePartOfHash() = Calendar.getInstance().get(Calendar.HOUR_OF_DAY) / getUpdateRate()
+
+    fun getWelcomeMessage(): Int
+    fun getEmptyStoreMessage(): Int
     fun getSymbol(): String
     fun getCards(): List<Pair<Card, Int>>
-    fun getStyles(): List<Style>
 
-    fun getCards(back: CardBack, nBig: Int = 13): List<Pair<Card, Int>> {
-        if (nBig <= 1) {
-            return emptyList()
+    fun getCards(back: CardBack): List<Pair<Card, Int>> {
+        // TODO: better seed
+        val bshl = (back.ordinal * 32 + getUpdatePartOfHash()) shl 23
+        val b = bshl - back.ordinal - 1
+        val todayHash = save.dailyHash
+        val rand = Random(todayHash xor (b * 31 + 22229) xor (b * b * b + 13))
+
+        fun shuffleCards(deck: CustomDeck) = deck.toList().shuffled(rand).filter {
+            rand.nextBoolean() || !save.isCardAvailableAlready(it)
         }
 
-        val b = back.ordinal
-        val rand = Random(save.challengesHash xor (b * 31 + 22229) xor (b * b * b + 13))
+        val n = 6
 
-        val cards1 = CustomDeck(back, false).toList().shuffled(rand).take(nBig)
-        val cards2 = if (back.hasAltPlayable()) {
-            CustomDeck(back, true).toList().shuffled(rand).take(nBig / 2 + 1)
+        val cards1 = shuffleCards(CustomDeck(back, false)).take(n)
+        val cards2 = if (back.hasAlt()) {
+            shuffleCards(CustomDeck(back, true)).take(n / 2)
         } else {
             emptyList()
         }
 
         val cards = (cards1 + cards2).toMutableList()
-        return if (cards.all { save.isCardAvailableAlready(it) }) {
-            // TODO: show invest thing
-            getCards(back, nBig / 2)
-        } else {
-            cards.map { card -> card to save.getPriceOfCard(card) }
-        }
-    }
-
-    companion object {
-        fun booleanToPlusOrMinus(it: Boolean): String {
-            return if (it) "+" else "-"
-        }
+        return cards.map { card -> card to save.getPriceOfCard(card) }
     }
 }

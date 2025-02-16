@@ -24,16 +24,11 @@ class CustomDeck() {
     val size: Int
         get() = cards.size
 
-    fun add(element: Card) = cards.add(element)
-    fun addAll(elements: CustomDeck) = cards.addAll(elements.toList())
-    fun addOnTop(element: Card) = cards.add(0, element)
-    fun moveOnTop(rank: Rank, suit: Suit): Boolean {
-        val card = cards.find { it.rank == rank && it.suit == suit } ?: return false
-        cards.remove(card)
-        cards.add(0, card)
-        return true
-    }
     operator fun get(index: Int) = cards[index]
+
+    fun add(element: Card) = cards.add(element)
+    fun addOnTop(element: Card) = cards.add(0, element)
+    fun addAll(elements: CustomDeck) = cards.addAll(elements.toList())
 
     fun count(predicate: (Card) -> Boolean) = cards.count(predicate)
     fun firstOrNull() = cards.firstOrNull()

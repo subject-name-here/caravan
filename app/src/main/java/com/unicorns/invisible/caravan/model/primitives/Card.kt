@@ -12,7 +12,7 @@ class Card(val rank: Rank, val suit: Suit, val back: CardBack, val isAlt: Boolea
     @Transient
     var caravanAnimationMark = AnimationMark.STABLE
 
-    fun isFace() = rank.isFace() || isNuclear()
+    fun isModifier() = rank.isFace() || isNuclear()
 
     override fun toString(): String {
         return "${this.hashCode() % 22229}; " +
@@ -40,43 +40,43 @@ class Card(val rank: Rank, val suit: Suit, val back: CardBack, val isAlt: Boolea
     }
 
     fun isNuclear(): Boolean {
-        return (back == CardBack.CHINESE || back == CardBack.ENCLAVE) && isAlt
+        return back == CardBack.NUCLEAR
     }
 
     fun isWildWasteland(): Boolean {
-        return back == CardBack.MADNESS && isAlt && rank.isFace()
+        return back == CardBack.WILD_WASTELAND && rank.isFace()
     }
 
     fun isOrdinary(): Boolean {
         return !isWildWasteland() && !isNuclear()
     }
 
-    fun getWildWastelandCardType(): WildWastelandCardType? {
-        if (!isWildWasteland()) {
-            return null
-        }
-
-        if (this.rank == Rank.QUEEN) {
-            return WildWastelandCardType.CAZADOR
-        }
-        if (this.rank == Rank.JACK) {
-            return WildWastelandCardType.UFO
-        }
-        return when (this.rank to this.suit) {
-            Rank.KING to Suit.HEARTS -> WildWastelandCardType.MUGGY
-            Rank.KING to Suit.SPADES -> WildWastelandCardType.DIFFICULT_PETE
-            Rank.KING to Suit.DIAMONDS -> WildWastelandCardType.YES_MAN
-            Rank.KING to Suit.CLUBS -> WildWastelandCardType.FEV
-            else -> null
-        }
+    enum class WildWastelandCardType(val rank: Rank, val suit: Suit) {
+        CAZADOR(Rank.QUEEN, Suit.HEARTS),
+        UFO(Rank.JACK, Suit.SPADES),
+        MUGGY(Rank.KING, Suit.HEARTS),
+        FEV(Rank.KING, Suit.CLUBS),
+        YES_MAN(Rank.KING, Suit.DIAMONDS),
+        DIFFICULT_PETE(Rank.KING, Suit.SPADES);
     }
 
-    enum class WildWastelandCardType {
-        CAZADOR,
-        DIFFICULT_PETE,
-        FEV,
-        MUGGY,
-        UFO,
-        YES_MAN
+    fun getWildWastelandType(): WildWastelandCardType? {
+        if (!isWildWasteland()) return null
+        return WildWastelandCardType.entries.firstOrNull { it.rank == this.rank && it.suit == this.suit }
+    }
+
+    fun getPriceOfCard(): Int {
+        val base = if (isAlt) 30.0 else 10.0
+        val rankMult = when (rank) {
+            Rank.ACE, Rank.SIX, Rank.QUEEN -> 1.0
+            Rank.TWO, Rank.THREE -> 0.8
+            Rank.FOUR, Rank.FIVE -> 0.9
+            Rank.SEVEN, Rank.EIGHT, Rank.NINE -> 1.1
+            Rank.TEN -> 1.2
+            Rank.JACK -> 1.3
+            Rank.KING -> 1.4
+            Rank.JOKER -> 1.5
+        }
+        return (base * rankMult).toInt()
     }
 }

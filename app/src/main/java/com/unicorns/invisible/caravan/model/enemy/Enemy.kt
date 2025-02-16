@@ -8,11 +8,13 @@ import kotlinx.serialization.Serializable
 @Serializable
 sealed interface Enemy {
     fun createDeck(): CResources
-    fun getBankNumber(): Int = -1
+    fun refreshBank(amount: Int)
+    fun getBank(): Int
+
+    fun startBattle()
+    fun addVictory()
 
     fun isSpeedOverriding(): Boolean = false
 
     fun makeMove(game: Game)
-
-    fun onVictory() {}
 }

@@ -2,7 +2,6 @@ package com.unicorns.invisible.caravan.model.trading
 
 import com.unicorns.invisible.caravan.MainActivity
 import com.unicorns.invisible.caravan.R
-import com.unicorns.invisible.caravan.Style
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.primitives.Card
 import com.unicorns.invisible.caravan.save
@@ -16,9 +15,12 @@ class Lucky38Trader : Trader {
     override fun openingCondition(activity: MainActivity) =
         activity.getString(R.string.lucky_38_trader_cond)
 
-    override fun getName(): Int = R.string.lucky_38_trader_name
+    override fun getUpdateRate() = 24
+
+    override fun getWelcomeMessage() = R.string.lucky_38_trader_welcome
+    override fun getEmptyStoreMessage() = R.string.lucky_38_trader_empty
+
     override fun getSymbol() = "38"
 
     override fun getCards(): List<Pair<Card, Int>> = getCards(CardBack.LUCKY_38)
-    override fun getStyles(): List<Style> = listOf(Style.OLD_WORLD)
 }

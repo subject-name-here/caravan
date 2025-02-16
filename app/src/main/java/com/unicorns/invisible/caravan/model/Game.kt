@@ -6,11 +6,9 @@ import com.unicorns.invisible.caravan.model.enemy.EnemyMadnessCardinal
 import com.unicorns.invisible.caravan.model.enemy.EnemyTheManInTheMirror
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.Caravan
-import com.unicorns.invisible.caravan.model.primitives.Card
 import com.unicorns.invisible.caravan.model.primitives.CardWithModifier
 import com.unicorns.invisible.caravan.model.primitives.CustomDeck
 import com.unicorns.invisible.caravan.model.primitives.Rank
-import com.unicorns.invisible.caravan.model.primitives.Suit
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -18,7 +16,6 @@ import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import java.util.UUID
-import kotlin.random.Random
 
 
 @Serializable
@@ -72,8 +69,10 @@ class Game(
                 enemyCResources.addNewDeck(CustomDeck(CardBack.MADNESS, false))
             }
         }
+
         playerCResources.initResources()
         enemyCResources.initResources()
+
         if (enemy is EnemyTheManInTheMirror) {
             enemyCResources.copyFrom(playerCResources)
         }
@@ -81,25 +80,32 @@ class Game(
         canPlayerMove = true
     }
 
-    fun processField() {
+    fun processField(): Boolean {
         val caravans = playerCaravans + enemyCaravans
         val cards = caravans.flatMap { it.cards }
+        var flag = false
 
         cards.forEach {
             if (it.hasBomb) {
                 processBomb(it)
+                flag = true
             }
         }
 
         if (cards.any { it.hasJacks() || it.hasActiveJoker }) {
             processJacks()
             processJoker()
+            flag = true
         }
 
-        if (cards.any { it.hasActiveFev || it.hasActiveUfo || it.hasActivePete }) {
-            processFev()
+        if (cards.any { it.hasActiveUfo || it.hasActivePete }) {
             processUfo()
             processPete()
+            flag = true
+        }
+
+        if (cards.any { it.hasActiveFev }) {
+            processFev()
         }
 
         caravans.forEach {
@@ -114,29 +120,30 @@ class Game(
 
             if (cazadorOwners.isNotEmpty()) {
                 it.getCazadorPoison(queensBlock)
+                flag = true
             }
         }
-    }
 
-    fun processHand(cResources: CResources) {
-        if (cResources.hand.size < 5 && cResources.deckSize > 0) {
-            cResources.addToHand()
-        }
+        return flag
     }
 
     fun afterPlayerMove(updateView: () -> Unit, speed: AnimationSpeed) {
         val delayLength = speed.delay.coerceAtLeast(95L)
 
+        canPlayerMove = false
         CoroutineScope(Dispatchers.Default).launch {
             updateView()
             delay(delayLength)
 
-            processField() // TODO: if no change, skip next two lines
-            updateView()
-            delay(delayLength)
-            processHand(playerCResources) // TODO: if no change, skip next two lines
-            updateView()
-            delay(delayLength)
+            if (processField()) {
+                updateView()
+                delay(delayLength)
+            }
+            if (playerCResources.hand.size < 5 && playerCResources.deckSize > 0) {
+                playerCResources.addToHand()
+                updateView()
+                delay(delayLength)
+            }
             isPlayerTurn = false
 
             if (checkOnGameOver()) {
@@ -150,17 +157,22 @@ class Game(
             updateView()
             delay(delayLength)
 
-            processField() // TODO: if no change, skip next two lines
-            updateView()
-            delay(delayLength)
-            processHand(enemyCResources) // TODO: if no change, skip next two lines
-            updateView()
-            delay(delayLength)
+            if (processField()) {
+                updateView()
+                delay(delayLength)
+            }
+            if (enemyCResources.hand.size < 5 && enemyCResources.deckSize > 0) {
+                enemyCResources.addToHand()
+                updateView()
+                delay(delayLength)
+            }
 
             isPlayerTurn = true
 
             checkOnGameOver()
             updateView()
+
+            canPlayerMove = true
         }
     }
 
@@ -199,13 +211,8 @@ class Game(
         checkLine(playerCaravans[2].getValue(), enemyCaravans[2].getValue())
 
         if (scorePlayer + scoreEnemy == 3) {
-            return if (scorePlayer > scoreEnemy) {
-                isGameOver = 1
-                true
-            } else {
-                isGameOver = -1
-                true
-            }
+            isGameOver = if (scorePlayer > scoreEnemy) 1 else -1
+            return true
         }
 
         val special = specialGameOverCondition()
@@ -214,7 +221,6 @@ class Game(
             return true
         }
 
-        isGameOver = 0
         return false
     }
 
@@ -225,81 +231,20 @@ class Game(
     }
 
     private fun processBomb(bombOwner: CardWithModifier) {
+        val isFBomb = bombOwner.modifiersCopy().lastOrNull()?.isAlt == true
         (playerCaravans + enemyCaravans).forEach {
-            val isFBomb = bombOwner.modifiersCopy().lastOrNull()?.back == CardBack.CHINESE
-            val isThisCaravan = bombOwner in it.cards
-            val isMuggyOnCaravan = it.cards.any { card -> card.isProtectedByMuggy }
-
-            if (!isThisCaravan) {
+            if (bombOwner !in it.cards) {
                 if (isFBomb) {
-                    val value = it.getValue()
+                    // TODO: some bonus
                     it.dropCaravan()
-                    if (it in playerCaravans) {
-                        addFBombCard(value)
+                } else {
+                    if (it.cards.all { card -> !card.isProtectedByMuggy }) {
+                        it.dropCaravan()
                     }
-                } else if (!isMuggyOnCaravan) {
-                    it.dropCaravan()
                 }
             }
         }
         bombOwner.deactivateBomb()
-    }
-
-    private fun addFBombCard(value: Int) {
-        when (value) {
-            3 -> {
-                playerCResources.addOnTop(Card(Rank.ACE, Suit.entries.random(), CardBack.MADNESS, true))
-            }
-            4 -> {
-                playerCResources.addOnTop(Card(Rank.TWO, Suit.entries.random(), CardBack.MADNESS, true))
-            }
-            in (5..6) -> {
-                playerCResources.addOnTop(Card(Rank.THREE, Suit.entries.random(), CardBack.MADNESS, true))
-            }
-            in (7..8) -> {
-                playerCResources.addOnTop(Card(Rank.FOUR, Suit.entries.random(), CardBack.MADNESS, true))
-            }
-            in (9..10) -> {
-                playerCResources.addOnTop(Card(Rank.FIVE, Suit.entries.random(), CardBack.MADNESS, true))
-            }
-            in (11..12) -> {
-                playerCResources.addOnTop(Card(Rank.SIX, Suit.entries.random(), CardBack.MADNESS, true))
-            }
-            in (13..14) -> {
-                playerCResources.addOnTop(Card(Rank.SEVEN, Suit.entries.random(), CardBack.MADNESS, true))
-            }
-            in (15..16) -> {
-                playerCResources.addOnTop(Card(Rank.EIGHT, Suit.entries.random(), CardBack.MADNESS, true))
-            }
-            in (17..18) -> {
-                playerCResources.addOnTop(Card(Rank.NINE, Suit.entries.random(), CardBack.MADNESS, true))
-            }
-            in (19..20) -> {
-                playerCResources.addOnTop(Card(Rank.TEN, Suit.entries.random(), CardBack.MADNESS, true))
-            }
-            in (21..22) -> {
-                if (Random.nextBoolean()) {
-                    playerCResources.addOnTop(Card(Rank.SEVEN, Suit.entries.random(), CardBack.MADNESS, true))
-                    playerCResources.addOnTop(Card(Rank.ACE, Suit.entries.random(), CardBack.MADNESS, true))
-                } else {
-                    playerCResources.addOnTop(Card(Rank.SIX, Suit.entries.random(), CardBack.MADNESS, true))
-                    playerCResources.addOnTop(Card(Rank.TWO, Suit.entries.random(), CardBack.MADNESS, true))
-                }
-            }
-            in (23..24) -> {
-                if (Random.nextBoolean()) {
-                    playerCResources.addOnTop(Card(Rank.NINE, Suit.entries.random(), CardBack.MADNESS, true))
-                    playerCResources.addOnTop(Card(Rank.THREE, Suit.entries.random(), CardBack.MADNESS, true))
-                } else {
-                    playerCResources.addOnTop(Card(Rank.EIGHT, Suit.entries.random(), CardBack.MADNESS, true))
-                    playerCResources.addOnTop(Card(Rank.FOUR, Suit.entries.random(), CardBack.MADNESS, true))
-                }
-            }
-            in (25..26) -> {
-                playerCResources.addOnTop(Card(Rank.TEN, Suit.entries.random(), CardBack.MADNESS, true))
-                playerCResources.addOnTop(Card(Rank.FIVE, Suit.entries.random(), CardBack.MADNESS, true))
-            }
-        }
     }
 
     private fun processFev() {

@@ -95,9 +95,6 @@ abstract class SaveDataActivity : AppCompatActivity() {
     suspend fun fetchDataFromDrive(): ByteArray? {
         return fetchFileFromDrive(SAVE_FILE_NAME)
     }
-    suspend fun fetchOldSaveFromDrive(): ByteArray? {
-        return fetchFileFromDrive(OLD_SAVE_FILE_NAME)
-    }
     private suspend fun fetchFileFromDrive(fileName: String): ByteArray? {
         val snapshot = getSnapshot(fileName)
         return try {
@@ -124,6 +121,5 @@ abstract class SaveDataActivity : AppCompatActivity() {
 
     companion object {
         const val SAVE_FILE_NAME = "saveFileMkII"
-        const val OLD_SAVE_FILE_NAME = "saveFile"
     }
 }

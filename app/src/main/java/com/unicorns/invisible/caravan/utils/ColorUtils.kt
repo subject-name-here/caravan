@@ -174,11 +174,6 @@ fun getDialogTextColor(activity: MainActivity): Color {
 }
 
 fun getDividerColor(activity: MainActivity): Color = getTextColor(activity)
-fun getGameDividerColor(activity: MainActivity): Color = when (activity.styleId) {
-    Style.ALASKA_FRONTIER -> Color(activity.getColor(R.color.alaskaYellow))
-    Style.NEW_WORLD -> Color(activity.getColor(R.color.newWorldAccent))
-    else -> getTextColor(activity)
-}
 
 fun getCheckBoxBorderColor(activity: MainActivity): Color = getSelectionColor(activity)
 

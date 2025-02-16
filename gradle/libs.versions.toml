@@ -1,5 +1,5 @@
 [versions]
-agp = "8.8.0"
+agp = "8.8.1"
 firebaseBom = "33.9.0"
 crashlytics = "3.0.3"
 kotlin = "2.1.0"
@@ -28,8 +28,8 @@ compose-material3 = { group = "androidx.compose.material3", name = "material3", 
 compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
 compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 compose-activity = { group = "androidx.activity", name = "activity-compose", version.ref = "activity" }
-compose-foundation = { group = "androidx.compose.foundation", name = "foundation", version = "1.8.0-beta01" }
-compose-runtime = { group = "androidx.compose.runtime", name = "runtime-livedata", version = "1.7.7" }
+compose-foundation = { group = "androidx.compose.foundation", name = "foundation", version = "1.8.0-beta02" }
+compose-runtime = { group = "androidx.compose.runtime", name = "runtime-livedata", version = "1.7.8" }
 coil = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
 coil-svg = { group = "io.coil-kt", name = "coil-svg", version.ref = "coil" }
 

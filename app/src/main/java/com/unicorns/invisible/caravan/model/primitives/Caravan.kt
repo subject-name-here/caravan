@@ -79,7 +79,7 @@ class Caravan {
     }
 
     fun canPutCardOnTop(card: Card): Boolean {
-        if (isFull() || card.isFace()) return false
+        if (isFull() || card.isModifier()) return false
         if (isEmpty()) {
             return true
         }

@@ -148,7 +148,6 @@ fun ShowTrueSettings(
                             CheatHalfEnclaveDeck,
                             CheatHalfStandardAltDeck,
                             CheatLevel10,
-                            CheatOldSaveRestore,
                             CheatPapaSmurf,
                             CheatRadioPseudonyms,
                             CheatStash1234,

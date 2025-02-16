@@ -33,7 +33,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.unicorns.invisible.caravan.model.primitives.Card
 import com.unicorns.invisible.caravan.model.primitives.Rank
-import com.unicorns.invisible.caravan.model.trading.Lucky38Trader
 import com.unicorns.invisible.caravan.model.trading.Trader
 import com.unicorns.invisible.caravan.save.saveData
 import com.unicorns.invisible.caravan.utils.MenuItemOpen
@@ -54,126 +53,170 @@ import com.unicorns.invisible.caravan.utils.scrollbar
 
 
 @Composable
+fun CardToBuy(activity: MainActivity, card: Card, price: Int, update: () -> Unit) {
+    val suit = if (card.rank == Rank.JOKER)
+        (card.suit.ordinal + 1).toString()
+    else
+        stringResource(card.suit.nameId)
+    Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+        TextFallout(
+            "${stringResource(card.rank.nameId)} $suit\n" +
+            "(${stringResource(card.back.getDeckName())} ${if (card.isAlt) "ALT!" else ""})",
+            getTextColor(activity),
+            getTextStrokeColor(activity),
+            16.sp,
+            Alignment.Center,
+            Modifier
+                .weight(1f)
+                .padding(4.dp),
+            TextAlign.Center
+        )
+        TextFallout(
+            stringResource(R.string.buy_for_caps, price),
+            getTextColor(activity),
+            getTextStrokeColor(activity),
+            16.sp,
+            Alignment.Center,
+            Modifier
+                .weight(1f)
+                .padding(4.dp)
+                .background(getTextBackgroundColor(activity))
+                .clickable {
+                    if (save.capsInHand < price) {
+                        playNoBeep(activity)
+                    } else {
+                        save.capsInHand -= price
+                        save.addCard(card)
+                        playCashSound(activity)
+                        saveData(activity)
+                        update()
+                    }
+                },
+            TextAlign.Center
+        )
+    }
+}
+
+@Composable
+fun StyleToBuy(activity: MainActivity, style: Style, update: () -> Unit) {
+    Row(
+        Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        TextFallout(
+            stringResource(
+                R.string.style_buy,
+                stringResource(style.styleNameId)
+            ),
+            getTextColor(activity),
+            getTextStrokeColor(activity),
+            16.sp,
+            Alignment.Center,
+            Modifier
+                .weight(1f)
+                .padding(4.dp),
+            TextAlign.Center
+        )
+        TextFallout(
+            stringResource(R.string.buy_for_caps, style.price),
+            getTextColor(activity),
+            getTextStrokeColor(activity),
+            16.sp,
+            Alignment.Center,
+            Modifier
+                .weight(1f)
+                .padding(4.dp)
+                .background(getTextBackgroundColor(activity))
+                .clickable {
+                    if (save.capsInHand < style.price) {
+                        playNoBeep(activity)
+                    } else {
+                        save.capsInHand -= style.price
+                        save.ownedStyles.add(style)
+                        playPimpBoySound(activity)
+                        saveData(activity)
+                        update()
+                    }
+                },
+            TextAlign.Center
+        )
+    }
+}
+
+@Composable
 fun ShowTraders(activity: MainActivity, goBack: () -> Unit) {
     MenuItemOpen(activity, stringResource(R.string.market), "<-", goBack) {
-        val state = rememberLazyListState()
-        LazyColumn(
-            Modifier
-                .fillMaxSize()
-                .background(getBackgroundColor(activity))
-                .scrollbar(
-                    state,
-                    horizontal = false,
-                    knobColor = getKnobColor(activity),
-                    trackColor = getTrackColor(activity),
-                ), state = state
-        ) {
-            item {
-                Spacer(Modifier.height(8.dp))
+        Spacer(Modifier.height(8.dp))
 
-                var selectedTab by rememberSaveable { mutableIntStateOf(0) }
-                var update by remember { mutableStateOf(false) }
-                key(update) {
-                    Column(
-                        Modifier.padding(horizontal = 4.dp),
-                        verticalArrangement = Arrangement.Top,
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        TextFallout(
-                            stringResource(R.string.your_caps_in_hand, save.capsInHand),
-                            getTextColor(activity),
-                            getTextStrokeColor(activity),
-                            16.sp,
-                            Alignment.Center,
-                            Modifier.padding(4.dp),
-                            TextAlign.Center
-                        )
+        var selectedTab by rememberSaveable { mutableIntStateOf(0) }
+        var update by remember { mutableStateOf(false) }
+        key(update) {
+            Column(
+                Modifier.padding(horizontal = 4.dp),
+                verticalArrangement = Arrangement.Top,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                TextFallout(
+                    stringResource(R.string.your_caps_in_hand, save.capsInHand),
+                    getTextColor(activity),
+                    getTextStrokeColor(activity),
+                    16.sp,
+                    Alignment.Center,
+                    Modifier.padding(4.dp),
+                    TextAlign.Center
+                )
 
-                        TabRow(
-                            selectedTab, Modifier.fillMaxWidth(),
-                            containerColor = getBackgroundColor(activity),
-                            indicator = { tabPositions ->
-                                if (selectedTab < tabPositions.size) {
-                                    TabRowDefaults.SecondaryIndicator(
-                                        Modifier.tabIndicatorOffset(tabPositions[selectedTab]),
-                                        color = getSelectionColor(activity)
-                                    )
-                                }
-                            },
-                            divider = {
-                                HorizontalDivider(color = getDividerColor(activity))
-                            }
+                TabRow(
+                    selectedTab, Modifier.fillMaxWidth(),
+                    containerColor = getBackgroundColor(activity),
+                    indicator = { tabPositions ->
+                        if (selectedTab < tabPositions.size) {
+                            TabRowDefaults.SecondaryIndicator(
+                                Modifier.tabIndicatorOffset(tabPositions[selectedTab]),
+                                color = getSelectionColor(activity)
+                            )
+                        }
+                    },
+                    divider = {
+                        HorizontalDivider(color = getDividerColor(activity))
+                    }
+                ) {
+                    @Composable
+                    fun TraderTab(tabNumber: Int, trader: Trader) {
+                        Tab(selectedTab == tabNumber, { selectedTab = tabNumber; playSelectSound(activity) },
+                            selectedContentColor = getSelectionColor(activity),
+                            unselectedContentColor = getTextBackgroundColor(activity)
                         ) {
-                            @Composable
-                            fun TraderTab(tabNumber: Int, trader: Trader) {
-                                Tab(selectedTab == tabNumber, { selectedTab = tabNumber; playSelectSound(activity) },
-                                    selectedContentColor = getSelectionColor(activity),
-                                    unselectedContentColor = getTextBackgroundColor(activity)
-                                ) {
-                                    TextFallout(
-                                        trader.getSymbol(),
-                                        getTextColor(activity),
-                                        getTextStrokeColor(activity),
-                                        12.sp,
-                                        Alignment.Center,
-                                        Modifier.padding(4.dp),
-                                        TextAlign.Center
-                                    )
-                                }
-                            }
-                            save.traders.forEachIndexed { index, t ->
-                                TraderTab(index, t)
-                            }
+                            TextFallout(
+                                trader.getSymbol(),
+                                getTextColor(activity),
+                                getTextStrokeColor(activity),
+                                12.sp,
+                                Alignment.Center,
+                                Modifier.padding(4.dp),
+                                TextAlign.Center
+                            )
                         }
+                    }
+                    save.traders.forEachIndexed { index, t ->
+                        TraderTab(index, t)
+                    }
+                }
 
-                        Spacer(modifier = Modifier.height(16.dp))
-                        val selectedTrader = save.traders[selectedTab]
-
-                        @Composable
-                        fun CardToBuy(card: Card, price: Int) {
-                            val suit = if (card.rank == Rank.JOKER)
-                                (card.suit.ordinal + 1).toString()
-                            else
-                                stringResource(card.suit.nameId)
-                            Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                                TextFallout(
-                                    stringResource(card.rank.nameId) + " " + suit +
-                                            "\n(" + stringResource(card.back.getDeckName()) +
-                                            if (card.isAlt) " ALT!)" else ")",
-                                    getTextColor(activity),
-                                    getTextStrokeColor(activity),
-                                    16.sp,
-                                    Alignment.Center,
-                                    Modifier
-                                        .weight(1f)
-                                        .padding(4.dp),
-                                    TextAlign.Center
-                                )
-                                TextFallout(
-                                    stringResource(R.string.buy_for_caps, price),
-                                    getTextColor(activity),
-                                    getTextStrokeColor(activity),
-                                    16.sp,
-                                    Alignment.Center,
-                                    Modifier
-                                        .weight(1f)
-                                        .padding(4.dp)
-                                        .background(getTextBackgroundColor(activity))
-                                        .clickable {
-                                            if (save.capsInHand < price) {
-                                                playNoBeep(activity)
-                                            } else {
-                                                save.capsInHand -= price
-                                                save.addCard(card)
-                                                playCashSound(activity)
-                                                saveData(activity)
-                                                update = !update
-                                            }
-                                        },
-                                    TextAlign.Center
-                                )
-                            }
-                        }
+                val selectedTrader = save.traders[selectedTab]
+                val state = rememberLazyListState()
+                LazyColumn(
+                    Modifier
+                        .fillMaxSize()
+                        .background(getBackgroundColor(activity))
+                        .scrollbar(
+                            state,
+                            horizontal = false,
+                            knobColor = getKnobColor(activity),
+                            trackColor = getTrackColor(activity),
+                        ), state = state
+                ) {
+                    item {
                         if (selectedTrader.isOpen()) {
                             Column(
                                 Modifier
@@ -182,86 +225,32 @@ fun ShowTraders(activity: MainActivity, goBack: () -> Unit) {
                                 horizontalAlignment = Alignment.CenterHorizontally,
                                 verticalArrangement = Arrangement.Top
                             ) {
+                                val styles = selectedTrader.getStyles()
+                                    .filter { it !in save.ownedStyles }
+                                val cards = selectedTrader.getCards()
+                                    .filter { !save.isCardAvailableAlready(it.first) }
+
                                 TextFallout(
-                                    stringResource(
-                                        if (selectedTrader is Lucky38Trader)
-                                            R.string.hi_our_name_is
-                                        else
-                                            R.string.hi_my_name_is,
-                                        stringResource(selectedTrader.getName())
-                                    ),
+                                    if (styles.isEmpty() && cards.isEmpty()) {
+                                        stringResource(selectedTrader.getEmptyStoreMessage())
+                                    } else {
+                                        stringResource(selectedTrader.getWelcomeMessage())
+                                    },
                                     getTextColor(activity),
                                     getTextStrokeColor(activity),
                                     18.sp,
                                     Alignment.Center,
-                                    Modifier.padding(4.dp),
+                                    Modifier.fillMaxWidth().padding(4.dp),
                                     TextAlign.Center
                                 )
 
-                                selectedTrader.getStyles().filter { it !in save.ownedStyles }.forEach {
+                                styles.forEach {
                                     Spacer(modifier = Modifier.height(4.dp))
-                                    Row(
-                                        Modifier.fillMaxWidth(),
-                                        verticalAlignment = Alignment.CenterVertically
-                                    ) {
-                                        TextFallout(
-                                            stringResource(
-                                                R.string.style_buy,
-                                                stringResource(it.styleNameId)
-                                            ),
-                                            getTextColor(activity),
-                                            getTextStrokeColor(activity),
-                                            16.sp,
-                                            Alignment.Center,
-                                            Modifier
-                                                .weight(1f)
-                                                .padding(4.dp),
-                                            TextAlign.Center
-                                        )
-                                        TextFallout(
-                                            stringResource(R.string.buy_for_caps, it.price),
-                                            getTextColor(activity),
-                                            getTextStrokeColor(activity),
-                                            16.sp,
-                                            Alignment.Center,
-                                            Modifier
-                                                .weight(1f)
-                                                .padding(4.dp)
-                                                .background(getTextBackgroundColor(activity))
-                                                .clickable {
-                                                    if (save.capsInHand < it.price) {
-                                                        playNoBeep(activity)
-                                                    } else {
-                                                        save.capsInHand -= it.price
-                                                        save.ownedStyles.add(it)
-                                                        playPimpBoySound(activity)
-                                                        saveData(activity)
-                                                        update = !update
-                                                    }
-                                                },
-                                            TextAlign.Center
-                                        )
-                                    }
+                                    StyleToBuy(activity, it) { update = !update }
                                 }
-
-                                val cards = selectedTrader.getCards()
-                                    .filter { !save.isCardAvailableAlready(it.first) }
-                                if (cards.isEmpty()) {
+                                cards.forEach {
                                     Spacer(modifier = Modifier.height(4.dp))
-                                    TextFallout(
-                                        stringResource(R.string.sorry_no_new_cards),
-                                        getTextColor(activity),
-                                        getTextStrokeColor(activity),
-                                        18.sp,
-                                        Alignment.Center,
-                                        Modifier.padding(4.dp),
-                                        TextAlign.Center
-                                    )
-                                } else {
-                                    cards.forEach {
-                                        Spacer(modifier = Modifier.height(4.dp))
-                                        CardToBuy(it.first, it.second)
-                                    }
+                                    CardToBuy(activity, it.first, it.second) { update = !update }
                                 }
                             }
                         } else {
@@ -277,9 +266,8 @@ fun ShowTraders(activity: MainActivity, goBack: () -> Unit) {
                         }
                     }
                 }
-
-                Spacer(Modifier.height(8.dp))
             }
         }
+        Spacer(Modifier.height(8.dp))
     }
 }

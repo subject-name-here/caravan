@@ -91,16 +91,14 @@ fun TowerScreen(
     goBack: () -> Unit,
 ) {
     var level by rememberSaveable { mutableIntStateOf(save.towerLevel) }
+    var playLevel by rememberScoped { mutableIntStateOf(0) }
+    var levelMemory by rememberScoped { mutableIntStateOf(0) }
+
     var startFrank by rememberSaveable { mutableStateOf(false) }
-    var frankSequencePlayed by rememberSaveable { mutableStateOf(false) }
-    var showFrankWarning by rememberSaveable { mutableStateOf(false) }
     if (startFrank) {
-        ShowFrank(activity) { startFrank = false; frankSequencePlayed = true }
+        ShowFrank(activity) { startFrank = false }
         return
     }
-
-    var showGameLevel by rememberScoped { mutableIntStateOf(0) }
-    var levelMemory by rememberScoped { mutableIntStateOf(0) }
 
     @Composable
     fun showTower(enemy: Enemy, goBack: () -> Unit) {
@@ -113,7 +111,6 @@ fun TowerScreen(
             level = levelMemory + 1
             save.towerLevel = levelMemory + 1
             levelMemory = 0
-            saveData(activity)
             when (level) {
                 6 -> {
                     activity.achievementsClient?.unlock(activity.getString(R.string.achievement_five_down_five_to_go))
@@ -122,6 +119,7 @@ fun TowerScreen(
                     activity.achievementsClient?.unlock(activity.getString(R.string.achievement_1010))
                 }
             }
+            saveData(activity)
         }, {
             levelMemory = 0
             level = 0
@@ -129,10 +127,11 @@ fun TowerScreen(
             saveData(activity)
         }, goBack)
     }
-    when (showGameLevel) {
+
+    when (playLevel) {
         in 1..9 -> {
             showTower(
-                when (showGameLevel) {
+                when (playLevel) {
                     1 -> EnemyTower1
                     2 -> EnemyTower2
                     3 -> EnemyTower3
@@ -143,10 +142,10 @@ fun TowerScreen(
                     8 -> EnemyTower8
                     else -> EnemyTower9
                 }
-            ) { showGameLevel = 0 }
+            ) { playLevel = 0 }
             return
         }
-        10 -> {
+        11 -> {
             var capsMemory by rememberScoped { mutableIntStateOf(0) }
             StartTowerGame(activity, EnemyFrank, showAlertDialog, {
                 startLevel11Theme(activity)
@@ -173,9 +172,8 @@ fun TowerScreen(
                 saveData(activity)
                 stopRadio()
             }) {
-                showGameLevel = 0
+                playLevel = 0
                 soundReduced = false
-                frankSequencePlayed = false
 
                 CoroutineScope(Dispatchers.Unconfined).launch {
                     if (level == 0) {
@@ -193,96 +191,322 @@ fun TowerScreen(
         }
     }
 
-    MenuItemOpen(activity, stringResource(R.string.tower), "<-", { if (!frankSequencePlayed) goBack() }) {
-        val state2 = rememberLazyListState()
-        LazyColumn(
-            Modifier
-                .fillMaxSize()
-                .background(getBackgroundColor(activity))
-                .padding(vertical = 8.dp)
-                .scrollbar(
-                    state2,
-                    knobColor = getKnobColor(activity), trackColor = getTrackColor(activity),
-                    horizontal = false,
-                ),
-            state = state2,
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            item {
-                if (level in 1..10) {
-                    Column(
-                        Modifier.fillMaxWidth(),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        if (level == 10 && frankSequencePlayed) {
-                            TextFallout(
-                                stringResource(R.string.deck_o_54_only),
-                                getTextColor(activity),
-                                getTextStrokeColor(activity),
-                                24.sp,
-                                Alignment.Center,
-                                Modifier,
-                                TextAlign.Center
+    var showFrankWarning by rememberSaveable { mutableStateOf(false) }
+    MenuItemOpen(activity, stringResource(R.string.tower), "<-", { if (level != 11) goBack() }) {
+        when (level) {
+            0 -> {
+                StartScreen(activity, { p1, p2 -> showAlertDialog(p1, p2, null) }) {
+                    level++
+                    save.towerLevel++
+                    saveData(activity)
+                }
+            }
+            in 1..10 -> {
+                val inBank = when (level) {
+                    1 -> 2
+                    2 -> 4
+                    3 -> 8
+                    4 -> 16
+                    5 -> 32
+                    6 -> 64
+                    7 -> 128
+                    8 -> 256
+                    9 -> 512
+                    10 -> 1024
+                    else -> 0
+                }
+                EnemyPresentedScreen(
+                    activity,
+                    inBank,
+                    { level },
+                    { playLevel = level },
+                    {
+                        level = 0
+                        save.towerLevel = 0
+                        save.capsInHand += inBank
+                        saveData(activity)
+                        playCashSound(activity)
+                        showAlertDialog(
+                            activity.getString(R.string.congratulations),
+                            activity.getString(
+                                R.string.your_reward_caps,
+                                inBank.toString()
+                            ),
+                            null
+                        )
+                    }
+                )
+            }
+            11 -> {
+                FrankPresentedScreen(
+                    activity,
+                    { showFrankWarning = true },
+                    {
+                        level = 0
+                        if (soundReduced) {
+                            soundReduced = false
+                            nextSong(activity)
+                        }
+                        save.towerLevel = 0
+                        save.capsInHand += 2048
+                        saveData(activity)
+                        playCashSound(activity)
+                        showAlertDialog(
+                            activity.getString(R.string.congratulations),
+                            activity.getString(R.string.your_reward_caps_2048),
+                            null
+                        )
+                    }
+                )
+            }
+            else -> {
+                FinalScreen(activity) {
+                    level = 0
+                    save.towerLevel = 0
+                    save.capsInHand += 4096
+                    saveData(activity)
+                    CoroutineScope(Dispatchers.Unconfined).launch {
+                        repeat(4) {
+                            playCashSound(activity)
+                            delay(190L)
+                        }
+                    }
+                    showAlertDialog(
+                        activity.getString(R.string.congratulations),
+                        activity.getString(R.string.your_reward_caps_4096),
+                        null
+                    )
+                }
+            }
+        }
+    }
+
+
+    if (showFrankWarning) {
+        LaunchedEffect(Unit) {
+            playNotificationSound(activity)
+        }
+        AlertDialog(
+            modifier = Modifier.border(width = 4.dp, color = Color(activity.getColor(R.color.colorText))),
+            onDismissRequest = { showFrankWarning = false },
+            confirmButton = {
+                TextClassic(
+                    stringResource(R.string.frank_start_button),
+                    Color(activity.getColor(R.color.colorTextBack)),
+                    Color(activity.getColor(R.color.colorTextBack)),
+                    18.sp, Alignment.Center,
+                    Modifier
+                        .background(Color(activity.getColor(R.color.colorText)))
+                        .clickableOk(activity) {
+                            showFrankWarning = false; playLevel = 11
+                        }
+                        .padding(4.dp),
+                    TextAlign.Center
+                )
+            },
+            dismissButton = {
+                TextClassic(
+                    stringResource(R.string.frank_think_button),
+                    Color(activity.getColor(R.color.colorTextBack)),
+                    Color(activity.getColor(R.color.colorTextBack)),
+                    18.sp, Alignment.Center,
+                    Modifier
+                        .background(Color(activity.getColor(R.color.colorText)))
+                        .clickableCancel(activity) { showFrankWarning = false }
+                        .padding(4.dp),
+                    TextAlign.Center
+                )
+            },
+            title = {
+                TextClassic(
+                    stringResource(R.string.frank_think_header),
+                    Color(activity.getColor(R.color.colorText)),
+                    Color(activity.getColor(R.color.colorText)),
+                    24.sp, Alignment.CenterStart, Modifier,
+                    TextAlign.Start
+                )
+            },
+            text = {
+                TextClassic(
+                    stringResource(R.string.frank_think_body),
+                    Color(activity.getColor(R.color.colorText)),
+                    Color(activity.getColor(R.color.colorText)),
+                    16.sp, Alignment.CenterStart, Modifier,
+                    TextAlign.Start
+                )
+            },
+            containerColor = Color.Black,
+            textContentColor = Color(activity.getColor(R.color.colorText)),
+            shape = RectangleShape,
+        )
+    }
+}
+
+@Composable
+fun StartScreen(
+    activity: MainActivity,
+    showAlertDialog: (String, String) -> Unit,
+    nextLevel: () -> Unit
+) {
+    Spacer(modifier = Modifier.height(16.dp))
+    val state2 = rememberLazyListState()
+    LazyColumn(
+        Modifier
+            .fillMaxSize()
+            .background(getBackgroundColor(activity))
+            .padding(vertical = 8.dp)
+            .scrollbar(
+                state2,
+                knobColor = getKnobColor(activity), trackColor = getTrackColor(activity),
+                horizontal = false,
+            ),
+        state = state2,
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        item {
+            TextFallout(
+                stringResource(R.string.tower_presents),
+                getTextColor(activity),
+                getTextStrokeColor(activity),
+                18.sp,
+                Alignment.Center,
+                Modifier,
+                TextAlign.Center
+            )
+            TextFallout(
+                stringResource(R.string.tower),
+                getTextColor(activity),
+                getTextStrokeColor(activity),
+                40.sp,
+                Alignment.Center,
+                Modifier,
+                TextAlign.Center
+            )
+            Spacer(modifier = Modifier.height(12.dp))
+            TextFallout(
+                stringResource(R.string.tower_starring_1),
+                getTextColor(activity),
+                getTextStrokeColor(activity),
+                24.sp,
+                Alignment.Center,
+                Modifier,
+                TextAlign.Center
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            TextFallout(
+                stringResource(R.string.tower_starring_2),
+                getTextColor(activity),
+                getTextStrokeColor(activity),
+                18.sp,
+                Alignment.Center,
+                Modifier,
+                TextAlign.Center
+            )
+            Spacer(modifier = Modifier.height(24.dp))
+            TextFallout(
+                stringResource(R.string.tickets_please_you_have_tickets, save.tickets),
+                getTextColor(activity),
+                getTextStrokeColor(activity),
+                20.sp,
+                Alignment.Center,
+                Modifier,
+                TextAlign.Center
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            TextFallout(
+                stringResource(R.string.pay_1_ticket),
+                getTextColor(activity),
+                getTextStrokeColor(activity),
+                20.sp,
+                Alignment.Center,
+                Modifier
+                    .padding(4.dp)
+                    .clickableOk(activity) {
+                        if (save.tickets <= 0) {
+                            showAlertDialog(
+                                activity.getString(R.string.hey),
+                                activity.getString(R.string.you_don_t_have_a_ticket_on_you),
                             )
                         } else {
-                            TextFallout(
-                                stringResource(R.string.custom_deck_only),
-                                getTextColor(activity),
-                                getTextStrokeColor(activity),
-                                24.sp,
-                                Alignment.Center,
-                                Modifier,
-                                TextAlign.Center
-                            )
-                            Spacer(Modifier.height(8.dp))
-                            TextFallout(
-                                stringResource(R.string.you_can_change_custom_deck_between_games),
-                                getTextColor(activity),
-                                getTextStrokeColor(activity),
-                                16.sp,
-                                Alignment.Center,
-                                Modifier,
-                                TextAlign.Center
-                            )
-                            Spacer(Modifier.height(8.dp))
-                            TextFallout(
-                                stringResource(R.string.progress_is_saved_between_sessions),
-                                getTextColor(activity),
-                                getTextStrokeColor(activity),
-                                24.sp,
-                                Alignment.Center,
-                                Modifier,
-                                TextAlign.Center
-                            )
+                            save.tickets--
+                            nextLevel()
                         }
-                        Spacer(modifier = Modifier.height(16.dp))
                     }
-                }
+                    .background(getTextBackgroundColor(activity))
+                    .padding(4.dp),
+                TextAlign.Center
+            )
+        }
+    }
+    Spacer(modifier = Modifier.height(16.dp))
+}
 
-                if (level == 0) {
-                    Spacer(modifier = Modifier.height(16.dp))
+@Composable
+fun EnemyPresentedScreen(
+    activity: MainActivity,
+    inBank: Int,
+    getLevel: () -> Int,
+    startLevel: () -> Unit,
+    setLevelZero: () -> Unit,
+) {
+    val state2 = rememberLazyListState()
+    LazyColumn(
+        Modifier
+            .fillMaxSize()
+            .background(getBackgroundColor(activity))
+            .padding(vertical = 8.dp)
+            .scrollbar(
+                state2,
+                knobColor = getKnobColor(activity), trackColor = getTrackColor(activity),
+                horizontal = false,
+            ),
+        state = state2,
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        item {
+            Column(
+                Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                TextFallout(
+                    stringResource(R.string.custom_deck_only),
+                    getTextColor(activity),
+                    getTextStrokeColor(activity),
+                    24.sp,
+                    Alignment.Center,
+                    Modifier,
+                    TextAlign.Center
+                )
+                Spacer(Modifier.height(8.dp))
+                TextFallout(
+                    stringResource(R.string.you_can_change_custom_deck_between_games),
+                    getTextColor(activity),
+                    getTextStrokeColor(activity),
+                    16.sp,
+                    Alignment.Center,
+                    Modifier,
+                    TextAlign.Center
+                )
+                Spacer(Modifier.height(8.dp))
+                TextFallout(
+                    stringResource(R.string.progress_is_saved_between_sessions),
+                    getTextColor(activity),
+                    getTextStrokeColor(activity),
+                    24.sp,
+                    Alignment.Center,
+                    Modifier,
+                    TextAlign.Center
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+            }
+
+            @Composable
+            fun showTowerCard(enemyName: String) {
+                Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
                     TextFallout(
-                        stringResource(R.string.tower_presents),
-                        getTextColor(activity),
-                        getTextStrokeColor(activity),
-                        18.sp,
-                        Alignment.Center,
-                        Modifier,
-                        TextAlign.Center
-                    )
-                    TextFallout(
-                        stringResource(R.string.tower),
-                        getTextColor(activity),
-                        getTextStrokeColor(activity),
-                        40.sp,
-                        Alignment.Center,
-                        Modifier,
-                        TextAlign.Center
-                    )
-                    Spacer(modifier = Modifier.height(12.dp))
-                    TextFallout(
-                        stringResource(R.string.tower_starring_1),
+                        stringResource(R.string.level_10, getLevel()),
                         getTextColor(activity),
                         getTextStrokeColor(activity),
                         24.sp,
@@ -290,277 +514,232 @@ fun TowerScreen(
                         Modifier,
                         TextAlign.Center
                     )
-                    Spacer(modifier = Modifier.height(8.dp))
                     TextFallout(
-                        stringResource(R.string.tower_starring_2),
+                        stringResource(R.string.currently_in_bank_caps, inBank),
                         getTextColor(activity),
                         getTextStrokeColor(activity),
-                        18.sp,
+                        24.sp,
                         Alignment.Center,
                         Modifier,
                         TextAlign.Center
                     )
-                    Spacer(modifier = Modifier.height(24.dp))
-
                     TextFallout(
-                        stringResource(R.string.tickets_please_you_have_tickets, save.tickets),
+                        stringResource(R.string.enemy, enemyName),
                         getTextColor(activity),
                         getTextStrokeColor(activity),
-                        20.sp,
+                        24.sp,
                         Alignment.Center,
                         Modifier,
                         TextAlign.Center
                     )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    TextFallout(
-                        stringResource(R.string.pay_1_ticket),
-                        getTextColor(activity),
-                        getTextStrokeColor(activity),
-                        20.sp,
-                        Alignment.Center,
-                        Modifier
-                            .padding(4.dp)
-                            .clickableOk(activity) {
-                                if (save.tickets <= 0) {
-                                    showAlertDialog(
-                                        activity.getString(R.string.hey),
-                                        activity.getString(R.string.you_don_t_have_a_ticket_on_you),
-                                        null
-                                    )
-                                } else {
-                                    level++
-                                    save.towerLevel++
-                                    save.tickets--
-                                    saveData(activity)
-                                }
-                            }
-                            .background(getTextBackgroundColor(activity))
-                            .padding(4.dp),
-                        TextAlign.Center
-                    )
-                } else {
-                    val inBank = when (level) {
-                        1 -> 2
-                        2 -> 4
-                        3 -> 8
-                        4 -> 16
-                        5 -> 32
-                        6 -> 64
-                        7 -> 128
-                        8 -> 256
-                        9 -> 512
-                        10 -> 1024
-                        else -> 2048
-                    }
-                    @Composable
-                    fun showTowerCard(enemyName: String) {
-                        Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-                            TextFallout(
-                                stringResource(R.string.level_10, level),
-                                getTextColor(activity),
-                                getTextStrokeColor(activity),
-                                24.sp,
-                                Alignment.Center,
-                                Modifier,
-                                TextAlign.Center
-                            )
-                            TextFallout(
-                                stringResource(R.string.currently_in_bank_caps, inBank),
-                                getTextColor(activity),
-                                getTextStrokeColor(activity),
-                                24.sp,
-                                Alignment.Center,
-                                Modifier,
-                                TextAlign.Center
-                            )
-                            TextFallout(
-                                stringResource(R.string.enemy, enemyName),
-                                getTextColor(activity),
-                                getTextStrokeColor(activity),
-                                24.sp,
-                                Alignment.Center,
-                                Modifier,
-                                TextAlign.Center
-                            )
-                        }
-                    }
-                    when (level) {
-                        1 -> {
-                            showTowerCard(stringResource(R.string.tower_enemy_1))
-                        }
-                        2 -> {
-                            showTowerCard(stringResource(R.string.tower_enemy_2))
-                        }
-                        3 -> {
-                            if (save.papaSmurfActive) {
-                                showTowerCard(stringResource(R.string.tower_enemy_3A))
-                            } else {
-                                showTowerCard(stringResource(R.string.tower_enemy_3))
-                            }
-                        }
-                        4 -> {
-                            showTowerCard(stringResource(R.string.tower_enemy_4))
-                        }
-                        5 -> {
-                            showTowerCard(stringResource(R.string.tower_enemy_5))
-                        }
-                        6 -> {
-                            showTowerCard(stringResource(R.string.tower_enemy_6))
-                        }
-                        7 -> {
-                            showTowerCard(stringResource(R.string.tower_enemy_7))
-                        }
-                        8 -> {
-                            showTowerCard(stringResource(R.string.tower_enemy_8))
-                        }
-                        9 -> {
-                            showTowerCard(stringResource(R.string.tower_enemy_9))
-                        }
-                        10 -> {
-                            if (!frankSequencePlayed) {
-                                showTowerCard(stringResource(R.string.tower_enemy_10))
-                            } else {
-                                showTowerCard(stringResource(R.string.tower_enemy_10A))
-                            }
-                        }
-                    }
-                    Spacer(Modifier.height(16.dp))
-                    Row(
-                        Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceEvenly,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        val takeTheCashLine = if (level == 10 && frankSequencePlayed) {
-                            stringResource(R.string.take_the_cash_alt)
-                        } else {
-                            stringResource(R.string.take_the_cash)
-                        }
-                        TextFallout(
-                            takeTheCashLine,
-                            getTextColor(activity),
-                            getTextStrokeColor(activity),
-                            24.sp,
-                            Alignment.Center,
-                            modifier = Modifier
-                                .clickableOk(activity) {
-                                    if (level > 0) {
-                                        level = 0
-                                        frankSequencePlayed = false
-                                        if (soundReduced) {
-                                            soundReduced = false
-                                            nextSong(activity)
-                                        }
-                                        save.towerLevel = 0
-                                        save.capsInHand += inBank
-                                        saveData(activity)
-                                        playCashSound(activity)
-                                        showAlertDialog(
-                                            activity.getString(R.string.congratulations),
-                                            activity.getString(
-                                                R.string.your_reward_caps,
-                                                inBank.toString()
-                                            ),
-                                            null
-                                        )
-
-                                    }
-                                }
-                                .background(getTextBackgroundColor(activity))
-                                .padding(horizontal = 8.dp, vertical = 4.dp),
-                            TextAlign.Center
-                        )
-
-                        if (level in (1..10)) {
-                            TextFallout(
-                                stringResource(R.string.en_garde),
-                                getTextColor(activity),
-                                getTextStrokeColor(activity),
-                                24.sp,
-                                Alignment.Center,
-                                modifier = Modifier
-                                    .clickableOk(activity) {
-                                        when (level) {
-                                            in 1..9 -> {
-                                                showGameLevel = level
-                                            }
-                                            10 -> {
-                                                if (!frankSequencePlayed) {
-                                                    startFrank = true
-                                                } else {
-                                                    showFrankWarning = true
-                                                }
-                                            }
-                                            else -> {}
-                                        }
-                                    }
-                                    .background(getTextBackgroundColor(activity))
-                                    .padding(horizontal = 8.dp, vertical = 4.dp),
-                                TextAlign.Center
-                            )
-                        }
-                    }
                 }
             }
-        }
-
-        if (showFrankWarning) {
-            LaunchedEffect(Unit) {
-                playNotificationSound(activity)
+            when (getLevel()) {
+                1 -> {
+                    showTowerCard(stringResource(R.string.tower_enemy_1))
+                }
+                2 -> {
+                    showTowerCard(stringResource(R.string.tower_enemy_2))
+                }
+                3 -> {
+                    if (save.papaSmurfActive) {
+                        showTowerCard(stringResource(R.string.tower_enemy_3A))
+                    } else {
+                        showTowerCard(stringResource(R.string.tower_enemy_3))
+                    }
+                }
+                4 -> {
+                    showTowerCard(stringResource(R.string.tower_enemy_4))
+                }
+                5 -> {
+                    showTowerCard(stringResource(R.string.tower_enemy_5))
+                }
+                6 -> {
+                    showTowerCard(stringResource(R.string.tower_enemy_6))
+                }
+                7 -> {
+                    showTowerCard(stringResource(R.string.tower_enemy_7))
+                }
+                8 -> {
+                    showTowerCard(stringResource(R.string.tower_enemy_8))
+                }
+                9 -> {
+                    showTowerCard(stringResource(R.string.tower_enemy_9))
+                }
+                10 -> {
+                    showTowerCard(stringResource(R.string.tower_enemy_10))
+                }
             }
-            AlertDialog(
-                modifier = Modifier.border(width = 4.dp, color = Color(activity.getColor(R.color.colorText))),
-                onDismissRequest = { showFrankWarning = false },
-                confirmButton = {
-                    TextClassic(
-                        stringResource(R.string.frank_start_button),
-                        Color(activity.getColor(R.color.colorTextBack)),
-                        Color(activity.getColor(R.color.colorTextBack)),
-                        18.sp, Alignment.Center,
-                        Modifier
-                            .background(Color(activity.getColor(R.color.colorText)))
-                            .clickableOk(activity) {
-                                showFrankWarning = false; showGameLevel = 10
-                            }
-                            .padding(4.dp),
-                        TextAlign.Center
-                    )
-                },
-                dismissButton = {
-                    TextClassic(
-                        stringResource(R.string.frank_think_button),
-                        Color(activity.getColor(R.color.colorTextBack)),
-                        Color(activity.getColor(R.color.colorTextBack)),
-                        18.sp, Alignment.Center,
-                        Modifier
-                            .background(Color(activity.getColor(R.color.colorText)))
-                            .clickableCancel(activity) { showFrankWarning = false }
-                            .padding(4.dp),
-                        TextAlign.Center
-                    )
-                },
-                title = {
-                    TextClassic(
-                        stringResource(R.string.frank_think_header),
-                        Color(activity.getColor(R.color.colorText)),
-                        Color(activity.getColor(R.color.colorText)),
-                        24.sp, Alignment.CenterStart, Modifier,
-                        TextAlign.Start
-                    )
-                },
-                text = {
-                    TextClassic(
-                        stringResource(R.string.frank_think_body),
-                        Color(activity.getColor(R.color.colorText)),
-                        Color(activity.getColor(R.color.colorText)),
-                        16.sp, Alignment.CenterStart, Modifier,
-                        TextAlign.Start
-                    )
-                },
-                containerColor = Color.Black,
-                textContentColor = Color(activity.getColor(R.color.colorText)),
-                shape = RectangleShape,
-            )
+            Spacer(Modifier.height(16.dp))
+            Row(
+                Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceEvenly,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                TextFallout(
+                    stringResource(R.string.take_the_cash),
+                    getTextColor(activity),
+                    getTextStrokeColor(activity),
+                    24.sp,
+                    Alignment.Center,
+                    modifier = Modifier
+                        .clickableOk(activity) {
+                            setLevelZero()
+                        }
+                        .background(getTextBackgroundColor(activity))
+                        .padding(horizontal = 8.dp, vertical = 4.dp),
+                    TextAlign.Center
+                )
+
+                TextFallout(
+                    stringResource(R.string.en_garde),
+                    getTextColor(activity),
+                    getTextStrokeColor(activity),
+                    24.sp,
+                    Alignment.Center,
+                    modifier = Modifier
+                        .clickableOk(activity) {
+                            startLevel()
+                        }
+                        .background(getTextBackgroundColor(activity))
+                        .padding(horizontal = 8.dp, vertical = 4.dp),
+                    TextAlign.Center
+                )
+            }
         }
+    }
+}
+
+@Composable
+fun FrankPresentedScreen(
+    activity: MainActivity,
+    startLevel: () -> Unit,
+    setLevelZero: () -> Unit,
+) {
+    val state2 = rememberLazyListState()
+    LazyColumn(
+        Modifier
+            .fillMaxSize()
+            .background(getBackgroundColor(activity))
+            .padding(vertical = 8.dp)
+            .scrollbar(
+                state2,
+                knobColor = getKnobColor(activity), trackColor = getTrackColor(activity),
+                horizontal = false,
+            ),
+        state = state2,
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        item {
+            Column(
+                Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Spacer(modifier = Modifier.height(16.dp))
+                TextFallout(
+                    stringResource(R.string.deck_o_54_only),
+                    getTextColor(activity),
+                    getTextStrokeColor(activity),
+                    24.sp,
+                    Alignment.Center,
+                    Modifier,
+                    TextAlign.Center
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+            }
+
+            val inBank = 2048
+            Column(
+                Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                TextFallout(
+                    stringResource(R.string.level_10, 10),
+                    getTextColor(activity),
+                    getTextStrokeColor(activity),
+                    24.sp,
+                    Alignment.Center,
+                    Modifier,
+                    TextAlign.Center
+                )
+                TextFallout(
+                    stringResource(R.string.currently_in_bank_caps, inBank),
+                    getTextColor(activity),
+                    getTextStrokeColor(activity),
+                    24.sp,
+                    Alignment.Center,
+                    Modifier,
+                    TextAlign.Center
+                )
+                TextFallout(
+                    stringResource(R.string.enemy, stringResource(R.string.tower_enemy_10A)),
+                    getTextColor(activity),
+                    getTextStrokeColor(activity),
+                    24.sp,
+                    Alignment.Center,
+                    Modifier,
+                    TextAlign.Center
+                )
+            }
+
+            Spacer(Modifier.height(16.dp))
+            Row(
+                Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceEvenly,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                TextFallout(
+                    stringResource(R.string.take_the_cash_alt),
+                    getTextColor(activity),
+                    getTextStrokeColor(activity),
+                    24.sp,
+                    Alignment.Center,
+                    modifier = Modifier
+                        .clickableOk(activity) {
+                            setLevelZero()
+                        }
+                        .background(getTextBackgroundColor(activity))
+                        .padding(horizontal = 8.dp, vertical = 4.dp),
+                    TextAlign.Center
+                )
+
+                TextFallout(
+                    stringResource(R.string.en_f_garde),
+                    getTextColor(activity),
+                    getTextStrokeColor(activity),
+                    24.sp,
+                    Alignment.Center,
+                    modifier = Modifier
+                        .clickableOk(activity) {
+                            startLevel()
+                        }
+                        .background(getTextBackgroundColor(activity))
+                        .padding(horizontal = 8.dp, vertical = 4.dp),
+                    TextAlign.Center
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun FinalScreen(activity: MainActivity, setLevelZero: () -> Unit) {
+    Column(Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center) {
+        TextFallout(
+            stringResource(R.string.take_the_cash),
+            getTextColor(activity),
+            getTextStrokeColor(activity),
+            24.sp,
+            Alignment.Center,
+            modifier = Modifier
+                .clickableOk(activity) {
+                    setLevelZero()
+                }
+                .background(getTextBackgroundColor(activity))
+                .padding(horizontal = 8.dp, vertical = 4.dp),
+            TextAlign.Center
+        )
     }
 }
 
@@ -701,7 +880,7 @@ fun StartTowerGame(
                     onQuitPressed
                 )
             }
-            enemy.onVictory()
+            enemy.addVictory()
             saveData(activity)
         }
         it.onLose = {
@@ -738,7 +917,7 @@ fun StartTowerGame(
     }
 }
 
-
+// TODO: move to story sequences
 @Composable
 fun ShowFrank(activity: MainActivity, goBack: () -> Unit) {
     var craigLine by rememberSaveable { mutableIntStateOf(0) }

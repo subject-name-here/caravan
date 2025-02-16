@@ -2,7 +2,6 @@ package com.unicorns.invisible.caravan.model.trading
 
 import com.unicorns.invisible.caravan.MainActivity
 import com.unicorns.invisible.caravan.R
-import com.unicorns.invisible.caravan.Style
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.primitives.Card
 import com.unicorns.invisible.caravan.save
@@ -20,9 +19,12 @@ class Vault21Trader : Trader {
     override fun openingCondition(activity: MainActivity) =
         activity.getString(R.string.vault_21_trader_condition)
 
-    override fun getName(): Int = R.string.vault_21_trader_name
+    override fun getUpdateRate() = 4
+
+    override fun getWelcomeMessage() = R.string.vault_21_trader_welcome
+    override fun getEmptyStoreMessage() = R.string.vault_21_trader_empty
+
     override fun getSymbol() = "21"
 
     override fun getCards(): List<Pair<Card, Int>> = getCards(CardBack.VAULT_21)
-    override fun getStyles(): List<Style> = listOf(Style.VAULT_21, Style.VAULT_22)
 }
