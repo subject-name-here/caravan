@@ -34,6 +34,7 @@ import com.unicorns.invisible.caravan.utils.getTrackColor
 import com.unicorns.invisible.caravan.utils.scrollbar
 
 
+// TODO: watch cartefully
 @Composable
 fun ShowAbout(activity: MainActivity, goBack: () -> Unit) {
     LaunchedEffect(Unit) {

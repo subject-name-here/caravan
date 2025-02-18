@@ -66,8 +66,14 @@ fun ShowDailys(
             ) {
                 item {
                     Spacer(Modifier.height(16.dp))
-                    save.challenges.forEach { challenge ->
-                        ShowChallenge(activity, challenge, challenge.isCompleted()) {
+                    save.challengesNew.forEach { challenge ->
+                        ShowChallenge(activity, challenge, challenge.isCompleted(), false) {
+                            updateKey = !updateKey
+                        }
+                        Spacer(Modifier.height(16.dp))
+                    }
+                    save.challengesInf.forEach { challenge ->
+                        ShowChallenge(activity, challenge, challenge.isCompleted(), true) {
                             updateKey = !updateKey
                         }
                         Spacer(Modifier.height(16.dp))
@@ -105,7 +111,7 @@ fun ShowDailys(
 }
 
 @Composable
-fun ShowChallenge(activity: MainActivity, challenge: Challenge, isCompleted: Boolean, updater: () -> Unit) {
+fun ShowChallenge(activity: MainActivity, challenge: Challenge, isCompleted: Boolean, isInfinite: Boolean, updater: () -> Unit) {
     Column(Modifier.fillMaxWidth().padding(horizontal = 8.dp)) {
         Row {
             TextFallout(
@@ -140,13 +146,22 @@ fun ShowChallenge(activity: MainActivity, challenge: Challenge, isCompleted: Boo
 
         if (isCompleted) {
             fun dailyCompleted(save: Save) {
-                save.challenges.remove(challenge)
-                saveData(activity)
-                playDailyCompleted(activity)
-                if (save.challenges.size <= 1) {
-                    activity.achievementsClient?.unlock(activity.getString(R.string.achievement_done_for_today))
+                if (isInfinite) {
+                    challenge.restartChallenge()
+                    saveData(activity)
+                    playDailyCompleted(activity)
+                    updater()
+                } else {
+                    save.challengesNew.remove(challenge)
+                    saveData(activity)
+                    playDailyCompleted(activity)
+                    // TODO: redo this achievement!!
+                    // TODO: redo all achievements!!
+                    if (save.challengesNew.size <= 1) {
+                        activity.achievementsClient?.unlock(activity.getString(R.string.achievement_done_for_today))
+                    }
+                    updater()
                 }
-                updater()
             }
             Spacer(Modifier.height(8.dp))
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
@@ -159,7 +174,7 @@ fun ShowChallenge(activity: MainActivity, challenge: Challenge, isCompleted: Boo
                     Modifier
                         .background(getTextBackgroundColor(activity))
                         .clickableOk(activity) {
-                            save.tickets += 2
+                            save.tickets += if (isInfinite) 1 else 2
                             dailyCompleted(save)
                         }
                         .padding(8.dp),

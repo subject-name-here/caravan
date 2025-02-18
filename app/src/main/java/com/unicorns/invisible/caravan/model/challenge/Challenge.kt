@@ -19,6 +19,8 @@ sealed interface Challenge {
 
     fun isCompleted(): Boolean
 
+    fun restartChallenge() {}
+
     data class Move(
         val moveCode: Int,
         val handCard: Card? = null,
@@ -30,7 +32,7 @@ sealed interface Challenge {
             val challenges = mutableListOf<Challenge>()
 
             challenges.add(ChallengePlayCard(Rank.entries.random(rand)))
-            challenges.add(ChallengeDoNotPlayCards((1..7).random(rand))) // TODO: add more
+            challenges.add(ChallengeDoNotPlayCards((1..7).random(rand))) // TODO: add more variations
             challenges.add(ChallengeBeatEnemies((1..8).random(rand))) // TODO: add more combinations
 
             val specialCode = (1..7).random(rand)

@@ -133,7 +133,6 @@ fun ShowTrueSettings(
                     Spacer(Modifier.height(12.dp))
                     SwitchSetting(stringResource(R.string.non_stop_radio), { playInBack }, { playInBack = !playInBack })
                     Spacer(Modifier.height(12.dp))
-                    Spacer(Modifier.height(12.dp))
                     Row(
                         modifier = Modifier.height(96.dp),
                         verticalAlignment = Alignment.CenterVertically,
@@ -211,6 +210,7 @@ fun ShowTrueSettings(
                             )
                         )
                     }
+                    Spacer(Modifier.height(12.dp))
                 }
             }
         }

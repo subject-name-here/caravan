@@ -599,9 +599,6 @@ fun StartPvP(
         it.wildWastelandSound = { playWWSound(activity) }
     }
     val quit = {
-        if (!game.isOver() && game.isPlayerTurn) {
-            playQuitMultiplayer(activity)
-        }
         stopAmbient()
         goBack()
     }

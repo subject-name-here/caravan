@@ -6,10 +6,11 @@ import com.unicorns.invisible.caravan.R
 import com.unicorns.invisible.caravan.Style
 
 
+// TODO: check here everything!!!!
+
 fun getBackgroundColor(activity: MainActivity): Color {
     return getBackByStyle(activity, activity.styleId)
 }
-
 fun getBackByStyle(activity: MainActivity, styleId: Style) = when (styleId) {
     Style.DESERT -> Color(activity.getColor(R.color.desertBackground))
     Style.PIP_BOY -> Color(activity.getColor(R.color.colorBack))
@@ -23,12 +24,13 @@ fun getBackByStyle(activity: MainActivity, styleId: Style) = when (styleId) {
     Style.VAULT_22 -> Color(activity.getColor(R.color.vault22Back))
     Style.ENCLAVE -> Color(activity.getColor(R.color.enclaveBack))
     Style.BLACK -> Color.Black
+    Style.NCR -> TODO()
+    Style.LEGION -> TODO()
 }
 
 fun getTextColor(activity: MainActivity): Color {
     return getTextColorByStyle(activity, activity.styleId)
 }
-
 fun getTextColorByStyle(activity: MainActivity, styleId: Style) = when (styleId) {
     Style.DESERT -> Color(activity.getColor(R.color.desertText))
     Style.PIP_BOY -> Color(activity.getColor(R.color.colorText))
@@ -42,25 +44,27 @@ fun getTextColorByStyle(activity: MainActivity, styleId: Style) = when (styleId)
     Style.VAULT_22 -> Color(activity.getColor(R.color.vault22Text))
     Style.ENCLAVE -> Color(activity.getColor(R.color.enclaveText))
     Style.BLACK -> Color.White
+    Style.NCR -> TODO()
+    Style.LEGION -> TODO()
 }
 
 fun getTextStrokeColor(activity: MainActivity): Color {
     return getStrokeColorByStyle(activity, activity.styleId)
 }
-
 fun getStrokeColorByStyle(activity: MainActivity, styleId: Style) = when (styleId) {
     Style.PIP_BOY -> Color(activity.getColor(R.color.colorTextStroke))
     Style.NEW_WORLD -> Color(activity.getColor(R.color.newWorldStroke))
     Style.VAULT_21 -> Color(activity.getColor(R.color.vault21Stroke))
     Style.VAULT_22 -> Color(activity.getColor(R.color.vault22Stroke))
     Style.ENCLAVE -> Color(activity.getColor(R.color.enclaveStroke))
+    Style.NCR -> TODO()
+    Style.LEGION -> TODO()
     else -> getTextColorByStyle(activity, styleId)
 }
 
 fun getTextBackgroundColor(activity: MainActivity): Color {
     return getTextBackByStyle(activity, activity.styleId)
 }
-
 fun getTextBackByStyle(activity: MainActivity, styleId: Style) = when (styleId) {
     Style.DESERT -> Color(activity.getColor(R.color.desertTextBackground))
     Style.PIP_BOY -> Color(activity.getColor(R.color.colorTextBack))
@@ -74,12 +78,13 @@ fun getTextBackByStyle(activity: MainActivity, styleId: Style) = when (styleId) 
     Style.VAULT_22 -> Color(activity.getColor(R.color.vault22TextBack))
     Style.ENCLAVE -> Color(activity.getColor(R.color.enclaveTextBack))
     Style.BLACK -> Color.DarkGray
+    Style.NCR -> TODO()
+    Style.LEGION -> TODO()
 }
 
 fun getSelectionColor(activity: MainActivity): Color {
     return getSelectionColorByStyle(activity, activity.styleId)
 }
-
 fun getSelectionColorByStyle(activity: MainActivity, styleId: Style) = when (styleId) {
     Style.DESERT -> Color(activity.getColor(R.color.desertTextBackground))
     Style.PIP_BOY -> Color(activity.getColor(R.color.colorTextStroke))
@@ -93,12 +98,13 @@ fun getSelectionColorByStyle(activity: MainActivity, styleId: Style) = when (sty
     Style.VAULT_22 -> Color(activity.getColor(R.color.vault22Stroke))
     Style.ENCLAVE -> Color(activity.getColor(R.color.enclaveAccent))
     Style.BLACK -> Color.White
+    Style.NCR -> TODO()
+    Style.LEGION -> TODO()
 }
 
 fun getMusicPanelColor(activity: MainActivity): Color {
     return getMusicPanelColorByStyle(activity, activity.styleId)
 }
-
 fun getMusicPanelColorByStyle(activity: MainActivity, styleId: Style) = when (styleId) {
     Style.DESERT -> Color(activity.getColor(R.color.desertAccent))
     Style.PIP_BOY -> Color(activity.getColor(R.color.colorText))
@@ -112,6 +118,8 @@ fun getMusicPanelColorByStyle(activity: MainActivity, styleId: Style) = when (st
     Style.VAULT_22 -> Color(activity.getColor(R.color.vault22Accent))
     Style.ENCLAVE -> Color(activity.getColor(R.color.enclaveText))
     Style.BLACK -> Color.White
+    Style.NCR -> TODO()
+    Style.LEGION -> TODO()
 }
 
 fun getMusicTextColor(activity: MainActivity): Color {
@@ -128,6 +136,8 @@ fun getMusicTextColor(activity: MainActivity): Color {
         Style.VAULT_22 -> Color(activity.getColor(R.color.vault22Text))
         Style.ENCLAVE -> Color(activity.getColor(R.color.enclaveStroke))
         Style.BLACK -> Color.White
+        Style.NCR -> TODO()
+        Style.LEGION -> TODO()
     }
 }
 
@@ -145,6 +155,8 @@ fun getMusicMarqueesColor(activity: MainActivity): Color {
         Style.VAULT_22 -> Color(activity.getColor(R.color.vault22Stroke))
         Style.ENCLAVE -> Color(activity.getColor(R.color.enclaveTextBack))
         Style.BLACK -> Color.Black
+        Style.NCR -> TODO()
+        Style.LEGION -> TODO()
     }
 }
 
@@ -162,6 +174,8 @@ fun getDialogBackground(activity: MainActivity): Color {
         Style.VAULT_22 -> Color(activity.getColor(R.color.vault22Accent))
         Style.ENCLAVE -> Color(activity.getColor(R.color.enclaveTextBack))
         Style.BLACK -> Color.Black
+        Style.NCR -> TODO()
+        Style.LEGION -> TODO()
     }
 }
 
@@ -169,6 +183,8 @@ fun getDialogTextColor(activity: MainActivity): Color {
     return when (activity.styleId) {
         Style.SIERRA_MADRE -> getBackgroundColor(activity)
         Style.NEW_WORLD -> Color(activity.getColor(R.color.newWorldTextBack))
+        Style.NCR -> TODO()
+        Style.LEGION -> TODO()
         else -> getTextColor(activity)
     }
 }
@@ -190,10 +206,14 @@ fun getCheckBoxFillColor(activity: MainActivity): Color = when (activity.styleId
     Style.VAULT_22 -> Color(activity.getColor(R.color.vault22Accent))
     Style.ENCLAVE -> Color(activity.getColor(R.color.enclaveStroke))
     Style.BLACK -> Color.White
+    Style.NCR -> TODO()
+    Style.LEGION -> TODO()
 }
 
 fun getTrackColor(activity: MainActivity): Color = getTextBackgroundColor(activity)
+fun getTrackColorByStyle(activity: MainActivity, style: Style): Color = getTextBackByStyle(activity, style)
 fun getKnobColor(activity: MainActivity): Color = getTextColor(activity)
+fun getKnobColorByStyle(activity: MainActivity, style: Style): Color = getTextColorByStyle(activity, style)
 
 fun getSwitchTrackColor(activity: MainActivity): Color = when (activity.styleId) {
     Style.ALASKA_FRONTIER -> getTextColor(activity)
@@ -215,6 +235,8 @@ fun getSwitchThumbColor(activity: MainActivity): Color = when (activity.styleId)
     Style.VAULT_22 -> Color(activity.getColor(R.color.vault22Stroke))
     Style.ENCLAVE -> Color(activity.getColor(R.color.enclaveText))
     Style.BLACK -> Color.White
+    Style.NCR -> TODO()
+    Style.LEGION -> TODO()
 }
 
 fun getSliderTrackColor(activity: MainActivity): Color = getSwitchTrackColor(activity)

@@ -4,6 +4,8 @@ import com.unicorns.invisible.caravan.AnimationSpeed
 import com.unicorns.invisible.caravan.Style
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.challenge.Challenge
+import com.unicorns.invisible.caravan.model.challenge.ChallengePlay188
+import com.unicorns.invisible.caravan.model.challenge.ChallengeWin5Games
 import com.unicorns.invisible.caravan.model.enemy.EnemyBenny
 import com.unicorns.invisible.caravan.model.enemy.EnemyCrooker
 import com.unicorns.invisible.caravan.model.enemy.EnemyDrMobius
@@ -36,6 +38,7 @@ import com.unicorns.invisible.caravan.model.trading.Vault21Trader
 import kotlinx.serialization.EncodeDefault
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
+import kotlin.random.Random
 
 
 // PlayerId == null => save is not loaded
@@ -108,6 +111,7 @@ class Save(var playerId: String? = null) {
     @EncodeDefault
     var styleId: Int = Style.PIP_BOY.ordinal
 
+    // TODO: a) more stats, and b) correctly count all the old one.
     @EncodeDefault
     var gamesStarted = 0
     @EncodeDefault
@@ -118,7 +122,6 @@ class Save(var playerId: String? = null) {
     var capsBet = 0
     @EncodeDefault
     var capsWon = 0
-    // TODO: more stats???
 
     @EncodeDefault
     var radioVolume = 1f
@@ -133,7 +136,6 @@ class Save(var playerId: String? = null) {
 
     @EncodeDefault
     var capsInHand = 150
-
     @EncodeDefault
     var tickets = 5
 
@@ -145,9 +147,11 @@ class Save(var playerId: String? = null) {
         challengesNew = Challenge.initChallenges(dailyHash)
     }
 
-    // TODO: two more types of challenges: infinite easy and infinite hard
     @EncodeDefault
-    val challengesInf: MutableList<Challenge> = mutableListOf()
+    val challengesInf: MutableList<Challenge> = mutableListOf(
+        ChallengeWin5Games(),
+        ChallengePlay188()
+    )
 
     @EncodeDefault
     var towerLevel: Int = 0
@@ -199,17 +203,14 @@ class Save(var playerId: String? = null) {
         )
     )
     fun updateEnemiesBanks() {
-        enemiesGroups.forEach { group ->
-            group.forEachIndexed { index, enemy ->
-                if (index != 4 && index != 6) {
-                    enemy.refreshBank(19)
-                } else if (index == 6) {
-                    enemy.refreshBank(90)
-                }
-            }
+        val enemies = enemiesGroups.flatten()
+        enemies.forEach { enemy ->
+            enemy.refreshBank()
         }
     }
 
+    // This one is for Snuffles bank update!
+    var table: Int = 0
 
     @EncodeDefault
     val traders = listOf<Trader>(

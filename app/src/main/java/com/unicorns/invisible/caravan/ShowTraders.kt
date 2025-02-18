@@ -47,13 +47,15 @@ import com.unicorns.invisible.caravan.utils.getTextStrokeColor
 import com.unicorns.invisible.caravan.utils.getTrackColor
 import com.unicorns.invisible.caravan.utils.playCashSound
 import com.unicorns.invisible.caravan.utils.playNoBeep
-import com.unicorns.invisible.caravan.utils.playPimpBoySound
 import com.unicorns.invisible.caravan.utils.playSelectSound
 import com.unicorns.invisible.caravan.utils.scrollbar
 
 
 @Composable
 fun CardToBuy(activity: MainActivity, card: Card, price: Int, update: () -> Unit) {
+    if (card.back.deckName == null) {
+        return
+    }
     val suit = if (card.rank == Rank.JOKER)
         (card.suit.ordinal + 1).toString()
     else
@@ -61,7 +63,7 @@ fun CardToBuy(activity: MainActivity, card: Card, price: Int, update: () -> Unit
     Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
         TextFallout(
             "${stringResource(card.rank.nameId)} $suit\n" +
-            "(${stringResource(card.back.getDeckName())} ${if (card.isAlt) "ALT!" else ""})",
+            "(${stringResource(card.back.deckName)} ${if (card.isAlt) "ALT!" else ""})",
             getTextColor(activity),
             getTextStrokeColor(activity),
             16.sp,
@@ -88,52 +90,6 @@ fun CardToBuy(activity: MainActivity, card: Card, price: Int, update: () -> Unit
                         save.capsInHand -= price
                         save.addCard(card)
                         playCashSound(activity)
-                        saveData(activity)
-                        update()
-                    }
-                },
-            TextAlign.Center
-        )
-    }
-}
-
-@Composable
-fun StyleToBuy(activity: MainActivity, style: Style, update: () -> Unit) {
-    Row(
-        Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        TextFallout(
-            stringResource(
-                R.string.style_buy,
-                stringResource(style.styleNameId)
-            ),
-            getTextColor(activity),
-            getTextStrokeColor(activity),
-            16.sp,
-            Alignment.Center,
-            Modifier
-                .weight(1f)
-                .padding(4.dp),
-            TextAlign.Center
-        )
-        TextFallout(
-            stringResource(R.string.buy_for_caps, style.price),
-            getTextColor(activity),
-            getTextStrokeColor(activity),
-            16.sp,
-            Alignment.Center,
-            Modifier
-                .weight(1f)
-                .padding(4.dp)
-                .background(getTextBackgroundColor(activity))
-                .clickable {
-                    if (save.capsInHand < style.price) {
-                        playNoBeep(activity)
-                    } else {
-                        save.capsInHand -= style.price
-                        save.ownedStyles.add(style)
-                        playPimpBoySound(activity)
                         saveData(activity)
                         update()
                     }
@@ -225,13 +181,11 @@ fun ShowTraders(activity: MainActivity, goBack: () -> Unit) {
                                 horizontalAlignment = Alignment.CenterHorizontally,
                                 verticalArrangement = Arrangement.Top
                             ) {
-                                val styles = selectedTrader.getStyles()
-                                    .filter { it !in save.ownedStyles }
                                 val cards = selectedTrader.getCards()
                                     .filter { !save.isCardAvailableAlready(it.first) }
 
                                 TextFallout(
-                                    if (styles.isEmpty() && cards.isEmpty()) {
+                                    if (cards.isEmpty()) {
                                         stringResource(selectedTrader.getEmptyStoreMessage())
                                     } else {
                                         stringResource(selectedTrader.getWelcomeMessage())
@@ -243,11 +197,6 @@ fun ShowTraders(activity: MainActivity, goBack: () -> Unit) {
                                     Modifier.fillMaxWidth().padding(4.dp),
                                     TextAlign.Center
                                 )
-
-                                styles.forEach {
-                                    Spacer(modifier = Modifier.height(4.dp))
-                                    StyleToBuy(activity, it) { update = !update }
-                                }
                                 cards.forEach {
                                     Spacer(modifier = Modifier.height(4.dp))
                                     CardToBuy(activity, it.first, it.second) { update = !update }

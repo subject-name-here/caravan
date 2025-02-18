@@ -1,6 +1,7 @@
 package com.unicorns.invisible.caravan.utils
 
 import android.media.MediaPlayer
+import android.widget.Toast
 import com.unicorns.invisible.caravan.MainActivity
 import com.unicorns.invisible.caravan.R
 import com.unicorns.invisible.caravan.Style
@@ -9,6 +10,7 @@ import com.unicorns.invisible.caravan.save
 import com.unicorns.invisible.caravan.soundReduced
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import okio.withLock
@@ -49,20 +51,18 @@ private fun playEffectPlayerSound(activity: MainActivity, soundId: Int, volumeFr
 fun playCardFlipSound(activity: MainActivity) =
     playEffectPlayerSound(activity, getRandomCardFlipSound(), 2)
 
-fun getRandomCardFlipSound(): Int {
-    return listOf(
-        R.raw.fol_gmble_cardflip_01,
-        R.raw.fol_gmble_cardflip_02,
-        R.raw.fol_gmble_cardflip_03,
-        R.raw.fol_gmble_cardflip_04,
-        R.raw.fol_gmble_cardflip_05,
-        R.raw.fol_gmble_cardflip_06,
-        R.raw.fol_gmble_cardflip_07,
-        R.raw.fol_gmble_cardflip_09,
-        R.raw.fol_gmble_cardflip_10,
-        R.raw.fol_gmble_cardflip_11,
-    ).random()
-}
+fun getRandomCardFlipSound() = listOf(
+    R.raw.fol_gmble_cardflip_01,
+    R.raw.fol_gmble_cardflip_02,
+    R.raw.fol_gmble_cardflip_03,
+    R.raw.fol_gmble_cardflip_04,
+    R.raw.fol_gmble_cardflip_05,
+    R.raw.fol_gmble_cardflip_06,
+    R.raw.fol_gmble_cardflip_07,
+    R.raw.fol_gmble_cardflip_09,
+    R.raw.fol_gmble_cardflip_10,
+    R.raw.fol_gmble_cardflip_11,
+).random()
 
 
 fun playLoseSound(activity: MainActivity) {
@@ -99,7 +99,6 @@ fun playSelectSound(activity: MainActivity) = playEffectPlayerSound(activity, R.
 fun playPimpBoySound(activity: MainActivity) = playEffectPlayerSound(activity, R.raw.ui_pimpboy, 3)
 fun playVatsEnter(activity: MainActivity) = playEffectPlayerSound(activity, R.raw.ui_vats_enter, 3)
 fun playVatsReady(activity: MainActivity) = playEffectPlayerSound(activity, R.raw.ui_vats_ready, 3)
-fun playQuitMultiplayer(activity: MainActivity) = playEffectPlayerSound(activity, R.raw.quit_multiplayer, 3)
 fun playNoCardAlarm(activity: MainActivity) = playEffectPlayerSound(activity, R.raw.no_cards_alarm)
 fun playYesBeep(activity: MainActivity) = playEffectPlayerSound(activity, R.raw.beep_a)
 fun playNoBeep(activity: MainActivity) = playEffectPlayerSound(activity, R.raw.beep_b)
@@ -218,30 +217,45 @@ private fun getSongsArray() = arrayOf(
     "MUS_Where_Have_You_Been_All_My_Life.amr" to "\"Where Have You Been All My Life?\" - Jeff Hooper",
     "MUS_Why_Dont_You_Do_Right.amr" to "\"Why Don't You Do Right?\" - The Dave Barbour Quartet, featuring Peggy Lee",
 )
-private val songsIndices = getSongsArray().indices.toMutableList()
 
-private var pointer = getSongsArray().size
+var pointer = -1
+val indices = getSongsArray().indices.toMutableList()
+private fun getSongByIndex(activity: MainActivity): Pair<String, String>? {
+    val songsArray = getSongsArray()
+    return if (pointer == -1) {
+        if (activity.styleId == Style.SIERRA_MADRE || activity.styleId == Style.MADRE_ROJA) {
+            if (save.isRadioUsesPseudonyms) {
+                "begin_again.amr" to "\"Begin Again\" - Vera Keyes"
+            } else {
+                "begin_again.amr" to "\"Begin Again\" - Justin E. Bell, Stephanie Dowling"
+            }
+        } else {
+            if (save.isRadioUsesPseudonyms) {
+                "MUS_caravan_whiplash.amr" to "\"Caravan\" - Shaffer Conservatory Studio Band"
+            } else {
+                "MUS_caravan_whiplash.amr" to "\"Caravan\" - John Wasson"
+            }
+        }
+    } else if (pointer in songsArray.indices) {
+        songsArray[indices[pointer]]
+    } else {
+        null
+    }
+}
+
+
 private var radioStartedFlag = false
 fun startRadio(activity: MainActivity) {
     if (radioStartedFlag) {
         return
     }
     radioStartedFlag = true
+    indices.shuffle()
     if (save.useCaravanIntro) {
-        if (activity.styleId == Style.SIERRA_MADRE || activity.styleId == Style.MADRE_ROJA) {
-            if (save.isRadioUsesPseudonyms) {
-                playSongFromRadio(activity, "begin_again.amr" to "\"Begin Again\" - Vera Keyes")
-            } else {
-                playSongFromRadio(activity, "begin_again.amr" to "\"Begin Again\" - Justin E. Bell, Stephanie Dowling")
-            }
-        } else {
-            if (save.isRadioUsesPseudonyms) {
-                playSongFromRadio(activity, "MUS_caravan_whiplash.amr" to "\"Caravan\" - Shaffer Conservatory Studio Band")
-            } else {
-                playSongFromRadio(activity, "MUS_caravan_whiplash.amr" to "\"Caravan\" - John Wasson")
-            }
-        }
+        pointer = -1
+        playSongFromRadio(activity)
     } else {
+        pointer = 0
         nextSong(activity)
     }
 }
@@ -255,41 +269,41 @@ enum class RadioState {
 private val radioPlayers = HashSet<MediaPlayer>()
 private val radioLock = ReentrantLock()
 private var radioState = RadioState.PLAYING
-private fun playSongFromRadio(activity: MainActivity, songName: Pair<String, String>) {
+private fun playSongFromRadio(activity: MainActivity) {
     val vol = save.radioVolume
-    MediaPlayer()
-        .apply {
-            val afd = activity.assets.openFd("radio/${songName.first}")
-            playingSongName.postValue(songName.second)
-            setDataSource(afd.fileDescriptor, afd.startOffset, afd.length)
-            setOnCompletionListener {
-                nextSong(activity)
-            }
-            try {
-                prepare()
-            } catch (_: Exception) {
-                stopRadio()
-                radioStartedFlag = false
-                startRadio(activity)
-                return
-            }
 
-            setVolume(vol, vol)
-            radioLock.withLock {
-                radioPlayers.add(this)
-                if (radioState == RadioState.PLAYING) {
-                    start()
+    try {
+        val songName = getSongByIndex(activity)!!
+        MediaPlayer()
+            .apply {
+                val afd = activity.assets.openFd("radio/${songName.first}")
+                playingSongName.postValue(songName.second)
+                setDataSource(afd.fileDescriptor, afd.startOffset, afd.length)
+                setOnCompletionListener {
+                    radioPlayers.remove(this)
+                    release()
+                    nextSong(activity)
+                }
+                prepare()
+                setVolume(vol, vol)
+                radioLock.withLock {
+                    radioPlayers.add(this)
+                    if (radioState == RadioState.PLAYING) {
+                        start()
+                    }
                 }
             }
+    } catch (_: Exception) {
+        CoroutineScope(Dispatchers.Unconfined).launch {
+            delay(760L)
+            nextSong(activity)
         }
+    }
 }
 
 fun stopRadio() {
     radioLock.withLock {
-        radioPlayers.forEach {
-            it.stop()
-            it.release()
-        }
+        radioPlayers.forEach { if (it.isPlaying) it.stop() }
         radioPlayers.clear()
     }
 }
@@ -298,10 +312,11 @@ fun nextSong(activity: MainActivity) {
     stopRadio()
 
     if (pointer !in getSongsArray().indices) {
-        songsIndices.shuffle()
         pointer = 0
+        indices.shuffle()
     }
-    playSongFromRadio(activity, getSongsArray()[songsIndices[pointer++]])
+
+    playSongFromRadio(activity)
 }
 
 fun resumeActivitySound() {

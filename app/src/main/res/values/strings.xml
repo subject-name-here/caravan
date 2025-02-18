@@ -321,6 +321,8 @@
 
     <string name="select">SELECT</string>
     <string name="buy">BUY</string>
+    <string name="cool_button">CooL BuTToN</string>
+    <string name="null_condition">It is already open, duh!</string>
 
     <string name="style_desert">Desert</string>
     <string name="style_pip_boy">Pip-Boy</string>
@@ -334,6 +336,8 @@
     <string name="style_vault_22">Vault 22</string>
     <string name="style_black">Darkness (test)</string>
     <string name="style_enclave">Enclave</string>
+    <string name="style_ncr">NCR</string>
+    <string name="style_legion">Legion</string>
 
     <string name="pip_boy_main_screen">Device #50724: Luck-o-Meter.</string>
     <string name="heads">HEADS</string>
@@ -401,6 +405,11 @@
     <string name="only_black_descr">Win a game playing only Spades, Clubs and Jokers. (Init stage is not counted.)</string>
     <string name="only_red_descr">Win a game playing only Hearts, Diamonds and Jokers. (Init stage is not counted.)</string>
     <string name="father_pucci_descr">Win a game playing only aces, face cards and prime number cards (2, 3, 5, 7). (Init stage is not counted.)</string>
+
+    <string name="simple_challenge">As Simple As This</string>
+    <string name="simple_challenge_descr">Defeat 6 different enemies.</string>
+    <string name="play_188_challenge">188 - Challenge</string>
+    <string name="play_188_challenge_descr">Play 188 cards.</string>
 
     <string name="claim_caps">Claim 30 Caps</string>
     <string name="claim_tickets">Claim 2 Tickets</string>
@@ -776,8 +785,7 @@
     <string name="deck_o_54">Deck o\' 54</string>
     <string name="custom_deck">Custom Deck</string>
     <string name="wild_wasteland">Wild Wasteland</string>
-    <string name="tba">TBA</string>
-    <string name="coming_soon">COMING SOON!!?</string>
+    <string name="xtras">Xtra</string>
 
     <string name="use_custom_deck">Use custom deck</string>
     <string name="use_wild_wasteland_cards">Use Wild Wasteland cards</string>

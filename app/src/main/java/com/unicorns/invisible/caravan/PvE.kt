@@ -43,23 +43,9 @@ import com.sebaslogen.resaca.rememberScoped
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.enemy.Enemy
-import com.unicorns.invisible.caravan.model.enemy.EnemyBenny
-import com.unicorns.invisible.caravan.model.enemy.EnemyCrooker
-import com.unicorns.invisible.caravan.model.enemy.EnemyDrMobius
-import com.unicorns.invisible.caravan.model.enemy.EnemyEasyPete
-import com.unicorns.invisible.caravan.model.enemy.EnemyElijah
 import com.unicorns.invisible.caravan.model.enemy.EnemyHanlon
-import com.unicorns.invisible.caravan.model.enemy.EnemyLuc10
 import com.unicorns.invisible.caravan.model.enemy.EnemyMadnessCardinal
-import com.unicorns.invisible.caravan.model.enemy.EnemyNash
-import com.unicorns.invisible.caravan.model.enemy.EnemyNoBark
-import com.unicorns.invisible.caravan.model.enemy.EnemyOliver
-import com.unicorns.invisible.caravan.model.enemy.EnemySnuffles
-import com.unicorns.invisible.caravan.model.enemy.EnemyTabitha
-import com.unicorns.invisible.caravan.model.enemy.EnemyTheManInTheMirror
-import com.unicorns.invisible.caravan.model.enemy.EnemyUlysses
-import com.unicorns.invisible.caravan.model.enemy.EnemyVeronica
-import com.unicorns.invisible.caravan.model.enemy.EnemyVictor
+import com.unicorns.invisible.caravan.model.enemy.EnemyViqueen
 import com.unicorns.invisible.caravan.model.enemy.EnemyVulpes
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.Card
@@ -90,7 +76,6 @@ import com.unicorns.invisible.caravan.utils.scrollbar
 import com.unicorns.invisible.caravan.utils.startAmbient
 import com.unicorns.invisible.caravan.utils.stopAmbient
 import java.util.Locale
-import kotlin.math.min
 import kotlin.math.pow
 
 
@@ -302,33 +287,12 @@ fun ShowPvE(
     showAlertDialog: (String, String, (() -> Unit)?) -> Unit,
     goBack: () -> Unit
 ) {
-    var showGameOliver by rememberSaveable { mutableStateOf(false) }
-    var showGameVeronica by rememberSaveable { mutableStateOf(false) }
-    var showGameVictor by rememberSaveable { mutableStateOf(false) }
-    var showGameChiefHanlon by rememberSaveable { mutableStateOf(false) }
-    var showGameUlysses by rememberSaveable { mutableStateOf(false) }
-    var showGameBenny by rememberSaveable { mutableStateOf(false) }
-    
-    var showGameNoBark by rememberSaveable { mutableStateOf(false) }
-    var showGameNash by rememberSaveable { mutableStateOf(false) }
-    var showGameTabitha by rememberSaveable { mutableStateOf(false) }
-    var showGameVulpes by rememberSaveable { mutableStateOf(false) }
-    var showGameElijah by rememberSaveable { mutableStateOf(false) }
-    var showGameCrocker by rememberSaveable { mutableStateOf(false) }
-
-    var showGameSnuffles by rememberSaveable { mutableStateOf(false) }
-    var showGameEasyPete by rememberSaveable { mutableStateOf(false) }
-    var showGameMadnessCardinal by rememberSaveable { mutableStateOf(false) }
-    var showGameLuc10 by rememberSaveable { mutableStateOf(false) }
-    var showGameDrMobius by rememberSaveable { mutableStateOf(false) }
-    var showGameTheManInTheMirror by rememberSaveable { mutableStateOf(false) }
-
-    var selectedTab by rememberSaveable { mutableIntStateOf(0) }
+    var playAgainstEnemy by rememberScoped { mutableIntStateOf(-1) }
 
     @Composable
-    fun StartWithEnemy(enemy: Enemy, isEven: Boolean, goBack: () -> Unit) {
+    fun StartWithEnemy(enemy: Enemy, goBack: () -> Unit) {
         StartGame(
-            activity, if (isEven)
+            activity, if (enemy.isEven())
                 CResources(save.selectedDeck.first, save.selectedDeck.second)
             else
                 CResources(save.getCustomDeckCopy()),
@@ -336,82 +300,17 @@ fun ShowPvE(
         )
     }
 
-    when {
-        showGameOliver -> {
-            StartWithEnemy(EnemyOliver, true) { showGameOliver = false }
+    if (playAgainstEnemy != -1) {
+        val enemyList = save.enemiesGroups.flatten()
+        if (playAgainstEnemy !in enemyList.indices) {
+            playAgainstEnemy = -1
             return
         }
-        showGameVeronica -> {
-            StartWithEnemy(EnemyVeronica, true) { showGameVeronica = false }
-            return
-        }
-        showGameVictor -> {
-            StartWithEnemy(EnemyVictor, true) { showGameVictor = false }
-            return
-        }
-        showGameChiefHanlon -> {
-            StartWithEnemy(EnemyHanlon, true) { showGameChiefHanlon = false }
-            return
-        }
-        showGameUlysses -> {
-            StartWithEnemy(EnemyUlysses, true) { showGameUlysses = false }
-            return
-        }
-        showGameBenny -> {
-            StartWithEnemy(EnemyBenny, true) { showGameBenny = false }
-            return
-        }
-
-        showGameNoBark -> {
-            StartWithEnemy(EnemyNoBark, false) { showGameNoBark = false }
-            return
-        }
-        showGameNash -> {
-            StartWithEnemy(EnemyNash, false) { showGameNash = false }
-            return
-        }
-        showGameTabitha -> {
-            StartWithEnemy(EnemyTabitha, false) { showGameTabitha = false }
-            return
-        }
-        showGameVulpes -> {
-            StartWithEnemy(EnemyVulpes, false) { showGameVulpes = false }
-            return
-        }
-        showGameElijah -> {
-            StartWithEnemy(EnemyElijah, false) { showGameElijah = false }
-            return
-        }
-        showGameCrocker -> {
-            StartWithEnemy(EnemyCrooker, false) { showGameCrocker = false }
-            return
-        }
-
-        showGameSnuffles -> {
-            StartWithEnemy(EnemySnuffles, false) { showGameSnuffles = false }
-            return
-        }
-        showGameEasyPete -> {
-            StartWithEnemy(EnemyEasyPete, true) { showGameEasyPete = false }
-            return
-        }
-        showGameMadnessCardinal -> {
-            StartWithEnemy(EnemyMadnessCardinal, false) { showGameMadnessCardinal = false }
-            return
-        }
-        showGameLuc10 -> {
-            StartWithEnemy(EnemyLuc10, true) { showGameLuc10 = false }
-            return
-        }
-        showGameDrMobius -> {
-            StartWithEnemy(EnemyDrMobius, false) { showGameDrMobius = false }
-            return
-        }
-        showGameTheManInTheMirror -> {
-            StartWithEnemy(EnemyTheManInTheMirror, false) { showGameTheManInTheMirror = false }
-            return
-        }
+        StartWithEnemy(enemyList[playAgainstEnemy]) { playAgainstEnemy = -1 }
+        return
     }
+
+    var selectedTab by rememberSaveable { mutableIntStateOf(0) }
 
     MenuItemOpen(activity, stringResource(R.string.select_enemy), "<-", goBack) {
         Column(
@@ -421,6 +320,106 @@ fun ShowPvE(
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            TabRow(
+                selectedTab, Modifier.fillMaxWidth(),
+                containerColor = getBackgroundColor(activity),
+                indicator = { tabPositions ->
+                    if (selectedTab < tabPositions.size) {
+                        TabRowDefaults.SecondaryIndicator(
+                            Modifier.tabIndicatorOffset(tabPositions[selectedTab]),
+                            color = getSelectionColor(activity)
+                        )
+                    }
+                },
+                divider = {
+                    HorizontalDivider(color = getDividerColor(activity))
+                }
+            ) {
+                Tab(selectedTab == 0, { playSelectSound(activity); selectedTab = 0 },
+                    selectedContentColor = getSelectionColor(activity),
+                    unselectedContentColor = getTextBackgroundColor(activity)
+                ) {
+                    TextFallout(
+                        stringResource(R.string.deck_o_54),
+                        getTextColor(activity),
+                        getTextStrokeColor(activity),
+                        16.sp,
+                        Alignment.Center,
+                        Modifier.padding(4.dp),
+                        TextAlign.Center
+                    )
+                }
+                Tab(
+                    selectedTab == 1, { playSelectSound(activity); selectedTab = 1 },
+                    selectedContentColor = getSelectionColor(activity),
+                    unselectedContentColor = getTextBackgroundColor(activity)
+                ) {
+                    TextFallout(
+                        stringResource(R.string.custom_deck),
+                        getTextColor(activity),
+                        getTextStrokeColor(activity),
+                        16.sp,
+                        Alignment.Center,
+                        Modifier.padding(4.dp),
+                        TextAlign.Center
+                    )
+                }
+                Tab(
+                    selectedTab == 2, { playSelectSound(activity); selectedTab = 2 },
+                    selectedContentColor = getSelectionColor(activity),
+                    unselectedContentColor = getTextBackgroundColor(activity)
+                ) {
+                    TextFallout(
+                        stringResource(R.string.wild_wasteland),
+                        getTextColor(activity),
+                        getTextStrokeColor(activity),
+                        16.sp,
+                        Alignment.Center,
+                        Modifier.padding(4.dp),
+                        TextAlign.Center
+                    )
+                }
+                Tab(
+                    selectedTab == 3, { playSelectSound(activity); selectedTab = 3 },
+                    selectedContentColor = getSelectionColor(activity),
+                    unselectedContentColor = getTextBackgroundColor(activity)
+                ) {
+                    TextFallout(
+                        stringResource(R.string.xtras),
+                        getTextColor(activity),
+                        getTextStrokeColor(activity),
+                        16.sp,
+                        Alignment.Center,
+                        Modifier.padding(4.dp),
+                        TextAlign.Center
+                    )
+                }
+            }
+
+            @Composable
+            fun OpponentItem(enemy: Enemy, onClick: () -> Unit) {
+                val line = if (enemy.getBet() == null)
+                    stringResource(R.string.enemy_without_caps, stringResource(enemy.getNameId()))
+                else
+                    stringResource(
+                        R.string.enemy_with_caps,
+                        stringResource(enemy.getNameId()),
+                        enemy.getBank()
+                    )
+                TextFallout(
+                    line,
+                    getTextColor(activity),
+                    getTextStrokeColor(activity),
+                    18.sp,
+                    Alignment.Center,
+                    Modifier
+                        .background(getTextBackgroundColor(activity))
+                        .clickable { onClick() }
+                        .padding(4.dp),
+                    TextAlign.Center
+                )
+            }
+
             val state = rememberLazyListState()
             LazyColumn(
                 Modifier
@@ -435,158 +434,14 @@ fun ShowPvE(
                 state = state
             ) {
                 item {
-                    Spacer(modifier = Modifier.height(16.dp))
-                    @Composable
-                    fun OpponentItem(name: String, number: Int, onClick: () -> Unit) {
-                        val line = if (number !in save.enemyCapsLeft.indices)
-                            stringResource(R.string.enemy_without_caps, name)
-                        else
-                            stringResource(R.string.enemy_with_caps, name, save.enemyCapsLeft[number])
-                        TextFallout(
-                            line,
-                            getTextColor(activity),
-                            getTextStrokeColor(activity),
-                            18.sp,
-                            Alignment.Center,
-                            Modifier
-                                .clickable { onClick() }
-                                .background(getTextBackgroundColor(activity))
-                                .padding(4.dp),
-                            TextAlign.Center
-                        )
-                    }
-
-                    Column(verticalArrangement = Arrangement.Top, horizontalAlignment = Alignment.CenterHorizontally) {
-                        TabRow(
-                            selectedTab, Modifier.fillMaxWidth(),
-                            containerColor = getBackgroundColor(activity),
-                            indicator = { tabPositions ->
-                                if (selectedTab < tabPositions.size) {
-                                    TabRowDefaults.SecondaryIndicator(
-                                        Modifier.tabIndicatorOffset(tabPositions[selectedTab]),
-                                        color = getSelectionColor(activity)
-                                    )
-                                }
-                            },
-                            divider = {
-                                HorizontalDivider(color = getDividerColor(activity))
-                            }
-                        ) {
-                            Tab(selectedTab == 0, { playSelectSound(activity); selectedTab = 0 },
-                                selectedContentColor = getSelectionColor(activity),
-                                unselectedContentColor = getTextBackgroundColor(activity)
-                            ) {
-                                TextFallout(
-                                    stringResource(R.string.deck_o_54),
-                                    getTextColor(activity),
-                                    getTextStrokeColor(activity),
-                                    16.sp,
-                                    Alignment.Center,
-                                    Modifier.padding(4.dp),
-                                    TextAlign.Center
-                                )
-                            }
-                            Tab(
-                                selectedTab == 1, { playSelectSound(activity); selectedTab = 1 },
-                                selectedContentColor = getSelectionColor(activity),
-                                unselectedContentColor = getTextBackgroundColor(activity)
-                            ) {
-                                TextFallout(
-                                    stringResource(R.string.custom_deck),
-                                    getTextColor(activity),
-                                    getTextStrokeColor(activity),
-                                    16.sp,
-                                    Alignment.Center,
-                                    Modifier.padding(4.dp),
-                                    TextAlign.Center
-                                )
-                            }
-                            Tab(
-                                selectedTab == 2, { playSelectSound(activity); selectedTab = 2 },
-                                selectedContentColor = getSelectionColor(activity),
-                                unselectedContentColor = getTextBackgroundColor(activity)
-                            ) {
-                                TextFallout(
-                                    stringResource(R.string.wild_wasteland),
-                                    getTextColor(activity),
-                                    getTextStrokeColor(activity),
-                                    16.sp,
-                                    Alignment.Center,
-                                    Modifier.padding(4.dp),
-                                    TextAlign.Center
-                                )
-                            }
-                            Tab(
-                                selectedTab == 3, { playSelectSound(activity); selectedTab = 3 },
-                                selectedContentColor = getSelectionColor(activity),
-                                unselectedContentColor = getTextBackgroundColor(activity)
-                            ) {
-                                TextFallout(
-                                    stringResource(R.string.tba),
-                                    getTextColor(activity),
-                                    getTextStrokeColor(activity),
-                                    16.sp,
-                                    Alignment.Center,
-                                    Modifier.padding(4.dp),
-                                    TextAlign.Center
-                                )
-                            }
+                    val enemies = save.enemiesGroups[selectedTab]
+                    Spacer(modifier = Modifier.height(8.dp))
+                    enemies.forEach {
+                        OpponentItem(it) {
+                            playVatsEnter(activity)
+                            playAgainstEnemy = save.enemiesGroups.flatten().indexOf(it)
                         }
-
-                        Spacer(modifier = Modifier.height(16.dp))
-                        when (selectedTab) {
-                            0 -> {
-                                OpponentItem(stringResource(R.string.pve_enemy_oliver_real), 0) { playVatsEnter(activity); showGameOliver = true }
-                                Spacer(modifier = Modifier.height(10.dp))
-                                OpponentItem(stringResource(R.string.pve_enemy_veronica), 1) { playVatsEnter(activity); showGameVeronica = true }
-                                Spacer(modifier = Modifier.height(10.dp))
-                                OpponentItem(stringResource(R.string.pve_enemy_victor), 2) { playVatsEnter(activity); showGameVictor = true }
-                                Spacer(modifier = Modifier.height(10.dp))
-                                OpponentItem(stringResource(R.string.pve_enemy_chief_hanlon), 3) { playVatsEnter(activity); showGameChiefHanlon = true }
-                                Spacer(modifier = Modifier.height(10.dp))
-                                OpponentItem(stringResource(R.string.pve_enemy_ulysses), 4) { playVatsEnter(activity); showGameUlysses = true }
-                                Spacer(modifier = Modifier.height(10.dp))
-                                OpponentItem(stringResource(R.string.benny), 5) { playVatsEnter(activity); showGameBenny = true }
-                            }
-                            1 -> {
-                                OpponentItem(stringResource(R.string.no_bark), 6) { playVatsEnter(activity); showGameNoBark = true }
-                                Spacer(modifier = Modifier.height(10.dp))
-                                OpponentItem(stringResource(R.string.johnson_nash), 7) { playVatsEnter(activity); showGameNash = true }
-                                Spacer(modifier = Modifier.height(10.dp))
-                                OpponentItem(stringResource(R.string.tabitha), 8) { playVatsEnter(activity); showGameTabitha = true }
-                                Spacer(modifier = Modifier.height(10.dp))
-                                OpponentItem(stringResource(R.string.vulpes), 9) { playVatsEnter(activity); showGameVulpes = true }
-                                Spacer(modifier = Modifier.height(10.dp))
-                                OpponentItem(stringResource(R.string.elijah), 10) { playVatsEnter(activity); showGameElijah = true }
-                                Spacer(modifier = Modifier.height(10.dp))
-                                OpponentItem(stringResource(R.string.crooker), 11) { playVatsEnter(activity); showGameCrocker = true }
-                            }
-                            2 -> {
-                                OpponentItem(stringResource(R.string.snuffles), 12) { playVatsEnter(activity); showGameSnuffles = true }
-                                Spacer(modifier = Modifier.height(10.dp))
-                                OpponentItem(stringResource(R.string.easy_pete), 13) { playVatsEnter(activity); showGameEasyPete = true }
-                                Spacer(modifier = Modifier.height(10.dp))
-                                OpponentItem(stringResource(R.string.madness_cardinal), -1) { playVatsEnter(activity); showGameMadnessCardinal = true }
-                                Spacer(modifier = Modifier.height(10.dp))
-                                OpponentItem(stringResource(R.string.man_in_the_mirror), 15) { playVatsEnter(activity); showGameTheManInTheMirror = true }
-                                Spacer(modifier = Modifier.height(10.dp))
-                                OpponentItem(stringResource(R.string.dr_mobius), 16) { playVatsEnter(activity); showGameDrMobius = true }
-                                Spacer(modifier = Modifier.height(10.dp))
-                                OpponentItem(stringResource(R.string.luc10), 17) { playVatsEnter(activity); showGameLuc10 = true }
-                            }
-                            3 -> {
-                                TextFallout(
-                                    stringResource(R.string.coming_soon),
-                                    getTextColor(activity),
-                                    getTextStrokeColor(activity),
-                                    16.sp,
-                                    Alignment.Center,
-                                    Modifier.padding(4.dp),
-                                    TextAlign.Center
-                                )
-                            }
-                        }
-                        Spacer(modifier = Modifier.height(16.dp))
+                        Spacer(modifier = Modifier.height(8.dp))
                     }
                 }
             }
@@ -603,38 +458,19 @@ fun StartGame(
     showAlertDialog: (String, String, (() -> Unit)?) -> Unit,
     goBack: () -> Unit,
 ) {
-    var bet: Int by rememberScoped { mutableIntStateOf(0) }
+    var showBettingScreen by rememberScoped { mutableStateOf(enemy.getBet() != null) }
+    var myBet by rememberScoped { mutableIntStateOf(0) }
     var reward: Int by rememberScoped { mutableIntStateOf(0) }
     var isBlitz: Boolean by rememberScoped { mutableStateOf(false) }
 
-    val isBettingEnemy = enemy !is EnemyMadnessCardinal
-    var showBettingScreen: Boolean by rememberScoped { mutableStateOf(isBettingEnemy) }
-
-    val capsLeft by rememberScoped {
-        mutableIntStateOf(save.enemyCapsLeft.getOrNull(enemy.getBankNumber()) ?: 0)
-    }
-
-    var enemyBet: Int by rememberScoped { mutableIntStateOf(
-        if (enemy.getBankNumber() % 6 == 5) {
-            30
-        } else {
-            min(capsLeft, 10)
-        }
-    ) }
-
     if (showBettingScreen) {
         ShowBettingScreen(
-            activity, enemy, enemyBet, { bet = it }, { isBlitz = it }, { reward = it },
-            { showBettingScreen = false; goBack() }, {
-                if (isBettingEnemy && reward > 0 && enemy.getBankNumber() in save.enemyCapsLeft.indices) {
-                    save.enemyCapsLeft[enemy.getBankNumber()] = capsLeft - enemyBet + reward
-                }
+            activity, enemy, { myBet = it }, { isBlitz = it }, { reward = it }, goBack, {
                 showBettingScreen = false
             }
         )
         return
     }
-
     val isDeckCourier6 by rememberScoped { mutableStateOf(playerCResources.isDeckCourier6()) }
 
     val game: Game = rememberScoped {
@@ -642,8 +478,12 @@ fun StartGame(
             playerCResources,
             enemy
         ).also {
+            enemy.retractBet()
+            save.capsInHand -= myBet
+            save.table += reward
+
             save.gamesStarted++
-            save.capsBet += bet
+            save.capsBet += myBet
             saveData(activity)
             it.startGame()
         }
@@ -654,15 +494,11 @@ fun StartGame(
 
     game.also {
         it.onWin = {
-            if (enemy is EnemyUlysses) {
-                activity.achievementsClient?.unlock(activity.getString(R.string.achievement_who_are_you_that_do_not_know_your_history))
-            } else if (enemy is EnemyVictor && isBlitz) {
-                activity.achievementsClient?.unlock(activity.getString(R.string.achievement_bravo_))
-            } else if (enemy is EnemyTheManInTheMirror) {
-                activity.achievementsClient?.unlock(activity.getString(R.string.achievement_lookalike))
-            }
+            // TODO: update achievements!!!!!
             if (isDeckCourier6) {
-                activity.achievementsClient?.unlock(activity.getString(R.string.achievement_just_load_everything_up_with_sixes_and_tens_and_kings))
+                activity.achievementsClient?.unlock(activity.getString(
+                    R.string.achievement_just_load_everything_up_with_sixes_and_tens_and_kings
+                ))
             }
 
             activity.processChallengesGameOver(it)
@@ -671,14 +507,11 @@ fun StartGame(
             save.gamesFinished++
             save.wins++
 
-            if (isBettingEnemy) {
-                val enemyCaps = save.enemyCapsLeft.getOrNull(enemy.getBankNumber()) ?: 0
-                if (reward > 0 && enemy.getBankNumber() in save.enemyCapsLeft.indices) {
-                    save.enemyCapsLeft[enemy.getBankNumber()] = enemyCaps - reward
-                }
+            if (enemy.getBet() != null) {
                 save.capsInHand += reward
-                save.capsWon += reward
+                save.table -= reward
 
+                save.capsWon += reward
                 showAlertDialog(
                     activity.getString(R.string.result),
                     activity.getString(R.string.you_win) + activity.getString(
@@ -687,27 +520,33 @@ fun StartGame(
                     ),
                     onQuitPressed
                 )
-            } else if (enemy is EnemyMadnessCardinal) {
-                val rewardCard = winCard(activity, CardBack.MADNESS, false)
-
-                showAlertDialog(
-                    activity.getString(R.string.result),
-                    activity.getString(R.string.you_win) + rewardCard,
-                    onQuitPressed
-                )
             } else {
-                showAlertDialog(
-                    activity.getString(R.string.result),
-                    activity.getString(R.string.you_win),
-                    onQuitPressed
-                )
+                when (enemy) {
+                    is EnemyHanlon -> CardBack.NCR
+                    is EnemyVulpes -> CardBack.LEGION
+                    is EnemyMadnessCardinal -> CardBack.MADNESS
+                    is EnemyViqueen -> CardBack.VIKING
+                    else -> null
+                }?.let {
+                    val rewardCard = winCard(activity, it, false)
+
+                    showAlertDialog(
+                        activity.getString(R.string.result),
+                        activity.getString(R.string.you_win) + rewardCard,
+                        onQuitPressed
+                    )
+                }
             }
 
-            enemy.onVictory()
+            enemy.addVictory()
             saveData(activity)
         }
         it.onLose = {
             playLoseSound(activity)
+
+            save.table -= reward
+            enemy.addReward(reward)
+
             save.gamesFinished++
             saveData(activity)
 
@@ -740,34 +579,16 @@ fun StartGame(
 fun ShowBettingScreen(
     activity: MainActivity,
     enemy: Enemy,
-    enemyBet: Int,
     setBet: (Int) -> Unit,
     setIsBlitz: (Boolean) -> Unit,
     setReward: (Int) -> Unit,
     goBack: () -> Unit,
     goForward: () -> Unit
 ) {
-    val enemyName = when (enemy) {
-        EnemyBenny -> stringResource(R.string.benny)
-        EnemyCrooker -> stringResource(R.string.crooker)
-        EnemyDrMobius -> stringResource(R.string.dr_mobius)
-        EnemyEasyPete -> stringResource(R.string.easy_pete)
-        EnemyElijah -> stringResource(R.string.elijah)
-        EnemyHanlon -> stringResource(R.string.pve_enemy_chief_hanlon)
-        EnemyLuc10 -> stringResource(R.string.luc10)
-        EnemyNash -> stringResource(R.string.johnson_nash)
-        EnemyNoBark -> stringResource(R.string.no_bark)
-        EnemyOliver -> stringResource(R.string.pve_enemy_oliver_real)
-        EnemySnuffles -> stringResource(R.string.snuffles)
-        EnemyTabitha -> stringResource(R.string.tabitha)
-        EnemyTheManInTheMirror -> stringResource(R.string.man_in_the_mirror)
-        EnemyUlysses -> stringResource(R.string.pve_enemy_ulysses)
-        EnemyVeronica -> stringResource(R.string.pve_enemy_veronica)
-        EnemyVictor -> stringResource(R.string.pve_enemy_victor)
-        EnemyVulpes -> stringResource(R.string.vulpes)
-        else -> "?!?"
-    }
+    val enemyName = stringResource(enemy.getNameId())
+    // TODO: some welcome pharse??!!
     var bet by rememberScoped { mutableStateOf("") }
+    val enemyBet by rememberScoped { mutableIntStateOf(enemy.getBet() ?: 0) }
     var isBlitz: Boolean by rememberScoped { mutableStateOf(false) }
 
     fun countRewardLocal(): Int {
@@ -775,6 +596,7 @@ fun ShowBettingScreen(
     }
 
     val state = rememberLazyListState()
+    // TODO: fix
     MenuItemOpen(activity, "$$$", "<-", { goBack() }) {
         Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             Box(Modifier.fillMaxSize().rotate(180f)) {
@@ -928,6 +750,7 @@ fun countReward(playerBet: Int, enemyBet: Int, isBlitz: Boolean): Int {
         playerBet + enemyBet
     } else {
         // Gain is O(log^2(k))
+        // TODO: think of interesting bet
         val k = (playerBet + enemyBet).toDouble()
         k.pow(k.pow(1.0 / k)).toInt()
     }
@@ -955,7 +778,7 @@ fun winCard(activity: MainActivity, back: CardBack, isAlt: Boolean): String {
             activity.getString(card.suit.nameId)
         }
         val isAlt = if (isAlt) " (ALT!)" else ""
-        "${activity.getString(card.rank.nameId)} $suit, ${activity.getString(back.getDeckName())}$isAlt"
+        "${activity.getString(card.rank.nameId)} $suit, ${activity.getString(back.deckName!!)}$isAlt"
     } else {
         val prize = if (isAlt) 50 else 15
         save.capsInHand += prize

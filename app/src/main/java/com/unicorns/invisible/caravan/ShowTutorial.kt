@@ -34,6 +34,7 @@ import com.unicorns.invisible.caravan.utils.getTextColor
 import com.unicorns.invisible.caravan.utils.stopAmbient
 
 
+// TODO: check all the things!!
 @Composable
 fun Tutorial(
     activity: MainActivity,
@@ -241,7 +242,7 @@ fun Tutorial(
             }
 
             30 -> {
-                if (game.playerCResources.hand.all { it.isFace() }) {
+                if (game.playerCResources.hand.all { it.isModifier() }) {
                     tutorialKey++
                 }
             }

@@ -7,9 +7,17 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 sealed interface Enemy {
+    fun getNameId(): Int
+
     fun createDeck(): CResources
-    fun refreshBank(amount: Int)
+    fun isEven(): Boolean
+
     fun getBank(): Int
+    fun refreshBank()
+
+    fun getBet(): Int?
+    fun retractBet()
+    fun addReward(reward: Int)
 
     fun startBattle()
     fun addVictory()

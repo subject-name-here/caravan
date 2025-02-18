@@ -704,8 +704,6 @@
     <string name="deck_o_54">Стандартная колода</string>
     <string name="custom_deck">Сборная колода</string>
     <string name="wild_wasteland">Дикая Пустошь</string>
-    <string name="tba">TBA</string>
-    <string name="coming_soon">Скоро.</string>
 
     <string name="use_custom_deck">Использовать сборную колоду</string>
     <string name="use_wild_wasteland_cards">Использовать карты Дикой Пустоши</string>

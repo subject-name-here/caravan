@@ -1,10 +1,11 @@
 package com.unicorns.invisible.caravan
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -25,14 +26,18 @@ import androidx.compose.ui.unit.sp
 import com.unicorns.invisible.caravan.utils.MenuItemOpen
 import com.unicorns.invisible.caravan.utils.TextFallout
 import com.unicorns.invisible.caravan.utils.clickableOk
+import com.unicorns.invisible.caravan.utils.clickableSelect
 import com.unicorns.invisible.caravan.utils.getBackByStyle
-import com.unicorns.invisible.caravan.utils.getBackgroundColor
-import com.unicorns.invisible.caravan.utils.getKnobColor
+import com.unicorns.invisible.caravan.utils.getKnobColorByStyle
 import com.unicorns.invisible.caravan.utils.getMusicPanelColorByStyle
 import com.unicorns.invisible.caravan.utils.getStrokeColorByStyle
 import com.unicorns.invisible.caravan.utils.getTextBackByStyle
+import com.unicorns.invisible.caravan.utils.getTextBackgroundColor
+import com.unicorns.invisible.caravan.utils.getTextColor
 import com.unicorns.invisible.caravan.utils.getTextColorByStyle
-import com.unicorns.invisible.caravan.utils.getTrackColor
+import com.unicorns.invisible.caravan.utils.getTextStrokeColor
+import com.unicorns.invisible.caravan.utils.getTrackColorByStyle
+import com.unicorns.invisible.caravan.utils.playPimpBoySound
 import com.unicorns.invisible.caravan.utils.scrollbar
 
 
@@ -43,86 +48,136 @@ fun ShowStyles(
     goBack: () -> Unit
 ) {
     var styleInt by rememberSaveable { mutableIntStateOf(save.styleId) }
-    val mainState = rememberLazyListState()
+    var currentlyWatchedStyle by rememberSaveable { mutableIntStateOf(save.styleId) }
 
     key(styleInt) {
         MenuItemOpen(activity, stringResource(R.string.themes), "<-", goBack) {
-            LazyColumn(
-                Modifier
-                    .fillMaxSize()
-                    .background(getBackgroundColor(activity))
-                    .scrollbar(
-                        mainState,
-                        horizontal = false,
-                        knobColor = getKnobColor(activity),
-                        trackColor = getTrackColor(activity)
-                    ),
-                mainState,
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) {
-                item {
-                    Style.entries.forEach { style ->
-                        ShowStyle(activity, style, style.ordinal == styleInt) {
-                            if (styleInt != style.ordinal) {
-                                styleInt = style.ordinal
-                                selectStyle(style.ordinal)
+            key(currentlyWatchedStyle) {
+                Row(Modifier.fillMaxSize()) {
+                    Column(
+                        Modifier.fillMaxHeight().weight(0.1f),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        TextFallout(
+                            "<",
+                            getTextColor(activity),
+                            getTextStrokeColor(activity),
+                            24.sp,
+                            Alignment.Center,
+                            Modifier
+                                .background(getTextBackgroundColor(activity))
+                                .clickableSelect(activity) {
+                                    currentlyWatchedStyle = if (currentlyWatchedStyle == 0) {
+                                        Style.entries.lastIndex
+                                    } else {
+                                        currentlyWatchedStyle - 1
+                                    }
+                                }
+                                .padding(4.dp),
+                            TextAlign.Center
+                        )
+                    }
+                    val watchedStyle = Style.entries.getOrNull(currentlyWatchedStyle) ?: Style.PIP_BOY
+                    Column(Modifier.fillMaxHeight().weight(0.8f)) {
+                        Row(Modifier
+                            .fillMaxWidth().fillMaxHeight(0.1f)
+                            .background(getMusicPanelColorByStyle(activity, watchedStyle))
+                        ) {}
+
+                        val state = rememberLazyListState()
+                        LazyColumn(
+                            Modifier
+                                .fillMaxSize()
+                                .background(getBackByStyle(activity, watchedStyle))
+                                .scrollbar(
+                                    state,
+                                    knobColor = getKnobColorByStyle(activity, watchedStyle),
+                                    trackColor = getTrackColorByStyle(activity, watchedStyle),
+                                    horizontal = false,
+                                ),
+                            verticalArrangement = Arrangement.Center,
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            state = state
+                        ) {
+                            item {
+                                Column(
+                                    Modifier.fillMaxSize(),
+                                    verticalArrangement = Arrangement.SpaceEvenly,
+                                    horizontalAlignment = Alignment.CenterHorizontally
+                                ) {
+                                    TextFallout(
+                                        stringResource(R.string.cool_button),
+                                        getTextColorByStyle(activity, watchedStyle),
+                                        getStrokeColorByStyle(activity, watchedStyle),
+                                        20.sp,
+                                        Alignment.Center,
+                                        Modifier
+                                            .background(getTextBackByStyle(activity, watchedStyle))
+                                            .clickable { playPimpBoySound(activity) }
+                                            .padding(4.dp),
+                                        TextAlign.Center
+                                    )
+
+                                    if (watchedStyle in save.ownedStyles) {
+                                        TextFallout(
+                                            stringResource(R.string.buy),
+                                            getTextColorByStyle(activity, watchedStyle),
+                                            getStrokeColorByStyle(activity, watchedStyle),
+                                            20.sp,
+                                            Alignment.Center,
+                                            Modifier
+                                                .background(
+                                                    getTextBackByStyle(
+                                                        activity,
+                                                        watchedStyle
+                                                    )
+                                                )
+                                                .clickableOk(activity) {
+                                                    styleInt = watchedStyle.ordinal
+                                                    selectStyle(watchedStyle.ordinal)
+                                                }
+                                                .padding(4.dp),
+                                            TextAlign.Center
+                                        )
+                                    } else {
+                                        TextFallout(
+                                            stringResource(watchedStyle.conditionToOpenId),
+                                            getTextColorByStyle(activity, watchedStyle),
+                                            getStrokeColorByStyle(activity, watchedStyle),
+                                            20.sp,
+                                            Alignment.Center,
+                                            Modifier.padding(4.dp),
+                                            TextAlign.Center
+                                        )
+                                    }
+                                }
                             }
                         }
                     }
+
+                    Column(
+                        Modifier.fillMaxHeight().weight(0.1f),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        TextFallout(
+                            ">",
+                            getTextColor(activity),
+                            getTextStrokeColor(activity),
+                            24.sp,
+                            Alignment.Center,
+                            Modifier
+                                .background(getTextBackgroundColor(activity))
+                                .clickableSelect(activity) {
+                                    currentlyWatchedStyle = (currentlyWatchedStyle + 1) % Style.entries.size
+                                }
+                                .padding(4.dp),
+                            TextAlign.Center
+                        )
+                    }
                 }
             }
-        }
-    }
-}
-
-@Composable
-fun ShowStyle(
-    activity: MainActivity,
-    style: Style,
-    isStyleUsed: Boolean,
-    onClick: (Int) -> Unit
-) {
-    Row(
-        Modifier
-            .fillMaxWidth()
-            .defaultMinSize(minHeight = 48.dp)
-            .padding(horizontal = 8.dp, vertical = 8.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Center
-    ) {
-        TextFallout(
-            activity.getString(style.styleNameId),
-            getTextColorByStyle(activity, style),
-            getStrokeColorByStyle(activity, style),
-            18.sp,
-            Alignment.Center,
-            Modifier
-                .fillMaxWidth(0.5f)
-                .padding(horizontal = 4.dp)
-                .background(getBackByStyle(activity, style))
-                .padding(4.dp),
-            TextAlign.Center
-        )
-        if (style in save.ownedStyles) {
-            TextFallout(
-                if (isStyleUsed) "OK" else stringResource(R.string.select),
-                getTextColorByStyle(activity, style),
-                getTextColorByStyle(activity, style),
-                22.sp,
-                Alignment.Center,
-                Modifier
-                    .fillMaxWidth(0.5f)
-                    .background(getMusicPanelColorByStyle(activity, style))
-                    .padding(6.dp)
-                    .background(getTextBackByStyle(activity, style))
-                    .clickableOk(activity) {
-                        onClick(style.ordinal)
-                    },
-                TextAlign.Center
-            )
-        } else {
-            Box(Modifier.fillMaxWidth(0.5f)) {}
         }
     }
 }

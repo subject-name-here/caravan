@@ -31,6 +31,8 @@ import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.ColorMatrix
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.graphics.drawscope.Stroke
@@ -39,16 +41,10 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.rememberTextMeasurer
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.Constraints
-import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
@@ -58,17 +54,148 @@ import coil.decode.SvgDecoder
 import coil.request.ImageRequest
 import com.unicorns.invisible.caravan.MainActivity
 import com.unicorns.invisible.caravan.R
+import com.unicorns.invisible.caravan.model.CardBack
+import com.unicorns.invisible.caravan.model.CardBack.GOMORRAH
+import com.unicorns.invisible.caravan.model.CardBack.STANDARD
+import com.unicorns.invisible.caravan.model.CardBack.TOPS
+import com.unicorns.invisible.caravan.model.CardBack.ULTRA_LUXE
 import com.unicorns.invisible.caravan.model.getCardName
 import com.unicorns.invisible.caravan.model.primitives.Card
-import com.unicorns.invisible.caravan.save
-import kotlin.math.floor
 
 
 @Composable
 fun Int.pxToDp() = with(LocalDensity.current) { this@pxToDp.toDp() }
-
 @Composable
 fun Dp.dpToPx() = with(LocalDensity.current) { this@dpToPx.toPx() }
+
+
+
+fun getFilter(back: CardBack, isAlt: Boolean): ColorFilter {
+    if (!isAlt) {
+        return ColorFilter.colorMatrix(ColorMatrix())
+    }
+    return when (back) {
+        STANDARD -> ColorFilter.colorMatrix(ColorMatrix(
+            floatArrayOf(
+                0f, 0f, 1f, 0f, 0f,
+                0f, 1f, 0f, 0f, 0f,
+                1f, 0f, 0f, 0f, 0f,
+                0f, 0f, 0f, 1f, 0f
+            )
+        ))
+
+        TOPS -> ColorFilter.colorMatrix(ColorMatrix().apply {
+            timesAssign(
+                ColorMatrix(
+                    floatArrayOf(
+                        0.9f, 2f, 0f, 0f, 0f,
+                        0.3f, 2f, 0f, 0f, 0f,
+                        0.15f, 2f, 0.1f, 0f, 0f,
+                        0f, 0f, 0f, 1f, 0f
+                    )
+                )
+            )
+            timesAssign(
+                ColorMatrix(
+                    floatArrayOf(
+                        1f, 0f, 0f, 0f, 0f,
+                        0f, 1f, -1f, 0f, 0f,
+                        0f, 0f, 1f, 0f, 0f,
+                        0f, 0f, 0f, 1f, 0f
+                    )
+                )
+            )
+            timesAssign(
+                ColorMatrix(
+                    floatArrayOf(
+                        1f, 0f, 0f, 0f, 0f,
+                        0f, -1f, 0f, 0f, 255f,
+                        0f, 0f, -1f, 0f, 255f,
+                        0f, 0f, 0f, 1f, 0f
+                    )
+                )
+            )
+            timesAssign(
+                ColorMatrix(
+                    floatArrayOf(
+                        0f, 0f, 1f, 0f, 0f,
+                        0f, 1f, 0f, 0f, 0f,
+                        1f, 0f, 0f, 0f, 0f,
+                        0f, 0f, 0f, 1f, 0f
+                    )
+                )
+            )
+        })
+
+        ULTRA_LUXE -> ColorFilter.colorMatrix(ColorMatrix().apply {
+            timesAssign(
+                ColorMatrix(
+                    floatArrayOf(
+                        1f, 0f, 0f, 0f, 0f,
+                        0f, 1f, 0f, 0f, 0f,
+                        0f, 0f, 16f, 0f, 0f,
+                        0f, 0f, 0f, 1f, 0f
+                    )
+                )
+            )
+            timesAssign(
+                ColorMatrix(
+                    floatArrayOf(
+                        -1f, 0f, 0f, 0f, 255f,
+                        0f, -1f, 0f, 0f, 255f,
+                        0f, 0f, -1f, 0f, 255f,
+                        0f, 0f, 0f, 1f, 0f
+                    )
+                )
+            )
+            timesAssign(
+                ColorMatrix(
+                    floatArrayOf(
+                        0f, 0f, 2f, 0f, 0f,
+                        0f, 2f, 0f, 0f, 0f,
+                        2f, 0f, 0f, 0f, 0f,
+                        0f, 0f, 0f, 1f, 0f
+                    )
+                )
+            )
+        })
+
+        GOMORRAH -> ColorFilter.colorMatrix(ColorMatrix().apply {
+            timesAssign(
+                ColorMatrix(
+                    floatArrayOf(
+                        0f, 1f, 0f, 0f, 0f,
+                        0.5f, 0.5f, 0f, 0f, 0f,
+                        1f, 0f, 0f, 0f, 0f,
+                        0f, 0f, 0f, 1f, 0f
+                    )
+                )
+            )
+            timesAssign(
+                ColorMatrix(
+                    floatArrayOf(
+                        -1f, 0f, 0f, 0f, 255f,
+                        0f, -1f, 0f, 0f, 255f,
+                        0f, 0f, -1f, 0f, 255f,
+                        0f, 0f, 0f, 1f, 0f
+                    )
+                )
+            )
+            timesAssign(
+                ColorMatrix(
+                    floatArrayOf(
+                        2f, 0f, 0f, 0f, 0f,
+                        0f, 2f, 0f, 0f, 0f,
+                        0f, 0f, 2f, 0f, 0f,
+                        0f, 0f, 0f, 1f, 0f
+                    )
+                )
+            )
+        })
+
+        else -> ColorFilter.colorMatrix(ColorMatrix())
+    }
+}
 
 
 @Composable
@@ -84,13 +211,13 @@ fun ShowCard(activity: MainActivity, card: Card, modifier: Modifier) {
         painter = painter,
         contentDescription = "",
         modifier = modifier.clip(RoundedCornerShape(5)),
-        colorFilter = card.back.getFilter(card.isAlt)
+        colorFilter = getFilter(card.back, card.isAlt)
     )
 }
 
 @Composable
 fun ShowCardBack(activity: MainActivity, card: Card, modifier: Modifier) {
-    val asset = if (card.isAlt) card.back.getCardBackAltAsset() else card.back.getCardBackAsset()
+    val asset = if (card.isAlt) card.back.altBackFileName else card.back.backFileName
     val painter2 = rememberAsyncImagePainter(
         ImageRequest.Builder(activity)
             .size(183, 256)
@@ -110,14 +237,11 @@ fun ShowCardBack(activity: MainActivity, card: Card, modifier: Modifier) {
 @Composable
 fun Modifier.scrollbar(
     state: LazyListState,
-    horizontal: Boolean,
+    horizontal: Boolean = false,
     alignEnd: Boolean = true,
     thickness: Dp = 8.pxToDp(),
-    knobCornerRadius: Dp = 2.dp,
-    trackCornerRadius: Dp = 4.dp,
     knobColor: Color,
     trackColor: Color,
-    padding: Dp = 0.dp,
     visibleAlpha: Float = 1f,
     hiddenAlpha: Float = 0.75f,
     fadeInAnimationDurationMs: Int = 150,
@@ -154,12 +278,11 @@ fun Modifier.scrollbar(
 
         state.layoutInfo.visibleItemsInfo.firstOrNull()?.let { firstVisibleItem ->
             if (state.isScrollInProgress || alpha > 0f) {
-                val viewportSize =
-                    if (horizontal) {
-                        size.width
-                    } else {
-                        size.height
-                    } - padding.toPx() * 2
+                val viewportSize = if (horizontal) {
+                    size.width
+                } else {
+                    size.height
+                }
 
                 val firstItemSize = firstVisibleItem.size
                 val estimatedFullListSize = firstItemSize * state.layoutInfo.totalItemsCount
@@ -172,8 +295,7 @@ fun Modifier.scrollbar(
                     state.firstVisibleItemIndex * firstItemSize + state.firstVisibleItemScrollOffset
 
                 // Where we should render the knob in our composable.
-                val knobPosition =
-                    (viewportSize / estimatedFullListSize) * viewportOffsetInFullListSpace + padding.toPx()
+                val knobPosition = (viewportSize / estimatedFullListSize) * viewportOffsetInFullListSpace
                 // How large should the knob be.
                 val knobSize = (viewportSize / estimatedFullListSize) * viewportSize
 
@@ -183,28 +305,21 @@ fun Modifier.scrollbar(
                     topLeft =
                     when {
                         // When the scrollbar is horizontal and aligned to the bottom:
-                        horizontal && alignEnd -> Offset(
-                            padding.toPx(),
-                            size.height - thickness.toPx()
-                        )
+                        horizontal && alignEnd -> Offset(0f, size.height - thickness.toPx())
                         // When the scrollbar is horizontal and aligned to the top:
-                        horizontal && !alignEnd -> Offset(padding.toPx(), 0f)
+                        horizontal && !alignEnd -> Offset(0f, 0f)
                         // When the scrollbar is vertical and aligned to the end:
-                        alignEnd -> Offset(size.width - thickness.toPx(), padding.toPx())
+                        alignEnd -> Offset(size.width - thickness.toPx(), 0f)
                         // When the scrollbar is vertical and aligned to the start:
-                        else -> Offset(0f, padding.toPx())
+                        else -> Offset(0f, 0f)
                     },
-                    size =
-                    if (horizontal) {
-                        Size(size.width - padding.toPx() * 2, thickness.toPx())
+                    size = if (horizontal) {
+                        Size(size.width, thickness.toPx())
                     } else {
-                        Size(thickness.toPx(), size.height - padding.toPx() * 2)
+                        Size(thickness.toPx(), size.height)
                     },
                     alpha = alpha,
-                    cornerRadius = CornerRadius(
-                        x = trackCornerRadius.toPx(),
-                        y = trackCornerRadius.toPx()
-                    ),
+                    cornerRadius = CornerRadius(thickness.toPx() / 2),
                 )
 
                 // Draw the knob
@@ -224,17 +339,13 @@ fun Modifier.scrollbar(
                         // When the scrollbar is vertical and aligned to the start:
                         else -> Offset(0f, knobPosition)
                     },
-                    size =
-                    if (horizontal) {
+                    size = if (horizontal) {
                         Size(knobSize, thickness.toPx())
                     } else {
                         Size(thickness.toPx(), knobSize)
                     },
                     alpha = alpha,
-                    cornerRadius = CornerRadius(
-                        x = knobCornerRadius.toPx(),
-                        y = knobCornerRadius.toPx()
-                    ),
+                    cornerRadius = CornerRadius(thickness.toPx() / 2),
                 )
             }
         }
@@ -336,11 +447,9 @@ fun TextFallout(
     textColor: Color,
     strokeColor: Color,
     textSize: TextUnit,
-    contentAlignment: Alignment,
-    modifier: Modifier,
-    textAlign: TextAlign,
+    boxModifier: Modifier
 ) {
-    TextCustom(text, Font(R.font.monofont), textColor, strokeColor, textSize, contentAlignment, modifier, textAlign)
+    TextCustom(text, Font(R.font.monofont), textColor, strokeColor, textSize, boxModifier)
 }
 
 @Composable
@@ -348,11 +457,9 @@ fun TextSymbola(
     text: String,
     textColor: Color,
     textSize: TextUnit,
-    contentAlignment: Alignment,
-    modifier: Modifier,
-    textAlign: TextAlign,
+    boxModifier: Modifier
 ) {
-    Box(modifier, contentAlignment = contentAlignment) {
+    Box(boxModifier) {
         Text(
             text = text, color = textColor,
             fontFamily = FontFamily(Font(R.font.symbola)),
@@ -360,8 +467,7 @@ fun TextSymbola(
                 color = textColor,
                 fontSize = textSize,
                 drawStyle = Fill
-            ),
-            textAlign = textAlign
+            )
         )
     }
 }
@@ -372,13 +478,11 @@ fun TextFallout(
     textColor: Color,
     strokeColor: Color,
     textSize: TextUnit,
-    contentAlignment: Alignment,
-    modifier: Modifier,
-    textAlign: TextAlign,
+    boxModifier: Modifier
 ) {
     val textRedacted = text
     val strokeWidth = getStrokeWidth(textSize)
-    Box(modifier, contentAlignment = contentAlignment) {
+    Box(boxModifier) {
         Text(
             text = textRedacted, color = textColor,
             fontFamily = FontFamily(Font(R.font.monofont)),
@@ -388,7 +492,6 @@ fun TextFallout(
                 fontWeight = FontWeight.Light,
                 drawStyle = Fill
             ),
-            textAlign = textAlign
         )
         if (textColor.toArgb() == strokeColor.toArgb()) {
             return@Box
@@ -402,7 +505,6 @@ fun TextFallout(
                 fontWeight = FontWeight.Normal,
                 drawStyle = Stroke(width = strokeWidth)
             ),
-            textAlign = textAlign
         )
     }
 }
@@ -414,11 +516,9 @@ fun TextClassic(
     textColor: Color,
     strokeColor: Color,
     textSize: TextUnit,
-    contentAlignment: Alignment,
-    modifier: Modifier,
-    textAlign: TextAlign,
+    boxModifier: Modifier
 ) {
-    TextCustom(text, Font(R.font.classic), textColor, strokeColor, textSize, contentAlignment, modifier, textAlign)
+    TextCustom(text, Font(R.font.classic), textColor, strokeColor, textSize, boxModifier)
 }
 
 @Composable
@@ -428,12 +528,10 @@ fun TextCustom(
     textColor: Color,
     strokeColor: Color,
     textSize: TextUnit,
-    contentAlignment: Alignment,
-    modifier: Modifier,
-    textAlign: TextAlign,
+    boxModifier: Modifier
 ) {
     val strokeWidth = getStrokeWidth(textSize)
-    Box(modifier, contentAlignment = contentAlignment) {
+    Box(boxModifier) {
         Text(
             text = text, color = textColor,
             fontFamily = FontFamily(font),
@@ -442,8 +540,7 @@ fun TextCustom(
                 fontSize = textSize,
                 fontWeight = FontWeight.Light,
                 drawStyle = Fill
-            ),
-            textAlign = textAlign
+            )
         )
         if (textColor.toArgb() == strokeColor.toArgb()) {
             return@Box
@@ -456,8 +553,7 @@ fun TextCustom(
                 fontSize = textSize,
                 fontWeight = FontWeight.Normal,
                 drawStyle = Stroke(width = strokeWidth)
-            ),
-            textAlign = textAlign
+            )
         )
     }
 }
@@ -495,14 +591,12 @@ fun MenuItemOpen(
                 getTextColor(activity),
                 getTextStrokeColor(activity),
                 24.sp,
-                Alignment.CenterStart,
                 Modifier
                     .background(getTextBackgroundColor(activity))
                     .clickableCancel(activity) {
                         goBack()
                     }
-                    .padding(8.dp),
-                TextAlign.Start
+                    .padding(8.dp)
             )
             Box(
                 Modifier.fillMaxWidth()
@@ -526,12 +620,10 @@ fun MenuItemOpen(
                     getTextColor(activity),
                     getTextStrokeColor(activity),
                     24.sp,
-                    Alignment.Center,
                     Modifier
                         .align(Alignment.Center)
                         .background(getBackgroundColor(activity))
                         .padding(8.dp),
-                    TextAlign.Center
                 )
             }
         }
@@ -544,66 +636,4 @@ fun MenuItemOpen(
             mainBlock()
         }
     }
-}
-
-@Composable
-fun Density.getFontSize(constraints: Constraints, text: String, style: TextStyle): TextUnit {
-    val stepSize = 0.25.sp.toPx()
-    val smallest = 8.sp.toPx()
-    val largest = 128.sp.toPx()
-    var min = smallest
-    var max = largest
-
-    var current = (min + max) / 2
-
-    while ((max - min) >= stepSize) {
-        val layoutResult = performLayout(constraints, text, current.toSp(), style)
-        val didOverflow =
-            when (layoutResult.layoutInput.overflow) {
-                TextOverflow.Clip,
-                TextOverflow.Visible -> {
-                    layoutResult.didOverflowWidth || layoutResult.didOverflowHeight
-                }
-                TextOverflow.StartEllipsis,
-                TextOverflow.MiddleEllipsis,
-                TextOverflow.Ellipsis -> {
-                    // If any line was ellipsized, we've overflowed.
-                    var lineIndex = 0
-                    while (lineIndex < layoutResult.lineCount) {
-                        if (layoutResult.isLineEllipsized(lineIndex)) break
-                        lineIndex++
-                    }
-                    lineIndex > 0
-                }
-                else ->
-                    throw IllegalArgumentException(
-                        "TextOverflow type" +
-                                " ${layoutResult.layoutInput.overflow} is not supported."
-                    )
-            }
-        if (didOverflow) {
-            max = current
-        } else {
-            min = current
-        }
-        current = (min + max) / 2
-    }
-    // used size minus minFontSize must be divisible by stepSize
-    current = (floor((min - smallest) / stepSize) * stepSize + smallest)
-
-    // We have found a size that fits, but we can still try one step up
-    if ((current + stepSize) <= largest) {
-        val layoutResult = performLayout(constraints, text, (current + stepSize).toSp(), style)
-        val didOverflow = layoutResult.didOverflowWidth || layoutResult.didOverflowHeight
-        if (!didOverflow) {
-            current += stepSize
-        }
-    }
-
-    return current.toSp()
-}
-
-@Composable
-private fun performLayout(constraints: Constraints, text: String, textSize: TextUnit, style: TextStyle): TextLayoutResult {
-    return rememberTextMeasurer(0).measure(text, style.copy(fontSize = textSize), constraints = constraints, maxLines = 1)
 }

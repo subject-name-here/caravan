@@ -30,7 +30,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -70,6 +69,8 @@ import com.unicorns.invisible.caravan.Style.PIP_GIRL
 import com.unicorns.invisible.caravan.Style.SIERRA_MADRE
 import com.unicorns.invisible.caravan.Style.VAULT_21
 import com.unicorns.invisible.caravan.Style.VAULT_22
+import com.unicorns.invisible.caravan.Style.LEGION
+import com.unicorns.invisible.caravan.Style.NCR
 import com.unicorns.invisible.caravan.save.saveData
 import com.unicorns.invisible.caravan.utils.TextFallout
 import com.unicorns.invisible.caravan.utils.dpToPx
@@ -88,19 +89,21 @@ import kotlin.math.min
 import kotlin.random.Random
 
 
-enum class Style(val styleNameId: Int, val price: Int) {
-    DESERT(R.string.style_desert, 500),
-    ALASKA_FRONTIER(R.string.style_alaska, 625),
-    PIP_BOY(R.string.style_pip_boy, 0),
-    PIP_GIRL(R.string.style_pip_girl, 845),
-    OLD_WORLD(R.string.style_old_world, 575),
-    NEW_WORLD(R.string.style_new_world, 875),
-    SIERRA_MADRE(R.string.style_sierra_madre, 625),
-    MADRE_ROJA(R.string.style_madre_roja, 1000),
-    VAULT_21(R.string.style_vault_21, 605),
-    VAULT_22(R.string.style_vault_22, 610),
-    BLACK(R.string.style_black, 565),
-    ENCLAVE(R.string.style_enclave, 888);
+enum class Style(val styleNameId: Int, val conditionToOpenId: Int = R.string.null_condition) {
+    DESERT(R.string.style_desert),
+    ALASKA_FRONTIER(R.string.style_alaska),
+    PIP_BOY(R.string.style_pip_boy),
+    PIP_GIRL(R.string.style_pip_girl),
+    OLD_WORLD(R.string.style_old_world),
+    NEW_WORLD(R.string.style_new_world),
+    SIERRA_MADRE(R.string.style_sierra_madre),
+    MADRE_ROJA(R.string.style_madre_roja),
+    VAULT_21(R.string.style_vault_21),
+    VAULT_22(R.string.style_vault_22),
+    BLACK(R.string.style_black),
+    ENCLAVE(R.string.style_enclave),
+    NCR(R.string.style_ncr),
+    LEGION(R.string.style_legion);
 }
 
 
@@ -113,16 +116,18 @@ fun getStyleCities(style: Style): List<String> {
     return when (style) {
         ALASKA_FRONTIER -> listOf("ALPINE", "KOTZEBUE", "NEWTOK", "AKUTAN", "ANCHORAGE", "SCAGWAY")
         OLD_WORLD, SIERRA_MADRE -> listOf("L.A.", "REDDING", "BLACK ROCK", "SAN DIEGO", "RENO", "ED. AFB")
-        MADRE_ROJA -> listOf("YOU", "CAN", "NEVER", "LEAVE", "SIERRA", "MADRE")
+        MADRE_ROJA -> listOf("DOG", "DOMINO", "ELIJAH", "GOD", "CHRISTINE", "COURIER")
         VAULT_21 -> listOf("LONG 15", "PRIMM", "NOVAK", "188", "NEW VEGAS", "HOOVER DAM")
-        VAULT_22 -> listOf("GRRRRR", "BRRRR", "VRRR", "MRR", "HRRRRRRR", "DRRRRRR")
+        VAULT_22 -> listOf("VAULT DOOR", "OXYGEN RECYCLING", "COMMON AREAS", "ENTRANCE HALL", "FOOD PRODUCTION", "PEST CONTROL")
         ENCLAVE -> listOf("NAVARRO", "AUSTIN", "WASHINGTON", "SEATTLE", "CHICAGO", "NEW YORK")
-        Style.BLACK -> listOf("YOU ARE", "TOO LATE", "TO SCREAM", "IT IS", "ALREADY ON", "YOUR BACK")
+        Style.BLACK -> listOf("YOU WILL BE", "DOING GREAT", "FEELING GOOD", "DYING IN PAIN", "IS UNLIKELY AND", "IS JUST AN ILLUSION")
+        LEGION -> listOf("THE FORT", "FLAGSTAFF", "DOG CITY", "PHOENIX", "TWO SUN", "MALPAIS")
         else -> listOf("BONEYARD", "REDDING", "VAULT CITY", "DAYGLOW", "NEW RENO", "THE HUB")
     }
 }
 
 
+// TODO: check everything!!!
 @SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
 fun BoxWithConstraintsScope.StylePicture(
@@ -1244,5 +1249,11 @@ fun BoxWithConstraintsScope.StylePicture(
         }
 
         Style.BLACK -> {}
+        NCR -> {
+            // TODO
+        }
+        LEGION -> {
+            // TODO
+        }
     }
 }

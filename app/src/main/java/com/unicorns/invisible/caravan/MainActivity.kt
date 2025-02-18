@@ -79,6 +79,7 @@ import com.unicorns.invisible.caravan.utils.clickableOk
 import com.unicorns.invisible.caravan.utils.cronetEngine
 import com.unicorns.invisible.caravan.utils.dpToPx
 import com.unicorns.invisible.caravan.utils.getBackgroundColor
+import com.unicorns.invisible.caravan.utils.getCurrentDateHashCode
 import com.unicorns.invisible.caravan.utils.getDialogBackground
 import com.unicorns.invisible.caravan.utils.getDialogTextColor
 import com.unicorns.invisible.caravan.utils.getDividerColor
@@ -211,6 +212,7 @@ class MainActivity : SaveDataActivity() {
             R.string.intro_tip_l10,
             R.string.intro_tip_l11,
         ).random(Random(id.hashCode()))
+        // TODO: more advices!!!!
 
         setContent {
             Box(Modifier.safeDrawingPadding()) {
@@ -740,7 +742,7 @@ class MainActivity : SaveDataActivity() {
                     }
                     else -> {
                         LaunchedEffect(Unit) {
-                            val currentHash = save.getCurrentDateHashCode()
+                            val currentHash = getCurrentDateHashCode()
                             if (currentHash != save.dailyHash) {
                                 val capsFound = Random.nextInt(15, 31)
                                 showAlertDialog(
@@ -750,7 +752,7 @@ class MainActivity : SaveDataActivity() {
                                 )
                                 save.dailyHash = currentHash
                                 save.updateChallenges()
-                                save.updateDailyStats()
+                                save.updateEnemiesBanks()
                                 save.capsInHand += capsFound
                                 saveData(this@MainActivity)
                             }
@@ -1060,12 +1062,12 @@ class MainActivity : SaveDataActivity() {
     }
 
     fun processChallengesMove(move: Challenge.Move, game: Game) {
-        save.challenges.forEach { challenge ->
+        (save.challengesNew + save.challengesInf).forEach { challenge ->
             challenge.processMove(move, game)
         }
     }
     fun processChallengesGameOver(game: Game) {
-        save.challenges.forEach { challenge ->
+        (save.challengesNew + save.challengesInf).forEach { challenge ->
             challenge.processGameResult(game)
         }
     }

@@ -40,6 +40,7 @@ import com.unicorns.invisible.caravan.utils.playSelectSound
 import com.unicorns.invisible.caravan.utils.scrollbar
 
 
+// TODO: check everything, update FAQ from discord!!!!
 @Composable
 fun ShowRules(activity: MainActivity, goBack: () -> Unit) {
     var selectedTab by rememberSaveable { mutableIntStateOf(0) }

@@ -70,6 +70,7 @@ fun SetCustomDeck(
     goBack: () -> Unit,
 ) {
     fun isInCustomDeck(card: Card) = card in save.getCurrentCustomDeck()
+    fun isAvailable(card: Card) = save.isCardAvailableAlready(card)
 
     fun toggleToCustomDeck(card: Card) {
         save.getCurrentCustomDeck().let { deck ->
@@ -82,21 +83,17 @@ fun SetCustomDeck(
         saveData(activity)
     }
 
-    fun isAvailable(card: Card): Boolean {
-        return save.isCardAvailableAlready(card)
-    }
-
     val mainState = rememberLazyListState()
-    var updater by remember { mutableStateOf(false) }
-    var tabUpdater by remember { mutableStateOf(false) }
     var selectedDeck by rememberSaveable { mutableIntStateOf(save.activeCustomDeck) }
+    var updateCharacteristics by remember { mutableStateOf(false) }
+    var updateAll by remember { mutableStateOf(false) }
 
     fun getSelectedDeckIndex() = selectedDeck - 1
     fun selectDeck(d: Int) {
         selectedDeck = d
         save.activeCustomDeck = d
-        updater = !updater
-        tabUpdater = !tabUpdater
+        updateCharacteristics = !updateCharacteristics
+        updateAll = !updateAll
         saveData(activity)
     }
 
@@ -143,7 +140,7 @@ fun SetCustomDeck(
                 CustomDeckTab(4)
             }
 
-            key (updater, tabUpdater) {
+            key (updateCharacteristics) {
                 ShowCharacteristics(activity)
             }
 
@@ -163,107 +160,114 @@ fun SetCustomDeck(
                 mainState
             ) {
                 items(CardBack.entries) { back ->
-                    var check by rememberSaveable { mutableStateOf(save.getAltDecksChosenMap()[back] == true) }
-                    var updaterLocal by remember { mutableStateOf(false) }
-                    Row(
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(4.dp),
-                        horizontalArrangement = Arrangement.Start,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Column(
+                    if (back.deckName == null) return@items
+                    var updateInfo by remember { mutableStateOf(false) }
+                    var updateCards by remember { mutableStateOf(false) }
+                    key (updateAll, updateInfo) {
+                        var check by remember { mutableStateOf(save.getAltDecksChosenMap()[back] == true) }
+                        Row(
                             Modifier
-                                .padding(horizontal = 8.dp)
-                                .fillMaxWidth(0.33f)
+                                .fillMaxWidth()
+                                .padding(4.dp),
+                            horizontalArrangement = Arrangement.Start,
+                            verticalAlignment = Alignment.CenterVertically
                         ) {
-                            TextFallout(
-                                stringResource(back.getDeckName()),
-                                getTextColor(activity),
-                                getTextStrokeColor(activity),
-                                14.sp,
-                                Alignment.Center,
-                                Modifier.fillMaxWidth(),
-                                TextAlign.Center
-                            )
-                            ShowCardBack(
-                                activity,
-                                Card(Rank.ACE, Suit.CLUBS, back, check),
-                                Modifier.align(Alignment.CenterHorizontally),
-                            )
-                        }
-                        Column(
-                            Modifier
-                                .padding(horizontal = 8.dp)
-                                .fillMaxWidth(0.5f)
-                        ) {
-                            @Composable
-                            fun Button(text: String, action: (Card) -> Unit) {
+                            Column(
+                                Modifier
+                                    .padding(horizontal = 8.dp)
+                                    .fillMaxWidth(0.33f)
+                            ) {
                                 TextFallout(
-                                    text,
+                                    stringResource(back.deckName),
                                     getTextColor(activity),
                                     getTextStrokeColor(activity),
-                                    18.sp,
+                                    14.sp,
                                     Alignment.Center,
-                                    Modifier
-                                        .fillMaxWidth()
-                                        .background(getTextBackgroundColor(activity))
-                                        .padding(vertical = 4.dp)
-                                        .clickableSelect(activity) {
-                                            updaterLocal = !updaterLocal
-                                            updater = !updater
-                                            CustomDeck(back, check).toList()
-                                                .filter { isAvailable(it) }
-                                                .forEach(action)
-                                        },
+                                    Modifier.fillMaxWidth(),
                                     TextAlign.Center
                                 )
+                                ShowCardBack(
+                                    activity,
+                                    Card(Rank.ACE, Suit.CLUBS, back, check),
+                                    Modifier.align(Alignment.CenterHorizontally),
+                                )
                             }
+                            Column(
+                                Modifier
+                                    .padding(horizontal = 8.dp)
+                                    .fillMaxWidth(0.5f)
+                            ) {
+                                @Composable
+                                fun Button(text: String, action: (Card) -> Unit) {
+                                    TextFallout(
+                                        text,
+                                        getTextColor(activity),
+                                        getTextStrokeColor(activity),
+                                        18.sp,
+                                        Alignment.Center,
+                                        Modifier
+                                            .fillMaxWidth()
+                                            .background(getTextBackgroundColor(activity))
+                                            .clickableSelect(activity) {
+                                                CustomDeck(back, check).toList()
+                                                    .filter { isAvailable(it) }
+                                                    .forEach(action)
+                                                updateCharacteristics = !updateCharacteristics
+                                                updateCards = !updateCards
+                                            }
+                                            .padding(vertical = 4.dp),
+                                        TextAlign.Center
+                                    )
+                                }
 
-                            Button(activity.getString(R.string.select_all)) {
-                                if (!isInCustomDeck(it)) { toggleToCustomDeck(it) }
+                                Button(activity.getString(R.string.select_all)) {
+                                    if (!isInCustomDeck(it)) { toggleToCustomDeck(it) }
+                                }
+                                HorizontalDivider(color = getDividerColor(activity))
+                                Button(activity.getString(R.string.deselect_all)) {
+                                    if (isInCustomDeck(it)) { toggleToCustomDeck(it) }
+                                }
                             }
-                            HorizontalDivider(color = getDividerColor(activity))
-                            Button(activity.getString(R.string.deselect_all)) {
-                                if (isInCustomDeck(it)) { toggleToCustomDeck(it) }
-                            }
-                        }
-                        Column(
-                            Modifier
-                                .fillMaxSize()
-                                .padding(8.dp),
-                            verticalArrangement = Arrangement.Center,
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            if (back.hasAltPlayable()) {
-                                TextFallout(
-                                    text = "ALT!",
-                                    getTextColor(activity),
-                                    getTextStrokeColor(activity),
-                                    12.sp,
-                                    Alignment.Center,
-                                    modifier = Modifier.wrapContentHeight(),
-                                    TextAlign.Center
-                                )
-                                CheckboxCustom(
-                                    activity, { check },
-                                    {
-                                        check = !check
-                                        save.getAltDecksChosenMap()[back] = check
-                                        saveData(activity)
-                                        if (check) {
-                                            playClickSound(activity)
-                                        } else {
-                                            playCloseSound(activity)
+                            Column(
+                                Modifier
+                                    .fillMaxSize()
+                                    .padding(8.dp),
+                                verticalArrangement = Arrangement.Center,
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                if (back.hasAlt()) {
+                                    TextFallout(
+                                        text = "ALT!",
+                                        getTextColor(activity),
+                                        getTextStrokeColor(activity),
+                                        12.sp,
+                                        Alignment.Center,
+                                        modifier = Modifier.wrapContentHeight(),
+                                        TextAlign.Center
+                                    )
+                                    CheckboxCustom(
+                                        activity, { check },
+                                        {
+                                            check = !check
+                                            save.getAltDecksChosenMap()[back] = check
+                                            saveData(activity)
+                                            if (check) {
+                                                playClickSound(activity)
+                                            } else {
+                                                playCloseSound(activity)
+                                            }
+                                            updateCharacteristics = !updateCharacteristics
+                                            updateInfo = !updateInfo
+                                            updateCards = !updateCards
                                         }
-                                        updater = !updater
-                                    }
-                                ) { back in save.ownedDecksAlt }
+                                    ) { back in save.ownedDecksAlt }
+                                }
                             }
                         }
                     }
+
                     val state = rememberLazyListState()
-                    key(check, updaterLocal, tabUpdater) {
+                    key(updateAll, updateCards) {
                         LazyRow(
                             Modifier
                                 .scrollbar(
@@ -276,7 +280,8 @@ fun SetCustomDeck(
                                 .padding(bottom = 4.dp),
                             state = state
                         ) lambda@{
-                            items(CustomDeck(back, check).toList().sortedWith { o1, o2 ->
+                            val isAlt = save.getAltDecksChosenMap()[back] == true
+                            items(CustomDeck(back, isAlt).toList().sortedWith { o1, o2 ->
                                 if (o1.rank != o2.rank) {
                                     o2.rank.value - o1.rank.value
                                 } else {
@@ -294,7 +299,8 @@ fun SetCustomDeck(
                                             } else {
                                                 playCloseSound(activity)
                                             }
-                                            updater = !updater
+                                            updateCharacteristics = !updateCharacteristics
+                                            updateCards = !updateCards
                                         }
                                         .border(
                                             width = (if (isSelected) 3 else 0).dp,
@@ -340,7 +346,7 @@ fun ShowCharacteristics(activity: MainActivity) {
                 Modifier.fillMaxWidth(0.5f),
                 TextAlign.Center
             )
-            val nonFaces = deck.count { !it.isFace() }
+            val nonFaces = deck.count { !it.rank.isFace() }
             val nonFacesMin = CResources.MIN_NUM_OF_NUMBERS
             val color3 = if (nonFaces < nonFacesMin) Color.Red else getTextColor(activity)
             val color4 = if (nonFaces < nonFacesMin) Color.Red else getTextStrokeColor(activity)
