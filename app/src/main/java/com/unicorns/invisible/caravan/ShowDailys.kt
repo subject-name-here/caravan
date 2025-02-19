@@ -21,7 +21,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.unicorns.invisible.caravan.model.challenge.Challenge
@@ -90,7 +89,6 @@ fun ShowDailys(
                             getTextColor(activity),
                             getTextStrokeColor(activity),
                             18.sp,
-                            Alignment.Center,
                             Modifier
                                 .fillMaxWidth(0.66f)
                                 .padding(horizontal = 8.dp)
@@ -101,7 +99,6 @@ fun ShowDailys(
                                         activity.openAchievements(it)
                                     }
                                 },
-                            TextAlign.Center
                         )
                     }
                 }
@@ -119,18 +116,14 @@ fun ShowChallenge(activity: MainActivity, challenge: Challenge, isCompleted: Boo
                 getTextColor(activity),
                 getTextStrokeColor(activity),
                 24.sp,
-                Alignment.CenterStart,
                 Modifier.fillMaxWidth(0.75f),
-                TextAlign.Start
             )
             TextFallout(
                 challenge.getProgress(),
                 getTextColor(activity),
                 getTextStrokeColor(activity),
                 24.sp,
-                Alignment.CenterEnd,
                 Modifier.fillMaxWidth(),
-                TextAlign.End
             )
         }
 
@@ -139,9 +132,7 @@ fun ShowChallenge(activity: MainActivity, challenge: Challenge, isCompleted: Boo
             getTextColor(activity),
             getTextStrokeColor(activity),
             16.sp,
-            Alignment.CenterStart,
             Modifier.fillMaxWidth(),
-            TextAlign.Start
         )
 
         if (isCompleted) {
@@ -170,7 +161,6 @@ fun ShowChallenge(activity: MainActivity, challenge: Challenge, isCompleted: Boo
                     getTextColor(activity),
                     getTextStrokeColor(activity),
                     20.sp,
-                    Alignment.Center,
                     Modifier
                         .background(getTextBackgroundColor(activity))
                         .clickableOk(activity) {
@@ -178,14 +168,12 @@ fun ShowChallenge(activity: MainActivity, challenge: Challenge, isCompleted: Boo
                             dailyCompleted(save)
                         }
                         .padding(8.dp),
-                    TextAlign.Center
                 )
                 TextFallout(
                     activity.getString(R.string.claim_caps),
                     getTextColor(activity),
                     getTextStrokeColor(activity),
                     20.sp,
-                    Alignment.Center,
                     Modifier
                         .background(getTextBackgroundColor(activity))
                         .clickableOk(activity) {
@@ -193,7 +181,6 @@ fun ShowChallenge(activity: MainActivity, challenge: Challenge, isCompleted: Boo
                             dailyCompleted(save)
                         }
                         .padding(8.dp),
-                    TextAlign.Center
                 )
             }
         }

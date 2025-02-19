@@ -84,9 +84,9 @@ class EnemyPlayer(
                 }
                 if (card.rank == Rank.JOKER) {
                     game.jokerPlayedSound()
-                } else if (card.isNuclear() && card.isAlt) {
+                } else if (card.isNuclear()) {
                     game.nukeBlownSound()
-                } else if (card.getWildWastelandCardType() != null) {
+                } else if (card.getWildWastelandType() != null) {
                     game.wildWastelandSound()
                 }
                 cardInCaravan.addModifier(card)

@@ -1,5 +1,6 @@
 package com.unicorns.invisible.caravan.model.enemy
 
+import com.unicorns.invisible.caravan.R
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.enemy.strategy.CardDropSelect
@@ -29,9 +30,41 @@ import kotlin.random.Random
 
 @Serializable
 data object EnemyBenny : Enemy {
+    override fun getNameId() = R.string.benny
     override fun createDeck() = CResources(CardBack.TOPS, true)
-    override fun getBankNumber() = 5
+    override fun isEven() = true
+
+    override fun getBank(): Int {
+        TODO("Not yet implemented")
+    }
+
+    override fun refreshBank() {
+        TODO("Not yet implemented")
+    }
+
+    override fun getBet(): Int? {
+        TODO("Not yet implemented")
+    }
+
+    override fun retractBet() {
+        TODO("Not yet implemented")
+    }
+
+    override fun addReward(reward: Int) {
+        TODO("Not yet implemented")
+    }
+
+    override fun startBattle() {
+
+    }
+
+    override fun addVictory() {
+        save.traders.filterIsInstance<TopsTrader>().forEach { it.bennyDefeated = true }
+    }
+
     var cheatCounter = 0
+
+
 
     override fun makeMove(game: Game) {
         val hand = game.enemyCResources.hand
@@ -232,9 +265,5 @@ data object EnemyBenny : Enemy {
         }
 
         StrategyDropCard(CardDropSelect.ULYSSES_ORDER).move(game)
-    }
-
-    override fun onVictory() {
-        save.traders.filterIsInstance<TopsTrader>().forEach { it.bennyDefeated = true }
     }
 }

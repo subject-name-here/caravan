@@ -5,6 +5,7 @@ import com.unicorns.invisible.caravan.R
 import com.unicorns.invisible.caravan.playingSongName
 import com.unicorns.invisible.caravan.save
 import com.unicorns.invisible.caravan.save.saveData
+import com.unicorns.invisible.caravan.utils.getSongByIndex
 import com.unicorns.invisible.caravan.utils.playYesBeep
 
 data object CheatRadioPseudonyms : Cheat {
@@ -18,7 +19,7 @@ data object CheatRadioPseudonyms : Cheat {
         saveData(activity)
         playYesBeep(activity)
 
-        playingSongName.postValue(playingSongName.value) // TODO: update this properly!
+        playingSongName.postValue(getSongByIndex(activity)?.second)
         if (save.isRadioUsesPseudonyms) {
             showAlertDialog(
                 activity.getString(R.string.easter_egg),

@@ -13,12 +13,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.Transient
 import java.util.UUID
 
 
-@Serializable
 class Game(
     val playerCResources: CResources,
     val enemy: Enemy
@@ -33,16 +30,11 @@ class Game(
 
     var id = UUID.randomUUID().toString()
 
-    @Transient
     var onWin: () -> Unit = {}
-    @Transient
     var onLose: () -> Unit = {}
 
-    @Transient
     var jokerPlayedSound: () -> Unit = {}
-    @Transient
     var nukeBlownSound: () -> Unit = {}
-    @Transient
     var wildWastelandSound: () -> Unit = {}
 
     var isGameOver = 0
@@ -176,7 +168,6 @@ class Game(
         }
     }
 
-    @Transient
     var specialGameOverCondition: () -> Int = { 0 }
     fun checkOnGameOver(): Boolean {
         if (!isPlayerTurn && enemyCResources.hand.isEmpty()) {

@@ -22,5 +22,5 @@ class ChineseTrader : Trader {
 
     override fun getSymbol(): String = "•"
 
-    override fun getCards(): List<Pair<Card, Int>> = getCards(CardBack.CHINESE)
+    override fun getCards(): List<Card> = getCards(CardBack.CHINESE)
 }

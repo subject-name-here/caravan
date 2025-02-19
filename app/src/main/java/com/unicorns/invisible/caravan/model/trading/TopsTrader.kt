@@ -29,5 +29,5 @@ class TopsTrader : Trader {
 
     override fun getSymbol() = "T"
 
-    override fun getCards(): List<Pair<Card, Int>> = getCards(CardBack.TOPS)
+    override fun getCards(): List<Card> = getCards(CardBack.TOPS)
 }

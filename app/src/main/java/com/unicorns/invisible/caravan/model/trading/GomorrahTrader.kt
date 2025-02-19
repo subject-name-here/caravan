@@ -29,5 +29,5 @@ class GomorrahTrader : Trader {
 
     override fun getSymbol() = "G"
 
-    override fun getCards(): List<Pair<Card, Int>> = getCards(CardBack.GOMORRAH)
+    override fun getCards(): List<Card> = getCards(CardBack.GOMORRAH)
 }

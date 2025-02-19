@@ -29,5 +29,5 @@ class SierraMadreTrader : Trader {
 
     override fun getSymbol() = "SM"
 
-    override fun getCards(): List<Pair<Card, Int>> = getCards(CardBack.SIERRA_MADRE)
+    override fun getCards(): List<Card> = getCards(CardBack.SIERRA_MADRE)
 }

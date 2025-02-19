@@ -67,18 +67,15 @@ fun CardToBuy(activity: MainActivity, card: Card, price: Int, update: () -> Unit
             getTextColor(activity),
             getTextStrokeColor(activity),
             16.sp,
-            Alignment.Center,
             Modifier
                 .weight(1f)
                 .padding(4.dp),
-            TextAlign.Center
         )
         TextFallout(
             stringResource(R.string.buy_for_caps, price),
             getTextColor(activity),
             getTextStrokeColor(activity),
             16.sp,
-            Alignment.Center,
             Modifier
                 .weight(1f)
                 .padding(4.dp)
@@ -94,7 +91,6 @@ fun CardToBuy(activity: MainActivity, card: Card, price: Int, update: () -> Unit
                         update()
                     }
                 },
-            TextAlign.Center
         )
     }
 }
@@ -117,9 +113,7 @@ fun ShowTraders(activity: MainActivity, goBack: () -> Unit) {
                     getTextColor(activity),
                     getTextStrokeColor(activity),
                     16.sp,
-                    Alignment.Center,
                     Modifier.padding(4.dp),
-                    TextAlign.Center
                 )
 
                 TabRow(
@@ -148,9 +142,7 @@ fun ShowTraders(activity: MainActivity, goBack: () -> Unit) {
                                 getTextColor(activity),
                                 getTextStrokeColor(activity),
                                 12.sp,
-                                Alignment.Center,
                                 Modifier.padding(4.dp),
-                                TextAlign.Center
                             )
                         }
                     }
@@ -182,7 +174,7 @@ fun ShowTraders(activity: MainActivity, goBack: () -> Unit) {
                                 verticalArrangement = Arrangement.Top
                             ) {
                                 val cards = selectedTrader.getCards()
-                                    .filter { !save.isCardAvailableAlready(it.first) }
+                                    .filter { !save.isCardAvailableAlready(it) }
 
                                 TextFallout(
                                     if (cards.isEmpty()) {
@@ -193,13 +185,11 @@ fun ShowTraders(activity: MainActivity, goBack: () -> Unit) {
                                     getTextColor(activity),
                                     getTextStrokeColor(activity),
                                     18.sp,
-                                    Alignment.Center,
                                     Modifier.fillMaxWidth().padding(4.dp),
-                                    TextAlign.Center
                                 )
                                 cards.forEach {
                                     Spacer(modifier = Modifier.height(4.dp))
-                                    CardToBuy(activity, it.first, it.second) { update = !update }
+                                    CardToBuy(activity, it, it.getPriceOfCard()) { update = !update }
                                 }
                             }
                         } else {
@@ -208,9 +198,7 @@ fun ShowTraders(activity: MainActivity, goBack: () -> Unit) {
                                 getTextColor(activity),
                                 getTextStrokeColor(activity),
                                 18.sp,
-                                Alignment.Center,
                                 Modifier.fillMaxWidth().padding(4.dp),
-                                TextAlign.Center
                             )
                         }
                     }

@@ -46,7 +46,6 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.LinkAnnotation
@@ -78,12 +77,12 @@ import com.unicorns.invisible.caravan.utils.clickableCancel
 import com.unicorns.invisible.caravan.utils.clickableOk
 import com.unicorns.invisible.caravan.utils.cronetEngine
 import com.unicorns.invisible.caravan.utils.dpToPx
+import com.unicorns.invisible.caravan.utils.dpToSp
 import com.unicorns.invisible.caravan.utils.getBackgroundColor
 import com.unicorns.invisible.caravan.utils.getCurrentDateHashCode
 import com.unicorns.invisible.caravan.utils.getDialogBackground
 import com.unicorns.invisible.caravan.utils.getDialogTextColor
 import com.unicorns.invisible.caravan.utils.getDividerColor
-import com.unicorns.invisible.caravan.utils.getFontSize
 import com.unicorns.invisible.caravan.utils.getKnobColor
 import com.unicorns.invisible.caravan.utils.getMusicMarqueesColor
 import com.unicorns.invisible.caravan.utils.getMusicPanelColor
@@ -258,18 +257,14 @@ class MainActivity : SaveDataActivity() {
                                             textColor,
                                             strokeColor,
                                             40.sp,
-                                            Alignment.TopCenter,
                                             Modifier.padding(top = 8.dp),
-                                            TextAlign.Center
                                         )
                                         TextFallout(
                                             stringResource(R.string.tap_to_play),
                                             textColor,
                                             strokeColor,
                                             24.sp,
-                                            Alignment.TopCenter,
                                             Modifier.padding(4.dp),
-                                            TextAlign.Center
                                         )
                                     } else {
                                         TextFallout(
@@ -277,9 +272,7 @@ class MainActivity : SaveDataActivity() {
                                             textColor,
                                             strokeColor,
                                             32.sp,
-                                            Alignment.TopCenter,
                                             Modifier.padding(4.dp),
-                                            TextAlign.Center
                                         )
                                     }
                                     Spacer(Modifier.height(8.dp))
@@ -288,9 +281,7 @@ class MainActivity : SaveDataActivity() {
                                         textColor,
                                         strokeColor,
                                         18.sp,
-                                        Alignment.Center,
                                         Modifier.padding(vertical = 4.dp, horizontal = 12.dp),
-                                        TextAlign.Center
                                     )
                                 }
                             }
@@ -308,9 +299,12 @@ class MainActivity : SaveDataActivity() {
                         }
                         @Composable
                         fun ColumnScope.PicAuthorLink(weight: Float) {
-                            Box(Modifier
-                                .fillMaxWidth()
-                                .weight(weight)) {
+                            Box(
+                                Modifier
+                                    .fillMaxWidth()
+                                    .weight(weight),
+                                contentAlignment = Alignment.BottomEnd
+                            ) {
                                 val annotatedString = buildAnnotatedString {
                                     append("Pic creator: ")
                                     withLink(
@@ -333,9 +327,7 @@ class MainActivity : SaveDataActivity() {
                                     textColor,
                                     strokeColor,
                                     14.sp,
-                                    Alignment.BottomEnd,
                                     Modifier.fillMaxSize(),
-                                    TextAlign.End
                                 )
                             }
                         }
@@ -434,12 +426,11 @@ class MainActivity : SaveDataActivity() {
                         stringResource(R.string.close),
                         getDialogBackground(this),
                         getDialogBackground(this),
-                        18.sp, Alignment.Center,
+                        18.sp,
                         Modifier
                             .background(getDialogTextColor(this))
                             .clickableCancel(this) { hideAlertDialog() }
-                            .padding(4.dp),
-                        TextAlign.Center
+                            .padding(4.dp)
                     )
                 },
                 dismissButton = {
@@ -451,15 +442,14 @@ class MainActivity : SaveDataActivity() {
                                 stringResource(R.string.back_to_menu)
                             },
                             getDialogBackground(this),
-                            getDialogBackground(this), 18.sp, Alignment.Center,
+                            getDialogBackground(this), 18.sp,
                             Modifier
                                 .background(getDialogTextColor(this))
                                 .clickableCancel(this) {
                                     hideAlertDialog()
                                     alertGoBack?.invoke()
                                 }
-                                .padding(4.dp),
-                            TextAlign.Center
+                                .padding(4.dp)
                         )
                     }
                 },
@@ -468,8 +458,7 @@ class MainActivity : SaveDataActivity() {
                         alertDialogHeader,
                         getDialogTextColor(this),
                         getDialogTextColor(this),
-                        24.sp, Alignment.CenterStart, Modifier,
-                        TextAlign.Start
+                        24.sp, Modifier
                     )
                 },
                 text = {
@@ -477,13 +466,12 @@ class MainActivity : SaveDataActivity() {
                         alertDialogMessage,
                         getDialogTextColor(this),
                         getDialogTextColor(this),
-                        16.sp, Alignment.CenterStart, Modifier,
-                            TextAlign.Start
-                        )
-                    },
-                    containerColor = getDialogBackground(this),
-                    textContentColor = getDialogTextColor(this),
-                    shape = RectangleShape
+                        16.sp, Modifier
+                    )
+                },
+                containerColor = getDialogBackground(this),
+                textContentColor = getDialogTextColor(this),
+                shape = RectangleShape
             )
         }
 
@@ -504,12 +492,10 @@ class MainActivity : SaveDataActivity() {
                         getDialogBackground(this),
                         getDialogBackground(this),
                         18.sp,
-                        Alignment.Center,
                         Modifier
                             .background(getDialogTextColor(this))
                             .clickableCancel(this) { saveData(this); hideSoundSettings() }
                             .padding(4.dp),
-                        TextAlign.Center
                     )
                 },
                 title = {
@@ -518,9 +504,7 @@ class MainActivity : SaveDataActivity() {
                         getDialogTextColor(this),
                         getDialogTextColor(this),
                         24.sp,
-                        Alignment.Center,
                         Modifier,
-                        TextAlign.Center
                     )
                 },
                 text = {
@@ -536,9 +520,7 @@ class MainActivity : SaveDataActivity() {
                                 getDialogTextColor(this@MainActivity),
                                 getDialogTextColor(this@MainActivity),
                                 16.sp,
-                                Alignment.CenterStart,
-                                modifier = Modifier.weight(1f),
-                                TextAlign.Start,
+                                Modifier.weight(1f),
                             )
 
                             Box(Modifier.weight(2.5f)) {
@@ -575,7 +557,6 @@ class MainActivity : SaveDataActivity() {
                 var isPaused by rememberScoped { mutableStateOf(false) }
                 val soundReducedObserver by soundReducedLiveData.observeAsState()
                 val songName by playingSongName.observeAsState()
-                var buttonTextSize by remember { mutableStateOf(0.sp) }
                 key(styleIdForTop, soundReducedObserver, songName) {
                     Row(
                         Modifier
@@ -602,7 +583,6 @@ class MainActivity : SaveDataActivity() {
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             BoxWithConstraints(Modifier.fillMaxSize()) {
-                                // TODO: better autosizing!!!
                                 val button1Text = if (!isPaused && !soundReduced)
                                     stringResource(R.string.next_song)
                                 else
@@ -620,19 +600,6 @@ class MainActivity : SaveDataActivity() {
                                     textAlign = TextAlign.Center,
                                 )
 
-                                val eWidth = constraints.maxWidth * 2 / 5
-                                val eConstraints = constraints.copy(
-                                    maxWidth = eWidth, minWidth = eWidth
-                                )
-
-                                val eSize = LocalDensity.current.getFontSize(
-                                    eConstraints, stringResource(R.string.resume_radio), style
-                                )
-
-                                if (buttonTextSize.value == 0f) {
-                                    buttonTextSize = eSize
-                                }
-
                                 Row(
                                     Modifier.fillMaxSize(),
                                     horizontalArrangement = Arrangement.SpaceEvenly,
@@ -647,7 +614,7 @@ class MainActivity : SaveDataActivity() {
                                                 .background(getTextBackgroundColor(this@MainActivity))
                                                 .padding(horizontal = 2.dp),
                                             style = style,
-                                            fontSize = buttonTextSize,
+                                            fontSize = 16.dp.dpToSp(),
                                             maxLines = 1
                                         )
                                     }
@@ -826,14 +793,12 @@ class MainActivity : SaveDataActivity() {
                         getTextColor(this@MainActivity),
                         getTextStrokeColor(this@MainActivity),
                         28.sp,
-                        Alignment.CenterStart,
                         Modifier
                             .wrapContentWidth()
                             .align(Alignment.Top)
                             .padding(start = 12.dp, top = 0.dp, end = 12.dp)
                             .background(getBackgroundColor(this@MainActivity))
                             .padding(start = 4.dp, top = 0.dp, end = 4.dp),
-                        TextAlign.Start
                     )
 
                     Box(Modifier.fillMaxSize(), contentAlignment = Alignment.BottomEnd) {
@@ -847,9 +812,7 @@ class MainActivity : SaveDataActivity() {
                             getTextColor(this@MainActivity),
                             getTextStrokeColor(this@MainActivity),
                             14.sp,
-                            Alignment.CenterEnd,
                             Modifier.padding(end = 12.dp),
-                            TextAlign.End
                         )
                     }
                 }
@@ -895,22 +858,18 @@ class MainActivity : SaveDataActivity() {
                             getTextColor(this@MainActivity),
                             getTextStrokeColor(this@MainActivity),
                             18.sp,
-                            Alignment.Center,
                             Modifier
                                 .align(Alignment.BottomEnd)
                                 .padding(end = 12.dp),
-                            TextAlign.Center
                         )
                         TextFallout(
                             stringResource(R.string.menu_discord),
                             getTextColor(this@MainActivity),
                             Color.Transparent,
                             18.sp,
-                            Alignment.Center,
                             Modifier
                                 .align(Alignment.BottomEnd)
                                 .padding(end = 12.dp),
-                            TextAlign.Center
                         )
                     }
                 }
@@ -949,7 +908,6 @@ class MainActivity : SaveDataActivity() {
                             getTextColor(this@MainActivity),
                             getTextStrokeColor(this@MainActivity),
                             18.sp,
-                            Alignment.Center,
                             Modifier
                                 .background(getBackgroundColor(this@MainActivity))
                                 .padding(horizontal = 4.dp)
@@ -958,7 +916,6 @@ class MainActivity : SaveDataActivity() {
                                     showVision()
                                 }
                                 .padding(4.dp),
-                            TextAlign.Center
                         )
 
                         TextFallout(
@@ -966,7 +923,6 @@ class MainActivity : SaveDataActivity() {
                             getTextColor(this@MainActivity),
                             getTextStrokeColor(this@MainActivity),
                             18.sp,
-                            Alignment.Center,
                             Modifier
                                 .background(getBackgroundColor(this@MainActivity))
                                 .padding(horizontal = 4.dp)
@@ -975,7 +931,6 @@ class MainActivity : SaveDataActivity() {
                                 }
                                 .background(getTextBackgroundColor(this@MainActivity))
                                 .padding(4.dp),
-                            TextAlign.Center
                         )
 
                         TextFallout(
@@ -983,7 +938,6 @@ class MainActivity : SaveDataActivity() {
                             getTextColor(this@MainActivity),
                             getTextStrokeColor(this@MainActivity),
                             18.sp,
-                            Alignment.Center,
                             Modifier
                                 .background(getBackgroundColor(this@MainActivity))
                                 .padding(horizontal = 4.dp)
@@ -992,7 +946,6 @@ class MainActivity : SaveDataActivity() {
                                 }
                                 .background(getTextBackgroundColor(this@MainActivity))
                                 .padding(4.dp),
-                            TextAlign.Center
                         )
                     }
                 }
@@ -1032,14 +985,12 @@ class MainActivity : SaveDataActivity() {
                                 getTextColor(this@MainActivity),
                                 getTextStrokeColor(this@MainActivity),
                                 20.sp,
-                                Alignment.CenterStart,
                                 Modifier
                                     .clickableOk(this@MainActivity) {
                                         onClick()
                                     }
                                     .background(getTextBackgroundColor(this@MainActivity))
                                     .padding(8.dp),
-                                TextAlign.Start
                             )
                         }
                         Spacer(Modifier.height(32.dp))

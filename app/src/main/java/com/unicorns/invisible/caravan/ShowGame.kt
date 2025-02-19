@@ -197,13 +197,13 @@ fun ShowGame(
                 animationSpeed
             )
         }
-        if (game.isPlayerTurn && !game.isOver() && !(game.isInitStage() && card.isFace())) {
-            if (card.isFace()) {
+        if (game.isPlayerTurn && !game.isOver() && !(game.isInitStage() && card.isModifier())) {
+            if (card.isModifier()) {
                 if (caravan.cards.getOrNull(position)?.canAddModifier(card) == true) {
                     playCardFlipSound(activity)
                     if (card.isOrdinary() && card.rank == Rank.JOKER) {
                         playJokerSounds(activity)
-                    } else if (card.getWildWastelandCardType() != null) {
+                    } else if (card.getWildWastelandType() != null) {
                         playWWSound(activity)
                     } else if (card.isNuclear()) {
                         playNukeBlownSound(activity)
@@ -289,11 +289,9 @@ fun ShowGame(
                     getTextColor(activity),
                     getTextStrokeColor(activity),
                     16.sp,
-                    Alignment.BottomEnd,
                     Modifier
                         .background(getTextBackgroundColor(activity))
                         .padding(8.dp),
-                    TextAlign.Center
                 )
             }
         }
@@ -394,14 +392,12 @@ fun ShowGameRaw(
                     getTextColor(activity),
                     getTextStrokeColor(activity),
                     16.sp,
-                    Alignment.Center,
                     Modifier
                         .fillMaxWidth()
                         .clickableCancel(activity) {
                             goBack()
                         }
                         .padding(8.dp),
-                    TextAlign.Center
                 )
             }
         }) { innerPadding ->
@@ -443,6 +439,7 @@ fun ShowGameRaw(
                             dropCaravan,
                             ::isInitStage,
                             { game.isPlayerTurn },
+                            { game.canPlayerMove },
                             ::canDiscard,
                             { game.isOver() },
                             { num -> game.playerCaravans[num] },
@@ -476,6 +473,7 @@ fun ShowGameRaw(
                             dropCaravan,
                             ::isInitStage,
                             { game.isPlayerTurn },
+                            { game.canPlayerMove },
                             ::canDiscard,
                             { game.isOver() },
                             { num -> game.playerCaravans[num] },
@@ -521,9 +519,7 @@ fun EnemySide(
                             getEnemySymbol(),
                             getTextColor(activity),
                             24.sp,
-                            Alignment.BottomCenter,
-                            Modifier.background(getTextBackgroundColor(activity)),
-                            TextAlign.Center
+                            Modifier.background(getTextBackgroundColor(activity))
                         )
                     }
                 }
@@ -567,13 +563,11 @@ fun PlayerSide(
                             getMySymbol(),
                             getTextColor(activity),
                             24.sp,
-                            Alignment.BottomCenter,
                             Modifier
                                 .background(getTextBackgroundColor(activity))
                                 .clickableOk(activity) {
                                     setMySymbol()
-                                },
-                            TextAlign.Center
+                                }
                         )
                     }
                 }
@@ -777,7 +771,7 @@ private fun canPutCard(
     index: Int
 ): Boolean {
     val cardOn = caravan.cards.getOrNull(index) ?: return false
-    return if (card.isFace()) {
+    return if (card.isModifier()) {
         cardOn.canAddModifier(card)
     } else if (isPlayerCaravan && index == caravan.size - 1) {
         caravan.canPutCardOnTop(card)
@@ -820,7 +814,6 @@ fun RowScope.CaravanOnField(
                 getTextColor(activity),
                 getTextStrokeColor(activity),
                 14.sp,
-                Alignment.Center,
                 Modifier
                     .fillMaxWidth()
                     .clickable {
@@ -832,8 +825,7 @@ fun RowScope.CaravanOnField(
                             Color(color.red, color.green, color.blue, 0.75f)
                         }
                     )
-                    .padding(2.dp),
-                TextAlign.Center
+                    .padding(2.dp)
             )
         }
         if (!isEnemyCaravan && caravan.isEmpty()) {
@@ -1078,12 +1070,10 @@ fun ShowDeck(cResources: CResources, activity: MainActivity, isKnown: Boolean = 
             getTextColor(activity),
             getTextStrokeColor(activity),
             16.sp,
-            Alignment.Center,
             Modifier
                 .fillMaxWidth()
                 .wrapContentWidth()
-                .background(getBackgroundColor(activity)),
-            TextAlign.Center
+                .background(getBackgroundColor(activity))
         )
         if (isKnown) {
             val (back, isAlt) = cResources.getDeckBack() ?: (null to false)
@@ -1134,9 +1124,7 @@ fun RowScope.Score(activity: MainActivity, num: Int, caravan: Caravan, opposingV
             textColor,
             textColor,
             14.sp,
-            Alignment.CenterEnd,
-            Modifier.fillMaxSize(),
-            textAlign = TextAlign.Start
+            Modifier.fillMaxSize()
         )
     }
 }
@@ -1191,9 +1179,9 @@ fun Caravans(
                     isInitStage = getIsInitStage(),
                     enemyStates[it],
                     { -1 },
-                    { index -> getSelectedCard()?.let {
-                        canPutCard(it, caravan, false, index, checkIfJokerUseless)
-                    } ?: PutResult.NOTHING },
+                    { index ->
+                        getSelectedCard()?.let { canPutCard(it, caravan, false, index) } == true
+                    },
                     { card -> addCardToEnemyCaravan(it, card) },
                     caravansKey
                 )
@@ -1252,9 +1240,7 @@ fun Caravans(
                         getTextColor(activity),
                         getTextStrokeColor(activity),
                         16.sp,
-                        Alignment.Center,
                         modifier,
-                        TextAlign.Center
                     )
                 }
 

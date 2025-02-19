@@ -15,7 +15,6 @@ import org.json.JSONObject
  */
 
 
-@Serializable
 data class MoveResponse(
     val moveCode: Int = 0,
     val caravanCode: Int = 0,

@@ -65,6 +65,13 @@ class CResources(private val deck: CustomDeck) {
         processHandAddedCard(card)
     }
 
+    fun removeFirstCardFromDeck() {
+        if (deck.size == 0) {
+            return
+        }
+        deck.removeFirst()
+    }
+
     private fun processHandAddedCard(card: Card) {
         val type = Card.WildWastelandCardType.CAZADOR
         if (card.getWildWastelandType() == type) {

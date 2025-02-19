@@ -21,9 +21,9 @@ sealed interface Trader {
     fun getWelcomeMessage(): Int
     fun getEmptyStoreMessage(): Int
     fun getSymbol(): String
-    fun getCards(): List<Pair<Card, Int>>
+    fun getCards(): List<Card>
 
-    fun getCards(back: CardBack): List<Pair<Card, Int>> {
+    fun getCards(back: CardBack): List<Card> {
         // TODO: better seed
         val bshl = (back.ordinal * 32 + getUpdatePartOfHash()) shl 23
         val b = bshl - back.ordinal - 1
@@ -43,7 +43,6 @@ sealed interface Trader {
             emptyList()
         }
 
-        val cards = (cards1 + cards2).toMutableList()
-        return cards.map { card -> card to save.getPriceOfCard(card) }
+        return (cards1 + cards2).toList()
     }
 }

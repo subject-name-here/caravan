@@ -26,5 +26,5 @@ class Vault21Trader : Trader {
 
     override fun getSymbol() = "21"
 
-    override fun getCards(): List<Pair<Card, Int>> = getCards(CardBack.VAULT_21)
+    override fun getCards(): List<Card> = getCards(CardBack.VAULT_21)
 }

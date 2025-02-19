@@ -11,7 +11,7 @@ import java.nio.ByteBuffer
 abstract class MyUrlRequestCallback(
     private var delegate: OnFinishRequest<JSONObject>
 ) : UrlRequest.Callback() {
-    private var redirectionCounter = 10
+    private var redirectionCounter = 6
 
     override fun onRedirectReceived(
         request: UrlRequest,

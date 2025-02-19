@@ -86,9 +86,7 @@ fun ShowRules(activity: MainActivity, goBack: () -> Unit) {
                                 getTextColor(activity),
                                 getTextStrokeColor(activity),
                                 16.sp,
-                                Alignment.Center,
                                 Modifier.padding(4.dp),
-                                TextAlign.Center
                             )
                         }
                         Tab(
@@ -101,9 +99,7 @@ fun ShowRules(activity: MainActivity, goBack: () -> Unit) {
                                 getTextColor(activity),
                                 getTextStrokeColor(activity),
                                 16.sp,
-                                Alignment.Center,
                                 Modifier.padding(4.dp),
-                                TextAlign.Center
                             )
                         }
                         Tab(
@@ -116,9 +112,7 @@ fun ShowRules(activity: MainActivity, goBack: () -> Unit) {
                                 getTextColor(activity),
                                 getTextStrokeColor(activity),
                                 16.sp,
-                                Alignment.Center,
                                 Modifier.padding(4.dp),
-                                TextAlign.Center
                             )
                         }
                     }
@@ -135,9 +129,7 @@ fun ShowRules(activity: MainActivity, goBack: () -> Unit) {
                                         getTextColor(activity),
                                         getTextStrokeColor(activity),
                                         20.sp,
-                                        Alignment.CenterStart,
                                         Modifier.padding(horizontal = 8.dp),
-                                        TextAlign.Start
                                     )
                                     Spacer(modifier = Modifier.height(16.dp))
                                 }
@@ -158,9 +150,7 @@ fun ShowRules(activity: MainActivity, goBack: () -> Unit) {
                                 getTextColor(activity),
                                 getTextStrokeColor(activity),
                                 20.sp,
-                                Alignment.Center,
                                 Modifier.padding(horizontal = 8.dp),
-                                TextAlign.Center
                             )
                         }
                         2 -> {
@@ -171,9 +161,7 @@ fun ShowRules(activity: MainActivity, goBack: () -> Unit) {
                                     getTextColor(activity),
                                     getTextStrokeColor(activity),
                                     18.sp,
-                                    Alignment.Center,
                                     Modifier.padding(horizontal = 8.dp),
-                                    TextAlign.Center
                                 )
                             }
                             Spacer(Modifier.height(20.dp))

@@ -21,5 +21,5 @@ class EnclaveTrader : Trader {
 
     override fun getSymbol() = "E"
 
-    override fun getCards(): List<Pair<Card, Int>> = getCards(CardBack.ENCLAVE)
+    override fun getCards(): List<Card> = getCards(CardBack.ENCLAVE)
 }

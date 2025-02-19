@@ -65,9 +65,7 @@ fun ShowAbout(activity: MainActivity, goBack: () -> Unit) {
                     getTextColor(activity),
                     getTextStrokeColor(activity),
                     20.sp,
-                    Alignment.Center,
                     Modifier,
-                    TextAlign.Center
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 TextFallout(
@@ -75,9 +73,7 @@ fun ShowAbout(activity: MainActivity, goBack: () -> Unit) {
                     getTextColor(activity),
                     getTextStrokeColor(activity),
                     20.sp,
-                    Alignment.Center,
                     Modifier,
-                    TextAlign.Center
                 )
                 Spacer(modifier = Modifier.height(16.dp))
 
@@ -104,9 +100,7 @@ fun ShowAbout(activity: MainActivity, goBack: () -> Unit) {
                     getTextColor(activity),
                     getTextStrokeColor(activity),
                     20.sp,
-                    Alignment.Center,
                     Modifier,
-                    TextAlign.Center
                 )
                 Spacer(modifier = Modifier.height(24.dp))
                 TextFallout(
@@ -114,9 +108,7 @@ fun ShowAbout(activity: MainActivity, goBack: () -> Unit) {
                     getTextColor(activity),
                     getTextStrokeColor(activity),
                     20.sp,
-                    Alignment.Center,
                     Modifier,
-                    TextAlign.Center
                 )
                 Spacer(modifier = Modifier.height(12.dp))
                 TextFallout(
@@ -124,9 +116,7 @@ fun ShowAbout(activity: MainActivity, goBack: () -> Unit) {
                     getTextColor(activity),
                     getTextStrokeColor(activity),
                     20.sp,
-                    Alignment.Center,
                     Modifier,
-                    TextAlign.Center
                 )
                 Spacer(modifier = Modifier.height(12.dp))
 
@@ -152,9 +142,7 @@ fun ShowAbout(activity: MainActivity, goBack: () -> Unit) {
                     getTextColor(activity),
                     getTextStrokeColor(activity),
                     20.sp,
-                    Alignment.Center,
                     Modifier,
-                    TextAlign.Center
                 )
                 Spacer(modifier = Modifier.height(12.dp))
                 val annotatedString2 = buildAnnotatedString {
@@ -180,9 +168,7 @@ fun ShowAbout(activity: MainActivity, goBack: () -> Unit) {
                     getTextColor(activity),
                     getTextStrokeColor(activity),
                     20.sp,
-                    Alignment.Center,
                     Modifier,
-                    TextAlign.Center
                 )
                 Spacer(modifier = Modifier.height(12.dp))
 
@@ -209,9 +195,7 @@ fun ShowAbout(activity: MainActivity, goBack: () -> Unit) {
                     getTextColor(activity),
                     getTextStrokeColor(activity),
                     20.sp,
-                    Alignment.Center,
                     Modifier,
-                    TextAlign.Center
                 )
                 Spacer(modifier = Modifier.height(12.dp))
                 val annotatedString3 = buildAnnotatedString {
@@ -236,9 +220,7 @@ fun ShowAbout(activity: MainActivity, goBack: () -> Unit) {
                     getTextColor(activity),
                     getTextStrokeColor(activity),
                     20.sp,
-                    Alignment.Center,
                     Modifier,
-                    TextAlign.Center
                 )
                 Spacer(modifier = Modifier.height(12.dp))
 
@@ -265,9 +247,7 @@ fun ShowAbout(activity: MainActivity, goBack: () -> Unit) {
                     getTextColor(activity),
                     getTextStrokeColor(activity),
                     20.sp,
-                    Alignment.Center,
                     Modifier,
-                    TextAlign.Center
                 )
                 Spacer(modifier = Modifier.height(16.dp))
             }

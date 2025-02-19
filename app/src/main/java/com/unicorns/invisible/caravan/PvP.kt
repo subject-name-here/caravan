@@ -61,7 +61,6 @@ import com.unicorns.invisible.caravan.utils.playCloseSound
 import com.unicorns.invisible.caravan.utils.playJokerSounds
 import com.unicorns.invisible.caravan.utils.playLoseSound
 import com.unicorns.invisible.caravan.utils.playNukeBlownSound
-import com.unicorns.invisible.caravan.utils.playQuitMultiplayer
 import com.unicorns.invisible.caravan.utils.playWWSound
 import com.unicorns.invisible.caravan.utils.playWinSound
 import com.unicorns.invisible.caravan.utils.scrollbar
@@ -75,6 +74,7 @@ import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
 
+// TODO: update mp (number of decks!)
 fun customDeckToInts(customDeck: CustomDeck): List<ULong> {
     val result = ArrayList<ULong>()
 
@@ -373,14 +373,12 @@ fun ShowPvP(
                             getTextColor(activity),
                             getTextStrokeColor(activity),
                             14.sp,
-                            Alignment.Center,
-                            modifier = Modifier
+                            Modifier
                                 .fillMaxWidth(0.33f)
                                 .padding(horizontal = 8.dp)
                                 .clickableOk(activity) { createRoom() }
                                 .background(getTextBackgroundColor(activity))
                                 .padding(4.dp),
-                            textAlign = TextAlign.Center,
                         )
                         TextField(
                             modifier = Modifier.fillMaxWidth(0.5f),
@@ -400,9 +398,7 @@ fun ShowPvP(
                                     getTextColor(activity),
                                     getTextStrokeColor(activity),
                                     11.sp,
-                                    Alignment.Center,
                                     Modifier,
-                                    TextAlign.Center
                                 )
                             },
                             colors = TextFieldDefaults.colors().copy(
@@ -417,14 +413,12 @@ fun ShowPvP(
                             getTextColor(activity),
                             getTextStrokeColor(activity),
                             14.sp,
-                            Alignment.Center,
                             Modifier
                                 .fillMaxWidth()
                                 .padding(horizontal = 8.dp)
                                 .clickableOk(activity) { joinRoom() }
                                 .background(getTextBackgroundColor(activity))
                                 .padding(4.dp),
-                            textAlign = TextAlign.Center,
                         )
                     }
                     Column(
@@ -444,9 +438,7 @@ fun ShowPvP(
                                 getTextColor(activity),
                                 getTextStrokeColor(activity),
                                 14.sp,
-                                Alignment.CenterStart,
                                 Modifier.fillMaxWidth(0.7f),
-                                TextAlign.Start
                             )
                             CheckboxCustom(
                                 activity,
@@ -475,9 +467,7 @@ fun ShowPvP(
                                 getTextColor(activity),
                                 getTextStrokeColor(activity),
                                 14.sp,
-                                Alignment.CenterStart,
                                 Modifier.fillMaxWidth(0.7f),
-                                TextAlign.Start
                             )
                             CheckboxCustom(
                                 activity,
@@ -506,9 +496,7 @@ fun ShowPvP(
                                 getTextColor(activity),
                                 getTextStrokeColor(activity),
                                 14.sp,
-                                Alignment.CenterStart,
                                 Modifier.fillMaxWidth(0.7f),
-                                TextAlign.Start
                             )
                             CheckboxCustom(
                                 activity,
@@ -541,9 +529,7 @@ fun ShowPvP(
                         getTextColor(activity),
                         getTextStrokeColor(activity),
                         13.sp,
-                        Alignment.Center,
                         Modifier.padding(horizontal = 16.dp),
-                        TextAlign.Start
                     )
                 }
             }
@@ -566,7 +552,6 @@ fun StartPvP(
             EnemyPlayer(enemyStartDeck)
         ).also {
             it.isPlayerTurn = false
-            it.isExchangingCards = true
             playerCResources.shuffleDeck()
             currentGameId = it.id
         }
@@ -650,18 +635,16 @@ fun StartPvP(
                     sendHandCard()
                     return@sendRequest
                 }
-                game.isExchangingCards = false
                 game.isPlayerTurn = isCreator
+                game.canPlayerMove = isCreator
                 updateCaravans()
             } else {
                 (game.enemy as EnemyPlayer).latestMoveResponse = move
-                game.isExchangingCards = false
                 game.isPlayerTurn = isCreator
 
                 game.enemy.makeMove(game)
                 updateEnemyHand()
                 game.processField()
-                game.processHand(game.enemyCResources)
 
                 updateCaravans()
 

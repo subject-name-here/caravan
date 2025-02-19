@@ -101,9 +101,7 @@ fun ShowTrueSettings(
                                 getTextColor(activity),
                                 getTextStrokeColor(activity),
                                 18.sp,
-                                Alignment.CenterStart,
                                 Modifier.fillMaxWidth(0.5f),
-                                TextAlign.Start
                             )
                             Spacer(modifier = Modifier.width(16.dp))
                             Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
@@ -160,8 +158,7 @@ fun ShowTrueSettings(
                             getTextColor(activity),
                             getTextStrokeColor(activity),
                             14.sp,
-                            Alignment.Center,
-                            modifier = Modifier
+                            Modifier
                                 .fillMaxWidth(0.33f)
                                 .padding(horizontal = 8.dp)
                                 .clickableOk(activity) {
@@ -177,7 +174,6 @@ fun ShowTrueSettings(
                                 }
                                 .background(getTextBackgroundColor(activity))
                                 .padding(4.dp),
-                            textAlign = TextAlign.Center,
                         )
                         TextField(
                             modifier = Modifier.fillMaxWidth(0.5f),
@@ -197,9 +193,7 @@ fun ShowTrueSettings(
                                     getTextColor(activity),
                                     getTextStrokeColor(activity),
                                     11.sp,
-                                    Alignment.Center,
                                     Modifier,
-                                    TextAlign.Center
                                 )
                             },
                             colors = TextFieldDefaults.colors().copy(

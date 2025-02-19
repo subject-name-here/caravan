@@ -30,8 +30,12 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.sebaslogen.resaca.rememberScoped
 import com.unicorns.invisible.caravan.model.CardBack
+import com.unicorns.invisible.caravan.model.primitives.Card
+import com.unicorns.invisible.caravan.model.primitives.Rank
+import com.unicorns.invisible.caravan.model.primitives.Suit
 import com.unicorns.invisible.caravan.save.saveData
 import com.unicorns.invisible.caravan.utils.MenuItemOpen
+import com.unicorns.invisible.caravan.utils.ShowCardBack
 import com.unicorns.invisible.caravan.utils.TextFallout
 import com.unicorns.invisible.caravan.utils.clickableOk
 import com.unicorns.invisible.caravan.utils.clickableSelect
@@ -102,14 +106,12 @@ fun DeckSelection(
                     getTextColor(activity),
                     getTextStrokeColor(activity),
                     20.sp,
-                    Alignment.Center,
                     Modifier
                         .background(getTextBackgroundColor(activity))
                         .clickableOk(activity) {
                             setCustomDeck = true
                         }
                         .padding(8.dp),
-                    TextAlign.Center
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -121,26 +123,12 @@ fun DeckSelection(
                     getTextColor(activity),
                     getTextStrokeColor(activity),
                     24.sp,
-                    Alignment.Center,
                     Modifier,
-                    TextAlign.Center
                 )
 
                 @Composable
                 fun showDeckBack(back: CardBack, isAlt: Boolean) {
-                    if (!isAlt) {
-                        AsyncImage(
-                            model = "file:///android_asset/caravan_cards_back/" + back.backFileName,
-                            contentDescription = "",
-                            modifier = getModifier(back, false)
-                        )
-                    } else {
-                        AsyncImage(
-                            model = "file:///android_asset/caravan_cards_back/" + back.altBackFileName,
-                            contentDescription = "",
-                            modifier = getModifier(back, true)
-                        )
-                    }
+                    ShowCardBack(activity, Card(Rank.ACE, Suit.HEARTS, back, isAlt), getModifier(back, isAlt))
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))

@@ -128,9 +128,7 @@ fun SetCustomDeck(
                             getTextColor(activity),
                             getTextStrokeColor(activity),
                             16.sp,
-                            Alignment.Center,
                             Modifier.padding(4.dp),
-                            TextAlign.Center
                         )
                     }
                 }
@@ -182,9 +180,7 @@ fun SetCustomDeck(
                                     getTextColor(activity),
                                     getTextStrokeColor(activity),
                                     14.sp,
-                                    Alignment.Center,
                                     Modifier.fillMaxWidth(),
-                                    TextAlign.Center
                                 )
                                 ShowCardBack(
                                     activity,
@@ -204,7 +200,6 @@ fun SetCustomDeck(
                                         getTextColor(activity),
                                         getTextStrokeColor(activity),
                                         18.sp,
-                                        Alignment.Center,
                                         Modifier
                                             .fillMaxWidth()
                                             .background(getTextBackgroundColor(activity))
@@ -215,8 +210,7 @@ fun SetCustomDeck(
                                                 updateCharacteristics = !updateCharacteristics
                                                 updateCards = !updateCards
                                             }
-                                            .padding(vertical = 4.dp),
-                                        TextAlign.Center
+                                            .padding(vertical = 4.dp)
                                     )
                                 }
 
@@ -241,9 +235,7 @@ fun SetCustomDeck(
                                         getTextColor(activity),
                                         getTextStrokeColor(activity),
                                         12.sp,
-                                        Alignment.Center,
-                                        modifier = Modifier.wrapContentHeight(),
-                                        TextAlign.Center
+                                        Modifier.wrapContentHeight(),
                                     )
                                     CheckboxCustom(
                                         activity, { check },
@@ -342,9 +334,7 @@ fun ShowCharacteristics(activity: MainActivity) {
                 color1,
                 color2,
                 14.sp,
-                Alignment.Center,
                 Modifier.fillMaxWidth(0.5f),
-                TextAlign.Center
             )
             val nonFaces = deck.count { !it.rank.isFace() }
             val nonFacesMin = CResources.MIN_NUM_OF_NUMBERS
@@ -355,9 +345,7 @@ fun ShowCharacteristics(activity: MainActivity) {
                 color3,
                 color4,
                 14.sp,
-                Alignment.Center,
                 Modifier.fillMaxWidth(),
-                TextAlign.Center,
             )
         }
         Row(
@@ -376,9 +364,7 @@ fun ShowCharacteristics(activity: MainActivity) {
                 color1,
                 color2,
                 14.sp,
-                Alignment.Center,
                 Modifier.fillMaxWidth(0.5f),
-                TextAlign.Center
             )
         }
     }

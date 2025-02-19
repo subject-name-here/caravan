@@ -64,7 +64,6 @@ fun ShowStyles(
                             getTextColor(activity),
                             getTextStrokeColor(activity),
                             24.sp,
-                            Alignment.Center,
                             Modifier
                                 .background(getTextBackgroundColor(activity))
                                 .clickableSelect(activity) {
@@ -75,7 +74,6 @@ fun ShowStyles(
                                     }
                                 }
                                 .padding(4.dp),
-                            TextAlign.Center
                         )
                     }
                     val watchedStyle = Style.entries.getOrNull(currentlyWatchedStyle) ?: Style.PIP_BOY
@@ -111,12 +109,10 @@ fun ShowStyles(
                                         getTextColorByStyle(activity, watchedStyle),
                                         getStrokeColorByStyle(activity, watchedStyle),
                                         20.sp,
-                                        Alignment.Center,
                                         Modifier
                                             .background(getTextBackByStyle(activity, watchedStyle))
                                             .clickable { playPimpBoySound(activity) }
                                             .padding(4.dp),
-                                        TextAlign.Center
                                     )
 
                                     if (watchedStyle in save.ownedStyles) {
@@ -125,7 +121,6 @@ fun ShowStyles(
                                             getTextColorByStyle(activity, watchedStyle),
                                             getStrokeColorByStyle(activity, watchedStyle),
                                             20.sp,
-                                            Alignment.Center,
                                             Modifier
                                                 .background(
                                                     getTextBackByStyle(
@@ -138,7 +133,6 @@ fun ShowStyles(
                                                     selectStyle(watchedStyle.ordinal)
                                                 }
                                                 .padding(4.dp),
-                                            TextAlign.Center
                                         )
                                     } else {
                                         TextFallout(
@@ -146,9 +140,7 @@ fun ShowStyles(
                                             getTextColorByStyle(activity, watchedStyle),
                                             getStrokeColorByStyle(activity, watchedStyle),
                                             20.sp,
-                                            Alignment.Center,
                                             Modifier.padding(4.dp),
-                                            TextAlign.Center
                                         )
                                     }
                                 }
@@ -166,14 +158,12 @@ fun ShowStyles(
                             getTextColor(activity),
                             getTextStrokeColor(activity),
                             24.sp,
-                            Alignment.Center,
                             Modifier
                                 .background(getTextBackgroundColor(activity))
                                 .clickableSelect(activity) {
                                     currentlyWatchedStyle = (currentlyWatchedStyle + 1) % Style.entries.size
                                 }
                                 .padding(4.dp),
-                            TextAlign.Center
                         )
                     }
                 }

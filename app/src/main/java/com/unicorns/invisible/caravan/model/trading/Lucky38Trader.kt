@@ -22,5 +22,5 @@ class Lucky38Trader : Trader {
 
     override fun getSymbol() = "38"
 
-    override fun getCards(): List<Pair<Card, Int>> = getCards(CardBack.LUCKY_38)
+    override fun getCards(): List<Card> = getCards(CardBack.LUCKY_38)
 }

@@ -957,9 +957,7 @@ fun BoxWithConstraintsScope.StylePicture(
                         getTextColor(activity),
                         getTextStrokeColor(activity),
                         12.sp,
-                        Alignment.TopCenter,
                         Modifier.fillMaxWidth(),
-                        TextAlign.Center,
                     )
                     Spacer(Modifier.height(4.dp))
                     TextFallout(
@@ -967,9 +965,7 @@ fun BoxWithConstraintsScope.StylePicture(
                         getTextColor(activity),
                         getTextStrokeColor(activity),
                         14.sp,
-                        Alignment.TopCenter,
                         Modifier.fillMaxWidth(),
-                        TextAlign.Center,
                     )
                     Spacer(Modifier.height(4.dp))
                     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
@@ -978,7 +974,6 @@ fun BoxWithConstraintsScope.StylePicture(
                             getTextColor(activity),
                             getTextStrokeColor(activity),
                             16.sp,
-                            Alignment.Center,
                             Modifier
                                 .background(getTextBackgroundColor(activity))
                                 .padding(4.dp)
@@ -993,14 +988,12 @@ fun BoxWithConstraintsScope.StylePicture(
                                     }
                                     side = Random.nextBoolean()
                                 },
-                            TextAlign.Center,
                         )
                         TextFallout(
                             stringResource(R.string.tails),
                             getTextColor(activity),
                             getTextStrokeColor(activity),
                             16.sp,
-                            Alignment.Center,
                             Modifier
                                 .background(getTextBackgroundColor(activity))
                                 .padding(4.dp)
@@ -1015,7 +1008,6 @@ fun BoxWithConstraintsScope.StylePicture(
                                     }
                                     side = Random.nextBoolean()
                                 },
-                            TextAlign.Center,
                         )
                     }
                 }

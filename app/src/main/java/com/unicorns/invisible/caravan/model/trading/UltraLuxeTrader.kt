@@ -25,5 +25,5 @@ class UltraLuxeTrader : Trader {
 
     override fun getSymbol() = "UL"
 
-    override fun getCards(): List<Pair<Card, Int>> = getCards(CardBack.ULTRA_LUXE)
+    override fun getCards(): List<Card> = getCards(CardBack.ULTRA_LUXE)
 }

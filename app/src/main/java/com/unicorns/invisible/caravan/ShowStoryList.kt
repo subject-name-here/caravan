@@ -211,9 +211,7 @@ fun ShowStoryList(
                     getTextColor(activity),
                     getTextStrokeColor(activity),
                     22.sp,
-                    Alignment.Center,
                     Modifier,
-                    TextAlign.Center
                 )
                 Spacer(modifier = Modifier.height(16.dp))
 
@@ -241,7 +239,6 @@ fun ShowStoryList(
                         getTextColor(activity),
                         getTextStrokeColor(activity),
                         16.sp,
-                        Alignment.Center,
                         if (isAvailable || isAlt) {
                             Modifier
                                 .clickableSelect(activity) { showChapter = number }
@@ -249,8 +246,7 @@ fun ShowStoryList(
                         } else {
                             Modifier
                         }
-                            .padding(4.dp),
-                        TextAlign.Center
+                            .padding(4.dp)
                     )
                     Spacer(modifier = Modifier.height(10.dp))
                 }
@@ -285,11 +281,9 @@ fun DialogLine(activity: MainActivity, line: String, isSelect: Boolean = true, o
         getTextColorByStyle(activity, Style.PIP_BOY),
         getStrokeColorByStyle(activity, Style.PIP_BOY),
         18.sp,
-        Alignment.CenterStart,
-        modifier = modifier
+        modifier
             .background(getTextBackByStyle(activity, Style.PIP_BOY))
-            .padding(horizontal = 8.dp, vertical = 4.dp),
-        TextAlign.Start
+            .padding(horizontal = 8.dp, vertical = 4.dp)
     )
     Spacer(Modifier.height(12.dp))
 }
@@ -400,11 +394,9 @@ fun ShowStoryChapter1(
                     getTextColorByStyle(activity, Style.PIP_BOY),
                     getStrokeColorByStyle(activity, Style.PIP_BOY),
                     16.sp,
-                    Alignment.CenterStart,
-                    modifier = Modifier
+                    Modifier
                         .background(getTextBackByStyle(activity, Style.PIP_BOY))
-                        .padding(horizontal = 8.dp, vertical = 4.dp),
-                    TextAlign.Start
+                        .padding(horizontal = 8.dp, vertical = 4.dp)
                 )
 
                 Spacer(Modifier.height(16.dp))
@@ -520,11 +512,9 @@ fun ShowStoryChapter2(
                     getTextColorByStyle(activity, Style.PIP_BOY),
                     getStrokeColorByStyle(activity, Style.PIP_BOY),
                     16.sp,
-                    Alignment.CenterStart,
-                    modifier = Modifier
+                    Modifier
                         .background(getTextBackByStyle(activity, Style.PIP_BOY))
-                        .padding(horizontal = 8.dp, vertical = 4.dp),
-                    TextAlign.Start
+                        .padding(horizontal = 8.dp, vertical = 4.dp)
                 )
 
                 Spacer(Modifier.height(16.dp))
@@ -640,11 +630,9 @@ fun ShowStoryChapter3(
                     getTextColorByStyle(activity, Style.PIP_BOY),
                     getStrokeColorByStyle(activity, Style.PIP_BOY),
                     16.sp,
-                    Alignment.CenterStart,
-                    modifier = Modifier
+                    Modifier
                         .background(getTextBackByStyle(activity, Style.PIP_BOY))
-                        .padding(horizontal = 8.dp, vertical = 4.dp),
-                    TextAlign.Start
+                        .padding(horizontal = 8.dp, vertical = 4.dp)
                 )
 
                 Spacer(Modifier.height(16.dp))
@@ -731,12 +719,11 @@ fun ShowStoryChapter4(
                     },
                     Color(activity.getColor(R.color.colorTextBack)),
                     Color(activity.getColor(R.color.colorTextBack)),
-                    18.sp, Alignment.Center,
+                    18.sp,
                     Modifier
                         .background(Color(activity.getColor(R.color.colorText)))
                         .clickableCancel(activity) { messageNumber = -1 }
-                        .padding(4.dp),
-                    TextAlign.Center
+                        .padding(4.dp)
                 )
             },
             title = {
@@ -744,8 +731,7 @@ fun ShowStoryChapter4(
                     stringResource(R.string.ch4_mh),
                     Color(activity.getColor(R.color.colorText)),
                     Color(activity.getColor(R.color.colorText)),
-                    24.sp, Alignment.CenterStart, Modifier,
-                    TextAlign.Start
+                    24.sp, Modifier
                 )
             },
             text = {
@@ -758,8 +744,7 @@ fun ShowStoryChapter4(
                     },
                     Color(activity.getColor(R.color.colorText)),
                     Color(activity.getColor(R.color.colorText)),
-                    16.sp, Alignment.CenterStart, Modifier,
-                    TextAlign.Start
+                    16.sp, Modifier
                 )
             },
             containerColor = Color.Black,
@@ -830,11 +815,9 @@ fun ShowStoryChapter4(
                     getTextColorByStyle(activity, Style.PIP_BOY),
                     getStrokeColorByStyle(activity, Style.PIP_BOY),
                     16.sp,
-                    Alignment.CenterStart,
-                    modifier = Modifier
+                    Modifier
                         .background(getTextBackByStyle(activity, Style.PIP_BOY))
-                        .padding(horizontal = 8.dp, vertical = 4.dp),
-                    TextAlign.Start
+                        .padding(horizontal = 8.dp, vertical = 4.dp)
                 )
 
                 Spacer(Modifier.height(16.dp))
@@ -942,11 +925,9 @@ fun ShowStoryChapter5(
                     getTextColorByStyle(activity, Style.PIP_BOY),
                     getStrokeColorByStyle(activity, Style.PIP_BOY),
                     16.sp,
-                    Alignment.CenterStart,
-                    modifier = Modifier
+                    Modifier
                         .background(getTextBackByStyle(activity, Style.PIP_BOY))
-                        .padding(horizontal = 8.dp, vertical = 4.dp),
-                    TextAlign.Start
+                        .padding(horizontal = 8.dp, vertical = 4.dp)
                 )
 
                 Spacer(Modifier.height(16.dp))
@@ -1030,12 +1011,11 @@ fun ShowStoryChapter6(
                     },
                     Color(activity.getColor(R.color.colorTextBack)),
                     Color(activity.getColor(R.color.colorTextBack)),
-                    18.sp, Alignment.Center,
+                    18.sp,
                     Modifier
                         .background(Color(activity.getColor(R.color.colorText)))
                         .clickableCancel(activity) { messageNumber = -1 }
-                        .padding(4.dp),
-                    TextAlign.Center
+                        .padding(4.dp)
                 )
             },
             title = {
@@ -1043,8 +1023,7 @@ fun ShowStoryChapter6(
                     stringResource(R.string.ch6_mh),
                     Color(activity.getColor(R.color.colorText)),
                     Color(activity.getColor(R.color.colorText)),
-                    24.sp, Alignment.CenterStart, Modifier,
-                    TextAlign.Start
+                    24.sp, Modifier
                 )
             },
             text = {
@@ -1056,8 +1035,7 @@ fun ShowStoryChapter6(
                     },
                     Color(activity.getColor(R.color.colorText)),
                     Color(activity.getColor(R.color.colorText)),
-                    16.sp, Alignment.CenterStart, Modifier,
-                    TextAlign.Start
+                    16.sp, Modifier
                 )
             },
             containerColor = Color.Black,
@@ -1158,11 +1136,9 @@ fun ShowStoryChapter6(
                     getTextColorByStyle(activity, Style.PIP_BOY),
                     getStrokeColorByStyle(activity, Style.PIP_BOY),
                     16.sp,
-                    Alignment.CenterStart,
-                    modifier = Modifier
+                    Modifier
                         .background(getTextBackByStyle(activity, Style.PIP_BOY))
-                        .padding(horizontal = 8.dp, vertical = 4.dp),
-                    TextAlign.Start
+                        .padding(horizontal = 8.dp, vertical = 4.dp)
                 )
 
                 Spacer(Modifier.height(16.dp))
@@ -1298,11 +1274,9 @@ fun ShowStoryChapter7(
                     getTextColorByStyle(activity, Style.PIP_BOY),
                     getStrokeColorByStyle(activity, Style.PIP_BOY),
                     16.sp,
-                    Alignment.CenterStart,
-                    modifier = Modifier
+                    Modifier
                         .background(getTextBackByStyle(activity, Style.PIP_BOY))
-                        .padding(horizontal = 8.dp, vertical = 4.dp),
-                    TextAlign.Start
+                        .padding(horizontal = 8.dp, vertical = 4.dp)
                 )
 
                 Spacer(Modifier.height(16.dp))
@@ -1429,11 +1403,9 @@ fun ShowStoryChapter8(
                     getTextColorByStyle(activity, Style.PIP_BOY),
                     getStrokeColorByStyle(activity, Style.PIP_BOY),
                     16.sp,
-                    Alignment.CenterStart,
-                    modifier = Modifier
+                    Modifier
                         .background(getTextBackByStyle(activity, Style.PIP_BOY))
-                        .padding(horizontal = 8.dp, vertical = 4.dp),
-                    TextAlign.Start
+                        .padding(horizontal = 8.dp, vertical = 4.dp)
                 )
 
                 Spacer(Modifier.height(16.dp))
@@ -1537,7 +1509,6 @@ fun ShowStoryChapter9(
                     getDialogTextColor(activity),
                     getDialogTextColor(activity),
                     14.sp,
-                    Alignment.CenterEnd,
                     Modifier.clickableCancel(activity) {
                         dialogText = when (dialogText) {
                             0 -> 100
@@ -1553,8 +1524,7 @@ fun ShowStoryChapter9(
                             }
                             else -> -1
                         }
-                    },
-                    TextAlign.End
+                    }
                 )
             },
             title = {
@@ -1563,9 +1533,7 @@ fun ShowStoryChapter9(
                     getDialogTextColor(activity),
                     getDialogTextColor(activity),
                     24.sp,
-                    Alignment.CenterEnd,
                     Modifier,
-                    TextAlign.End
                 )
             },
             text = {
@@ -1592,9 +1560,7 @@ fun ShowStoryChapter9(
                     getDialogTextColor(activity),
                     getDialogTextColor(activity),
                     18.sp,
-                    Alignment.CenterStart,
                     Modifier,
-                    TextAlign.Start
                 )
             },
             containerColor = getDialogBackground(activity),
@@ -1681,11 +1647,9 @@ fun ShowStoryChapter9(
                     getTextColorByStyle(activity, Style.PIP_BOY),
                     getStrokeColorByStyle(activity, Style.PIP_BOY),
                     16.sp,
-                    Alignment.CenterStart,
-                    modifier = Modifier
+                    Modifier
                         .background(getTextBackByStyle(activity, Style.PIP_BOY))
-                        .padding(horizontal = 8.dp, vertical = 4.dp),
-                    TextAlign.Start
+                        .padding(horizontal = 8.dp, vertical = 4.dp)
                 )
 
                 Spacer(Modifier.height(16.dp))
@@ -1879,11 +1843,9 @@ fun ShowStoryChapter10(
                     getTextColorByStyle(activity, Style.PIP_BOY),
                     getStrokeColorByStyle(activity, Style.PIP_BOY),
                     16.sp,
-                    Alignment.CenterStart,
-                    modifier = Modifier
+                    Modifier
                         .background(getTextBackByStyle(activity, Style.PIP_BOY))
-                        .padding(horizontal = 8.dp, vertical = 4.dp),
-                    TextAlign.Start
+                        .padding(horizontal = 8.dp, vertical = 4.dp)
                 )
 
                 Spacer(Modifier.height(16.dp))
@@ -2016,11 +1978,9 @@ fun ShowStoryChapter9A(
                     getTextColorByStyle(activity, Style.PIP_BOY),
                     getStrokeColorByStyle(activity, Style.PIP_BOY),
                     16.sp,
-                    Alignment.CenterStart,
-                    modifier = Modifier
+                    Modifier
                         .background(getTextBackByStyle(activity, Style.PIP_BOY))
-                        .padding(horizontal = 8.dp, vertical = 4.dp),
-                    TextAlign.Start
+                        .padding(horizontal = 8.dp, vertical = 4.dp)
                 )
 
                 Spacer(Modifier.height(16.dp))
@@ -2244,11 +2204,9 @@ fun StartStoryFinalBossGame(
                 getTextColorByStyle(activity, Style.PIP_BOY),
                 getStrokeColorByStyle(activity, Style.PIP_BOY),
                 14.sp,
-                Alignment.BottomEnd,
                 Modifier
                     .background(getTextBackByStyle(activity, Style.PIP_BOY))
-                    .padding(8.dp),
-                TextAlign.Center
+                    .padding(8.dp)
             )
         }
     }

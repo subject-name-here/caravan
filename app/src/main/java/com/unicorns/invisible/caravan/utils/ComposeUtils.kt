@@ -2,7 +2,6 @@ package com.unicorns.invisible.caravan.utils
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -49,6 +48,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
 import coil.decode.SvgDecoder
 import coil.request.ImageRequest
@@ -65,6 +65,8 @@ import com.unicorns.invisible.caravan.model.primitives.Card
 
 @Composable
 fun Int.pxToDp() = with(LocalDensity.current) { this@pxToDp.toDp() }
+@Composable
+fun Dp.dpToSp() = with(LocalDensity.current) { this@dpToSp.toSp() }
 @Composable
 fun Dp.dpToPx() = with(LocalDensity.current) { this@dpToPx.toPx() }
 
@@ -207,10 +209,10 @@ fun ShowCard(activity: MainActivity, card: Card, modifier: Modifier) {
             .decoderFactory(SvgDecoder.Factory())
             .build()
     )
-    Image(
-        painter = painter,
+    AsyncImage(
+        model = painter,
         contentDescription = "",
-        modifier = modifier.clip(RoundedCornerShape(5)),
+        modifier.clip(RoundedCornerShape(5)),
         colorFilter = getFilter(card.back, card.isAlt)
     )
 }
@@ -225,10 +227,10 @@ fun ShowCardBack(activity: MainActivity, card: Card, modifier: Modifier) {
             .decoderFactory(SvgDecoder.Factory())
             .build()
     )
-    Image(
-        painter = painter2,
+    AsyncImage(
+        model = painter2,
         contentDescription = "",
-        modifier = modifier.clip(RoundedCornerShape(5)),
+        modifier.clip(RoundedCornerShape(5)),
         contentScale = ContentScale.Fit
     )
 }

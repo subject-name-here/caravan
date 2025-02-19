@@ -64,8 +64,7 @@ fun afterPlayerMove(
             delay(speed.delay * 2)
         }
         game.isPlayerTurn = false
-        val isNewCardAdded =
-            game.playerCResources.deckSize > 0 && game.playerCResources.hand.size < 5
+        val isNewCardAdded = game.playerCResources.deckSize > 0 && game.playerCResources.hand.size < 5
 
         game.processField()
         if (speed.delay != 0L) {
@@ -73,10 +72,14 @@ fun afterPlayerMove(
         }
         updateView()
 
-        game.processHand(game.playerCResources)
-        if (speed.delay != 0L) {
-            delay(speed.delay) // Take card into hand
+        if (game.playerCResources.hand.size < 5 && game.playerCResources.deckSize > 0) {
+            game.playerCResources.addToHand()
+            updateView()
+            if (speed.delay != 0L) {
+                delay(speed.delay) // Take card into hand
+            }
         }
+
         updateView()
 
         if (isNewCardAdded) {
@@ -168,11 +171,13 @@ fun pingForMove(
             }
             updateView()
 
-            game.processHand(game.enemyCResources)
-            if (speed.delay != 0L) {
-                delay(speed.delay) // Take card into hand
+            if (game.enemyCResources.hand.size < 5 && game.enemyCResources.deckSize > 0) {
+                game.enemyCResources.removeFirstCardFromDeck()
+                updateView()
+                if (speed.delay != 0L) {
+                    delay(speed.delay) // Take card into hand
+                }
             }
-            updateView()
 
             game.isPlayerTurn = true
             game.checkOnGameOver()
@@ -258,7 +263,7 @@ fun ShowGamePvP(
     }
 
     fun dropCardFromHand() {
-        if (game.isExchangingCards) return
+        if (!game.canPlayerMove) return
         val selectedCardNN = selectedCard
         if (selectedCardNN !in game.playerCResources.hand.indices) return
         playVatsReady(activity)
@@ -287,7 +292,7 @@ fun ShowGamePvP(
     }
 
     fun dropCaravan() {
-        if (game.isExchangingCards) return
+        if (!game.canPlayerMove) return
         val selectedCaravanNN = selectedCaravan
         if (selectedCaravanNN == -1) return
         playVatsReady(activity)
@@ -323,7 +328,7 @@ fun ShowGamePvP(
         position: Int,
         isEnemy: Boolean = false
     ) {
-        if (game.isExchangingCards) return
+        if (!game.canPlayerMove) return
         fun onCaravanCardInserted(cardIndex: Int, caravanIndex: Int, cardInCaravan: Int? = null) {
             resetSelected()
             updateCaravans()
@@ -377,8 +382,8 @@ fun ShowGamePvP(
 
         val cardIndex = selectedCard
         val card = game.playerCResources.hand.getOrNull(cardIndex) ?: return
-        if (game.isPlayerTurn && !game.isOver() && (!game.isInitStage() || !card.isFace())) {
-            if (!card.isFace()) {
+        if (game.isPlayerTurn && !game.isOver() && (!game.isInitStage() || !card.isModifier())) {
+            if (!card.isModifier()) {
                 if (position == caravan.cards.size && !isEnemy) {
                     if (caravan.canPutCardOnTop(card)) {
                         playCardFlipSound(activity)
@@ -398,7 +403,7 @@ fun ShowGamePvP(
                     playCardFlipSound(activity)
                     if (card.isOrdinary() && card.rank == Rank.JOKER) {
                         playJokerSounds(activity)
-                    } else if (card.getWildWastelandCardType() != null) {
+                    } else if (card.getWildWastelandType() != null) {
                         playWWSound(activity)
                     } else if (card.isNuclear()) {
                         playNukeBlownSound(activity)
@@ -476,11 +481,9 @@ fun ShowGamePvP(
                 getTextColor(activity),
                 getTextStrokeColor(activity),
                 14.sp,
-                Alignment.BottomEnd,
                 Modifier
                     .background(getTextBackgroundColor(activity))
-                    .padding(8.dp),
-                TextAlign.Center
+                    .padding(8.dp)
             )
         }
     }

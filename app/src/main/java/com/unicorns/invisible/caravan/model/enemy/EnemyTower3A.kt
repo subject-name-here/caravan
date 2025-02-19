@@ -4,6 +4,5 @@ import kotlinx.serialization.Serializable
 
 
 @Serializable
-data object EnemyViqueen : Enemy {
-
+data object EnemyTower3A : Enemy {
 }

@@ -36,7 +36,6 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sebaslogen.resaca.rememberScoped
@@ -137,12 +136,10 @@ fun ShowSelectPvE(
                         getTextColor(activity),
                         getTextStrokeColor(activity),
                         28.sp,
-                        Alignment.Center,
                         Modifier
                             .clickableSelect(activity) { onClick() }
                             .background(getTextBackgroundColor(activity))
                             .padding(8.dp),
-                        TextAlign.Center
                     )
                 }
 
@@ -194,9 +191,7 @@ fun ShowStats(
                     getTextColor(activity),
                     getTextStrokeColor(activity),
                     20.sp,
-                    Alignment.Center,
                     Modifier,
-                    TextAlign.Center
                 )
                 Spacer(modifier = Modifier.height(12.dp))
                 @Composable
@@ -206,9 +201,7 @@ fun ShowStats(
                         getTextColor(activity),
                         getTextStrokeColor(activity),
                         16.sp,
-                        Alignment.Center,
                         Modifier,
-                        TextAlign.Center,
                     )
                 }
                 StatsItem(text = stringResource(R.string.pve_games_started, started))
@@ -226,9 +219,7 @@ fun ShowStats(
                     getTextColor(activity),
                     getTextStrokeColor(activity),
                     20.sp,
-                    Alignment.Center,
                     Modifier,
-                    TextAlign.Center
                 )
                 Spacer(modifier = Modifier.height(12.dp))
                 StatsItem(
@@ -344,9 +335,7 @@ fun ShowPvE(
                         getTextColor(activity),
                         getTextStrokeColor(activity),
                         16.sp,
-                        Alignment.Center,
                         Modifier.padding(4.dp),
-                        TextAlign.Center
                     )
                 }
                 Tab(
@@ -359,9 +348,7 @@ fun ShowPvE(
                         getTextColor(activity),
                         getTextStrokeColor(activity),
                         16.sp,
-                        Alignment.Center,
                         Modifier.padding(4.dp),
-                        TextAlign.Center
                     )
                 }
                 Tab(
@@ -374,9 +361,7 @@ fun ShowPvE(
                         getTextColor(activity),
                         getTextStrokeColor(activity),
                         16.sp,
-                        Alignment.Center,
                         Modifier.padding(4.dp),
-                        TextAlign.Center
                     )
                 }
                 Tab(
@@ -389,9 +374,7 @@ fun ShowPvE(
                         getTextColor(activity),
                         getTextStrokeColor(activity),
                         16.sp,
-                        Alignment.Center,
                         Modifier.padding(4.dp),
-                        TextAlign.Center
                     )
                 }
             }
@@ -411,12 +394,10 @@ fun ShowPvE(
                     getTextColor(activity),
                     getTextStrokeColor(activity),
                     18.sp,
-                    Alignment.Center,
                     Modifier
                         .background(getTextBackgroundColor(activity))
                         .clickable { onClick() }
                         .padding(4.dp),
-                    TextAlign.Center
                 )
             }
 
@@ -625,22 +606,18 @@ fun ShowBettingScreen(
                             getTextColor(activity),
                             getTextStrokeColor(activity),
                             16.sp,
-                            Alignment.Center,
                             Modifier
                                 .fillMaxWidth()
                                 .padding(8.dp),
-                            TextAlign.Center
                         )
                         TextFallout(
                             stringResource(R.string.enemy_s_bet, enemyBet),
                             getTextColor(activity),
                             getTextStrokeColor(activity),
                             16.sp,
-                            Alignment.Center,
                             Modifier
                                 .fillMaxWidth()
                                 .padding(8.dp),
-                            TextAlign.Center
                         )
 
                         Spacer(Modifier.height(16.dp))
@@ -667,9 +644,7 @@ fun ShowBettingScreen(
                                     getTextColor(activity),
                                     getTextStrokeColor(activity),
                                     14.sp,
-                                    Alignment.Center,
                                     Modifier,
-                                    TextAlign.Center
                                 )
                             },
                             colors = TextFieldDefaults.colors().copy(
@@ -686,10 +661,7 @@ fun ShowBettingScreen(
                                 getTextColor(activity),
                                 getTextStrokeColor(activity),
                                 18.sp,
-                                Alignment.Center,
-                                Modifier
-                                    .padding(8.dp),
-                                TextAlign.Center
+                                Modifier.padding(8.dp),
                             )
                             CheckboxCustom(activity, { isBlitz }, { isBlitz = it }) { true }
 
@@ -700,11 +672,7 @@ fun ShowBettingScreen(
                             getTextColor(activity),
                             getTextStrokeColor(activity),
                             18.sp,
-                            Alignment.Center,
-                            Modifier
-                                .fillMaxWidth()
-                                .padding(8.dp),
-                            TextAlign.Center
+                            Modifier.fillMaxWidth().padding(8.dp),
                         )
 
                         val modifier = if (bet == "" || bet.toIntOrNull().let { it != null && it >= enemyBet && it <= save.capsInHand }) {
@@ -730,9 +698,7 @@ fun ShowBettingScreen(
                             getTextColor(activity),
                             getTextStrokeColor(activity),
                             24.sp,
-                            Alignment.Center,
                             modifier,
-                            TextAlign.Center
                         )
                         Spacer(Modifier.height(12.dp))
                     }

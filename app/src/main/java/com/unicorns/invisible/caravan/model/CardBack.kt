@@ -1,10 +1,10 @@
 package com.unicorns.invisible.caravan.model
 
-import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.ColorMatrix
 import com.unicorns.invisible.caravan.R
+import kotlinx.serialization.Serializable
 
 
+@Serializable
 enum class CardBack(val deckName: Int?, val backFileName: String, val altBackFileName: String?) {
     STANDARD(R.string.standard_deck_name, "FNV_Caravan_card_back_-_standard.webp", "FNV_Caravan_card_back_-_st_alt.webp"),
     TOPS(R.string.tops_deck_name, "FNV_Caravan_card_back_-_Tops.webp", "tops_alt.webp"),
@@ -26,6 +26,5 @@ enum class CardBack(val deckName: Int?, val backFileName: String, val altBackFil
     NCR(R.string.ncr_deck_name, "TODO", null), // TODO
     LEGION(R.string.legion_deck_name, "TODO", null); // TODO
 
-    fun isPlayable() = deckName != null
     fun hasAlt() = altBackFileName != null
 }

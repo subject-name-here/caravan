@@ -1,7 +1,6 @@
 package com.unicorns.invisible.caravan.utils
 
 import android.media.MediaPlayer
-import android.widget.Toast
 import com.unicorns.invisible.caravan.MainActivity
 import com.unicorns.invisible.caravan.R
 import com.unicorns.invisible.caravan.Style
@@ -10,7 +9,6 @@ import com.unicorns.invisible.caravan.save
 import com.unicorns.invisible.caravan.soundReduced
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import okio.withLock
@@ -220,7 +218,7 @@ private fun getSongsArray() = arrayOf(
 
 var pointer = -1
 val indices = getSongsArray().indices.toMutableList()
-private fun getSongByIndex(activity: MainActivity): Pair<String, String>? {
+fun getSongByIndex(activity: MainActivity): Pair<String, String>? {
     val songsArray = getSongsArray()
     return if (pointer == -1) {
         if (activity.styleId == Style.SIERRA_MADRE || activity.styleId == Style.MADRE_ROJA) {

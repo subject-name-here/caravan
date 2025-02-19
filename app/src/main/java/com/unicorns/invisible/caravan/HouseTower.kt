@@ -28,7 +28,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sebaslogen.resaca.rememberScoped
@@ -294,14 +293,13 @@ fun TowerScreen(
                     stringResource(R.string.frank_start_button),
                     Color(activity.getColor(R.color.colorTextBack)),
                     Color(activity.getColor(R.color.colorTextBack)),
-                    18.sp, Alignment.Center,
+                    18.sp,
                     Modifier
                         .background(Color(activity.getColor(R.color.colorText)))
                         .clickableOk(activity) {
                             showFrankWarning = false; playLevel = 11
                         }
-                        .padding(4.dp),
-                    TextAlign.Center
+                        .padding(4.dp)
                 )
             },
             dismissButton = {
@@ -309,12 +307,11 @@ fun TowerScreen(
                     stringResource(R.string.frank_think_button),
                     Color(activity.getColor(R.color.colorTextBack)),
                     Color(activity.getColor(R.color.colorTextBack)),
-                    18.sp, Alignment.Center,
+                    18.sp,
                     Modifier
                         .background(Color(activity.getColor(R.color.colorText)))
                         .clickableCancel(activity) { showFrankWarning = false }
-                        .padding(4.dp),
-                    TextAlign.Center
+                        .padding(4.dp)
                 )
             },
             title = {
@@ -322,8 +319,7 @@ fun TowerScreen(
                     stringResource(R.string.frank_think_header),
                     Color(activity.getColor(R.color.colorText)),
                     Color(activity.getColor(R.color.colorText)),
-                    24.sp, Alignment.CenterStart, Modifier,
-                    TextAlign.Start
+                    24.sp, Modifier,
                 )
             },
             text = {
@@ -331,8 +327,7 @@ fun TowerScreen(
                     stringResource(R.string.frank_think_body),
                     Color(activity.getColor(R.color.colorText)),
                     Color(activity.getColor(R.color.colorText)),
-                    16.sp, Alignment.CenterStart, Modifier,
-                    TextAlign.Start
+                    16.sp, Modifier
                 )
             },
             containerColor = Color.Black,
@@ -370,18 +365,14 @@ fun StartScreen(
                 getTextColor(activity),
                 getTextStrokeColor(activity),
                 18.sp,
-                Alignment.Center,
                 Modifier,
-                TextAlign.Center
             )
             TextFallout(
                 stringResource(R.string.tower),
                 getTextColor(activity),
                 getTextStrokeColor(activity),
                 40.sp,
-                Alignment.Center,
                 Modifier,
-                TextAlign.Center
             )
             Spacer(modifier = Modifier.height(12.dp))
             TextFallout(
@@ -389,9 +380,7 @@ fun StartScreen(
                 getTextColor(activity),
                 getTextStrokeColor(activity),
                 24.sp,
-                Alignment.Center,
                 Modifier,
-                TextAlign.Center
             )
             Spacer(modifier = Modifier.height(8.dp))
             TextFallout(
@@ -399,9 +388,7 @@ fun StartScreen(
                 getTextColor(activity),
                 getTextStrokeColor(activity),
                 18.sp,
-                Alignment.Center,
                 Modifier,
-                TextAlign.Center
             )
             Spacer(modifier = Modifier.height(24.dp))
             TextFallout(
@@ -409,9 +396,7 @@ fun StartScreen(
                 getTextColor(activity),
                 getTextStrokeColor(activity),
                 20.sp,
-                Alignment.Center,
                 Modifier,
-                TextAlign.Center
             )
             Spacer(modifier = Modifier.height(8.dp))
             TextFallout(
@@ -419,7 +404,6 @@ fun StartScreen(
                 getTextColor(activity),
                 getTextStrokeColor(activity),
                 20.sp,
-                Alignment.Center,
                 Modifier
                     .padding(4.dp)
                     .clickableOk(activity) {
@@ -435,7 +419,6 @@ fun StartScreen(
                     }
                     .background(getTextBackgroundColor(activity))
                     .padding(4.dp),
-                TextAlign.Center
             )
         }
     }
@@ -475,9 +458,7 @@ fun EnemyPresentedScreen(
                     getTextColor(activity),
                     getTextStrokeColor(activity),
                     24.sp,
-                    Alignment.Center,
                     Modifier,
-                    TextAlign.Center
                 )
                 Spacer(Modifier.height(8.dp))
                 TextFallout(
@@ -485,9 +466,7 @@ fun EnemyPresentedScreen(
                     getTextColor(activity),
                     getTextStrokeColor(activity),
                     16.sp,
-                    Alignment.Center,
                     Modifier,
-                    TextAlign.Center
                 )
                 Spacer(Modifier.height(8.dp))
                 TextFallout(
@@ -495,9 +474,7 @@ fun EnemyPresentedScreen(
                     getTextColor(activity),
                     getTextStrokeColor(activity),
                     24.sp,
-                    Alignment.Center,
                     Modifier,
-                    TextAlign.Center
                 )
                 Spacer(modifier = Modifier.height(16.dp))
             }
@@ -510,27 +487,21 @@ fun EnemyPresentedScreen(
                         getTextColor(activity),
                         getTextStrokeColor(activity),
                         24.sp,
-                        Alignment.Center,
                         Modifier,
-                        TextAlign.Center
                     )
                     TextFallout(
                         stringResource(R.string.currently_in_bank_caps, inBank),
                         getTextColor(activity),
                         getTextStrokeColor(activity),
                         24.sp,
-                        Alignment.Center,
                         Modifier,
-                        TextAlign.Center
                     )
                     TextFallout(
                         stringResource(R.string.enemy, enemyName),
                         getTextColor(activity),
                         getTextStrokeColor(activity),
                         24.sp,
-                        Alignment.Center,
                         Modifier,
-                        TextAlign.Center
                     )
                 }
             }
@@ -581,14 +552,12 @@ fun EnemyPresentedScreen(
                     getTextColor(activity),
                     getTextStrokeColor(activity),
                     24.sp,
-                    Alignment.Center,
-                    modifier = Modifier
+                    Modifier
                         .clickableOk(activity) {
                             setLevelZero()
                         }
                         .background(getTextBackgroundColor(activity))
                         .padding(horizontal = 8.dp, vertical = 4.dp),
-                    TextAlign.Center
                 )
 
                 TextFallout(
@@ -596,14 +565,12 @@ fun EnemyPresentedScreen(
                     getTextColor(activity),
                     getTextStrokeColor(activity),
                     24.sp,
-                    Alignment.Center,
-                    modifier = Modifier
+                    Modifier
                         .clickableOk(activity) {
                             startLevel()
                         }
                         .background(getTextBackgroundColor(activity))
-                        .padding(horizontal = 8.dp, vertical = 4.dp),
-                    TextAlign.Center
+                        .padding(horizontal = 8.dp, vertical = 4.dp)
                 )
             }
         }
@@ -642,9 +609,7 @@ fun FrankPresentedScreen(
                     getTextColor(activity),
                     getTextStrokeColor(activity),
                     24.sp,
-                    Alignment.Center,
                     Modifier,
-                    TextAlign.Center
                 )
                 Spacer(modifier = Modifier.height(16.dp))
             }
@@ -659,27 +624,21 @@ fun FrankPresentedScreen(
                     getTextColor(activity),
                     getTextStrokeColor(activity),
                     24.sp,
-                    Alignment.Center,
                     Modifier,
-                    TextAlign.Center
                 )
                 TextFallout(
                     stringResource(R.string.currently_in_bank_caps, inBank),
                     getTextColor(activity),
                     getTextStrokeColor(activity),
                     24.sp,
-                    Alignment.Center,
                     Modifier,
-                    TextAlign.Center
                 )
                 TextFallout(
                     stringResource(R.string.enemy, stringResource(R.string.tower_enemy_10A)),
                     getTextColor(activity),
                     getTextStrokeColor(activity),
                     24.sp,
-                    Alignment.Center,
                     Modifier,
-                    TextAlign.Center
                 )
             }
 
@@ -694,14 +653,12 @@ fun FrankPresentedScreen(
                     getTextColor(activity),
                     getTextStrokeColor(activity),
                     24.sp,
-                    Alignment.Center,
-                    modifier = Modifier
+                    Modifier
+                        .background(getTextBackgroundColor(activity))
                         .clickableOk(activity) {
                             setLevelZero()
                         }
-                        .background(getTextBackgroundColor(activity))
                         .padding(horizontal = 8.dp, vertical = 4.dp),
-                    TextAlign.Center
                 )
 
                 TextFallout(
@@ -709,14 +666,12 @@ fun FrankPresentedScreen(
                     getTextColor(activity),
                     getTextStrokeColor(activity),
                     24.sp,
-                    Alignment.Center,
-                    modifier = Modifier
+                    Modifier
+                        .background(getTextBackgroundColor(activity))
                         .clickableOk(activity) {
                             startLevel()
                         }
-                        .background(getTextBackgroundColor(activity))
                         .padding(horizontal = 8.dp, vertical = 4.dp),
-                    TextAlign.Center
                 )
             }
         }
@@ -731,14 +686,12 @@ fun FinalScreen(activity: MainActivity, setLevelZero: () -> Unit) {
             getTextColor(activity),
             getTextStrokeColor(activity),
             24.sp,
-            Alignment.Center,
-            modifier = Modifier
+            Modifier
                 .clickableOk(activity) {
                     setLevelZero()
                 }
                 .background(getTextBackgroundColor(activity))
                 .padding(horizontal = 8.dp, vertical = 4.dp),
-            TextAlign.Center
         )
     }
 }
@@ -766,12 +719,11 @@ fun StartTowerGame(
                     "OK",
                     Color(activity.getColor(R.color.colorTextBack)),
                     Color(activity.getColor(R.color.colorTextBack)),
-                    18.sp, Alignment.Center,
+                    18.sp,
                     Modifier
                         .background(Color(activity.getColor(R.color.colorText)))
                         .clickableCancel(activity) { showIntro = false }
-                        .padding(4.dp),
-                    TextAlign.Center
+                        .padding(4.dp)
                 )
             },
             title = {
@@ -779,8 +731,7 @@ fun StartTowerGame(
                     stringResource(R.string.you_re_not_a_hero_you_re_just_a_walking_corpse),
                     Color(activity.getColor(R.color.colorText)),
                     Color(activity.getColor(R.color.colorText)),
-                    24.sp, Alignment.CenterStart, Modifier,
-                    TextAlign.Start
+                    24.sp, Modifier
                 )
             },
             text = {
@@ -794,8 +745,7 @@ fun StartTowerGame(
                     ),
                     Color(activity.getColor(R.color.colorText)),
                     Color(activity.getColor(R.color.colorText)),
-                    16.sp, Alignment.CenterStart, Modifier,
-                    TextAlign.Start
+                    16.sp, Modifier
                 )
             },
             containerColor = Color.Black,
@@ -814,12 +764,11 @@ fun StartTowerGame(
                     stringResource(R.string.finish),
                     Color(activity.getColor(R.color.colorTextBack)),
                     Color(activity.getColor(R.color.colorTextBack)),
-                    18.sp, Alignment.Center,
+                    18.sp,
                     Modifier
                         .background(Color(activity.getColor(R.color.colorText)))
                         .clickableCancel(activity) { showFrankOutro = false }
-                        .padding(4.dp),
-                    TextAlign.Center
+                        .padding(4.dp)
                 )
             },
             title = {
@@ -827,8 +776,7 @@ fun StartTowerGame(
                     activity.getString(R.string.you_win),
                     Color(activity.getColor(R.color.colorText)),
                     Color(activity.getColor(R.color.colorText)),
-                    24.sp, Alignment.CenterStart, Modifier,
-                    TextAlign.Start
+                    24.sp, Modifier
                 )
             },
             text = {
@@ -836,8 +784,7 @@ fun StartTowerGame(
                     stringResource(R.string.frank_final_words),
                     Color(activity.getColor(R.color.colorText)),
                     Color(activity.getColor(R.color.colorText)),
-                    16.sp, Alignment.CenterStart, Modifier,
-                    TextAlign.Start
+                    16.sp, Modifier
                 )
             },
             containerColor = Color.Black,
@@ -965,11 +912,9 @@ fun ShowFrank(activity: MainActivity, goBack: () -> Unit) {
                     getTextColorByStyle(activity, Style.PIP_BOY),
                     getStrokeColorByStyle(activity, Style.PIP_BOY),
                     16.sp,
-                    Alignment.CenterStart,
-                    modifier = Modifier
+                    Modifier
                         .background(getTextBackByStyle(activity, Style.PIP_BOY))
                         .padding(horizontal = 8.dp, vertical = 4.dp),
-                    TextAlign.Start
                 )
             }
 
@@ -995,14 +940,12 @@ fun ShowFrank(activity: MainActivity, goBack: () -> Unit) {
                             getTextColorByStyle(activity, Style.PIP_BOY),
                             getStrokeColorByStyle(activity, Style.PIP_BOY),
                             18.sp,
-                            Alignment.CenterStart,
-                            modifier = Modifier
+                            Modifier
                                 .clickableSelect(activity) {
                                     onClick()
                                 }
                                 .background(getTextBackByStyle(activity, Style.PIP_BOY))
-                                .padding(horizontal = 8.dp, vertical = 4.dp),
-                            TextAlign.Start
+                                .padding(horizontal = 8.dp, vertical = 4.dp)
                         )
                         Spacer(Modifier.height(12.dp))
                     }
