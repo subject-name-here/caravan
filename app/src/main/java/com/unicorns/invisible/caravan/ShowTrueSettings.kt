@@ -101,12 +101,12 @@ fun ShowTrueSettings(
                                 getTextColor(activity),
                                 getTextStrokeColor(activity),
                                 18.sp,
-                                Modifier.fillMaxWidth(0.5f),
+                                Modifier.weight(1f),
                                 textAlignment = TextAlign.Center,
                                 boxAlignment = Alignment.CenterEnd
                             )
                             Spacer(modifier = Modifier.width(16.dp))
-                            Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.CenterStart) {
+                            Box(Modifier.weight(1f), contentAlignment = Alignment.CenterStart) {
                                 SwitchCustomUsualBackground(activity, getFlag, {
                                     switch()
                                     if (getFlag()) {
@@ -134,7 +134,7 @@ fun ShowTrueSettings(
                     SwitchSetting(stringResource(R.string.non_stop_radio), { playInBack }, { playInBack = !playInBack })
                     Spacer(Modifier.height(12.dp))
                     Row(
-                        modifier = Modifier.height(96.dp),
+                        modifier = Modifier.height(96.dp).fillMaxWidth(0.8f),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.Center
                     ) {
@@ -161,8 +161,7 @@ fun ShowTrueSettings(
                             getTextStrokeColor(activity),
                             14.sp,
                             Modifier
-                                .fillMaxWidth(0.33f)
-                                .padding(horizontal = 8.dp)
+                                .weight(1f)
                                 .clickableOk(activity) {
                                     cheats.forEach {
                                         if (secretCode == it.getCode()) {
@@ -178,8 +177,9 @@ fun ShowTrueSettings(
                                 .padding(4.dp),
                             textAlignment = TextAlign.Center
                         )
+                        Spacer(modifier = Modifier.width(16.dp))
                         TextField(
-                            modifier = Modifier.fillMaxWidth(0.5f),
+                            modifier = Modifier.weight(1f),
                             singleLine = true,
                             enabled = true,
                             value = secretCode?.toString() ?: "",

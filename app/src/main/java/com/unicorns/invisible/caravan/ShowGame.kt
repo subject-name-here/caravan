@@ -1,6 +1,7 @@
 package com.unicorns.invisible.caravan
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.collection.mutableObjectListOf
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.TweenSpec
@@ -785,7 +786,7 @@ fun RowScope.CaravanOnField(
     activity: MainActivity,
     animationSpeed: AnimationSpeed,
     caravan: Caravan,
-    isPlayerTurn: () -> Boolean,
+    isPlayerTurn: Boolean,
     isEnemyCaravan: Boolean,
     isInitStage: Boolean,
     state: LazyListState,
@@ -794,7 +795,6 @@ fun RowScope.CaravanOnField(
     addSelectedCardOnPosition: (Int) -> Unit,
     caravansKey: Int,
 ) {
-    val enemyTurnMult = if (isPlayerTurn()) 1 else -1
     var width by remember { mutableIntStateOf(0) }
     LaunchedEffect(width) {
         if (width == 0) {
@@ -855,6 +855,8 @@ fun RowScope.CaravanOnField(
         ) {
             item {
                 Box(Modifier.wrapContentHeight(unbounded = true)) {
+                    val enemyTurnMult = if (isPlayerTurn) 1 else -1
+
                     val memCards = remember { mutableObjectListOf<CardWithModifier>() }
                     memCards.addAll(caravan.cards - memCards.asMutableList().toSet())
                     memCards.removeIf { it.card.caravanAnimationMark == Card.AnimationMark.MOVED_OUT }
@@ -1176,7 +1178,7 @@ fun Caravans(
                     activity,
                     animationSpeed,
                     caravan,
-                    isPlayersTurn,
+                    isPlayersTurn(),
                     isEnemyCaravan = true,
                     isInitStage = getIsInitStage(),
                     enemyStates[it],
@@ -1269,7 +1271,7 @@ fun Caravans(
                     activity,
                     animationSpeed,
                     caravan,
-                    isPlayersTurn,
+                    isPlayersTurn(),
                     isEnemyCaravan = false,
                     isInitStage = getIsInitStage(),
                     playerStates[it],

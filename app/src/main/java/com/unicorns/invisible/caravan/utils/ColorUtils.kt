@@ -76,7 +76,7 @@ fun getTextBackByStyle(activity: MainActivity, styleId: Style) = when (styleId) 
     Style.VAULT_21 -> Color(activity.getColor(R.color.vault21TextBack))
     Style.VAULT_22 -> Color(activity.getColor(R.color.vault22TextBack))
     Style.ENCLAVE -> Color(activity.getColor(R.color.enclaveTextBack))
-    Style.BLACK -> Color.DarkGray
+    Style.BLACK -> Color.Gray
     Style.NCR -> Color(activity.getColor(R.color.ncrTextBack))
     Style.LEGION -> Color(activity.getColor(R.color.legionTextBack))
 }
@@ -96,7 +96,7 @@ fun getSelectionColorByStyle(activity: MainActivity, styleId: Style) = when (sty
     Style.VAULT_21 -> Color(activity.getColor(R.color.vault21Accent))
     Style.VAULT_22 -> Color(activity.getColor(R.color.vault22Stroke))
     Style.ENCLAVE -> Color(activity.getColor(R.color.enclaveAccent))
-    Style.BLACK -> Color.White
+    Style.BLACK -> Color.Gray
     Style.NCR -> Color(activity.getColor(R.color.ncrAccent))
     Style.LEGION -> Color(activity.getColor(R.color.legionAccent))
 }

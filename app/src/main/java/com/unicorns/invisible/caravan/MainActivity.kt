@@ -431,7 +431,8 @@ class MainActivity : SaveDataActivity() {
                         Modifier
                             .background(getDialogTextColor(this))
                             .clickableCancel(this) { hideAlertDialog() }
-                            .padding(4.dp)
+                            .padding(4.dp),
+                        textAlignment = TextAlign.Start
                     )
                 },
                 dismissButton = {
@@ -468,7 +469,8 @@ class MainActivity : SaveDataActivity() {
                         alertDialogMessage,
                         getDialogTextColor(this),
                         getDialogTextColor(this),
-                        16.sp, Modifier
+                        16.sp, Modifier,
+                        textAlignment = TextAlign.Start
                     )
                 },
                 containerColor = getDialogBackground(this),
