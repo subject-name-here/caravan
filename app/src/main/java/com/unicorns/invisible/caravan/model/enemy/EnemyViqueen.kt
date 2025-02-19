@@ -15,27 +15,10 @@ data object EnemyViqueen : EnemyPve {
     override fun createDeck(): CResources {
         return CResources(CardBack.VIKING, false)
     }
-    override fun getBank(): Int {
-        return 0
-    }
-
-    override fun refreshBank() {
-
-    }
-
-    override fun getBet(): Int? {
-        return 0
-    }
-
-    override fun retractBet() {
-
-    }
-
-    override fun addReward(reward: Int) {
-
-    }
-
-    override fun makeMove(game: Game) {
-
-    }
+    override fun getBank(): Int { return 0 }
+    override fun refreshBank() {}
+    override fun getBet(): Int? { return null }
+    override fun retractBet() {}
+    override fun addReward(reward: Int) {}
+    override fun makeMove(game: Game) {}
 }

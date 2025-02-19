@@ -86,6 +86,7 @@ import com.unicorns.invisible.caravan.utils.getDividerColor
 import com.unicorns.invisible.caravan.utils.getKnobColor
 import com.unicorns.invisible.caravan.utils.getMusicMarqueesColor
 import com.unicorns.invisible.caravan.utils.getMusicPanelColor
+import com.unicorns.invisible.caravan.utils.getMusicTextBackColor
 import com.unicorns.invisible.caravan.utils.getMusicTextColor
 import com.unicorns.invisible.caravan.utils.getTextBackgroundColor
 import com.unicorns.invisible.caravan.utils.getTextColor
@@ -458,7 +459,8 @@ class MainActivity : SaveDataActivity() {
                         alertDialogHeader,
                         getDialogTextColor(this),
                         getDialogTextColor(this),
-                        24.sp, Modifier
+                        24.sp, Modifier,
+                        textAlignment = TextAlign.Start
                     )
                 },
                 text = {
@@ -611,7 +613,7 @@ class MainActivity : SaveDataActivity() {
                                             text = text,
                                             modifier = Modifier
                                                 .clickableOk(this@MainActivity, onClick)
-                                                .background(getTextBackgroundColor(this@MainActivity))
+                                                .background(getMusicTextBackColor(this@MainActivity))
                                                 .padding(horizontal = 2.dp),
                                             style = style,
                                             fontSize = 16.dp.dpToSp(),

@@ -1124,7 +1124,9 @@ fun RowScope.Score(activity: MainActivity, num: Int, caravan: Caravan, opposingV
             textColor,
             textColor,
             14.sp,
-            Modifier.fillMaxSize()
+            Modifier.fillMaxSize(),
+            textAlignment = TextAlign.End,
+            boxAlignment = Alignment.CenterEnd
         )
     }
 }

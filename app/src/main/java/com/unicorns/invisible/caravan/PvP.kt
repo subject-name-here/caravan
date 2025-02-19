@@ -379,6 +379,7 @@ fun ShowPvP(
                                 .clickableOk(activity) { createRoom() }
                                 .background(getTextBackgroundColor(activity))
                                 .padding(4.dp),
+                            textAlignment = TextAlign.Start
                         )
                         TextField(
                             modifier = Modifier.fillMaxWidth(0.5f),
@@ -419,6 +420,7 @@ fun ShowPvP(
                                 .clickableOk(activity) { joinRoom() }
                                 .background(getTextBackgroundColor(activity))
                                 .padding(4.dp),
+                            textAlignment = TextAlign.Start
                         )
                     }
                     Column(
@@ -438,7 +440,8 @@ fun ShowPvP(
                                 getTextColor(activity),
                                 getTextStrokeColor(activity),
                                 14.sp,
-                                Modifier.fillMaxWidth(0.7f),
+                                Modifier.fillMaxWidth(0.5f),
+                                textAlignment = TextAlign.Start
                             )
                             CheckboxCustom(
                                 activity,
@@ -467,7 +470,8 @@ fun ShowPvP(
                                 getTextColor(activity),
                                 getTextStrokeColor(activity),
                                 14.sp,
-                                Modifier.fillMaxWidth(0.7f),
+                                Modifier.fillMaxWidth(0.5f),
+                                textAlignment = TextAlign.Start
                             )
                             CheckboxCustom(
                                 activity,
@@ -496,7 +500,8 @@ fun ShowPvP(
                                 getTextColor(activity),
                                 getTextStrokeColor(activity),
                                 14.sp,
-                                Modifier.fillMaxWidth(0.7f),
+                                Modifier.fillMaxWidth(0.5f),
+                                textAlignment = TextAlign.Start
                             )
                             CheckboxCustom(
                                 activity,
@@ -530,6 +535,7 @@ fun ShowPvP(
                         getTextStrokeColor(activity),
                         13.sp,
                         Modifier.padding(horizontal = 16.dp),
+                        textAlignment = TextAlign.Start
                     )
                 }
             }

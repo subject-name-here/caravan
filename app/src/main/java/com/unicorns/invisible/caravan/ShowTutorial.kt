@@ -378,7 +378,7 @@ fun Tutorial(
     if (showAlertDialog) {
         AlertDialog(
             modifier = Modifier.border(width = 4.dp, color = getTextColor(activity)),
-            onDismissRequest = { hideAlertDialog() },
+            onDismissRequest = {},
             confirmButton = {
                 TextFallout(
                     "OK",
@@ -404,6 +404,7 @@ fun Tutorial(
                     getDialogTextColor(activity),
                     18.sp,
                     Modifier,
+                    textAlignment = TextAlign.Start
                 )
             },
             containerColor = getDialogBackground(activity),

@@ -181,6 +181,7 @@ fun SetCustomDeck(
                                     getTextStrokeColor(activity),
                                     14.sp,
                                     Modifier.fillMaxWidth(),
+                                    boxAlignment = Alignment.Center
                                 )
                                 ShowCardBack(
                                     activity,
@@ -210,7 +211,8 @@ fun SetCustomDeck(
                                                 updateCharacteristics = !updateCharacteristics
                                                 updateCards = !updateCards
                                             }
-                                            .padding(vertical = 4.dp)
+                                            .padding(vertical = 4.dp),
+                                        boxAlignment = Alignment.Center
                                     )
                                 }
 

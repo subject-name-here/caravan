@@ -100,6 +100,7 @@ fun ShowDailys(
                                         activity.openAchievements(it)
                                     }
                                 },
+                            boxAlignment = Alignment.Center
                         )
                     }
                 }
@@ -118,6 +119,7 @@ fun ShowChallenge(activity: MainActivity, challenge: Challenge, isCompleted: Boo
                 getTextStrokeColor(activity),
                 24.sp,
                 Modifier.fillMaxWidth(0.75f),
+                boxAlignment = Alignment.CenterStart
             )
             TextFallout(
                 challenge.getProgress(),
@@ -125,7 +127,7 @@ fun ShowChallenge(activity: MainActivity, challenge: Challenge, isCompleted: Boo
                 getTextStrokeColor(activity),
                 24.sp,
                 Modifier.fillMaxWidth(),
-                TextAlign.End
+                boxAlignment = Alignment.CenterEnd
             )
         }
 
@@ -135,7 +137,8 @@ fun ShowChallenge(activity: MainActivity, challenge: Challenge, isCompleted: Boo
             getTextStrokeColor(activity),
             16.sp,
             Modifier.fillMaxWidth(),
-            textAlignment = TextAlign.Start
+            textAlignment = TextAlign.Start,
+            boxAlignment = Alignment.CenterStart
         )
 
         if (isCompleted) {

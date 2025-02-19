@@ -46,77 +46,81 @@ fun ShowRules(activity: MainActivity, goBack: () -> Unit) {
     var selectedTab by rememberSaveable { mutableIntStateOf(0) }
     val rules = stringResource(R.string.rules)
     MenuItemOpen(activity, stringResource(R.string.menu_rules), "<-", goBack) {
-        val state = rememberLazyListState()
-        LazyColumn(
-            Modifier
-                .fillMaxSize()
-                .background(getBackgroundColor(activity))
-                .scrollbar(
-                    state,
-                    horizontal = false,
-                    knobColor = getKnobColor(activity),
-                    trackColor = getTrackColor(activity),
-                ), state = state
-        ) {
-            item {
-                Spacer(Modifier.height(8.dp))
-                Column(Modifier.padding(horizontal = 4.dp), verticalArrangement = Arrangement.Top, horizontalAlignment = Alignment.CenterHorizontally) {
-                    TabRow(
-                        selectedTab, Modifier.fillMaxWidth(),
-                        containerColor = getBackgroundColor(activity),
-                        indicator = { tabPositions ->
-                            if (selectedTab < tabPositions.size) {
-                                TabRowDefaults.SecondaryIndicator(
-                                    Modifier.tabIndicatorOffset(tabPositions[selectedTab]),
-                                    color = getSelectionColor(activity)
-                                )
-                            }
-                        },
-                        divider = {
-                            HorizontalDivider(color = getDividerColor(activity))
-                        }
-                    ) {
-                        Tab(
-                            selectedTab == 0, { playSelectSound(activity); selectedTab = 0 },
-                            selectedContentColor = getSelectionColor(activity),
-                            unselectedContentColor = getTextBackgroundColor(activity)
-                        ) {
-                            TextFallout(
-                                stringResource(R.string.better_rules),
-                                getTextColor(activity),
-                                getTextStrokeColor(activity),
-                                16.sp,
-                                Modifier.padding(4.dp),
-                            )
-                        }
-                        Tab(
-                            selectedTab == 1, { playSelectSound(activity); selectedTab = 1 },
-                            selectedContentColor = getSelectionColor(activity),
-                            unselectedContentColor = getTextBackgroundColor(activity)
-                        ) {
-                            TextFallout(
-                                stringResource(R.string.og_rules),
-                                getTextColor(activity),
-                                getTextStrokeColor(activity),
-                                16.sp,
-                                Modifier.padding(4.dp),
-                            )
-                        }
-                        Tab(
-                            selectedTab == 2, { playSelectSound(activity); selectedTab = 2 },
-                            selectedContentColor = getSelectionColor(activity),
-                            unselectedContentColor = getTextBackgroundColor(activity)
-                        ) {
-                            TextFallout(
-                                stringResource(R.string.faq),
-                                getTextColor(activity),
-                                getTextStrokeColor(activity),
-                                16.sp,
-                                Modifier.padding(4.dp),
-                            )
-                        }
+        Spacer(Modifier.height(8.dp))
+        Column(Modifier.padding(horizontal = 4.dp), verticalArrangement = Arrangement.Top, horizontalAlignment = Alignment.CenterHorizontally) {
+            TabRow(
+                selectedTab, Modifier.fillMaxWidth(),
+                containerColor = getBackgroundColor(activity),
+                indicator = { tabPositions ->
+                    if (selectedTab < tabPositions.size) {
+                        TabRowDefaults.SecondaryIndicator(
+                            Modifier.tabIndicatorOffset(tabPositions[selectedTab]),
+                            color = getSelectionColor(activity)
+                        )
                     }
+                },
+                divider = {
+                    HorizontalDivider(color = getDividerColor(activity))
+                }
+            ) {
+                Tab(
+                    selectedTab == 0, { playSelectSound(activity); selectedTab = 0 },
+                    selectedContentColor = getSelectionColor(activity),
+                    unselectedContentColor = getTextBackgroundColor(activity)
+                ) {
+                    TextFallout(
+                        stringResource(R.string.better_rules),
+                        getTextColor(activity),
+                        getTextStrokeColor(activity),
+                        16.sp,
+                        Modifier.padding(4.dp),
+                        textAlignment = TextAlign.Start
+                    )
+                }
+                Tab(
+                    selectedTab == 1, { playSelectSound(activity); selectedTab = 1 },
+                    selectedContentColor = getSelectionColor(activity),
+                    unselectedContentColor = getTextBackgroundColor(activity)
+                ) {
+                    TextFallout(
+                        stringResource(R.string.og_rules),
+                        getTextColor(activity),
+                        getTextStrokeColor(activity),
+                        16.sp,
+                        Modifier.padding(4.dp),
+                        textAlignment = TextAlign.Start
+                    )
+                }
+                Tab(
+                    selectedTab == 2, { playSelectSound(activity); selectedTab = 2 },
+                    selectedContentColor = getSelectionColor(activity),
+                    unselectedContentColor = getTextBackgroundColor(activity)
+                ) {
+                    TextFallout(
+                        stringResource(R.string.faq),
+                        getTextColor(activity),
+                        getTextStrokeColor(activity),
+                        16.sp,
+                        Modifier.padding(4.dp),
+                    )
+                }
+            }
 
+            Spacer(Modifier.height(8.dp))
+
+            val state = rememberLazyListState()
+            LazyColumn(
+                Modifier
+                    .fillMaxSize()
+                    .background(getBackgroundColor(activity))
+                    .scrollbar(
+                        state,
+                        horizontal = false,
+                        knobColor = getKnobColor(activity),
+                        trackColor = getTrackColor(activity),
+                    ), state = state
+            ) {
+                item {
                     Spacer(modifier = Modifier.height(16.dp))
                     when (selectedTab) {
                         0 -> {
@@ -191,8 +195,8 @@ fun ShowRules(activity: MainActivity, goBack: () -> Unit) {
                             Spacer(Modifier.height(20.dp))
                         }
                     }
+                    Spacer(modifier = Modifier.height(16.dp))
                 }
-                Spacer(Modifier.height(8.dp))
             }
         }
     }

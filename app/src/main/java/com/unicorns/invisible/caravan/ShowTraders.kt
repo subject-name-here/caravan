@@ -63,7 +63,7 @@ fun CardToBuy(activity: MainActivity, card: Card, price: Int, update: () -> Unit
     Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
         TextFallout(
             "${stringResource(card.rank.nameId)} $suit\n" +
-            "(${stringResource(card.back.deckName)} ${if (card.isAlt) "ALT!" else ""})",
+            "(${stringResource(card.back.deckName)}${if (card.isAlt) " ALT!" else ""})",
             getTextColor(activity),
             getTextStrokeColor(activity),
             16.sp,
@@ -91,6 +91,7 @@ fun CardToBuy(activity: MainActivity, card: Card, price: Int, update: () -> Unit
                         update()
                     }
                 },
+            boxAlignment = Alignment.Center
         )
     }
 }

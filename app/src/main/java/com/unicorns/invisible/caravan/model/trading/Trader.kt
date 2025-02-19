@@ -30,9 +30,8 @@ sealed interface Trader {
         val todayHash = save.dailyHash
         val rand = Random(todayHash xor (b * 31 + 22229) xor (b * b * b + 13))
 
-        fun shuffleCards(deck: CustomDeck) = deck.toList().shuffled(rand).filter {
-            rand.nextBoolean() || !save.isCardAvailableAlready(it)
-        }
+        // TODO: shuffle with love to cards available to buy
+        fun shuffleCards(deck: CustomDeck) = deck.toList().shuffled(rand)
 
         val n = 6
 

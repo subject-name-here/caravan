@@ -57,7 +57,6 @@ fun getStrokeColorByStyle(activity: MainActivity, styleId: Style) = when (styleI
     Style.VAULT_21 -> Color(activity.getColor(R.color.vault21Stroke))
     Style.VAULT_22 -> Color(activity.getColor(R.color.vault22Stroke))
     Style.ENCLAVE -> Color(activity.getColor(R.color.enclaveStroke))
-    Style.NCR -> Color(activity.getColor(R.color.ncrStroke))
     Style.LEGION -> Color(activity.getColor(R.color.legionStroke))
     else -> getTextColorByStyle(activity, styleId)
 }
@@ -88,7 +87,7 @@ fun getSelectionColor(activity: MainActivity): Color {
 fun getSelectionColorByStyle(activity: MainActivity, styleId: Style) = when (styleId) {
     Style.DESERT -> Color(activity.getColor(R.color.desertTextBackground))
     Style.PIP_BOY -> Color(activity.getColor(R.color.colorTextStroke))
-    Style.ALASKA_FRONTIER -> Color(activity.getColor(R.color.alaskaBlue))
+    Style.ALASKA_FRONTIER -> Color(activity.getColor(R.color.alaskaYellow))
     Style.PIP_GIRL -> Color(activity.getColor(R.color.pipGirlBlack))
     Style.OLD_WORLD -> Color(activity.getColor(R.color.oldWorldText))
     Style.NEW_WORLD -> Color(activity.getColor(R.color.newWorldStroke))
@@ -112,13 +111,13 @@ fun getMusicPanelColorByStyle(activity: MainActivity, styleId: Style) = when (st
     Style.PIP_GIRL -> Color(activity.getColor(R.color.pipGirlPink))
     Style.OLD_WORLD -> Color(activity.getColor(R.color.oldWorldTextBack2))
     Style.NEW_WORLD -> Color(activity.getColor(R.color.newWorldAccent))
-    Style.SIERRA_MADRE -> Color(activity.getColor(R.color.sierraMadreAccent))
-    Style.MADRE_ROJA -> Color(activity.getColor(R.color.madreRojaAccent))
-    Style.VAULT_21 -> Color(activity.getColor(R.color.vault21Accent))
+    Style.SIERRA_MADRE -> Color(activity.getColor(R.color.sierraMadreText))
+    Style.MADRE_ROJA -> Color(activity.getColor(R.color.madreRojaText))
+    Style.VAULT_21 -> Color(activity.getColor(R.color.vault21Stroke))
     Style.VAULT_22 -> Color(activity.getColor(R.color.vault22Accent))
     Style.ENCLAVE -> Color(activity.getColor(R.color.enclaveText))
     Style.BLACK -> Color.White
-    Style.NCR -> Color(activity.getColor(R.color.ncrTextBack))
+    Style.NCR -> Color(activity.getColor(R.color.ncrText))
     Style.LEGION -> Color(activity.getColor(R.color.legionStroke))
 }
 
@@ -129,17 +128,27 @@ fun getMusicTextColor(activity: MainActivity): Color {
         Style.ALASKA_FRONTIER -> Color(activity.getColor(R.color.alaskaYellow))
         Style.PIP_GIRL -> Color(activity.getColor(R.color.pipGirlBlack))
         Style.OLD_WORLD -> Color(activity.getColor(R.color.oldWorldText))
-        Style.NEW_WORLD -> Color(activity.getColor(R.color.newWorldAccent))
+        Style.NEW_WORLD -> Color(activity.getColor(R.color.newWorldText))
         Style.SIERRA_MADRE -> Color(activity.getColor(R.color.sierraMadreText))
         Style.MADRE_ROJA -> Color(activity.getColor(R.color.madreRojaText))
         Style.VAULT_21 -> Color(activity.getColor(R.color.vault21Text))
-        Style.VAULT_22 -> Color(activity.getColor(R.color.vault22Text))
-        Style.ENCLAVE -> Color(activity.getColor(R.color.enclaveStroke))
+        Style.VAULT_22 -> Color(activity.getColor(R.color.vault22Stroke))
+        Style.ENCLAVE -> Color(activity.getColor(R.color.enclaveText))
         Style.BLACK -> Color.White
         Style.NCR -> Color(activity.getColor(R.color.ncrText))
-        Style.LEGION -> Color(activity.getColor(R.color.legionTextBack))
+        Style.LEGION -> Color(activity.getColor(R.color.legionText))
     }
 }
+fun getMusicTextBackColor(activity: MainActivity): Color {
+    return when (activity.styleId) {
+        Style.PIP_BOY -> Color(activity.getColor(R.color.colorTextBack))
+        Style.VAULT_22 -> Color(activity.getColor(R.color.vault22Back))
+        Style.BLACK -> Color.Black
+        Style.NCR -> Color(activity.getColor(R.color.ncrBack))
+        else -> getTextBackgroundColor(activity)
+    }
+}
+
 
 fun getMusicMarqueesColor(activity: MainActivity): Color {
     return when (activity.styleId) {
@@ -150,10 +159,10 @@ fun getMusicMarqueesColor(activity: MainActivity): Color {
         Style.OLD_WORLD -> Color(activity.getColor(R.color.oldWorldText))
         Style.NEW_WORLD -> Color(activity.getColor(R.color.newWorldText))
         Style.SIERRA_MADRE -> Color(activity.getColor(R.color.sierraMadreTextBack))
-        Style.MADRE_ROJA -> Color(activity.getColor(R.color.madreRojaText))
+        Style.MADRE_ROJA -> Color(activity.getColor(R.color.madreRojaTextBack))
         Style.VAULT_21 -> Color(activity.getColor(R.color.vault21Text))
         Style.VAULT_22 -> Color(activity.getColor(R.color.vault22Stroke))
-        Style.ENCLAVE -> Color(activity.getColor(R.color.enclaveTextBack))
+        Style.ENCLAVE -> Color(activity.getColor(R.color.enclaveBack))
         Style.BLACK -> Color.Black
         Style.NCR -> Color(activity.getColor(R.color.ncrBack))
         Style.LEGION -> Color(activity.getColor(R.color.legionText))

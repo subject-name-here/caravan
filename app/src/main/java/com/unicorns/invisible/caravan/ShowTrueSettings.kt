@@ -102,9 +102,11 @@ fun ShowTrueSettings(
                                 getTextStrokeColor(activity),
                                 18.sp,
                                 Modifier.fillMaxWidth(0.5f),
+                                textAlignment = TextAlign.Center,
+                                boxAlignment = Alignment.CenterEnd
                             )
                             Spacer(modifier = Modifier.width(16.dp))
-                            Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                            Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.CenterStart) {
                                 SwitchCustomUsualBackground(activity, getFlag, {
                                     switch()
                                     if (getFlag()) {
@@ -174,6 +176,7 @@ fun ShowTrueSettings(
                                 }
                                 .background(getTextBackgroundColor(activity))
                                 .padding(4.dp),
+                            textAlignment = TextAlign.Center
                         )
                         TextField(
                             modifier = Modifier.fillMaxWidth(0.5f),

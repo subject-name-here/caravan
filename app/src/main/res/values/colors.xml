@@ -69,10 +69,9 @@
     <color name="enclaveStroke">#000000</color>
 
     <color name="ncrBack">#ffffff</color>
-    <color name="ncrTextBack">#df0000</color>
-    <color name="ncrText">#594222</color>
-    <color name="ncrAccent">#008740</color>
-    <color name="ncrStroke">#ba8a5d</color>
+    <color name="ncrTextBack">#be8b5e</color>
+    <color name="ncrText">#b80a31</color>
+    <color name="ncrAccent">#008640</color>
 
     <color name="legionBack">#8b0908</color>
     <color name="legionTextBack">#361808</color>

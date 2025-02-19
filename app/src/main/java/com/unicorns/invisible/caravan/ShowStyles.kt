@@ -1,13 +1,17 @@
 package com.unicorns.invisible.caravan
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -30,6 +34,7 @@ import com.unicorns.invisible.caravan.utils.clickableSelect
 import com.unicorns.invisible.caravan.utils.getBackByStyle
 import com.unicorns.invisible.caravan.utils.getKnobColorByStyle
 import com.unicorns.invisible.caravan.utils.getMusicPanelColorByStyle
+import com.unicorns.invisible.caravan.utils.getSelectionColorByStyle
 import com.unicorns.invisible.caravan.utils.getStrokeColorByStyle
 import com.unicorns.invisible.caravan.utils.getTextBackByStyle
 import com.unicorns.invisible.caravan.utils.getTextBackgroundColor
@@ -53,18 +58,20 @@ fun ShowStyles(
     key(styleInt) {
         MenuItemOpen(activity, stringResource(R.string.themes), "<-", goBack) {
             key(currentlyWatchedStyle) {
-                Row(Modifier.fillMaxSize()) {
+                Row(Modifier.fillMaxSize(), verticalAlignment = Alignment.CenterVertically) {
                     Column(
                         Modifier.fillMaxHeight().weight(0.1f),
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
+                        Row(Modifier.fillMaxWidth().fillMaxHeight(0.1f)) {}
                         TextFallout(
                             "<",
                             getTextColor(activity),
                             getTextStrokeColor(activity),
                             24.sp,
                             Modifier
+                                .fillMaxWidth()
                                 .background(getTextBackgroundColor(activity))
                                 .clickableSelect(activity) {
                                     currentlyWatchedStyle = if (currentlyWatchedStyle == 0) {
@@ -77,7 +84,13 @@ fun ShowStyles(
                         )
                     }
                     val watchedStyle = Style.entries.getOrNull(currentlyWatchedStyle) ?: Style.PIP_BOY
-                    Column(Modifier.fillMaxHeight().weight(0.8f)) {
+                    Column(
+                        Modifier.fillMaxHeight(0.8f).weight(0.8f)
+                        .border(BorderStroke(
+                            4.dp, getSelectionColorByStyle(activity, watchedStyle)
+                        ))
+                        .padding(4.dp)
+                    ) {
                         Row(Modifier
                             .fillMaxWidth().fillMaxHeight(0.1f)
                             .background(getMusicPanelColorByStyle(activity, watchedStyle))
@@ -114,7 +127,7 @@ fun ShowStyles(
                                             .clickable { playPimpBoySound(activity) }
                                             .padding(4.dp),
                                     )
-
+                                    Spacer(Modifier.height(16.dp))
                                     if (watchedStyle in save.ownedStyles) {
                                         TextFallout(
                                             stringResource(R.string.select),
@@ -153,12 +166,14 @@ fun ShowStyles(
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
+                        Row(Modifier.fillMaxWidth().fillMaxHeight(0.1f)) {}
                         TextFallout(
                             ">",
                             getTextColor(activity),
                             getTextStrokeColor(activity),
                             24.sp,
                             Modifier
+                                .fillMaxWidth()
                                 .background(getTextBackgroundColor(activity))
                                 .clickableSelect(activity) {
                                     currentlyWatchedStyle = (currentlyWatchedStyle + 1) % Style.entries.size

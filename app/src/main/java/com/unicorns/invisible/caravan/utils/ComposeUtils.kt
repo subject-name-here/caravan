@@ -445,9 +445,10 @@ fun TextFallout(
     strokeColor: Color,
     textSize: TextUnit,
     boxModifier: Modifier,
-    textAlignment: TextAlign = TextAlign.Center
+    textAlignment: TextAlign = TextAlign.Center,
+    boxAlignment: Alignment = Alignment.Center
 ) {
-    TextCustom(text, Font(R.font.monofont), textColor, strokeColor, textSize, boxModifier, textAlignment)
+    TextCustom(text, Font(R.font.monofont), textColor, strokeColor, textSize, boxModifier, textAlignment, boxAlignment)
 }
 
 @Composable
@@ -456,9 +457,10 @@ fun TextSymbola(
     textColor: Color,
     textSize: TextUnit,
     boxModifier: Modifier,
-    textAlignment: TextAlign = TextAlign.Center
+    textAlignment: TextAlign = TextAlign.Center,
+    boxAlignment: Alignment = Alignment.Center
 ) {
-    Box(boxModifier) {
+    Box(boxModifier, contentAlignment = boxAlignment) {
         Text(
             text = text, color = textColor,
             fontFamily = FontFamily(Font(R.font.symbola)),
@@ -479,11 +481,12 @@ fun TextFallout(
     strokeColor: Color,
     textSize: TextUnit,
     boxModifier: Modifier,
-    textAlignment: TextAlign = TextAlign.Center
+    textAlignment: TextAlign = TextAlign.Center,
+    boxAlignment: Alignment = Alignment.Center
 ) {
     val textRedacted = text
     val strokeWidth = getStrokeWidth(textSize)
-    Box(boxModifier) {
+    Box(boxModifier, contentAlignment = boxAlignment) {
         Text(
             text = textRedacted, color = textColor,
             fontFamily = FontFamily(Font(R.font.monofont)),
@@ -520,9 +523,10 @@ fun TextClassic(
     strokeColor: Color,
     textSize: TextUnit,
     boxModifier: Modifier,
-    textAlignment: TextAlign = TextAlign.Center
+    textAlignment: TextAlign = TextAlign.Center,
+    boxAlignment: Alignment = Alignment.Center
 ) {
-    TextCustom(text, Font(R.font.classic), textColor, strokeColor, textSize, boxModifier, textAlignment)
+    TextCustom(text, Font(R.font.classic), textColor, strokeColor, textSize, boxModifier, textAlignment, boxAlignment)
 }
 
 @Composable
@@ -533,10 +537,11 @@ fun TextCustom(
     strokeColor: Color,
     textSize: TextUnit,
     boxModifier: Modifier,
-    textAlignment: TextAlign = TextAlign.Center
+    textAlignment: TextAlign = TextAlign.Center,
+    boxAlignment: Alignment = Alignment.Center
 ) {
     val strokeWidth = getStrokeWidth(textSize)
-    Box(boxModifier) {
+    Box(boxModifier, contentAlignment = boxAlignment) {
         Text(
             text = text, color = textColor,
             fontFamily = FontFamily(font),
