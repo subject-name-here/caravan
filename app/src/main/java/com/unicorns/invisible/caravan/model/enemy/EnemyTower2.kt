@@ -12,7 +12,6 @@ import com.unicorns.invisible.caravan.utils.checkMoveOnDefeat
 import kotlinx.serialization.Serializable
 
 
-@Serializable
 data object EnemyTower2 : Enemy {
     override fun createDeck(): CResources = CResources(CustomDeck(CardBack.LUCKY_38, false).apply {
         listOf(CardBack.TOPS, CardBack.GOMORRAH, CardBack.ULTRA_LUXE, CardBack.VAULT_21).forEach { back ->
@@ -28,7 +27,7 @@ data object EnemyTower2 : Enemy {
         val hand = game.enemyCResources.hand
 
         if (game.isInitStage()) {
-            val card = hand.filter { !it.isFace() }.maxBy { it.rank.value }
+            val card = hand.filter { !it.isModifier() }.maxBy { it.rank.value }
             val caravan = game.enemyCaravans.filter { it.isEmpty() }.random()
             caravan.putCardOnTop(game.enemyCResources.removeFromHand(hand.indexOf(card)))
             return

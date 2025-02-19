@@ -1,5 +1,6 @@
 package com.unicorns.invisible.caravan.model.enemy
 
+import com.unicorns.invisible.caravan.R
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.enemy.strategy.CardDropSelect
@@ -22,8 +23,10 @@ import kotlinx.serialization.Serializable
 
 
 @Serializable
-data object EnemyNash : Enemy {
-    override fun getBankNumber() = 7
+data object EnemyNash : EnemyPve {
+    override fun getNameId() = R.string.johnson_nash
+    override fun isEven() = false
+
     override fun createDeck(): CResources = CResources(CustomDeck().apply {
         listOf(
             CardBack.TOPS,
@@ -39,6 +42,26 @@ data object EnemyNash : Enemy {
             }
         }
     })
+
+    override fun getBank(): Int {
+        return 0
+    }
+
+    override fun refreshBank() {
+
+    }
+
+    override fun getBet(): Int? {
+        return 0
+    }
+
+    override fun retractBet() {
+
+    }
+
+    override fun addReward(reward: Int) {
+
+    }
 
     override fun makeMove(game: Game) {
         val hand = game.enemyCResources.hand

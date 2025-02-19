@@ -1,5 +1,6 @@
 package com.unicorns.invisible.caravan.model.enemy
 
+import com.unicorns.invisible.caravan.R
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.enemy.strategy.CardDropSelect
@@ -16,9 +17,17 @@ import kotlin.math.abs
 
 
 @Serializable
-data object EnemyHanlon : Enemy {
+data object EnemyHanlon : EnemyPve {
+    override fun getNameId() = R.string.pve_enemy_chief_hanlon
+    override fun isEven() = true
+
     override fun createDeck() = CResources(CardBack.VAULT_21, false)
-    override fun getBankNumber() = 3
+
+    override fun getBank() = 0
+    override fun refreshBank() {}
+    override fun getBet() = null
+    override fun retractBet() {}
+    override fun addReward(reward: Int) {}
 
     override fun makeMove(game: Game) {
         val overWeightCaravans = game.enemyCaravans.filter { it.getValue() > 26 }

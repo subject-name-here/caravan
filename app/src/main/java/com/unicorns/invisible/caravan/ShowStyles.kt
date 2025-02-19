@@ -117,7 +117,7 @@ fun ShowStyles(
 
                                     if (watchedStyle in save.ownedStyles) {
                                         TextFallout(
-                                            stringResource(R.string.buy),
+                                            stringResource(R.string.select),
                                             getTextColorByStyle(activity, watchedStyle),
                                             getStrokeColorByStyle(activity, watchedStyle),
                                             20.sp,

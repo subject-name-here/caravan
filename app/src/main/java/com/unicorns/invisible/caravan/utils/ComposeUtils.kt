@@ -44,6 +44,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
@@ -202,15 +203,12 @@ fun getFilter(back: CardBack, isAlt: Boolean): ColorFilter {
 
 @Composable
 fun ShowCard(activity: MainActivity, card: Card, modifier: Modifier) {
-    val painter = rememberAsyncImagePainter(
-        ImageRequest.Builder(activity)
+    AsyncImage(
+        model = ImageRequest.Builder(activity)
             .size(183, 256)
             .data("file:///android_asset/caravan_cards/${getCardName(card)}")
             .decoderFactory(SvgDecoder.Factory())
-            .build()
-    )
-    AsyncImage(
-        model = painter,
+            .build(),
         contentDescription = "",
         modifier.clip(RoundedCornerShape(5)),
         colorFilter = getFilter(card.back, card.isAlt)
@@ -220,15 +218,12 @@ fun ShowCard(activity: MainActivity, card: Card, modifier: Modifier) {
 @Composable
 fun ShowCardBack(activity: MainActivity, card: Card, modifier: Modifier) {
     val asset = if (card.isAlt) card.back.altBackFileName else card.back.backFileName
-    val painter2 = rememberAsyncImagePainter(
-        ImageRequest.Builder(activity)
+    AsyncImage(
+        model = ImageRequest.Builder(activity)
             .size(183, 256)
             .data("file:///android_asset/caravan_cards_back/$asset")
             .decoderFactory(SvgDecoder.Factory())
-            .build()
-    )
-    AsyncImage(
-        model = painter2,
+            .build(),
         contentDescription = "",
         modifier.clip(RoundedCornerShape(5)),
         contentScale = ContentScale.Fit
@@ -449,9 +444,10 @@ fun TextFallout(
     textColor: Color,
     strokeColor: Color,
     textSize: TextUnit,
-    boxModifier: Modifier
+    boxModifier: Modifier,
+    textAlignment: TextAlign = TextAlign.Center
 ) {
-    TextCustom(text, Font(R.font.monofont), textColor, strokeColor, textSize, boxModifier)
+    TextCustom(text, Font(R.font.monofont), textColor, strokeColor, textSize, boxModifier, textAlignment)
 }
 
 @Composable
@@ -459,7 +455,8 @@ fun TextSymbola(
     text: String,
     textColor: Color,
     textSize: TextUnit,
-    boxModifier: Modifier
+    boxModifier: Modifier,
+    textAlignment: TextAlign = TextAlign.Center
 ) {
     Box(boxModifier) {
         Text(
@@ -468,7 +465,8 @@ fun TextSymbola(
             style = TextStyle(
                 color = textColor,
                 fontSize = textSize,
-                drawStyle = Fill
+                drawStyle = Fill,
+                textAlign = textAlignment
             )
         )
     }
@@ -480,7 +478,8 @@ fun TextFallout(
     textColor: Color,
     strokeColor: Color,
     textSize: TextUnit,
-    boxModifier: Modifier
+    boxModifier: Modifier,
+    textAlignment: TextAlign = TextAlign.Center
 ) {
     val textRedacted = text
     val strokeWidth = getStrokeWidth(textSize)
@@ -492,7 +491,8 @@ fun TextFallout(
                 color = textColor,
                 fontSize = textSize,
                 fontWeight = FontWeight.Light,
-                drawStyle = Fill
+                drawStyle = Fill,
+                textAlign = textAlignment
             ),
         )
         if (textColor.toArgb() == strokeColor.toArgb()) {
@@ -505,7 +505,8 @@ fun TextFallout(
                 color = strokeColor,
                 fontSize = textSize,
                 fontWeight = FontWeight.Normal,
-                drawStyle = Stroke(width = strokeWidth)
+                drawStyle = Stroke(width = strokeWidth),
+                textAlign = textAlignment
             ),
         )
     }
@@ -518,9 +519,10 @@ fun TextClassic(
     textColor: Color,
     strokeColor: Color,
     textSize: TextUnit,
-    boxModifier: Modifier
+    boxModifier: Modifier,
+    textAlignment: TextAlign = TextAlign.Center
 ) {
-    TextCustom(text, Font(R.font.classic), textColor, strokeColor, textSize, boxModifier)
+    TextCustom(text, Font(R.font.classic), textColor, strokeColor, textSize, boxModifier, textAlignment)
 }
 
 @Composable
@@ -530,7 +532,8 @@ fun TextCustom(
     textColor: Color,
     strokeColor: Color,
     textSize: TextUnit,
-    boxModifier: Modifier
+    boxModifier: Modifier,
+    textAlignment: TextAlign = TextAlign.Center
 ) {
     val strokeWidth = getStrokeWidth(textSize)
     Box(boxModifier) {
@@ -541,7 +544,8 @@ fun TextCustom(
                 color = textColor,
                 fontSize = textSize,
                 fontWeight = FontWeight.Light,
-                drawStyle = Fill
+                drawStyle = Fill,
+                textAlign = textAlignment
             )
         )
         if (textColor.toArgb() == strokeColor.toArgb()) {
@@ -554,7 +558,8 @@ fun TextCustom(
                 color = strokeColor,
                 fontSize = textSize,
                 fontWeight = FontWeight.Normal,
-                drawStyle = Stroke(width = strokeWidth)
+                drawStyle = Stroke(width = strokeWidth),
+                textAlign = textAlignment
             )
         )
     }

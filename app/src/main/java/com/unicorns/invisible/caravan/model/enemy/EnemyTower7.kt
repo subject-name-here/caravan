@@ -20,7 +20,6 @@ import kotlinx.serialization.Serializable
 import kotlin.math.max
 
 
-@Serializable
 data object EnemyTower7 : Enemy {
     override fun createDeck(): CResources = CResources(CustomDeck().apply {
         listOf(CardBack.TOPS, CardBack.ULTRA_LUXE, CardBack.GOMORRAH, CardBack.LUCKY_38, CardBack.VAULT_21)
@@ -45,7 +44,7 @@ data object EnemyTower7 : Enemy {
         val hand = game.enemyCResources.hand
 
         if (game.isInitStage()) {
-            val card = hand.filter { !it.isFace() }.minBy { it.rank.value }
+            val card = hand.filter { !it.isModifier() }.minBy { it.rank.value }
             val caravan = game.enemyCaravans.filter { it.isEmpty() }.random()
             caravan.putCardOnTop(game.enemyCResources.removeFromHand(hand.indexOf(card)))
             return
@@ -108,7 +107,7 @@ data object EnemyTower7 : Enemy {
 
                 // Put a card on top!
                 hand.withIndex()
-                    .filter { card -> !card.value.isFace() }
+                    .filter { card -> !card.value.isModifier() }
                     .forEach { (cardIndex, card) ->
                         if (it.value.getValue() + card.rank.value in (lowerBound..26) && it.value.canPutCardOnTop(card)) {
                             it.value.putCardOnTop(game.enemyCResources.removeFromHand(cardIndex))
@@ -177,7 +176,7 @@ data object EnemyTower7 : Enemy {
 
             // Try creating a draw!
             hand.withIndex()
-                .filter { !it.value.isFace()  }
+                .filter { !it.value.isModifier()  }
                 .sortedByDescending { it.value.rank.value }
                 .forEach { (cardIndex, card) ->
                     game.enemyCaravans
@@ -267,7 +266,7 @@ data object EnemyTower7 : Enemy {
                 } else {
                     -1
                 }
-                hand.withIndex().filter { !it.value.isFace() || it.value.rank == Rank.QUEEN }
+                hand.withIndex().filter { !it.value.isModifier() || it.value.rank == Rank.QUEEN }
                     .sortedBy { if (it.value.rank == Rank.QUEEN) 5 * mult else it.value.rank.value * mult }
                     .forEach { (cardIndex, card) ->
                         if (caravan.getValue() + card.rank.value <= 26 &&
@@ -348,9 +347,5 @@ data object EnemyTower7 : Enemy {
                 Rank.JOKER -> 14
             }
         }!!.index)
-    }
-
-    override fun onVictory() {
-        save.traders.filterIsInstance<Lucky38Trader>().forEach { it.isMrHouseBeaten = true }
     }
 }

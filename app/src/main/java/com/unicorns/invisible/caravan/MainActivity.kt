@@ -327,7 +327,7 @@ class MainActivity : SaveDataActivity() {
                                     textColor,
                                     strokeColor,
                                     14.sp,
-                                    Modifier.fillMaxSize(),
+                                    Modifier,
                                 )
                             }
                         }

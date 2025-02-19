@@ -26,7 +26,6 @@ import kotlinx.serialization.Serializable
 import kotlin.math.max
 
 
-@Serializable
 data object EnemyFrank : Enemy {
     override fun createDeck(): CResources = CResources(CustomDeck(CardBack.ENCLAVE, false).apply {
         add(Card(Rank.ACE, Suit.HEARTS, CardBack.ENCLAVE, true))
@@ -101,7 +100,7 @@ data object EnemyFrank : Enemy {
                 // Put a card on top!
                 hand.withIndex()
                     .filter { it.value.isOrdinary() }
-                    .filter { card -> !card.value.isFace() }
+                    .filter { card -> !card.value.isModifier() }
                     .forEach { (cardIndex, card) ->
                         if (it.value.getValue() + card.rank.value in (lowerBound..26) && it.value.canPutCardOnTop(card)) {
                             it.value.putCardOnTop(game.enemyCResources.removeFromHand(cardIndex))
@@ -197,7 +196,7 @@ data object EnemyFrank : Enemy {
                 // Try creating a draw!
                 hand.withIndex()
                     .filter { it.value.isOrdinary() }
-                    .filter { !it.value.isFace()  }
+                    .filter { !it.value.isModifier()  }
                     .sortedByDescending { it.value.rank.value }
                     .forEach { (cardIndex, card) ->
                         game.enemyCaravans
@@ -307,7 +306,7 @@ data object EnemyFrank : Enemy {
                 } else {
                     -1
                 }
-                hand.withIndex().filter { it.value.isOrdinary() }.filter { !it.value.isFace() }
+                hand.withIndex().filter { it.value.isOrdinary() }.filter { !it.value.isModifier() }
                     .sortedBy { it.value.rank.value * mult }
                     .forEach { (cardIndex, card) ->
                         if (caravan.getValue() + card.rank.value <= 26 &&
@@ -375,9 +374,5 @@ data object EnemyFrank : Enemy {
         }
 
         StrategyDropCard(CardDropSelect.ULYSSES_ORDER).move(game)
-    }
-
-    override fun onVictory() {
-        save.traders.filterIsInstance<EnclaveTrader>().forEach { it.isTowerBeaten = true }
     }
 }

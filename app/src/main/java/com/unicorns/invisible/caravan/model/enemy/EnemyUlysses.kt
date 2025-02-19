@@ -1,5 +1,6 @@
 package com.unicorns.invisible.caravan.model.enemy
 
+import com.unicorns.invisible.caravan.R
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.enemy.strategy.CardDropSelect
@@ -24,9 +25,31 @@ import kotlin.math.max
 
 
 @Serializable
-data object EnemyUlysses : Enemy {
+data object EnemyUlysses : EnemyPve {
+    override fun getNameId() = R.string.pve_enemy_ulysses
+    override fun isEven() = true
+
     override fun createDeck() = CResources(CardBack.VAULT_21, true)
-    override fun getBankNumber() = 4
+
+    override fun getBank(): Int {
+        return 0
+    }
+
+    override fun refreshBank() {
+
+    }
+
+    override fun getBet(): Int? {
+        return 0
+    }
+
+    override fun retractBet() {
+
+    }
+
+    override fun addReward(reward: Int) {
+
+    }
 
     override fun makeMove(game: Game) {
         val overWeightCaravans = game.enemyCaravans.filter { it.getValue() > 26 }
@@ -94,7 +117,7 @@ data object EnemyUlysses : Enemy {
 
                 // Put a card on top!
                 hand.withIndex()
-                    .filter { card -> !card.value.isFace() }
+                    .filter { card -> !card.value.isModifier() }
                     .forEach { (cardIndex, card) ->
                         if (it.value.getValue() + card.rank.value in (lowerBound..26) && it.value.canPutCardOnTop(card)) {
                             it.value.putCardOnTop(game.enemyCResources.removeFromHand(cardIndex))
@@ -167,7 +190,7 @@ data object EnemyUlysses : Enemy {
 
                 // Try creating a draw!
                 hand.withIndex()
-                    .filter { !it.value.isFace()  }
+                    .filter { !it.value.isModifier()  }
                     .sortedByDescending { it.value.rank.value }
                     .forEach { (cardIndex, card) ->
                         game.enemyCaravans
@@ -260,7 +283,7 @@ data object EnemyUlysses : Enemy {
                 } else {
                     -1
                 }
-                hand.withIndex().filter { !it.value.isFace() || it.value.rank == Rank.QUEEN }
+                hand.withIndex().filter { !it.value.isModifier() || it.value.rank == Rank.QUEEN }
                     .sortedBy { if (it.value.rank == Rank.QUEEN) 5 * mult else it.value.rank.value * mult }
                     .forEach { (cardIndex, card) ->
                         if (caravan.getValue() + card.rank.value <= 26 &&
@@ -328,9 +351,5 @@ data object EnemyUlysses : Enemy {
         }
 
         StrategyDropCard(CardDropSelect.ULYSSES_ORDER).move(game)
-    }
-
-    override fun onVictory() {
-        save.traders.filterIsInstance<SierraMadreTrader>().forEach { it.ulyssesBeaten = true }
     }
 }

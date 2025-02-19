@@ -8,7 +8,6 @@ import com.unicorns.invisible.caravan.model.primitives.Rank
 import kotlinx.serialization.Serializable
 
 
-@Serializable
 data object EnemyTower3 : Enemy {
     override fun createDeck(): CResources = CResources(CustomDeck(CardBack.STANDARD, false).apply {
         removeAll(toList().filter { it.rank == Rank.JOKER })
@@ -19,7 +18,7 @@ data object EnemyTower3 : Enemy {
         val overWeightCaravans = game.enemyCaravans.filter { it.getValue() > 26 }
 
         if (game.isInitStage()) {
-            val cardIndex = hand.withIndex().filter { !it.value.isFace() }.minBy { it.value.rank.value }.index
+            val cardIndex = hand.withIndex().filter { !it.value.isModifier() }.minBy { it.value.rank.value }.index
             val caravan = game.enemyCaravans.first { it.size == 0 }
             caravan.putCardOnTop(game.enemyCResources.removeFromHand(cardIndex))
             return

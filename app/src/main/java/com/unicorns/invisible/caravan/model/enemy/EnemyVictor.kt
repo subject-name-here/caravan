@@ -1,5 +1,6 @@
 package com.unicorns.invisible.caravan.model.enemy
 
+import com.unicorns.invisible.caravan.R
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.enemy.strategy.SelectCard
@@ -15,9 +16,31 @@ import kotlinx.serialization.Serializable
 
 
 @Serializable
-data object EnemyVictor : Enemy {
+data object EnemyVictor : EnemyPve {
+    override fun getNameId() = R.string.pve_enemy_victor
+    override fun isEven() = true
+
     override fun createDeck() = CResources(CardBack.LUCKY_38, false)
-    override fun getBankNumber() = 2
+
+    override fun getBank(): Int {
+        return 0
+    }
+
+    override fun refreshBank() {
+
+    }
+
+    override fun getBet(): Int? {
+        return 0
+    }
+
+    override fun retractBet() {
+
+    }
+
+    override fun addReward(reward: Int) {
+
+    }
 
     override fun makeMove(game: Game) {
         if (game.isInitStage()) {
@@ -58,9 +81,5 @@ data object EnemyVictor : Enemy {
         }
 
         EnemyHanlon.makeMove(game)
-    }
-
-    override fun onVictory() {
-        save.traders.filterIsInstance<TopsTrader>().forEach { it.isVictorDefeated = true }
     }
 }

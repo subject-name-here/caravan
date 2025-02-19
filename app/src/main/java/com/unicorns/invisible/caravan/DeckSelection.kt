@@ -147,15 +147,6 @@ fun DeckSelection(
                     }
                     Spacer(Modifier.width(8.dp))
                     Column(Modifier, verticalArrangement = Arrangement.Center) {
-                        showDeckBack(CardBack.MADNESS, false)
-                        showDeckBack(CardBack.NCR, false)
-                        showDeckBack(CardBack.LEGION, false)
-                        showDeckBack(CardBack.VIKING, false)
-                        showDeckBack(CardBack.ENCLAVE, false)
-                        showDeckBack(CardBack.CHINESE, false)
-                    }
-                    Spacer(Modifier.width(8.dp))
-                    Column(Modifier, verticalArrangement = Arrangement.Center) {
                         showDeckBack(CardBack.STANDARD, true)
                         showDeckBack(CardBack.TOPS, true)
                         showDeckBack(CardBack.GOMORRAH, true)
@@ -163,6 +154,15 @@ fun DeckSelection(
                         showDeckBack(CardBack.LUCKY_38, true)
                         showDeckBack(CardBack.VAULT_21, true)
                         showDeckBack(CardBack.SIERRA_MADRE, true)
+                    }
+                    Spacer(Modifier.width(8.dp))
+                    Column(Modifier, verticalArrangement = Arrangement.Center) {
+                        showDeckBack(CardBack.MADNESS, false)
+                        showDeckBack(CardBack.NCR, false)
+                        showDeckBack(CardBack.LEGION, false)
+                        showDeckBack(CardBack.VIKING, false)
+                        showDeckBack(CardBack.ENCLAVE, false)
+                        showDeckBack(CardBack.CHINESE, false)
                     }
                 }
                 Spacer(modifier = Modifier.height(16.dp))

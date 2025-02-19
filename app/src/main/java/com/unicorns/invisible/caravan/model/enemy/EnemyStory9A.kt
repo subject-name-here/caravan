@@ -21,7 +21,6 @@ import kotlinx.serialization.Serializable
 import kotlin.math.abs
 
 
-@Serializable
 data object EnemyStory9A : Enemy {
     override fun createDeck(): CResources = CResources(CustomDeck().apply {
         Rank.entries.forEach { rank ->
@@ -73,14 +72,14 @@ data object EnemyStory9A : Enemy {
 
         val specials = hand.withIndex().filter { !it.value.isOrdinary() }
         specials.forEach { (index, special) ->
-            when (special.getWildWastelandCardType()) {
+            when (special.getWildWastelandType()) {
                 Card.WildWastelandCardType.CAZADOR -> {
                     val candidate = game.playerCaravans
                         .filter { it.getValue() in (11..26) }
                         .filter { !it.cards.any { card ->
                             val mods = card.modifiersCopy()
                             card.isProtectedByMuggy || mods.any { mod ->
-                                mod.getWildWastelandCardType() == Card.WildWastelandCardType.CAZADOR
+                                mod.getWildWastelandType() == Card.WildWastelandCardType.CAZADOR
                             }
                         } }
                         .maxByOrNull { it.size }

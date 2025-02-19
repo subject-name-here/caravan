@@ -44,6 +44,7 @@ import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.enemy.Enemy
 import com.unicorns.invisible.caravan.model.enemy.EnemyHanlon
 import com.unicorns.invisible.caravan.model.enemy.EnemyMadnessCardinal
+import com.unicorns.invisible.caravan.model.enemy.EnemyPve
 import com.unicorns.invisible.caravan.model.enemy.EnemyViqueen
 import com.unicorns.invisible.caravan.model.enemy.EnemyVulpes
 import com.unicorns.invisible.caravan.model.primitives.CResources
@@ -281,7 +282,7 @@ fun ShowPvE(
     var playAgainstEnemy by rememberScoped { mutableIntStateOf(-1) }
 
     @Composable
-    fun StartWithEnemy(enemy: Enemy, goBack: () -> Unit) {
+    fun StartWithEnemy(enemy: EnemyPve, goBack: () -> Unit) {
         StartGame(
             activity, if (enemy.isEven())
                 CResources(save.selectedDeck.first, save.selectedDeck.second)
@@ -380,7 +381,7 @@ fun ShowPvE(
             }
 
             @Composable
-            fun OpponentItem(enemy: Enemy, onClick: () -> Unit) {
+            fun OpponentItem(enemy: EnemyPve, onClick: () -> Unit) {
                 val line = if (enemy.getBet() == null)
                     stringResource(R.string.enemy_without_caps, stringResource(enemy.getNameId()))
                 else
@@ -435,7 +436,7 @@ fun ShowPvE(
 fun StartGame(
     activity: MainActivity,
     playerCResources: CResources,
-    enemy: Enemy,
+    enemy: EnemyPve,
     showAlertDialog: (String, String, (() -> Unit)?) -> Unit,
     goBack: () -> Unit,
 ) {
@@ -519,7 +520,7 @@ fun StartGame(
                 }
             }
 
-            enemy.addVictory()
+            enemy.onVictory(isBlitz)
             saveData(activity)
         }
         it.onLose = {
@@ -559,7 +560,7 @@ fun StartGame(
 @Composable
 fun ShowBettingScreen(
     activity: MainActivity,
-    enemy: Enemy,
+    enemy: EnemyPve,
     setBet: (Int) -> Unit,
     setIsBlitz: (Boolean) -> Unit,
     setReward: (Int) -> Unit,

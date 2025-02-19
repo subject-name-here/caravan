@@ -10,7 +10,6 @@ import com.unicorns.invisible.caravan.model.primitives.Suit
 import kotlinx.serialization.Serializable
 
 
-@Serializable
 class EnemyStory4(val showMessage: (Int) -> Unit) : Enemy {
     override fun createDeck(): CResources = CResources(CustomDeck(CardBack.GOMORRAH, false).apply {
         removeAll(toList().filter { it.rank.value < 5 || it.rank == Rank.QUEEN })
@@ -41,7 +40,7 @@ class EnemyStory4(val showMessage: (Int) -> Unit) : Enemy {
                 }
             }
 
-            val cardIndex = hand.withIndex().filter { !it.value.isFace() }.random().index
+            val cardIndex = hand.withIndex().filter { !it.value.isModifier() }.random().index
             val caravan = game.enemyCaravans.filter { it.isEmpty() }.random()
             caravan.putCardOnTop(game.enemyCResources.removeFromHand(cardIndex))
             return

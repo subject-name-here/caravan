@@ -1,5 +1,6 @@
 package com.unicorns.invisible.caravan.model.enemy
 
+import com.unicorns.invisible.caravan.R
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.enemy.strategy.CardDropSelect
@@ -19,8 +20,10 @@ import kotlin.math.abs
 
 
 @Serializable
-data object EnemyNoBark : Enemy {
-    override fun getBankNumber() = 6
+data object EnemyNoBark : EnemyPve {
+    override fun getNameId() = R.string.no_bark
+
+    override fun isEven() = false
 
     override fun createDeck() = CResources(CustomDeck(CardBack.STANDARD, false).apply {
         removeAll(toList().filter { it.rank.value < 5 || it.rank == Rank.JOKER })
@@ -31,6 +34,26 @@ data object EnemyNoBark : Enemy {
             }
         }
     })
+
+    override fun getBank(): Int {
+        return 0
+    }
+
+    override fun refreshBank() {
+
+    }
+
+    override fun getBet(): Int? {
+        return 0
+    }
+
+    override fun retractBet() {
+
+    }
+
+    override fun addReward(reward: Int) {
+
+    }
 
     override fun makeMove(game: Game) {
         val hand = game.enemyCResources.hand

@@ -10,7 +10,6 @@ import com.unicorns.invisible.caravan.model.primitives.Suit
 import kotlinx.serialization.Serializable
 
 
-@Serializable
 data object EnemyTower9 : Enemy {
     override fun createDeck(): CResources = CResources(CustomDeck().apply {
         listOf(CardBack.TOPS, CardBack.ULTRA_LUXE, CardBack.GOMORRAH, CardBack.LUCKY_38, CardBack.VAULT_21)

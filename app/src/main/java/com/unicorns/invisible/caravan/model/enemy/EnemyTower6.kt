@@ -20,7 +20,6 @@ import com.unicorns.invisible.caravan.utils.checkMoveOnShouldYouDoSmth
 import kotlinx.serialization.Serializable
 
 
-@Serializable
 data object EnemyTower6 : Enemy {
     override fun createDeck(): CResources = CResources(CustomDeck().apply {
         listOf(
@@ -126,7 +125,7 @@ data object EnemyTower6 : Enemy {
                 }
             }
             .forEach { (caravanIndex, caravan) ->
-                hand.withIndex().filter { !it.value.isFace() }
+                hand.withIndex().filter { !it.value.isModifier() }
                     .forEach { (cardIndex, card) ->
                         if (caravan.getValue() + card.rank.value <= 26 &&
                             caravan.canPutCardOnTop(card) &&

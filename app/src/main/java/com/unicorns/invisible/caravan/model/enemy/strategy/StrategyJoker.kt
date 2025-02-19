@@ -20,7 +20,7 @@ object StrategyJoker : Strategy {
             val cards = (game.playerCaravans + game.enemyCaravans)
                 .flatMap { it.cards }
                 .sortedByDescending { if (it.card.rank == Rank.ACE) 10 else it.card.rank.value }
-            val gameCopyString = json.encodeToString(game)
+            val gameCopyString = json.encodeToString(game) // TODO: remove serialization!!!
             fun joke(potentialCardToJoker: CardWithModifier): Int {
                 val gameCopy = json.decodeFromString<Game>(gameCopyString)
                 val cardInCopy =

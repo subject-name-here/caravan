@@ -13,7 +13,6 @@ import kotlinx.serialization.Serializable
 import kotlin.math.abs
 
 
-@Serializable
 data object EnemyStory5 : Enemy {
     override fun createDeck(): CResources = CResources(CustomDeck(CardBack.MADNESS, false).apply {
         add(Card(Rank.KING, Suit.HEARTS, CardBack.MADNESS, true))
@@ -40,7 +39,7 @@ data object EnemyStory5 : Enemy {
         val hand = game.enemyCResources.hand
 
         if (game.isInitStage()) {
-            val card = hand.filter { it.isOrdinary() }.filter { !it.isFace() }.maxBy { it.rank.value }
+            val card = hand.filter { it.isOrdinary() }.filter { !it.isModifier() }.maxBy { it.rank.value }
             val caravan = game.enemyCaravans.filter { it.isEmpty() }.random()
             caravan.putCardOnTop(game.enemyCResources.removeFromHand(hand.indexOf(card)))
             return
@@ -63,7 +62,7 @@ data object EnemyStory5 : Enemy {
 
         val specials = hand.withIndex().filter { !it.value.isOrdinary() }
         specials.forEach { (index, special) ->
-            when (special.getWildWastelandCardType()) {
+            when (special.getWildWastelandType()) {
                 Card.WildWastelandCardType.CAZADOR -> {
                     val candidate = game.playerCaravans
                         .filter { it.getValue() in (1..26) }
@@ -73,7 +72,7 @@ data object EnemyStory5 : Enemy {
                         ?.cards
                         ?.filter {
                             it.canAddModifier(special) && !it.modifiersCopy().any { card ->
-                                card.getWildWastelandCardType() == Card.WildWastelandCardType.CAZADOR
+                                card.getWildWastelandType() == Card.WildWastelandCardType.CAZADOR
                             }
                         }
                         ?.maxByOrNull { it.getValue() }

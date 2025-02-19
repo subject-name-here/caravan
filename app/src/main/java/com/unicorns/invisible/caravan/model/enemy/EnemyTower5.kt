@@ -13,7 +13,6 @@ import kotlinx.serialization.Serializable
 import kotlin.math.abs
 
 
-@Serializable
 data object EnemyTower5 : Enemy {
     override fun createDeck(): CResources = CResources(CustomDeck(CardBack.GOMORRAH, true).apply {
         listOf(CardBack.ULTRA_LUXE, CardBack.TOPS, CardBack.LUCKY_38).forEach { back ->
@@ -30,7 +29,7 @@ data object EnemyTower5 : Enemy {
         val hand = game.enemyCResources.hand
 
         if (game.isInitStage()) {
-            val card = hand.filter { !it.isFace() }.maxBy { it.rank.value }
+            val card = hand.filter { !it.isModifier() }.maxBy { it.rank.value }
             val caravan = game.enemyCaravans.filter { it.isEmpty() }.random()
             caravan.putCardOnTop(game.enemyCResources.removeFromHand(hand.indexOf(card)))
             return

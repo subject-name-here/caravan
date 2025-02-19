@@ -1,5 +1,6 @@
 package com.unicorns.invisible.caravan.model.enemy
 
+import com.unicorns.invisible.caravan.R
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.enemy.strategy.CardDropSelect
@@ -14,9 +15,31 @@ import kotlinx.serialization.Serializable
 
 
 @Serializable
-data object EnemyOliver : Enemy {
+data object EnemyOliver : EnemyPve {
+    override fun getNameId() = R.string.pve_enemy_oliver_real
+    override fun isEven() = true
+
     override fun createDeck() = CResources(CardBack.STANDARD, false)
-    override fun getBankNumber(): Int = 0
+
+    override fun getBank(): Int {
+        return 0
+    }
+
+    override fun refreshBank() {
+
+    }
+
+    override fun getBet(): Int? {
+        return 0
+    }
+
+    override fun retractBet() {
+
+    }
+
+    override fun addReward(reward: Int) {
+
+    }
 
     override fun makeMove(game: Game) {
         val hand = game.enemyCResources.hand
@@ -93,9 +116,5 @@ data object EnemyOliver : Enemy {
         }
 
         StrategyDropCard(CardDropSelect.RANDOM).move(game)
-    }
-
-    override fun onVictory() {
-        save.traders.filterIsInstance<GomorrahTrader>().forEach { it.oliverDefeated = true }
     }
 }

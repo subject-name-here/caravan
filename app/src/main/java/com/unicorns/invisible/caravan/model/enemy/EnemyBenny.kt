@@ -16,8 +16,6 @@ import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJokerSimple
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyQueen
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.Rank
-import com.unicorns.invisible.caravan.model.trading.TopsTrader
-import com.unicorns.invisible.caravan.save
 import com.unicorns.invisible.caravan.utils.checkMoveOnDefeat
 import com.unicorns.invisible.caravan.utils.checkMoveOnImminentVictory
 import com.unicorns.invisible.caravan.utils.checkMoveOnPossibleVictory
@@ -29,42 +27,33 @@ import kotlin.random.Random
 
 
 @Serializable
-data object EnemyBenny : Enemy {
+data object EnemyBenny : EnemyPve {
     override fun getNameId() = R.string.benny
     override fun createDeck() = CResources(CardBack.TOPS, true)
     override fun isEven() = true
 
+    // TODO
     override fun getBank(): Int {
-        TODO("Not yet implemented")
+        return 0
     }
 
     override fun refreshBank() {
-        TODO("Not yet implemented")
+
     }
 
     override fun getBet(): Int? {
-        TODO("Not yet implemented")
+        return 0
     }
 
     override fun retractBet() {
-        TODO("Not yet implemented")
+
     }
 
     override fun addReward(reward: Int) {
-        TODO("Not yet implemented")
-    }
 
-    override fun startBattle() {
-
-    }
-
-    override fun addVictory() {
-        save.traders.filterIsInstance<TopsTrader>().forEach { it.bennyDefeated = true }
     }
 
     var cheatCounter = 0
-
-
 
     override fun makeMove(game: Game) {
         val hand = game.enemyCResources.hand
@@ -127,7 +116,7 @@ data object EnemyBenny : Enemy {
 
                 // Put a card on top!
                 hand.withIndex()
-                    .filter { card -> !card.value.isFace() }
+                    .filter { card -> !card.value.isModifier() }
                     .forEach { (cardIndex, card) ->
                         if (it.value.getValue() + card.rank.value in (lowerBound..26) && it.value.canPutCardOnTop(card)) {
                             it.value.putCardOnTop(game.enemyCResources.removeFromHand(cardIndex))
@@ -242,7 +231,7 @@ data object EnemyBenny : Enemy {
                 } else {
                     -1
                 }
-                hand.withIndex().filter { !it.value.isFace() || it.value.rank == Rank.QUEEN }
+                hand.withIndex().filter { !it.value.isModifier() || it.value.rank == Rank.QUEEN }
                     .sortedBy { if (it.value.rank == Rank.QUEEN) 5 * mult else it.value.rank.value * mult }
                     .forEach { (cardIndex, card) ->
                         if (caravan.getValue() + card.rank.value <= 26 &&

@@ -1,5 +1,6 @@
 package com.unicorns.invisible.caravan.model.enemy
 
+import com.unicorns.invisible.caravan.R
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.enemy.strategy.CardDropSelect
@@ -15,9 +16,31 @@ import kotlin.random.Random
 
 
 @Serializable
-data object EnemyVeronica : Enemy {
+data object EnemyVeronica : EnemyPve {
+    override fun getNameId() = R.string.pve_enemy_veronica
+    override fun isEven() = true
+
     override fun createDeck() = CResources(CardBack.ULTRA_LUXE, false)
-    override fun getBankNumber() = 1
+
+    override fun getBank(): Int {
+        return 0
+    }
+
+    override fun refreshBank() {
+
+    }
+
+    override fun getBet(): Int? {
+        return 0
+    }
+
+    override fun retractBet() {
+
+    }
+
+    override fun addReward(reward: Int) {
+
+    }
 
     override fun makeMove(game: Game) {
         val hand = game.enemyCResources.hand

@@ -9,7 +9,6 @@ import kotlinx.serialization.Serializable
 import kotlin.random.Random
 
 
-@Serializable
 data object EnemyTower1 : Enemy {
     override fun createDeck(): CResources = CResources(CustomDeck(CardBack.STANDARD, false).apply {
         removeAll(toList().filter { it.rank == Rank.QUEEN || it.rank == Rank.JOKER })
@@ -20,7 +19,7 @@ data object EnemyTower1 : Enemy {
         val hand = game.enemyCResources.hand
 
         if (game.isInitStage()) {
-            val cardIndex = hand.withIndex().filter { !it.value.isFace() }.random().index
+            val cardIndex = hand.withIndex().filter { !it.value.isModifier() }.random().index
             val caravan = game.enemyCaravans.first { it.size == 0 }
             caravan.putCardOnTop(game.enemyCResources.removeFromHand(cardIndex))
             return

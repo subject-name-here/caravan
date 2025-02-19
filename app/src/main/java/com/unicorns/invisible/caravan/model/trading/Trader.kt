@@ -13,7 +13,7 @@ import kotlin.random.Random
 @Serializable
 sealed interface Trader {
     fun isOpen(): Boolean
-    fun openingCondition(activity: MainActivity): String
+    fun openingCondition(activity: MainActivity): String // TODO: add in code those conditions!!!
 
     fun getUpdateRate(): Int
     fun getUpdatePartOfHash() = Calendar.getInstance().get(Calendar.HOUR_OF_DAY) / getUpdateRate()

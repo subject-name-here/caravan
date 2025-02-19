@@ -1,5 +1,6 @@
 package com.unicorns.invisible.caravan.model.enemy
 
+import com.unicorns.invisible.caravan.R
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.enemy.strategy.CardDropSelect
@@ -21,7 +22,10 @@ import kotlin.math.abs
 
 
 @Serializable
-data object EnemyEasyPete : Enemy {
+data object EnemyEasyPete : EnemyPve {
+    override fun getNameId() = R.string.easy_pete
+    override fun isEven() = true
+
     override fun createDeck() = CResources(CustomDeck().apply {
         Rank.entries.forEach { rank ->
             if (rank != Rank.JOKER) {
@@ -36,7 +40,25 @@ data object EnemyEasyPete : Enemy {
         add(Card(Rank.KING, Suit.SPADES, CardBack.MADNESS, true))
     })
 
-    override fun getBankNumber() = 13
+    override fun getBank(): Int {
+        return 0
+    }
+
+    override fun refreshBank() {
+
+    }
+
+    override fun getBet(): Int? {
+        return 0
+    }
+
+    override fun retractBet() {
+
+    }
+
+    override fun addReward(reward: Int) {
+
+    }
 
     override fun makeMove(game: Game) {
         val hand = game.enemyCResources.hand
@@ -56,7 +78,7 @@ data object EnemyEasyPete : Enemy {
 
         val specials = hand.withIndex().filter { !it.value.isOrdinary() }
         specials.forEach { (index, special) ->
-            when (special.getWildWastelandCardType()) {
+            when (special.getWildWastelandType()) {
                 Card.WildWastelandCardType.DIFFICULT_PETE -> {
                     val candidate = (game.playerCaravans + game.enemyCaravans)
                         .flatMap { it.cards }

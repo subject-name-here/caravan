@@ -11,7 +11,6 @@ import com.unicorns.invisible.caravan.multiplayer.MoveResponse
 import kotlinx.serialization.Serializable
 
 
-@Serializable
 class EnemyPlayer(
     private val startDeck: CustomDeck,
 ) : Enemy {

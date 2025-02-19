@@ -1,5 +1,6 @@
 package com.unicorns.invisible.caravan.model.enemy
 
+import com.unicorns.invisible.caravan.R
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.enemy.strategy.CardDropSelect
@@ -26,14 +27,12 @@ import kotlinx.serialization.Transient
 import kotlin.math.max
 
 
-@Serializable
-class EnemyFinalBossStory(@Transient private var update: Int = 0) : Enemy {
+class EnemyFinalBossStory(private var update: Int = 0) : Enemy {
     override fun createDeck(): CResources = CResources(CustomDeck(CardBack.CHINESE, false))
+
     override fun isSpeedOverriding() = true
 
-    @Transient
     var playAlarm: () -> Unit = {}
-    @Transient
     var sayThing: (Int) -> Unit = {}
 
     override fun makeMove(game: Game) {
@@ -102,7 +101,7 @@ class EnemyFinalBossStory(@Transient private var update: Int = 0) : Enemy {
                         }
                 }
                 hand.withIndex()
-                    .filter { card -> !card.value.isFace() && card.value.isOrdinary() }
+                    .filter { card -> !card.value.isModifier() && card.value.isOrdinary() }
                     .forEach { (cardIndex, card) ->
                         if (it.value.getValue() + card.rank.value in (lowerBound..26) && it.value.canPutCardOnTop(card)) {
                             it.value.putCardOnTop(game.enemyCResources.removeFromHand(cardIndex))
@@ -200,7 +199,7 @@ class EnemyFinalBossStory(@Transient private var update: Int = 0) : Enemy {
                 }
 
                 // Put a card on top!
-                hand.filter { card -> !card.value.isFace() }
+                hand.filter { card -> !card.value.isModifier() }
                     .forEach { (cardIndex, card) ->
                         if (it.value.getValue() + card.rank.value in (lowerBound..26) && it.value.canPutCardOnTop(card)) {
                             it.value.putCardOnTop(game.enemyCResources.removeFromHand(cardIndex))
@@ -269,7 +268,7 @@ class EnemyFinalBossStory(@Transient private var update: Int = 0) : Enemy {
                 }
 
                 // Try creating a draw!
-                hand.filter { !it.value.isFace()  }
+                hand.filter { !it.value.isModifier()  }
                     .sortedByDescending { it.value.rank.value }
                     .forEach { (cardIndex, card) ->
                         game.enemyCaravans
@@ -367,7 +366,7 @@ class EnemyFinalBossStory(@Transient private var update: Int = 0) : Enemy {
                 } else {
                     -1
                 }
-                hand.filter { !it.value.isFace() || it.value.rank == Rank.QUEEN }
+                hand.filter { !it.value.isModifier() || it.value.rank == Rank.QUEEN }
                     .sortedBy { if (it.value.rank == Rank.QUEEN) 5 * mult else it.value.rank.value * mult }
                     .forEach { (cardIndex, card) ->
                         if (caravan.getValue() + card.rank.value <= 26 &&

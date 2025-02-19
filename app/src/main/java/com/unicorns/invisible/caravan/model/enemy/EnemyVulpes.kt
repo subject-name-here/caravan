@@ -1,5 +1,6 @@
 package com.unicorns.invisible.caravan.model.enemy
 
+import com.unicorns.invisible.caravan.R
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.enemy.strategy.CardDropSelect
@@ -19,8 +20,30 @@ import kotlinx.serialization.Serializable
 
 
 @Serializable
-data object EnemyVulpes : Enemy {
-    override fun getBankNumber() = 9
+data object EnemyVulpes : EnemyPve {
+    override fun getNameId() = R.string.vulpes
+    override fun isEven() = true
+
+    override fun getBank(): Int {
+        return 0
+    }
+
+    override fun refreshBank() {
+
+    }
+
+    override fun getBet(): Int? {
+        return 0
+    }
+
+    override fun retractBet() {
+
+    }
+
+    override fun addReward(reward: Int) {
+
+    }
+
     override fun createDeck(): CResources = CResources(CustomDeck(CardBack.LUCKY_38, true).apply {
         removeAll(toList().filter { it.rank.value < 5 && it.rank.value != Rank.QUEEN.value })
     })
@@ -112,9 +135,5 @@ data object EnemyVulpes : Enemy {
         }
 
         StrategyDropCard(CardDropSelect.MIN_VALUE).move(game)
-    }
-
-    override fun onVictory() {
-        save.traders.filterIsInstance<GomorrahTrader>().forEach { it.vulpesDefeated = true }
     }
 }

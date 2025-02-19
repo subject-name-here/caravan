@@ -11,7 +11,6 @@ import kotlinx.serialization.Serializable
 import kotlin.random.Random
 
 
-@Serializable
 data object EnemyStory1 : Enemy {
     override fun createDeck(): CResources = CResources(CustomDeck(CardBack.SIERRA_MADRE, true))
 

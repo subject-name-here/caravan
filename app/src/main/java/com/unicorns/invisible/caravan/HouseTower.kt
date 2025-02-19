@@ -827,7 +827,7 @@ fun StartTowerGame(
                     onQuitPressed
                 )
             }
-            enemy.addVictory()
+            enemy.onVictory(false)
             saveData(activity)
         }
         it.onLose = {

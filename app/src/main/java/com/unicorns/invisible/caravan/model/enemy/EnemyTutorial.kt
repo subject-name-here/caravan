@@ -7,18 +7,16 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 
 
-@Serializable
 class EnemyTutorial : Enemy {
     override fun createDeck(): CResources = CResources(CardBack.STANDARD, true)
 
-    @Transient
     var onRemoveFromHand: () -> Unit = {}
 
     override fun makeMove(game: Game) {
         val hand = game.enemyCResources.hand
 
         if (game.isInitStage()) {
-            val cardIndex = hand.withIndex().filter { !it.value.isFace() }.random().index
+            val cardIndex = hand.withIndex().filter { !it.value.isModifier() }.random().index
             val caravan = game.enemyCaravans.find { it.isEmpty() }!!
             caravan.putCardOnTop(game.enemyCResources.removeFromHand(cardIndex))
             onRemoveFromHand()

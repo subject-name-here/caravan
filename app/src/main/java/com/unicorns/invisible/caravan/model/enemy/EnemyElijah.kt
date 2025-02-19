@@ -1,5 +1,6 @@
 package com.unicorns.invisible.caravan.model.enemy
 
+import com.unicorns.invisible.caravan.R
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.enemy.strategy.CardDropSelect
@@ -25,8 +26,9 @@ import kotlin.random.Random
 
 
 @Serializable
-data object EnemyElijah : Enemy {
-    override fun getBankNumber(): Int = 10
+data object EnemyElijah : EnemyPve {
+    override fun getNameId() = R.string.elijah
+    override fun isEven() = false
 
     override fun createDeck(): CResources = CResources(CustomDeck().apply {
         listOf(
@@ -46,6 +48,26 @@ data object EnemyElijah : Enemy {
             add(Card(Rank.JOKER, Suit.CLUBS, back, true))
         }
     })
+
+    override fun getBank(): Int {
+        return 0
+    }
+
+    override fun refreshBank() {
+
+    }
+
+    override fun getBet(): Int? {
+        return 0
+    }
+
+    override fun retractBet() {
+
+    }
+
+    override fun addReward(reward: Int) {
+
+    }
 
     override fun makeMove(game: Game) {
         val hand = game.enemyCResources.hand
@@ -85,7 +107,7 @@ data object EnemyElijah : Enemy {
             }
         }
 
-        hand.withIndex().filter { !it.value.isFace() }.forEach { (cardIndex, card) ->
+        hand.withIndex().filter { !it.value.isModifier() }.forEach { (cardIndex, card) ->
             game.enemyCaravans.withIndex().sortedByDescending { it.value.getValue() }
                 .forEach { (caravanIndex, caravan) ->
                     val futureValue = caravan.getValue() + card.rank.value
@@ -135,7 +157,7 @@ data object EnemyElijah : Enemy {
             }
         }
 
-        hand.withIndex().filter { !it.value.isFace() }.forEach { (cardIndex, card) ->
+        hand.withIndex().filter { !it.value.isModifier() }.forEach { (cardIndex, card) ->
             game.enemyCaravans.withIndex().sortedByDescending { it.value.getValue() }
                 .forEach { (caravanIndex, caravan) ->
                     if (caravan.size < 2 && caravan.getValue() + card.rank.value <= 26 && caravan.canPutCardOnTop(
@@ -170,9 +192,5 @@ data object EnemyElijah : Enemy {
         }
 
         StrategyDropCard(CardDropSelect.MIN_VALUE).move(game)
-    }
-
-    override fun onVictory() {
-        save.traders.filterIsInstance<SierraMadreTrader>().forEach { it.elijahDefeated = true }
     }
 }

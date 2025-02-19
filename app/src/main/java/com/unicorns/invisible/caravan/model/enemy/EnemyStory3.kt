@@ -10,10 +10,9 @@ import com.unicorns.invisible.caravan.model.primitives.Suit
 import kotlinx.serialization.Serializable
 
 
-@Serializable
 class EnemyStory3 : Enemy {
     override fun createDeck(): CResources = CResources(CustomDeck(CardBack.TOPS, false).apply {
-        removeAll(toList().filter { it.isFace() && it.rank != Rank.JACK })
+        removeAll(toList().filter { it.isModifier() && it.rank != Rank.JACK })
     })
 
     private var cazadorsAdded = 0
@@ -21,7 +20,7 @@ class EnemyStory3 : Enemy {
         val hand = game.enemyCResources.hand
 
         if (game.isInitStage()) {
-            val card = hand.filter { it.isOrdinary() }.filter { !it.isFace() }.maxBy { it.rank.value }
+            val card = hand.filter { it.isOrdinary() }.filter { !it.isModifier() }.maxBy { it.rank.value }
             val caravan = game.enemyCaravans.filter { it.isEmpty() }.random()
             caravan.putCardOnTop(game.enemyCResources.removeFromHand(hand.indexOf(card)))
             return
@@ -32,7 +31,7 @@ class EnemyStory3 : Enemy {
 
         val specials = hand.withIndex().filter { it.value.isWildWasteland() }
         specials.forEach { (index, special) ->
-            when (special.getWildWastelandCardType()) {
+            when (special.getWildWastelandType()) {
                 Card.WildWastelandCardType.CAZADOR -> {
                     val candidate = game.playerCaravans
                         .filter { it.getValue() in (11..26) }

@@ -1,5 +1,6 @@
 package com.unicorns.invisible.caravan.model.enemy
 
+import com.unicorns.invisible.caravan.R
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.enemy.strategy.SelectCard
@@ -16,8 +17,10 @@ import kotlin.random.Random
 
 
 @Serializable
-data object EnemySnuffles : Enemy {
-    override fun getBankNumber() = 12
+data object EnemySnuffles : EnemyPve {
+    override fun getNameId() = R.string.snuffles
+    override fun isEven() = false
+
     override fun createDeck(): CResources = CResources(CustomDeck().apply {
         listOf(CardBack.LUCKY_38, CardBack.GOMORRAH, CardBack.ULTRA_LUXE, CardBack.TOPS).forEach { back ->
             Rank.entries.forEach { rank ->
@@ -46,6 +49,27 @@ data object EnemySnuffles : Enemy {
     })
 
 
+    override fun getBank(): Int {
+        return 0
+    }
+
+    override fun refreshBank() {
+
+    }
+
+    override fun getBet(): Int? {
+        return 0
+    }
+
+    override fun retractBet() {
+
+    }
+
+    override fun addReward(reward: Int) {
+
+    }
+
+
     override fun makeMove(game: Game) {
         val hand = game.enemyCResources.hand
 
@@ -56,7 +80,7 @@ data object EnemySnuffles : Enemy {
 
         val specials = hand.withIndex().filter { !it.value.isOrdinary() }
         specials.forEach { (index, special) ->
-            when (special.getWildWastelandCardType()) {
+            when (special.getWildWastelandType()) {
                 Card.WildWastelandCardType.CAZADOR -> {
                     val candidate = game.playerCaravans
                         .filter { it.getValue() in (11..26) }

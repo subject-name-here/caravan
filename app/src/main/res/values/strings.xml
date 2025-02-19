@@ -45,7 +45,7 @@
     <string name="vault_21_trader_empty">Oy, sorry! Nothing has arrived yet. Meanwhile, you can have fun playing Caravan!</string>
     <string name="vault_21_trader_condition">Win 21 games or visit every 21st day of month.</string>
 
-    <string name="sierra_madre_trader_welcome">*welcoming beeping and celebratory looped music from Sierra Madre BottleCaps Exchange Machine*</string>
+    <string name="sierra_madre_trader_welcome">*welcoming beeping and looped celebratory music from Sierra Madre BottleCaps Exchange Machine*</string>
     <string name="sierra_madre_trader_empty">*silence*</string>
     <string name="sierra_madre_trader_cond">Defeat Elijah, Ulysses and Dr. Mobius. (%1$s, %2$s, %3$s)</string>
 

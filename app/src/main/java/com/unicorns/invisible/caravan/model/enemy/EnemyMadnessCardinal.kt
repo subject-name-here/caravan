@@ -1,5 +1,6 @@
 package com.unicorns.invisible.caravan.model.enemy
 
+import com.unicorns.invisible.caravan.R
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.enemy.strategy.CardDropSelect
@@ -23,7 +24,16 @@ import kotlin.math.abs
 
 
 @Serializable
-data object EnemyMadnessCardinal : Enemy {
+data object EnemyMadnessCardinal : EnemyPve {
+    override fun getNameId() = R.string.madness_cardinal
+    override fun isEven() = false
+
+    override fun getBank() = 0
+    override fun refreshBank() {}
+    override fun getBet() = null
+    override fun retractBet() {}
+    override fun addReward(reward: Int) {}
+
     override fun createDeck(): CResources = CResources(CustomDeck(CardBack.MADNESS, false).apply {
         add(Card(Rank.ACE, Suit.HEARTS, CardBack.ENCLAVE, true))
         add(Card(Rank.ACE, Suit.CLUBS, CardBack.ENCLAVE, true))
@@ -38,6 +48,7 @@ data object EnemyMadnessCardinal : Enemy {
         add(Card(Rank.JACK, Suit.CLUBS, CardBack.MADNESS, true))
         add(Card(Rank.QUEEN, Suit.SPADES, CardBack.MADNESS, true))
     })
+
 
     override fun makeMove(game: Game) {
         val hand = game.enemyCResources.hand
@@ -59,14 +70,14 @@ data object EnemyMadnessCardinal : Enemy {
 
         val specials = hand.withIndex().filter { !it.value.isOrdinary() }
         specials.forEach { (index, special) ->
-            when (special.getWildWastelandCardType()) {
+            when (special.getWildWastelandType()) {
                 Card.WildWastelandCardType.CAZADOR -> {
                     val candidate = game.playerCaravans
                         .filter { it.getValue() in (11..26) }
                         .filter { !it.cards.any { card ->
                             val mods = card.modifiersCopy()
                             card.isProtectedByMuggy || mods.any { mod ->
-                                mod.getWildWastelandCardType() == Card.WildWastelandCardType.CAZADOR
+                                mod.getWildWastelandType() == Card.WildWastelandCardType.CAZADOR
                             }
                         } }
                         .maxByOrNull { it.size }
@@ -299,9 +310,5 @@ data object EnemyMadnessCardinal : Enemy {
         }
 
         StrategyDropCard(CardDropSelect.MIN_VALUE).move(game)
-    }
-
-    override fun onVictory() {
-        save.traders.filterIsInstance<GomorrahTrader>().forEach { it.cardinalDefeated = true }
     }
 }

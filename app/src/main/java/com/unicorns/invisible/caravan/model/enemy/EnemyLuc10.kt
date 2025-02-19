@@ -1,5 +1,6 @@
 package com.unicorns.invisible.caravan.model.enemy
 
+import com.unicorns.invisible.caravan.R
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.enemy.strategy.SelectCard
@@ -18,9 +19,31 @@ import kotlin.random.Random
 
 
 @Serializable
-data object EnemyLuc10 : Enemy {
+data object EnemyLuc10 : EnemyPve {
+    override fun getNameId() = R.string.luc10
+    override fun isEven() = true
+
     override fun createDeck() = CResources(CardBack.LUCKY_38, true)
-    override fun getBankNumber() = 17
+
+    override fun getBank(): Int {
+         return 0
+    }
+
+    override fun refreshBank() {
+
+    }
+
+    override fun getBet(): Int? {
+        return 0
+    }
+
+    override fun retractBet() {
+
+    }
+
+    override fun addReward(reward: Int) {
+
+    }
 
     override fun makeMove(game: Game) {
         if (game.isInitStage()) {
@@ -76,53 +99,49 @@ data object EnemyLuc10 : Enemy {
 
         EnemyBenny.makeMove(game)
 
-        // The deck is L-U-C-K-Y!
+        // TODO: The deck is L-U-C-K-Y!
 
-        if (playerReadyCaravans.isNotEmpty()) {
-            Suit.entries.forEach { suit ->
-                val ranks = if (Random.nextBoolean()) {
-                    listOf(Rank.JACK, Rank.KING)
-                } else {
-                    listOf(Rank.KING, Rank.JACK)
-                }
-                ranks.forEach {
-                    if (game.enemyCResources.moveOnTop(it, suit)) {
-                        return
-                    }
-                }
-            }
-            if (Random.nextBoolean()) {
-                if (
-                    game.enemyCResources.moveOnTop(Rank.JOKER, Suit.HEARTS) ||
-                    game.enemyCResources.moveOnTop(Rank.JOKER, Suit.CLUBS)
-                ) {
-                    return
-                }
-            }
-        }
-
-        game.enemyCaravans.sortedByDescending { it.getValue() }.forEach { caravan ->
-            Suit.entries.shuffled().forEach { suit ->
-                Rank.entries.reversed().filter { !it.isFace() }.forEach { rank ->
-                    if (caravan.canPutCardOnTop(Card(rank, suit, CardBack.STANDARD, false))) {
-                        if (caravan.getValue() + rank.value <= 26) {
-                            if (game.enemyCResources.moveOnTop(rank, suit)) {
-                                return
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        Suit.entries.shuffled().forEach { suit ->
-            if (game.enemyCResources.moveOnTop(Rank.QUEEN, suit)) {
-                return
-            }
-        }
-    }
-
-    override fun onVictory() {
-        save.traders.filterIsInstance<TopsTrader>().forEach { it.isLuc10Defeated = true }
+//        if (playerReadyCaravans.isNotEmpty()) {
+//            Suit.entries.forEach { suit ->
+//                val ranks = if (Random.nextBoolean()) {
+//                    listOf(Rank.JACK, Rank.KING)
+//                } else {
+//                    listOf(Rank.KING, Rank.JACK)
+//                }
+//                ranks.forEach {
+//                    if (game.enemyCResources.moveOnTop(it, suit)) {
+//                        return
+//                    }
+//                }
+//            }
+//            if (Random.nextBoolean()) {
+//                if (
+//                    game.enemyCResources.moveOnTop(Rank.JOKER, Suit.HEARTS) ||
+//                    game.enemyCResources.moveOnTop(Rank.JOKER, Suit.CLUBS)
+//                ) {
+//                    return
+//                }
+//            }
+//        }
+//
+//        game.enemyCaravans.sortedByDescending { it.getValue() }.forEach { caravan ->
+//            Suit.entries.shuffled().forEach { suit ->
+//                Rank.entries.reversed().filter { !it.isFace() }.forEach { rank ->
+//                    if (caravan.canPutCardOnTop(Card(rank, suit, CardBack.STANDARD, false))) {
+//                        if (caravan.getValue() + rank.value <= 26) {
+//                            if (game.enemyCResources.moveOnTop(rank, suit)) {
+//                                return
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//
+//        Suit.entries.shuffled().forEach { suit ->
+//            if (game.enemyCResources.moveOnTop(Rank.QUEEN, suit)) {
+//                return
+//            }
+//        }
     }
 }

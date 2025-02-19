@@ -8,7 +8,6 @@ import com.unicorns.invisible.caravan.model.primitives.Rank
 import kotlinx.serialization.Serializable
 
 
-@Serializable
 data object EnemyStory2 : Enemy {
     override fun createDeck(): CResources = CResources(CustomDeck(CardBack.ULTRA_LUXE, false))
 
@@ -16,7 +15,7 @@ data object EnemyStory2 : Enemy {
         val hand = game.enemyCResources.hand
 
         if (game.isInitStage()) {
-            val cardIndex = hand.withIndex().filter { !it.value.isFace() }.random().index
+            val cardIndex = hand.withIndex().filter { !it.value.isModifier() }.random().index
             val caravan = game.enemyCaravans.first { it.size == 0 }
             caravan.putCardOnTop(game.enemyCResources.removeFromHand(cardIndex))
             return

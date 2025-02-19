@@ -165,14 +165,14 @@ fun ShowTraders(activity: MainActivity, goBack: () -> Unit) {
                         ), state = state
                 ) {
                     item {
-                        if (selectedTrader.isOpen()) {
-                            Column(
-                                Modifier
-                                    .fillMaxSize()
-                                    .padding(8.dp),
-                                horizontalAlignment = Alignment.CenterHorizontally,
-                                verticalArrangement = Arrangement.Top
-                            ) {
+                        Column(
+                            Modifier
+                                .fillMaxSize()
+                                .padding(8.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Top
+                        ) {
+                            if (selectedTrader.isOpen()) {
                                 val cards = selectedTrader.getCards()
                                     .filter { !save.isCardAvailableAlready(it) }
 
@@ -189,17 +189,19 @@ fun ShowTraders(activity: MainActivity, goBack: () -> Unit) {
                                 )
                                 cards.forEach {
                                     Spacer(modifier = Modifier.height(4.dp))
-                                    CardToBuy(activity, it, it.getPriceOfCard()) { update = !update }
+                                    CardToBuy(activity, it, it.getPriceOfCard()) {
+                                        update = !update
+                                    }
                                 }
+                            } else {
+                                TextFallout(
+                                    selectedTrader.openingCondition(activity),
+                                    getTextColor(activity),
+                                    getTextStrokeColor(activity),
+                                    18.sp,
+                                    Modifier.fillMaxWidth().padding(4.dp),
+                                )
                             }
-                        } else {
-                            TextFallout(
-                                selectedTrader.openingCondition(activity),
-                                getTextColor(activity),
-                                getTextStrokeColor(activity),
-                                18.sp,
-                                Modifier.fillMaxWidth().padding(4.dp),
-                            )
                         }
                     }
                 }

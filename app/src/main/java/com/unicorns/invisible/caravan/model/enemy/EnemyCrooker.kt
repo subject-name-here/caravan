@@ -1,5 +1,6 @@
 package com.unicorns.invisible.caravan.model.enemy
 
+import com.unicorns.invisible.caravan.R
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.enemy.strategy.CardDropSelect
@@ -20,8 +21,9 @@ import kotlin.math.abs
 
 
 @Serializable
-data object EnemyCrooker : Enemy {
-    override fun getBankNumber() = 11
+data object EnemyCrooker : EnemyPve {
+    override fun getNameId() = R.string.crooker
+    override fun isEven() = false
 
     override fun createDeck(): CResources = CResources(CustomDeck().apply {
         listOf(CardBack.VAULT_21, CardBack.LUCKY_38).forEach { back ->
@@ -37,6 +39,27 @@ data object EnemyCrooker : Enemy {
             }
         }
     })
+
+    override fun getBank(): Int {
+        return 0
+    }
+
+    override fun refreshBank() {
+
+    }
+
+    override fun getBet(): Int? {
+        return 0
+    }
+
+    override fun retractBet() {
+
+    }
+
+    override fun addReward(reward: Int) {
+
+    }
+
     override fun makeMove(game: Game) {
         val overWeightCaravans = game.enemyCaravans.filter { it.getValue() > 26 }
         val playersReadyCaravans = game.playerCaravans.filter { it.getValue() in (21..26) }

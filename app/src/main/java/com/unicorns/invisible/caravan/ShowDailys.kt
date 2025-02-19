@@ -21,6 +21,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.unicorns.invisible.caravan.model.challenge.Challenge
@@ -124,6 +125,7 @@ fun ShowChallenge(activity: MainActivity, challenge: Challenge, isCompleted: Boo
                 getTextStrokeColor(activity),
                 24.sp,
                 Modifier.fillMaxWidth(),
+                TextAlign.End
             )
         }
 
@@ -133,6 +135,7 @@ fun ShowChallenge(activity: MainActivity, challenge: Challenge, isCompleted: Boo
             getTextStrokeColor(activity),
             16.sp,
             Modifier.fillMaxWidth(),
+            textAlignment = TextAlign.Start
         )
 
         if (isCompleted) {
