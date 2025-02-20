@@ -1,7 +1,6 @@
 package com.unicorns.invisible.caravan
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.collection.mutableObjectListOf
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.TweenSpec
@@ -12,6 +11,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
@@ -22,9 +22,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -61,13 +64,13 @@ import com.unicorns.invisible.caravan.model.primitives.Card
 import com.unicorns.invisible.caravan.model.primitives.CardWithModifier
 import com.unicorns.invisible.caravan.model.primitives.Rank
 import com.unicorns.invisible.caravan.model.primitives.Suit
-import com.unicorns.invisible.caravan.save.saveData
 import com.unicorns.invisible.caravan.utils.ShowCard
 import com.unicorns.invisible.caravan.utils.ShowCardBack
 import com.unicorns.invisible.caravan.utils.TextFallout
 import com.unicorns.invisible.caravan.utils.TextSymbola
 import com.unicorns.invisible.caravan.utils.clickableCancel
 import com.unicorns.invisible.caravan.utils.clickableOk
+import com.unicorns.invisible.caravan.utils.dpToPx
 import com.unicorns.invisible.caravan.utils.getBackgroundColor
 import com.unicorns.invisible.caravan.utils.getGameScoreColor
 import com.unicorns.invisible.caravan.utils.getGameSelectionColor
@@ -418,35 +421,35 @@ fun ShowGameRaw(
                             horizontalAlignment = Alignment.CenterHorizontally,
                             modifier = Modifier.fillMaxWidth(0.5f)
                         ) {
-                            EnemySide(activity, animationSpeed, isPvP, getEnemySymbol, game, fillHeight = 0.45f, enemyHandKey)
+                            EnemySide(activity, animationSpeed, isPvP, getEnemySymbol, game, fillHalfMaxHeight = true, enemyHandKey)
                             PlayerSide(activity, animationSpeed, isPvP, game, getSelectedCard(), setSelectedCard, getMySymbol, setMySymbol, playerHandKey)
                         }
-                        Caravans(
-                            activity,
-                            animationSpeed,
-                            { game.playerCResources.hand.getOrNull(getSelectedCard()) },
-                            getSelectedCaravan,
-                            setSelectedCaravan,
-                            isMaxHeight = true,
-                            state1Enemy,
-                            state1Player,
-                            state2Enemy,
-                            state2Player,
-                            state3Enemy,
-                            state3Player,
-                            ::addCardToPlayerCaravan,
-                            ::addCardToEnemyCaravan,
-                            { dropCardFromHand() },
-                            dropCaravan,
-                            ::isInitStage,
-                            { game.isPlayerTurn },
-                            { game.canPlayerMove },
-                            ::canDiscard,
-                            { game.isOver() },
-                            { num -> game.playerCaravans[num] },
-                            { num -> game.enemyCaravans[num] },
-                            caravansKey
-                        )
+//                        Caravans(
+//                            activity,
+//                            animationSpeed,
+//                            { game.playerCResources.hand.getOrNull(getSelectedCard()) },
+//                            getSelectedCaravan,
+//                            setSelectedCaravan,
+//                            isMaxHeight = true,
+//                            state1Enemy,
+//                            state1Player,
+//                            state2Enemy,
+//                            state2Player,
+//                            state3Enemy,
+//                            state3Player,
+//                            ::addCardToPlayerCaravan,
+//                            ::addCardToEnemyCaravan,
+//                            { dropCardFromHand() },
+//                            dropCaravan,
+//                            ::isInitStage,
+//                            { game.isPlayerTurn },
+//                            { game.canPlayerMove },
+//                            ::canDiscard,
+//                            { game.isOver() },
+//                            { num -> game.playerCaravans[num] },
+//                            { num -> game.enemyCaravans[num] },
+//                            caravansKey
+//                        )
                     }
                 } else {
                     Column(
@@ -454,7 +457,7 @@ fun ShowGameRaw(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         modifier = Modifier.fillMaxSize()
                     ) {
-                        EnemySide(activity, animationSpeed, isPvP, getEnemySymbol, game, fillHeight = 0.15f, enemyHandKey)
+                        EnemySide(activity, animationSpeed, isPvP, getEnemySymbol, game, fillHalfMaxHeight = false, enemyHandKey)
                         Caravans(
                             activity,
                             animationSpeed,
@@ -496,25 +499,33 @@ fun EnemySide(
     isPvP: Boolean,
     getEnemySymbol: () -> String,
     game: Game,
-    fillHeight: Float,
+    fillHalfMaxHeight: Boolean,
     enemyHandKey: Int
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .fillMaxHeight(fillHeight)
+            .let {
+                if (fillHalfMaxHeight) {
+                    it.fillMaxHeight(0.5f)
+                } else {
+                    it.wrapContentHeight()
+                }
+                it
+            }
             .padding(vertical = 4.dp),
+        verticalAlignment = Alignment.Bottom
     ) {
         RowOfEnemyCards(activity, animationSpeed, game.enemyCResources.hand)
         key(enemyHandKey) {
-            Box(Modifier.fillMaxSize()) {
+            Box(Modifier.fillMaxWidth().wrapContentHeight()) {
                 ShowDeck(game.enemyCResources, activity, isKnown = !isPvP)
                 if (isPvP) {
                     Box(
                         modifier = Modifier
-                            .fillMaxSize()
+                            .fillMaxWidth()
                             .background(Color.Transparent),
-                        contentAlignment = Alignment.BottomCenter
+                        contentAlignment = Alignment.Center
                     ) {
                         TextSymbola(
                             getEnemySymbol(),
@@ -541,7 +552,10 @@ fun PlayerSide(
     playerHandKey: Int,
 ) {
     val selectedCardColor = getGameSelectionColor(activity)
-    Row(verticalAlignment = Alignment.Bottom, modifier = Modifier.fillMaxSize()) {
+    Row(
+        verticalAlignment = Alignment.Bottom,
+        modifier = Modifier.fillMaxWidth().padding(bottom = 4.dp, start = 4.dp).wrapContentHeight(),
+    ) {
         PlayerCards(
             activity,
             animationSpeed,
@@ -551,14 +565,14 @@ fun PlayerSide(
             onCardClicked
         )
         key(playerHandKey) {
-            Box {
+            Box(Modifier.fillMaxWidth().wrapContentHeight()) {
                 ShowDeck(game.playerCResources, activity)
                 if (isPvP) {
                     Box(
                         modifier = Modifier
                             .fillMaxSize()
                             .background(Color.Transparent),
-                        contentAlignment = Alignment.BottomCenter
+                        contentAlignment = Alignment.TopCenter
                     ) {
                         TextSymbola(
                             getMySymbol(),
@@ -594,7 +608,6 @@ fun RowOfEnemyCards(activity: MainActivity, animationSpeed: AnimationSpeed, card
     Hand(activity, animationSpeed, true, cards, -1, Color.Transparent) {}
 }
 
-// TODO: rework, scrollable hand
 @SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
 fun Hand(
@@ -604,162 +617,64 @@ fun Hand(
     cards: List<Card>,
     selectedCard: Int?, selectedCardColor: Color, onClick: (Int) -> Unit
 ) {
-    val enemyMult = if (isEnemy) -1f else 1f
     BoxWithConstraints(
         Modifier
             .fillMaxWidth(0.8f)
-            .fillMaxHeight(),
-        Alignment.TopStart
+            .padding(bottom = 8.pxToDp())
+            .wrapContentHeight(),
     ) {
-        val cardHeight = (maxHeight - 16.dp) / 2
-        val cardWidth = (maxWidth - 40.dp) / 5
-        val scaleH = cardHeight / 256.pxToDp()
-        val scaleW = cardWidth / 183.pxToDp()
-        val scale = min(scaleW, scaleH)
-
-        val memCards = remember { mutableObjectListOf<Card>() }
-        memCards.addAll(cards - memCards.asMutableList().toSet())
-        memCards.removeIf { it.handAnimationMark == Card.AnimationMark.MOVED_OUT }
-
-        val itemVerticalOffsetMovingIn = remember { Animatable(2.5f * enemyMult) }
-        val itemVerticalOffsetMovingOut = remember { Animatable(0f) }
-
-        var recomposeKey by remember { mutableStateOf(false) }
-        LaunchedEffect(recomposeKey) {}
-        val isAnyMovingIn = memCards.any { it.handAnimationMark.isMovingIn() }
-        val isAnyMovingOut = memCards.any { it.handAnimationMark.isMovingOut() }
-
-        if (animationSpeed.delay != 0L) {
-            LaunchedEffect(isAnyMovingIn) {
-                if (isAnyMovingIn) {
-                    playCardFlipSound(activity)
-                    itemVerticalOffsetMovingIn.snapTo(2.5f * enemyMult)
-                    memCards.forEach {
-                        if (it.handAnimationMark == Card.AnimationMark.MOVING_IN) {
-                            it.handAnimationMark = Card.AnimationMark.MOVING_IN_WIP
-                        }
-                    }
-                    itemVerticalOffsetMovingIn.animateTo(0f, TweenSpec(animationSpeed.delay.toInt())) {
-                        recomposeKey = !recomposeKey
-                    }
-                    memCards.forEach {
-                        if (it.handAnimationMark.isMovingIn()) {
-                            it.handAnimationMark = Card.AnimationMark.STABLE
-                        }
-                    }
-                    recomposeKey = !recomposeKey
-                }
-            }
-
-            LaunchedEffect(isAnyMovingOut) {
-                if (isAnyMovingOut) {
-                    playCardFlipSound(activity)
-                    val isDropping = memCards.any { it.handAnimationMark in listOf(Card.AnimationMark.MOVING_OUT_ALT, Card.AnimationMark.MOVING_OUT_ALT_WIP) }
-                    val isDisappearing = memCards.any { it.handAnimationMark == Card.AnimationMark.MOVED_OUT }
-                    val target = (if (isDropping) 2.5f else -2.5f) * enemyMult
-                    itemVerticalOffsetMovingOut.snapTo(0f)
-                    memCards.forEach {
-                        if (it.handAnimationMark == Card.AnimationMark.MOVING_OUT) {
-                            it.handAnimationMark = Card.AnimationMark.MOVING_OUT_WIP
-                        }
-                        if (it.handAnimationMark == Card.AnimationMark.MOVING_OUT_ALT) {
-                            it.handAnimationMark = Card.AnimationMark.MOVING_OUT_ALT_WIP
-                        }
-                    }
-                    if (!isDisappearing) {
-                        itemVerticalOffsetMovingOut.animateTo(target, TweenSpec(animationSpeed.delay.toInt())) {
-                            recomposeKey = !recomposeKey
-                        }
-                    }
-
-                    memCards.removeIf { it.handAnimationMark.isMovingOut() }
-                    recomposeKey = !recomposeKey
-                }
-            }
-        } else {
-            if (isAnyMovingIn || isAnyMovingOut) {
-                recomposeKey = !recomposeKey
-            }
-        }
-
-        val iteratedCollection = if (animationSpeed.delay == 0L) cards else memCards.asMutableList()
-        memCards.forEach {
-            val inValue = if (animationSpeed.delay == 0L) 0f else when (it.handAnimationMark) {
-                Card.AnimationMark.MOVING_IN -> 2.5f * enemyMult
-                Card.AnimationMark.MOVING_IN_WIP -> itemVerticalOffsetMovingIn.value
-                else -> 0f
-            }
-            val outValue = if (animationSpeed.delay == 0L) 0f else when (it.handAnimationMark) {
-                Card.AnimationMark.MOVING_OUT_WIP, Card.AnimationMark.MOVING_OUT_ALT_WIP -> itemVerticalOffsetMovingOut.value
-                else -> 0f
-            }
-            val index = iteratedCollection.indexOf(it)
-            if (index == -1) return@forEach
-            val cardsSize = iteratedCollection.size
-            if (isEnemy) {
-                ShowCardBack(
-                    activity,
-                    it,
-                    Modifier
-                        .scale(scale)
-                        .layout { measurable, constraints ->
-                            val rowWidth =
-                                if (cardsSize <= 5) cardsSize else (if (index < 5) 5 else (cardsSize - 5))
-                            val placeable = measurable.measure(constraints)
-                            val scaledWidth = placeable.width
-                            val scaledHeight = placeable.height
-                            val handVerticalAlignment = if (cardsSize > 5) 0 else scaledHeight / 2
-                            val offsetWidth =
-                                (index % 5) * scaledWidth + maxWidth.toPx() / 2 - (rowWidth / 2f) * scaledWidth
-                            val offsetHeight = scaledHeight * (index / 5) + handVerticalAlignment +
-                                    scaledHeight *
-                                    (inValue + outValue)
-                            layout(constraints.maxWidth, 0) {
-                                placeable.place(offsetWidth.toInt(), offsetHeight.toInt())
-                            }
-                        }
+        val state = rememberLazyListState()
+        LazyRow(
+            Modifier
+                .fillMaxWidth()
+                .wrapContentHeight()
+                .scrollbar(
+                    state,
+                    knobColor = getKnobColor(activity),
+                    trackColor = getTrackColor(activity),
+                    horizontal = true
                 )
-            } else {
-                if (it.rank == Rank.JOKER && it.handAnimationMark == Card.AnimationMark.MOVING_IN) {
-                    if (animationSpeed.delay == 0L) {
-                        it.handAnimationMark = Card.AnimationMark.STABLE
-                    }
-                    LaunchedEffect(Unit) {
-                        playJokerReceivedSounds(activity)
-                    }
-                }
-                ShowCard(
-                    activity,
-                    it,
-                    Modifier
-                        .scale(scale)
-                        .layout { measurable, constraints ->
-                            val rowWidth =
-                                if (cardsSize <= 5) cardsSize else (if (index < 5) 5 else (cardsSize - 5))
-                            val placeable = measurable.measure(constraints)
-                            val scaledWidth = placeable.width
-                            val scaledHeight = placeable.height
-                            val handVerticalAlignment = if (cardsSize > 5) 0 else scaledHeight / 2
-                            val offsetWidth =
-                                (index % 5) * scaledWidth + maxWidth.toPx() / 2 - (rowWidth / 2f) * scaledWidth
-                            val offsetHeight = scaledHeight * (index / 5) + handVerticalAlignment +
-                                    scaledHeight *
-                                    (inValue + outValue)
-                            layout(constraints.maxWidth, 0) {
-                                placeable.place(offsetWidth.toInt(), offsetHeight.toInt())
-                            }
+                .padding(bottom = 8.dp),
+            state = state,
+            verticalAlignment = Alignment.Bottom,
+            horizontalArrangement = Arrangement.Start
+        ) {
+            itemsIndexed(cards) { index, it ->
+                val widthPaddings = if (isEnemy) 5.dp else 25.dp
+                val cardHeight = maxHeight.dpToPx().toFloat()
+                val cardWidth = (maxWidth - widthPaddings).dpToPx().toFloat() / 5f
+                val scaleH = cardHeight / 256f
+                val scaleW = cardWidth / 183f
+                val scale = min(scaleW, scaleH).coerceAtMost(1f)
+
+                if (isEnemy) {
+                    ShowCardBack(
+                        activity,
+                        it,
+                        Modifier,
+                        scale
+                    )
+                } else {
+                    if (it.rank == Rank.JOKER && it.handAnimationMark == Card.AnimationMark.MOVING_IN) {
+                        LaunchedEffect(Unit) {
+                            playJokerReceivedSounds(activity)
                         }
-                        .clickable {
-                            if (!itemVerticalOffsetMovingIn.isRunning && !itemVerticalOffsetMovingIn.isRunning) {
+                    }
+                    ShowCard(
+                        activity,
+                        it,
+                        Modifier
+                            .clickable {
                                 onClick(index)
                             }
-                        }
-                        .border(
-                            width = if (index == (selectedCard ?: -1)) 3.dp else (-1).dp,
-                            color = selectedCardColor
-                        )
-                        .padding(4.dp),
-                )
+                            .border(
+                                width = if (index == (selectedCard ?: -1)) 2.dp else (-1).dp,
+                                color = selectedCardColor
+                            )
+                            .padding(2.dp),
+                        scale
+                    )
+                }
             }
         }
     }
@@ -804,10 +719,9 @@ fun RowScope.CaravanOnField(
     val modifierOffset = 14.dp * (if (isEnemyCaravan) -1 else 1)
     Column(
         Modifier
-            .fillMaxHeight()
+            .wrapContentHeight()
             .weight(0.25f)
     ) {
-        // TODO
         if (!isEnemyCaravan && !isInitStage && !caravan.isEmpty()) {
             TextFallout(
                 stringResource(R.string.discard),
@@ -816,10 +730,11 @@ fun RowScope.CaravanOnField(
                 14.sp,
                 Modifier
                     .fillMaxWidth()
+                    .height(20.dp)
+                    .padding(start = 2.dp, end = 2.dp, bottom = 2.dp, top = 0.dp)
                     .clickable {
                         selectCaravan()
                     }
-                    .padding(start = 2.dp, end = 2.dp, bottom = 2.dp, top = 0.dp)
                     .background(
                         getTextBackgroundColor(activity).let { color ->
                             Color(color.red, color.green, color.blue, 0.75f)
@@ -1059,13 +974,14 @@ fun RowScope.CaravanOnField(
     }
 }
 
+@SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
 fun ShowDeck(cResources: CResources, activity: MainActivity, isKnown: Boolean = true) {
     Column(
-        modifier = Modifier
-            .fillMaxHeight()
-            .padding(end = 4.dp),
-        verticalArrangement = Arrangement.Center
+        Modifier
+            .fillMaxWidth()
+            .wrapContentHeight(),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         TextFallout(
             cResources.deckSize.toString(),
@@ -1073,18 +989,27 @@ fun ShowDeck(cResources: CResources, activity: MainActivity, isKnown: Boolean = 
             getTextStrokeColor(activity),
             16.sp,
             Modifier
-                .fillMaxWidth()
-                .wrapContentWidth()
+                .wrapContentSize()
                 .background(getBackgroundColor(activity))
         )
         if (isKnown) {
             val (back, isAlt) = cResources.getDeckBack() ?: (null to false)
             if (back != null) {
-                ShowCardBack(
-                    activity,
-                    Card(Rank.ACE, Suit.HEARTS, back, isAlt),
-                    Modifier.fillMaxWidth()
-                )
+                BoxWithConstraints(
+                    Modifier.fillMaxWidth().wrapContentHeight().padding(bottom = 24.pxToDp()),
+                    contentAlignment = Alignment.TopCenter
+                ) {
+                    val cardHeight = maxHeight.dpToPx().toFloat()
+                    val cardWidth = maxWidth.dpToPx().toFloat()
+                    val scaleH = cardHeight / 256f
+                    val scaleW = cardWidth / 183f
+                    val scale = min(scaleW, scaleH).coerceAtMost(1f)
+                    ShowCardBack(
+                        activity,
+                        Card(Rank.ACE, Suit.HEARTS, back, isAlt),
+                        Modifier.scale(scale)
+                    )
+                }
             }
         }
     }
@@ -1134,7 +1059,7 @@ fun RowScope.Score(activity: MainActivity, num: Int, caravan: Caravan, opposingV
 }
 
 @Composable
-fun Caravans(
+fun ColumnScope.Caravans(
     activity: MainActivity,
     animationSpeed: AnimationSpeed,
     getSelectedCard: () -> Card?,
@@ -1164,14 +1089,14 @@ fun Caravans(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .fillMaxHeight(if (isMaxHeight) 1f else 0.725f),
+            .weight(1f),
     ) {
         val enemyStates = listOf(state1Enemy, state2Enemy, state3Enemy)
         val playerStates = listOf(state1Player, state2Player, state3Player)
         Row(
             Modifier
                 .fillMaxWidth()
-                .fillMaxHeight(enemyCaravanFillHeight)) {
+                .weight(0.5f)) {
             repeat(3) {
                 val caravan = getEnemyCaravan(it)
                 CaravanOnField(
@@ -1264,7 +1189,7 @@ fun Caravans(
         Row(
             Modifier
                 .fillMaxWidth()
-                .fillMaxHeight()) {
+                .weight(0.5f)) {
             repeat(3) {
                 val caravan = getPlayerCaravan(it)
                 CaravanOnField(

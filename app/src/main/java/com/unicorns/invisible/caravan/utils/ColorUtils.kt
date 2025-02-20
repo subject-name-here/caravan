@@ -6,7 +6,7 @@ import com.unicorns.invisible.caravan.R
 import com.unicorns.invisible.caravan.Style
 
 
-// TODO: check here everything!!!!
+// TODO: test it all
 
 fun getBackgroundColor(activity: MainActivity): Color {
     return getBackByStyle(activity, activity.styleId)
@@ -199,15 +199,16 @@ fun getDialogTextColor(activity: MainActivity): Color {
 }
 
 fun getDividerColor(activity: MainActivity): Color = getTextColor(activity)
+fun getDividerColorByStyle(activity: MainActivity, style: Style): Color = getTextColorByStyle(activity, style)
 
 fun getCheckBoxBorderColor(activity: MainActivity): Color = getSelectionColor(activity)
 
 fun getCheckBoxFillColor(activity: MainActivity): Color = when (activity.styleId) {
     Style.DESERT -> Color(activity.getColor(R.color.desertText))
     Style.PIP_BOY -> Color(activity.getColor(R.color.colorTextBack))
-    Style.ALASKA_FRONTIER -> Color(activity.getColor(R.color.alaskaYellow))
+    Style.ALASKA_FRONTIER -> Color(activity.getColor(R.color.alaskaLightBlue))
     Style.PIP_GIRL -> Color(activity.getColor(R.color.pipGirlPink))
-    Style.OLD_WORLD -> getBackgroundColor(activity)
+    Style.OLD_WORLD -> Color(activity.getColor(R.color.oldWorldTextBack))
     Style.NEW_WORLD -> Color(activity.getColor(R.color.newWorldText))
     Style.SIERRA_MADRE -> Color(activity.getColor(R.color.sierraMadreTextBack))
     Style.MADRE_ROJA -> Color(activity.getColor(R.color.madreRojaTextBack))
@@ -215,14 +216,29 @@ fun getCheckBoxFillColor(activity: MainActivity): Color = when (activity.styleId
     Style.VAULT_22 -> Color(activity.getColor(R.color.vault22Accent))
     Style.ENCLAVE -> Color(activity.getColor(R.color.enclaveStroke))
     Style.BLACK -> Color.White
-    Style.NCR -> Color(activity.getColor(R.color.ncrTextBack))
-    Style.LEGION -> Color(activity.getColor(R.color.legionAccent))
+    Style.NCR -> Color(activity.getColor(R.color.ncrText))
+    Style.LEGION -> Color(activity.getColor(R.color.legionStroke))
 }
 
-fun getTrackColor(activity: MainActivity): Color = getTextBackgroundColor(activity)
-fun getTrackColorByStyle(activity: MainActivity, style: Style): Color = getTextBackByStyle(activity, style)
-fun getKnobColor(activity: MainActivity): Color = getTextColor(activity)
-fun getKnobColorByStyle(activity: MainActivity, style: Style): Color = getTextColorByStyle(activity, style)
+fun getTrackColor(activity: MainActivity): Color = getDividerColor(activity)
+fun getTrackColorByStyle(activity: MainActivity, style: Style): Color = getDividerColorByStyle(activity, style)
+fun getKnobColor(activity: MainActivity): Color = getKnobColorByStyle(activity, activity.styleId)
+fun getKnobColorByStyle(activity: MainActivity, style: Style): Color = when (style) {
+    Style.DESERT -> Color(activity.getColor(R.color.desertAccent))
+    Style.PIP_BOY -> Color(activity.getColor(R.color.colorTextBack))
+    Style.ALASKA_FRONTIER -> Color(activity.getColor(R.color.alaskaYellow))
+    Style.PIP_GIRL -> Color(activity.getColor(R.color.pipGirlWhite))
+    Style.OLD_WORLD -> Color(activity.getColor(R.color.oldWorldTextBack))
+    Style.NEW_WORLD -> Color(activity.getColor(R.color.newWorldStroke))
+    Style.SIERRA_MADRE -> Color(activity.getColor(R.color.sierraMadreTextBack))
+    Style.MADRE_ROJA -> Color(activity.getColor(R.color.madreRojaTextBack))
+    Style.VAULT_21 -> Color(activity.getColor(R.color.vault21Accent))
+    Style.VAULT_22 -> Color(activity.getColor(R.color.vault22Accent))
+    Style.ENCLAVE -> Color(activity.getColor(R.color.enclaveStroke))
+    Style.BLACK -> Color.Black
+    Style.NCR -> Color(activity.getColor(R.color.ncrAccent))
+    Style.LEGION -> Color(activity.getColor(R.color.legionTextBack))
+}
 
 fun getSwitchTrackColor(activity: MainActivity): Color = when (activity.styleId) {
     Style.ALASKA_FRONTIER -> getTextColor(activity)

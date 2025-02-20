@@ -578,9 +578,8 @@ fun ShowBettingScreen(
     }
 
     val state = rememberLazyListState()
-    // TODO: fix
     MenuItemOpen(activity, "$$$", "<-", { goBack() }) {
-        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+        Box(Modifier.fillMaxSize().padding(bottom = 8.dp), contentAlignment = Alignment.Center) {
             Box(Modifier.fillMaxSize().rotate(180f)) {
                 Box(Modifier.fillMaxSize().getTableBackground()) {}
             }

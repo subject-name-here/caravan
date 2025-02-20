@@ -37,6 +37,7 @@ import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.FixedScale
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.AnnotatedString
@@ -53,6 +54,7 @@ import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
 import coil.decode.SvgDecoder
 import coil.request.ImageRequest
+import coil.size.Scale
 import com.unicorns.invisible.caravan.MainActivity
 import com.unicorns.invisible.caravan.R
 import com.unicorns.invisible.caravan.model.CardBack
@@ -202,35 +204,35 @@ fun getFilter(back: CardBack, isAlt: Boolean): ColorFilter {
 
 
 @Composable
-fun ShowCard(activity: MainActivity, card: Card, modifier: Modifier) {
+fun ShowCard(activity: MainActivity, card: Card, modifier: Modifier, scale: Float = 1f) {
     AsyncImage(
         model = ImageRequest.Builder(activity)
-            .size(183, 256)
             .data("file:///android_asset/caravan_cards/${getCardName(card)}")
             .decoderFactory(SvgDecoder.Factory())
             .build(),
         contentDescription = "",
         modifier.clip(RoundedCornerShape(5)),
-        colorFilter = getFilter(card.back, card.isAlt)
+        colorFilter = getFilter(card.back, card.isAlt),
+        contentScale = FixedScale(scale)
     )
 }
 
 @Composable
-fun ShowCardBack(activity: MainActivity, card: Card, modifier: Modifier) {
+fun ShowCardBack(activity: MainActivity, card: Card, modifier: Modifier, scale: Float = 1f) {
     val asset = if (card.isAlt) card.back.altBackFileName else card.back.backFileName
     AsyncImage(
         model = ImageRequest.Builder(activity)
-            .size(183, 256)
             .data("file:///android_asset/caravan_cards_back/$asset")
             .decoderFactory(SvgDecoder.Factory())
             .build(),
         contentDescription = "",
         modifier.clip(RoundedCornerShape(5)),
-        contentScale = ContentScale.Fit
+        contentScale = FixedScale(scale)
     )
 }
 
 
+// TODO: doesn't work everywhere from the colors pov
 @Composable
 fun Modifier.scrollbar(
     state: LazyListState,
@@ -315,8 +317,7 @@ fun Modifier.scrollbar(
                     } else {
                         Size(thickness.toPx(), size.height)
                     },
-                    alpha = alpha,
-                    cornerRadius = CornerRadius(thickness.toPx() / 2),
+                    //alpha = alpha,
                 )
 
                 // Draw the knob
@@ -327,22 +328,21 @@ fun Modifier.scrollbar(
                         // When the scrollbar is horizontal and aligned to the bottom:
                         horizontal && alignEnd -> Offset(
                             knobPosition,
-                            size.height - thickness.toPx()
+                            size.height - thickness.toPx() + 2f
                         )
                         // When the scrollbar is horizontal and aligned to the top:
-                        horizontal && !alignEnd -> Offset(knobPosition, 0f)
+                        horizontal && !alignEnd -> Offset(knobPosition, 2f)
                         // When the scrollbar is vertical and aligned to the end:
-                        alignEnd -> Offset(size.width - thickness.toPx(), knobPosition)
+                        alignEnd -> Offset(size.width - thickness.toPx() + 2f, knobPosition)
                         // When the scrollbar is vertical and aligned to the start:
-                        else -> Offset(0f, knobPosition)
+                        else -> Offset(2f, knobPosition)
                     },
                     size = if (horizontal) {
-                        Size(knobSize, thickness.toPx())
+                        Size(knobSize, thickness.toPx() - 4)
                     } else {
-                        Size(thickness.toPx(), knobSize)
+                        Size(thickness.toPx() - 4, knobSize)
                     },
-                    alpha = alpha,
-                    cornerRadius = CornerRadius(thickness.toPx() / 2),
+                    //alpha = alpha,
                 )
             }
         }

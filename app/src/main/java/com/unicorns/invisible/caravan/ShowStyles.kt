@@ -86,10 +86,11 @@ fun ShowStyles(
                     val watchedStyle = Style.entries.getOrNull(currentlyWatchedStyle) ?: Style.PIP_BOY
                     Column(
                         Modifier.fillMaxHeight(0.8f).weight(0.8f)
-                        .border(BorderStroke(
-                            4.dp, getSelectionColorByStyle(activity, watchedStyle)
-                        ))
-                        .padding(4.dp)
+                            .padding(8.dp)
+                            .border(
+                                BorderStroke(4.dp, getSelectionColorByStyle(activity, watchedStyle))
+                            )
+                            .padding(4.dp)
                     ) {
                         Row(Modifier
                             .fillMaxWidth().fillMaxHeight(0.1f)

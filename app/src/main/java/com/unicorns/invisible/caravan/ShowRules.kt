@@ -47,7 +47,7 @@ fun ShowRules(activity: MainActivity, goBack: () -> Unit) {
     val rules = stringResource(R.string.rules)
     MenuItemOpen(activity, stringResource(R.string.menu_rules), "<-", goBack) {
         Spacer(Modifier.height(8.dp))
-        Column(Modifier.padding(horizontal = 4.dp), verticalArrangement = Arrangement.Top, horizontalAlignment = Alignment.CenterHorizontally) {
+        Column(Modifier, verticalArrangement = Arrangement.Top, horizontalAlignment = Alignment.CenterHorizontally) {
             TabRow(
                 selectedTab, Modifier.fillMaxWidth(),
                 containerColor = getBackgroundColor(activity),

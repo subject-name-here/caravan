@@ -13,7 +13,7 @@ import kotlin.random.Random
 @Serializable
 sealed interface Trader {
     fun isOpen(): Boolean
-    fun openingCondition(activity: MainActivity): String // TODO: add in code those conditions!!!
+    fun openingCondition(activity: MainActivity): String
 
     fun getUpdateRate(): Int
     fun getUpdatePartOfHash() = Calendar.getInstance().get(Calendar.HOUR_OF_DAY) / getUpdateRate()
@@ -24,13 +24,11 @@ sealed interface Trader {
     fun getCards(): List<Card>
 
     fun getCards(back: CardBack): List<Card> {
-        // TODO: better seed
         val bshl = (back.ordinal * 32 + getUpdatePartOfHash()) shl 23
         val b = bshl - back.ordinal - 1
         val todayHash = save.dailyHash
         val rand = Random(todayHash xor (b * 31 + 22229) xor (b * b * b + 13))
 
-        // TODO: shuffle with love to cards available to buy
         fun shuffleCards(deck: CustomDeck) = deck.toList().shuffled(rand)
 
         val n = 6
