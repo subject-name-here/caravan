@@ -309,6 +309,7 @@ fun stopRadio() {
 fun nextSong(activity: MainActivity) {
     stopRadio()
 
+    pointer++
     if (pointer !in getSongsArray().indices) {
         pointer = 0
         indices.shuffle()

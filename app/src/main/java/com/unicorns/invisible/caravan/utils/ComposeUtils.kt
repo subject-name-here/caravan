@@ -208,6 +208,7 @@ fun ShowCard(activity: MainActivity, card: Card, modifier: Modifier, scale: Floa
     AsyncImage(
         model = ImageRequest.Builder(activity)
             .data("file:///android_asset/caravan_cards/${getCardName(card)}")
+            .size(183, 256)
             .decoderFactory(SvgDecoder.Factory())
             .build(),
         contentDescription = "",
@@ -223,6 +224,7 @@ fun ShowCardBack(activity: MainActivity, card: Card, modifier: Modifier, scale: 
     AsyncImage(
         model = ImageRequest.Builder(activity)
             .data("file:///android_asset/caravan_cards_back/$asset")
+            .size(183, 256)
             .decoderFactory(SvgDecoder.Factory())
             .build(),
         contentDescription = "",

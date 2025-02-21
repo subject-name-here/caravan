@@ -9,5 +9,5 @@ data object CheatStash1234 : CheatStash {
 
     override fun getPrizeIndex() = 4
 
-    override fun getBodyMessageId() = R.string.prize2_body
+    override fun getBodyMessageId() = R.string.prize3_body
 }

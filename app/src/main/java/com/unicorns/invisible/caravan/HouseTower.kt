@@ -3,7 +3,6 @@ package com.unicorns.invisible.caravan
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -23,10 +22,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.paint
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -46,19 +43,19 @@ import com.unicorns.invisible.caravan.model.enemy.EnemyTower9
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.CustomDeck
 import com.unicorns.invisible.caravan.save.saveData
+import com.unicorns.invisible.caravan.story.DialogEdge
+import com.unicorns.invisible.caravan.story.DialogGraph
+import com.unicorns.invisible.caravan.story.DialogState
+import com.unicorns.invisible.caravan.story.StoryShow
 import com.unicorns.invisible.caravan.utils.MenuItemOpen
 import com.unicorns.invisible.caravan.utils.TextClassic
 import com.unicorns.invisible.caravan.utils.TextFallout
 import com.unicorns.invisible.caravan.utils.clickableCancel
 import com.unicorns.invisible.caravan.utils.clickableOk
-import com.unicorns.invisible.caravan.utils.clickableSelect
 import com.unicorns.invisible.caravan.utils.getBackgroundColor
 import com.unicorns.invisible.caravan.utils.getKnobColor
-import com.unicorns.invisible.caravan.utils.getStrokeColorByStyle
-import com.unicorns.invisible.caravan.utils.getTextBackByStyle
 import com.unicorns.invisible.caravan.utils.getTextBackgroundColor
 import com.unicorns.invisible.caravan.utils.getTextColor
-import com.unicorns.invisible.caravan.utils.getTextColorByStyle
 import com.unicorns.invisible.caravan.utils.getTextStrokeColor
 import com.unicorns.invisible.caravan.utils.getTrackColor
 import com.unicorns.invisible.caravan.utils.nextSong
@@ -864,154 +861,57 @@ fun StartTowerGame(
     }
 }
 
-// TODO: move to story sequences
 @Composable
 fun ShowFrank(activity: MainActivity, goBack: () -> Unit) {
-    var craigLine by rememberSaveable { mutableIntStateOf(0) }
-
-    var showFrankFlag by rememberSaveable { mutableStateOf(false) }
-    var showDialogs by rememberSaveable { mutableStateOf(true) }
-
-    var whoAreYouAsked by rememberSaveable { mutableStateOf(false) }
-    var letsTalkAsked by rememberSaveable { mutableStateOf(false) }
-    var whoIAmAsked by rememberSaveable { mutableStateOf(false) }
-    var iChallengeYou by rememberSaveable { mutableStateOf(false) }
-
-    var text by rememberScoped { mutableStateOf(activity.getString(R.string.craig_1)) }
-
-    LaunchedEffect(craigLine) {
-        if (craigLine == 3) {
-            playFrankPhrase(activity, R.raw.frank_on_welcome)
-            text = activity.getString(R.string.frank_welcome)
-            delay(3000L)
-            showFrankFlag = true
-            delay(10000L)
-            showDialogs = true
-        }
-    }
-
-    Box(
-        Modifier
-            .fillMaxSize()
-            .background(Color.Black)) {
-
-        Column {
-            Box(Modifier
-                .fillMaxWidth()
-                .padding(8.dp)
-                .paint(
-                    painterResource(
-                        if (showFrankFlag) R.drawable.frank_head else R.drawable.black_back
-                    )
-                )
-            )
-
-            Box(Modifier.fillMaxWidth()) {
-                TextClassic(
-                    text,
-                    getTextColorByStyle(activity, Style.PIP_BOY),
-                    getStrokeColorByStyle(activity, Style.PIP_BOY),
-                    16.sp,
-                    Modifier
-                        .background(getTextBackByStyle(activity, Style.PIP_BOY))
-                        .padding(horizontal = 8.dp, vertical = 4.dp),
-                )
-            }
-
-            if (showDialogs) {
-                Spacer(Modifier.height(32.dp))
-                val state = rememberLazyListState()
-                LazyColumn(
-                    Modifier
-                        .fillMaxSize()
-                        .scrollbar(
-                            state,
-                            alignEnd = false,
-                            knobColor = getTextColorByStyle(activity, Style.PIP_BOY),
-                            trackColor = getStrokeColorByStyle(activity, Style.PIP_BOY),
-                            horizontal = false
-                        ),
-                    state = state
-                ) {
-                    @Composable
-                    fun DialogLine(line: String, onClick: () -> Unit) {
-                        TextClassic(
-                            line,
-                            getTextColorByStyle(activity, Style.PIP_BOY),
-                            getStrokeColorByStyle(activity, Style.PIP_BOY),
-                            18.sp,
-                            Modifier
-                                .clickableSelect(activity) {
-                                    onClick()
-                                }
-                                .background(getTextBackByStyle(activity, Style.PIP_BOY))
-                                .padding(horizontal = 8.dp, vertical = 4.dp)
-                        )
-                        Spacer(Modifier.height(12.dp))
-                    }
-                    item {
-                        when (craigLine) {
-                            0 -> {
-                                DialogLine(stringResource(R.string.craig_continue)) {
-                                    craigLine++
-                                    text = activity.getString(R.string.craig_2)
-                                }
-                                return@item
-                            }
-                            1 -> {
-                                DialogLine(stringResource(R.string.craig_continue)) {
-                                    craigLine++
-                                    stopRadio()
-                                    soundReduced = true
-                                    playMinigunSound(activity)
-                                    text = activity.getString(R.string.craig_3)
-                                }
-                                return@item
-                            }
-                            2 -> {
-                                DialogLine(stringResource(R.string.craig_continue)) {
-                                    showDialogs = false
-                                    craigLine++
-                                    text = ""
-                                }
-                                return@item
-                            }
-                        }
-                        if (!whoAreYouAsked && !letsTalkAsked && !iChallengeYou) {
-                            DialogLine(stringResource(R.string.frank_who)) {
-                                whoAreYouAsked = true
-                                text = activity.getString(R.string.frank_horrigan_that_s_who)
-                                playFrankPhrase(activity, R.raw.frank_who_are_you)
-                            }
-                        }
-                        if (!letsTalkAsked && !iChallengeYou) {
-                            DialogLine(stringResource(R.string.wait_let_s_talk)) {
-                                letsTalkAsked = true
-                                text = activity.getString(R.string.we_just_did_time_for_talking_s_over)
-                                playFrankPhrase(activity, R.raw.frank_lets_talk)
-                            }
-                        }
-                        if (!whoIAmAsked && !letsTalkAsked && !iChallengeYou) {
-                            DialogLine(stringResource(R.string.you_don_t_even_know_who_i_am)) {
-                                whoIAmAsked = true
-                                text = activity.getString(R.string.you_re_just_another_mutant_that_needs_to_be_put_down)
-                                playFrankPhrase(activity, R.raw.frank_you_dont_even_know_who_i_am)
-                            }
-                        }
-                        if (!iChallengeYou) {
-                            DialogLine(stringResource(R.string.i_challenge_you_to_the_game_of_caravan)) {
-                                iChallengeYou = true
-                                text = activity.getString(R.string.you_mutant_scum)
-                                playFrankPhrase(activity, R.raw.frank_i_challenge_you)
-                            }
-                        } else {
-                            DialogLine(stringResource(R.string.finish)) {
-                                goBack()
-                            }
-                        }
-                    }
+    StoryShow(activity, DialogGraph(
+        states = listOf(
+            DialogState(R.drawable.black_back, listOf(1)),
+            DialogState(R.drawable.black_back, listOf(2)),
+            DialogState(R.drawable.black_back, listOf(3)),
+            DialogState(R.drawable.black_back, listOf()),
+            DialogState(R.drawable.frank_head, listOf()),
+            DialogState(R.drawable.frank_head, listOf(4, 5, 6, 7)),
+            DialogState(R.drawable.frank_head, listOf(7)),
+            DialogState(R.drawable.frank_head, listOf(8)),
+        ),
+        edges = listOf(
+            DialogEdge(0, R.string.craig_1, 0),
+            DialogEdge(R.string.craig_continue, R.string.craig_2, 1),
+            DialogEdge(R.string.craig_continue, R.string.craig_3, 2),
+            DialogEdge(R.string.craig_continue, R.string.frank_welcome, 3),
+            DialogEdge(R.string.frank_who, R.string.frank_horrigan_that_s_who, 5),
+            DialogEdge(R.string.wait_let_s_talk, R.string.we_just_did_time_for_talking_s_over, 6),
+            DialogEdge(R.string.you_don_t_even_know_who_i_am, R.string.you_re_just_another_mutant_that_needs_to_be_put_down, 5),
+            DialogEdge(R.string.i_challenge_you_to_the_game_of_caravan, R.string.you_mutant_scum, 7),
+            DialogEdge(R.string.finish, 0, -1),
+        ),
+        onEdgeVisitedMap = mapOf(
+            2 to {
+                stopRadio()
+                soundReduced = true
+                playMinigunSound(activity)
+            },
+            3 to lambda@{
+                playFrankPhrase(activity, R.raw.frank_on_welcome)
+                CoroutineScope(Dispatchers.Unconfined).launch {
+                    delay(3000L)
+                    this@lambda.currentState = 4
+                    delay(10000L)
+                    this@lambda.currentState = 5
                 }
-            }
-        }
-    }
+            },
+            4 to {
+                playFrankPhrase(activity, R.raw.frank_who_are_you)
+            },
+            5 to {
+                playFrankPhrase(activity, R.raw.frank_lets_talk)
+            },
+            6 to {
+                playFrankPhrase(activity, R.raw.frank_lets_talk)
+            },
+            7 to {
+                playFrankPhrase(activity, R.raw.frank_i_challenge_you)
+            },
+        )
+    ), goBack)
 }
