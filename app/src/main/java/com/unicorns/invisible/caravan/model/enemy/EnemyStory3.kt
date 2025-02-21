@@ -25,7 +25,7 @@ class EnemyStory3 : Enemy {
             caravan.putCardOnTop(game.enemyCResources.removeFromHand(hand.indexOf(card)))
             return
         } else if (cazadorsAdded % 13 == 0) {
-            game.enemyCResources.addOnTop(Card(Rank.QUEEN, Suit.HEARTS, CardBack.MADNESS, true))
+            game.enemyCResources.addOnTop(Card(Rank.QUEEN, Suit.HEARTS, CardBack.WILD_WASTELAND, false))
         }
         cazadorsAdded++
 
@@ -49,7 +49,6 @@ class EnemyStory3 : Enemy {
                 else -> {}
             }
         }
-
 
         hand.withIndex().filter { it.value.isOrdinary() }.shuffled().forEach { (cardIndex, card) ->
             if (!card.rank.isFace()) {

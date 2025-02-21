@@ -35,6 +35,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -47,6 +48,7 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.layout
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
@@ -640,12 +642,17 @@ fun Hand(
             horizontalArrangement = Arrangement.Start
         ) {
             itemsIndexed(cards) { index, it ->
+                var scale by remember { mutableFloatStateOf(1f) }
                 val widthPaddings = if (isEnemy) 5.dp else 25.dp
                 val cardHeight = maxHeight.dpToPx().toFloat()
                 val cardWidth = (maxWidth - widthPaddings).dpToPx().toFloat() / 5f
                 val scaleH = cardHeight / 256f
                 val scaleW = cardWidth / 183f
-                val scale = min(scaleW, scaleH).coerceAtMost(1f)
+                scale = when {
+                    scaleH == 0f -> scaleW
+                    scaleW == 0f -> scaleH
+                    else -> min(scaleW, scaleH)
+                }.coerceAtMost(1f)
 
                 if (isEnemy) {
                     ShowCardBack(

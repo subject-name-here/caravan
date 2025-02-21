@@ -22,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sebaslogen.resaca.rememberScoped
@@ -151,7 +152,7 @@ fun ShowStoryList(
                         text,
                         getTextColor(activity),
                         getTextStrokeColor(activity),
-                        16.sp,
+                        20.sp,
                         Modifier.padding(4.dp)
                     )
                 }
@@ -189,6 +190,7 @@ fun ShowStoryList(
                         16.sp,
                         if (isAvailable) {
                             Modifier
+                                .padding(4.dp)
                                 .clickableSelect(activity) { showChapter = number }
                                 .background(getTextBackgroundColor(activity))
                         } else {
@@ -305,33 +307,18 @@ fun ShowStoryChapter1(
 
     StoryShow(activity, DialogGraph(
         states = listOf(
-            DialogState(
-                R.drawable.ch1_1,
-                listOf(1)
-            ),
-            DialogState(
-                R.drawable.ch1_2,
-                listOf(2)
-            ),
-            DialogState(
-                R.drawable.ch1_3,
-                listOf(3)
-            ),
-            DialogState(
-                R.drawable.ch1_4,
-                listOf(4)
-            ),
-            DialogState(
-                R.drawable.ch1_5,
-                listOf(5)
-            ),
+            DialogState(R.drawable.ch1_1, listOf(1)),
+            DialogState(R.drawable.ch1_2, listOf(2)),
+            DialogState(R.drawable.ch1_3, listOf(3)),
+            DialogState(R.drawable.ch1_4, listOf(4)),
+            DialogState(R.drawable.ch1_5, listOf(5)),
         ),
         edges = listOf(
             DialogEdge(0, R.string.chapter_1_text_1, 0),
-            DialogEdge(R.string.chapter_1_q_1, R.string.chapter_1_text_2, 0),
-            DialogEdge(R.string.chapter_1_q_2, R.string.chapter_1_text_3, 0),
-            DialogEdge(R.string.chapter_1_q_3, R.string.chapter_1_text_4, 0),
-            DialogEdge(R.string.chapter_1_q_4, R.string.chapter_1_text_5, 0),
+            DialogEdge(R.string.chapter_1_q_1, R.string.chapter_1_text_2, 1),
+            DialogEdge(R.string.chapter_1_q_2, R.string.chapter_1_text_3, 2),
+            DialogEdge(R.string.chapter_1_q_3, R.string.chapter_1_text_4, 3),
+            DialogEdge(R.string.chapter_1_q_4, R.string.chapter_1_text_5, 4),
             DialogEdge(R.string.finish, 0, -1),
         )
     )) {
@@ -448,7 +435,7 @@ fun ShowStoryChapter4(
                     stringResource(R.string.ch4_mh),
                     Color(activity.getColor(R.color.colorText)),
                     Color(activity.getColor(R.color.colorText)),
-                    24.sp, Modifier
+                    24.sp, Modifier, textAlignment = TextAlign.Start
                 )
             },
             text = {
@@ -461,7 +448,7 @@ fun ShowStoryChapter4(
                     },
                     Color(activity.getColor(R.color.colorText)),
                     Color(activity.getColor(R.color.colorText)),
-                    16.sp, Modifier
+                    16.sp, Modifier, textAlignment = TextAlign.Start
                 )
             },
             containerColor = Color.Black,
@@ -520,7 +507,8 @@ fun ShowStoryChapter4(
         ),
         edges = listOf(
             DialogEdge(0, R.string.c4_t1, 0),
-            DialogEdge(R.string.ch4_q1, R.string.ch4_t2, 1)
+            DialogEdge(R.string.ch4_q1, R.string.ch4_t2, 1),
+            DialogEdge(R.string.finish, 0, -1)
         )
     )) {
         isGame = true

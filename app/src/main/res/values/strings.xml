@@ -519,9 +519,7 @@
     <string name="chapter_1_on_win">Defeated, the hologuard shrugged his shoulders and vanished, leaving behind brand new Sierra Madre Deck!</string>
     <string name="chapter_1_on_lose">Trying to find anything useful in Sierra Madre, the Prospector gets lost in Cloud and die. His body is never found.</string>
 
-    <string name="ch2t1">Six days passed since Prospector got out of Sierra Madre.</string>
 
-    <string name="ch3t1">The road to Hub - the famous Long 15 - was eerily silent, which made the Prospector feel odd. He wondered why, and soon he received his answer. A massive sandstorm from the Divide was approaching…</string>
 
     <string name="c4_t1">Aarrghhhhhhhh… Uuuuuu… Mmmmmphhhhhhhh…</string>
     <string name="ch4_r1">yeah......</string>
@@ -592,8 +590,6 @@
 
     <string name="achievements">Achievements</string>
 
-
-    <string name="your_barter_stat">Your Barter stat: %1$s</string>
     <string name="your_caps_in_hand">Your caps in hand: %1$s</string>
     <string name="style_buy">Style: %1$s</string>
     <string name="buy_for_caps">Buy for %1$s caps</string>

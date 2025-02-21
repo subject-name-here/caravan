@@ -214,7 +214,7 @@ fun ShowCard(activity: MainActivity, card: Card, modifier: Modifier, scale: Floa
         contentDescription = "",
         modifier.clip(RoundedCornerShape(5)),
         colorFilter = getFilter(card.back, card.isAlt),
-        contentScale = FixedScale(scale)
+        contentScale = FixedScale(scale),
     )
 }
 

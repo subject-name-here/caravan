@@ -45,7 +45,7 @@ class Caravan {
             val mods = cardCopy.modifiersCopy()
             val card = getCard(cardCopy)
             cardsMutable.add(
-                CardWithModifier(Card(card.first, card.second, CardBack.MADNESS, true)).apply {
+                CardWithModifier(Card(card.first, card.second, CardBack.WILD_WASTELAND, false)).apply {
                     copyModifiersFrom(mods); copyWild(cardCopy)
                 }
             )
