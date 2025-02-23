@@ -163,6 +163,8 @@ fun ShowGame(
     }
 
     fun dropCardFromHand() {
+        if (!game.canPlayerMove) return
+
         val selectedCardNN = selectedCard
         if (selectedCardNN !in game.playerCResources.hand.indices) return
         playVatsReady(activity)
@@ -177,6 +179,8 @@ fun ShowGame(
     }
 
     fun dropCaravan() {
+        if (!game.canPlayerMove) return
+
         val selectedCaravanNN = selectedCaravan
         if (selectedCaravanNN !in game.playerCaravans.indices) return
         playVatsReady(activity)
@@ -192,6 +196,8 @@ fun ShowGame(
     }
 
     fun addCardToCaravan(caravan: Caravan, position: Int, isEnemy: Boolean) {
+        if (!game.canPlayerMove) return
+
         val cardIndex = selectedCard
         val card = game.playerCResources.hand.getOrNull(cardIndex) ?: return
         fun onCaravanCardInserted() {
@@ -475,7 +481,7 @@ fun ShowGameRaw(
                             state3Player,
                             ::addCardToPlayerCaravan,
                             ::addCardToEnemyCaravan,
-                            { dropCardFromHand() },
+                            dropCardFromHand,
                             dropCaravan,
                             ::isInitStage,
                             { game.isPlayerTurn },

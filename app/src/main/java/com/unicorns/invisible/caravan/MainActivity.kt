@@ -517,7 +517,7 @@ class MainActivity : SaveDataActivity() {
                     var ambientVolume by remember { mutableFloatStateOf(save.ambientVolume) }
 
                     @Composable
-                    fun Setting(title: String, get: () -> Float, set: (Float) -> Unit) {
+                    fun Setting(title: String, get: () -> Float, set: (Float) -> Unit, onFinished: () -> Unit) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             TextFallout(
                                 title,
@@ -528,26 +528,26 @@ class MainActivity : SaveDataActivity() {
                             )
 
                             Box(Modifier.weight(2.5f)) {
-                                SliderCustom(this@MainActivity, get, set)
+                                SliderCustom(this@MainActivity, get, set, onFinished)
                             }
                         }
                     }
 
                     Column {
-                        Setting(stringResource(R.string.radio), { radioVolume }) {
+                        Setting(stringResource(R.string.radio), { radioVolume }, {
                             radioVolume = it
                             save.radioVolume = it
                             setRadioVolume(it)
-                        }
-                        Setting(stringResource(R.string.ambient), { ambientVolume }) {
+                        }, {})
+                        Setting(stringResource(R.string.ambient), { ambientVolume }, {
                             ambientVolume = it
                             save.ambientVolume = it
                             setAmbientVolume(it / 2)
-                        }
-                        Setting(stringResource(R.string.sfx), { soundVolume }) {
+                        }, {})
+                        Setting(stringResource(R.string.sfx), { soundVolume }, {
                             soundVolume = it
                             save.soundVolume = it
-                        }
+                        }) { playNotificationSound(this@MainActivity) }
                     }
                 },
                 containerColor = getDialogBackground(this),

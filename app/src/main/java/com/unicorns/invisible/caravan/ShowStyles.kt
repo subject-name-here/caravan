@@ -24,7 +24,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.unicorns.invisible.caravan.utils.MenuItemOpen
@@ -119,6 +118,14 @@ fun ShowStyles(
                                     horizontalAlignment = Alignment.CenterHorizontally
                                 ) {
                                     TextFallout(
+                                        stringResource(watchedStyle.styleNameId),
+                                        getTextColorByStyle(activity, watchedStyle),
+                                        getStrokeColorByStyle(activity, watchedStyle),
+                                        24.sp,
+                                        Modifier.padding(4.dp),
+                                    )
+                                    Spacer(Modifier.height(16.dp))
+                                    TextFallout(
                                         stringResource(R.string.cool_button),
                                         getTextColorByStyle(activity, watchedStyle),
                                         getStrokeColorByStyle(activity, watchedStyle),
@@ -134,14 +141,9 @@ fun ShowStyles(
                                             stringResource(R.string.select),
                                             getTextColorByStyle(activity, watchedStyle),
                                             getStrokeColorByStyle(activity, watchedStyle),
-                                            20.sp,
+                                            18.sp,
                                             Modifier
-                                                .background(
-                                                    getTextBackByStyle(
-                                                        activity,
-                                                        watchedStyle
-                                                    )
-                                                )
+                                                .background(getTextBackByStyle(activity, watchedStyle))
                                                 .clickableOk(activity) {
                                                     styleInt = watchedStyle.ordinal
                                                     selectStyle(watchedStyle.ordinal)

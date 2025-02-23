@@ -314,7 +314,7 @@
     <string name="style_madre_roja">Мадре-Роха</string>
     <string name="style_vault_21">Убежище 21</string>
     <string name="style_vault_22">Убежище 22</string>
-    <string name="style_black">Тьма (тест)</string>
+    <string name="style_black">Монохром</string>
     <string name="style_enclave">Анклав</string>
 
     <string name="beat_enemies_1_name">Отцы и дети</string>
@@ -380,9 +380,6 @@
     <string name="only_black_descr">Одолейте соперника, играя только Пики, Крести и Джокеры. (Дебют не считается!)</string>
     <string name="only_red_descr">Одолейте соперника, играя только Черви, Буби и Джокеры. (Дебют не считается!)</string>
     <string name="father_pucci_descr">Одолейте соперника, играя только тузы, картинки и числовые карты простого достоинства (2, 3, 5, 7). (Дебют не считается!)</string>
-
-    <string name="claim_caps">Забрать крышки (30)</string>
-    <string name="claim_tickets">Забрать билеты (2)</string>
 
     <string name="missions">Испытания GRA</string>
 

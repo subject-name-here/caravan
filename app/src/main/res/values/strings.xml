@@ -154,7 +154,7 @@
     <string name="about_2">This port is created by subject_name_here (it\'s a username, not a bug!), who is in no way affiliated with the creators of the original game.</string>
     <string name="about_3_0">SPECIAL thanks go to:</string>
     <string name="about_3_1">Kat - for help with design;</string>
-    <string name="about_3_2">" - for all the help with Wild Wasteland, Story Mode, Chinese deck, Viking deck and a lot of other things (basically, half of the app!!);"</string>
+    <string name="about_3_2">" - for all the help with Wild Wasteland, Story Mode, Chinese deck, Viking deck, NCR deck, Legion deck and a lot of other things (basically, half of the app!!);"</string>
     <string name="about_3_4_1">"Kyle - for "</string>
     <string name="about_3_4_2">this Reddit post</string>
     <string name="about_3_4_3">" with Caravan rules;"</string>
@@ -334,7 +334,7 @@
     <string name="style_madre_roja">Madre Roja</string>
     <string name="style_vault_21">Vault 21</string>
     <string name="style_vault_22">Vault 22</string>
-    <string name="style_black">Darkness (test)</string>
+    <string name="style_black">Monochrome</string>
     <string name="style_enclave">Enclave</string>
     <string name="style_ncr">NCR</string>
     <string name="style_legion">Legion</string>
@@ -411,8 +411,8 @@
     <string name="play_188_challenge">188 - Challenge</string>
     <string name="play_188_challenge_descr">Play 188 cards.</string>
 
-    <string name="claim_caps">Claim 30 Caps</string>
-    <string name="claim_tickets">Claim 2 Tickets</string>
+    <string name="claim_caps">Claim %1$s Caps</string>
+    <string name="claim_tickets">Claim %1$s Ticket</string>
 
     <string name="tower_presents">VAULT-TEC\nproudly presents</string>
     <string name="tower">TOWER!</string>
@@ -591,8 +591,7 @@
     <string name="achievements">Achievements</string>
 
     <string name="your_caps_in_hand">Your caps in hand: %1$s</string>
-    <string name="style_buy">Style: %1$s</string>
-    <string name="buy_for_caps">Buy for %1$s caps</string>
+    <string name="buy_for_caps">%1$s caps</string>
 
     <string name="enemy_name">Enemy: %1$s</string>
     <string name="enemy_s_bet">Enemy\'s bet: %1$s</string>

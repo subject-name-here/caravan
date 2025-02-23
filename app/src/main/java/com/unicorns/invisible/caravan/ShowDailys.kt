@@ -117,15 +117,15 @@ fun ShowChallenge(activity: MainActivity, challenge: Challenge, isCompleted: Boo
                 challenge.getName(activity),
                 getTextColor(activity),
                 getTextStrokeColor(activity),
-                24.sp,
-                Modifier.fillMaxWidth(0.75f),
+                22.sp,
+                Modifier.fillMaxWidth(0.66f),
                 boxAlignment = Alignment.CenterStart
             )
             TextFallout(
                 challenge.getProgress(),
                 getTextColor(activity),
                 getTextStrokeColor(activity),
-                24.sp,
+                22.sp,
                 Modifier.fillMaxWidth(),
                 boxAlignment = Alignment.CenterEnd
             )
@@ -163,27 +163,27 @@ fun ShowChallenge(activity: MainActivity, challenge: Challenge, isCompleted: Boo
             Spacer(Modifier.height(8.dp))
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
                 TextFallout(
-                    activity.getString(R.string.claim_tickets),
+                    activity.getString(R.string.claim_tickets, "1"),
                     getTextColor(activity),
                     getTextStrokeColor(activity),
                     20.sp,
                     Modifier
                         .background(getTextBackgroundColor(activity))
                         .clickableOk(activity) {
-                            save.tickets += if (isInfinite) 1 else 2
+                            save.tickets += 1
                             dailyCompleted(save)
                         }
                         .padding(8.dp),
                 )
                 TextFallout(
-                    activity.getString(R.string.claim_caps),
+                    activity.getString(R.string.claim_caps, "20"),
                     getTextColor(activity),
                     getTextStrokeColor(activity),
                     20.sp,
                     Modifier
                         .background(getTextBackgroundColor(activity))
                         .clickableOk(activity) {
-                            save.capsInHand += 30
+                            save.capsInHand += 20
                             dailyCompleted(save)
                         }
                         .padding(8.dp),

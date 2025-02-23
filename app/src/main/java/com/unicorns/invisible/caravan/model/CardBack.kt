@@ -23,8 +23,8 @@ enum class CardBack(val deckName: Int?, val backFileName: String, val altBackFil
     CHINESE(R.string.chinese_deck_name, "ccp_back.webp", null),
     ENCLAVE(R.string.enclave_deck_name, "enclave_back.webp", null),
     VIKING(R.string.viking_deck_name, "viking_back.webp", null),
-    NCR(R.string.ncr_deck_name, "TODO", null), // TODO
-    LEGION(R.string.legion_deck_name, "TODO", null); // TODO
+    NCR(R.string.ncr_deck_name, "ncr_back.webp", null),
+    LEGION(R.string.legion_deck_name, "legion_back.webp", null);
 
     fun hasAlt() = altBackFileName != null
 }

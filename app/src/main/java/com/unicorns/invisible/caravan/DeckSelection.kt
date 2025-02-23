@@ -134,7 +134,7 @@ fun DeckSelection(
                 Spacer(modifier = Modifier.height(16.dp))
                 Row(
                     Modifier,
-                    horizontalArrangement = Arrangement.Center
+                    horizontalArrangement = Arrangement.Center,
                 ) {
                     Column(Modifier, verticalArrangement = Arrangement.Center) {
                         showDeckBack(CardBack.STANDARD, false)
@@ -155,7 +155,7 @@ fun DeckSelection(
                         showDeckBack(CardBack.VAULT_21, true)
                         showDeckBack(CardBack.SIERRA_MADRE, true)
                     }
-                    Spacer(Modifier.width(12.dp))
+                    Spacer(Modifier.width(8.dp))
                     Column(Modifier, verticalArrangement = Arrangement.Center) {
                         showDeckBack(CardBack.MADNESS, false)
                         showDeckBack(CardBack.NCR, false)

@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.HorizontalDivider
@@ -36,6 +38,8 @@ import com.unicorns.invisible.caravan.model.primitives.Rank
 import com.unicorns.invisible.caravan.model.trading.Trader
 import com.unicorns.invisible.caravan.save.saveData
 import com.unicorns.invisible.caravan.utils.MenuItemOpen
+import com.unicorns.invisible.caravan.utils.ShowCard
+import com.unicorns.invisible.caravan.utils.ShowCardBack
 import com.unicorns.invisible.caravan.utils.TextFallout
 import com.unicorns.invisible.caravan.utils.getBackgroundColor
 import com.unicorns.invisible.caravan.utils.getDividerColor
@@ -61,16 +65,24 @@ fun CardToBuy(activity: MainActivity, card: Card, price: Int, update: () -> Unit
     else
         stringResource(card.suit.nameId)
     Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-        TextFallout(
-            "${stringResource(card.rank.nameId)} $suit\n" +
-            "(${stringResource(card.back.deckName)}${if (card.isAlt) " ALT!" else ""})",
-            getTextColor(activity),
-            getTextStrokeColor(activity),
-            16.sp,
-            Modifier
-                .weight(1f)
-                .padding(4.dp),
-        )
+        Column(Modifier.weight(2f).wrapContentHeight()) {
+            Row(Modifier.fillMaxWidth().wrapContentHeight().padding(4.dp), horizontalArrangement = Arrangement.Center) {
+                ShowCard(activity, card, Modifier)
+                Spacer(Modifier.width(4.dp))
+                ShowCardBack(activity, card, Modifier)
+            }
+
+            TextFallout(
+                "${stringResource(card.rank.nameId)} $suit\n" +
+                        "(${stringResource(card.back.deckName)}${if (card.isAlt) " ALT!" else ""})",
+                getTextColor(activity),
+                getTextStrokeColor(activity),
+                16.sp,
+                Modifier.fillMaxWidth().wrapContentHeight().padding(4.dp),
+                textAlignment = TextAlign.Center
+            )
+        }
+
         TextFallout(
             stringResource(R.string.buy_for_caps, price),
             getTextColor(activity),
@@ -105,7 +117,7 @@ fun ShowTraders(activity: MainActivity, goBack: () -> Unit) {
         var update by remember { mutableStateOf(false) }
         key(update) {
             Column(
-                Modifier.padding(horizontal = 4.dp),
+                Modifier,
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -169,7 +181,7 @@ fun ShowTraders(activity: MainActivity, goBack: () -> Unit) {
                         Column(
                             Modifier
                                 .fillMaxSize()
-                                .padding(8.dp),
+                                .padding(4.dp),
                             horizontalAlignment = Alignment.CenterHorizontally,
                             verticalArrangement = Arrangement.Top
                         ) {
@@ -190,10 +202,15 @@ fun ShowTraders(activity: MainActivity, goBack: () -> Unit) {
                                 )
                                 cards.forEach {
                                     Spacer(modifier = Modifier.height(4.dp))
+                                    HorizontalDivider(thickness = 1.dp, color = getDividerColor(activity))
+                                    Spacer(modifier = Modifier.height(4.dp))
                                     CardToBuy(activity, it, it.getPriceOfCard()) {
                                         update = !update
                                     }
                                 }
+                                Spacer(modifier = Modifier.height(4.dp))
+                                HorizontalDivider(thickness = 1.dp, color = getDividerColor(activity))
+                                Spacer(modifier = Modifier.height(4.dp))
                             } else {
                                 TextFallout(
                                     selectedTrader.openingCondition(activity),

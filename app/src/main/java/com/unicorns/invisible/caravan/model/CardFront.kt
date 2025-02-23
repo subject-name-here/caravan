@@ -22,8 +22,8 @@ fun getCardName(card: Card): String {
         CardBack.ENCLAVE -> getEnclaveName(card)
         CardBack.MADNESS -> getMadnessName(card)
         CardBack.VIKING -> getVikingName(card)
-        CardBack.NCR -> "TODO" // TODO
-        CardBack.LEGION -> "TODO" // TODO
+        CardBack.NCR -> getNcrName(card)
+        CardBack.LEGION -> getLegionName(card)
     }
 }
 
@@ -197,6 +197,14 @@ private fun getUltraLuxeName(card: Card): String {
     }
 }
 
+private fun getNcrName(card: Card): String {
+    return when (card.rank to card.suit) {
+        Rank.JOKER to Suit.CLUBS -> "ncr/ncr_joker_2.webp"
+        Rank.ACE to Suit.SPADES -> "ncr/ncr_ace_of_spades.webp"
+        else -> getStandardName(card)
+    }
+}
+
 private fun getLucky38Name(card: Card): String {
     return when (card.rank to card.suit) {
         Rank.ACE to Suit.SPADES -> "FNV_Ace_of_Spades_-_Lucky_38.webp"
@@ -268,6 +276,9 @@ private fun getEnclaveName(card: Card): String {
 }
 private fun getVikingName(card: Card): String {
     return getOGCardName(card, "viking")
+}
+private fun getLegionName(card: Card): String {
+    return getOGCardName(card, "legion")
 }
 
 private fun getOGCardName(card: Card, dirName: String): String {
