@@ -8,7 +8,6 @@ import com.unicorns.invisible.caravan.model.primitives.CustomDeck
 import com.unicorns.invisible.caravan.model.primitives.Rank
 import com.unicorns.invisible.caravan.model.primitives.Suit
 import com.unicorns.invisible.caravan.multiplayer.MoveResponse
-import kotlinx.serialization.Serializable
 
 
 class EnemyPlayer(

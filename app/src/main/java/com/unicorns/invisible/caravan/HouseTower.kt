@@ -32,14 +32,8 @@ import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.enemy.Enemy
 import com.unicorns.invisible.caravan.model.enemy.EnemyFrank
 import com.unicorns.invisible.caravan.model.enemy.EnemyTower1
-import com.unicorns.invisible.caravan.model.enemy.EnemyTower2
 import com.unicorns.invisible.caravan.model.enemy.EnemyTower3
-import com.unicorns.invisible.caravan.model.enemy.EnemyTower4
-import com.unicorns.invisible.caravan.model.enemy.EnemyTower5
-import com.unicorns.invisible.caravan.model.enemy.EnemyTower6
-import com.unicorns.invisible.caravan.model.enemy.EnemyTower7
-import com.unicorns.invisible.caravan.model.enemy.EnemyTower8
-import com.unicorns.invisible.caravan.model.enemy.EnemyTower9
+import com.unicorns.invisible.caravan.model.enemy.EnemyTower3A
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.CustomDeck
 import com.unicorns.invisible.caravan.save.saveData
@@ -129,14 +123,14 @@ fun TowerScreen(
             showTower(
                 when (playLevel) {
                     1 -> EnemyTower1
-                    2 -> EnemyTower2
-                    3 -> EnemyTower3
-                    4 -> EnemyTower4
-                    5 -> EnemyTower5
-                    6 -> EnemyTower6
-                    7 -> EnemyTower7
-                    8 -> EnemyTower8
-                    else -> EnemyTower9
+                    2 -> EnemyTower1
+                    3 -> if (save.papaSmurfActive) EnemyTower3A else EnemyTower3
+                    4 -> EnemyTower1
+                    5 -> EnemyTower1
+                    6 -> EnemyTower1
+                    7 -> EnemyTower1
+                    8 -> EnemyTower1
+                    else -> EnemyTower1
                 }
             ) { playLevel = 0 }
             return

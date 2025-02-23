@@ -3,7 +3,6 @@ package com.unicorns.invisible.caravan.model.enemy
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.primitives.CResources
-import kotlinx.serialization.Serializable
 
 
 data object EnemyTower3A : Enemy {

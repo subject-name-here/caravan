@@ -125,7 +125,13 @@
     <string name="dr_mobius">Dr. Mobius</string>
     <string name="man_in_the_mirror" translatable="false">ЯОЯЯIM ЭHT ИI ИAM</string>
 
+
+    <string name="gloria_van_graff">Gloria Van Graff</string>
+    <string name="fisto">FISTO (feat. Mr. Handy)</string>
     <string name="enemy_significant_other" translatable="false">EXPERIMENT #666: Significant Other</string>
+    <string name="viqueen">Thyra the Black</string>
+    <string name="joshua_graham">Joshua Graham</string>
+    <string name="alice_mclafferty">Alice McLafferty</string>
 
     <string name="pve_games_started">Games started: %1$s</string>
     <string name="pve_games_finished">Games finished: %1$s</string>

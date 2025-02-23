@@ -1,0 +1,52 @@
+package com.unicorns.invisible.caravan.model.enemy
+
+import com.unicorns.invisible.caravan.R
+import com.unicorns.invisible.caravan.model.CardBack
+import com.unicorns.invisible.caravan.model.Game
+import com.unicorns.invisible.caravan.model.primitives.CResources
+import com.unicorns.invisible.caravan.model.primitives.Card
+import com.unicorns.invisible.caravan.model.primitives.CustomDeck
+import com.unicorns.invisible.caravan.model.primitives.Rank
+import com.unicorns.invisible.caravan.model.primitives.Suit
+import kotlinx.serialization.Serializable
+
+
+@Serializable
+data object EnemyFisto : EnemyPve {
+    override fun getNameId() = R.string.fisto
+    override fun isEven() = false
+
+    override fun createDeck(): CResources {
+        return CResources(CustomDeck(CardBack.GOMORRAH, false).apply {
+            listOf(
+                CardBack.VAULT_21,
+                CardBack.TOPS,
+                CardBack.LUCKY_38,
+                CardBack.ULTRA_LUXE,
+                CardBack.STANDARD
+            ).forEach { back ->
+                add(Card(Rank.JOKER, Suit.HEARTS, back, false))
+                add(Card(Rank.JOKER, Suit.CLUBS, back, false))
+            }
+
+            add(Card(
+                Card.WildWastelandCardType.YES_MAN.rank,
+                Card.WildWastelandCardType.YES_MAN.suit,
+                CardBack.WILD_WASTELAND,
+                false
+            ))
+            add(Card(
+                Card.WildWastelandCardType.MUGGY.rank,
+                Card.WildWastelandCardType.MUGGY.suit,
+                CardBack.WILD_WASTELAND,
+                false
+            ))
+        })
+    }
+    override fun getBank(): Int { return 0 }
+    override fun refreshBank() {}
+    override fun getBet(): Int? { return 0 }
+    override fun retractBet() {}
+    override fun addReward(reward: Int) {}
+    override fun makeMove(game: Game) {}
+}

@@ -3,8 +3,6 @@ package com.unicorns.invisible.caravan.model.enemy
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.primitives.CResources
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.Transient
 
 
 class EnemyTutorial : Enemy {

@@ -5,7 +5,6 @@ import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.CustomDeck
 import com.unicorns.invisible.caravan.model.primitives.Rank
-import kotlinx.serialization.Serializable
 
 
 data object EnemyStory2 : Enemy {

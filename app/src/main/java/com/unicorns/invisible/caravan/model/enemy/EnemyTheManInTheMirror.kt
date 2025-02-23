@@ -35,17 +35,5 @@ data object EnemyTheManInTheMirror : EnemyPve {
 
     }
 
-    override fun makeMove(game: Game) {
-        if (game.isInitStage()) {
-            val caravan = game.enemyCaravans.withIndex().find {
-                it.value.isEmpty() && !game.playerCaravans[it.index].isEmpty()
-            }!!
-            val card = game.playerCaravans[caravan.index].cards.first().card
-            val cardInHand = game.enemyCResources.hand.find { it.rank == card.rank && it.suit == card.suit }
-            val cardInHandIndex = game.enemyCResources.hand.indexOf(cardInHand)
-            caravan.value.putCardOnTop(game.enemyCResources.removeFromHand(cardInHandIndex))
-            return
-        }
-        EnemyFrank.makeMove(game)
-    }
+    override fun makeMove(game: Game) {}
 }

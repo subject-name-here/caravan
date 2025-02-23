@@ -6,23 +6,29 @@ import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.challenge.Challenge
 import com.unicorns.invisible.caravan.model.challenge.ChallengePlay188
 import com.unicorns.invisible.caravan.model.challenge.ChallengeWin5Games
+import com.unicorns.invisible.caravan.model.enemy.EnemyAlice
 import com.unicorns.invisible.caravan.model.enemy.EnemyBenny
 import com.unicorns.invisible.caravan.model.enemy.EnemyCrooker
 import com.unicorns.invisible.caravan.model.enemy.EnemyDrMobius
 import com.unicorns.invisible.caravan.model.enemy.EnemyEasyPete
 import com.unicorns.invisible.caravan.model.enemy.EnemyElijah
+import com.unicorns.invisible.caravan.model.enemy.EnemyFisto
+import com.unicorns.invisible.caravan.model.enemy.EnemyGloria
 import com.unicorns.invisible.caravan.model.enemy.EnemyHanlon
+import com.unicorns.invisible.caravan.model.enemy.EnemyJoshua
 import com.unicorns.invisible.caravan.model.enemy.EnemyLuc10
 import com.unicorns.invisible.caravan.model.enemy.EnemyMadnessCardinal
 import com.unicorns.invisible.caravan.model.enemy.EnemyNash
 import com.unicorns.invisible.caravan.model.enemy.EnemyNoBark
 import com.unicorns.invisible.caravan.model.enemy.EnemyOliver
+import com.unicorns.invisible.caravan.model.enemy.EnemySignificantOther
 import com.unicorns.invisible.caravan.model.enemy.EnemySnuffles
 import com.unicorns.invisible.caravan.model.enemy.EnemyTabitha
 import com.unicorns.invisible.caravan.model.enemy.EnemyTheManInTheMirror
 import com.unicorns.invisible.caravan.model.enemy.EnemyUlysses
 import com.unicorns.invisible.caravan.model.enemy.EnemyVeronica
 import com.unicorns.invisible.caravan.model.enemy.EnemyVictor
+import com.unicorns.invisible.caravan.model.enemy.EnemyViqueen
 import com.unicorns.invisible.caravan.model.enemy.EnemyVulpes
 import com.unicorns.invisible.caravan.model.primitives.Card
 import com.unicorns.invisible.caravan.model.primitives.CustomDeck
@@ -38,7 +44,6 @@ import com.unicorns.invisible.caravan.model.trading.Vault21Trader
 import kotlinx.serialization.EncodeDefault
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
-import kotlin.random.Random
 
 
 // PlayerId == null => save is not loaded
@@ -200,7 +205,16 @@ class Save(var playerId: String? = null) {
             EnemyMadnessCardinal,
             EnemyDrMobius,
             EnemyLuc10
+        ),
+        listOf(
+            EnemyGloria,
+            EnemyFisto,
+            EnemySignificantOther,
+            EnemyViqueen,
+            EnemyJoshua,
+            EnemyAlice
         )
+
     )
     fun updateEnemiesBanks() {
         val enemies = enemiesGroups.flatten()
