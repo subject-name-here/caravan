@@ -102,7 +102,7 @@ fun ShowStoryList(
                     soundReduced = true
                 }
                 ShowStoryChapter4(activity, getDeck(showChapter!!), showAlertDialog, {
-                    save.storyProgress = maxOf(save.storyProgress, 41)
+                    save.storyProgress = maxOf(save.storyProgress, 39)
                     saveData(activity)
                     activity.achievementsClient?.unlock(activity.getString(R.string.achievement_what_do_we_say_to_the_god_of_death))
                 }) { showChapter = null; soundReduced = false; nextSong(activity) }

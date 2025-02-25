@@ -15,7 +15,7 @@ import com.unicorns.invisible.caravan.model.enemy.EnemyElijah
 import com.unicorns.invisible.caravan.model.enemy.EnemyFisto
 import com.unicorns.invisible.caravan.model.enemy.EnemyGloria
 import com.unicorns.invisible.caravan.model.enemy.EnemyHanlon
-import com.unicorns.invisible.caravan.model.enemy.EnemyJoshua
+import com.unicorns.invisible.caravan.model.enemy.EnemySalt
 import com.unicorns.invisible.caravan.model.enemy.EnemyLuc10
 import com.unicorns.invisible.caravan.model.enemy.EnemyMadnessCardinal
 import com.unicorns.invisible.caravan.model.enemy.EnemyNash
@@ -181,7 +181,7 @@ class Save(var playerId: String? = null) {
     var isRadioUsesPseudonyms = false
 
     @EncodeDefault
-    val enemiesGroups = listOf(
+    val enemiesGrouped = listOf(
         listOf(
             EnemyOliver,
             EnemyVeronica,
@@ -211,13 +211,13 @@ class Save(var playerId: String? = null) {
             EnemyFisto,
             EnemySignificantOther,
             EnemyViqueen,
-            EnemyJoshua,
+            EnemySalt,
             EnemyAlice
         )
 
     )
     fun updateEnemiesBanks() {
-        val enemies = enemiesGroups.flatten()
+        val enemies = enemiesGrouped.flatten()
         enemies.forEach { enemy ->
             enemy.refreshBank()
         }

@@ -125,7 +125,7 @@ class Game(
         canPlayerMove = false
         CoroutineScope(Dispatchers.Default).launch {
             updateView()
-            delay(delayLength * 3)
+            delay(delayLength)
 
             if (processField()) {
                 updateView()
@@ -147,7 +147,7 @@ class Game(
 
             enemy.makeMove(this@Game)
             updateView()
-            delay(delayLength * 3)
+            delay(delayLength)
 
             if (processField()) {
                 updateView()

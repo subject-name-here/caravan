@@ -23,11 +23,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -48,7 +46,6 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.layout
-import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
@@ -522,7 +519,7 @@ fun EnemySide(
                 it
             }
             .padding(vertical = 4.dp),
-        verticalAlignment = Alignment.Bottom
+        verticalAlignment = Alignment.Top
     ) {
         RowOfEnemyCards(activity, animationSpeed, game.enemyCResources.hand)
         key(enemyHandKey) {
@@ -625,12 +622,82 @@ fun Hand(
     cards: List<Card>,
     selectedCard: Int?, selectedCardColor: Color, onClick: (Int) -> Unit
 ) {
+    val enemyMult = if (isEnemy) -1f else 1f
     BoxWithConstraints(
         Modifier
             .fillMaxWidth(0.8f)
-            .padding(bottom = 8.pxToDp())
             .wrapContentHeight(),
+        Alignment.TopStart
     ) {
+        var scale by remember { mutableFloatStateOf(1f) }
+        val cardHeight = maxHeight.dpToPx().toFloat() - 8.dp.dpToPx()
+        val cardWidth = maxWidth.dpToPx().toFloat() / 5f - 8.dp.dpToPx()
+        val scaleH = cardHeight / 256f
+        val scaleW = cardWidth / 183f
+        scale = when {
+            scaleH == 0f -> scaleW
+            scaleW == 0f -> scaleH
+            else -> min(scaleW, scaleH)
+        }.coerceAtMost(1f)
+
+        val memCards = remember { mutableObjectListOf<Card>() }
+        memCards.addAll(cards - memCards.asMutableList().toSet())
+        memCards.removeIf { it.handAnimationMark == Card.AnimationMark.MOVED_OUT }
+
+        val itemVerticalOffsetMovingIn = remember { Animatable(2.5f * enemyMult) }
+        val itemVerticalOffsetMovingOut = remember { Animatable(0f) }
+
+        var recomposeKey by remember { mutableStateOf(false) }
+        val isAnyMovingIn = memCards.any { it.handAnimationMark.isMovingIn() }
+        val isAnyMovingOut = memCards.any { it.handAnimationMark.isMovingOut() }
+
+        LaunchedEffect(isAnyMovingIn) {
+            if (isAnyMovingIn) {
+                playCardFlipSound(activity)
+                itemVerticalOffsetMovingIn.snapTo(2.5f * enemyMult)
+                memCards.forEach {
+                    if (it.handAnimationMark == Card.AnimationMark.MOVING_IN) {
+                        it.handAnimationMark = Card.AnimationMark.MOVING_IN_WIP
+                    }
+                }
+                itemVerticalOffsetMovingIn.animateTo(0f, TweenSpec(animationSpeed.delay.toInt())) {
+                    recomposeKey = !recomposeKey
+                }
+                memCards.forEach {
+                    if (it.handAnimationMark.isMovingIn()) {
+                        it.handAnimationMark = Card.AnimationMark.STABLE
+                    }
+                }
+                recomposeKey = !recomposeKey
+            }
+        }
+
+        LaunchedEffect(isAnyMovingOut) {
+            if (isAnyMovingOut) {
+                playCardFlipSound(activity)
+                val isDropping = memCards.any { it.handAnimationMark.isAlt() }
+                val isDisappearing = memCards.any { it.handAnimationMark == Card.AnimationMark.MOVED_OUT }
+                val target = (if (isDropping) 2.5f else -2.5f) * enemyMult
+                itemVerticalOffsetMovingOut.snapTo(0f)
+                memCards.forEach {
+                    if (it.handAnimationMark == Card.AnimationMark.MOVING_OUT) {
+                        it.handAnimationMark = Card.AnimationMark.MOVING_OUT_WIP
+                    }
+                    if (it.handAnimationMark == Card.AnimationMark.MOVING_OUT_ALT) {
+                        it.handAnimationMark = Card.AnimationMark.MOVING_OUT_ALT_WIP
+                    }
+                }
+                if (!isDisappearing) {
+                    itemVerticalOffsetMovingOut.animateTo(target, TweenSpec(animationSpeed.delay.toInt())) {
+                        recomposeKey = !recomposeKey
+                    }
+                }
+
+                memCards.removeIf { it.handAnimationMark.isMovingOut() }
+                recomposeKey = !recomposeKey
+            }
+        }
+
         val state = rememberLazyListState()
         LazyRow(
             Modifier
@@ -641,54 +708,63 @@ fun Hand(
                     knobColor = getKnobColor(activity),
                     trackColor = getTrackColor(activity),
                     horizontal = true
-                )
-                .padding(bottom = 8.dp),
+                ),
             state = state,
-            verticalAlignment = Alignment.Bottom,
-            horizontalArrangement = Arrangement.Start
+            verticalAlignment = Alignment.Top,
+            horizontalArrangement = Arrangement.Center
         ) {
-            itemsIndexed(cards) { index, it ->
-                var scale by remember { mutableFloatStateOf(1f) }
-                val widthPaddings = if (isEnemy) 5.dp else 25.dp
-                val cardHeight = maxHeight.dpToPx().toFloat()
-                val cardWidth = (maxWidth - widthPaddings).dpToPx().toFloat() / 5f
-                val scaleH = cardHeight / 256f
-                val scaleW = cardWidth / 183f
-                scale = when {
-                    scaleH == 0f -> scaleW
-                    scaleW == 0f -> scaleH
-                    else -> min(scaleW, scaleH)
-                }.coerceAtMost(1f)
-
-                if (isEnemy) {
-                    ShowCardBack(
-                        activity,
-                        it,
-                        Modifier,
-                        scale
-                    )
-                } else {
-                    if (it.rank == Rank.JOKER && it.handAnimationMark == Card.AnimationMark.MOVING_IN) {
-                        LaunchedEffect(Unit) {
-                            playJokerReceivedSounds(activity)
-                        }
+            item { key (recomposeKey) {
+                memCards.forEach {
+                    val inValue = if (animationSpeed.delay == 0L) 0f else when (it.handAnimationMark) {
+                        Card.AnimationMark.MOVING_IN -> 2.5f * enemyMult
+                        Card.AnimationMark.MOVING_IN_WIP -> itemVerticalOffsetMovingIn.value
+                        else -> 0f
                     }
-                    ShowCard(
-                        activity,
-                        it,
-                        Modifier
-                            .clickable {
-                                onClick(index)
+                    val outValue = if (animationSpeed.delay == 0L) 0f else when (it.handAnimationMark) {
+                        Card.AnimationMark.MOVING_OUT_WIP, Card.AnimationMark.MOVING_OUT_ALT_WIP -> itemVerticalOffsetMovingOut.value
+                        else -> 0f
+                    }
+                    val index = memCards.asMutableList().indexOf(it)
+                    if (index == -1) return@forEach
+
+                    val modifier = Modifier
+                        .scale(scale)
+                        .layout { measurable, constraints ->
+                            val placeable = measurable.measure(constraints)
+                            val scaledWidth = placeable.width * scale
+                            val scaledHeight = placeable.height * scale
+                            val offsetHeight = scaledHeight * (inValue + outValue)
+                            layout(scaledWidth.toInt(), scaledHeight.toInt()) {
+                                placeable.place(0, offsetHeight.toInt())
                             }
-                            .border(
-                                width = if (index == (selectedCard ?: -1)) 2.dp else (-1).dp,
-                                color = selectedCardColor
-                            )
-                            .padding(2.dp),
-                        scale
-                    )
+                        }
+
+                    if (isEnemy) {
+                        ShowCardBack(activity, it, modifier)
+                    } else {
+                        if (it.rank == Rank.JOKER && it.handAnimationMark == Card.AnimationMark.MOVING_IN) {
+                            LaunchedEffect(Unit) {
+                                playJokerReceivedSounds(activity)
+                            }
+                        }
+                        ShowCard(
+                            activity,
+                            it,
+                            modifier
+                                .clickable {
+                                    if (!itemVerticalOffsetMovingIn.isRunning && !itemVerticalOffsetMovingIn.isRunning) {
+                                        onClick(index)
+                                    }
+                                }
+                                .border(
+                                    width = if (index == (selectedCard ?: -1)) 3.dp else (-1).dp,
+                                    color = selectedCardColor
+                                )
+                                .padding(4.dp),
+                        )
+                    }
                 }
-            }
+            } }
         }
     }
 }
@@ -789,7 +865,7 @@ fun RowScope.CaravanOnField(
                     memCards.addAll(caravan.cards - memCards.asMutableList().toSet())
                     memCards.removeIf { it.card.caravanAnimationMark == Card.AnimationMark.MOVED_OUT }
 
-                    val animationIn = remember { Animatable(3f) }
+                    val animationIn = remember { Animatable(3f * enemyTurnMult) }
                     val animationOut = remember { Animatable(0f) }
                     var recomposeKey by remember { mutableStateOf(false) }
                     LaunchedEffect(recomposeKey) {}
@@ -801,7 +877,7 @@ fun RowScope.CaravanOnField(
                     LaunchedEffect(isAnyMovingIn) {
                         if (isAnyMovingIn) {
                             playCardFlipSound(activity)
-                            animationIn.snapTo(3f)
+                            animationIn.snapTo(3f * enemyTurnMult)
                             memCards.forEach {
                                 if (it.card.caravanAnimationMark == Card.AnimationMark.MOVING_IN) {
                                     it.card.caravanAnimationMark = Card.AnimationMark.MOVING_IN_WIP

@@ -20,7 +20,7 @@ data object EnemySignificantOther : EnemyPve {
     }
     override fun getBank(): Int { return 0 }
     override fun refreshBank() {}
-    override fun getBet(): Int? { return 0 }
+    override fun getBet(): Int? { return null }
     override fun retractBet() {}
     override fun addReward(reward: Int) {}
     override fun makeMove(game: Game) {}

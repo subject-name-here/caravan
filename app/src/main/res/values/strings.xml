@@ -130,7 +130,7 @@
     <string name="fisto">FISTO (feat. Mr. Handy)</string>
     <string name="enemy_significant_other" translatable="false">EXPERIMENT #666: Significant Other</string>
     <string name="viqueen">Thyra the Black</string>
-    <string name="joshua_graham">Joshua Graham</string>
+    <string name="salt">Salt-Upon-Wounds</string>
     <string name="alice_mclafferty">Alice McLafferty</string>
 
     <string name="pve_games_started">Games started: %1$s</string>
@@ -782,8 +782,9 @@ If this helped you understand the game, thank the author Kyle! To do this, go to
 
     </string>
     <string name="this_game_will_be_counted_as_lost">This game will be counted as lost!!</string>
-    <string name="enemy_with_caps">%1$s (%2$s caps)</string>
-    <string name="enemy_without_caps" translatable="false">%1$s</string>
+    <string name="enemy_with_caps">%1$s (bank: %2$s, bet: %3$s)</string>
+    <string name="enemy_with_card">%1$s (%2$s cards)</string>
+    <string name="enemy_empty" translatable="false">%1$s</string>
 
     <string name="congrats">Congrats!</string>
     <string name="prize4_body">You have found a secret stash! +5000 caps!</string>

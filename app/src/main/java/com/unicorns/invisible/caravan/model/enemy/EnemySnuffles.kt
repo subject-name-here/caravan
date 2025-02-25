@@ -8,7 +8,9 @@ import com.unicorns.invisible.caravan.model.primitives.Card
 import com.unicorns.invisible.caravan.model.primitives.CustomDeck
 import com.unicorns.invisible.caravan.model.primitives.Rank
 import com.unicorns.invisible.caravan.model.primitives.Suit
+import com.unicorns.invisible.caravan.save
 import kotlinx.serialization.Serializable
+import kotlin.random.Random
 
 
 @Serializable
@@ -40,27 +42,67 @@ data object EnemySnuffles : EnemyPve {
         add(Card(Rank.QUEEN, Suit.HEARTS, CardBack.WILD_WASTELAND, false))
     })
 
-
-    override fun getBank(): Int {
-        return 0
-    }
-
+    private var bank = 0
+    override fun getBank(): Int { return bank }
     override fun refreshBank() {
-
+        bank += save.table
+        save.table = 0
     }
-
-    override fun getBet(): Int? {
-        return 0
+    override fun getBet(): Int {
+        return if (bank <= 1) {
+            bank
+        } else {
+            bank / 2
+        }
     }
+    override fun retractBet() { bank -= getBet() }
+    override fun addReward(reward: Int) { bank += reward }
 
-    override fun retractBet() {
+    override fun makeMove(game: Game) {
+        if (game.isInitStage()) {
+            val card = game.enemyCResources.hand.withIndex().filter { !it.value.isModifier() }.random()
+            val caravan = game.enemyCaravans.filter { it.isEmpty() }.random()
+            caravan.putCardOnTop(game.enemyCResources.removeFromHand(card.index))
+            return
+        }
 
+        val cards = game.enemyCResources.hand.withIndex()
+            .filter { !it.value.isModifier() }
+            .shuffled()
+        val caravans = game.enemyCaravans.shuffled()
+        cards.forEach { card ->
+            caravans.forEach { caravan ->
+                if (caravan.canPutCardOnTop(card.value) && Random.nextBoolean()) {
+                    caravan.putCardOnTop(game.enemyCResources.removeFromHand(card.index))
+                    return
+                }
+            }
+        }
+
+        if (Random.nextBoolean()) {
+            val modifiers = game.enemyCResources.hand.withIndex()
+                .filter { it.value.isModifier() }
+                .shuffled()
+            val cards = (game.playerCaravans + game.enemyCaravans).flatMap { it.cards }.shuffled()
+            cards.forEach { card ->
+                modifiers.forEach { modifier ->
+                    if (card.canAddModifier(modifier.value) && Random.nextBoolean()) {
+                        card.addModifier(game.enemyCResources.removeFromHand(modifier.index))
+                        return
+                    }
+                }
+            }
+        }
+
+        if (Random.nextBoolean()) {
+            game.enemyCaravans.shuffled().forEach { caravan ->
+                if (!caravan.isEmpty() && Random.nextBoolean()) {
+                    caravan.dropCaravan()
+                    return
+                }
+            }
+        }
+
+        game.enemyCResources.dropCardFromHand(game.enemyCResources.hand.indices.random())
     }
-
-    override fun addReward(reward: Int) {
-
-    }
-
-
-    override fun makeMove(game: Game) {}
 }

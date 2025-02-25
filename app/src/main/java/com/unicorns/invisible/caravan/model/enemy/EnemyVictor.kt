@@ -5,6 +5,7 @@ import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import kotlinx.serialization.Serializable
+import kotlin.math.min
 
 
 @Serializable
@@ -14,25 +15,12 @@ data object EnemyVictor : EnemyPve {
 
     override fun createDeck() = CResources(CardBack.LUCKY_38, false)
 
-    override fun getBank(): Int {
-        return 0
-    }
-
-    override fun refreshBank() {
-
-    }
-
-    override fun getBet(): Int? {
-        return 0
-    }
-
-    override fun retractBet() {
-
-    }
-
-    override fun addReward(reward: Int) {
-
-    }
+    private var bank = 0
+    override fun getBank(): Int { return bank }
+    override fun refreshBank() { bank = 50 }
+    override fun getBet(): Int { return min(bank, 25) }
+    override fun retractBet() { bank -= getBet() }
+    override fun addReward(reward: Int) { bank += reward }
 
     override fun makeMove(game: Game) {}
 }

@@ -5,6 +5,7 @@ import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.CustomDeck
 import kotlinx.serialization.Serializable
+import kotlin.math.min
 
 
 @Serializable
@@ -14,26 +15,12 @@ data object EnemyTheManInTheMirror : EnemyPve {
 
     override fun createDeck() = CResources(CustomDeck())
 
-
-    override fun getBank(): Int {
-        return 0
-    }
-
-    override fun refreshBank() {
-
-    }
-
-    override fun getBet(): Int? {
-        return 0
-    }
-
-    override fun retractBet() {
-
-    }
-
-    override fun addReward(reward: Int) {
-
-    }
+    private var bank = 0
+    override fun getBank(): Int { return bank }
+    override fun refreshBank() { bank = 88 }
+    override fun getBet(): Int { return min(bank, 11) }
+    override fun retractBet() { bank -= getBet() }
+    override fun addReward(reward: Int) { bank += reward }
 
     override fun makeMove(game: Game) {}
 }

@@ -240,7 +240,7 @@ fun Modifier.scrollbar(
     state: LazyListState,
     horizontal: Boolean = false,
     alignEnd: Boolean = true,
-    thickness: Dp = 8.pxToDp(),
+    thickness: Int = 8,
     knobColor: Color,
     trackColor: Color,
     visibleAlpha: Float = 1f,
@@ -306,18 +306,18 @@ fun Modifier.scrollbar(
                     topLeft =
                     when {
                         // When the scrollbar is horizontal and aligned to the bottom:
-                        horizontal && alignEnd -> Offset(0f, size.height - thickness.toPx())
+                        horizontal && alignEnd -> Offset(0f, size.height - thickness)
                         // When the scrollbar is horizontal and aligned to the top:
                         horizontal && !alignEnd -> Offset(0f, 0f)
                         // When the scrollbar is vertical and aligned to the end:
-                        alignEnd -> Offset(size.width - thickness.toPx(), 0f)
+                        alignEnd -> Offset(size.width - thickness, 0f)
                         // When the scrollbar is vertical and aligned to the start:
                         else -> Offset(0f, 0f)
                     },
                     size = if (horizontal) {
-                        Size(size.width, thickness.toPx())
+                        Size(size.width, thickness.toFloat())
                     } else {
-                        Size(thickness.toPx(), size.height)
+                        Size(thickness.toFloat(), size.height)
                     },
                     //alpha = alpha,
                 )
@@ -330,19 +330,19 @@ fun Modifier.scrollbar(
                         // When the scrollbar is horizontal and aligned to the bottom:
                         horizontal && alignEnd -> Offset(
                             knobPosition,
-                            size.height - thickness.toPx() + 2f
+                            size.height - thickness + 2f
                         )
                         // When the scrollbar is horizontal and aligned to the top:
                         horizontal && !alignEnd -> Offset(knobPosition, 2f)
                         // When the scrollbar is vertical and aligned to the end:
-                        alignEnd -> Offset(size.width - thickness.toPx() + 2f, knobPosition)
+                        alignEnd -> Offset(size.width - thickness + 2f, knobPosition)
                         // When the scrollbar is vertical and aligned to the start:
                         else -> Offset(2f, knobPosition)
                     },
                     size = if (horizontal) {
-                        Size(knobSize, thickness.toPx() - 4)
+                        Size(knobSize, thickness.toFloat() - 4)
                     } else {
-                        Size(thickness.toPx() - 4, knobSize)
+                        Size(thickness.toFloat() - 4, knobSize)
                     },
                     //alpha = alpha,
                 )

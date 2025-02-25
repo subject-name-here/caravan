@@ -9,6 +9,7 @@ import com.unicorns.invisible.caravan.model.primitives.CustomDeck
 import com.unicorns.invisible.caravan.model.primitives.Rank
 import com.unicorns.invisible.caravan.model.primitives.Suit
 import kotlinx.serialization.Serializable
+import kotlin.math.min
 
 
 @Serializable
@@ -37,10 +38,12 @@ data object EnemyGloria : EnemyPve {
             }
         })
     }
-    override fun getBank(): Int { return 0 }
-    override fun refreshBank() {}
-    override fun getBet(): Int? { return 0 }
-    override fun retractBet() {}
-    override fun addReward(reward: Int) {}
+    private var bank = 0
+    override fun getBank(): Int { return bank }
+    override fun refreshBank() { bank = 125 }
+    override fun getBet(): Int { return min(bank, 25) }
+    override fun retractBet() { bank -= getBet() }
+    override fun addReward(reward: Int) { bank += reward }
+
     override fun makeMove(game: Game) {}
 }

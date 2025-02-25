@@ -41,7 +41,6 @@ import androidx.compose.ui.unit.sp
 import com.sebaslogen.resaca.rememberScoped
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
-import com.unicorns.invisible.caravan.model.enemy.Enemy
 import com.unicorns.invisible.caravan.model.enemy.EnemyHanlon
 import com.unicorns.invisible.caravan.model.enemy.EnemyMadnessCardinal
 import com.unicorns.invisible.caravan.model.enemy.EnemyPve
@@ -293,7 +292,7 @@ fun ShowPvE(
     }
 
     if (playAgainstEnemy != -1) {
-        val enemyList = save.enemiesGroups.flatten()
+        val enemyList = save.enemiesGrouped.flatten()
         if (playAgainstEnemy !in enemyList.indices) {
             playAgainstEnemy = -1
             return
@@ -382,13 +381,28 @@ fun ShowPvE(
 
             @Composable
             fun OpponentItem(enemy: EnemyPve, onClick: () -> Unit) {
-                val line = if (enemy.getBet() == null)
-                    stringResource(R.string.enemy_without_caps, stringResource(enemy.getNameId()))
-                else
+                val line = if (enemy.getBet() == null) {
+                    val deckNameId = when (enemy) {
+                        is EnemyHanlon -> CardBack.NCR
+                        is EnemyVulpes -> CardBack.LEGION
+                        is EnemyMadnessCardinal -> CardBack.MADNESS
+                        is EnemyViqueen -> CardBack.VIKING
+                        else -> null
+                    }?.deckName ?: 0
+                    if (deckNameId == 0) {
+                        stringResource(R.string.enemy_empty, stringResource(enemy.getNameId()))
+                    } else {
+                        stringResource(R.string.enemy_with_card,
+                            stringResource(enemy.getNameId()),
+                            stringResource(deckNameId)
+                        )
+                    }
+                } else
                     stringResource(
                         R.string.enemy_with_caps,
                         stringResource(enemy.getNameId()),
-                        enemy.getBank()
+                        enemy.getBank(),
+                        enemy.getBet() ?: 0
                     )
                 TextFallout(
                     line,
@@ -416,12 +430,12 @@ fun ShowPvE(
                 state = state
             ) {
                 item {
-                    val enemies = save.enemiesGroups[selectedTab]
+                    val enemies = save.enemiesGrouped[selectedTab]
                     Spacer(modifier = Modifier.height(8.dp))
                     enemies.forEach {
                         OpponentItem(it) {
                             playVatsEnter(activity)
-                            playAgainstEnemy = save.enemiesGroups.flatten().indexOf(it)
+                            playAgainstEnemy = save.enemiesGrouped.flatten().indexOf(it)
                         }
                         Spacer(modifier = Modifier.height(8.dp))
                     }
