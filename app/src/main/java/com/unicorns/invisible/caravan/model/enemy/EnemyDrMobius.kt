@@ -14,7 +14,7 @@ import kotlin.random.Random
 
 
 @Serializable
-data object EnemyDrMobius : EnemyPve {
+class EnemyDrMobius : EnemyPve {
     override fun getNameId() = R.string.dr_mobius
     override fun isEven() = false
 

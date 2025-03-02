@@ -9,7 +9,7 @@ import kotlin.math.min
 
 
 @Serializable
-data object EnemyBenny : EnemyPve {
+class EnemyBenny : EnemyPve {
     override fun getNameId() = R.string.benny
     override fun createDeck() = CResources(CardBack.TOPS, true)
     override fun isEven() = true

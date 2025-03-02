@@ -12,7 +12,7 @@ import kotlinx.serialization.Serializable
 
 
 @Serializable
-data object EnemyMadnessCardinal : EnemyPve {
+class EnemyMadnessCardinal : EnemyPve {
     override fun getNameId() = R.string.madness_cardinal
     override fun isEven() = false
 

@@ -105,7 +105,7 @@ fun TowerScreen(
                 6 -> {
                     activity.achievementsClient?.unlock(activity.getString(R.string.achievement_five_down_five_to_go))
                 }
-                10 -> {
+                11 -> {
                     activity.achievementsClient?.unlock(activity.getString(R.string.achievement_1010))
                 }
             }
@@ -119,7 +119,7 @@ fun TowerScreen(
     }
 
     when (playLevel) {
-        in 1..9 -> {
+        in 1..10 -> {
             showTower(
                 when (playLevel) {
                     1 -> EnemyTower1
@@ -130,12 +130,13 @@ fun TowerScreen(
                     6 -> EnemyTower1
                     7 -> EnemyTower1
                     8 -> EnemyTower1
+                    9 -> EnemyTower1
                     else -> EnemyTower1
                 }
             ) { playLevel = 0 }
             return
         }
-        11 -> {
+        12 -> {
             var capsMemory by rememberScoped { mutableIntStateOf(0) }
             StartTowerGame(activity, EnemyFrank, showAlertDialog, {
                 startLevel11Theme(activity)
@@ -202,6 +203,7 @@ fun TowerScreen(
                     7 -> 128
                     8 -> 256
                     9 -> 512
+                    10 -> 1024
                     10 -> 1024
                     else -> 0
                 }

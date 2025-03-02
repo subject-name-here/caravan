@@ -14,7 +14,7 @@ import kotlin.math.min
 
 
 @Serializable
-data object EnemyEasyPete : EnemyPve {
+class EnemyEasyPete : EnemyPve {
     override fun getNameId() = R.string.easy_pete
     override fun isEven() = true
 

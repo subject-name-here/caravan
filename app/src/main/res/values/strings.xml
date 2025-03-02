@@ -125,13 +125,15 @@
     <string name="dr_mobius">Dr. Mobius</string>
     <string name="man_in_the_mirror" translatable="false">ЯОЯЯIM ЭHT ИI ИAM</string>
 
-
     <string name="gloria_van_graff">Gloria Van Graff</string>
     <string name="fisto">FISTO (feat. Mr. Handy)</string>
-    <string name="enemy_significant_other" translatable="false">EXPERIMENT #666: Significant Other</string>
+    <string name="caesar">Caesar</string>
     <string name="viqueen">Thyra the Black</string>
     <string name="salt">Salt-Upon-Wounds</string>
     <string name="alice_mclafferty">Alice McLafferty</string>
+
+    <string name="enemy_significant_other" translatable="false">EXPERIMENT #666: Significant Other</string>
+    <string name="graham">Joshua Graham</string>
 
     <string name="pve_games_started">Games started: %1$s</string>
     <string name="pve_games_finished">Games finished: %1$s</string>
@@ -422,7 +424,7 @@
 
     <string name="tower_presents">VAULT-TEC\nproudly presents</string>
     <string name="tower">TOWER!</string>
-    <string name="tower_starring_1">Starring:\nDean Domino\nRobert Edwin House\nSunny Smiles\nand\nEdward Sallow as Caesar.</string>
+    <string name="tower_starring_1">Starring:\nDean Domino\nRobert Edwin House\nSunny Smiles\nand\nLEGENDARY\nLEGATE LANIUS.</string>
     <string name="tower_starring_2">Also starring: Craig Muffin,\n3-time Caravan champ of NCR.</string>
     <string name="deck_o_54_only">(Deck o\' 54 only!)</string>
     <string name="custom_deck_only">(Custom deck only!)</string>
@@ -436,8 +438,8 @@
     <string name="currently_in_bank_caps">Currently at stake: %1$s caps</string>
     <string name="enemy">Enemy: %1$s</string>
     <string name="your_reward_caps">Your reward: %1$s caps.</string>
-    <string name="your_reward_caps_2048">Cowardly running away, you managed to get: 2048 caps.</string>
-    <string name="your_reward_caps_4096">The final boss is defeated. By being a true hero, you have managed to earn: 4096 caps.</string>
+    <string name="your_reward_caps_running">Cowardly running away, you managed to get: %1$s caps.</string>
+    <string name="your_reward_caps_finale">The final boss is defeated. By being a true hero, you have managed to earn: %1$s caps.</string>
 
     <string name="tower_enemy_1">Sunny Smiles</string>
     <string name="tower_enemy_2">Yes Man</string>
@@ -446,11 +448,12 @@
     <string name="tower_enemy_4">Jason Bright</string>
     <string name="tower_enemy_5">The King</string>
     <string name="tower_enemy_6">Dean Domino</string>
-    <string name="tower_enemy_7">Mr. House</string>
-    <string name="tower_enemy_8">Cook-Cook</string>
-    <string name="tower_enemy_9">Caesar</string>
-    <string name="tower_enemy_10">Champion Craig Muffin</string>
-    <string name="tower_enemy_10A">Special Agent Frank Horrigan</string>
+    <string name="tower_enemy_7">General Lee Oliver</string>
+    <string name="tower_enemy_8">Mr. House</string>
+    <string name="tower_enemy_9">Cook-Cook</string>
+    <string name="tower_enemy_10">Legate Lanius</string>
+    <string name="tower_enemy_11">Champion Craig Muffin</string>
+    <string name="tower_enemy_12">Special Agent Frank Horrigan</string>
 
     <string name="take_the_cash">Take the cash!</string>
     <string name="take_the_cash_alt">Run away with cash!</string>

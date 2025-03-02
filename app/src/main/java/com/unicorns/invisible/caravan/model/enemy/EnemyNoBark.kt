@@ -13,7 +13,7 @@ import kotlin.math.min
 
 
 @Serializable
-data object EnemyNoBark : EnemyPve {
+class EnemyNoBark : EnemyPve {
     override fun getNameId() = R.string.no_bark
 
     override fun isEven() = false

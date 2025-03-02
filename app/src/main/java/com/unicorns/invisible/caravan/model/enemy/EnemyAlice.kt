@@ -13,7 +13,7 @@ import kotlin.math.min
 
 
 @Serializable
-data object EnemyAlice : EnemyPve {
+class EnemyAlice : EnemyPve {
     override fun getNameId() = R.string.alice_mclafferty
     override fun isEven() = false
 
@@ -36,8 +36,8 @@ data object EnemyAlice : EnemyPve {
 
     private var bank = 0
     override fun getBank(): Int { return bank }
-    override fun refreshBank() { bank = 100 }
-    override fun getBet(): Int { return min(bank, 25) }
+    override fun refreshBank() { bank = 75 }
+    override fun getBet(): Int { return min(bank, 15) }
     override fun retractBet() { bank -= getBet() }
     override fun addReward(reward: Int) { bank += reward }
 

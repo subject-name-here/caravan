@@ -279,6 +279,7 @@ fun ShowPvE(
     goBack: () -> Unit
 ) {
     var playAgainstEnemy by rememberScoped { mutableIntStateOf(-1) }
+    var selectedTab by rememberSaveable { mutableIntStateOf(0) }
 
     @Composable
     fun StartWithEnemy(enemy: EnemyPve, goBack: () -> Unit) {
@@ -292,7 +293,7 @@ fun ShowPvE(
     }
 
     if (playAgainstEnemy != -1) {
-        val enemyList = save.enemiesGrouped.flatten()
+        val enemyList = save.enemiesGroups2.flatten()
         if (playAgainstEnemy !in enemyList.indices) {
             playAgainstEnemy = -1
             return
@@ -300,8 +301,6 @@ fun ShowPvE(
         StartWithEnemy(enemyList[playAgainstEnemy]) { playAgainstEnemy = -1 }
         return
     }
-
-    var selectedTab by rememberSaveable { mutableIntStateOf(0) }
 
     MenuItemOpen(activity, stringResource(R.string.select_enemy), "<-", goBack) {
         Column(
@@ -389,14 +388,10 @@ fun ShowPvE(
                         is EnemyViqueen -> CardBack.VIKING
                         else -> null
                     }?.deckName ?: 0
-                    if (deckNameId == 0) {
-                        stringResource(R.string.enemy_empty, stringResource(enemy.getNameId()))
-                    } else {
-                        stringResource(R.string.enemy_with_card,
-                            stringResource(enemy.getNameId()),
-                            stringResource(deckNameId)
-                        )
-                    }
+                    stringResource(R.string.enemy_with_card,
+                        stringResource(enemy.getNameId()),
+                        stringResource(deckNameId)
+                    )
                 } else
                     stringResource(
                         R.string.enemy_with_caps,
@@ -430,12 +425,12 @@ fun ShowPvE(
                 state = state
             ) {
                 item {
-                    val enemies = save.enemiesGrouped[selectedTab]
+                    val enemies = save.enemiesGroups2[selectedTab]
                     Spacer(modifier = Modifier.height(8.dp))
                     enemies.forEach {
                         OpponentItem(it) {
                             playVatsEnter(activity)
-                            playAgainstEnemy = save.enemiesGrouped.flatten().indexOf(it)
+                            playAgainstEnemy = save.enemiesGroups2.flatten().indexOf(it)
                         }
                         Spacer(modifier = Modifier.height(8.dp))
                     }
@@ -490,7 +485,6 @@ fun StartGame(
 
     game.also {
         it.onWin = {
-            // TODO: update achievements!!!!!
             if (isDeckCourier6) {
                 activity.achievementsClient?.unlock(activity.getString(
                     R.string.achievement_just_load_everything_up_with_sixes_and_tens_and_kings
@@ -582,7 +576,6 @@ fun ShowBettingScreen(
     goForward: () -> Unit
 ) {
     val enemyName = stringResource(enemy.getNameId())
-    // TODO: some welcome pharse??!!
     var bet by rememberScoped { mutableStateOf("") }
     val enemyBet by rememberScoped { mutableIntStateOf(enemy.getBet() ?: 0) }
     var isBlitz: Boolean by rememberScoped { mutableStateOf(false) }

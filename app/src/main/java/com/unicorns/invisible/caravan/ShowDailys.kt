@@ -119,7 +119,8 @@ fun ShowChallenge(activity: MainActivity, challenge: Challenge, isCompleted: Boo
                 getTextStrokeColor(activity),
                 22.sp,
                 Modifier.fillMaxWidth(0.66f),
-                boxAlignment = Alignment.CenterStart
+                boxAlignment = Alignment.CenterStart,
+                textAlignment = TextAlign.Start
             )
             TextFallout(
                 challenge.getProgress(),

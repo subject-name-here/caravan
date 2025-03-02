@@ -13,7 +13,7 @@ import kotlin.math.min
 
 
 @Serializable
-data object EnemyNash : EnemyPve {
+class EnemyNash : EnemyPve {
     override fun getNameId() = R.string.johnson_nash
     override fun isEven() = false
 

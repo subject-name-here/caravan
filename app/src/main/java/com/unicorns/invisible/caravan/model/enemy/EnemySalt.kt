@@ -9,7 +9,7 @@ import kotlin.math.min
 
 
 @Serializable
-data object EnemySalt : EnemyPve {
+class EnemySalt : EnemyPve {
     override fun getNameId() = R.string.salt
     override fun isEven() = true
 

@@ -14,6 +14,7 @@ import com.unicorns.invisible.caravan.model.enemy.EnemyLuc10
 import com.unicorns.invisible.caravan.model.enemy.EnemyMadnessCardinal
 import com.unicorns.invisible.caravan.model.enemy.EnemyNash
 import com.unicorns.invisible.caravan.model.enemy.EnemyNoBark
+import com.unicorns.invisible.caravan.model.enemy.EnemyOliver
 import com.unicorns.invisible.caravan.model.enemy.EnemySnuffles
 import com.unicorns.invisible.caravan.model.enemy.EnemyTabitha
 import com.unicorns.invisible.caravan.model.enemy.EnemyTheManInTheMirror
@@ -26,16 +27,16 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 class ChallengeBeatEnemies(private val code: Int) : Challenge {
-    private val enemyList: List<Enemy>
+    private val enemyList: List<String?>
         get() = when (code) {
-            1 -> listOf(EnemyVeronica, EnemyElijah)
-            2 -> listOf(EnemyHanlon, EnemyCrooker)
-            3 -> listOf(EnemyBenny, EnemyLuc10)
-            4 -> listOf(EnemyTabitha, EnemySnuffles)
-            5 -> listOf(EnemyNash, EnemyNoBark, EnemyEasyPete)
-            6 -> listOf(EnemyUlysses, EnemyDrMobius)
-            7 -> listOf(EnemyVeronica, EnemyVictor, EnemyVulpes)
-            8 -> listOf(EnemyMadnessCardinal, EnemyTheManInTheMirror)
+            1 -> listOf(EnemyVeronica::class.simpleName, EnemyElijah::class.simpleName)
+            2 -> listOf(EnemyHanlon::class.simpleName, EnemyCrooker::class.simpleName)
+            3 -> listOf(EnemyBenny::class.simpleName, EnemyLuc10::class.simpleName)
+            4 -> listOf(EnemyTabitha::class.simpleName, EnemySnuffles::class.simpleName)
+            5 -> listOf(EnemyNash::class.simpleName, EnemyNoBark::class.simpleName, EnemyEasyPete::class.simpleName)
+            6 -> listOf(EnemyUlysses::class.simpleName, EnemyDrMobius::class.simpleName)
+            7 -> listOf(EnemyVeronica::class.simpleName, EnemyVictor::class.simpleName, EnemyVulpes::class.simpleName)
+            8 -> listOf(EnemyMadnessCardinal::class.simpleName, EnemyTheManInTheMirror::class.simpleName)
             else -> emptyList()
         }
     private val isBeaten = Array(enemyList.size) { false }
@@ -44,7 +45,7 @@ class ChallengeBeatEnemies(private val code: Int) : Challenge {
 
     override fun processGameResult(game: Game) {
         if (game.isGameOver == 1) {
-            val index = enemyList.indexOfFirst { it.javaClass == game.enemy.javaClass }
+            val index = enemyList.indexOfFirst { it == game.enemy::class.simpleName }
             if (index != -1) {
                 isBeaten[index] = true
             }

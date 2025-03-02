@@ -3,7 +3,6 @@ package com.unicorns.invisible.caravan
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -41,7 +40,6 @@ import com.unicorns.invisible.caravan.utils.getTextColor
 import com.unicorns.invisible.caravan.utils.getTextColorByStyle
 import com.unicorns.invisible.caravan.utils.getTextStrokeColor
 import com.unicorns.invisible.caravan.utils.getTrackColorByStyle
-import com.unicorns.invisible.caravan.utils.playPimpBoySound
 import com.unicorns.invisible.caravan.utils.scrollbar
 
 
@@ -54,6 +52,28 @@ fun ShowStyles(
     var styleInt by rememberSaveable { mutableIntStateOf(save.styleId) }
     var currentlyWatchedStyle by rememberSaveable { mutableIntStateOf(save.styleId) }
 
+    @Composable
+    fun ChangeWatchedStyle(text: String, operation: (Int) -> Int) {
+        TextFallout(
+            text,
+            getTextColor(activity),
+            getTextStrokeColor(activity),
+            24.sp,
+            Modifier
+                .fillMaxWidth()
+                .background(getTextBackgroundColor(activity))
+                .clickableSelect(activity) {
+                    currentlyWatchedStyle = operation(currentlyWatchedStyle)
+                    if (currentlyWatchedStyle < 0) {
+                        currentlyWatchedStyle = Style.entries.lastIndex
+                    } else if (currentlyWatchedStyle > Style.entries.lastIndex) {
+                        currentlyWatchedStyle = 0
+                    }
+                }
+                .padding(4.dp),
+        )
+    }
+
     key(styleInt) {
         MenuItemOpen(activity, stringResource(R.string.themes), "<-", goBack) {
             key(currentlyWatchedStyle) {
@@ -64,23 +84,7 @@ fun ShowStyles(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Row(Modifier.fillMaxWidth().fillMaxHeight(0.1f)) {}
-                        TextFallout(
-                            "<",
-                            getTextColor(activity),
-                            getTextStrokeColor(activity),
-                            24.sp,
-                            Modifier
-                                .fillMaxWidth()
-                                .background(getTextBackgroundColor(activity))
-                                .clickableSelect(activity) {
-                                    currentlyWatchedStyle = if (currentlyWatchedStyle == 0) {
-                                        Style.entries.lastIndex
-                                    } else {
-                                        currentlyWatchedStyle - 1
-                                    }
-                                }
-                                .padding(4.dp),
-                        )
+                        ChangeWatchedStyle("<", Int::dec)
                     }
                     val watchedStyle = Style.entries.getOrNull(currentlyWatchedStyle) ?: Style.PIP_BOY
                     Column(
@@ -125,17 +129,6 @@ fun ShowStyles(
                                         Modifier.padding(4.dp),
                                     )
                                     Spacer(Modifier.height(16.dp))
-                                    TextFallout(
-                                        stringResource(R.string.cool_button),
-                                        getTextColorByStyle(activity, watchedStyle),
-                                        getStrokeColorByStyle(activity, watchedStyle),
-                                        20.sp,
-                                        Modifier
-                                            .background(getTextBackByStyle(activity, watchedStyle))
-                                            .clickable { playPimpBoySound(activity) }
-                                            .padding(4.dp),
-                                    )
-                                    Spacer(Modifier.height(16.dp))
                                     if (watchedStyle in save.ownedStyles) {
                                         TextFallout(
                                             stringResource(R.string.select),
@@ -170,19 +163,7 @@ fun ShowStyles(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Row(Modifier.fillMaxWidth().fillMaxHeight(0.1f)) {}
-                        TextFallout(
-                            ">",
-                            getTextColor(activity),
-                            getTextStrokeColor(activity),
-                            24.sp,
-                            Modifier
-                                .fillMaxWidth()
-                                .background(getTextBackgroundColor(activity))
-                                .clickableSelect(activity) {
-                                    currentlyWatchedStyle = (currentlyWatchedStyle + 1) % Style.entries.size
-                                }
-                                .padding(4.dp),
-                        )
+                        ChangeWatchedStyle(">", Int::inc)
                     }
                 }
             }

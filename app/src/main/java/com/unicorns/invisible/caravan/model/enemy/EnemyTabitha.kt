@@ -14,7 +14,7 @@ import kotlin.math.min
 
 
 @Serializable
-data object EnemyTabitha : EnemyPve {
+class EnemyTabitha : EnemyPve {
     override fun getNameId() = R.string.tabitha
 
     override fun isEven() = false

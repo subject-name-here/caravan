@@ -10,16 +10,10 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 
-data object CheatChangeTrack : Cheat {
-    override fun getCode() = 1337
+data object Cheat666 : Cheat {
+    override fun getCode() = 666
 
     override fun onEnter(activity: MainActivity, showAlertDialog: (String, String) -> Unit) {
-        pauseRadio()
-        playPimpBoySound(activity)
-        MainScope().launch {
-            delay(2000L)
-            resumeRadio()
-            nextSong(activity)
-        }
+        // TODO
     }
 }

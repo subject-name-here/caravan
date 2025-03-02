@@ -8,6 +8,7 @@ import com.unicorns.invisible.caravan.model.challenge.ChallengePlay188
 import com.unicorns.invisible.caravan.model.challenge.ChallengeWin5Games
 import com.unicorns.invisible.caravan.model.enemy.EnemyAlice
 import com.unicorns.invisible.caravan.model.enemy.EnemyBenny
+import com.unicorns.invisible.caravan.model.enemy.EnemyCaesar
 import com.unicorns.invisible.caravan.model.enemy.EnemyCrooker
 import com.unicorns.invisible.caravan.model.enemy.EnemyDrMobius
 import com.unicorns.invisible.caravan.model.enemy.EnemyEasyPete
@@ -101,9 +102,9 @@ class Save(var playerId: String? = null) {
 
     fun getCustomDeckCopy(): CustomDeck {
         val deck = CustomDeck()
-        val alts = getAltDecksChosenMap()
+        fun getIsAlt(back: CardBack): Boolean = getAltDecksChosenMap()[back] == true
         getCurrentCustomDeck().toList().forEach {
-            if (it.isAlt == alts[it.back]) {
+            if (it.isAlt == getIsAlt(it.back)) {
                 deck.add(Card(it.rank, it.suit, it.back, it.isAlt))
             }
         }
@@ -181,43 +182,43 @@ class Save(var playerId: String? = null) {
     var isRadioUsesPseudonyms = false
 
     @EncodeDefault
-    val enemiesGrouped = listOf(
+    val enemiesGroups2 = listOf(
         listOf(
-            EnemyOliver,
-            EnemyVeronica,
-            EnemyVictor,
-            EnemyHanlon,
-            EnemyUlysses,
-            EnemyBenny
+            EnemyOliver(),
+            EnemyVeronica(),
+            EnemyVictor(),
+            EnemyHanlon(),
+            EnemyUlysses(),
+            EnemyBenny()
         ),
         listOf(
-            EnemyNoBark,
-            EnemyNash,
-            EnemyTabitha,
-            EnemyVulpes,
-            EnemyElijah,
-            EnemyCrooker
+            EnemyNoBark(),
+            EnemyNash(),
+            EnemyTabitha(),
+            EnemyVulpes(),
+            EnemyElijah(),
+            EnemyCrooker()
         ),
         listOf(
-            EnemySnuffles,
-            EnemyEasyPete,
-            EnemyTheManInTheMirror,
-            EnemyMadnessCardinal,
-            EnemyDrMobius,
-            EnemyLuc10
+            EnemySnuffles(),
+            EnemyEasyPete(),
+            EnemyTheManInTheMirror(),
+            EnemyMadnessCardinal(),
+            EnemyDrMobius(),
+            EnemyLuc10()
         ),
         listOf(
-            EnemyGloria,
-            EnemyFisto,
-            EnemySignificantOther,
-            EnemyViqueen,
-            EnemySalt,
-            EnemyAlice
+            EnemyAlice(),
+            EnemyFisto(),
+            EnemyCaesar(),
+            EnemyViqueen(),
+            EnemySalt(),
+            EnemyGloria(),
         )
 
     )
     fun updateEnemiesBanks() {
-        val enemies = enemiesGrouped.flatten()
+        val enemies = enemiesGroups2.flatten()
         enemies.forEach { enemy ->
             enemy.refreshBank()
         }

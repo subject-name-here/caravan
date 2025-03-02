@@ -9,7 +9,7 @@ import kotlin.random.Random
 
 
 @Serializable
-data object EnemyOliver : EnemyPve {
+class EnemyOliver : EnemyPve {
     override fun getNameId() = R.string.pve_enemy_oliver_real
     override fun isEven() = true
 

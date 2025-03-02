@@ -8,7 +8,7 @@ import kotlinx.serialization.Serializable
 
 
 @Serializable
-data object EnemyViqueen : EnemyPve {
+class EnemyViqueen : EnemyPve {
     override fun getNameId() = R.string.viqueen
     override fun isEven() = true
 

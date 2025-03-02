@@ -13,7 +13,7 @@ import kotlin.math.min
 
 
 @Serializable
-data object EnemyGloria : EnemyPve {
+class EnemyGloria : EnemyPve {
     override fun getNameId() = R.string.gloria_van_graff
     override fun isEven() = false
 

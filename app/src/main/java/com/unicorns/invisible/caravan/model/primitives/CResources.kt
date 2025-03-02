@@ -43,7 +43,7 @@ class CResources(private val deck: CustomDeck) {
         shuffleDeck()
         val tmpHand = getTopHand()
         deck.removeAllOnce(tmpHand)
-        tmpHand.forEach { addCardToHand(it) }
+        tmpHand.shuffled().forEach { addCardToHand(it) }
     }
 
     private fun addCardToHand(card: Card) {

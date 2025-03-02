@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -52,6 +53,7 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sebaslogen.resaca.rememberScoped
@@ -170,7 +172,9 @@ fun ShowGame(
         updatePlayerHand()
         onMove(null)
         game.afterPlayerMove(
-            { updateEnemyHand(); updateCaravans(); updatePlayerHand() },
+            ::updatePlayerHand,
+            ::updateCaravans,
+            ::updateEnemyHand,
             animationSpeed
         )
     }
@@ -187,7 +191,9 @@ fun ShowGame(
         updateCaravans()
         onMove(null)
         game.afterPlayerMove(
-            { updateEnemyHand(); updateCaravans(); updatePlayerHand() },
+            ::updatePlayerHand,
+            ::updateCaravans,
+            ::updateEnemyHand,
             animationSpeed
         )
     }
@@ -202,7 +208,9 @@ fun ShowGame(
             updatePlayerHand()
             onMove(card)
             game.afterPlayerMove(
-                { updateEnemyHand(); updateCaravans(); updatePlayerHand() },
+                ::updatePlayerHand,
+                ::updateCaravans,
+                ::updateEnemyHand,
                 animationSpeed
             )
         }
@@ -630,7 +638,7 @@ fun Hand(
         Alignment.TopStart
     ) {
         var scale by remember { mutableFloatStateOf(1f) }
-        val cardHeight = maxHeight.dpToPx().toFloat() - 8.dp.dpToPx()
+        val cardHeight = maxHeight.dpToPx().toFloat()
         val cardWidth = maxWidth.dpToPx().toFloat() / 5f - 8.dp.dpToPx()
         val scaleH = cardHeight / 256f
         val scaleW = cardWidth / 183f
@@ -647,7 +655,8 @@ fun Hand(
         val itemVerticalOffsetMovingIn = remember { Animatable(2.5f * enemyMult) }
         val itemVerticalOffsetMovingOut = remember { Animatable(0f) }
 
-        var recomposeKey by remember { mutableStateOf(false) }
+        var recomposeKey by remember { mutableIntStateOf(0) }
+        LaunchedEffect(recomposeKey) {}
         val isAnyMovingIn = memCards.any { it.handAnimationMark.isMovingIn() }
         val isAnyMovingOut = memCards.any { it.handAnimationMark.isMovingOut() }
 
@@ -661,14 +670,14 @@ fun Hand(
                     }
                 }
                 itemVerticalOffsetMovingIn.animateTo(0f, TweenSpec(animationSpeed.delay.toInt())) {
-                    recomposeKey = !recomposeKey
+                    recomposeKey++
                 }
                 memCards.forEach {
                     if (it.handAnimationMark.isMovingIn()) {
                         it.handAnimationMark = Card.AnimationMark.STABLE
                     }
                 }
-                recomposeKey = !recomposeKey
+                recomposeKey++
             }
         }
 
@@ -688,13 +697,17 @@ fun Hand(
                     }
                 }
                 if (!isDisappearing) {
-                    itemVerticalOffsetMovingOut.animateTo(target, TweenSpec(animationSpeed.delay.toInt())) {
-                        recomposeKey = !recomposeKey
+                    itemVerticalOffsetMovingOut.animateTo(target, TweenSpec(animationSpeed.delay.toInt(), animationSpeed.delay.toInt())) {
+                        recomposeKey++
                     }
                 }
 
-                memCards.removeIf { it.handAnimationMark.isMovingOut() }
-                recomposeKey = !recomposeKey
+                memCards.forEach {
+                    if (it.handAnimationMark.isMovingOut()) {
+                        it.handAnimationMark = Card.AnimationMark.MOVED_OUT
+                    }
+                }
+                recomposeKey++
             }
         }
 
@@ -728,39 +741,31 @@ fun Hand(
                     if (index == -1) return@forEach
 
                     val modifier = Modifier
-                        .scale(scale)
-                        .layout { measurable, constraints ->
-                            val placeable = measurable.measure(constraints)
-                            val scaledWidth = placeable.width * scale
-                            val scaledHeight = placeable.height * scale
-                            val offsetHeight = scaledHeight * (inValue + outValue)
-                            layout(scaledWidth.toInt(), scaledHeight.toInt()) {
-                                placeable.place(0, offsetHeight.toInt())
-                            }
-                        }
-
+                        .offset { IntOffset(0, (cardHeight * (inValue + outValue)).toInt()) }
                     if (isEnemy) {
-                        ShowCardBack(activity, it, modifier)
+                        ShowCardBack(activity, it, modifier.padding(4.dp), scale)
                     } else {
                         if (it.rank == Rank.JOKER && it.handAnimationMark == Card.AnimationMark.MOVING_IN) {
                             LaunchedEffect(Unit) {
                                 playJokerReceivedSounds(activity)
                             }
+                            it.handAnimationMark = Card.AnimationMark.MOVING_IN_WIP
                         }
                         ShowCard(
                             activity,
                             it,
                             modifier
-                                .clickable {
-                                    if (!itemVerticalOffsetMovingIn.isRunning && !itemVerticalOffsetMovingIn.isRunning) {
-                                        onClick(index)
-                                    }
-                                }
                                 .border(
                                     width = if (index == (selectedCard ?: -1)) 3.dp else (-1).dp,
                                     color = selectedCardColor
                                 )
-                                .padding(4.dp),
+                                .padding(4.dp)
+                                .clickable {
+                                    if (!itemVerticalOffsetMovingIn.isRunning && !itemVerticalOffsetMovingIn.isRunning) {
+                                        onClick(index)
+                                    }
+                                },
+                            scale
                         )
                     }
                 }
@@ -888,7 +893,7 @@ fun RowScope.CaravanOnField(
                                     }
                                 }
                             }
-                            animationIn.animateTo(0f, TweenSpec(animationSpeed.delay.toInt(), animationSpeed.delay.toInt())) {
+                            animationIn.animateTo(0f, TweenSpec(animationSpeed.delay.toInt(), animationSpeed.delay.toInt() * 2)) {
                                 recomposeKey = !recomposeKey
                             }
                             memCards.forEach {
@@ -914,7 +919,7 @@ fun RowScope.CaravanOnField(
                                     it.card.caravanAnimationMark = Card.AnimationMark.MOVING_OUT_WIP
                                 }
                             }
-                            animationOut.animateTo(2f, TweenSpec(animationSpeed.delay.toInt(), animationSpeed.delay.toInt())) {
+                            animationOut.animateTo(2f, TweenSpec(animationSpeed.delay.toInt(), animationSpeed.delay.toInt() * 3)) {
                                 recomposeKey = !recomposeKey
                             }
                             memCards.forEach {

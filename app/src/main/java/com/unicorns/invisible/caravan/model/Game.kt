@@ -119,50 +119,65 @@ class Game(
         return flag
     }
 
-    fun afterPlayerMove(updateView: () -> Unit, speed: AnimationSpeed) {
+    fun afterPlayerMove(
+        updatePlayerHand: () -> Unit,
+        updateCaravans: () -> Unit,
+        updateEnemyHand: () -> Unit,
+        speed: AnimationSpeed
+    ) {
         val delayLength = speed.delay.coerceAtLeast(95L)
 
         canPlayerMove = false
         CoroutineScope(Dispatchers.Default).launch {
-            updateView()
+            updatePlayerHand()
+            updateCaravans()
             delay(delayLength)
 
             if (processField()) {
-                updateView()
+                updatePlayerHand()
+                updateCaravans()
+                updateEnemyHand()
                 delay(delayLength)
             }
             if (playerCResources.hand.size < 5 && playerCResources.deckSize > 0) {
                 playerCResources.addToHand()
-                updateView()
+                updatePlayerHand()
                 delay(delayLength)
             }
             isPlayerTurn = false
 
             if (checkOnGameOver()) {
-                updateView()
+                updatePlayerHand()
+                updateCaravans()
+                updateEnemyHand()
                 return@launch
             }
 
             delay(delayLength * 2) // Just break.
 
             enemy.makeMove(this@Game)
-            updateView()
+            updateEnemyHand()
+            updateCaravans()
             delay(delayLength)
 
             if (processField()) {
-                updateView()
+                updatePlayerHand()
+                updateCaravans()
+                updateEnemyHand()
                 delay(delayLength)
             }
             if (enemyCResources.hand.size < 5 && enemyCResources.deckSize > 0) {
                 enemyCResources.addToHand()
-                updateView()
+                updateEnemyHand()
                 delay(delayLength)
             }
 
             isPlayerTurn = true
 
             checkOnGameOver()
-            updateView()
+            updatePlayerHand()
+            updateCaravans()
+            updateEnemyHand()
 
             canPlayerMove = true
         }

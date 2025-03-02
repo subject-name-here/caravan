@@ -74,7 +74,6 @@ fun ShowRules(activity: MainActivity, goBack: () -> Unit) {
                         getTextStrokeColor(activity),
                         16.sp,
                         Modifier.padding(4.dp),
-                        textAlignment = TextAlign.Start
                     )
                 }
                 Tab(
@@ -88,7 +87,6 @@ fun ShowRules(activity: MainActivity, goBack: () -> Unit) {
                         getTextStrokeColor(activity),
                         16.sp,
                         Modifier.padding(4.dp),
-                        textAlignment = TextAlign.Start
                     )
                 }
                 Tab(
@@ -134,6 +132,7 @@ fun ShowRules(activity: MainActivity, goBack: () -> Unit) {
                                         getTextStrokeColor(activity),
                                         20.sp,
                                         Modifier.padding(horizontal = 8.dp),
+                                        textAlignment = TextAlign.Start
                                     )
                                     Spacer(modifier = Modifier.height(16.dp))
                                 }
@@ -155,6 +154,7 @@ fun ShowRules(activity: MainActivity, goBack: () -> Unit) {
                                 getTextStrokeColor(activity),
                                 20.sp,
                                 Modifier.padding(horizontal = 8.dp),
+                                textAlignment = TextAlign.Start
                             )
                         }
                         2 -> {
@@ -166,6 +166,7 @@ fun ShowRules(activity: MainActivity, goBack: () -> Unit) {
                                     getTextStrokeColor(activity),
                                     18.sp,
                                     Modifier.padding(horizontal = 8.dp),
+                                    textAlignment = TextAlign.Start
                                 )
                             }
                             Spacer(Modifier.height(20.dp))

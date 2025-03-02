@@ -154,6 +154,8 @@ fun ShowTrueSettings(
                             CheatStashEventfulMay,
                             CheatStashLove,
                             CheatLaggySpeed,
+                            CheatFightJoshua,
+                            Cheat666,
                         )
                         TextFallout(
                             text = stringResource(R.string.cheats),
