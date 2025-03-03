@@ -125,12 +125,12 @@
     <string name="dr_mobius">Dr. Mobius</string>
     <string name="man_in_the_mirror" translatable="false">ЯОЯЯIM ЭHT ИI ИAM</string>
 
-    <string name="gloria_van_graff">Gloria Van Graff</string>
+    <string name="ringo">Ringo</string>
     <string name="fisto">FISTO (feat. Mr. Handy)</string>
     <string name="caesar">Caesar</string>
     <string name="viqueen">Thyra the Black</string>
     <string name="salt">Salt-Upon-Wounds</string>
-    <string name="alice_mclafferty">Alice McLafferty</string>
+    <string name="gloria_van_graff">Gloria Van Graff</string>
 
     <string name="enemy_significant_other" translatable="false">EXPERIMENT #666: Significant Other</string>
     <string name="graham">Joshua Graham</string>
@@ -447,13 +447,13 @@
     <string name="tower_enemy_3A">Papa Smurf</string>
     <string name="tower_enemy_4">Jason Bright</string>
     <string name="tower_enemy_5">The King</string>
-    <string name="tower_enemy_6">Dean Domino</string>
-    <string name="tower_enemy_7">General Lee Oliver</string>
-    <string name="tower_enemy_8">Mr. House</string>
-    <string name="tower_enemy_9">Cook-Cook</string>
-    <string name="tower_enemy_10">Legate Lanius</string>
-    <string name="tower_enemy_11">Champion Craig Muffin</string>
-    <string name="tower_enemy_12">Special Agent Frank Horrigan</string>
+    <string name="tower_enemy_7">Dean Domino</string>
+    <string name="tower_enemy_8">General Lee Oliver</string>
+    <string name="tower_enemy_9">Mr. House</string>
+    <string name="tower_enemy_10">Cook-Cook</string>
+    <string name="tower_enemy_11">Legate Lanius</string>
+    <string name="tower_enemy_12">Champion Craig Muffin</string>
+    <string name="tower_enemy_13">Special Agent Frank Horrigan</string>
 
     <string name="take_the_cash">Take the cash!</string>
     <string name="take_the_cash_alt">Run away with cash!</string>

@@ -6,7 +6,7 @@ import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.challenge.Challenge
 import com.unicorns.invisible.caravan.model.challenge.ChallengePlay188
 import com.unicorns.invisible.caravan.model.challenge.ChallengeWin5Games
-import com.unicorns.invisible.caravan.model.enemy.EnemyAlice
+import com.unicorns.invisible.caravan.model.enemy.EnemyRingo
 import com.unicorns.invisible.caravan.model.enemy.EnemyBenny
 import com.unicorns.invisible.caravan.model.enemy.EnemyCaesar
 import com.unicorns.invisible.caravan.model.enemy.EnemyCrooker
@@ -22,7 +22,6 @@ import com.unicorns.invisible.caravan.model.enemy.EnemyMadnessCardinal
 import com.unicorns.invisible.caravan.model.enemy.EnemyNash
 import com.unicorns.invisible.caravan.model.enemy.EnemyNoBark
 import com.unicorns.invisible.caravan.model.enemy.EnemyOliver
-import com.unicorns.invisible.caravan.model.enemy.EnemySignificantOther
 import com.unicorns.invisible.caravan.model.enemy.EnemySnuffles
 import com.unicorns.invisible.caravan.model.enemy.EnemyTabitha
 import com.unicorns.invisible.caravan.model.enemy.EnemyTheManInTheMirror
@@ -161,6 +160,10 @@ class Save(var playerId: String? = null) {
 
     @EncodeDefault
     var towerLevel: Int = 0
+    @EncodeDefault
+    var cookCookMult: Int = 1
+    @EncodeDefault
+    var secondChances: Int = 0
 
     @EncodeDefault
     var storyProgress = 0
@@ -208,7 +211,7 @@ class Save(var playerId: String? = null) {
             EnemyLuc10()
         ),
         listOf(
-            EnemyAlice(),
+            EnemyRingo(),
             EnemyFisto(),
             EnemyCaesar(),
             EnemyViqueen(),

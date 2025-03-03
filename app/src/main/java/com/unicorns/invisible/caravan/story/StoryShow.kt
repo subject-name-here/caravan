@@ -29,6 +29,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.unicorns.invisible.caravan.MainActivity
+import com.unicorns.invisible.caravan.R
 import com.unicorns.invisible.caravan.Style
 import com.unicorns.invisible.caravan.utils.TextClassic
 import com.unicorns.invisible.caravan.utils.clickableSelect
@@ -128,6 +129,68 @@ fun StoryShow(activity: MainActivity, graph: DialogGraph, onEnd: () -> Unit) {
                         }
                     }
                 }
+            }
+        } }
+    }
+}
+
+@Composable
+fun ShowDeathScreen(activity: MainActivity, leave: () -> Unit) {
+    var update by remember { mutableStateOf(false) }
+    Box(
+        Modifier
+            .fillMaxSize()
+            .background(Color.Black)) {
+        val state = rememberLazyListState()
+        LazyColumn(
+            Modifier
+                .fillMaxSize()
+                .background(Color.Black)
+                .scrollbar(
+                    state,
+                    knobColor = getTextColorByStyle(activity, Style.PIP_BOY),
+                    trackColor = getStrokeColorByStyle(activity, Style.PIP_BOY),
+                    horizontal = false,
+                ),
+            verticalArrangement = Arrangement.Top,
+            horizontalAlignment = Alignment.CenterHorizontally,
+            state = state
+        ) { item {
+            key(update) {
+
+            }
+            Box(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp)
+                    .paint(
+                        painterResource(
+                            id = R.drawable.death_screen
+                        )
+                    ))
+
+            val messages = listOf<Pair<Int, Int>>()
+            val message = messages.random()
+
+            LaunchedEffect(Unit) {
+
+            }
+
+            Column(Modifier.fillMaxWidth()) {
+                TextClassic(
+                    stringResource(message.first),
+                    getTextColorByStyle(activity, Style.PIP_BOY),
+                    getStrokeColorByStyle(activity, Style.PIP_BOY),
+                    16.sp,
+                    Modifier
+                        .background(getTextBackByStyle(activity, Style.PIP_BOY))
+                        .padding(horizontal = 8.dp, vertical = 4.dp),
+                    textAlignment = TextAlign.Start
+                )
+
+                Spacer(Modifier.height(16.dp))
+
+                DialogLine(activity, stringResource(R.string.finish)) { leave() }
             }
         } }
     }

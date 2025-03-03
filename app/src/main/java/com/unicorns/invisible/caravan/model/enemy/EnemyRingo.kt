@@ -13,31 +13,18 @@ import kotlin.math.min
 
 
 @Serializable
-class EnemyAlice : EnemyPve {
-    override fun getNameId() = R.string.alice_mclafferty
-    override fun isEven() = false
+class EnemyRingo : EnemyPve {
+    override fun getNameId() = R.string.ringo
+    override fun isEven() = true
 
     override fun createDeck(): CResources {
-        return CResources(CustomDeck().apply {
-            listOf(CardBack.NCR, CardBack.VAULT_21, CardBack.STANDARD).forEach { back ->
-                listOf(Suit.CLUBS, Suit.SPADES, Suit.DIAMONDS).forEach { suit ->
-                    Rank.entries.forEach { rank ->
-                        if (rank != Rank.JOKER) {
-                            add(Card(rank, suit, back, false))
-                            if (back.hasAlt()) {
-                                add(Card(rank, suit, back, true))
-                            }
-                        }
-                    }
-                }
-            }
-        })
+        return CResources(CustomDeck(CardBack.TOPS, false))
     }
 
     private var bank = 0
     override fun getBank(): Int { return bank }
-    override fun refreshBank() { bank = 75 }
-    override fun getBet(): Int { return min(bank, 15) }
+    override fun refreshBank() { bank = 30 }
+    override fun getBet(): Int { return min(bank, 10) }
     override fun retractBet() { bank -= getBet() }
     override fun addReward(reward: Int) { bank += reward }
 

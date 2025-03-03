@@ -81,6 +81,9 @@ fun TowerScreen(
     goBack: () -> Unit,
 ) {
     var level by rememberSaveable { mutableIntStateOf(save.towerLevel) }
+    var cookCook by rememberSaveable { mutableIntStateOf(save.cookCookMult) }
+    var secondChances by rememberSaveable { mutableIntStateOf(save.secondChances) }
+
     var playLevel by rememberScoped { mutableIntStateOf(0) }
     var levelMemory by rememberScoped { mutableIntStateOf(0) }
 
@@ -119,24 +122,25 @@ fun TowerScreen(
     }
 
     when (playLevel) {
-        in 1..10 -> {
+        6 -> {
+
+        }
+        10 -> {
+
+        }
+        12 -> {
+            startFrank = true
+        }
+        in 1..11 -> {
             showTower(
                 when (playLevel) {
-                    1 -> EnemyTower1
-                    2 -> EnemyTower1
                     3 -> if (save.papaSmurfActive) EnemyTower3A else EnemyTower3
-                    4 -> EnemyTower1
-                    5 -> EnemyTower1
-                    6 -> EnemyTower1
-                    7 -> EnemyTower1
-                    8 -> EnemyTower1
-                    9 -> EnemyTower1
                     else -> EnemyTower1
                 }
             ) { playLevel = 0 }
             return
         }
-        12 -> {
+        13 -> {
             var capsMemory by rememberScoped { mutableIntStateOf(0) }
             StartTowerGame(activity, EnemyFrank, showAlertDialog, {
                 startLevel11Theme(activity)
@@ -192,21 +196,26 @@ fun TowerScreen(
                     saveData(activity)
                 }
             }
-            in 1..10 -> {
+            6 -> {
+
+            }
+            10 -> {
+
+            }
+            in 1..12 -> {
                 val inBank = when (level) {
-                    1 -> 2
-                    2 -> 4
-                    3 -> 8
-                    4 -> 16
-                    5 -> 32
-                    6 -> 64
-                    7 -> 128
-                    8 -> 256
-                    9 -> 512
-                    10 -> 1024
-                    10 -> 1024
+                    1 -> 1
+                    2 -> 2
+                    3 -> 4
+                    4 -> 8
+                    5 -> 16
+                    7 -> 32
+                    8 -> 64
+                    9 -> 128
+                    11 -> 256
+                    12 -> 512
                     else -> 0
-                }
+                } * cookCook
                 EnemyPresentedScreen(
                     activity,
                     inBank,
@@ -229,7 +238,7 @@ fun TowerScreen(
                     }
                 )
             }
-            11 -> {
+            13 -> {
                 FrankPresentedScreen(
                     activity,
                     { showFrankWarning = true },
@@ -240,12 +249,13 @@ fun TowerScreen(
                             nextSong(activity)
                         }
                         save.towerLevel = 0
-                        save.capsInHand += 2048
+                        val inBank = 512 * cookCook
+                        save.capsInHand += inBank
                         saveData(activity)
                         playCashSound(activity)
                         showAlertDialog(
                             activity.getString(R.string.congratulations),
-                            activity.getString(R.string.your_reward_caps_2048),
+                            activity.getString(R.string.your_reward_caps_running, inBank.toString()),
                             null
                         )
                     }
@@ -255,7 +265,8 @@ fun TowerScreen(
                 FinalScreen(activity) {
                     level = 0
                     save.towerLevel = 0
-                    save.capsInHand += 4096
+                    val inBank = 1536 + 512 * (cookCook - 1)
+                    save.capsInHand += inBank
                     saveData(activity)
                     CoroutineScope(Dispatchers.Unconfined).launch {
                         repeat(4) {
@@ -265,7 +276,7 @@ fun TowerScreen(
                     }
                     showAlertDialog(
                         activity.getString(R.string.congratulations),
-                        activity.getString(R.string.your_reward_caps_4096),
+                        activity.getString(R.string.your_reward_caps_finale, inBank.toString()),
                         null
                     )
                 }
@@ -427,6 +438,12 @@ fun EnemyPresentedScreen(
     setLevelZero: () -> Unit,
 ) {
     val state2 = rememberLazyListState()
+    val innerLevel = when (val lvl = getLevel()) {
+        in 1..5 -> lvl
+        in 7..9 -> lvl - 1
+        in 11..12 -> lvl - 2
+        else -> 0
+    }
     LazyColumn(
         Modifier
             .fillMaxSize()
@@ -476,7 +493,7 @@ fun EnemyPresentedScreen(
             fun showTowerCard(enemyName: String) {
                 Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
                     TextFallout(
-                        stringResource(R.string.level_10, getLevel()),
+                        stringResource(R.string.level_10, innerLevel),
                         getTextColor(activity),
                         getTextStrokeColor(activity),
                         24.sp,
@@ -498,7 +515,7 @@ fun EnemyPresentedScreen(
                     )
                 }
             }
-            when (getLevel()) {
+            when (innerLevel) {
                 1 -> {
                     showTowerCard(stringResource(R.string.tower_enemy_1))
                 }
@@ -519,19 +536,19 @@ fun EnemyPresentedScreen(
                     showTowerCard(stringResource(R.string.tower_enemy_5))
                 }
                 6 -> {
-                    showTowerCard(stringResource(R.string.tower_enemy_6))
-                }
-                7 -> {
                     showTowerCard(stringResource(R.string.tower_enemy_7))
                 }
-                8 -> {
+                7 -> {
                     showTowerCard(stringResource(R.string.tower_enemy_8))
                 }
-                9 -> {
+                8 -> {
                     showTowerCard(stringResource(R.string.tower_enemy_9))
                 }
+                9 -> {
+                    showTowerCard(stringResource(R.string.tower_enemy_11))
+                }
                 10 -> {
-                    showTowerCard(stringResource(R.string.tower_enemy_10))
+                    showTowerCard(stringResource(R.string.tower_enemy_12))
                 }
             }
             Spacer(Modifier.height(16.dp))
