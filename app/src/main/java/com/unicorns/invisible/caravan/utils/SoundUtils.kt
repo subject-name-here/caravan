@@ -406,7 +406,7 @@ fun startFinalBossTheme(activity: MainActivity) {
     if (save.isHeroic) {
         playTheme(activity, R.raw.final_heroic)
     } else {
-        playTheme(activity, R.raw.final_boss)
+        playTheme(activity, R.raw.chapter_13)
     }
 }
 
@@ -430,5 +430,20 @@ fun playFrankPhrase(activity: MainActivity, phraseId: Int) {
                 effectPlayers.add(this)
                 start()
             }
+        }
+}
+
+fun playDeathPhrase(activity: MainActivity, phrasePath: String) {
+    val vol = save.radioVolume
+    MediaPlayer()
+        .apply {
+            val afd = activity.assets.openFd("death_messages/${phrasePath}")
+            setDataSource(afd.fileDescriptor, afd.startOffset, afd.length)
+            prepare()
+            setOnCompletionListener {
+                release()
+            }
+            setVolume(vol, vol)
+            start()
         }
 }

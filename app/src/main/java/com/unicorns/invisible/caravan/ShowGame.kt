@@ -2,8 +2,8 @@ package com.unicorns.invisible.caravan
 
 import android.annotation.SuppressLint
 import androidx.collection.mutableObjectListOf
-import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.core.TweenSpec
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -652,62 +652,18 @@ fun Hand(
         memCards.addAll(cards - memCards.asMutableList().toSet())
         memCards.removeIf { it.handAnimationMark == Card.AnimationMark.MOVED_OUT }
 
-        val itemVerticalOffsetMovingIn = remember { Animatable(2.5f * enemyMult) }
-        val itemVerticalOffsetMovingOut = remember { Animatable(0f) }
-
-        var recomposeKey by remember { mutableIntStateOf(0) }
-        LaunchedEffect(recomposeKey) {}
         val isAnyMovingIn = memCards.any { it.handAnimationMark.isMovingIn() }
         val isAnyMovingOut = memCards.any { it.handAnimationMark.isMovingOut() }
 
         LaunchedEffect(isAnyMovingIn) {
             if (isAnyMovingIn) {
                 playCardFlipSound(activity)
-                itemVerticalOffsetMovingIn.snapTo(2.5f * enemyMult)
-                memCards.forEach {
-                    if (it.handAnimationMark == Card.AnimationMark.MOVING_IN) {
-                        it.handAnimationMark = Card.AnimationMark.MOVING_IN_WIP
-                    }
-                }
-                itemVerticalOffsetMovingIn.animateTo(0f, TweenSpec(animationSpeed.delay.toInt())) {
-                    recomposeKey++
-                }
-                memCards.forEach {
-                    if (it.handAnimationMark.isMovingIn()) {
-                        it.handAnimationMark = Card.AnimationMark.STABLE
-                    }
-                }
-                recomposeKey++
             }
         }
 
         LaunchedEffect(isAnyMovingOut) {
             if (isAnyMovingOut) {
                 playCardFlipSound(activity)
-                val isDropping = memCards.any { it.handAnimationMark.isAlt() }
-                val isDisappearing = memCards.any { it.handAnimationMark == Card.AnimationMark.MOVED_OUT }
-                val target = (if (isDropping) 2.5f else -2.5f) * enemyMult
-                itemVerticalOffsetMovingOut.snapTo(0f)
-                memCards.forEach {
-                    if (it.handAnimationMark == Card.AnimationMark.MOVING_OUT) {
-                        it.handAnimationMark = Card.AnimationMark.MOVING_OUT_WIP
-                    }
-                    if (it.handAnimationMark == Card.AnimationMark.MOVING_OUT_ALT) {
-                        it.handAnimationMark = Card.AnimationMark.MOVING_OUT_ALT_WIP
-                    }
-                }
-                if (!isDisappearing) {
-                    itemVerticalOffsetMovingOut.animateTo(target, TweenSpec(animationSpeed.delay.toInt(), animationSpeed.delay.toInt())) {
-                        recomposeKey++
-                    }
-                }
-
-                memCards.forEach {
-                    if (it.handAnimationMark.isMovingOut()) {
-                        it.handAnimationMark = Card.AnimationMark.MOVED_OUT
-                    }
-                }
-                recomposeKey++
             }
         }
 
@@ -726,22 +682,30 @@ fun Hand(
             verticalAlignment = Alignment.Top,
             horizontalArrangement = Arrangement.Center
         ) {
-            item { key (recomposeKey) {
+            item {
                 memCards.forEach {
-                    val inValue = if (animationSpeed.delay == 0L) 0f else when (it.handAnimationMark) {
+                    val offsetMult by animateFloatAsState(when (it.handAnimationMark) {
                         Card.AnimationMark.MOVING_IN -> 2.5f * enemyMult
-                        Card.AnimationMark.MOVING_IN_WIP -> itemVerticalOffsetMovingIn.value
-                        else -> 0f
+                        Card.AnimationMark.STABLE -> 0f
+                        Card.AnimationMark.MOVING_OUT -> -3f * enemyMult
+                        Card.AnimationMark.MOVING_OUT_ALT -> 3f * enemyMult
+                        Card.AnimationMark.MOVED_OUT -> -3f * enemyMult
+                    }, animationSpec = tween(animationSpeed.delay.toInt())) { finalOffset ->
+                        when (it.handAnimationMark) {
+                            Card.AnimationMark.STABLE, Card.AnimationMark.MOVED_OUT -> {}
+                            Card.AnimationMark.MOVING_IN -> {
+                                it.handAnimationMark = Card.AnimationMark.STABLE
+                            }
+                            Card.AnimationMark.MOVING_OUT_ALT, Card.AnimationMark.MOVING_OUT -> {
+                                it.handAnimationMark = Card.AnimationMark.MOVED_OUT
+                            }
+                        }
                     }
-                    val outValue = if (animationSpeed.delay == 0L) 0f else when (it.handAnimationMark) {
-                        Card.AnimationMark.MOVING_OUT_WIP, Card.AnimationMark.MOVING_OUT_ALT_WIP -> itemVerticalOffsetMovingOut.value
-                        else -> 0f
-                    }
+
                     val index = memCards.asMutableList().indexOf(it)
                     if (index == -1) return@forEach
 
-                    val modifier = Modifier
-                        .offset { IntOffset(0, (cardHeight * (inValue + outValue)).toInt()) }
+                    val modifier = Modifier.offset { IntOffset(0, (cardHeight * offsetMult).toInt()) }
                     if (isEnemy) {
                         ShowCardBack(activity, it, modifier.padding(4.dp), scale)
                     } else {
@@ -749,7 +713,6 @@ fun Hand(
                             LaunchedEffect(Unit) {
                                 playJokerReceivedSounds(activity)
                             }
-                            it.handAnimationMark = Card.AnimationMark.MOVING_IN_WIP
                         }
                         ShowCard(
                             activity,
@@ -761,7 +724,7 @@ fun Hand(
                                 )
                                 .padding(4.dp)
                                 .clickable {
-                                    if (!itemVerticalOffsetMovingIn.isRunning && !itemVerticalOffsetMovingIn.isRunning) {
+                                    if (offsetMult == 0f) {
                                         onClick(index)
                                     }
                                 },
@@ -769,7 +732,7 @@ fun Hand(
                         )
                     }
                 }
-            } }
+            }
         }
     }
 }
@@ -870,11 +833,6 @@ fun RowScope.CaravanOnField(
                     memCards.addAll(caravan.cards - memCards.asMutableList().toSet())
                     memCards.removeIf { it.card.caravanAnimationMark == Card.AnimationMark.MOVED_OUT }
 
-                    val animationIn = remember { Animatable(3f * enemyTurnMult) }
-                    val animationOut = remember { Animatable(0f) }
-                    var recomposeKey by remember { mutableStateOf(false) }
-                    LaunchedEffect(recomposeKey) {}
-
                     val isAnyMovingIn = memCards.any { it.card.caravanAnimationMark.isMovingIn() ||
                                 it.modifiersCopy().any { mod -> mod.caravanAnimationMark.isMovingIn() }
                     }
@@ -882,57 +840,12 @@ fun RowScope.CaravanOnField(
                     LaunchedEffect(isAnyMovingIn) {
                         if (isAnyMovingIn) {
                             playCardFlipSound(activity)
-                            animationIn.snapTo(3f * enemyTurnMult)
-                            memCards.forEach {
-                                if (it.card.caravanAnimationMark == Card.AnimationMark.MOVING_IN) {
-                                    it.card.caravanAnimationMark = Card.AnimationMark.MOVING_IN_WIP
-                                }
-                                it.modifiersCopy().forEach { mod ->
-                                    if (mod.caravanAnimationMark == Card.AnimationMark.MOVING_IN) {
-                                        mod.caravanAnimationMark = Card.AnimationMark.MOVING_IN_WIP
-                                    }
-                                }
-                            }
-                            animationIn.animateTo(0f, TweenSpec(animationSpeed.delay.toInt(), animationSpeed.delay.toInt() * 2)) {
-                                recomposeKey = !recomposeKey
-                            }
-                            memCards.forEach {
-                                if (it.card.caravanAnimationMark == Card.AnimationMark.MOVING_IN_WIP) {
-                                    it.card.caravanAnimationMark = Card.AnimationMark.STABLE
-                                }
-                                it.modifiersCopy().forEach { mod ->
-                                    if (mod.caravanAnimationMark == Card.AnimationMark.MOVING_IN_WIP) {
-                                        mod.caravanAnimationMark = Card.AnimationMark.STABLE
-                                    }
-                                }
-                            }
-                            recomposeKey = !recomposeKey
                         }
                     }
 
                     LaunchedEffect(isAnyMovingOut) {
                         if (isAnyMovingOut) {
                             playCardFlipSound(activity)
-                            animationOut.snapTo(0f)
-                            memCards.forEach {
-                                if (it.card.caravanAnimationMark == Card.AnimationMark.MOVING_OUT) {
-                                    it.card.caravanAnimationMark = Card.AnimationMark.MOVING_OUT_WIP
-                                }
-                            }
-                            animationOut.animateTo(2f, TweenSpec(animationSpeed.delay.toInt(), animationSpeed.delay.toInt() * 3)) {
-                                recomposeKey = !recomposeKey
-                            }
-                            memCards.forEach {
-                                if (it.card.caravanAnimationMark == Card.AnimationMark.MOVING_OUT_WIP) {
-                                    it.card.caravanAnimationMark = Card.AnimationMark.MOVED_OUT
-                                }
-                                it.modifiersCopy().forEach { mod ->
-                                    if (mod.caravanAnimationMark == Card.AnimationMark.MOVING_OUT_WIP) {
-                                        mod.caravanAnimationMark = Card.AnimationMark.MOVED_OUT
-                                    }
-                                }
-                            }
-                            recomposeKey = !recomposeKey
                         }
                     }
 
@@ -942,25 +855,32 @@ fun RowScope.CaravanOnField(
                         modifierIndex: Int,
                         it: CardWithModifier
                     ) {
-                        val inValue = when (modifier.caravanAnimationMark) {
-                            Card.AnimationMark.MOVING_IN -> {
-                                3f * enemyTurnMult
-                            }
-                            Card.AnimationMark.MOVING_IN_WIP -> {
-                                animationIn.value * enemyTurnMult
-                            }
-                            else -> {
-                                0f
-                            }
-                        }
-                        val outValue = when (it.card.caravanAnimationMark) {
-                            Card.AnimationMark.MOVING_OUT_WIP -> {
-                                animationOut.value
-                            }
-                            else -> {
-                                0f
+                        val offsetHeightMult by animateFloatAsState(when (it.card.caravanAnimationMark) {
+                            Card.AnimationMark.MOVING_IN -> 3f * enemyTurnMult
+                            else -> 0f
+                        }, animationSpec = tween(animationSpeed.delay.toInt())) { finalOffset ->
+                            when (it.card.caravanAnimationMark) {
+                                Card.AnimationMark.MOVING_IN -> {
+                                    it.card.caravanAnimationMark = Card.AnimationMark.STABLE
+                                }
+                                else -> 0f
                             }
                         }
+
+                        val offsetWidthMult by animateFloatAsState(when (it.card.caravanAnimationMark) {
+                            Card.AnimationMark.STABLE -> 0f
+                            Card.AnimationMark.MOVING_IN -> 0f
+                            Card.AnimationMark.MOVING_OUT, Card.AnimationMark.MOVING_OUT_ALT -> 2f
+                            Card.AnimationMark.MOVED_OUT -> 2f
+                        }, animationSpec = tween(animationSpeed.delay.toInt())) { finalOffset ->
+                            when (it.card.caravanAnimationMark) {
+                                Card.AnimationMark.MOVING_OUT, Card.AnimationMark.MOVING_OUT_ALT -> {
+                                    it.card.caravanAnimationMark = Card.AnimationMark.MOVED_OUT
+                                }
+                                else -> {}
+                            }
+                        }
+
                         Box(modifier = Modifier
                             .layout { measurable, constraints ->
                                 val placeable = measurable.measure(constraints)
@@ -969,8 +889,8 @@ fun RowScope.CaravanOnField(
                                 val modifierOffset = (modifierOffset * (modifierIndex + 1)).toPx()
                                 layout(placeableWidth.coerceAtLeast(0), 0) {
                                     placeable.place(
-                                        (modifierOffset + placeableWidth * outValue).toInt(),
-                                        (placeableHeight * inValue).toInt()
+                                        (modifierOffset + placeableWidth * offsetWidthMult).toInt(),
+                                        (placeableHeight * offsetHeightMult).toInt()
                                     )
                                 }
                             })
@@ -984,23 +904,29 @@ fun RowScope.CaravanOnField(
                         it: CardWithModifier,
                         index: Int
                     ) {
-                        val inValue = when (it.card.caravanAnimationMark) {
-                            Card.AnimationMark.MOVING_IN -> {
-                                3f * enemyTurnMult
-                            }
-                            Card.AnimationMark.MOVING_IN_WIP -> {
-                                animationIn.value * enemyTurnMult
-                            }
-                            else -> {
-                                0f
+                        val offsetHeightMult by animateFloatAsState(when (it.card.caravanAnimationMark) {
+                            Card.AnimationMark.MOVING_IN -> 3f * enemyTurnMult
+                            else -> 0f
+                        }, animationSpec = tween(animationSpeed.delay.toInt())) { finalOffset ->
+                            when (it.card.caravanAnimationMark) {
+                                Card.AnimationMark.MOVING_IN -> {
+                                    it.card.caravanAnimationMark = Card.AnimationMark.STABLE
+                                }
+                                else -> 0f
                             }
                         }
-                        val outValue = when (it.card.caravanAnimationMark) {
-                            Card.AnimationMark.MOVING_OUT_WIP -> {
-                                animationOut.value
-                            }
-                            else -> {
-                                0f
+
+                        val offsetWidthMult by animateFloatAsState(when (it.card.caravanAnimationMark) {
+                            Card.AnimationMark.STABLE -> 0f
+                            Card.AnimationMark.MOVING_IN -> 0f
+                            Card.AnimationMark.MOVING_OUT, Card.AnimationMark.MOVING_OUT_ALT -> 2f
+                            Card.AnimationMark.MOVED_OUT -> 2f
+                        }, animationSpec = tween(animationSpeed.delay.toInt())) { finalOffset ->
+                            when (it.card.caravanAnimationMark) {
+                                Card.AnimationMark.MOVING_OUT, Card.AnimationMark.MOVING_OUT_ALT -> {
+                                    it.card.caravanAnimationMark = Card.AnimationMark.MOVED_OUT
+                                }
+                                else -> {}
                             }
                         }
 
@@ -1033,8 +959,8 @@ fun RowScope.CaravanOnField(
 
                                 layout(constraints.maxWidth, finalCaravanHeight) {
                                     placeable.place(
-                                        cardOffsetWidth + (placeableWidth * outValue).toInt(),
-                                        finalHeightOffset + (placeableHeight * inValue).toInt()
+                                        cardOffsetWidth + (placeableWidth * offsetWidthMult).toInt(),
+                                        finalHeightOffset + (placeableHeight * offsetHeightMult).toInt()
                                     )
                                 }
                             }
@@ -1057,7 +983,7 @@ fun RowScope.CaravanOnField(
                         }
                     }
 
-                    key(caravansKey, recomposeKey) {
+                    key(caravansKey) {
                         memCards.forEachIndexed { index, it ->
                             CardInCaravan(it, index)
                         }

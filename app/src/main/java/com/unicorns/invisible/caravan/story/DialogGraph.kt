@@ -1,17 +1,18 @@
 package com.unicorns.invisible.caravan.story
 
-data class DialogState(val picId: Int, val possibleEdges: List<Int>)
+sealed interface DialogState
+class DialogFinishState(val code: DeathCode) : DialogState
+class DialogMiddleState(val picId: Int, val responseId: Int) : DialogState
 
-data class DialogEdge(val lineId: Int, val responseId: Int, val newState: Int)
+data class DialogEdge(
+    val oldState: Int, val newState: Int,
+    val lineId: Int,
+    val onVisited: suspend () -> Int = { -1 } // returns edge to visit
+)
 
 class DialogGraph(
     val states: List<DialogState>,
     val edges: List<DialogEdge>,
-    val onEdgeVisitedMap: Map<Int, DialogGraph.() -> Unit> = emptyMap()
 ) {
-    var currentState: Int = 0
-    var entranceEdge: Int = 0
-    val visitedEdges = edges.map { false }.toMutableList()
-    fun getCurrentState() = states[currentState]
-    fun getEntranceEdge() = edges[entranceEdge]
+    val visitedEdges = Array<Boolean>(edges.size) { false }
 }

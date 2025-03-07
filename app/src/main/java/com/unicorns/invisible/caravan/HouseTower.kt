@@ -37,8 +37,11 @@ import com.unicorns.invisible.caravan.model.enemy.EnemyTower3A
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.CustomDeck
 import com.unicorns.invisible.caravan.save.saveData
+import com.unicorns.invisible.caravan.story.DeathCode
 import com.unicorns.invisible.caravan.story.DialogEdge
+import com.unicorns.invisible.caravan.story.DialogFinishState
 import com.unicorns.invisible.caravan.story.DialogGraph
+import com.unicorns.invisible.caravan.story.DialogMiddleState
 import com.unicorns.invisible.caravan.story.DialogState
 import com.unicorns.invisible.caravan.story.StoryShow
 import com.unicorns.invisible.caravan.utils.MenuItemOpen
@@ -644,7 +647,7 @@ fun FrankPresentedScreen(
                     Modifier,
                 )
                 TextFallout(
-                    stringResource(R.string.enemy, stringResource(R.string.tower_enemy_10A)),
+                    stringResource(R.string.enemy, stringResource(R.string.tower_enemy_13)),
                     getTextColor(activity),
                     getTextStrokeColor(activity),
                     24.sp,
@@ -878,53 +881,86 @@ fun StartTowerGame(
 fun ShowFrank(activity: MainActivity, goBack: () -> Unit) {
     StoryShow(activity, DialogGraph(
         states = listOf(
-            DialogState(R.drawable.black_back, listOf(1)),
-            DialogState(R.drawable.black_back, listOf(2)),
-            DialogState(R.drawable.black_back, listOf(3)),
-            DialogState(R.drawable.black_back, listOf()),
-            DialogState(R.drawable.frank_head, listOf()),
-            DialogState(R.drawable.frank_head, listOf(4, 5, 6, 7)),
-            DialogState(R.drawable.frank_head, listOf(7)),
-            DialogState(R.drawable.frank_head, listOf(8)),
+            DialogMiddleState(R.drawable.black_back, R.string.craig_1),
+            DialogMiddleState(R.drawable.black_back, R.string.craig_2),
+            DialogMiddleState(R.drawable.black_back, R.string.craig_3),
+            DialogMiddleState(R.drawable.black_back, R.string.empty_string),
+            DialogMiddleState(R.drawable.frank_head, R.string.empty_string),
+            DialogMiddleState(R.drawable.frank_head, R.string.frank_welcome),
+            DialogMiddleState(R.drawable.frank_head, R.string.frank_horrigan_that_s_who),
+            DialogMiddleState(R.drawable.frank_head, R.string.we_just_did_time_for_talking_s_over),
+            DialogMiddleState(R.drawable.frank_head, R.string.you_re_just_another_mutant_that_needs_to_be_put_down),
+            DialogMiddleState(R.drawable.frank_head, R.string.you_mutant_scum),
+            DialogFinishState(DeathCode.ALIVE),
+            DialogMiddleState(R.drawable.frank_head, R.string.frank_welcome),
         ),
         edges = listOf(
-            DialogEdge(0, R.string.craig_1, 0),
-            DialogEdge(R.string.craig_continue, R.string.craig_2, 1),
-            DialogEdge(R.string.craig_continue, R.string.craig_3, 2),
-            DialogEdge(R.string.craig_continue, R.string.frank_welcome, 3),
-            DialogEdge(R.string.frank_who, R.string.frank_horrigan_that_s_who, 5),
-            DialogEdge(R.string.wait_let_s_talk, R.string.we_just_did_time_for_talking_s_over, 6),
-            DialogEdge(R.string.you_don_t_even_know_who_i_am, R.string.you_re_just_another_mutant_that_needs_to_be_put_down, 5),
-            DialogEdge(R.string.i_challenge_you_to_the_game_of_caravan, R.string.you_mutant_scum, 7),
-            DialogEdge(R.string.finish, 0, -1),
-        ),
-        onEdgeVisitedMap = mapOf(
-            2 to {
+            DialogEdge(0, 1, R.string.craig_continue),
+            DialogEdge(1, 2, R.string.craig_continue) {
                 stopRadio()
                 soundReduced = true
                 playMinigunSound(activity)
+                -1
             },
-            3 to lambda@{
+            DialogEdge(2, 3, R.string.craig_continue) {
                 playFrankPhrase(activity, R.raw.frank_on_welcome)
-                CoroutineScope(Dispatchers.Unconfined).launch {
-                    delay(3000L)
-                    this@lambda.currentState = 4
-                    delay(10000L)
-                    this@lambda.currentState = 5
-                }
+                delay(3000L)
+                3
             },
-            4 to {
+            DialogEdge(3, 4, R.string.empty_string) {
+                delay(3000L)
+                4
+            },
+            DialogEdge(4, 11, R.string.empty_string) {
+                delay(10000L)
+                5
+            },
+            DialogEdge(11, 5, R.string.empty_string),
+            DialogEdge(5, 6, R.string.frank_who) {
                 playFrankPhrase(activity, R.raw.frank_who_are_you)
+                -1
             },
-            5 to {
+            DialogEdge(5, 7, R.string.wait_let_s_talk) {
                 playFrankPhrase(activity, R.raw.frank_lets_talk)
+                -1
             },
-            6 to {
-                playFrankPhrase(activity, R.raw.frank_lets_talk)
+            DialogEdge(5, 8, R.string.you_don_t_even_know_who_i_am) {
+                playFrankPhrase(activity, R.raw.frank_you_dont_even_know_who_i_am)
+                -1
             },
-            7 to {
+            DialogEdge(5, 9, R.string.i_challenge_you_to_the_game_of_caravan) {
                 playFrankPhrase(activity, R.raw.frank_i_challenge_you)
+                -1
             },
+            DialogEdge(6, 7, R.string.wait_let_s_talk) {
+                playFrankPhrase(activity, R.raw.frank_lets_talk)
+                -1
+            },
+            DialogEdge(6, 8, R.string.you_don_t_even_know_who_i_am) {
+                playFrankPhrase(activity, R.raw.frank_you_dont_even_know_who_i_am)
+                -1
+            },
+            DialogEdge(6, 9, R.string.i_challenge_you_to_the_game_of_caravan) {
+                playFrankPhrase(activity, R.raw.frank_i_challenge_you)
+                -1
+            },
+            DialogEdge(7, 9, R.string.i_challenge_you_to_the_game_of_caravan) {
+                playFrankPhrase(activity, R.raw.frank_i_challenge_you)
+                -1
+            },
+            DialogEdge(8, 6, R.string.frank_who) {
+                playFrankPhrase(activity, R.raw.frank_who_are_you)
+                -1
+            },
+            DialogEdge(8, 7, R.string.wait_let_s_talk) {
+                playFrankPhrase(activity, R.raw.frank_lets_talk)
+                -1
+            },
+            DialogEdge(8, 9, R.string.i_challenge_you_to_the_game_of_caravan) {
+                playFrankPhrase(activity, R.raw.frank_i_challenge_you)
+                -1
+            },
+            DialogEdge(9, 10, R.string.finish)
         )
     ), goBack)
 }

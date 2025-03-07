@@ -32,16 +32,17 @@ import com.unicorns.invisible.caravan.model.enemy.Enemy
 import com.unicorns.invisible.caravan.model.enemy.EnemyStory1
 import com.unicorns.invisible.caravan.model.enemy.EnemyStory2
 import com.unicorns.invisible.caravan.model.enemy.EnemyStory3
-import com.unicorns.invisible.caravan.model.enemy.EnemyStory4
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.Card
 import com.unicorns.invisible.caravan.model.primitives.CustomDeck
 import com.unicorns.invisible.caravan.model.primitives.Rank
 import com.unicorns.invisible.caravan.model.primitives.Suit
 import com.unicorns.invisible.caravan.save.saveData
+import com.unicorns.invisible.caravan.story.DeathCode
 import com.unicorns.invisible.caravan.story.DialogEdge
+import com.unicorns.invisible.caravan.story.DialogFinishState
 import com.unicorns.invisible.caravan.story.DialogGraph
-import com.unicorns.invisible.caravan.story.DialogState
+import com.unicorns.invisible.caravan.story.DialogMiddleState
 import com.unicorns.invisible.caravan.story.StoryShow
 import com.unicorns.invisible.caravan.utils.MenuItemOpen
 import com.unicorns.invisible.caravan.utils.TextClassic
@@ -59,7 +60,6 @@ import com.unicorns.invisible.caravan.utils.playHeartbeatSound
 import com.unicorns.invisible.caravan.utils.playJokerSounds
 import com.unicorns.invisible.caravan.utils.playLoseSound
 import com.unicorns.invisible.caravan.utils.playNukeBlownSound
-import com.unicorns.invisible.caravan.utils.playTowerFailed
 import com.unicorns.invisible.caravan.utils.playWWSound
 import com.unicorns.invisible.caravan.utils.playWinSound
 import com.unicorns.invisible.caravan.utils.scrollbar
@@ -77,35 +77,25 @@ fun ShowStoryList(
 
     if (showChapter != null) {
         when (showChapter) {
-            0 -> {
+            11 -> {
                 ShowStoryChapter1(activity, getDeck(showChapter!!), showAlertDialog, {
                     save.storyProgress = maxOf(save.storyProgress, 10)
                     saveData(activity)
                     activity.achievementsClient?.unlock(activity.getString(R.string.achievement_madre_roja))
                 }) { showChapter = null }
             }
-            10 -> {
+            12 -> {
                 ShowStoryChapter2(activity, getDeck(showChapter!!), showAlertDialog, {
                     save.storyProgress = maxOf(save.storyProgress, 20)
                     saveData(activity)
                 }) { showChapter = null }
             }
-            20 -> {
+            13 -> {
+                LaunchedEffect(Unit) { stopRadio(); soundReduced = true }
                 ShowStoryChapter3(activity, getDeck(showChapter!!), showAlertDialog, {
                     save.storyProgress = maxOf(save.storyProgress, 30)
                     saveData(activity)
-                }) { showChapter = null }
-            }
-            30 -> {
-                LaunchedEffect(Unit) {
-                    stopRadio()
-                    soundReduced = true
-                }
-                ShowStoryChapter4(activity, getDeck(showChapter!!), showAlertDialog, {
-                    save.storyProgress = maxOf(save.storyProgress, 39)
-                    saveData(activity)
-                    activity.achievementsClient?.unlock(activity.getString(R.string.achievement_what_do_we_say_to_the_god_of_death))
-                }) { showChapter = null; soundReduced = false; nextSong(activity) }
+                }) { soundReduced = false; nextSong(activity); showChapter = null }
             }
             else -> { showChapter = null }
         }
@@ -162,25 +152,24 @@ fun ShowStoryList(
                     val text = if (!isAvailable) {
                         "???"
                     } else when (number) {
-                        0 -> stringResource(R.string.chapter_1_name)
-                        10 -> stringResource(R.string.chapter_2_name)
-                        20 -> stringResource(R.string.chapter_3_name)
-                        30 -> stringResource(R.string.chapter_4_name)
-                        39 -> stringResource(R.string.end_1_name)
-                        41 -> stringResource(R.string.chapter_5_1_name)
-                        42 -> stringResource(R.string.chapter_5_2_name)
-                        43 -> stringResource(R.string.chapter_5_3_name)
-                        49 -> stringResource(R.string.end_2_name)
-                        50 -> stringResource(R.string.chapter_6_name)
-                        60 -> stringResource(R.string.chapter_7_name)
-                        69 -> stringResource(R.string.end_3_name)
-                        70 -> stringResource(R.string.chapter_8_0_name)
-                        71 -> stringResource(R.string.chapter_8_1_name)
-                        72 -> stringResource(R.string.chapter_8_2_name)
-                        73 -> stringResource(R.string.chapter_8_3_name)
-                        79 -> stringResource(R.string.end_4_name)
-                        80 -> stringResource(R.string.chapter_9_name)
-                        90 -> stringResource(R.string.chapter_end_name)
+                        11 -> stringResource(R.string.chapter_1_name)
+                        12 -> stringResource(R.string.chapter_2_name)
+                        13 -> stringResource(R.string.chapter_3_name)
+                        19 -> stringResource(R.string.end_1_name)
+                        24 -> stringResource(R.string.chapter_4_name)
+                        25 -> stringResource(R.string.chapter_5_name)
+                        26 -> stringResource(R.string.chapter_6_name)
+                        29 -> stringResource(R.string.end_2_name)
+                        37 -> stringResource(R.string.chapter_7_name)
+                        38 -> stringResource(R.string.chapter_8_name)
+                        39 -> stringResource(R.string.end_3_name)
+                        409 -> stringResource(R.string.chapter_9_name)
+                        410 -> stringResource(R.string.chapter_10_name)
+                        411 -> stringResource(R.string.chapter_11_name)
+                        412-> stringResource(R.string.chapter_12_name)
+                        499 -> stringResource(R.string.end_4_name)
+                        513 -> stringResource(R.string.chapter_13_name)
+                        999 -> stringResource(R.string.chapter_end_name)
                         else -> "???"
                     }
                     TextFallout(
@@ -201,17 +190,17 @@ fun ShowStoryList(
                 }
 
                 val acts = listOf(
-                    listOf(0, 10, 20, 30, 39),
-                    listOf(41, 42, 43, 49),
-                    listOf(50, 60, 69),
-                    listOf(70, 71, 72, 73, 79),
-                    listOf(80, 90)
+                    listOf(11, 12, 13, 19),
+                    listOf(24, 25, 26, 29),
+                    listOf(37, 38, 39),
+                    listOf(409, 410, 411, 412, 499),
+                    listOf(513, 999)
                 )
                 val actsRevealed = when (save.storyProgress) {
-                    in (80..99) -> 5
-                    in (70..79) -> 4
-                    in (50..69) -> 3
-                    in (40..49) -> 2
+                    in (500..999) -> 5
+                    in (400..499) -> 4
+                    in (30..39) -> 3
+                    in (20..29) -> 2
                     else -> 1
                 }
                 repeat(actsRevealed) {
@@ -228,10 +217,10 @@ fun ShowStoryList(
 
 fun getDeck(chapterNumber: Int): CustomDeck {
     return when (chapterNumber) {
-        0 -> {
+        11 -> {
             CustomDeck(CardBack.STANDARD, false)
         }
-        10, 20 -> {
+        12 -> {
             CustomDeck(CardBack.STANDARD, false).apply {
                 add(Card(Rank.ACE, Suit.SPADES, CardBack.SIERRA_MADRE, true))
                 add(Card(Rank.KING, Suit.SPADES, CardBack.SIERRA_MADRE, true))
@@ -240,7 +229,7 @@ fun getDeck(chapterNumber: Int): CustomDeck {
                 add(Card(Rank.TEN, Suit.SPADES, CardBack.SIERRA_MADRE, true))
             }
         }
-        30 -> {
+        13 -> {
             CustomDeck().apply {
                 add(Card(Rank.ACE, Suit.SPADES, CardBack.GOMORRAH, false))
                 add(Card(Rank.ACE, Suit.SPADES, CardBack.ULTRA_LUXE, false))
@@ -275,55 +264,7 @@ fun ShowStoryChapter1(
         return
     }
 
-    // TODO: rewrite this chapter!
-    when (gameResult) {
-        1 -> {
-            StoryShow(activity, DialogGraph(
-                states = listOf(
-                    DialogState(R.drawable.ch1_5, listOf(1)),
-                ),
-                edges = listOf(
-                    DialogEdge(0, R.string.chapter_1_on_win, 0),
-                    DialogEdge(R.string.finish, 0, -1),
-                )
-            )) { goBack() }
-            return
-        }
-        -1 -> {
-            LaunchedEffect(Unit) { playTowerFailed(activity) }
-            StoryShow(activity, DialogGraph(
-                states = listOf(
-                    DialogState(R.drawable.black_back, listOf(1)),
-                ),
-                edges = listOf(
-                    DialogEdge(0, R.string.chapter_1_on_lose, 0),
-                    DialogEdge(R.string.finish, 0, -1),
-                )
-            )) { goBack() }
-            return
-        }
-        else -> {}
-    }
-
-    StoryShow(activity, DialogGraph(
-        states = listOf(
-            DialogState(R.drawable.ch1_1, listOf(1)),
-            DialogState(R.drawable.ch1_2, listOf(2)),
-            DialogState(R.drawable.ch1_3, listOf(3)),
-            DialogState(R.drawable.ch1_4, listOf(4)),
-            DialogState(R.drawable.ch1_5, listOf(5)),
-        ),
-        edges = listOf(
-            DialogEdge(0, R.string.chapter_1_text_1, 0),
-            DialogEdge(R.string.chapter_1_q_1, R.string.chapter_1_text_2, 1),
-            DialogEdge(R.string.chapter_1_q_2, R.string.chapter_1_text_3, 2),
-            DialogEdge(R.string.chapter_1_q_3, R.string.chapter_1_text_4, 3),
-            DialogEdge(R.string.chapter_1_q_4, R.string.chapter_1_text_5, 4),
-            DialogEdge(R.string.finish, 0, -1),
-        )
-    )) {
-        isGame = true
-    }
+    goBack()
 }
 
 @Composable
@@ -339,7 +280,7 @@ fun ShowStoryChapter2(
     if (isGame) {
         StartStoryGame(
             activity,
-            EnemyStory2,
+            EnemyStory2(),
             CResources(deck),
             showAlertDialog,
             {},
@@ -351,39 +292,10 @@ fun ShowStoryChapter2(
     }
 
     goBack()
-    // TODO: write this chapter!
 }
 
 @Composable
 fun ShowStoryChapter3(
-    activity: MainActivity,
-    deck: CustomDeck,
-    showAlertDialog: (String, String, (() -> Unit)?) -> Unit,
-    advanceChapter: () -> Unit,
-    goBack: () -> Unit,
-) {
-    var isGame by rememberSaveable { mutableStateOf(true) }
-    var gameResult by rememberSaveable { mutableIntStateOf(0) }
-    if (isGame) {
-        StartStoryGame(
-            activity,
-            EnemyStory3(),
-            CResources(deck),
-            showAlertDialog,
-            {},
-            { gameResult = 1; advanceChapter() },
-            { gameResult = -1 },
-            { isGame = false }
-        )
-        return
-    }
-
-    goBack()
-    // TODO: write this chapter!
-}
-
-@Composable
-fun ShowStoryChapter4(
     activity: MainActivity,
     deck: CustomDeck,
     showAlertDialog: (String, String, (() -> Unit)?) -> Unit,
@@ -460,7 +372,7 @@ fun ShowStoryChapter4(
     if (isGame) {
         StartStoryGame(
             activity,
-            EnemyStory4 { messageNumber = it },
+            EnemyStory3 { messageNumber = it },
             CResources(deck),
             showAlertDialog,
             {},
@@ -474,26 +386,15 @@ fun ShowStoryChapter4(
     when (gameResult) {
         1 -> {
             StoryShow(activity, DialogGraph(
-                states = listOf(
-                    DialogState(R.drawable.ch4_1, listOf(1)),
-                ),
-                edges = listOf(
-                    DialogEdge(0, R.string.ch4_w1, 0),
-                    DialogEdge(R.string.finish, 0, -1),
-                )
+                states = listOf(DialogFinishState(DeathCode.ALIVE)),
+                edges = emptyList(),
             )) { goBack() }
             return
         }
         -1 -> {
-            LaunchedEffect(Unit) { playTowerFailed(activity) }
             StoryShow(activity, DialogGraph(
-                states = listOf(
-                    DialogState(R.drawable.black_back, listOf(1)),
-                ),
-                edges = listOf(
-                    DialogEdge(0, R.string.ch4_l1, 0),
-                    DialogEdge(R.string.finish, 0, -1),
-                )
+                states = listOf(DialogFinishState(DeathCode.AGAINST_DEATH)),
+                edges = emptyList(),
             )) { goBack() }
             return
         }
@@ -501,14 +402,15 @@ fun ShowStoryChapter4(
     }
 
     StoryShow(activity, DialogGraph(
-        states = listOf(
-            DialogState(R.drawable.black_back, listOf(1)),
-            DialogState(R.drawable.black_back, listOf(2)),
+        listOf(
+            DialogMiddleState(R.drawable.black_back, R.string.c4_t1),
+            DialogMiddleState(R.drawable.black_back, R.string.ch4_t2),
+            DialogFinishState(DeathCode.ALIVE),
+
         ),
-        edges = listOf(
-            DialogEdge(0, R.string.c4_t1, 0),
-            DialogEdge(R.string.ch4_q1, R.string.ch4_t2, 1),
-            DialogEdge(R.string.finish, 0, -1)
+        listOf(
+            DialogEdge(0, 1, R.string.ch4_q1),
+            DialogEdge(1, 2, R.string.finish),
         )
     )) {
         isGame = true
@@ -538,16 +440,6 @@ fun StartStoryGame(
 
     game.also {
         it.onWin = {
-            if (enemy is EnemyStory3) {
-                val isPoisonedInEveryCaravan = game.playerCaravans.all { caravan ->
-                    val cards = caravan.cards.map { it.card }
-                    cards.any { it.back == CardBack.MADNESS && it.isAlt }
-                }
-                if (isPoisonedInEveryCaravan) {
-                    activity.achievementsClient?.unlock(activity.getString(R.string.achievement_float_like_a_butterfly___))
-                }
-            }
-
             activity.processChallengesGameOver(it)
             playWinSound(activity)
             onWin()

@@ -15,7 +15,6 @@ data object CheatEraseStoryProgress : Cheat {
     ) {
         save.let {
             it.storyProgress = 0
-            it.altStoryProgress = 0
             it.storyCompleted = false
         }
         saveData(activity)

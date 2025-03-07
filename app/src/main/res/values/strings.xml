@@ -491,27 +491,26 @@
     <string name="select_the_chapter">Select the chapter</string>
     <string name="act_1_name">Part I: Desert Wind.</string>
     <string name="chapter_1_name">Chapter 1: Orange Colored Sky.</string>
-    <string name="chapter_2_name">Chapter 2: California, Here I Come!</string>
-    <string name="chapter_3_name">Chapter 3: Stormy Weather.</string>
-    <string name="chapter_4_name">Chapter 4: Me And My Shadow.</string>
+    <string name="chapter_2_name">Chapter 2: Stormy Weather.</string>
+    <string name="chapter_3_name">Chapter 3: Me And My Shadow.</string>
     <string name="end_1_name">End of Part I.</string>
     <string name="act_2_name">Part II: Many Contrasts.</string>
-    <string name="chapter_5_1_name">Chapter 5.1: Don\'t Fence Me In.</string>
-    <string name="chapter_5_2_name">Chapter 5.2: Moonlight Serenade.</string>
-    <string name="chapter_5_3_name">Chapter 5.3: Heartbreak Hotel.</string>
+    <string name="chapter_4_name">Chapter 4: Don\'t Fence Me In.</string>
+    <string name="chapter_5_name">Chapter 5: Moonlight Serenade.</string>
+    <string name="chapter_6_name">Chapter 6: Heartbreak Hotel.</string>
     <string name="end_2_name">End of Part II.</string>
     <string name="act_3_name">Part III: New World, New Order.</string>
-    <string name="chapter_6_name">Chapter 6: Trouble Blues.</string>
-    <string name="chapter_7_name">Chapter 7: Jailhouse Rock.</string>
+    <string name="chapter_7_name">Chapter 7: Trouble Blues.</string>
+    <string name="chapter_8_name">Chapter 8: Jailhouse Rock.</string>
     <string name="end_3_name">End of Part III.</string>
     <string name="act_4_name">Part IV: Wasteland Justice.</string>
-    <string name="chapter_8_0_name">Chapter 8.0: Pistol Packin\' Mama.</string>
-    <string name="chapter_8_1_name">Chapter 8.1: The Great Pretender.</string>
-    <string name="chapter_8_2_name">Chapter 8.2: Body And Soul.</string>
-    <string name="chapter_8_3_name">Chapter 8.3: Alexander\'s Ragtime Band.</string>
+    <string name="chapter_9_name">Chapter 9: Pistol Packin\' Mama.</string>
+    <string name="chapter_10_name">Chapter 10: The Great Pretender.</string>
+    <string name="chapter_11_name">Chapter 11: Body And Soul.</string>
+    <string name="chapter_12_name">Chapter 12: Alexander\'s Ragtime Band.</string>
     <string name="end_4_name">End of Part IV.</string>
     <string name="act_5_name">Part V: Of the People, For the People.</string>
-    <string name="chapter_9_name">Chapter 9: Opus No. 1.</string>
+    <string name="chapter_13_name">Chapter 13: Opus No. 1.</string>
     <string name="chapter_end_name">The End Slides.</string>
 
 
@@ -540,8 +539,6 @@
     <string name="ch4_m2">You are too strong to perish like this.</string>
     <string name="ch4_m3">Now get up and fight. Fight!</string>
     <string name="ch4_m4">You are not dying here today!</string>
-    <string name="ch4_w1" tools:ignore="Typos">The Prospector’s body had not succumbed to the poison. As his soul wrestled the angel of death and reigned victorious, he earnt himself yet another day to live.</string>
-    <string name="ch4_l1">The Prospector\'s body had succumbed to the poison. He is just another dead body in the cursed vault.</string>
     <string name="ch4_q1">Someone\'s coming, Prospector.</string>
     <string name="ch4_t2">(grim reaper approaches)</string>
     <string name="ch4_q2" tools:ignore="TypographyEllipsis">...</string>
@@ -823,5 +820,25 @@ If this helped you understand the game, thank the author Kyle! To do this, go to
         The exceptions are Standard deck ALT (cards are dropped in multiplayer) and Madness deck (cards are dropped for defeating Madness Cardinal).</string>
     <string name="faq_ql">Q: I have a question, but cannot find the answer here or in the rules!!!</string>
     <string name="faq_al">A: Well, you can send the question in Discord (link in the main menu in the top right corner) or to me directly by email (link in About section).</string>
+
+    <string name="death_message_any_1">The darkness of the afterlife is all that awaits you now. May you find more peace in that world than you found in this one.</string>
+    <string name="death_message_any_2">You have failed.</string>
+    <string name="death_message_any_3">You have died.</string>
+    <string name="death_message_any_4">Rest in peace.</string>
+    <string name="death_message_any_5">You have perished.</string>
+    <string name="death_message_ch_13_1">You have died, along with everyone else on the Earth.</string>
+    <string name="death_message_ch_13_2">Your death has sealed the fate of everyone else on Earth. Millions die, and the Earth falls silent again.</string>
+    <string name="death_message_fight_death">You fought valiantly, but to no avail.</string>
+    <string name="death_message_fight_death_world_dies">You fought valiantly, but to no avail, and soon the entire world dies.</string>
+    <string name="death_message_joke_1">Here is the picture of your corpse. Not pretty.</string>
+    <string name="death_message_joke_2">Time to reload.</string>
+    <string name="death_message_on_fail_check">Boy, are you stupid. And dead.</string>
+    <string name="death_message_painful">Your death was lingering and extremely painful. Your adventure is done.</string>
+    <string name="death_message_starve">You are doomed to die of starvation.</string>
+    <string name="death_message_wasteland_1">The wasteland has claimed your life.</string>
+    <string name="death_message_wasteland_2">Not even the carrion eaters are interested in your irradiated corpse.</string>
+    <string name="death_message_wasteland_3">Your life ends in the Wasteland.</string>
+    <string name="empty_string" />
+
 
 </resources>

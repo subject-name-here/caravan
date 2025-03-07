@@ -3,24 +3,53 @@ package com.unicorns.invisible.caravan.model.enemy
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.primitives.CResources
+import com.unicorns.invisible.caravan.model.primitives.Card
 import com.unicorns.invisible.caravan.model.primitives.CustomDeck
 import com.unicorns.invisible.caravan.model.primitives.Rank
+import com.unicorns.invisible.caravan.model.primitives.Suit
 
 
-data object EnemyStory2 : Enemy {
-    override fun createDeck(): CResources = CResources(CustomDeck(CardBack.ULTRA_LUXE, false))
+class EnemyStory2 : Enemy {
+    override fun createDeck(): CResources = CResources(CustomDeck(CardBack.TOPS, false).apply {
+        removeAll(toList().filter { it.isModifier() && it.rank != Rank.JACK })
+    })
 
+    private var cazadorsAdded = 0
     override fun makeMove(game: Game) {
         val hand = game.enemyCResources.hand
 
         if (game.isInitStage()) {
-            val cardIndex = hand.withIndex().filter { !it.value.isModifier() }.random().index
-            val caravan = game.enemyCaravans.first { it.size == 0 }
-            caravan.putCardOnTop(game.enemyCResources.removeFromHand(cardIndex))
+            val card = hand.filter { it.isOrdinary() }.filter { !it.isModifier() }.maxBy { it.rank.value }
+            val caravan = game.enemyCaravans.filter { it.isEmpty() }.random()
+            caravan.putCardOnTop(game.enemyCResources.removeFromHand(hand.indexOf(card)))
             return
+        } else if (cazadorsAdded % 13 == 0) {
+            game.enemyCResources.addOnTop(Card(Rank.QUEEN, Suit.HEARTS, CardBack.WILD_WASTELAND, false))
+        }
+        cazadorsAdded++
+
+        val specials = hand.withIndex().filter { it.value.isWildWasteland() }
+        specials.forEach { (index, special) ->
+            when (special.getWildWastelandType()) {
+                Card.WildWastelandCardType.CAZADOR -> {
+                    val candidate = game.playerCaravans
+                        .filter { it.getValue() in (11..26) }
+                        .filter { !it.cards.flatMap { card -> card.modifiersCopy() }.any { mod -> mod.isWildWasteland() } }
+                        .maxByOrNull { it.size }
+                        ?.cards
+                        ?.filter { it.canAddModifier(special) }
+                        ?.maxByOrNull { it.getValue() }
+                    if (candidate != null) {
+                        candidate.addModifier(game.enemyCResources.removeFromHand(index))
+                        game.wildWastelandSound()
+                        return
+                    }
+                }
+                else -> {}
+            }
         }
 
-        hand.withIndex().sortedBy { it.value.rank.value }.forEach { (cardIndex, card) ->
+        hand.withIndex().filter { it.value.isOrdinary() }.shuffled().forEach { (cardIndex, card) ->
             if (!card.rank.isFace()) {
                 game.enemyCaravans.shuffled().forEach { caravan ->
                     if (caravan.getValue() + card.rank.value <= 26) {
@@ -32,7 +61,8 @@ data object EnemyStory2 : Enemy {
                 }
             }
             if (card.rank == Rank.JACK) {
-                val caravan = game.enemyCaravans.filter { it.getValue() > 26 }.randomOrNull()
+                val caravan =
+                    game.playerCaravans.filter { it.getValue() in (21..26) }.randomOrNull()
                 if (caravan != null) {
                     val cardToAdd = caravan.cards.maxBy { it.getValue() }
                     if (cardToAdd.canAddModifier(card)) {
@@ -41,55 +71,26 @@ data object EnemyStory2 : Enemy {
                     }
                 }
             }
-            if (card.rank == Rank.KING) {
-                val caravan =
-                    game.enemyCaravans.filter { it.getValue() < 21 }.randomOrNull()
-                if (caravan != null) {
-                    val cardToKing = caravan.cards.filter { it.canAddModifier(card) }
-                        .filter { caravan.getValue() + it.getValue() <= 26 }
-                        .maxByOrNull { it.card.rank.value }
-                    if (cardToKing != null) {
-                        cardToKing.addModifier(game.enemyCResources.removeFromHand(cardIndex))
-                        return
-                    }
-                }
-            }
-            if (card.rank == Rank.QUEEN) {
-                val possibleQueenCaravans = game.enemyCaravans
-                    .filter { c ->
-                        c.size >= 2 && hand.all { !c.canPutCardOnTop(it) } && c.cards.last().canAddModifier(card)
-                    }
-                if (possibleQueenCaravans.isNotEmpty()) {
-                    possibleQueenCaravans
-                        .random()
-                        .cards
-                        .last()
-                        .addModifier(game.enemyCResources.removeFromHand(cardIndex))
-                    return
-                }
-            }
-
-            if (card.rank == Rank.JOKER) {
-                val cards = (game.playerCaravans + game.enemyCaravans).flatMap { it.cards }.groupBy { it.card.rank }
-                val maxRank = cards.entries.maxBy { it.value.size }
-                val cardsRank = maxRank.value
-                if (cardsRank.isNotEmpty()) {
-                    val cardToJoke = cardsRank.random()
-                    if (cardToJoke.canAddModifier(card)) {
-                        cardToJoke.addModifier(game.enemyCResources.removeFromHand(cardIndex))
-                        game.jokerPlayedSound()
-                        return
-                    }
-                }
-            }
         }
 
-        val overWeightCaravans = game.enemyCaravans.filter { it.getValue() > 26 }
-        if (overWeightCaravans.isNotEmpty()) {
-            overWeightCaravans.random().dropCaravan()
-            return
-        }
-
-        game.enemyCResources.dropCardFromHand(hand.indices.random())
+        game.enemyCResources.dropCardFromHand(hand.withIndex().minByOrNull {
+            if (it.value.isWildWasteland()) {
+                15
+            } else {
+                when (it.value.rank) {
+                    Rank.ACE -> 3
+                    Rank.TWO -> 2
+                    Rank.THREE -> 2
+                    Rank.FOUR -> 3
+                    Rank.FIVE -> 3
+                    Rank.SIX -> 4
+                    Rank.SEVEN -> 5
+                    Rank.EIGHT -> 5
+                    Rank.NINE -> 5
+                    Rank.TEN -> 5
+                    else -> 6
+                }
+            }
+        }!!.index)
     }
 }

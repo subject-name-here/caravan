@@ -9,7 +9,7 @@ data object CheatLevel10 : Cheat {
     override fun getCode() = 65537
 
     override fun onEnter(activity: MainActivity, showAlertDialog: (String, String) -> Unit) {
-        save.towerLevel = 10
+        save.towerLevel = 12
         saveData(activity)
         playYesBeep(activity)
     }
