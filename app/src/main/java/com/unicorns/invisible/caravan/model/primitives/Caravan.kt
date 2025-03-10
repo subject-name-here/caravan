@@ -17,11 +17,7 @@ class Caravan {
     fun isFull() = size >= 10
 
     private fun removeAll(predicate: (CardWithModifier) -> Boolean) {
-        val toRemove = cardsMutable.filter(predicate)
-        toRemove.forEach {
-            it.card.caravanAnimationMark = Card.AnimationMark.MOVING_OUT
-        }
-        cardsMutable.removeAll(toRemove)
+        cardsMutable.removeAll(predicate)
     }
 
     fun dropCaravan() {
@@ -121,7 +117,6 @@ class Caravan {
     }
 
     fun putCardOnTop(card: Card) {
-        card.caravanAnimationMark = Card.AnimationMark.MOVING_IN
         cardsMutable.add(CardWithModifier(card))
     }
 }

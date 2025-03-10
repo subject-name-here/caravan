@@ -14,5 +14,5 @@ class DialogGraph(
     val states: List<DialogState>,
     val edges: List<DialogEdge>,
 ) {
-    val visitedEdges = Array<Boolean>(edges.size) { false }
+    val visitedStates = Array<Boolean>(edges.size) { false }
 }

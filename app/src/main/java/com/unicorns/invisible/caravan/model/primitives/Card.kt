@@ -22,22 +22,9 @@ class Card(val rank: Rank, val suit: Suit, val back: CardBack, val isAlt: Boolea
 
     enum class AnimationMark {
         STABLE,
-        MOVING_IN,
         MOVING_OUT,
         MOVING_OUT_ALT,
-        MOVED_OUT;
-
-        fun isMovingIn(): Boolean {
-            return this in listOf(MOVING_IN)
-        }
-
-        fun isMovingOut(): Boolean {
-            return this !in listOf(STABLE, MOVING_IN)
-        }
-
-        fun isAlt(): Boolean {
-            return this in listOf(MOVING_OUT_ALT)
-        }
+        MOVED_OUT
     }
 
     fun isNuclear(): Boolean {

@@ -469,7 +469,9 @@ fun StartGame(
             playerCResources,
             enemy
         ).also {
-            enemy.retractBet()
+            if (myBet > 0) {
+                enemy.retractBet()
+            }
             save.capsInHand -= myBet
             save.table += reward
 
@@ -504,10 +506,14 @@ fun StartGame(
                 save.capsWon += reward
                 showAlertDialog(
                     activity.getString(R.string.result),
-                    activity.getString(R.string.you_win) + activity.getString(
-                        R.string.your_reward_reward_caps,
-                        reward.toString()
-                    ),
+                    activity.getString(R.string.you_win) +
+                        if (reward == 0)
+                            ""
+                        else
+                            activity.getString(
+                                R.string.your_reward_reward_caps,
+                                reward.toString()
+                            ),
                     onQuitPressed
                 )
             } else {

@@ -120,17 +120,20 @@ fun StoryShow(activity: MainActivity, graph: DialogGraph, onEnd: () -> Unit) {
                         Spacer(Modifier.height(16.dp))
 
                         graph.edges.forEachIndexed { edgeIndex, edge ->
-                            if (edge.oldState == dialogState && !graph.visitedEdges[edgeIndex]) {
+                            if (edge.oldState == dialogState) {
                                 val edge = graph.edges[edgeIndex]
+                                if (graph.visitedStates[edge.newState]) {
+                                    return@forEachIndexed
+                                }
                                 DialogLine(activity, stringResource(edge.lineId)) {
-                                    graph.visitedEdges[edgeIndex] = true
                                     dialogState = edge.newState
+                                    graph.visitedStates[dialogState] = true
                                     CoroutineScope(Dispatchers.Unconfined).launch {
                                         var visitedEdgeResult = edge.onVisited()
                                         while (visitedEdgeResult in graph.edges.indices) {
                                             val otherEdge = graph.edges[visitedEdgeResult]
-                                            graph.visitedEdges[visitedEdgeResult] = true
                                             dialogState = otherEdge.newState
+                                            graph.visitedStates[dialogState] = true
                                             visitedEdgeResult = otherEdge.onVisited()
                                         }
                                     }

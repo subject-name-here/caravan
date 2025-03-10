@@ -47,7 +47,6 @@ class CResources(private val deck: CustomDeck) {
     }
 
     private fun addCardToHand(card: Card) {
-        card.handAnimationMark = Card.AnimationMark.MOVING_IN
         handMutable.add(card)
     }
 
@@ -85,12 +84,10 @@ class CResources(private val deck: CustomDeck) {
     }
 
     fun removeFromHand(index: Int): Card {
-        handMutable[index].handAnimationMark = Card.AnimationMark.MOVING_OUT
         return handMutable.removeAt(index)
     }
 
     fun dropCardFromHand(index: Int) {
-        handMutable[index].handAnimationMark = Card.AnimationMark.MOVING_OUT_ALT
         handMutable.removeAt(index)
     }
 

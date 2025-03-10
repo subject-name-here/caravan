@@ -264,7 +264,7 @@ fun ShowStoryChapter1(
         return
     }
 
-    goBack()
+    isGame = true
 }
 
 @Composable
@@ -291,7 +291,7 @@ fun ShowStoryChapter2(
         return
     }
 
-    goBack()
+    isGame = true
 }
 
 @Composable

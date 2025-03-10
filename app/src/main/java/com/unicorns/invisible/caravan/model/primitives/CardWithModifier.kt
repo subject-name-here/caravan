@@ -9,7 +9,6 @@ class CardWithModifier(val card: Card) {
     private val modifiers: MutableList<Card> = mutableListOf()
     fun addModifier(card: Card) {
         modifiers.add(card)
-        card.caravanAnimationMark = Card.AnimationMark.MOVING_IN
         if (card.isNuclear()) {
             hasBomb = true
         } else when (card.getWildWastelandType()) {

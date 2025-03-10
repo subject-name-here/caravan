@@ -258,7 +258,7 @@ fun Modifier.scrollbar(
             }
 
             val firstItemSize = firstVisibleItem.size
-            val estimatedFullListSize = firstItemSize * state.layoutInfo.totalItemsCount
+            val estimatedFullListSize = firstItemSize * state.layoutInfo.totalItemsCount - 1
 
             if (viewportSize > estimatedFullListSize) {
                 return@drawWithContent

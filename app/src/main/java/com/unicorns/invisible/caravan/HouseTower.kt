@@ -92,7 +92,11 @@ fun TowerScreen(
 
     var startFrank by rememberSaveable { mutableStateOf(false) }
     if (startFrank) {
-        ShowFrank(activity) { startFrank = false }
+        ShowFrank(activity) {
+            level++
+            playLevel = 0
+            startFrank = false
+        }
         return
     }
 
@@ -132,7 +136,10 @@ fun TowerScreen(
 
         }
         12 -> {
-            startFrank = true
+            LaunchedEffect(Unit) {
+                startFrank = true
+            }
+            return
         }
         in 1..11 -> {
             showTower(
@@ -190,7 +197,7 @@ fun TowerScreen(
     }
 
     var showFrankWarning by rememberSaveable { mutableStateOf(false) }
-    MenuItemOpen(activity, stringResource(R.string.tower), "<-", { if (level != 11) goBack() }) {
+    MenuItemOpen(activity, stringResource(R.string.tower), "<-", { if (level != 13) goBack() }) {
         when (level) {
             0 -> {
                 StartScreen(activity, { p1, p2 -> showAlertDialog(p1, p2, null) }) {
