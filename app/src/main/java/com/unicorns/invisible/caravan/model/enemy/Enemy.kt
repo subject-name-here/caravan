@@ -9,7 +9,7 @@ sealed interface Enemy {
 
     fun isSpeedOverriding(): Boolean = false
 
-    fun makeMove(game: Game)
+    suspend fun makeMove(game: Game, delay: Long)
 
     fun onVictory(isBlitz: Boolean) {}
 }

@@ -33,7 +33,7 @@ class EnemyDrMobius : EnemyPve {
     override fun retractBet() { bank -= getBet() }
     override fun addReward(reward: Int) { bank += reward }
 
-    override fun makeMove(game: Game) {
+    override suspend fun makeMove(game: Game, delay: Long) {
         makeMoveInner(game)
         if (game.enemyCResources.hand.size < 5) {
             game.enemyCResources.addOnTop(generateCard())

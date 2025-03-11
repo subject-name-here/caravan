@@ -10,7 +10,7 @@ class EnemyTutorial : Enemy {
 
     var onRemoveFromHand: () -> Unit = {}
 
-    override fun makeMove(game: Game) {
+    override suspend fun makeMove(game: Game, delay: Long) {
         val hand = game.enemyCResources.hand
 
         if (game.isInitStage()) {

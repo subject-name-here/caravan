@@ -14,7 +14,7 @@ data object EnemyTower1 : Enemy {
     })
 
 
-    override fun makeMove(game: Game) {
+    override suspend fun makeMove(game: Game, delay: Long) {
         val hand = game.enemyCResources.hand
 
         if (game.isInitStage()) {

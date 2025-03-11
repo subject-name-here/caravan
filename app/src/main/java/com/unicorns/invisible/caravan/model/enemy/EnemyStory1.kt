@@ -11,7 +11,7 @@ import kotlin.random.Random
 data object EnemyStory1 : Enemy {
     override fun createDeck(): CResources = CResources(CustomDeck(CardBack.SIERRA_MADRE, true))
 
-    override fun makeMove(game: Game) {
+    override suspend fun makeMove(game: Game, delay: Long) {
         val hand = game.enemyCResources.hand
 
         if (game.isInitStage()) {

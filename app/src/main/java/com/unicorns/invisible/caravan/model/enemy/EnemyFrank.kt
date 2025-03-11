@@ -16,5 +16,5 @@ data object EnemyFrank : Enemy {
         add(Card(Rank.ACE, Suit.DIAMONDS, CardBack.ENCLAVE, true))
     })
 
-    override fun makeMove(game: Game) {}
+    override suspend fun makeMove(game: Game, delay: Long) {}
 }

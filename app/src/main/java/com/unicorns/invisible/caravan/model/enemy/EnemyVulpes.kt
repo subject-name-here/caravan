@@ -24,5 +24,5 @@ class EnemyVulpes : EnemyPve {
         removeAll(toList().filter { it.rank.value < 5 && it.rank.value != Rank.QUEEN.value })
     })
 
-    override fun makeMove(game: Game) {}
+    override suspend fun makeMove(game: Game, delay: Long) {}
 }

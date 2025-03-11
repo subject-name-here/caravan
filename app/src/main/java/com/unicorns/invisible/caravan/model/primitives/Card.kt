@@ -1,5 +1,8 @@
 package com.unicorns.invisible.caravan.model.primitives
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import com.unicorns.invisible.caravan.model.CardBack
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
@@ -7,10 +10,8 @@ import kotlinx.serialization.Transient
 
 @Serializable
 class Card(val rank: Rank, val suit: Suit, val back: CardBack, val isAlt: Boolean) {
-    @Transient
-    var handAnimationMark = AnimationMark.STABLE
-    @Transient
-    var caravanAnimationMark = AnimationMark.STABLE
+    var handAnimationMark by mutableStateOf(AnimationMark.NEW)
+    var caravanAnimationMark by mutableStateOf(AnimationMark.NEW)
 
     fun isModifier() = rank.isFace() || isNuclear()
 
@@ -22,9 +23,10 @@ class Card(val rank: Rank, val suit: Suit, val back: CardBack, val isAlt: Boolea
 
     enum class AnimationMark {
         STABLE,
+        NEW,
         MOVING_OUT,
         MOVING_OUT_ALT,
-        MOVED_OUT
+        MOVED_OUT;
     }
 
     fun isNuclear(): Boolean {

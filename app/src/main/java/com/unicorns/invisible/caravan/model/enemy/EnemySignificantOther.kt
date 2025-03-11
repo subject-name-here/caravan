@@ -13,5 +13,5 @@ class EnemySignificantOther : Enemy {
     var isAlt: Boolean = false
 
     override fun createDeck() = CResources(back, isAlt)
-    override fun makeMove(game: Game) {}
+    override suspend fun makeMove(game: Game, delay: Long) {}
 }

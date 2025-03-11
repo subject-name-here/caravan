@@ -1,7 +1,7 @@
 package com.unicorns.invisible.caravan
 
 import android.annotation.SuppressLint
-import androidx.collection.mutableObjectListOf
+import androidx.compose.animation.core.SnapSpec
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
@@ -93,10 +93,10 @@ import com.unicorns.invisible.caravan.utils.playVatsReady
 import com.unicorns.invisible.caravan.utils.playWWSound
 import com.unicorns.invisible.caravan.utils.pxToDp
 import com.unicorns.invisible.caravan.utils.scrollbar
-import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
 
@@ -111,13 +111,6 @@ fun ShowGame(
 ) {
     var selectedCard by remember { mutableIntStateOf(-1) }
     var selectedCaravan by remember { mutableIntStateOf(-1) }
-
-    var caravansKey by rememberSaveable { mutableIntStateOf(0) }
-    var enemyHandKey by rememberSaveable { mutableIntStateOf(0) }
-    var playerHandKey by rememberSaveable { mutableIntStateOf(0) }
-    fun updateCaravans() { caravansKey++ }
-    fun updateEnemyHand() { enemyHandKey++ }
-    fun updatePlayerHand() { playerHandKey++ }
 
     val scope = rememberCoroutineScope()
 
@@ -148,14 +141,14 @@ fun ShowGame(
         if (game.isOver()) {
             return
         }
-        selectedCaravan = index
-        if (selectedCaravan == -1) {
+        selectedCaravan = if (index == selectedCaravan || index !in game.playerCaravans.indices) {
             playCloseSound(activity)
+            -1
         } else {
             playSelectSound(activity)
+            index
         }
         selectedCard = -1
-        updateCaravans()
     }
 
     fun resetSelected() {
@@ -168,20 +161,15 @@ fun ShowGame(
 
         val selectedCardNN = selectedCard
         if (selectedCardNN !in game.playerCResources.hand.indices) return
+        game.canPlayerMove = false
+        resetSelected()
         scope.launch {
-            game.playerCResources.hand[selectedCardNN].handAnimationMark = Card.AnimationMark.MOVING_OUT_ALT
-            delay(animationSpeed.delay)
+            playCardFlipSound(activity)
+            game.playerCResources.dropCardFromHand(selectedCardNN, animationSpeed.delay)
             playVatsReady(activity)
-            game.playerCResources.dropCardFromHand(selectedCardNN)
-            resetSelected()
-            updatePlayerHand()
             onMove(null)
-            game.afterPlayerMove(
-                ::updatePlayerHand,
-                ::updateCaravans,
-                ::updateEnemyHand,
-                animationSpeed
-            )
+            game.afterPlayerMove(animationSpeed)
+            game.canPlayerMove = true
         }
     }
 
@@ -190,20 +178,15 @@ fun ShowGame(
 
         val selectedCaravanNN = selectedCaravan
         if (selectedCaravanNN !in game.playerCaravans.indices) return
+        game.canPlayerMove = false
+        resetSelected()
         scope.launch {
-            delay(animationSpeed.delay)
+            game.playerCaravans[selectedCaravanNN].dropCaravan()
             playVatsReady(activity)
             activity.processChallengesMove(Challenge.Move(moveCode = 1), game)
-            game.playerCaravans[selectedCaravanNN].dropCaravan()
-            resetSelected()
-            updateCaravans()
             onMove(null)
-            game.afterPlayerMove(
-                ::updatePlayerHand,
-                ::updateCaravans,
-                ::updateEnemyHand,
-                animationSpeed
-            )
+            game.afterPlayerMove(animationSpeed)
+            game.canPlayerMove = true
         }
     }
 
@@ -212,53 +195,50 @@ fun ShowGame(
 
         val cardIndex = selectedCard
         val card = game.playerCResources.hand.getOrNull(cardIndex) ?: return
-        fun onCaravanCardInserted() {
-            resetSelected()
-            updatePlayerHand()
-            onMove(card)
-            game.afterPlayerMove(
-                ::updatePlayerHand,
-                ::updateCaravans,
-                ::updateEnemyHand,
-                animationSpeed
-            )
-        }
         if (game.isPlayerTurn && !game.isOver() && !(game.isInitStage() && card.isModifier())) {
             if (card.isModifier()) {
                 if (caravan.cards.getOrNull(position)?.canAddModifier(card) == true) {
+                    game.canPlayerMove = false
+                    resetSelected()
                     scope.launch {
-                        card.handAnimationMark = Card.AnimationMark.MOVING_OUT
-                        delay(animationSpeed.delay)
+                        playCardFlipSound(activity)
+                        val removedCard = game.playerCResources.removeFromHand(cardIndex, animationSpeed.delay)
 
                         if (card.getWildWastelandType() != null) {
                             playWWSound(activity)
                         } else if (card.isNuclear()) {
                             playNukeBlownSound(activity)
                         }
+                        caravan.cards[position].addModifier(removedCard)
 
                         activity.processChallengesMove(Challenge.Move(
                             moveCode = 4,
                             handCard = card
                         ), game)
-                        caravan.cards[position].addModifier(
-                            game.playerCResources.removeFromHand(cardIndex)
-                        )
-                        onCaravanCardInserted()
+                        onMove(card)
+
+                        game.afterPlayerMove(animationSpeed)
+                        game.canPlayerMove = true
                     }
                 }
             } else {
                 if (!isEnemy && !(game.isInitStage() && !caravan.isEmpty())) {
                     if (caravan.canPutCardOnTop(card)) {
+                        game.canPlayerMove = false
+                        resetSelected()
                         scope.launch {
-                            card.handAnimationMark = Card.AnimationMark.MOVING_OUT
-                            delay(animationSpeed.delay)
+                            playCardFlipSound(activity)
+                            val removedCard = game.playerCResources.removeFromHand(cardIndex, animationSpeed.delay)
+                            caravan.putCardOnTop(removedCard)
 
                             activity.processChallengesMove(Challenge.Move(
                                 moveCode = 3,
                                 handCard = card
                             ), game)
-                            caravan.putCardOnTop(game.playerCResources.removeFromHand(cardIndex))
-                            onCaravanCardInserted()
+                            onMove(card)
+
+                            game.afterPlayerMove(animationSpeed)
+                            game.canPlayerMove = true
                         }
                     }
                 }
@@ -278,9 +258,6 @@ fun ShowGame(
         { a1, _, a3, a4 -> addCardToCaravan(a1, a3, a4) },
         ::dropCardFromHand,
         ::dropCaravan,
-        enemyHandKey,
-        caravansKey,
-        playerHandKey
     )
 
     if (isBlitz) {
@@ -348,66 +325,27 @@ fun ShowGameRaw(
     addCardToCaravan: (Caravan, Int, Int, Boolean) -> Unit,
     dropCardFromHand: () -> Unit,
     dropCaravan: () -> Unit,
-    enemyHandKey: Int,
-    caravansKey: Int,
-    playerHandKey: Int,
 ) {
-    if (game.playerCResources.deckSize == 0) {
-        LaunchedEffect(Unit) { playNoCardAlarm(activity) }
-    }
-
     val state1Enemy = rememberLazyListState()
     val state1Player = rememberLazyListState()
     val state2Enemy = rememberLazyListState()
     val state2Player = rememberLazyListState()
     val state3Enemy = rememberLazyListState()
     val state3Player = rememberLazyListState()
-    fun stateToSizeOfItem(state: LazyListState): Int {
-        return state.layoutInfo.visibleItemsInfo[0].size
-    }
 
+    // TODO: scroll to the place of change
     fun addCardToEnemyCaravan(caravanNum: Int, position: Int) {
         addCardToCaravan(game.enemyCaravans[caravanNum], caravanNum, position, true)
-        MainScope().launch {
-            val caravan = game.enemyCaravans[caravanNum]
-            when (caravanNum) {
-                0 -> state1Enemy.scrollToItem(0,
-                    (stateToSizeOfItem(state1Enemy).toFloat() * (caravan.size - position - 1) / caravan.size).toInt()
-                )
-                1 -> state2Enemy.scrollToItem(0,
-                    (stateToSizeOfItem(state2Enemy).toFloat() * (caravan.size - position - 1) / caravan.size).toInt()
-                )
-                2 -> state3Enemy.scrollToItem(0,
-                    (stateToSizeOfItem(state3Enemy).toFloat() * (caravan.size - position - 1) / caravan.size).toInt()
-                )
-            }
-        }
     }
-
     fun addCardToPlayerCaravan(caravanNum: Int, position: Int) {
         addCardToCaravan(game.playerCaravans[caravanNum], caravanNum, position, false)
-        MainScope().launch {
-            val caravan = game.playerCaravans[caravanNum]
-            when (caravanNum) {
-                0 -> state1Player.scrollToItem(0,
-                    (stateToSizeOfItem(state1Player).toFloat() * position / caravan.size).toInt()
-                )
-                1 -> state2Player.scrollToItem(0,
-                    (stateToSizeOfItem(state2Player).toFloat() * position / caravan.size).toInt()
-                )
-                2 -> state3Player.scrollToItem(0,
-                    (stateToSizeOfItem(state3Player).toFloat() * position / caravan.size).toInt()
-                )
-            }
-        }
     }
 
     fun isInitStage(): Boolean {
         return game.isInitStage()
     }
-
     fun canDiscard(): Boolean {
-        return !(game.isOver() || !game.isPlayerTurn || game.isInitStage())
+        return !(game.isOver() || !game.canPlayerMove || game.isInitStage())
     }
 
     BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
@@ -451,8 +389,8 @@ fun ShowGameRaw(
                             horizontalAlignment = Alignment.CenterHorizontally,
                             modifier = Modifier.fillMaxWidth(0.5f)
                         ) {
-                            EnemySide(activity, animationSpeed, isPvP, getEnemySymbol, game, fillHalfMaxHeight = true, enemyHandKey)
-                            PlayerSide(activity, animationSpeed, isPvP, game, getSelectedCard(), setSelectedCard, getMySymbol, setMySymbol, playerHandKey)
+                            EnemySide(activity, animationSpeed, isPvP, getEnemySymbol, game, fillHalfMaxHeight = true)
+                            PlayerSide(activity, animationSpeed, isPvP, game, getSelectedCard(), setSelectedCard, getMySymbol, setMySymbol)
                         }
 //                        Caravans(
 //                            activity,
@@ -487,7 +425,14 @@ fun ShowGameRaw(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         modifier = Modifier.fillMaxSize()
                     ) {
-                        EnemySide(activity, animationSpeed, isPvP, getEnemySymbol, game, fillHalfMaxHeight = false, enemyHandKey)
+                        EnemySide(
+                            activity,
+                            animationSpeed,
+                            isPvP,
+                            getEnemySymbol,
+                            game,
+                            fillHalfMaxHeight = false
+                        )
                         Caravans(
                             activity,
                             animationSpeed,
@@ -511,10 +456,18 @@ fun ShowGameRaw(
                             ::canDiscard,
                             { game.isOver() },
                             { num -> game.playerCaravans[num] },
-                            { num -> game.enemyCaravans[num] },
-                            caravansKey
+                            { num -> game.enemyCaravans[num] }
                         )
-                        PlayerSide(activity, animationSpeed, isPvP, game, getSelectedCard(), setSelectedCard, getMySymbol, setMySymbol, playerHandKey)
+                        PlayerSide(
+                            activity,
+                            animationSpeed,
+                            isPvP,
+                            game,
+                            getSelectedCard(),
+                            setSelectedCard,
+                            getMySymbol,
+                            setMySymbol
+                        )
                     }
                 }
             }
@@ -530,7 +483,6 @@ fun EnemySide(
     getEnemySymbol: () -> String,
     game: Game,
     fillHalfMaxHeight: Boolean,
-    enemyHandKey: Int
 ) {
     Row(
         modifier = Modifier
@@ -546,26 +498,26 @@ fun EnemySide(
             .padding(vertical = 4.dp),
         verticalAlignment = Alignment.Top
     ) {
-        Hand(activity, animationSpeed, true, game.enemyCResources.hand, -1, Color.Transparent, {}) { enemyHandKey }
-        key(enemyHandKey) {
-            Box(Modifier
-                .fillMaxWidth()
-                .wrapContentHeight()) {
+        Hand(activity, animationSpeed, true, game.enemyCResources, -1, Color.Transparent, {})
+        Box(Modifier
+            .fillMaxWidth()
+            .wrapContentHeight()) {
+            key (game.enemyCResources.recomposeResources) {
                 ShowDeck(game.enemyCResources, activity, isKnown = !isPvP)
-                if (isPvP) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .background(Color.Transparent),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        TextSymbola(
-                            getEnemySymbol(),
-                            getTextColor(activity),
-                            24.sp,
-                            Modifier.background(getTextBackgroundColor(activity))
-                        )
-                    }
+            }
+            if (isPvP) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(Color.Transparent),
+                    contentAlignment = Alignment.Center
+                ) {
+                    TextSymbola(
+                        getEnemySymbol(),
+                        getTextColor(activity),
+                        24.sp,
+                        Modifier.background(getTextBackgroundColor(activity))
+                    )
                 }
             }
         }
@@ -581,8 +533,11 @@ fun PlayerSide(
     selectedCard: Int,
     onCardClicked: (Int) -> Unit,
     getMySymbol: () -> String, setMySymbol: () -> Unit,
-    playerHandKey: Int,
 ) {
+    if (game.playerCResources.deckSize == 0) { // TODO: make size mutableStateOf
+        LaunchedEffect(Unit) { playNoCardAlarm(activity) }
+    }
+
     val selectedCardColor = getGameSelectionColor(activity)
     Row(
         verticalAlignment = Alignment.Bottom,
@@ -591,30 +546,37 @@ fun PlayerSide(
             .padding(bottom = 4.dp, start = 4.dp)
             .wrapContentHeight(),
     ) {
-        Hand(activity, animationSpeed, false, game.playerCResources.hand, selectedCard, selectedCardColor, onCardClicked) { playerHandKey }
-        key(playerHandKey) {
-            Box(Modifier
-                .fillMaxWidth()
-                .wrapContentHeight()) {
+        Hand(
+            activity,
+            animationSpeed,
+            false,
+            game.playerCResources,
+            selectedCard,
+            selectedCardColor,
+            onCardClicked
+        )
+        Box(Modifier.fillMaxWidth().wrapContentHeight()) {
+            key (game.playerCResources.recomposeResources) {
                 ShowDeck(game.playerCResources, activity)
-                if (isPvP) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .background(Color.Transparent),
-                        contentAlignment = Alignment.TopCenter
-                    ) {
-                        TextSymbola(
-                            getMySymbol(),
-                            getTextColor(activity),
-                            24.sp,
-                            Modifier
-                                .background(getTextBackgroundColor(activity))
-                                .clickableOk(activity) {
-                                    setMySymbol()
-                                }
-                        )
-                    }
+            }
+            if (isPvP) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.Transparent),
+                    contentAlignment = Alignment.TopCenter
+                ) {
+                    // TODO: test this.
+                    TextSymbola(
+                        getMySymbol(),
+                        getTextColor(activity),
+                        24.sp,
+                        Modifier
+                            .background(getTextBackgroundColor(activity))
+                            .clickableOk(activity) {
+                                setMySymbol()
+                            }
+                    )
                 }
             }
         }
@@ -627,11 +589,12 @@ fun Hand(
     activity: MainActivity,
     animationSpeed: AnimationSpeed,
     isEnemy: Boolean,
-    cards: List<Card>,
+    cResources: CResources,
     selectedCard: Int?, selectedCardColor: Color, onClick: (Int) -> Unit,
-    key: () -> Int
 ) {
     val enemyMult = if (isEnemy) -1f else 1f
+    val cards = cResources.hand
+
     BoxWithConstraints(
         Modifier
             .fillMaxWidth(0.8f)
@@ -650,46 +613,38 @@ fun Hand(
         }.coerceAtMost(1f)
 
         cards.forEachIndexed { index, it ->
-            var isNew by rememberScoped(it) { mutableStateOf(true) }
+            val targetValue = when (it.handAnimationMark) {
+                Card.AnimationMark.STABLE -> 0f
+                Card.AnimationMark.MOVING_OUT -> -1.5f * enemyMult
+                Card.AnimationMark.MOVING_OUT_ALT -> 1.5f * enemyMult
+                Card.AnimationMark.MOVED_OUT -> 1.5f * enemyMult
+                Card.AnimationMark.NEW -> 3f * enemyMult
+            }
+            val offsetMult by animateFloatAsState(
+                targetValue,
+                tween(animationSpeed.delay.toInt())
+            )
 
-            val offsetMult by animateFloatAsState(if (isNew) {
-                3f * enemyMult
-            } else {
-                when (it.handAnimationMark) {
-                    Card.AnimationMark.STABLE -> 0f
-                    Card.AnimationMark.MOVING_OUT -> -3f * enemyMult
-                    Card.AnimationMark.MOVING_OUT_ALT -> 3f * enemyMult
-                    Card.AnimationMark.MOVED_OUT -> 3f * enemyMult
+            LaunchedEffect(it.handAnimationMark) {
+                if (it.handAnimationMark == Card.AnimationMark.NEW) {
+                    if (it.rank == Rank.JOKER) {
+                        playJokerReceivedSounds(activity)
+                    }
+                    it.handAnimationMark = Card.AnimationMark.STABLE
+                    playCardFlipSound(activity)
+                } else if (it.handAnimationMark == Card.AnimationMark.MOVING_OUT) {
+                    if (it.rank == Rank.JOKER) {
+                        playJokerSounds(activity)
+                    }
                 }
-            }, animationSpec = tween(animationSpeed.delay.toInt())) {
-                playCardFlipSound(activity)
             }
 
-            LaunchedEffect(it) {
-                if (isNew) {
-                    isNew = false
-                }
-            }
             val widthOffset = index * maxWidth.dpToPx() / cards.size
             val modifier = Modifier.offset { IntOffset(widthOffset.toInt(), (256f * scale * offsetMult).toInt()) }
+
             if (isEnemy) {
                 ShowCardBack(activity, it, modifier.padding(4.dp), scale)
             } else {
-                if (it.rank == Rank.JOKER) {
-                    when (it.handAnimationMark) {
-                        Card.AnimationMark.STABLE -> {
-                            LaunchedEffect(Unit) {
-                                playJokerReceivedSounds(activity)
-                            }
-                        }
-                        Card.AnimationMark.MOVING_OUT -> {
-                            LaunchedEffect(Unit) {
-                                playJokerSounds(activity)
-                            }
-                        }
-                        else -> {}
-                    }
-                }
                 ShowCard(
                     activity,
                     it,
@@ -699,11 +654,7 @@ fun Hand(
                             color = selectedCardColor
                         )
                         .padding(4.dp)
-                        .clickable {
-                            if (offsetMult == 0f) {
-                                onClick(index)
-                            }
-                        },
+                        .clickable { if (offsetMult == 0f) { onClick(index) } },
                     scale
                 )
             }
@@ -738,8 +689,7 @@ fun RowScope.CaravanOnField(
     state: LazyListState,
     selectCaravan: () -> Unit = {},
     canPutSelectedCardOn: (Int) -> Boolean,
-    addSelectedCardOnPosition: (Int) -> Unit,
-    caravansKey: Int,
+    addSelectedCardOnPosition: (Int) -> Unit
 ) {
     var width by remember { mutableIntStateOf(0) }
     LaunchedEffect(width) {
@@ -748,11 +698,7 @@ fun RowScope.CaravanOnField(
         }
     }
     val modifierOffset = 14.dp * (if (isEnemyCaravan) -1 else 1)
-    Column(
-        Modifier
-            .wrapContentHeight()
-            .weight(0.25f)
-    ) {
+    Column(Modifier.wrapContentHeight().weight(0.25f)) { key (caravan.recomposeResources) {
         if (!isEnemyCaravan && !isInitStage && !caravan.isEmpty()) {
             TextFallout(
                 stringResource(R.string.discard),
@@ -804,9 +750,6 @@ fun RowScope.CaravanOnField(
                 Box(Modifier.wrapContentHeight(unbounded = true)) {
                     val enemyTurnMult = if (isPlayerTurn) 1 else -1
 
-                    val memCards = remember { mutableObjectListOf<CardWithModifier>() }
-                    memCards.addAll(caravan.cards - memCards.asMutableList().toSet())
-
                     @Composable
                     fun ModifierOnCardInCaravan(
                         modifier: Card,
@@ -814,13 +757,27 @@ fun RowScope.CaravanOnField(
                         it: CardWithModifier
                     ) {
                         val offsetHeightMult by animateFloatAsState(when (modifier.caravanAnimationMark) {
-                            else -> 0f
+                            Card.AnimationMark.STABLE -> 0f
+                            Card.AnimationMark.NEW -> 3f * enemyTurnMult
+                            Card.AnimationMark.MOVING_OUT -> 0f
+                            Card.AnimationMark.MOVING_OUT_ALT -> 0f
+                            Card.AnimationMark.MOVED_OUT -> 0f
                         }, animationSpec = tween(animationSpeed.delay.toInt()))
 
                         val offsetWidthMult by animateFloatAsState(when (it.card.caravanAnimationMark) {
                             Card.AnimationMark.STABLE -> 0f
-                            else -> 2f
+                            Card.AnimationMark.NEW -> 0f
+                            Card.AnimationMark.MOVING_OUT -> 2f
+                            Card.AnimationMark.MOVING_OUT_ALT -> 2f
+                            Card.AnimationMark.MOVED_OUT -> 2f
                         }, animationSpec = tween(animationSpeed.delay.toInt()))
+
+                        LaunchedEffect(it.card.caravanAnimationMark) {
+                            if (it.card.caravanAnimationMark == Card.AnimationMark.NEW) {
+                                it.card.caravanAnimationMark = Card.AnimationMark.STABLE
+                                playCardFlipSound(activity)
+                            }
+                        }
 
                         Box(modifier = Modifier
                             .layout { measurable, constraints ->
@@ -846,13 +803,27 @@ fun RowScope.CaravanOnField(
                         index: Int
                     ) {
                         val offsetHeightMult by animateFloatAsState(when (it.card.caravanAnimationMark) {
-                            else -> 0f
+                            Card.AnimationMark.STABLE -> 0f
+                            Card.AnimationMark.NEW -> 3f * enemyTurnMult
+                            Card.AnimationMark.MOVING_OUT -> 0f
+                            Card.AnimationMark.MOVING_OUT_ALT -> 0f
+                            Card.AnimationMark.MOVED_OUT -> 0f
                         }, animationSpec = tween(animationSpeed.delay.toInt()))
 
                         val offsetWidthMult by animateFloatAsState(when (it.card.caravanAnimationMark) {
                             Card.AnimationMark.STABLE -> 0f
-                            else -> 2f
+                            Card.AnimationMark.NEW -> 0f
+                            Card.AnimationMark.MOVING_OUT -> 2f
+                            Card.AnimationMark.MOVING_OUT_ALT -> 2f
+                            Card.AnimationMark.MOVED_OUT -> 2f
                         }, animationSpec = tween(animationSpeed.delay.toInt()))
+
+                        LaunchedEffect(it.card.caravanAnimationMark) {
+                            if (it.card.caravanAnimationMark == Card.AnimationMark.NEW) {
+                                it.card.caravanAnimationMark = Card.AnimationMark.STABLE
+                                playCardFlipSound(activity)
+                            }
+                        }
 
                         val coverColor = if (canPutSelectedCardOn(index)) {
                             Color(0f, 1f, 0f, 0.33f)
@@ -908,15 +879,13 @@ fun RowScope.CaravanOnField(
                         }
                     }
 
-                    key(caravansKey) {
-                        memCards.forEachIndexed { index, it ->
-                            CardInCaravan(it, index)
-                        }
+                    caravan.cards.forEachIndexed { index, it ->
+                        CardInCaravan(it, index)
                     }
                 }
             }
         }
-    }
+    } }
 }
 
 @SuppressLint("UnusedBoxWithConstraintsScope")
@@ -1032,7 +1001,6 @@ fun ColumnScope.Caravans(
     isGameOver: () -> Boolean,
     getPlayerCaravan: (Int) -> Caravan,
     getEnemyCaravan: (Int) -> Caravan,
-    caravansKey: Int
 ) {
     val enemyCaravanFillHeight = if (isMaxHeight) 0.36f else 0.425f
     Column(
@@ -1061,77 +1029,78 @@ fun ColumnScope.Caravans(
                         getSelectedCard()?.let { canPutCard(it, caravan, false, index) } == true
                     },
                     { card -> addCardToEnemyCaravan(it, card) },
-                    caravansKey
                 )
             }
         }
 
-        key(caravansKey) {
-            Column(Modifier.wrapContentHeight()) {
-                Row(
-                    Modifier
-                        .fillMaxWidth()
-                        .height(24.dp)) {
-                    repeat(3) {
-                        val caravan = getEnemyCaravan(it)
-                        val opposingValue = getPlayerCaravan(it).getValue()
+        Column(Modifier.wrapContentHeight()) {
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .height(24.dp)) {
+                repeat(3) {
+                    val caravan = getEnemyCaravan(it)
+                    val opposingValue = getPlayerCaravan(it).getValue()
+                    key (caravan.recomposeResources) {
                         Score(activity, it, caravan, opposingValue)
                     }
                 }
+            }
 
-                val text = when {
-                    isGameOver() -> stringResource(R.string.can_t_act)
-                    !isPlayersTurn() -> stringResource(R.string.wait)
-                    getIsInitStage() -> stringResource(R.string.init_stage)
-                    getSelectedCard() != null -> {
-                        stringResource(R.string.discard_card)
-                    }
-                    getSelectedCaravan() in (0..2) -> {
-                        stringResource(R.string.drop_caravan, getSelectedCaravan() + 1)
-                    }
-                    else -> stringResource(R.string.your_turn)
+            val text = when {
+                isGameOver() -> stringResource(R.string.can_t_act)
+                !isPlayersTurn() -> stringResource(R.string.wait)
+                getIsInitStage() -> stringResource(R.string.init_stage)
+                getSelectedCard() != null -> {
+                    stringResource(R.string.discard_card)
                 }
-                val modifier = Modifier
-                    .fillMaxWidth(0.66f)
-                    .let {
-                        if (canDiscard() && (getSelectedCard() != null || getSelectedCaravan() in (0..2))) {
-                            it
-                                .clickable {
-                                    if (!canDiscard()) return@clickable
-                                    if (getSelectedCard() != null) {
-                                        dropCardFromHand()
-                                    } else if (getSelectedCaravan() in (0..2)) {
-                                        dropSelectedCaravan()
-                                    }
+                getSelectedCaravan() in (0..2) -> {
+                    stringResource(R.string.drop_caravan, getSelectedCaravan() + 1)
+                }
+                else -> stringResource(R.string.your_turn)
+            }
+            val modifier = Modifier
+                .fillMaxWidth(0.66f)
+                .let {
+                    if (canDiscard() && (getSelectedCard() != null || getSelectedCaravan() in (0..2))) {
+                        it
+                            .clickable {
+                                if (!canDiscard()) return@clickable
+                                if (getSelectedCard() != null) {
+                                    dropCardFromHand()
+                                } else if (getSelectedCaravan() in (0..2)) {
+                                    dropSelectedCaravan()
                                 }
-                                .background(getTextBackgroundColor(activity).let {
-                                    Color(it.red, it.green, it.blue, 0.75f)
-                                })
-                        } else {
-                            it.background(getGrayTransparent(activity))
-                        }
+                            }
+                            .background(getTextBackgroundColor(activity).let {
+                                Color(it.red, it.green, it.blue, 0.81f)
+                            })
+                    } else {
+                        it.background(getGrayTransparent(activity))
                     }
-                    .padding(horizontal = 8.dp, vertical = 4.dp)
-
-                Box(Modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight(), contentAlignment = Alignment.Center) {
-                    TextFallout(
-                        text,
-                        getTextColor(activity),
-                        getTextStrokeColor(activity),
-                        16.sp,
-                        modifier,
-                    )
                 }
+                .padding(horizontal = 8.dp, vertical = 4.dp)
 
-                Row(
-                    Modifier
-                        .fillMaxWidth()
-                        .height(24.dp)) {
-                    repeat(3) {
-                        val caravan = getPlayerCaravan(it)
-                        val opposingValue = getEnemyCaravan(it).getValue()
+            Box(Modifier
+                .fillMaxWidth()
+                .wrapContentHeight(), contentAlignment = Alignment.Center) {
+                TextFallout(
+                    text,
+                    getTextColor(activity),
+                    getTextStrokeColor(activity),
+                    16.sp,
+                    modifier,
+                )
+            }
+
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .height(24.dp)) {
+                repeat(3) {
+                    val caravan = getPlayerCaravan(it)
+                    val opposingValue = getEnemyCaravan(it).getValue()
+                    key (caravan.recomposeResources) {
                         Score(activity, it + 3, caravan, opposingValue)
                     }
                 }
@@ -1166,7 +1135,6 @@ fun ColumnScope.Caravans(
                         canPlayerMove() && !getIsInitStage() && canPutCard(selectedCard, caravan, true, index)
                     },
                     { card -> addCardToPlayerCaravan(it, card) },
-                    caravansKey
                 )
             }
         }

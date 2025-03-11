@@ -66,7 +66,7 @@ fun afterPlayerMove(
         game.isPlayerTurn = false
         val isNewCardAdded = game.playerCResources.deckSize > 0 && game.playerCResources.hand.size < 5
 
-        game.processField()
+        game.processField(0L)
         if (speed.delay != 0L) {
             delay(speed.delay * 2) // Remove cards; move cards within caravan
         }
@@ -158,14 +158,14 @@ fun pingForMove(
             if (speed.delay != 0L) {
                 delay(speed.delay) // Just break.
             }
-            game.enemy.makeMove(game)
+            game.enemy.makeMove(game, 0L)
             updateView()
 
             if (speed.delay != 0L) {
                 delay(speed.delay * 2) // Move card from hand; move card ontoField
             }
 
-            game.processField()
+            game.processField(0L)
             if (speed.delay != 0L) {
                 delay(speed.delay * 2) // Remove cards; move cards within caravan
             }
@@ -198,9 +198,6 @@ fun ShowGamePvP(
     isCreator: Boolean,
     roomNumber: Int,
     showAlert: (String, String, (() -> Unit)?) -> Unit,
-    enemyHandKey: Int,
-    caravansKey: Int,
-    playerHandKey: Int,
     updateEnemyHand: () -> Unit,
     updateCaravans: () -> Unit,
     updatePlayerHand: () -> Unit,
@@ -262,166 +259,166 @@ fun ShowGamePvP(
         timeOnTimer = 0
     }
 
-    fun dropCardFromHand() {
-        if (!game.canPlayerMove) return
-        val selectedCardNN = selectedCard
-        if (selectedCardNN !in game.playerCResources.hand.indices) return
-        playVatsReady(activity)
-        game.playerCResources.dropCardFromHand(selectedCardNN)
-        resetSelected()
-        afterPlayerMove(game, speed, roomNumber, isCreator = isCreator, MoveResponse(
-            moveCode = 2,
-            handCardNumber = selectedCardNN,
-        ), chosenSymbol,
-            ::updateAll,
-            ::corruptGame,
-            {
-                pingForMove(
-                    game, speed, roomNumber, isCreator,
-                    { enemyChosenSymbol = it },
-                    ::corruptGame,
-                    ::updateAll,
-                    {
-                        if (it) {
-                            timeOnTimerTrigger = !timeOnTimerTrigger
-                        }
-                    }
-                )
-            }
-        )
-    }
-
-    fun dropCaravan() {
-        if (!game.canPlayerMove) return
-        val selectedCaravanNN = selectedCaravan
-        if (selectedCaravanNN == -1) return
-        playVatsReady(activity)
-        activity.processChallengesMove(Challenge.Move(moveCode = 1), game)
-        game.playerCaravans[selectedCaravanNN].dropCaravan()
-        updateCaravans()
-        resetSelected()
-        afterPlayerMove(game, speed, roomNumber, isCreator = isCreator, MoveResponse(
-            moveCode = 1,
-            caravanCode = selectedCaravanNN,
-        ), chosenSymbol,
-            ::updateAll,
-            ::corruptGame,
-            {
-                pingForMove(
-                    game, speed, roomNumber, isCreator,
-                    { enemyChosenSymbol = it },
-                    ::corruptGame,
-                    ::updateAll,
-                    {
-                        if (it) {
-                            timeOnTimerTrigger = !timeOnTimerTrigger
-                        }
-                    }
-                )
-            }
-        )
-    }
-
-    fun addCardToCaravan(
-        caravan: Caravan,
-        caravanIndex: Int,
-        position: Int,
-        isEnemy: Boolean = false
-    ) {
-        if (!game.canPlayerMove) return
-        fun onCaravanCardInserted(cardIndex: Int, caravanIndex: Int, cardInCaravan: Int? = null) {
-            resetSelected()
-            updateCaravans()
-            if (cardInCaravan == null) {
-                afterPlayerMove(game, speed, roomNumber, isCreator = isCreator, MoveResponse(
-                    moveCode = 3,
-                    handCardNumber = cardIndex,
-                    caravanCode = caravanIndex
-                ), chosenSymbol,
-                    ::updateAll,
-                    ::corruptGame,
-                    {
-                        pingForMove(
-                            game, speed, roomNumber, isCreator,
-                            { enemyChosenSymbol = it },
-                            ::corruptGame,
-                            ::updateAll,
-                            {
-                                if (it) {
-                                    timeOnTimerTrigger = !timeOnTimerTrigger
-                                }
-                            }
-                        )
-                    }
-                )
-            } else {
-                afterPlayerMove(game, speed, roomNumber, isCreator = isCreator, MoveResponse(
-                    moveCode = 4,
-                    handCardNumber = cardIndex,
-                    cardInCaravanNumber = cardInCaravan,
-                    caravanCode = if (isEnemy) (-3 + caravanIndex) else caravanIndex
-                ), chosenSymbol,
-                    ::updateAll,
-                    ::corruptGame,
-                    {
-                        pingForMove(
-                            game, speed, roomNumber, isCreator,
-                            { enemyChosenSymbol = it },
-                            ::corruptGame,
-                            ::updateAll,
-                            {
-                                if (it) {
-                                    timeOnTimerTrigger = !timeOnTimerTrigger
-                                }
-                            }
-                        )
-                    }
-                )
-            }
-        }
-
-        val cardIndex = selectedCard
-        val card = game.playerCResources.hand.getOrNull(cardIndex) ?: return
-        if (game.isPlayerTurn && !game.isOver() && (!game.isInitStage() || !card.isModifier())) {
-            if (!card.isModifier()) {
-                if (position == caravan.cards.size && !isEnemy) {
-                    if (caravan.canPutCardOnTop(card)) {
-                        playCardFlipSound(activity)
-                        activity.processChallengesMove(Challenge.Move(
-                            moveCode = 3,
-                            handCard = card
-                        ), game)
-                        caravan.putCardOnTop(game.playerCResources.removeFromHand(cardIndex))
-                        onCaravanCardInserted(cardIndex, caravanIndex, null)
-                    }
-                }
-            } else {
-                if (position in caravan.cards.indices && caravan.cards[position].canAddModifier(
-                        card
-                    )
-                ) {
-                    playCardFlipSound(activity)
-                    if (card.isOrdinary() && card.rank == Rank.JOKER) {
-                        playJokerSounds(activity)
-                    } else if (card.getWildWastelandType() != null) {
-                        playWWSound(activity)
-                    } else if (card.isNuclear()) {
-                        playNukeBlownSound(activity)
-                    }
-                    activity.processChallengesMove(Challenge.Move(
-                        moveCode = 4,
-                        handCard = card
-                    ), game)
-                    caravan.cards[position].addModifier(
-                        game.playerCResources.removeFromHand(
-                            cardIndex
-                        )
-                    )
-                    onCaravanCardInserted(cardIndex, caravanIndex, position)
-                }
-            }
-        }
-    }
+//    fun dropCardFromHand() {
+//        if (!game.canPlayerMove) return
+//        val selectedCardNN = selectedCard
+//        if (selectedCardNN !in game.playerCResources.hand.indices) return
+//        playVatsReady(activity)
+//        game.playerCResources.dropCardFromHand(selectedCardNN)
+//        resetSelected()
+//        afterPlayerMove(game, speed, roomNumber, isCreator = isCreator, MoveResponse(
+//            moveCode = 2,
+//            handCardNumber = selectedCardNN,
+//        ), chosenSymbol,
+//            ::updateAll,
+//            ::corruptGame,
+//            {
+//                pingForMove(
+//                    game, speed, roomNumber, isCreator,
+//                    { enemyChosenSymbol = it },
+//                    ::corruptGame,
+//                    ::updateAll,
+//                    {
+//                        if (it) {
+//                            timeOnTimerTrigger = !timeOnTimerTrigger
+//                        }
+//                    }
+//                )
+//            }
+//        )
+//    }
+//
+//    fun dropCaravan() {
+//        if (!game.canPlayerMove) return
+//        val selectedCaravanNN = selectedCaravan
+//        if (selectedCaravanNN == -1) return
+//        playVatsReady(activity)
+//        activity.processChallengesMove(Challenge.Move(moveCode = 1), game)
+//        game.playerCaravans[selectedCaravanNN].dropCaravan()
+//        updateCaravans()
+//        resetSelected()
+//        afterPlayerMove(game, speed, roomNumber, isCreator = isCreator, MoveResponse(
+//            moveCode = 1,
+//            caravanCode = selectedCaravanNN,
+//        ), chosenSymbol,
+//            ::updateAll,
+//            ::corruptGame,
+//            {
+//                pingForMove(
+//                    game, speed, roomNumber, isCreator,
+//                    { enemyChosenSymbol = it },
+//                    ::corruptGame,
+//                    ::updateAll,
+//                    {
+//                        if (it) {
+//                            timeOnTimerTrigger = !timeOnTimerTrigger
+//                        }
+//                    }
+//                )
+//            }
+//        )
+//    }
+//
+//    fun addCardToCaravan(
+//        caravan: Caravan,
+//        caravanIndex: Int,
+//        position: Int,
+//        isEnemy: Boolean = false
+//    ) {
+//        if (!game.canPlayerMove) return
+//        fun onCaravanCardInserted(cardIndex: Int, caravanIndex: Int, cardInCaravan: Int? = null) {
+//            resetSelected()
+//            updateCaravans()
+//            if (cardInCaravan == null) {
+//                afterPlayerMove(game, speed, roomNumber, isCreator = isCreator, MoveResponse(
+//                    moveCode = 3,
+//                    handCardNumber = cardIndex,
+//                    caravanCode = caravanIndex
+//                ), chosenSymbol,
+//                    ::updateAll,
+//                    ::corruptGame,
+//                    {
+//                        pingForMove(
+//                            game, speed, roomNumber, isCreator,
+//                            { enemyChosenSymbol = it },
+//                            ::corruptGame,
+//                            ::updateAll,
+//                            {
+//                                if (it) {
+//                                    timeOnTimerTrigger = !timeOnTimerTrigger
+//                                }
+//                            }
+//                        )
+//                    }
+//                )
+//            } else {
+//                afterPlayerMove(game, speed, roomNumber, isCreator = isCreator, MoveResponse(
+//                    moveCode = 4,
+//                    handCardNumber = cardIndex,
+//                    cardInCaravanNumber = cardInCaravan,
+//                    caravanCode = if (isEnemy) (-3 + caravanIndex) else caravanIndex
+//                ), chosenSymbol,
+//                    ::updateAll,
+//                    ::corruptGame,
+//                    {
+//                        pingForMove(
+//                            game, speed, roomNumber, isCreator,
+//                            { enemyChosenSymbol = it },
+//                            ::corruptGame,
+//                            ::updateAll,
+//                            {
+//                                if (it) {
+//                                    timeOnTimerTrigger = !timeOnTimerTrigger
+//                                }
+//                            }
+//                        )
+//                    }
+//                )
+//            }
+//        }
+//
+//        val cardIndex = selectedCard
+//        val card = game.playerCResources.hand.getOrNull(cardIndex) ?: return
+//        if (game.isPlayerTurn && !game.isOver() && (!game.isInitStage() || !card.isModifier())) {
+//            if (!card.isModifier()) {
+//                if (position == caravan.cards.size && !isEnemy) {
+//                    if (caravan.canPutCardOnTop(card)) {
+//                        playCardFlipSound(activity)
+//                        activity.processChallengesMove(Challenge.Move(
+//                            moveCode = 3,
+//                            handCard = card
+//                        ), game)
+//                        caravan.putCardOnTop(game.playerCResources.removeFromHand(cardIndex))
+//                        onCaravanCardInserted(cardIndex, caravanIndex, null)
+//                    }
+//                }
+//            } else {
+//                if (position in caravan.cards.indices && caravan.cards[position].canAddModifier(
+//                        card
+//                    )
+//                ) {
+//                    playCardFlipSound(activity)
+//                    if (card.isOrdinary() && card.rank == Rank.JOKER) {
+//                        playJokerSounds(activity)
+//                    } else if (card.getWildWastelandType() != null) {
+//                        playWWSound(activity)
+//                    } else if (card.isNuclear()) {
+//                        playNukeBlownSound(activity)
+//                    }
+//                    activity.processChallengesMove(Challenge.Move(
+//                        moveCode = 4,
+//                        handCard = card
+//                    ), game)
+//                    caravan.cards[position].addModifier(
+//                        game.playerCResources.removeFromHand(
+//                            cardIndex
+//                        )
+//                    )
+//                    onCaravanCardInserted(cardIndex, caravanIndex, position)
+//                }
+//            }
+//        }
+//    }
 
     val symbols = listOf(
         "\uD83D\uDC4B", // HI!
@@ -436,38 +433,35 @@ fun ShowGamePvP(
         "\uD83D\uDC7F", // Devil angry
     )
 
-    ShowGameRaw(
-        activity,
-        true,
-        game,
-        goBack,
-        speed,
-        getEnemySymbol = { symbols[enemyChosenSymbol.coerceIn(0, symbols.size - 1)] },
-        getMySymbol = { symbols[chosenSymbol.coerceIn(0, symbols.size - 1)] },
-        setMySymbol = { chosenSymbol = (chosenSymbol + 1) % symbols.size },
-        { selectedCard },
-        ::onCardClicked,
-        getSelectedCaravan = { selectedCaravan },
-        setSelectedCaravan = lambda@ {
-            if (game.isOver()) {
-                return@lambda
-            }
-            selectedCaravan = it
-            if (selectedCaravan == -1) {
-                playCloseSound(activity)
-            } else {
-                playSelectSound(activity)
-            }
-            selectedCard = -1
-            updateCaravans()
-        },
-        ::addCardToCaravan,
-        ::dropCardFromHand,
-        ::dropCaravan,
-        enemyHandKey,
-        caravansKey,
-        playerHandKey
-    )
+//    ShowGameRaw(
+//        activity,
+//        true,
+//        game,
+//        goBack,
+//        speed,
+//        getEnemySymbol = { symbols[enemyChosenSymbol.coerceIn(0, symbols.size - 1)] },
+//        getMySymbol = { symbols[chosenSymbol.coerceIn(0, symbols.size - 1)] },
+//        setMySymbol = { chosenSymbol = (chosenSymbol + 1) % symbols.size },
+//        { selectedCard },
+//        ::onCardClicked,
+//        getSelectedCaravan = { selectedCaravan },
+//        setSelectedCaravan = lambda@ {
+//            if (game.isOver()) {
+//                return@lambda
+//            }
+//            selectedCaravan = it
+//            if (selectedCaravan == -1) {
+//                playCloseSound(activity)
+//            } else {
+//                playSelectSound(activity)
+//            }
+//            selectedCard = -1
+//            updateCaravans()
+//        },
+//        ::addCardToCaravan,
+//        ::dropCardFromHand,
+//        ::dropCaravan,
+//    )
 
     key(timeOnTimer) {
         Box(

@@ -1,5 +1,8 @@
 package com.unicorns.invisible.caravan.model.primitives
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.setValue
 import com.unicorns.invisible.caravan.model.CardBack
 import kotlinx.serialization.Serializable
 import kotlin.random.Random
@@ -7,6 +10,8 @@ import kotlin.random.Random
 
 @Serializable
 class Caravan {
+    var recomposeResources by mutableIntStateOf(0)
+
     private val cardsMutable = mutableListOf<CardWithModifier>()
     val cards
         get() = cardsMutable.toList()
@@ -117,6 +122,7 @@ class Caravan {
     }
 
     fun putCardOnTop(card: Card) {
+        recomposeResources++
         cardsMutable.add(CardWithModifier(card))
     }
 }

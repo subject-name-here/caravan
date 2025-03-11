@@ -72,28 +72,24 @@ class Game(
         canPlayerMove = true
     }
 
-    fun processField(): Boolean {
+    fun processField(delay: Long) {
         val caravans = playerCaravans + enemyCaravans
         val cards = caravans.flatMap { it.cards }
-        var flag = false
 
         cards.forEach {
             if (it.hasBomb) {
                 processBomb(it)
-                flag = true
             }
         }
 
         if (cards.any { it.hasJacks() || it.hasActiveJoker }) {
             processJacks()
             processJoker()
-            flag = true
         }
 
         if (cards.any { it.hasActiveUfo || it.hasActivePete }) {
             processUfo()
             processPete()
-            flag = true
         }
 
         if (cards.any { it.hasActiveFev }) {
@@ -112,75 +108,34 @@ class Game(
 
             if (cazadorOwners.isNotEmpty()) {
                 it.getCazadorPoison(queensBlock)
-                flag = true
             }
         }
-
-        return flag
     }
 
-    fun afterPlayerMove(
-        updatePlayerHand: () -> Unit,
-        updateCaravans: () -> Unit,
-        updateEnemyHand: () -> Unit,
-        speed: AnimationSpeed
-    ) {
-        val delayLength = speed.delay.coerceAtLeast(95L)
-
-        canPlayerMove = false
-        CoroutineScope(Dispatchers.Default).launch {
-            updatePlayerHand()
-            updateCaravans()
+    suspend fun afterPlayerMove(speed: AnimationSpeed) {
+        val delayLength = speed.delay.coerceAtLeast(95L) * 3 / 2
+        processField(delayLength)
+        if (playerCResources.hand.size < 5 && playerCResources.deckSize > 0) {
+            playerCResources.addToHand()
             delay(delayLength)
-
-            if (processField()) {
-                updatePlayerHand()
-                updateCaravans()
-                updateEnemyHand()
-                delay(delayLength)
-            }
-            if (playerCResources.hand.size < 5 && playerCResources.deckSize > 0) {
-                playerCResources.addToHand()
-                updatePlayerHand()
-                delay(delayLength)
-            }
-            isPlayerTurn = false
-
-            if (checkOnGameOver()) {
-                updatePlayerHand()
-                updateCaravans()
-                updateEnemyHand()
-                return@launch
-            }
-
-            delay(delayLength * 2) // Just break.
-
-            enemy.makeMove(this@Game)
-            updateEnemyHand()
-            updateCaravans()
-            delay(delayLength)
-
-            if (processField()) {
-                updatePlayerHand()
-                updateCaravans()
-                updateEnemyHand()
-                delay(delayLength)
-            }
-            if (enemyCResources.hand.size < 5 && enemyCResources.deckSize > 0) {
-                enemyCResources.addToHand()
-                updateEnemyHand()
-                delay(delayLength)
-            }
-
-            isPlayerTurn = true
-
-            checkOnGameOver()
-            updatePlayerHand()
-            updateCaravans()
-            updateEnemyHand()
-
-            canPlayerMove = true
         }
+        isPlayerTurn = false
+
+        if (checkOnGameOver()) {
+            return
+        }
+
+        delay(delayLength)
+
+        enemy.makeMove(this@Game, delayLength)
+
+        processField(delayLength)
+        if (enemyCResources.hand.size < 5 && enemyCResources.deckSize > 0) {
+            enemyCResources.addToHand()
+        }
+        isPlayerTurn = true
+
+        checkOnGameOver()
     }
 
     var specialGameOverCondition: () -> Int = { 0 }

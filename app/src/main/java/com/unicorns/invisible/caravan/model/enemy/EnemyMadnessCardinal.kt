@@ -44,5 +44,5 @@ class EnemyMadnessCardinal : EnemyPve {
     })
 
 
-    override fun makeMove(game: Game) {}
+    override suspend fun makeMove(game: Game, delay: Long) {}
 }

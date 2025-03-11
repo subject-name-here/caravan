@@ -15,7 +15,7 @@ class EnemyStory2 : Enemy {
     })
 
     private var cazadorsAdded = 0
-    override fun makeMove(game: Game) {
+    override suspend fun makeMove(game: Game, delay: Long) {
         val hand = game.enemyCResources.hand
 
         if (game.isInitStage()) {

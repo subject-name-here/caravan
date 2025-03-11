@@ -648,9 +648,9 @@ fun StartPvP(
                 (game.enemy as EnemyPlayer).latestMoveResponse = move
                 game.isPlayerTurn = isCreator
 
-                game.enemy.makeMove(game)
+                // game.enemy.makeMove(game)
                 updateEnemyHand()
-                game.processField()
+                game.processField(0L)
 
                 updateCaravans()
 
@@ -699,9 +699,6 @@ fun StartPvP(
         isCreator,
         roomNumber,
         showAlertDialog,
-        enemyHandKey,
-        caravansKey,
-        playerHandKey,
         ::updateEnemyHand,
         ::updateCaravans,
         ::updatePlayerHand

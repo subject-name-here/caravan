@@ -20,5 +20,5 @@ class EnemyViqueen : EnemyPve {
     override fun getBet(): Int? { return null }
     override fun retractBet() {}
     override fun addReward(reward: Int) {}
-    override fun makeMove(game: Game) {}
+    override suspend fun makeMove(game: Game, delay: Long) {}
 }

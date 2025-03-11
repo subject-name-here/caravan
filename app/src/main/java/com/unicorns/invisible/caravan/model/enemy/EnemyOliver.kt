@@ -22,11 +22,11 @@ class EnemyOliver : EnemyPve {
     override fun retractBet() { bank -= getBet() }
     override fun addReward(reward: Int) { bank += reward }
 
-    override fun makeMove(game: Game) {
+    override suspend fun makeMove(game: Game, delay: Long) {
         if (game.isInitStage()) {
             val card = game.enemyCResources.hand.withIndex().filter { !it.value.isModifier() }.random()
             val caravan = game.enemyCaravans.filter { it.isEmpty() }.random()
-            caravan.putCardOnTop(game.enemyCResources.removeFromHand(card.index))
+            caravan.putCardOnTop(game.enemyCResources.removeFromHand(card.index, delay))
             return
         }
 
@@ -37,7 +37,7 @@ class EnemyOliver : EnemyPve {
         cards.forEach { card ->
             caravans.forEach { caravan ->
                 if (caravan.canPutCardOnTop(card.value) && Random.nextBoolean()) {
-                    caravan.putCardOnTop(game.enemyCResources.removeFromHand(card.index))
+                    caravan.putCardOnTop(game.enemyCResources.removeFromHand(card.index, delay))
                     return
                 }
             }
@@ -51,7 +51,7 @@ class EnemyOliver : EnemyPve {
             cards.forEach { card ->
                 modifiers.forEach { modifier ->
                     if (card.canAddModifier(modifier.value) && Random.nextBoolean()) {
-                        card.addModifier(game.enemyCResources.removeFromHand(modifier.index))
+                        card.addModifier(game.enemyCResources.removeFromHand(modifier.index, delay))
                         return
                     }
                 }
@@ -67,6 +67,6 @@ class EnemyOliver : EnemyPve {
             }
         }
 
-        game.enemyCResources.dropCardFromHand(game.enemyCResources.hand.indices.random())
+        game.enemyCResources.dropCardFromHand(game.enemyCResources.hand.indices.random(), delay)
     }
 }

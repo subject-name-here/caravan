@@ -10,5 +10,5 @@ class EnemyFinalBossStory : Enemy {
     override fun createDeck(): CResources = CResources(CustomDeck(CardBack.CHINESE, false))
     override fun isSpeedOverriding() = true
 
-    override fun makeMove(game: Game) {}
+    override suspend fun makeMove(game: Game, delay: Long) {}
 }

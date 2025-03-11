@@ -12,7 +12,7 @@ data object EnemyTower3 : Enemy {
         removeAll(toList().filter { it.rank == Rank.JOKER })
     })
 
-    override fun makeMove(game: Game) {
+    override suspend fun makeMove(game: Game, delay: Long) {
         val hand = game.enemyCResources.hand
         val overWeightCaravans = game.enemyCaravans.filter { it.getValue() > 26 }
 

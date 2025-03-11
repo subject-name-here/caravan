@@ -10,7 +10,7 @@ data object EnemyTower3A : Enemy {
         return CResources(CardBack.LUCKY_38, true)
     }
 
-    override fun makeMove(game: Game) {
+    override suspend fun makeMove(game: Game, delay: Long) {
 
     }
 }

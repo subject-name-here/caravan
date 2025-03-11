@@ -1,6 +1,10 @@
 package com.unicorns.invisible.caravan.model.primitives
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.setValue
 import com.unicorns.invisible.caravan.model.CardBack
+import kotlinx.coroutines.delay
 import kotlinx.serialization.Serializable
 import kotlin.random.Random
 
@@ -8,6 +12,8 @@ import kotlin.random.Random
 @Serializable
 class CResources(private val deck: CustomDeck) {
     constructor(back: CardBack, isAlt: Boolean) : this(CustomDeck(back, isAlt))
+
+    var recomposeResources by mutableIntStateOf(0)
 
     private val handMutable: MutableList<Card> = mutableListOf()
     val hand: List<Card>
@@ -48,6 +54,7 @@ class CResources(private val deck: CustomDeck) {
 
     private fun addCardToHand(card: Card) {
         handMutable.add(card)
+        recomposeResources++
     }
 
     fun addToHand() {
@@ -83,12 +90,21 @@ class CResources(private val deck: CustomDeck) {
         }
     }
 
-    fun removeFromHand(index: Int): Card {
-        return handMutable.removeAt(index)
+    suspend fun removeFromHand(index: Int, delay: Long = 0L): Card {
+        handMutable[index].handAnimationMark = Card.AnimationMark.MOVING_OUT
+        recomposeResources++
+        delay(delay)
+        val removedCard = handMutable.removeAt(index)
+        recomposeResources++
+        return removedCard
     }
 
-    fun dropCardFromHand(index: Int) {
+    suspend fun dropCardFromHand(index: Int, delay: Long = 0L) {
+        handMutable[index].handAnimationMark = Card.AnimationMark.MOVING_OUT_ALT
+        recomposeResources++
+        delay(delay)
         handMutable.removeAt(index)
+        recomposeResources++
     }
 
     fun getDeckBack() = deck.firstOrNull()?.let { it.back to it.isAlt }
