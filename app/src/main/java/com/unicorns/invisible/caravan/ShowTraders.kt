@@ -115,6 +115,7 @@ fun ShowTraders(activity: MainActivity, goBack: () -> Unit) {
 
         var selectedTab by rememberSaveable { mutableIntStateOf(0) }
         var update by remember { mutableStateOf(false) }
+        val state = rememberLazyListState()
         key(update) {
             Column(
                 Modifier,
@@ -165,7 +166,6 @@ fun ShowTraders(activity: MainActivity, goBack: () -> Unit) {
                 }
 
                 val selectedTrader = save.traders[selectedTab]
-                val state = rememberLazyListState()
                 LazyColumn(
                     Modifier
                         .fillMaxSize()

@@ -96,7 +96,6 @@ import com.unicorns.invisible.caravan.utils.scrollbar
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
 
@@ -381,43 +380,47 @@ fun ShowGameRaw(
                     .fillMaxSize()
                     .getTableBackground()) {}
             }
-            BoxWithConstraints(Modifier.padding(innerPadding)) {
+            BoxWithConstraints(Modifier.padding(innerPadding)) field@ {
+                var handCardsScale by remember { mutableFloatStateOf(1f) }
+                val cardWidth = maxWidth.dpToPx().toFloat() / 5f - 8.dp.dpToPx()
+                handCardsScale = (cardWidth / 183f).coerceAtMost(1f)
+                val handCardHeight = 256f * handCardsScale
+
                 if (maxWidth > maxHeight) {
                     Row(Modifier.fillMaxSize()) {
                         Column(
                             verticalArrangement = Arrangement.Center,
                             horizontalAlignment = Alignment.CenterHorizontally,
-                            modifier = Modifier.fillMaxWidth(0.5f)
+                            modifier = Modifier.fillMaxWidth(0.5f).fillMaxHeight()
                         ) {
-                            EnemySide(activity, animationSpeed, isPvP, getEnemySymbol, game, fillHalfMaxHeight = true)
-                            PlayerSide(activity, animationSpeed, isPvP, game, getSelectedCard(), setSelectedCard, getMySymbol, setMySymbol)
+                            EnemySide(activity, animationSpeed, isPvP, getEnemySymbol, game, fillHalfMaxHeight = true, handCardHeight)
+                            PlayerSide(activity, animationSpeed, isPvP, game, getSelectedCard(), setSelectedCard, getMySymbol, setMySymbol, fillMaxHeight = true, handCardHeight)
                         }
-//                        Caravans(
-//                            activity,
-//                            animationSpeed,
-//                            { game.playerCResources.hand.getOrNull(getSelectedCard()) },
-//                            getSelectedCaravan,
-//                            setSelectedCaravan,
-//                            isMaxHeight = true,
-//                            state1Enemy,
-//                            state1Player,
-//                            state2Enemy,
-//                            state2Player,
-//                            state3Enemy,
-//                            state3Player,
-//                            ::addCardToPlayerCaravan,
-//                            ::addCardToEnemyCaravan,
-//                            { dropCardFromHand() },
-//                            dropCaravan,
-//                            ::isInitStage,
-//                            { game.isPlayerTurn },
-//                            { game.canPlayerMove },
-//                            ::canDiscard,
-//                            { game.isOver() },
-//                            { num -> game.playerCaravans[num] },
-//                            { num -> game.enemyCaravans[num] },
-//                            caravansKey
-//                        )
+                        Caravans(
+                            activity,
+                            animationSpeed,
+                            { game.playerCResources.hand.getOrNull(getSelectedCard()) },
+                            getSelectedCaravan,
+                            setSelectedCaravan,
+                            height = this@field.maxHeight.dpToPx(),
+                            state1Enemy,
+                            state1Player,
+                            state2Enemy,
+                            state2Player,
+                            state3Enemy,
+                            state3Player,
+                            ::addCardToPlayerCaravan,
+                            ::addCardToEnemyCaravan,
+                            dropCardFromHand,
+                            dropCaravan,
+                            ::isInitStage,
+                            { game.isPlayerTurn },
+                            { game.canPlayerMove },
+                            ::canDiscard,
+                            { game.isOver() },
+                            { num -> game.playerCaravans[num] },
+                            { num -> game.enemyCaravans[num] }
+                        )
                     }
                 } else {
                     Column(
@@ -431,7 +434,8 @@ fun ShowGameRaw(
                             isPvP,
                             getEnemySymbol,
                             game,
-                            fillHalfMaxHeight = false
+                            fillHalfMaxHeight = false,
+                            handCardHeight
                         )
                         Caravans(
                             activity,
@@ -439,7 +443,7 @@ fun ShowGameRaw(
                             { game.playerCResources.hand.getOrNull(getSelectedCard()) },
                             getSelectedCaravan,
                             setSelectedCaravan,
-                            isMaxHeight = false,
+                            this@field.maxHeight.dpToPx() - 2 * handCardHeight,
                             state1Enemy,
                             state1Player,
                             state2Enemy,
@@ -466,7 +470,9 @@ fun ShowGameRaw(
                             getSelectedCard(),
                             setSelectedCard,
                             getMySymbol,
-                            setMySymbol
+                            setMySymbol,
+                            fillMaxHeight = true,
+                            handCardHeight
                         )
                     }
                 }
@@ -483,6 +489,7 @@ fun EnemySide(
     getEnemySymbol: () -> String,
     game: Game,
     fillHalfMaxHeight: Boolean,
+    height: Float,
 ) {
     Row(
         modifier = Modifier
@@ -491,17 +498,13 @@ fun EnemySide(
                 if (fillHalfMaxHeight) {
                     it.fillMaxHeight(0.5f)
                 } else {
-                    it.wrapContentHeight()
+                    it.height(height.toInt().pxToDp())
                 }
-                it
-            }
-            .padding(vertical = 4.dp),
+            },
         verticalAlignment = Alignment.Top
     ) {
         Hand(activity, animationSpeed, true, game.enemyCResources, -1, Color.Transparent, {})
-        Box(Modifier
-            .fillMaxWidth()
-            .wrapContentHeight()) {
+        Box(Modifier.fillMaxSize()) {
             key (game.enemyCResources.recomposeResources) {
                 ShowDeck(game.enemyCResources, activity, isKnown = !isPvP)
             }
@@ -533,6 +536,8 @@ fun PlayerSide(
     selectedCard: Int,
     onCardClicked: (Int) -> Unit,
     getMySymbol: () -> String, setMySymbol: () -> Unit,
+    fillMaxHeight: Boolean,
+    height: Float,
 ) {
     if (game.playerCResources.deckSize == 0) { // TODO: make size mutableStateOf
         LaunchedEffect(Unit) { playNoCardAlarm(activity) }
@@ -543,8 +548,13 @@ fun PlayerSide(
         verticalAlignment = Alignment.Bottom,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(bottom = 4.dp, start = 4.dp)
-            .wrapContentHeight(),
+            .let {
+                if (fillMaxHeight) {
+                    it.fillMaxHeight()
+                } else {
+                    it.height(height.toInt().pxToDp())
+                }
+            },
     ) {
         Hand(
             activity,
@@ -555,7 +565,7 @@ fun PlayerSide(
             selectedCardColor,
             onCardClicked
         )
-        Box(Modifier.fillMaxWidth().wrapContentHeight()) {
+        Box(Modifier.fillMaxSize()) {
             key (game.playerCResources.recomposeResources) {
                 ShowDeck(game.playerCResources, activity)
             }
@@ -566,7 +576,6 @@ fun PlayerSide(
                         .background(Color.Transparent),
                     contentAlignment = Alignment.TopCenter
                 ) {
-                    // TODO: test this.
                     TextSymbola(
                         getMySymbol(),
                         getTextColor(activity),
@@ -595,35 +604,24 @@ fun Hand(
     val enemyMult = if (isEnemy) -1f else 1f
     val cards = cResources.hand
 
-    BoxWithConstraints(
-        Modifier
-            .fillMaxWidth(0.8f)
-            .wrapContentHeight(),
-        Alignment.TopStart
-    ) {
-        var scale by remember { mutableFloatStateOf(1f) }
-        val cardHeight = maxHeight.dpToPx().toFloat()
-        val cardWidth = maxWidth.dpToPx().toFloat() / 5f - 8.dp.dpToPx()
-        val scaleH = cardHeight / 256f
-        val scaleW = cardWidth / 183f
-        scale = when {
-            scaleH == 0f -> scaleW
-            scaleW == 0f -> scaleH
-            else -> min(scaleW, scaleH)
-        }.coerceAtMost(1f)
+    LaunchedEffect(cResources.recomposeResources) {}
 
+    BoxWithConstraints(
+        Modifier.fillMaxWidth(0.83f).fillMaxHeight(),
+        Alignment.CenterStart
+    ) {
+        val scale = maxHeight.dpToPx() / 256f
         cards.forEachIndexed { index, it ->
-            val targetValue = when (it.handAnimationMark) {
-                Card.AnimationMark.STABLE -> 0f
-                Card.AnimationMark.MOVING_OUT -> -1.5f * enemyMult
-                Card.AnimationMark.MOVING_OUT_ALT -> 1.5f * enemyMult
-                Card.AnimationMark.MOVED_OUT -> 1.5f * enemyMult
-                Card.AnimationMark.NEW -> 3f * enemyMult
-            }
             val offsetMult by animateFloatAsState(
-                targetValue,
+                when (it.handAnimationMark) {
+                    Card.AnimationMark.STABLE -> 0f
+                    Card.AnimationMark.MOVING_OUT -> -1.5f * enemyMult
+                    Card.AnimationMark.MOVING_OUT_ALT -> 1.5f * enemyMult
+                    Card.AnimationMark.MOVED_OUT -> 1.5f * enemyMult
+                    Card.AnimationMark.NEW -> 3f * enemyMult
+                },
                 tween(animationSpeed.delay.toInt())
-            )
+            ) {}
 
             LaunchedEffect(it.handAnimationMark) {
                 if (it.handAnimationMark == Card.AnimationMark.NEW) {
@@ -977,13 +975,13 @@ fun RowScope.Score(activity: MainActivity, num: Int, caravan: Caravan, opposingV
 }
 
 @Composable
-fun ColumnScope.Caravans(
+fun Caravans(
     activity: MainActivity,
     animationSpeed: AnimationSpeed,
     getSelectedCard: () -> Card?,
     getSelectedCaravan: () -> Int,
     setSelectedCaravan: (Int) -> Unit,
-    isMaxHeight: Boolean = false,
+    height: Float,
     state1Enemy: LazyListState,
     state1Player: LazyListState,
     state2Enemy: LazyListState,
@@ -1002,11 +1000,9 @@ fun ColumnScope.Caravans(
     getPlayerCaravan: (Int) -> Caravan,
     getEnemyCaravan: (Int) -> Caravan,
 ) {
-    val enemyCaravanFillHeight = if (isMaxHeight) 0.36f else 0.425f
     Column(
         modifier = Modifier
-            .fillMaxWidth()
-            .weight(1f),
+            .fillMaxWidth().height(height.toInt().pxToDp()),
     ) {
         val enemyStates = listOf(state1Enemy, state2Enemy, state3Enemy)
         val playerStates = listOf(state1Player, state2Player, state3Player)
@@ -1061,6 +1057,7 @@ fun ColumnScope.Caravans(
             }
             val modifier = Modifier
                 .fillMaxWidth(0.66f)
+                .wrapContentHeight()
                 .let {
                     if (canDiscard() && (getSelectedCard() != null || getSelectedCaravan() in (0..2))) {
                         it

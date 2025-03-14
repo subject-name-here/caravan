@@ -87,12 +87,12 @@ class CResources(private val deck: CustomDeck) {
             repeat(notSpecial.size) {
                 handMutable.add(Card(type.rank, type.suit, CardBack.WILD_WASTELAND, false))
             }
+            recomposeResources++
         }
     }
 
     suspend fun removeFromHand(index: Int, delay: Long = 0L): Card {
         handMutable[index].handAnimationMark = Card.AnimationMark.MOVING_OUT
-        recomposeResources++
         delay(delay)
         val removedCard = handMutable.removeAt(index)
         recomposeResources++
@@ -101,7 +101,6 @@ class CResources(private val deck: CustomDeck) {
 
     suspend fun dropCardFromHand(index: Int, delay: Long = 0L) {
         handMutable[index].handAnimationMark = Card.AnimationMark.MOVING_OUT_ALT
-        recomposeResources++
         delay(delay)
         handMutable.removeAt(index)
         recomposeResources++
@@ -122,6 +121,7 @@ class CResources(private val deck: CustomDeck) {
         repeat(handSize) {
             handMutable.add(Card(card.rank, card.suit, CardBack.WILD_WASTELAND, true))
         }
+        recomposeResources++
     }
 
     fun addNewDeck(newDeck: CustomDeck) {
