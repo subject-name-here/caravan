@@ -22,7 +22,10 @@ class Caravan {
     fun isFull() = size >= 10
 
     private fun removeAll(predicate: (CardWithModifier) -> Boolean) {
-        cardsMutable.removeAll(predicate)
+        val toRemove = cardsMutable.filter(predicate)
+        toRemove.forEach { it.card.caravanAnimationMark = Card.AnimationMark.MOVING_OUT }
+        cardsMutable.removeAll(toRemove)
+        recomposeResources++
     }
 
     fun dropCaravan() {
@@ -51,6 +54,7 @@ class Caravan {
                 }
             )
         }
+        recomposeResources++
     }
     fun getCazadorPoison(isReversed: Boolean) {
         if (!isReversed) {

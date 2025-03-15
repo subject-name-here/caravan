@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
@@ -209,6 +208,7 @@ fun ShowGame(
                             playNukeBlownSound(activity)
                         }
                         caravan.cards[position].addModifier(removedCard)
+                        caravan.recomposeResources++
 
                         activity.processChallengesMove(Challenge.Move(
                             moveCode = 4,
@@ -696,7 +696,7 @@ fun RowScope.CaravanOnField(
         }
     }
     val modifierOffset = 14.dp * (if (isEnemyCaravan) -1 else 1)
-    Column(Modifier.wrapContentHeight().weight(0.25f)) { key (caravan.recomposeResources) {
+    Column(Modifier.wrapContentHeight().weight(0.25f)) {
         if (!isEnemyCaravan && !isInitStage && !caravan.isEmpty()) {
             TextFallout(
                 stringResource(R.string.discard),
@@ -747,6 +747,7 @@ fun RowScope.CaravanOnField(
             item {
                 Box(Modifier.wrapContentHeight(unbounded = true)) {
                     val enemyTurnMult = if (isPlayerTurn) 1 else -1
+                    LaunchedEffect(caravan.recomposeResources) { }
 
                     @Composable
                     fun ModifierOnCardInCaravan(
@@ -771,9 +772,9 @@ fun RowScope.CaravanOnField(
                         }, animationSpec = tween(animationSpeed.delay.toInt()))
 
                         LaunchedEffect(it.card.caravanAnimationMark) {
-                            if (it.card.caravanAnimationMark == Card.AnimationMark.NEW) {
-                                it.card.caravanAnimationMark = Card.AnimationMark.STABLE
+                            if (modifier.caravanAnimationMark == Card.AnimationMark.NEW) {
                                 playCardFlipSound(activity)
+                                modifier.caravanAnimationMark = Card.AnimationMark.STABLE
                             }
                         }
 
@@ -783,7 +784,7 @@ fun RowScope.CaravanOnField(
                                 val placeableHeight = placeable.height.toInt()
                                 val placeableWidth = placeable.width.toInt()
                                 val modifierOffset = (modifierOffset * (modifierIndex + 1)).toPx()
-                                layout(placeableWidth.coerceAtLeast(0), 0) {
+                                layout(placeableWidth.coerceAtLeast(0), placeableHeight) {
                                     placeable.place(
                                         (modifierOffset + placeableWidth * offsetWidthMult).toInt(),
                                         (placeableHeight * offsetHeightMult).toInt()
@@ -865,13 +866,15 @@ fun RowScope.CaravanOnField(
 
 
                         Box(modifier = modifier) {
-                            ShowCard(activity, it.card,
+                            LaunchedEffect(it.recomposeResources) { }
+                            ShowCard(
+                                activity, it.card,
                                 Modifier.clickable {
                                     addSelectedCardOnPosition(caravan.cards.indexOf(it))
                                 }
                             )
 
-                            it.modifiersCopy().withIndex().forEach { (modifierIndex, card) ->
+                            it.modifiersCopy().forEachIndexed { modifierIndex, card ->
                                 ModifierOnCardInCaravan(card, modifierIndex, it)
                             }
                         }
@@ -883,7 +886,7 @@ fun RowScope.CaravanOnField(
                 }
             }
         }
-    } }
+    }
 }
 
 @SuppressLint("UnusedBoxWithConstraintsScope")

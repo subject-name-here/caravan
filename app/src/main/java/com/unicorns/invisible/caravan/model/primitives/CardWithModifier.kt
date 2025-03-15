@@ -1,14 +1,19 @@
 package com.unicorns.invisible.caravan.model.primitives
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.setValue
 import kotlinx.serialization.Serializable
 import kotlin.math.pow
 
 
 @Serializable
 class CardWithModifier(val card: Card) {
+    var recomposeResources by mutableIntStateOf(0)
     private val modifiers: MutableList<Card> = mutableListOf()
     fun addModifier(card: Card) {
         modifiers.add(card)
+        recomposeResources++
         if (card.isNuclear()) {
             hasBomb = true
         } else when (card.getWildWastelandType()) {
@@ -75,7 +80,9 @@ class CardWithModifier(val card: Card) {
 
     fun hasJacks() = modifiers.any { it.isOrdinary() && it.rank == Rank.JACK }
 
-    fun modifiersCopy() = modifiers.toList()
+    fun modifiersCopy(): List<Card> {
+        return modifiers.toList()
+    }
 
     fun getValue(): Int {
         return if (card.isModifier()) {
