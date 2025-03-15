@@ -648,14 +648,16 @@ fun StartPvP(
                 (game.enemy as EnemyPlayer).latestMoveResponse = move
                 game.isPlayerTurn = isCreator
 
-                // game.enemy.makeMove(game)
-                updateEnemyHand()
-                game.processField(0L)
+                CoroutineScope(Dispatchers.Unconfined).launch {
+                    // game.enemy.makeMove(game)
+                    updateEnemyHand()
+                    game.processField(AnimationSpeed.NONE)
 
-                updateCaravans()
+                    updateCaravans()
 
-                game.isPlayerTurn = true
-                game.checkOnGameOver()
+                    game.isPlayerTurn = true
+                    game.checkOnGameOver()
+                }
             }
         }
     }

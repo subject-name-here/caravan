@@ -16,14 +16,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.unicorns.invisible.caravan.model.Game
-import com.unicorns.invisible.caravan.model.challenge.Challenge
 import com.unicorns.invisible.caravan.model.enemy.EnemyPlayer
-import com.unicorns.invisible.caravan.model.primitives.Caravan
-import com.unicorns.invisible.caravan.model.primitives.Rank
 import com.unicorns.invisible.caravan.multiplayer.MoveResponse
 import com.unicorns.invisible.caravan.multiplayer.decodeMove
 import com.unicorns.invisible.caravan.utils.TextFallout
@@ -31,14 +27,9 @@ import com.unicorns.invisible.caravan.utils.crvnUrl
 import com.unicorns.invisible.caravan.utils.getTextBackgroundColor
 import com.unicorns.invisible.caravan.utils.getTextColor
 import com.unicorns.invisible.caravan.utils.getTextStrokeColor
-import com.unicorns.invisible.caravan.utils.playCardFlipSound
 import com.unicorns.invisible.caravan.utils.playCloseSound
-import com.unicorns.invisible.caravan.utils.playJokerSounds
 import com.unicorns.invisible.caravan.utils.playNoBeep
-import com.unicorns.invisible.caravan.utils.playNukeBlownSound
 import com.unicorns.invisible.caravan.utils.playSelectSound
-import com.unicorns.invisible.caravan.utils.playVatsReady
-import com.unicorns.invisible.caravan.utils.playWWSound
 import com.unicorns.invisible.caravan.utils.sendRequest
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -66,7 +57,7 @@ fun afterPlayerMove(
         game.isPlayerTurn = false
         val isNewCardAdded = game.playerCResources.deckSize > 0 && game.playerCResources.hand.size < 5
 
-        game.processField(0L)
+        game.processField(AnimationSpeed.NONE)
         if (speed.delay != 0L) {
             delay(speed.delay * 2) // Remove cards; move cards within caravan
         }
@@ -158,14 +149,14 @@ fun pingForMove(
             if (speed.delay != 0L) {
                 delay(speed.delay) // Just break.
             }
-            game.enemy.makeMove(game, 0L)
+            game.enemy.makeMove(game, AnimationSpeed.NONE)
             updateView()
 
             if (speed.delay != 0L) {
                 delay(speed.delay * 2) // Move card from hand; move card ontoField
             }
 
-            game.processField(0L)
+            game.processField(AnimationSpeed.NONE)
             if (speed.delay != 0L) {
                 delay(speed.delay * 2) // Remove cards; move cards within caravan
             }

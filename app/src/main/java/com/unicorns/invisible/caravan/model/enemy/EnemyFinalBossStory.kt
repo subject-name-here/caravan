@@ -1,5 +1,6 @@
 package com.unicorns.invisible.caravan.model.enemy
 
+import com.unicorns.invisible.caravan.AnimationSpeed
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.primitives.CResources
@@ -10,5 +11,5 @@ class EnemyFinalBossStory : Enemy {
     override fun createDeck(): CResources = CResources(CustomDeck(CardBack.CHINESE, false))
     override fun isSpeedOverriding() = true
 
-    override suspend fun makeMove(game: Game, delay: Long) {}
+    override suspend fun makeMove(game: Game, speed: AnimationSpeed) {}
 }

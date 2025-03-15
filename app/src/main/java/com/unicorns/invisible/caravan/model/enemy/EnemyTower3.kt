@@ -1,5 +1,6 @@
 package com.unicorns.invisible.caravan.model.enemy
 
+import com.unicorns.invisible.caravan.AnimationSpeed
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.primitives.CResources
@@ -12,14 +13,14 @@ data object EnemyTower3 : Enemy {
         removeAll(toList().filter { it.rank == Rank.JOKER })
     })
 
-    override suspend fun makeMove(game: Game, delay: Long) {
+    override suspend fun makeMove(game: Game, speed: AnimationSpeed) {
         val hand = game.enemyCResources.hand
         val overWeightCaravans = game.enemyCaravans.filter { it.getValue() > 26 }
 
         if (game.isInitStage()) {
             val cardIndex = hand.withIndex().filter { !it.value.isModifier() }.minBy { it.value.rank.value }.index
             val caravan = game.enemyCaravans.first { it.size == 0 }
-            caravan.putCardOnTop(game.enemyCResources.removeFromHand(cardIndex))
+            caravan.putCardOnTop(game.enemyCResources.removeFromHand(cardIndex, speed), speed)
             return
         }
 
@@ -29,7 +30,7 @@ data object EnemyTower3 : Enemy {
                     .maxByOrNull { it.getValue() }
                 val cardToJack = caravan?.cards?.maxBy { it.getValue() }
                 if (cardToJack != null && cardToJack.canAddModifier(card)) {
-                    cardToJack.addModifier(game.enemyCResources.removeFromHand(cardIndex))
+                    cardToJack.addModifier(game.enemyCResources.removeFromHand(cardIndex, speed), speed)
                     return
                 }
             }
@@ -39,7 +40,7 @@ data object EnemyTower3 : Enemy {
                 if (caravan != null) {
                     val cardToKing = caravan.cards.maxByOrNull { it.getValue() }
                     if (cardToKing != null && cardToKing.canAddModifier(card)) {
-                        cardToKing.addModifier(game.enemyCResources.removeFromHand(cardIndex))
+                        cardToKing.addModifier(game.enemyCResources.removeFromHand(cardIndex, speed), speed)
                         return
                     }
                 }
@@ -49,7 +50,7 @@ data object EnemyTower3 : Enemy {
                         if (enemyCaravan.getValue() + caravanCard.getValue() in (16..26)) {
                             if (caravanCard.canAddModifier(card)) {
                                 caravanCard.addModifier(
-                                    game.enemyCResources.removeFromHand(cardIndex)
+                                    game.enemyCResources.removeFromHand(cardIndex, speed), speed
                                 )
                                 return
                             }
@@ -62,7 +63,7 @@ data object EnemyTower3 : Enemy {
                 game.enemyCaravans.sortedBy { -it.getValue() }.forEach { caravan ->
                     if (caravan.getValue() + card.rank.value <= 26) {
                         if (caravan.canPutCardOnTop(card)) {
-                            caravan.putCardOnTop(game.enemyCResources.removeFromHand(cardIndex))
+                            caravan.putCardOnTop(game.enemyCResources.removeFromHand(cardIndex, speed), speed)
                             return
                         }
                     }
@@ -73,7 +74,7 @@ data object EnemyTower3 : Enemy {
                 val enemyCaravan = overWeightCaravans.random()
                 val cardToDelete = enemyCaravan.cards.maxBy { it.getValue() }
                 if (cardToDelete.canAddModifier(card)) {
-                    cardToDelete.addModifier(game.enemyCResources.removeFromHand(cardIndex))
+                    cardToDelete.addModifier(game.enemyCResources.removeFromHand(cardIndex, speed), speed)
                     return
                 }
             }
@@ -90,17 +91,17 @@ data object EnemyTower3 : Enemy {
                         .random()
                         .cards
                         .last()
-                        .addModifier(game.enemyCResources.removeFromHand(cardIndex))
+                        .addModifier(game.enemyCResources.removeFromHand(cardIndex, speed), speed)
                     return
                 }
             }
         }
 
         if (overWeightCaravans.isNotEmpty()) {
-            overWeightCaravans.random().dropCaravan()
+            overWeightCaravans.random().dropCaravan(speed)
             return
         }
 
-        game.enemyCResources.dropCardFromHand(hand.indices.random())
+        game.enemyCResources.dropCardFromHand(hand.indices.random(), speed)
     }
 }

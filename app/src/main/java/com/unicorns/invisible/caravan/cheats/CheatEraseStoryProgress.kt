@@ -14,7 +14,7 @@ data object CheatEraseStoryProgress : Cheat {
         showAlertDialog: (String, String) -> Unit
     ) {
         save.let {
-            it.storyProgress = 11
+            it.storyProgress = 0
             it.storyCompleted = false
         }
         saveData(activity)

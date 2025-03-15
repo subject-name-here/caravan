@@ -1,5 +1,6 @@
 package com.unicorns.invisible.caravan.model.enemy
 
+import com.unicorns.invisible.caravan.AnimationSpeed
 import com.unicorns.invisible.caravan.R
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
@@ -33,7 +34,7 @@ class EnemyDrMobius : EnemyPve {
     override fun retractBet() { bank -= getBet() }
     override fun addReward(reward: Int) { bank += reward }
 
-    override suspend fun makeMove(game: Game, delay: Long) {
+    override suspend fun makeMove(game: Game, speed: AnimationSpeed) {
         makeMoveInner(game)
         if (game.enemyCResources.hand.size < 5) {
             game.enemyCResources.addOnTop(generateCard())

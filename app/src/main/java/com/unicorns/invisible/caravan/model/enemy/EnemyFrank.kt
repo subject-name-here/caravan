@@ -1,5 +1,6 @@
 package com.unicorns.invisible.caravan.model.enemy
 
+import com.unicorns.invisible.caravan.AnimationSpeed
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.primitives.CResources
@@ -16,5 +17,5 @@ data object EnemyFrank : Enemy {
         add(Card(Rank.ACE, Suit.DIAMONDS, CardBack.ENCLAVE, true))
     })
 
-    override suspend fun makeMove(game: Game, delay: Long) {}
+    override suspend fun makeMove(game: Game, speed: AnimationSpeed) {}
 }

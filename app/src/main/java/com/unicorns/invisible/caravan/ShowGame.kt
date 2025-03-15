@@ -163,7 +163,7 @@ fun ShowGame(
         resetSelected()
         scope.launch {
             playCardFlipSound(activity)
-            game.playerCResources.dropCardFromHand(selectedCardNN, animationSpeed.delay)
+            game.playerCResources.dropCardFromHand(selectedCardNN, animationSpeed)
             playVatsReady(activity)
             onMove(null)
             game.afterPlayerMove(animationSpeed)
@@ -179,7 +179,7 @@ fun ShowGame(
         game.canPlayerMove = false
         resetSelected()
         scope.launch {
-            game.playerCaravans[selectedCaravanNN].dropCaravan()
+            game.playerCaravans[selectedCaravanNN].dropCaravan(animationSpeed)
             playVatsReady(activity)
             activity.processChallengesMove(Challenge.Move(moveCode = 1), game)
             onMove(null)
@@ -200,14 +200,14 @@ fun ShowGame(
                     resetSelected()
                     scope.launch {
                         playCardFlipSound(activity)
-                        val removedCard = game.playerCResources.removeFromHand(cardIndex, animationSpeed.delay)
+                        val removedCard = game.playerCResources.removeFromHand(cardIndex, animationSpeed)
 
                         if (card.getWildWastelandType() != null) {
                             playWWSound(activity)
                         } else if (card.isNuclear()) {
                             playNukeBlownSound(activity)
                         }
-                        caravan.cards[position].addModifier(removedCard)
+                        caravan.cards[position].addModifier(removedCard, animationSpeed)
                         caravan.recomposeResources++
 
                         activity.processChallengesMove(Challenge.Move(
@@ -227,8 +227,8 @@ fun ShowGame(
                         resetSelected()
                         scope.launch {
                             playCardFlipSound(activity)
-                            val removedCard = game.playerCResources.removeFromHand(cardIndex, animationSpeed.delay)
-                            caravan.putCardOnTop(removedCard)
+                            val removedCard = game.playerCResources.removeFromHand(cardIndex, animationSpeed)
+                            caravan.putCardOnTop(removedCard, animationSpeed)
 
                             activity.processChallengesMove(Challenge.Move(
                                 moveCode = 3,
@@ -610,7 +610,7 @@ fun Hand(
         Modifier.fillMaxWidth(0.83f).fillMaxHeight(),
         Alignment.CenterStart
     ) {
-        val scale = maxHeight.dpToPx() / 256f
+        val scale = (maxHeight - 4.dp * 2).dpToPx() / 256f
         cards.forEachIndexed { index, it ->
             val offsetMult by animateFloatAsState(
                 when (it.handAnimationMark) {
@@ -681,7 +681,7 @@ fun RowScope.CaravanOnField(
     activity: MainActivity,
     animationSpeed: AnimationSpeed,
     caravan: Caravan,
-    isPlayerTurn: Boolean,
+    isPlayerTurn: () -> Boolean,
     isEnemyCaravan: Boolean,
     isInitStage: Boolean,
     state: LazyListState,
@@ -698,6 +698,7 @@ fun RowScope.CaravanOnField(
     val modifierOffset = 14.dp * (if (isEnemyCaravan) -1 else 1)
     Column(Modifier.wrapContentHeight().weight(0.25f)) {
         if (!isEnemyCaravan && !isInitStage && !caravan.isEmpty()) {
+            LaunchedEffect(caravan.recomposeResources) {}
             TextFallout(
                 stringResource(R.string.discard),
                 getTextColor(activity),
@@ -719,6 +720,7 @@ fun RowScope.CaravanOnField(
             )
         }
         if (!isEnemyCaravan && caravan.isEmpty()) {
+            LaunchedEffect(caravan.recomposeResources) {}
             Box(modifier = Modifier
                 .fillMaxWidth()
                 .height(20.dp)
@@ -746,9 +748,8 @@ fun RowScope.CaravanOnField(
         ) {
             item {
                 Box(Modifier.wrapContentHeight(unbounded = true)) {
-                    val enemyTurnMult = if (isPlayerTurn) 1 else -1
-                    LaunchedEffect(caravan.recomposeResources) { }
-
+                    LaunchedEffect(caravan.recomposeResources) {}
+                    val enemyTurnMult = if (isPlayerTurn()) 1 else -1
                     @Composable
                     fun ModifierOnCardInCaravan(
                         modifier: Card,
@@ -1003,6 +1004,7 @@ fun Caravans(
     getPlayerCaravan: (Int) -> Caravan,
     getEnemyCaravan: (Int) -> Caravan,
 ) {
+    var recomposeKey by remember { mutableIntStateOf(0) }
     Column(
         modifier = Modifier
             .fillMaxWidth().height(height.toInt().pxToDp()),
@@ -1019,7 +1021,7 @@ fun Caravans(
                     activity,
                     animationSpeed,
                     caravan,
-                    isPlayersTurn(),
+                    isPlayersTurn,
                     isEnemyCaravan = true,
                     isInitStage = getIsInitStage(),
                     enemyStates[it],
@@ -1041,11 +1043,13 @@ fun Caravans(
                     val caravan = getEnemyCaravan(it)
                     val opposingValue = getPlayerCaravan(it).getValue()
                     key (caravan.recomposeResources) {
+                        recomposeKey++
                         Score(activity, it, caravan, opposingValue)
                     }
                 }
             }
 
+            LaunchedEffect(recomposeKey) {}
             val text = when {
                 isGameOver() -> stringResource(R.string.can_t_act)
                 !isPlayersTurn() -> stringResource(R.string.wait)
@@ -1101,6 +1105,7 @@ fun Caravans(
                     val caravan = getPlayerCaravan(it)
                     val opposingValue = getEnemyCaravan(it).getValue()
                     key (caravan.recomposeResources) {
+                        recomposeKey++
                         Score(activity, it + 3, caravan, opposingValue)
                     }
                 }
@@ -1117,7 +1122,7 @@ fun Caravans(
                     activity,
                     animationSpeed,
                     caravan,
-                    isPlayersTurn(),
+                    isPlayersTurn,
                     isEnemyCaravan = false,
                     isInitStage = getIsInitStage(),
                     playerStates[it],

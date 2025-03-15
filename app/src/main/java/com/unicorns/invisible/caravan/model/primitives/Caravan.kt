@@ -3,7 +3,9 @@ package com.unicorns.invisible.caravan.model.primitives
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.setValue
+import com.unicorns.invisible.caravan.AnimationSpeed
 import com.unicorns.invisible.caravan.model.CardBack
+import kotlinx.coroutines.delay
 import kotlinx.serialization.Serializable
 import kotlin.random.Random
 
@@ -21,24 +23,27 @@ class Caravan {
     fun isEmpty() = size == 0
     fun isFull() = size >= 10
 
-    private fun removeAll(predicate: (CardWithModifier) -> Boolean) {
+    private suspend fun removeAll(speed: AnimationSpeed, predicate: (CardWithModifier) -> Boolean) {
         val toRemove = cardsMutable.filter(predicate)
         toRemove.forEach { it.card.caravanAnimationMark = Card.AnimationMark.MOVING_OUT }
+        if (toRemove.isNotEmpty()) {
+            delay(speed.delay)
+        }
         cardsMutable.removeAll(toRemove)
         recomposeResources++
     }
 
-    fun dropCaravan() {
-        removeAll { true }
+    suspend fun dropCaravan(speed: AnimationSpeed) {
+        removeAll(speed) { true }
     }
-    fun removeAllJackedCards() {
-        removeAll { it.hasJacks() }
+    suspend fun removeAllJackedCards(speed: AnimationSpeed) {
+        removeAll(speed) { it.hasJacks() }
     }
-    fun jokerRemoveAllRanks(card: Card) {
-        removeAll { it.card.rank == card.rank && !it.hasActiveJoker }
+    suspend fun jokerRemoveAllRanks(card: Card, speed: AnimationSpeed) {
+        removeAll(speed) { it.card.rank == card.rank && !it.hasActiveJoker }
     }
-    fun jokerRemoveAllSuits(card: Card) {
-        removeAll { it.card.suit == card.suit && !it.hasActiveJoker }
+    suspend fun jokerRemoveAllSuits(card: Card, speed: AnimationSpeed) {
+        removeAll(speed) { it.card.suit == card.suit && !it.hasActiveJoker }
     }
 
     private fun replaceCards(getCard: (CardWithModifier) -> Pair<Rank, Suit>) {
@@ -56,9 +61,9 @@ class Caravan {
         }
         recomposeResources++
     }
-    fun getCazadorPoison(isReversed: Boolean) {
+    suspend fun getCazadorPoison(isReversed: Boolean, speed: AnimationSpeed) {
         if (!isReversed) {
-            removeAll { it.card.rank.value == 1 }
+            removeAll(speed) { it.card.rank.value == 1 }
         }
 
         val changeOrdinal: (Int) -> Int = if (isReversed) Int::inc else Int::dec
@@ -70,9 +75,9 @@ class Caravan {
     fun getPetePower() {
         replaceCards { Rank.TEN to it.card.suit }
     }
-    fun getUfo(seed: Int) {
+    suspend fun getUfo(seed: Int, speed: AnimationSpeed) {
         val rand = Random(seed)
-        removeAll { rand.nextBoolean() && !it.hasActiveUfo }
+        removeAll(speed) { rand.nextBoolean() && !it.hasActiveUfo }
     }
 
     fun getValue(): Int {
@@ -125,8 +130,9 @@ class Caravan {
         return false
     }
 
-    fun putCardOnTop(card: Card) {
-        recomposeResources++
+    suspend fun putCardOnTop(card: Card, speed: AnimationSpeed) {
         cardsMutable.add(CardWithModifier(card))
+        recomposeResources++
+        delay(speed.delay)
     }
 }

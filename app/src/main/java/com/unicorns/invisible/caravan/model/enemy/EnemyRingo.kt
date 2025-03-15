@@ -1,13 +1,11 @@
 package com.unicorns.invisible.caravan.model.enemy
 
+import com.unicorns.invisible.caravan.AnimationSpeed
 import com.unicorns.invisible.caravan.R
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.primitives.CResources
-import com.unicorns.invisible.caravan.model.primitives.Card
 import com.unicorns.invisible.caravan.model.primitives.CustomDeck
-import com.unicorns.invisible.caravan.model.primitives.Rank
-import com.unicorns.invisible.caravan.model.primitives.Suit
 import kotlinx.serialization.Serializable
 import kotlin.math.min
 
@@ -28,7 +26,7 @@ class EnemyRingo : EnemyPve {
     override fun retractBet() { bank -= getBet() }
     override fun addReward(reward: Int) { bank += reward }
 
-    override suspend fun makeMove(game: Game, delay: Long) {
+    override suspend fun makeMove(game: Game, speed: AnimationSpeed) {
 
 
     }

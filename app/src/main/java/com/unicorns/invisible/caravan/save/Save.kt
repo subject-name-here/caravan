@@ -166,7 +166,7 @@ class Save(var playerId: String? = null) {
     var secondChances: Int = 0
 
     @EncodeDefault
-    var storyProgress = 11
+    var storyProgress = 0
     @EncodeDefault
     var storyCompleted = false
 

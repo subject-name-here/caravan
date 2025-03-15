@@ -1,5 +1,6 @@
 package com.unicorns.invisible.caravan.model.enemy
 
+import com.unicorns.invisible.caravan.AnimationSpeed
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.primitives.CResources
@@ -18,7 +19,7 @@ class EnemyStory3(val showMessage: (Int) -> Unit) : Enemy {
     })
 
     private var shownMessage = false
-    override suspend fun makeMove(game: Game, delay: Long) {
+    override suspend fun makeMove(game: Game, speed: AnimationSpeed) {
         val hand = game.enemyCResources.hand
 
         if (game.isInitStage()) {
@@ -41,7 +42,7 @@ class EnemyStory3(val showMessage: (Int) -> Unit) : Enemy {
 
             val cardIndex = hand.withIndex().filter { !it.value.isModifier() }.random().index
             val caravan = game.enemyCaravans.filter { it.isEmpty() }.random()
-            caravan.putCardOnTop(game.enemyCResources.removeFromHand(cardIndex))
+            caravan.putCardOnTop(game.enemyCResources.removeFromHand(cardIndex, speed), speed)
             return
         }
 
@@ -60,7 +61,7 @@ class EnemyStory3(val showMessage: (Int) -> Unit) : Enemy {
                 game.enemyCaravans.shuffled().forEach { caravan ->
                     if (caravan.getValue() + card.rank.value <= 26) {
                         if (caravan.canPutCardOnTop(card)) {
-                            caravan.putCardOnTop(game.enemyCResources.removeFromHand(cardIndex))
+                            caravan.putCardOnTop(game.enemyCResources.removeFromHand(cardIndex, speed), speed)
                             return
                         }
                     }
@@ -71,7 +72,7 @@ class EnemyStory3(val showMessage: (Int) -> Unit) : Enemy {
                 if (caravan != null) {
                     val cardToAdd = caravan.cards.maxBy { it.getValue() }
                     if (cardToAdd.canAddModifier(card)) {
-                        cardToAdd.addModifier(game.enemyCResources.removeFromHand(cardIndex))
+                        cardToAdd.addModifier(game.enemyCResources.removeFromHand(cardIndex, speed), speed)
                         return
                     }
                 }
@@ -81,7 +82,7 @@ class EnemyStory3(val showMessage: (Int) -> Unit) : Enemy {
                     .maxByOrNull { it.getValue() }
                 val cardToJack = caravan?.cards?.maxBy { it.getValue() }
                 if (cardToJack != null && cardToJack.canAddModifier(card)) {
-                    cardToJack.addModifier(game.enemyCResources.removeFromHand(cardIndex))
+                    cardToJack.addModifier(game.enemyCResources.removeFromHand(cardIndex, speed), speed)
                     return
                 }
             }
@@ -93,7 +94,7 @@ class EnemyStory3(val showMessage: (Int) -> Unit) : Enemy {
                         .filter { caravan.getValue() + it.getValue() <= 26 }
                         .maxByOrNull { it.card.rank.value }
                     if (cardToKing != null) {
-                        cardToKing.addModifier(game.enemyCResources.removeFromHand(cardIndex))
+                        cardToKing.addModifier(game.enemyCResources.removeFromHand(cardIndex, speed), speed)
                         return
                     }
                 }
@@ -104,7 +105,7 @@ class EnemyStory3(val showMessage: (Int) -> Unit) : Enemy {
                 if (caravan != null) {
                     val cardToKing = caravan.cards.maxByOrNull { it.getValue() }
                     if (cardToKing != null && cardToKing.canAddModifier(card)) {
-                        cardToKing.addModifier(game.enemyCResources.removeFromHand(cardIndex))
+                        cardToKing.addModifier(game.enemyCResources.removeFromHand(cardIndex, speed), speed)
                         return
                     }
                 }
@@ -117,7 +118,7 @@ class EnemyStory3(val showMessage: (Int) -> Unit) : Enemy {
                 if (cardsRank.isNotEmpty()) {
                     val cardToJoke = cardsRank.random()
                     if (cardToJoke.canAddModifier(card)) {
-                        cardToJoke.addModifier(game.enemyCResources.removeFromHand(cardIndex))
+                        cardToJoke.addModifier(game.enemyCResources.removeFromHand(cardIndex, speed), speed)
                         game.jokerPlayedSound()
                         return
                     }
@@ -127,10 +128,10 @@ class EnemyStory3(val showMessage: (Int) -> Unit) : Enemy {
 
         val overWeightCaravans = game.enemyCaravans.filter { it.getValue() > 26 }
         if (overWeightCaravans.isNotEmpty()) {
-            overWeightCaravans.random().dropCaravan()
+            overWeightCaravans.random().dropCaravan(speed)
             return
         }
 
-        game.enemyCResources.dropCardFromHand(hand.withIndex().minBy { it.value.rank.value }.index)
+        game.enemyCResources.dropCardFromHand(hand.withIndex().minBy { it.value.rank.value }.index, speed)
     }
 }

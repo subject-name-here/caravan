@@ -3,6 +3,8 @@ package com.unicorns.invisible.caravan.model.primitives
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.setValue
+import com.unicorns.invisible.caravan.AnimationSpeed
+import kotlinx.coroutines.delay
 import kotlinx.serialization.Serializable
 import kotlin.math.pow
 
@@ -11,9 +13,11 @@ import kotlin.math.pow
 class CardWithModifier(val card: Card) {
     var recomposeResources by mutableIntStateOf(0)
     private val modifiers: MutableList<Card> = mutableListOf()
-    fun addModifier(card: Card) {
+    suspend fun addModifier(card: Card, speed: AnimationSpeed) {
         modifiers.add(card)
         recomposeResources++
+        delay(speed.delay)
+
         if (card.isNuclear()) {
             hasBomb = true
         } else when (card.getWildWastelandType()) {

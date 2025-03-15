@@ -77,23 +77,29 @@ fun ShowStoryList(
 
     if (showChapter != null) {
         when (showChapter) {
+            0 -> {
+                ShowIntro(activity, {
+                    save.storyProgress = maxOf(save.storyProgress, 11)
+                    saveData(activity)
+                }) { showChapter = null }
+            }
             11 -> {
                 ShowStoryChapter1(activity, getDeck(showChapter!!), showAlertDialog, {
-                    save.storyProgress = maxOf(save.storyProgress, 10)
+                    save.storyProgress = maxOf(save.storyProgress, 12)
                     saveData(activity)
                     activity.achievementsClient?.unlock(activity.getString(R.string.achievement_madre_roja))
                 }) { showChapter = null }
             }
             12 -> {
                 ShowStoryChapter2(activity, getDeck(showChapter!!), showAlertDialog, {
-                    save.storyProgress = maxOf(save.storyProgress, 20)
+                    save.storyProgress = maxOf(save.storyProgress, 13)
                     saveData(activity)
                 }) { showChapter = null }
             }
             13 -> {
                 LaunchedEffect(Unit) { stopRadio(); soundReduced = true }
                 ShowStoryChapter3(activity, getDeck(showChapter!!), showAlertDialog, {
-                    save.storyProgress = maxOf(save.storyProgress, 30)
+                    save.storyProgress = maxOf(save.storyProgress, 19)
                     saveData(activity)
                 }) { soundReduced = false; nextSong(activity); showChapter = null }
             }
@@ -126,7 +132,21 @@ fun ShowStoryList(
                     22.sp,
                     Modifier,
                 )
-                Spacer(modifier = Modifier.height(16.dp))
+
+                @Composable
+                fun Intro() {
+                    TextFallout(
+                        stringResource(R.string.intro),
+                        getTextColor(activity),
+                        getTextStrokeColor(activity),
+                        16.sp,
+                        Modifier
+                            .padding(4.dp)
+                            .clickableSelect(activity) { showChapter = 0 }
+                            .background(getTextBackgroundColor(activity))
+                            .padding(4.dp)
+                    )
+                }
 
                 @Composable
                 fun Act(number: Int) {
@@ -201,8 +221,10 @@ fun ShowStoryList(
                     in (400..499) -> 4
                     in (30..39) -> 3
                     in (20..29) -> 2
-                    else -> 1
+                    in (11..19) -> 1
+                    else -> 0
                 }
+                Intro()
                 repeat(actsRevealed) {
                     Act(it)
                     for (chapter in acts[it]) {
@@ -241,6 +263,16 @@ fun getDeck(chapterNumber: Int): CustomDeck {
 }
 
 @Composable
+fun ShowIntro(
+    activity: MainActivity,
+    advanceChapter: () -> Unit,
+    goBack: () -> Unit,
+) {
+    advanceChapter()
+    goBack()
+}
+
+@Composable
 fun ShowStoryChapter1(
     activity: MainActivity,
     deck: CustomDeck,
@@ -259,12 +291,12 @@ fun ShowStoryChapter1(
             {},
             { gameResult = 1; advanceChapter() },
             { gameResult = -1 },
-            { isGame = false }
+            { goBack() }
         )
         return
     }
 
-    isGame = true
+    LaunchedEffect(Unit) { isGame = true }
 }
 
 @Composable
@@ -275,7 +307,7 @@ fun ShowStoryChapter2(
     advanceChapter: () -> Unit,
     goBack: () -> Unit,
 ) {
-    var isGame by rememberSaveable { mutableStateOf(true) }
+    var isGame by rememberSaveable { mutableStateOf(false) }
     var gameResult by rememberSaveable { mutableIntStateOf(0) }
     if (isGame) {
         StartStoryGame(
@@ -286,12 +318,12 @@ fun ShowStoryChapter2(
             {},
             { gameResult = 1; advanceChapter() },
             { gameResult = -1 },
-            { isGame = false }
+            { goBack() }
         )
         return
     }
 
-    isGame = true
+    LaunchedEffect(Unit) { isGame = true }
 }
 
 @Composable

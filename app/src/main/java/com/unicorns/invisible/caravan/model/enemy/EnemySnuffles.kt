@@ -1,5 +1,6 @@
 package com.unicorns.invisible.caravan.model.enemy
 
+import com.unicorns.invisible.caravan.AnimationSpeed
 import com.unicorns.invisible.caravan.R
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
@@ -58,11 +59,11 @@ class EnemySnuffles : EnemyPve {
     override fun retractBet() { bank -= getBet() }
     override fun addReward(reward: Int) { bank += reward }
 
-    override suspend fun makeMove(game: Game, delay: Long) {
+    override suspend fun makeMove(game: Game, speed: AnimationSpeed) {
         if (game.isInitStage()) {
             val card = game.enemyCResources.hand.withIndex().filter { !it.value.isModifier() }.random()
             val caravan = game.enemyCaravans.filter { it.isEmpty() }.random()
-            caravan.putCardOnTop(game.enemyCResources.removeFromHand(card.index))
+            caravan.putCardOnTop(game.enemyCResources.removeFromHand(card.index, speed), speed)
             return
         }
 
@@ -73,7 +74,7 @@ class EnemySnuffles : EnemyPve {
         cards.forEach { card ->
             caravans.forEach { caravan ->
                 if (caravan.canPutCardOnTop(card.value) && Random.nextBoolean()) {
-                    caravan.putCardOnTop(game.enemyCResources.removeFromHand(card.index))
+                    caravan.putCardOnTop(game.enemyCResources.removeFromHand(card.index, speed), speed)
                     return
                 }
             }
@@ -87,7 +88,7 @@ class EnemySnuffles : EnemyPve {
             cards.forEach { card ->
                 modifiers.forEach { modifier ->
                     if (card.canAddModifier(modifier.value) && Random.nextBoolean()) {
-                        card.addModifier(game.enemyCResources.removeFromHand(modifier.index))
+                        card.addModifier(game.enemyCResources.removeFromHand(modifier.index, speed), speed)
                         return
                     }
                 }
@@ -97,12 +98,12 @@ class EnemySnuffles : EnemyPve {
         if (Random.nextBoolean()) {
             game.enemyCaravans.shuffled().forEach { caravan ->
                 if (!caravan.isEmpty() && Random.nextBoolean()) {
-                    caravan.dropCaravan()
+                    caravan.dropCaravan(speed)
                     return
                 }
             }
         }
 
-        game.enemyCResources.dropCardFromHand(game.enemyCResources.hand.indices.random())
+        game.enemyCResources.dropCardFromHand(game.enemyCResources.hand.indices.random(), speed)
     }
 }

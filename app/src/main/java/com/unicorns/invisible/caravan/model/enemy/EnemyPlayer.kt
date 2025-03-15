@@ -1,5 +1,6 @@
 package com.unicorns.invisible.caravan.model.enemy
 
+import com.unicorns.invisible.caravan.AnimationSpeed
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.primitives.CResources
@@ -17,7 +18,7 @@ class EnemyPlayer(
 
     var latestMoveResponse: MoveResponse? = null
 
-    override suspend fun makeMove(game: Game, delay: Long) {
+    override suspend fun makeMove(game: Game, speed: AnimationSpeed) {
         val move = latestMoveResponse ?: throw Exception()
         when (move.moveCode) {
             1 -> {
@@ -25,7 +26,7 @@ class EnemyPlayer(
                     game.isCorrupted = true
                     return
                 }
-                game.enemyCaravans[move.caravanCode].dropCaravan()
+                game.enemyCaravans[move.caravanCode].dropCaravan(speed)
             }
 
             2 -> {
@@ -33,7 +34,7 @@ class EnemyPlayer(
                     game.isCorrupted = true
                     return
                 }
-                game.enemyCResources.dropCardFromHand(move.handCardNumber)
+                game.enemyCResources.dropCardFromHand(move.handCardNumber, speed)
             }
 
             3 -> {
@@ -41,12 +42,12 @@ class EnemyPlayer(
                     game.isCorrupted = true
                     return
                 }
-                val card = game.enemyCResources.removeFromHand(move.handCardNumber)
+                val card = game.enemyCResources.removeFromHand(move.handCardNumber, speed)
                 if (!game.enemyCaravans[move.caravanCode].canPutCardOnTop(card)) {
                     game.isCorrupted = true
                     return
                 }
-                game.enemyCaravans[move.caravanCode].putCardOnTop(card)
+                game.enemyCaravans[move.caravanCode].putCardOnTop(card, speed)
             }
 
             4 -> {
@@ -54,7 +55,7 @@ class EnemyPlayer(
                     game.isCorrupted = true
                     return
                 }
-                val card = game.enemyCResources.removeFromHand(move.handCardNumber)
+                val card = game.enemyCResources.removeFromHand(move.handCardNumber, speed)
 
                 val cardInCaravan = if (move.caravanCode < 0) {
                     val playersCaravan = 3 + move.caravanCode
@@ -87,7 +88,7 @@ class EnemyPlayer(
                 } else if (card.getWildWastelandType() != null) {
                     game.wildWastelandSound()
                 }
-                cardInCaravan.addModifier(card)
+                cardInCaravan.addModifier(card, speed)
             }
         }
 

@@ -3,6 +3,7 @@ package com.unicorns.invisible.caravan.model.primitives
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.setValue
+import com.unicorns.invisible.caravan.AnimationSpeed
 import com.unicorns.invisible.caravan.model.CardBack
 import kotlinx.coroutines.delay
 import kotlinx.serialization.Serializable
@@ -91,17 +92,17 @@ class CResources(private val deck: CustomDeck) {
         }
     }
 
-    suspend fun removeFromHand(index: Int, delay: Long = 0L): Card {
+    suspend fun removeFromHand(index: Int, speed: AnimationSpeed): Card {
         handMutable[index].handAnimationMark = Card.AnimationMark.MOVING_OUT
-        delay(delay)
+        delay(speed.delay)
         val removedCard = handMutable.removeAt(index)
         recomposeResources++
         return removedCard
     }
 
-    suspend fun dropCardFromHand(index: Int, delay: Long = 0L) {
+    suspend fun dropCardFromHand(index: Int, speed: AnimationSpeed) {
         handMutable[index].handAnimationMark = Card.AnimationMark.MOVING_OUT_ALT
-        delay(delay)
+        delay(speed.delay)
         handMutable.removeAt(index)
         recomposeResources++
     }

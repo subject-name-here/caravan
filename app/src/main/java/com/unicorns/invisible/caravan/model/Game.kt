@@ -9,10 +9,7 @@ import com.unicorns.invisible.caravan.model.primitives.Caravan
 import com.unicorns.invisible.caravan.model.primitives.CardWithModifier
 import com.unicorns.invisible.caravan.model.primitives.CustomDeck
 import com.unicorns.invisible.caravan.model.primitives.Rank
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import java.util.UUID
 
 
@@ -72,23 +69,23 @@ class Game(
         canPlayerMove = true
     }
 
-    fun processField(delay: Long) {
+    suspend fun processField(speed: AnimationSpeed) {
         val caravans = playerCaravans + enemyCaravans
         val cards = caravans.flatMap { it.cards }
 
         cards.forEach {
             if (it.hasBomb) {
-                processBomb(it)
+                processBomb(it, speed)
             }
         }
 
         if (cards.any { it.hasJacks() || it.hasActiveJoker }) {
-            processJacks()
-            processJoker()
+            processJacks(speed)
+            processJoker(speed)
         }
 
         if (cards.any { it.hasActiveUfo || it.hasActivePete }) {
-            processUfo()
+            processUfo(speed)
             processPete()
         }
 
@@ -107,17 +104,17 @@ class Game(
             val queensBlock = cazadorOwners.all { owner -> owner.isQueenReversingSequence() }
 
             if (cazadorOwners.isNotEmpty()) {
-                it.getCazadorPoison(queensBlock)
+                it.getCazadorPoison(queensBlock, speed)
             }
         }
     }
 
     suspend fun afterPlayerMove(speed: AnimationSpeed) {
-        val delayLength = speed.delay.coerceAtLeast(95L) * 3 / 2
-        processField(delayLength)
+        delay(speed.delay.coerceAtLeast(95L))
+        processField(speed)
         if (playerCResources.hand.size < 5 && playerCResources.deckSize > 0) {
             playerCResources.addToHand()
-            delay(delayLength)
+            delay(speed.delay)
         }
         isPlayerTurn = false
 
@@ -125,11 +122,12 @@ class Game(
             return
         }
 
-        delay(delayLength)
+        delay(speed.delay.coerceAtLeast(95L))
 
-        enemy.makeMove(this@Game, delayLength)
+        enemy.makeMove(this@Game, speed)
+        delay(speed.delay.coerceAtLeast(95L))
 
-        processField(delayLength)
+        processField(speed)
         if (enemyCResources.hand.size < 5 && enemyCResources.deckSize > 0) {
             enemyCResources.addToHand()
         }
@@ -185,22 +183,22 @@ class Game(
         return false
     }
 
-    private fun processJacks() {
+    private suspend fun processJacks(speed: AnimationSpeed) {
         (playerCaravans + enemyCaravans).forEach { caravan ->
-            caravan.removeAllJackedCards()
+            caravan.removeAllJackedCards(speed)
         }
     }
 
-    private fun processBomb(bombOwner: CardWithModifier) {
+    private suspend fun processBomb(bombOwner: CardWithModifier, speed: AnimationSpeed) {
         val isFBomb = bombOwner.modifiersCopy().lastOrNull()?.isAlt == true
         (playerCaravans + enemyCaravans).forEach {
             if (bombOwner !in it.cards) {
                 if (isFBomb) {
                     // TODO: some bonus
-                    it.dropCaravan()
+                    it.dropCaravan(speed)
                 } else {
                     if (it.cards.all { card -> !card.isProtectedByMuggy }) {
-                        it.dropCaravan()
+                        it.dropCaravan(speed)
                     }
                 }
             }
@@ -226,14 +224,14 @@ class Game(
             }
         }
     }
-    private fun processUfo() {
+    private suspend fun processUfo(speed: AnimationSpeed) {
         (playerCaravans + enemyCaravans).forEach { caravan ->
             caravan.cards.filter {
                 it.hasActiveUfo
             }.forEach { card ->
                 val seed = card.card.rank.ordinal * 4 + card.card.suit.ordinal
                 (playerCaravans + enemyCaravans).forEach { caravan ->
-                    caravan.getUfo(seed)
+                    caravan.getUfo(seed, speed)
                 }
                 card.deactivateUfo()
             }
@@ -252,26 +250,26 @@ class Game(
         }
     }
 
-    fun processJoker() {
+    suspend fun processJoker(speed: AnimationSpeed) {
         (playerCaravans + enemyCaravans).forEach { caravan ->
             caravan.cards.filter {
                 it.hasActiveJoker
             }.forEach {
-                putJokerOntoCard(it)
+                putJokerOntoCard(it, speed)
                 it.deactivateJoker()
             }
         }
     }
 
-    private fun putJokerOntoCard(cardWithModifier: CardWithModifier) {
+    private suspend fun putJokerOntoCard(cardWithModifier: CardWithModifier, speed: AnimationSpeed) {
         val card = cardWithModifier.card
         if (card.rank == Rank.ACE) {
             (playerCaravans + enemyCaravans).forEach { caravan ->
-                caravan.jokerRemoveAllSuits(card)
+                caravan.jokerRemoveAllSuits(card, speed)
             }
         } else {
             (playerCaravans + enemyCaravans).forEach { caravan ->
-                caravan.jokerRemoveAllRanks(card)
+                caravan.jokerRemoveAllRanks(card, speed)
             }
         }
     }
