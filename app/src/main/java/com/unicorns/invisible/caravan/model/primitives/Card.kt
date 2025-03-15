@@ -27,6 +27,8 @@ class Card(val rank: Rank, val suit: Suit, val back: CardBack, val isAlt: Boolea
         MOVING_OUT,
         MOVING_OUT_ALT,
         MOVED_OUT;
+
+        fun isOut() = this !in listOf(STABLE, NEW)
     }
 
     fun isNuclear(): Boolean {

@@ -612,16 +612,25 @@ fun Hand(
     ) {
         val scale = (maxHeight - 4.dp * 2).dpToPx() / 256f
         cards.forEachIndexed { index, it ->
+            var prevState by rememberScoped { mutableStateOf(it.handAnimationMark) }
+            val needsSnap = prevState == it.handAnimationMark
             val offsetMult by animateFloatAsState(
                 when (it.handAnimationMark) {
                     Card.AnimationMark.STABLE -> 0f
-                    Card.AnimationMark.MOVING_OUT -> -1.5f * enemyMult
-                    Card.AnimationMark.MOVING_OUT_ALT -> 1.5f * enemyMult
-                    Card.AnimationMark.MOVED_OUT -> 1.5f * enemyMult
+                    Card.AnimationMark.MOVING_OUT -> -1f * enemyMult
+                    Card.AnimationMark.MOVING_OUT_ALT -> 1f * enemyMult
+                    Card.AnimationMark.MOVED_OUT -> 0f
                     Card.AnimationMark.NEW -> 3f * enemyMult
                 },
-                tween(animationSpeed.delay.toInt())
-            ) {}
+                if (it.handAnimationMark == Card.AnimationMark.MOVED_OUT || needsSnap) {
+                    SnapSpec()
+                } else {
+                    tween(animationSpeed.delay.toInt())
+                },
+                label = "$index $it"
+            ) { newOffset ->
+                prevState = it.handAnimationMark
+            }
 
             LaunchedEffect(it.handAnimationMark) {
                 if (it.handAnimationMark == Card.AnimationMark.NEW) {
@@ -756,13 +765,20 @@ fun RowScope.CaravanOnField(
                         modifierIndex: Int,
                         it: CardWithModifier
                     ) {
+                        var prevStateHeight by rememberScoped { mutableStateOf(modifier.caravanAnimationMark) }
+                        var prevStateWidth by rememberScoped { mutableStateOf(it.card.caravanAnimationMark) }
                         val offsetHeightMult by animateFloatAsState(when (modifier.caravanAnimationMark) {
                             Card.AnimationMark.STABLE -> 0f
-                            Card.AnimationMark.NEW -> 3f * enemyTurnMult
+                            Card.AnimationMark.NEW -> 2f * enemyTurnMult
                             Card.AnimationMark.MOVING_OUT -> 0f
                             Card.AnimationMark.MOVING_OUT_ALT -> 0f
                             Card.AnimationMark.MOVED_OUT -> 0f
-                        }, animationSpec = tween(animationSpeed.delay.toInt()))
+                        }, if (prevStateHeight != Card.AnimationMark.STABLE && prevStateHeight != Card.AnimationMark.NEW) {
+                            SnapSpec()
+                        } else {
+                            tween(animationSpeed.delay.toInt())
+                        }
+                        ) { _ -> prevStateHeight = modifier.caravanAnimationMark }
 
                         val offsetWidthMult by animateFloatAsState(when (it.card.caravanAnimationMark) {
                             Card.AnimationMark.STABLE -> 0f
@@ -770,7 +786,12 @@ fun RowScope.CaravanOnField(
                             Card.AnimationMark.MOVING_OUT -> 2f
                             Card.AnimationMark.MOVING_OUT_ALT -> 2f
                             Card.AnimationMark.MOVED_OUT -> 2f
-                        }, animationSpec = tween(animationSpeed.delay.toInt()))
+                        }, if (prevStateWidth != Card.AnimationMark.STABLE && prevStateWidth != Card.AnimationMark.NEW) {
+                            SnapSpec()
+                        } else {
+                            tween(animationSpeed.delay.toInt())
+                        }
+                        ) { _ -> prevStateWidth = it.card.caravanAnimationMark }
 
                         LaunchedEffect(it.card.caravanAnimationMark) {
                             if (modifier.caravanAnimationMark == Card.AnimationMark.NEW) {
@@ -802,13 +823,19 @@ fun RowScope.CaravanOnField(
                         it: CardWithModifier,
                         index: Int
                     ) {
+                        var prevState by rememberScoped { mutableStateOf(it.card.caravanAnimationMark) }
                         val offsetHeightMult by animateFloatAsState(when (it.card.caravanAnimationMark) {
                             Card.AnimationMark.STABLE -> 0f
                             Card.AnimationMark.NEW -> 3f * enemyTurnMult
                             Card.AnimationMark.MOVING_OUT -> 0f
                             Card.AnimationMark.MOVING_OUT_ALT -> 0f
                             Card.AnimationMark.MOVED_OUT -> 0f
-                        }, animationSpec = tween(animationSpeed.delay.toInt()))
+                        }, if (prevState != Card.AnimationMark.STABLE && prevState != Card.AnimationMark.NEW) {
+                            SnapSpec()
+                        } else {
+                            tween(animationSpeed.delay.toInt())
+                        }
+                        ) { _ -> prevState = it.card.caravanAnimationMark }
 
                         val offsetWidthMult by animateFloatAsState(when (it.card.caravanAnimationMark) {
                             Card.AnimationMark.STABLE -> 0f
@@ -816,7 +843,12 @@ fun RowScope.CaravanOnField(
                             Card.AnimationMark.MOVING_OUT -> 2f
                             Card.AnimationMark.MOVING_OUT_ALT -> 2f
                             Card.AnimationMark.MOVED_OUT -> 2f
-                        }, animationSpec = tween(animationSpeed.delay.toInt()))
+                        }, if (prevState != Card.AnimationMark.STABLE && prevState != Card.AnimationMark.NEW) {
+                            SnapSpec()
+                        } else {
+                            tween(animationSpeed.delay.toInt())
+                        }
+                        ) { _ -> prevState = it.card.caravanAnimationMark }
 
                         LaunchedEffect(it.card.caravanAnimationMark) {
                             if (it.card.caravanAnimationMark == Card.AnimationMark.NEW) {
