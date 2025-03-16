@@ -43,6 +43,7 @@ import com.unicorns.invisible.caravan.story.DialogEdge
 import com.unicorns.invisible.caravan.story.DialogFinishState
 import com.unicorns.invisible.caravan.story.DialogGraph
 import com.unicorns.invisible.caravan.story.DialogMiddleState
+import com.unicorns.invisible.caravan.story.PicEffect
 import com.unicorns.invisible.caravan.story.StoryShow
 import com.unicorns.invisible.caravan.utils.MenuItemOpen
 import com.unicorns.invisible.caravan.utils.TextClassic
@@ -268,8 +269,38 @@ fun ShowIntro(
     advanceChapter: () -> Unit,
     goBack: () -> Unit,
 ) {
-    advanceChapter()
-    goBack()
+    StoryShow(activity, DialogGraph(
+        listOf(
+            DialogMiddleState(R.drawable.black_back, R.string.intro_0, intro = PicEffect.NONE, outro = PicEffect.NONE),
+            DialogMiddleState(R.drawable.intro_1, R.string.intro_1, intro = PicEffect.SLIDE, outro = PicEffect.SLIDE),
+            DialogMiddleState(R.drawable.intro_2, R.string.intro_2, intro = PicEffect.SLIDE, outro = PicEffect.SLIDE),
+            DialogMiddleState(R.drawable.intro_3, R.string.intro_3, intro = PicEffect.SLIDE, outro = PicEffect.SLIDE),
+            DialogMiddleState(R.drawable.intro_4, R.string.intro_4, intro = PicEffect.SLIDE, outro = PicEffect.SLIDE),
+            DialogMiddleState(R.drawable.intro_5, R.string.intro_5, intro = PicEffect.SLIDE, outro = PicEffect.SLIDE),
+            DialogMiddleState(R.drawable.intro_6, R.string.intro_6, intro = PicEffect.SLIDE, outro = PicEffect.SLIDE),
+            DialogMiddleState(R.drawable.intro_7, R.string.intro_7, intro = PicEffect.SLIDE, outro = PicEffect.SLIDE),
+            DialogMiddleState(R.drawable.intro_8, R.string.intro_8, intro = PicEffect.SLIDE, outro = PicEffect.SLIDE),
+            DialogMiddleState(R.drawable.intro_9, R.string.intro_9, intro = PicEffect.SLIDE, outro = PicEffect.SLIDE),
+            DialogMiddleState(R.drawable.black_back, R.string.intro_10, intro = PicEffect.NONE, outro = PicEffect.SELECT),
+            DialogFinishState(DeathCode.ALIVE)
+        ),
+        listOf(
+            DialogEdge(0, 1, R.string.next_slide),
+            DialogEdge(1, 2, R.string.next_slide),
+            DialogEdge(2, 3, R.string.next_slide),
+            DialogEdge(3, 4, R.string.next_slide),
+            DialogEdge(4, 5, R.string.next_slide),
+            DialogEdge(5, 6, R.string.next_slide),
+            DialogEdge(6, 7, R.string.next_slide),
+            DialogEdge(7, 8, R.string.next_slide),
+            DialogEdge(8, 9, R.string.next_slide),
+            DialogEdge(9, 10, R.string.next_slide),
+            DialogEdge(10, 11, R.string.finish)
+        )
+    )) {
+        advanceChapter()
+        goBack()
+    }
 }
 
 @Composable
@@ -437,8 +468,7 @@ fun ShowStoryChapter3(
         listOf(
             DialogMiddleState(R.drawable.black_back, R.string.c4_t1),
             DialogMiddleState(R.drawable.black_back, R.string.ch4_t2),
-            DialogFinishState(DeathCode.ALIVE),
-
+            DialogFinishState(DeathCode.ALIVE)
         ),
         listOf(
             DialogEdge(0, 1, R.string.ch4_q1),

@@ -1,5 +1,12 @@
 package com.unicorns.invisible.caravan.story
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.SnapSpec
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.VisibilityThreshold
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -10,54 +17,65 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.BiasAlignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.draw.paint
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
+import coil.compose.rememberAsyncImagePainter
+import coil.decode.SvgDecoder
+import coil.request.ImageRequest
+import coil.size.Scale
+import coil.size.SizeResolver
 import com.sebaslogen.resaca.rememberScoped
 import com.unicorns.invisible.caravan.MainActivity
 import com.unicorns.invisible.caravan.R
 import com.unicorns.invisible.caravan.Style
 import com.unicorns.invisible.caravan.utils.TextClassic
-import com.unicorns.invisible.caravan.utils.clickableSelect
 import com.unicorns.invisible.caravan.utils.getStrokeColorByStyle
 import com.unicorns.invisible.caravan.utils.getTextBackByStyle
 import com.unicorns.invisible.caravan.utils.getTextColorByStyle
 import com.unicorns.invisible.caravan.utils.playDeathPhrase
+import com.unicorns.invisible.caravan.utils.playSelectSound
+import com.unicorns.invisible.caravan.utils.playSlideSound
+import com.unicorns.invisible.caravan.utils.pxToDp
 import com.unicorns.invisible.caravan.utils.scrollbar
 import com.unicorns.invisible.caravan.utils.weightedRandom
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 
 @Composable
-fun DialogLine(activity: MainActivity, line: String, isSelect: Boolean = true, onClick: () -> Unit) {
+fun DialogLine(activity: MainActivity, line: String, onClick: () -> Unit) {
     if (line == "") return
-
-    val modifier = if (isSelect) {
-        Modifier.clickableSelect(activity) { onClick() }
-    } else {
-        Modifier.clickable { onClick() }
-    }
     TextClassic(
         line,
         getTextColorByStyle(activity, Style.PIP_BOY),
         getStrokeColorByStyle(activity, Style.PIP_BOY),
         18.sp,
-        modifier
+        Modifier
+            .clickable { onClick() }
             .background(getTextBackByStyle(activity, Style.PIP_BOY))
             .padding(horizontal = 8.dp, vertical = 4.dp),
         textAlignment = TextAlign.Start
@@ -68,7 +86,8 @@ fun DialogLine(activity: MainActivity, line: String, isSelect: Boolean = true, o
 @Composable
 fun StoryShow(activity: MainActivity, graph: DialogGraph, onEnd: () -> Unit) {
     var dialogState by rememberScoped { mutableIntStateOf(0) }
-    val stableDialogState = graph.states[dialogState]
+    val stableDialogState: DialogState = graph.states[dialogState]
+
     when (stableDialogState) {
         is DialogFinishState -> {
             ShowDeathScreen(activity, stableDialogState.code, onEnd)
@@ -93,15 +112,35 @@ fun StoryShow(activity: MainActivity, graph: DialogGraph, onEnd: () -> Unit) {
                     horizontalAlignment = Alignment.CenterHorizontally,
                     state = state
                 ) { item {
-                    Box(
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(8.dp)
-                            .paint(
-                                painterResource(
-                                    id = stableDialogState.picId
-                                )
-                            ))
+                    var isSlideVisible by rememberScoped { mutableStateOf(false) }
+                    LaunchedEffect(dialogState) {
+                        if (stableDialogState.intro == PicEffect.SLIDE) {
+                            playSlideSound(activity)
+                        }
+                        isSlideVisible = true
+                    }
+
+                    Box(Modifier.width(640.pxToDp()).height(480.pxToDp()).clipToBounds(), contentAlignment = Alignment.TopCenter) {
+                        AnimatedVisibility(
+                            visible = stableDialogState.intro == PicEffect.SLIDE && isSlideVisible,
+                            enter = slideInHorizontally(
+                                animationSpec = spring(stiffness = Spring.StiffnessMediumLow, visibilityThreshold = IntOffset.VisibilityThreshold),
+                                initialOffsetX = { it -> -it }
+                            ),
+                            exit = slideOutHorizontally(targetOffsetX = { it -> it })
+                        ) {
+                            AsyncImage(
+                                model = ImageRequest.Builder(activity)
+                                    .data(stableDialogState.picId)
+                                    .build(),
+                                contentScale = ContentScale.FillBounds,
+                                contentDescription = "",
+                            )
+                        }
+                        Box(Modifier.fillMaxSize()
+                            .paint(painterResource(id = R.drawable.crt_1))
+                        )
+                    }
                     Column(Modifier.fillMaxWidth()) {
                         val response = stringResource(stableDialogState.responseId)
                         if (response.isNotEmpty()) {
@@ -126,9 +165,20 @@ fun StoryShow(activity: MainActivity, graph: DialogGraph, onEnd: () -> Unit) {
                                     return@forEachIndexed
                                 }
                                 DialogLine(activity, stringResource(edge.lineId)) {
-                                    dialogState = edge.newState
-                                    graph.visitedStates[dialogState] = true
                                     CoroutineScope(Dispatchers.Unconfined).launch {
+                                        isSlideVisible = false
+                                        when (stableDialogState.outro) {
+                                            PicEffect.SLIDE -> {
+                                                playSlideSound(activity)
+                                                delay(1000L)
+                                            }
+                                            PicEffect.SELECT -> {
+                                                playSelectSound(activity)
+                                            }
+                                            PicEffect.NONE -> {}
+                                        }
+                                        dialogState = edge.newState
+                                        graph.visitedStates[dialogState] = true
                                         var visitedEdgeResult = edge.onVisited()
                                         while (visitedEdgeResult in graph.edges.indices) {
                                             val otherEdge = graph.edges[visitedEdgeResult]

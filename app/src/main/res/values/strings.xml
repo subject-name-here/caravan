@@ -515,6 +515,18 @@
     <string name="chapter_end_name">The End Slides.</string>
 
 
+    <string name="intro_0">War. War never changes.</string>
+    <string name="next_slide">[NEXT SLIDE]</string>
+    <string name="intro_1">Humanity learns it time and time again the hard way. World Wars, Great War… they went and gone, and people are still inventing reasons to fight and to kill.</string>
+    <string name="intro_2">When the radioactive dust settled upon America, different factions emerged. NCR, Legion, Followers of Apocalypse - all with different goals and different methods.</string>
+    <string name="intro_3">In Mojave Wasteland, however, there was no single force that could unite the whole area.</string>
+    <string name="intro_4">That led to battles, big and small, across the territory. Fighting and killing, all over again.</string>
+    <string name="intro_5">Many people of Mojave had escaped, yet many more still cling to their homeland.</string>
+    <string name="intro_6">You are the Prospector, a child of the Mojave Wasteland, hardened by the harsh life in the desert and teased by the luxuries of the neon lights of New Vegas.</string>
+    <string name="intro_7">Your lifelong quest is to get to this shining oasis behind the walls and guns of securitrons, to lock your place there and live in safety, knowing no war.</string>
+    <string name="intro_8">To change your life for good, you had become a vulture for the rotting parts of the Old World, seeking to salvage, repair and sell off to whoever might find them a better use.</string>
+    <string name="intro_9">One day, you take the trip of your life to legendary Sierra Madre, the city covered by the red mist that kills everyone who is not careful enough. You waste almost all your resources, all your Stealth Boys, but you are finally here.</string>
+    <string name="intro_10">What seemed like a suicide mission might finally bring what you were looking for… peace.</string>
 
     <string name="chapter_1_text_1">It is a story of the Prospector. A child of the Mojave Wasteland, hardened by the harsh life in the desert and teased by the luxuries of the neon lights of New Vegas, doors of which are closed to ones of his kind.</string>
     <string name="chapter_1_q_1">Ooh, poor guy! What did he do?</string>
@@ -788,10 +800,9 @@ If this helped you understand the game, thank the author Kyle! To do this, go to
     <string name="enemy_empty" translatable="false">%1$s</string>
 
     <string name="congrats">Congrats!</string>
-    <string name="prize4_body">You have found a secret stash! +5000 caps!</string>
-    <string name="prize1_body">You have found a secret stash! +1969 caps!</string>
-    <string name="prize2_body">You have found a secret stash! +2024 caps!</string>
-    <string name="prize3_body">You have found a not-so-secret stash! +12 caps!</string>
+    <string name="prize1_body">You have found a secret stash in a stone wall! +1969 caps!</string>
+    <string name="prize2_body">You have found a secret stash! It was an eventful year, huh? +2024 caps!</string>
+    <string name="prize3_body">You have found a badly hidden stash! +12 caps!</string>
     <string name="story_progress_is_deleted">Story progress is deleted.</string>
     <string name="you_have_found_cards_from_standard_alt_deck">You have found cards from Standard ALT deck!</string>
     <string name="you_have_found_cards_from_enclave_deck">You have found cards from Enclave deck!</string>
