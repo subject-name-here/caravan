@@ -10,8 +10,8 @@ import kotlinx.serialization.Serializable
 @Serializable
 class EnemySignificantOther : Enemy {
     var back: CardBack = CardBack.STANDARD
-    var isAlt: Boolean = false
+    var backNumber: Int = 0
 
-    override fun createDeck() = CResources(back, isAlt)
+    override fun createDeck() = CResources(back, backNumber)
     override suspend fun makeMove(game: Game, speed: AnimationSpeed) {}
 }

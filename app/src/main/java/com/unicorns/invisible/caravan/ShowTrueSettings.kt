@@ -31,8 +31,19 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.unicorns.invisible.caravan.cheats.*
-import com.unicorns.invisible.caravan.cheats.stash.*
+import com.unicorns.invisible.caravan.cheats.Cheat666
+import com.unicorns.invisible.caravan.cheats.CheatChangeTrack
+import com.unicorns.invisible.caravan.cheats.CheatChina
+import com.unicorns.invisible.caravan.cheats.CheatEraseStoryProgress
+import com.unicorns.invisible.caravan.cheats.CheatFightJoshua
+import com.unicorns.invisible.caravan.cheats.CheatFinalBossesHeroicMusic
+import com.unicorns.invisible.caravan.cheats.CheatLaggySpeed
+import com.unicorns.invisible.caravan.cheats.CheatLevel10
+import com.unicorns.invisible.caravan.cheats.CheatPapaSmurf
+import com.unicorns.invisible.caravan.cheats.CheatRadioPseudonyms
+import com.unicorns.invisible.caravan.cheats.stash.CheatStash1234
+import com.unicorns.invisible.caravan.cheats.stash.CheatStash1969
+import com.unicorns.invisible.caravan.cheats.stash.CheatStashEventfulYear
 import com.unicorns.invisible.caravan.save.saveData
 import com.unicorns.invisible.caravan.utils.MenuItemOpen
 import com.unicorns.invisible.caravan.utils.SwitchCustomUsualBackground
@@ -144,8 +155,6 @@ fun ShowTrueSettings(
                             CheatChina,
                             CheatEraseStoryProgress,
                             CheatFinalBossesHeroicMusic,
-                            CheatHalfEnclaveDeck,
-                            CheatHalfStandardAltDeck,
                             CheatLevel10,
                             CheatPapaSmurf,
                             CheatRadioPseudonyms,

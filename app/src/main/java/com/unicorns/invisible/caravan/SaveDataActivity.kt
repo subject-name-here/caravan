@@ -119,7 +119,10 @@ abstract class SaveDataActivity : AppCompatActivity() {
             }.await()
     }
 
+    suspend fun fetchOldSave() = fetchFileFromDrive(OLD_SAVE_FILE_NAME)
+
     companion object {
-        const val SAVE_FILE_NAME = "saveFileMkII"
+        const val SAVE_FILE_NAME = "saveFileMkIII"
+        const val OLD_SAVE_FILE_NAME = "saveFileMkII"
     }
 }

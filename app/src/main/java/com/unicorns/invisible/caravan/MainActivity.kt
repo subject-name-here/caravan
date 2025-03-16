@@ -66,7 +66,6 @@ import androidx.lifecycle.MutableLiveData
 import com.sebaslogen.resaca.rememberScoped
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.challenge.Challenge
-import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.save.Save
 import com.unicorns.invisible.caravan.save.loadGDSave
 import com.unicorns.invisible.caravan.save.loadLocalSave
@@ -686,7 +685,7 @@ class MainActivity : SaveDataActivity() {
                         ShowAbout(this@MainActivity) { showAbout = false }
                     }
                     showPvE -> {
-                        if (!CResources(save.getCustomDeckCopy()).isCustomDeckValid()) {
+                        if (!save.getCurrentCustomDeck().isCustomDeckValid()) {
                             showAlertCustomDeck()
                             showPvE = false
                         } else {
@@ -694,7 +693,7 @@ class MainActivity : SaveDataActivity() {
                         }
                     }
                     showPvP -> {
-                        if (!CResources(save.getCustomDeckCopy()).isCustomDeckValid()) {
+                        if (!save.getCurrentCustomDeck().isCustomDeckValid()) {
                             showAlertCustomDeck()
                             showPvP = false
                         } else if (cronetEngine == null) {

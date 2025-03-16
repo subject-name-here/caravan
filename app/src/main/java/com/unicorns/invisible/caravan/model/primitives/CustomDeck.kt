@@ -1,24 +1,12 @@
 package com.unicorns.invisible.caravan.model.primitives
 
 import com.unicorns.invisible.caravan.model.CardBack
-import kotlinx.serialization.Serializable
 
-
-@Serializable
 class CustomDeck() {
     private val cards = ArrayList<Card>()
 
-    constructor(back: CardBack, isAlt: Boolean) : this() {
-        Rank.entries.forEach { rank ->
-            if (rank == Rank.JOKER) {
-                cards.add(Card(rank, Suit.HEARTS, back, isAlt))
-                cards.add(Card(rank, Suit.CLUBS, back, isAlt))
-            } else {
-                Suit.entries.forEach { suit ->
-                    cards.add(Card(rank, suit, back, isAlt))
-                }
-            }
-        }
+    constructor(back: CardBack, backNumber: Int): this() {
+        addAll(CollectibleDeck(back, backNumber))
     }
 
     val size: Int
@@ -28,21 +16,30 @@ class CustomDeck() {
 
     fun add(element: Card) = cards.add(element)
     fun addOnTop(element: Card) = cards.add(0, element)
-    fun addAll(elements: CustomDeck) = cards.addAll(elements.toList())
-
-    fun count(predicate: (Card) -> Boolean) = cards.count(predicate)
-    fun firstOrNull() = cards.firstOrNull()
+    fun addAll(elements: CollectibleDeck) = cards.addAll(elements.toCardList())
     fun removeFirst() = cards.removeAt(0)
 
     private fun getEqPredicate(it: Card): (Card) -> Boolean = { c ->
-        it.suit == c.suit && it.back == c.back && it.rank == c.rank && it.isAlt == c.isAlt
+        when (c) {
+            is CardFaceSuited -> it is CardFaceSuited && it.rank == c.rank && it.suit == c.suit && it.back == c.back && it.backNumber == c.backNumber
+            is CardJoker -> it is CardJoker && it.number == c.number && it.back == c.back && it.backNumber == c.backNumber
+            is CardNumber -> it is CardNumber && it.rank == c.rank && it.suit == c.suit && it.back == c.back && it.backNumber == c.backNumber
+            is CardNumberWW -> it is CardNumberWW && it.rank == c.rank && it.suit == c.suit
+            is CardAtomic -> it is CardAtomic
+            is CardFBomb -> it is CardFBomb
+            is CardWildWasteland -> it is CardWildWasteland && it.type == c.type
+        }
     }
 
     fun removeAll(elements: Collection<Card>) = elements.forEach { cardToRemove ->
         cards.removeAll(getEqPredicate(cardToRemove))
     }
+    fun removeAll(predicate: (Card) -> Boolean) {
+        cards.removeAll(predicate)
+    }
     fun removeAllOnce(elements: Collection<Card>) = elements.forEach { cardToRemove ->
-        val card = cards.find(getEqPredicate(cardToRemove))
+        val predicate = getEqPredicate(cardToRemove)
+        val card = cards.filter { predicate(it) }.randomOrNull()
         cards.remove(card)
     }
 
@@ -50,13 +47,21 @@ class CustomDeck() {
         return cards.any(getEqPredicate(card))
     }
 
-    fun toList() = cards.toList()
     fun shuffle() = cards.shuffle()
+    fun toList() = cards.toList()
 
     fun copy(): CustomDeck {
         val res = CustomDeck()
         for (card in cards) {
-            res.add(Card(card.rank, card.suit, card.back, card.isAlt))
+            res.add(when (card) {
+                is CardFaceSuited -> CardFaceSuited(card.rank, card.suit, card.back, card.backNumber)
+                is CardJoker -> CardJoker(card.number, card.back, card.backNumber)
+                is CardNumber -> CardNumber(card.rank, card.suit, card.back, card.backNumber)
+                is CardNumberWW -> CardNumberWW(card.rank, card.suit)
+                is CardAtomic -> CardAtomic()
+                is CardFBomb -> CardFBomb()
+                is CardWildWasteland -> CardWildWasteland(card.type)
+            })
         }
         return res
     }

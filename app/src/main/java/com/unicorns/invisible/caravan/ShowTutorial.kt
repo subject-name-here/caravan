@@ -10,7 +10,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.stringResource
@@ -22,9 +21,12 @@ import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.enemy.EnemyTutorial
 import com.unicorns.invisible.caravan.model.primitives.CResources
-import com.unicorns.invisible.caravan.model.primitives.Card
+import com.unicorns.invisible.caravan.model.primitives.CardFaceSuited
+import com.unicorns.invisible.caravan.model.primitives.CardModifier
+import com.unicorns.invisible.caravan.model.primitives.CardNumber
 import com.unicorns.invisible.caravan.model.primitives.CustomDeck
-import com.unicorns.invisible.caravan.model.primitives.Rank
+import com.unicorns.invisible.caravan.model.primitives.RankFace
+import com.unicorns.invisible.caravan.model.primitives.RankNumber
 import com.unicorns.invisible.caravan.model.primitives.Suit
 import com.unicorns.invisible.caravan.utils.TextFallout
 import com.unicorns.invisible.caravan.utils.clickableCancel
@@ -61,16 +63,16 @@ fun Tutorial(
     val game: Game = rememberScoped {
         Game(
             CResources(CustomDeck().apply {
-                add(Card(Rank.JACK, Suit.HEARTS, CardBack.STANDARD, false))
-                add(Card(Rank.QUEEN, Suit.CLUBS, CardBack.STANDARD, false))
-                add(Card(Rank.KING, Suit.DIAMONDS, CardBack.STANDARD, false))
-                add(Card(Rank.JOKER, Suit.HEARTS, CardBack.STANDARD, false))
-                add(Card(Rank.TWO, Suit.HEARTS, CardBack.STANDARD, false))
-                add(Card(Rank.TWO, Suit.DIAMONDS, CardBack.STANDARD, false))
-                add(Card(Rank.TWO, Suit.CLUBS, CardBack.STANDARD, false))
-                add(Card(Rank.THREE, Suit.HEARTS, CardBack.STANDARD, false))
-                add(Card(Rank.FOUR, Suit.DIAMONDS, CardBack.STANDARD, false))
-                add(Card(Rank.ACE, Suit.DIAMONDS, CardBack.STANDARD, false))
+                add(CardFaceSuited(RankFace.JACK, Suit.HEARTS, CardBack.STANDARD, 0))
+                add(CardFaceSuited(RankFace.QUEEN, Suit.CLUBS, CardBack.STANDARD, 0))
+                add(CardFaceSuited(RankFace.KING, Suit.DIAMONDS, CardBack.STANDARD, 0))
+                add(CardFaceSuited(RankFace.JOKER, Suit.HEARTS, CardBack.STANDARD, 0))
+                add(CardNumber(RankNumber.TWO, Suit.HEARTS, CardBack.STANDARD, 0))
+                add(CardNumber(RankNumber.TWO, Suit.DIAMONDS, CardBack.STANDARD, 0))
+                add(CardNumber(RankNumber.TWO, Suit.CLUBS, CardBack.STANDARD, 0))
+                add(CardNumber(RankNumber.THREE, Suit.HEARTS, CardBack.STANDARD, 0))
+                add(CardNumber(RankNumber.FOUR, Suit.DIAMONDS, CardBack.STANDARD, 0))
+                add(CardNumber(RankNumber.ACE, Suit.DIAMONDS, CardBack.STANDARD, 0))
             }),
             EnemyTutorial().apply {
                 onRemoveFromHand = { updater = !updater }
@@ -242,7 +244,7 @@ fun Tutorial(
             }
 
             30 -> {
-                if (game.playerCResources.hand.all { it.isModifier() }) {
+                if (game.playerCResources.hand.all { it is CardModifier }) {
                     tutorialKey++
                 }
             }

@@ -3,7 +3,7 @@ package com.unicorns.invisible.caravan.model.primitives
 import com.unicorns.invisible.caravan.R
 
 
-enum class Rank(val value: Int, val nameId: Int) {
+enum class RankNumber(val value: Int, val nameId: Int) {
     ACE(1, R.string.ace_name),
     TWO(2, R.string.two_name),
     THREE(3, R.string.three_name),
@@ -13,11 +13,12 @@ enum class Rank(val value: Int, val nameId: Int) {
     SEVEN(7, R.string.seven_name),
     EIGHT(8, R.string.eight_name),
     NINE(9, R.string.nine_name),
-    TEN(10, R.string.ten_name),
+    TEN(10, R.string.ten_name)
+}
+
+enum class RankFace(val value: Int, val nameId: Int) {
     JACK(11, R.string.jack_name),
     QUEEN(12, R.string.queen_name),
     KING(13, R.string.king_name),
-    JOKER(14, R.string.joker_name);
-
-    fun isFace() = this.value > 10
+    JOKER(14, R.string.joker_name)
 }

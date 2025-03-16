@@ -16,7 +16,7 @@ class EnemyCaesar : EnemyPve {
     override fun isEven() = false
 
     override fun createDeck(): CResources {
-        return CResources(CustomDeck(CardBack.LEGION, false))
+        return CResources(CustomDeck(CardBack.FNV_FACTION, 1))
     }
 
     private var bank = 0

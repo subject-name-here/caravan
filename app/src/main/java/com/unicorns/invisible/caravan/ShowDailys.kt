@@ -162,6 +162,7 @@ fun ShowChallenge(activity: MainActivity, challenge: Challenge, isCompleted: Boo
                 }
             }
             Spacer(Modifier.height(8.dp))
+            // TODO: custom rewards!!
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
                 TextFallout(
                     activity.getString(R.string.claim_tickets, "1"),

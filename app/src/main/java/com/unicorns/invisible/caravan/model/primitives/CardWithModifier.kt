@@ -5,42 +5,39 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.setValue
 import com.unicorns.invisible.caravan.AnimationSpeed
 import kotlinx.coroutines.delay
-import kotlinx.serialization.Serializable
 import kotlin.math.pow
 
 
-@Serializable
-class CardWithModifier(val card: Card) {
+class CardWithModifier(val card: CardBase) {
     var recomposeResources by mutableIntStateOf(0)
-    private val modifiers: MutableList<Card> = mutableListOf()
-    suspend fun addModifier(card: Card, speed: AnimationSpeed) {
+    private val modifiers: MutableList<CardModifier> = mutableListOf()
+    suspend fun addModifier(card: CardModifier, speed: AnimationSpeed) {
         modifiers.add(card)
         recomposeResources++
         delay(speed.delay)
 
-        if (card.isNuclear()) {
+        if (card is CardNuclear) {
             hasBomb = true
-        } else when (card.getWildWastelandType()) {
-            Card.WildWastelandCardType.DIFFICULT_PETE -> hasActivePete = true
-            Card.WildWastelandCardType.FEV -> hasActiveFev = true
-            Card.WildWastelandCardType.UFO -> hasActiveUfo = true
-            Card.WildWastelandCardType.CAZADOR -> hasActiveCazador = true
-            Card.WildWastelandCardType.MUGGY -> hasActiveMuggy = true
-            Card.WildWastelandCardType.YES_MAN -> hasActiveYesMan = true
-            else -> {
-                if (card.rank == Rank.JOKER) {
-                    hasActiveJoker = true
-                }
+        } else if (card is CardWildWasteland) {
+            when (card.type) {
+                WWType.DIFFICULT_PETE -> hasActivePete = true
+                WWType.FEV -> hasActiveFev = true
+                WWType.UFO -> hasActiveUfo = true
+                WWType.CAZADOR -> hasActiveCazador = true
+                WWType.MUGGY -> hasActiveMuggy = true
+                WWType.YES_MAN -> hasActiveYesMan = true
             }
+        } else if (card is CardJoker) {
+            hasActiveJoker = true
         }
     }
-    fun copyModifiersFrom(mods: List<Card>) {
+    fun copyModifiersFrom(mods: List<CardModifier>) {
         modifiers.addAll(mods)
     }
 
-    fun canAddModifier(card: Card): Boolean {
-        val isOrdinaryJack = card.rank == Rank.JACK && card.isOrdinary()
-        return card.isModifier() && !isProtectedByMuggy && (modifiers.size < 3 || isOrdinaryJack)
+    fun canAddModifier(card: CardModifier): Boolean {
+        val isOrdinaryJack = card is CardFace && card.rank == RankFace.JACK
+        return !isProtectedByMuggy && (modifiers.size < 3 || isOrdinaryJack)
     }
 
     var hasActiveJoker: Boolean = false
@@ -80,24 +77,22 @@ class CardWithModifier(val card: Card) {
     }
 
     fun isQueenReversingSequence() = modifiers
-        .count { it.isOrdinary() && it.rank == Rank.QUEEN } % 2 == 1
+        .count { it is CardFace && it.rank == RankFace.QUEEN } % 2 == 1
 
-    fun hasJacks() = modifiers.any { it.isOrdinary() && it.rank == Rank.JACK }
+    fun hasJacks() = modifiers.any { it is CardFace && it.rank == RankFace.JACK }
 
-    fun modifiersCopy(): List<Card> {
+    fun modifiersCopy(): List<CardModifier> {
         return modifiers.toList()
     }
 
     fun getValue(): Int {
-        return if (card.isModifier()) {
-            0
-        } else {
-            card.rank.value * (2.0.pow(modifiers.count { it.isOrdinary() && it.rank == Rank.KING })).toInt()
-        }
+        return card.rank.value * (2.0.pow(modifiers.count { it is CardFace && it.rank == RankFace.KING })).toInt()
     }
 
     fun getTopSuit(): Suit {
-        return modifiers.findLast { it.isOrdinary() && it.rank == Rank.QUEEN }?.suit ?: card.suit
+        return modifiers
+            .filterIsInstance<CardFaceSuited>()
+            .findLast { it.rank == RankFace.QUEEN }?.suit ?: card.suit
     }
 
     fun copyWild(src: CardWithModifier) {

@@ -34,8 +34,11 @@ import com.unicorns.invisible.caravan.model.enemy.EnemyStory2
 import com.unicorns.invisible.caravan.model.enemy.EnemyStory3
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.Card
+import com.unicorns.invisible.caravan.model.primitives.CardFaceSuited
+import com.unicorns.invisible.caravan.model.primitives.CardNumber
 import com.unicorns.invisible.caravan.model.primitives.CustomDeck
-import com.unicorns.invisible.caravan.model.primitives.Rank
+import com.unicorns.invisible.caravan.model.primitives.RankFace
+import com.unicorns.invisible.caravan.model.primitives.RankNumber
 import com.unicorns.invisible.caravan.model.primitives.Suit
 import com.unicorns.invisible.caravan.save.saveData
 import com.unicorns.invisible.caravan.story.DeathCode
@@ -241,22 +244,22 @@ fun ShowStoryList(
 fun getDeck(chapterNumber: Int): CustomDeck {
     return when (chapterNumber) {
         11 -> {
-            CustomDeck(CardBack.STANDARD, false)
+            CustomDeck(CardBack.STANDARD, 0)
         }
         12 -> {
-            CustomDeck(CardBack.STANDARD, false).apply {
-                add(Card(Rank.ACE, Suit.SPADES, CardBack.SIERRA_MADRE, true))
-                add(Card(Rank.KING, Suit.SPADES, CardBack.SIERRA_MADRE, true))
-                add(Card(Rank.QUEEN, Suit.SPADES, CardBack.SIERRA_MADRE, true))
-                add(Card(Rank.JACK, Suit.SPADES, CardBack.SIERRA_MADRE, true))
-                add(Card(Rank.TEN, Suit.SPADES, CardBack.SIERRA_MADRE, true))
+            CustomDeck(CardBack.STANDARD, 0).apply {
+                add(CardNumber(RankNumber.ACE, Suit.SPADES, CardBack.SIERRA_MADRE, 1))
+                add(CardFaceSuited(RankFace.KING, Suit.SPADES, CardBack.SIERRA_MADRE, 1))
+                add(CardFaceSuited(RankFace.QUEEN, Suit.SPADES, CardBack.SIERRA_MADRE, 1))
+                add(CardFaceSuited(RankFace.JACK, Suit.SPADES, CardBack.SIERRA_MADRE, 1))
+                add(CardNumber(RankNumber.TEN, Suit.SPADES, CardBack.SIERRA_MADRE, 1))
             }
         }
         13 -> {
             CustomDeck().apply {
-                add(Card(Rank.ACE, Suit.SPADES, CardBack.GOMORRAH, false))
-                add(Card(Rank.ACE, Suit.SPADES, CardBack.ULTRA_LUXE, false))
-                add(Card(Rank.ACE, Suit.SPADES, CardBack.TOPS, false))
+                add(CardNumber(RankNumber.ACE, Suit.SPADES, CardBack.GOMORRAH, 0))
+                add(CardNumber(RankNumber.ACE, Suit.SPADES, CardBack.ULTRA_LUXE, 0))
+                add(CardNumber(RankNumber.ACE, Suit.SPADES, CardBack.TOPS, 0))
             }
         }
         else -> CustomDeck()

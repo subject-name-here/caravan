@@ -4,13 +4,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.setValue
 import com.unicorns.invisible.caravan.AnimationSpeed
-import com.unicorns.invisible.caravan.model.CardBack
 import kotlinx.coroutines.delay
-import kotlinx.serialization.Serializable
 import kotlin.random.Random
 
 
-@Serializable
 class Caravan {
     var recomposeResources by mutableIntStateOf(0)
 
@@ -39,14 +36,14 @@ class Caravan {
     suspend fun removeAllJackedCards(speed: AnimationSpeed) {
         removeAll(speed) { it.hasJacks() }
     }
-    suspend fun jokerRemoveAllRanks(card: Card, speed: AnimationSpeed) {
+    suspend fun jokerRemoveAllRanks(card: CardBase, speed: AnimationSpeed) {
         removeAll(speed) { it.card.rank == card.rank && !it.hasActiveJoker }
     }
-    suspend fun jokerRemoveAllSuits(card: Card, speed: AnimationSpeed) {
+    suspend fun jokerRemoveAllSuits(card: CardBase, speed: AnimationSpeed) {
         removeAll(speed) { it.card.suit == card.suit && !it.hasActiveJoker }
     }
 
-    private fun replaceCards(getCard: (CardWithModifier) -> Pair<Rank, Suit>) {
+    private fun replaceCards(getCard: (CardWithModifier) -> Pair<RankNumber, Suit>) {
         cardsMutable.forEach { it.card.caravanAnimationMark = Card.AnimationMark.MOVED_OUT }
         val copy = cardsMutable.toList()
         cardsMutable.clear()
@@ -54,7 +51,7 @@ class Caravan {
             val mods = cardCopy.modifiersCopy()
             val card = getCard(cardCopy)
             cardsMutable.add(
-                CardWithModifier(Card(card.first, card.second, CardBack.WILD_WASTELAND, false)).apply {
+                CardWithModifier(CardNumberWW(card.first, card.second)).apply {
                     copyModifiersFrom(mods); copyWild(cardCopy)
                 }
             )
@@ -69,11 +66,11 @@ class Caravan {
         val changeOrdinal: (Int) -> Int = if (isReversed) Int::inc else Int::dec
         replaceCards {
             val newOrdinal = (changeOrdinal(it.card.rank.ordinal)).coerceIn(0, 9)
-            Rank.entries[newOrdinal] to it.card.suit
+            RankNumber.entries[newOrdinal] to it.card.suit
         }
     }
     fun getPetePower() {
-        replaceCards { Rank.TEN to it.card.suit }
+        replaceCards { RankNumber.TEN to it.card.suit }
     }
     suspend fun getUfo(seed: Int, speed: AnimationSpeed) {
         val rand = Random(seed)
@@ -88,11 +85,10 @@ class Caravan {
         }
     }
 
-    fun canPutCardOnTop(card: Card): Boolean {
-        if (isFull() || card.isModifier()) return false
-        if (isEmpty()) {
-            return true
-        }
+    fun canPutCardOnTop(card: CardBase): Boolean {
+        if (isFull()) return false
+        if (isEmpty()) return true
+
         val last = cards.last()
         if (last.card.rank == card.rank) {
             return false
@@ -130,7 +126,7 @@ class Caravan {
         return false
     }
 
-    suspend fun putCardOnTop(card: Card, speed: AnimationSpeed) {
+    suspend fun putCardOnTop(card: CardBase, speed: AnimationSpeed) {
         cardsMutable.add(CardWithModifier(card))
         recomposeResources++
         delay(speed.delay)

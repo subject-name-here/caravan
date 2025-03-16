@@ -1,7 +1,5 @@
 package com.unicorns.invisible.caravan.utils
 
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -20,14 +18,12 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchColors
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.BiasAlignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.drawWithContent
-import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
@@ -37,7 +33,6 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.FixedScale
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.colorResource
@@ -63,6 +58,11 @@ import com.unicorns.invisible.caravan.model.CardBack.TOPS
 import com.unicorns.invisible.caravan.model.CardBack.ULTRA_LUXE
 import com.unicorns.invisible.caravan.model.getCardName
 import com.unicorns.invisible.caravan.model.primitives.Card
+import com.unicorns.invisible.caravan.model.primitives.CardAtomic
+import com.unicorns.invisible.caravan.model.primitives.CardFBomb
+import com.unicorns.invisible.caravan.model.primitives.CardNumberWW
+import com.unicorns.invisible.caravan.model.primitives.CardWildWasteland
+import com.unicorns.invisible.caravan.model.primitives.CardWithPrice
 
 
 @Composable
@@ -74,19 +74,50 @@ fun Dp.dpToPx() = with(LocalDensity.current) { this@dpToPx.toPx() }
 
 
 
-fun getFilter(back: CardBack, isAlt: Boolean): ColorFilter {
-    if (!isAlt) {
+fun getFilter(back: CardBack, backNumber: Int): ColorFilter {
+    if (backNumber == 0) {
         return ColorFilter.colorMatrix(ColorMatrix())
     }
     return when (back) {
-        STANDARD -> ColorFilter.colorMatrix(ColorMatrix(
-            floatArrayOf(
-                0f, 0f, 1f, 0f, 0f,
-                0f, 1f, 0f, 0f, 0f,
-                1f, 0f, 0f, 0f, 0f,
-                0f, 0f, 0f, 1f, 0f
-            )
-        ))
+        STANDARD -> ColorFilter.colorMatrix(
+            when (backNumber) {
+                1 -> {
+                    ColorMatrix(floatArrayOf(
+                        0f, 1f, 0f, 0f, 0f,
+                        1f, 0f, 0f, 0f, 0f,
+                        0f, 0f, 1f, 0f, 0f,
+                        0f, 0f, 0f, 1f, 0f
+                    ))
+                }
+                2 -> {
+                    ColorMatrix(floatArrayOf(
+                        0f, 0f, 1f, 0f, 0f,
+                        0f, 1f, 0f, 0f, 0f,
+                        1f, 0f, 0f, 0f, 0f,
+                        0f, 0f, 0f, 1f, 0f
+                    ))
+                }
+                3 -> {
+                    ColorMatrix(floatArrayOf(
+                        1f, 0f, 0f, 0f, 0f,
+                        0f, 1f, 0f, 0f, 0f,
+                        1f, 0f, 1f, 0f, 0f,
+                        0f, 0f, 0f, 1f, 0f
+                    ))
+                }
+                4 -> {
+                    ColorMatrix(floatArrayOf(
+                        1f, 0f, 0f, 0f, 0f,
+                        1f, 1f, 0f, 0f, 0f,
+                        0f, 0f, 1f, 0f, 0f,
+                        0f, 0f, 0f, 1f, 0f
+                    ))
+                }
+                else -> {
+                    ColorMatrix()
+                }
+            }
+        )
 
         TOPS -> ColorFilter.colorMatrix(ColorMatrix().apply {
             timesAssign(
@@ -212,7 +243,11 @@ fun ShowCard(activity: MainActivity, card: Card, modifier: Modifier, scale: Floa
             .build(),
         contentDescription = "",
         modifier.clip(RoundedCornerShape(5)),
-        colorFilter = getFilter(card.back, card.isAlt),
+        colorFilter = if (card is CardWithPrice) {
+            getFilter(card.getBack(), card.getBackNumber())
+        } else {
+            ColorFilter.colorMatrix(ColorMatrix())
+        },
         contentScale = FixedScale(scale),
         alignment = BiasAlignment(-1f, -1f)
     )
@@ -220,7 +255,13 @@ fun ShowCard(activity: MainActivity, card: Card, modifier: Modifier, scale: Floa
 
 @Composable
 fun ShowCardBack(activity: MainActivity, card: Card, modifier: Modifier, scale: Float = 1f) {
-    val asset = if (card.isAlt) card.back.altBackFileName else card.back.backFileName
+    val asset = when (card) {
+        is CardWithPrice -> card.getBack().nameIdWithBackFileName[card.getBackNumber()].second
+        is CardNumberWW -> "ww_back.webp"
+        is CardAtomic -> "nuclear_back.webp"
+        is CardFBomb -> "ccp_alt_back.webp"
+        is CardWildWasteland -> "ww_back.webp"
+    }
     AsyncImage(
         model = ImageRequest.Builder(activity)
             .data("file:///android_asset/caravan_cards_back/$asset")

@@ -14,7 +14,7 @@ class EnemyViqueen : EnemyPve {
     override fun isEven() = true
 
     override fun createDeck(): CResources {
-        return CResources(CardBack.VIKING, false)
+        return CResources(CardBack.VIKING, 0)
     }
     override fun getBank(): Int { return 0 }
     override fun refreshBank() {}

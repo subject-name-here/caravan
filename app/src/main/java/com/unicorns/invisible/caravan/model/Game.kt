@@ -6,9 +6,11 @@ import com.unicorns.invisible.caravan.model.enemy.EnemyMadnessCardinal
 import com.unicorns.invisible.caravan.model.enemy.EnemyTheManInTheMirror
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.Caravan
+import com.unicorns.invisible.caravan.model.primitives.CardFBomb
+import com.unicorns.invisible.caravan.model.primitives.CardNuclear
 import com.unicorns.invisible.caravan.model.primitives.CardWithModifier
 import com.unicorns.invisible.caravan.model.primitives.CustomDeck
-import com.unicorns.invisible.caravan.model.primitives.Rank
+import com.unicorns.invisible.caravan.model.primitives.RankNumber
 import kotlinx.coroutines.delay
 import java.util.UUID
 
@@ -54,8 +56,8 @@ class Game(
 
     fun startGame() {
         if (enemy is EnemyMadnessCardinal) {
-            while (enemyCResources.deckSize < playerCResources.deckSize + 27) {
-                enemyCResources.addNewDeck(CustomDeck(CardBack.MADNESS, false))
+            while (enemyCResources.deckSize < playerCResources.deckSize + 17) {
+                enemyCResources.addNewDeck(CustomDeck(CardBack.MADNESS, 0))
             }
         }
 
@@ -190,7 +192,7 @@ class Game(
     }
 
     private suspend fun processBomb(bombOwner: CardWithModifier, speed: AnimationSpeed) {
-        val isFBomb = bombOwner.modifiersCopy().lastOrNull()?.isAlt == true
+        val isFBomb = bombOwner.modifiersCopy().findLast { it is CardNuclear } is CardFBomb
         (playerCaravans + enemyCaravans).forEach {
             if (bombOwner !in it.cards) {
                 if (isFBomb) {
@@ -263,7 +265,7 @@ class Game(
 
     private suspend fun putJokerOntoCard(cardWithModifier: CardWithModifier, speed: AnimationSpeed) {
         val card = cardWithModifier.card
-        if (card.rank == Rank.ACE) {
+        if (card.rank == RankNumber.ACE) {
             (playerCaravans + enemyCaravans).forEach { caravan ->
                 caravan.jokerRemoveAllSuits(card, speed)
             }

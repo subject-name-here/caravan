@@ -3,7 +3,11 @@ package com.unicorns.invisible.caravan.model.challenge
 import com.unicorns.invisible.caravan.MainActivity
 import com.unicorns.invisible.caravan.R
 import com.unicorns.invisible.caravan.model.Game
-import com.unicorns.invisible.caravan.model.primitives.Rank
+import com.unicorns.invisible.caravan.model.primitives.CardBase
+import com.unicorns.invisible.caravan.model.primitives.CardFace
+import com.unicorns.invisible.caravan.model.primitives.CardFaceSuited
+import com.unicorns.invisible.caravan.model.primitives.RankFace
+import com.unicorns.invisible.caravan.model.primitives.RankNumber
 import com.unicorns.invisible.caravan.model.primitives.Suit
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
@@ -22,38 +26,43 @@ class ChallengeDoNotPlayCards(private val code: Int) : Challenge {
             val playedCard = move.handCard ?: return
             val predicate: () -> Boolean = when (code) {
                 1 -> {
-                    { playedCard.rank in listOf(Rank.TWO, Rank.FOUR, Rank.SIX, Rank.EIGHT, Rank.TEN) }
+                    { playedCard is CardBase && playedCard.rank.value % 2 == 0 }
                 }
 
                 2 -> {
-                    { playedCard.rank in listOf(Rank.THREE, Rank.FIVE, Rank.SEVEN, Rank.NINE) }
+                    { playedCard is CardBase && playedCard.rank != RankNumber.ACE && playedCard.rank.value % 2 == 1 }
                 }
 
                 3 -> {
-                    { playedCard.rank == Rank.JACK }
+                    { playedCard is CardFace && playedCard.rank == RankFace.JACK }
                 }
 
                 4 -> {
-                    { playedCard.rank == Rank.KING }
+                    { playedCard is CardFace && playedCard.rank == RankFace.KING }
                 }
-
                 5 -> {
-                    { playedCard.suit == Suit.HEARTS || playedCard.suit == Suit.DIAMONDS }
+                    {
+                        playedCard is CardBase && playedCard.suit in listOf(Suit.HEARTS, Suit.DIAMONDS) ||
+                        playedCard is CardFaceSuited && playedCard.suit in listOf(Suit.HEARTS, Suit.DIAMONDS)
+                    }
                 }
 
                 6 -> {
-                    { playedCard.suit == Suit.SPADES || playedCard.suit == Suit.CLUBS }
+                    {
+                        playedCard is CardBase && playedCard.suit in listOf(Suit.SPADES, Suit.CLUBS) ||
+                        playedCard is CardFaceSuited && playedCard.suit in listOf(Suit.SPADES, Suit.CLUBS)
+                    }
                 }
 
                 7 -> {
-                    { playedCard.rank in listOf(Rank.FOUR, Rank.SIX, Rank.EIGHT, Rank.NINE, Rank.TEN) }
+                    { playedCard is CardBase && playedCard.rank in listOf(RankNumber.FOUR, RankNumber.SIX, RankNumber.EIGHT, RankNumber.NINE, RankNumber.TEN) }
                 }
 
                 else -> {
                     { true }
                 }
             }
-            if (playedCard.isOrdinary() && playedCard.rank != Rank.JOKER && predicate()) {
+            if (predicate()) {
                 notPlayed = false
             }
         }

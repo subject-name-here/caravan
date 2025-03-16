@@ -8,7 +8,7 @@ import com.unicorns.invisible.caravan.model.primitives.CustomDeck
 
 
 class EnemyFinalBossStory : Enemy {
-    override fun createDeck(): CResources = CResources(CustomDeck(CardBack.CHINESE, false))
+    override fun createDeck(): CResources = CResources(CustomDeck(CardBack.CHINESE, 0))
     override fun isSpeedOverriding() = true
 
     override suspend fun makeMove(game: Game, speed: AnimationSpeed) {}

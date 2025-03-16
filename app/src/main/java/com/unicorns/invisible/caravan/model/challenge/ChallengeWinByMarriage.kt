@@ -3,7 +3,8 @@ package com.unicorns.invisible.caravan.model.challenge
 import com.unicorns.invisible.caravan.MainActivity
 import com.unicorns.invisible.caravan.R
 import com.unicorns.invisible.caravan.model.Game
-import com.unicorns.invisible.caravan.model.primitives.Rank
+import com.unicorns.invisible.caravan.model.primitives.CardFaceSuited
+import com.unicorns.invisible.caravan.model.primitives.RankFace
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 
@@ -14,14 +15,14 @@ class ChallengeWinByMarriage : Challenge {
     private var wasLastMoveMarriage = false
     private var completedFlag = false
     override fun processMove(move: Challenge.Move, game: Game) {
-        val isCardKing = move.handCard?.let { it.rank == Rank.KING && it.isOrdinary() } == true
+        val isCardKing = move.handCard is CardFaceSuited && move.handCard.rank == RankFace.KING
         if (isCardKing) {
             val kingOwner = (game.enemyCaravans + game.playerCaravans)
                 .flatMap { it.cards }
                 .find { move.handCard in it.modifiersCopy() }
             if (kingOwner != null) {
                 val queens = kingOwner.modifiersCopy().filter {
-                    it.isOrdinary() && it.rank == Rank.QUEEN && it.suit == move.handCard.suit
+                    it is CardFaceSuited && it.rank == RankFace.QUEEN && it.suit == move.handCard.suit
                 }
                 wasLastMoveMarriage = queens.isNotEmpty()
                 return

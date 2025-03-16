@@ -13,7 +13,7 @@ class EnemyHanlon : EnemyPve {
     override fun getNameId() = R.string.pve_enemy_chief_hanlon
     override fun isEven() = true
 
-    override fun createDeck() = CResources(CardBack.NCR, false)
+    override fun createDeck() = CResources(CardBack.FNV_FACTION, 0)
 
     override fun getBank() = 0
     override fun refreshBank() {}

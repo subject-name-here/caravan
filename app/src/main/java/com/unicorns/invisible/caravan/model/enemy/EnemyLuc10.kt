@@ -14,7 +14,7 @@ class EnemyLuc10 : EnemyPve {
     override fun getNameId() = R.string.luc10
     override fun isEven() = true
 
-    override fun createDeck() = CResources(CardBack.LUCKY_38, true)
+    override fun createDeck() = CResources(CardBack.LUCKY_38, 1)
 
     private var bank = 0
     override fun getBank(): Int { return bank }

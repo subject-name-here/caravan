@@ -61,7 +61,9 @@ import com.sebaslogen.resaca.rememberScoped
 import com.unicorns.invisible.caravan.Style.ALASKA_FRONTIER
 import com.unicorns.invisible.caravan.Style.DESERT
 import com.unicorns.invisible.caravan.Style.ENCLAVE
+import com.unicorns.invisible.caravan.Style.LEGION
 import com.unicorns.invisible.caravan.Style.MADRE_ROJA
+import com.unicorns.invisible.caravan.Style.NCR
 import com.unicorns.invisible.caravan.Style.NEW_WORLD
 import com.unicorns.invisible.caravan.Style.OLD_WORLD
 import com.unicorns.invisible.caravan.Style.PIP_BOY
@@ -69,8 +71,6 @@ import com.unicorns.invisible.caravan.Style.PIP_GIRL
 import com.unicorns.invisible.caravan.Style.SIERRA_MADRE
 import com.unicorns.invisible.caravan.Style.VAULT_21
 import com.unicorns.invisible.caravan.Style.VAULT_22
-import com.unicorns.invisible.caravan.Style.LEGION
-import com.unicorns.invisible.caravan.Style.NCR
 import com.unicorns.invisible.caravan.save.saveData
 import com.unicorns.invisible.caravan.utils.TextFallout
 import com.unicorns.invisible.caravan.utils.dpToPx

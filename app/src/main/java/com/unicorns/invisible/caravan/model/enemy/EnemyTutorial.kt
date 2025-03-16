@@ -7,7 +7,7 @@ import com.unicorns.invisible.caravan.model.primitives.CResources
 
 
 class EnemyTutorial : Enemy {
-    override fun createDeck(): CResources = CResources(CardBack.STANDARD, true)
+    override fun createDeck(): CResources = CResources(CardBack.STANDARD, 1)
 
     var onRemoveFromHand: () -> Unit = {}
 

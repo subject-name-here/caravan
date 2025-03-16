@@ -47,9 +47,8 @@ import com.unicorns.invisible.caravan.model.enemy.EnemyPve
 import com.unicorns.invisible.caravan.model.enemy.EnemyViqueen
 import com.unicorns.invisible.caravan.model.enemy.EnemyVulpes
 import com.unicorns.invisible.caravan.model.primitives.CResources
-import com.unicorns.invisible.caravan.model.primitives.Card
+import com.unicorns.invisible.caravan.model.primitives.CardWithPrice
 import com.unicorns.invisible.caravan.model.primitives.CustomDeck
-import com.unicorns.invisible.caravan.model.primitives.Rank
 import com.unicorns.invisible.caravan.save.saveData
 import com.unicorns.invisible.caravan.utils.CheckboxCustom
 import com.unicorns.invisible.caravan.utils.MenuItemOpen
@@ -287,7 +286,7 @@ fun ShowPvE(
             activity, if (enemy.isEven())
                 CResources(save.selectedDeck.first, save.selectedDeck.second)
             else
-                CResources(save.getCustomDeckCopy()),
+                CResources(CustomDeck().apply { addAll(save.getCurrentDeckCopy()) }),
             enemy, showAlertDialog, goBack
         )
     }
@@ -462,7 +461,7 @@ fun StartGame(
         )
         return
     }
-    val isDeckCourier6 by rememberScoped { mutableStateOf(playerCResources.isDeckCourier6()) }
+    // TODO: val isDeckCourier6 by rememberScoped { mutableStateOf(playerCResources.isDeckCourier6()) }
 
     val game: Game = rememberScoped {
         Game(
@@ -736,7 +735,7 @@ fun countReward(playerBet: Int, enemyBet: Int, isBlitz: Boolean): Int {
 }
 
 fun winCard(activity: MainActivity, back: CardBack, isAlt: Boolean): String {
-    fun isCardNew(card: Card): Boolean {
+    fun isCardNew(card: CardWithPrice): Boolean {
         return !save.isCardAvailableAlready(card)
     }
 

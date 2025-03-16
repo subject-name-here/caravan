@@ -3,7 +3,7 @@ package com.unicorns.invisible.caravan.model.challenge
 import com.unicorns.invisible.caravan.MainActivity
 import com.unicorns.invisible.caravan.R
 import com.unicorns.invisible.caravan.model.Game
-import com.unicorns.invisible.caravan.model.primitives.Rank
+import com.unicorns.invisible.caravan.model.primitives.CardJoker
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 
@@ -14,7 +14,7 @@ class ChallengeWinByPlayingJoker : Challenge {
     private var wasLastMoveJoker = false
     private var completedFlag = false
     override fun processMove(move: Challenge.Move, game: Game) {
-        val isCardJoker = move.handCard?.let { it.rank == Rank.JOKER && it.isOrdinary() } == true
+        val isCardJoker = move.handCard?.let { it is CardJoker } == true
         wasLastMoveJoker = move.moveCode == 4 && isCardJoker
     }
 

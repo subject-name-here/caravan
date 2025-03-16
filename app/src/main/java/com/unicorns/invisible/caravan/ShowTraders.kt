@@ -33,8 +33,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.unicorns.invisible.caravan.model.primitives.Card
-import com.unicorns.invisible.caravan.model.primitives.Rank
+import com.unicorns.invisible.caravan.model.primitives.CardFaceSuited
+import com.unicorns.invisible.caravan.model.primitives.CardJoker
+import com.unicorns.invisible.caravan.model.primitives.CardNumber
+import com.unicorns.invisible.caravan.model.primitives.CardWithPrice
 import com.unicorns.invisible.caravan.model.trading.Trader
 import com.unicorns.invisible.caravan.save.saveData
 import com.unicorns.invisible.caravan.utils.MenuItemOpen
@@ -56,14 +58,12 @@ import com.unicorns.invisible.caravan.utils.scrollbar
 
 
 @Composable
-fun CardToBuy(activity: MainActivity, card: Card, price: Int, update: () -> Unit) {
-    if (card.back.deckName == null) {
-        return
+fun CardToBuy(activity: MainActivity, card: CardWithPrice, price: Int, update: () -> Unit) {
+    val rankToSuit = when (card) {
+        is CardJoker -> stringResource(card.rank.nameId) to (card.number).toString()
+        is CardNumber -> stringResource(card.rank.nameId) to stringResource(card.suit.nameId)
+        is CardFaceSuited -> stringResource(card.rank.nameId) to stringResource(card.suit.nameId)
     }
-    val suit = if (card.rank == Rank.JOKER)
-        (card.suit.ordinal + 1).toString()
-    else
-        stringResource(card.suit.nameId)
     Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
         Column(Modifier.weight(2f).wrapContentHeight()) {
             Row(Modifier.fillMaxWidth().wrapContentHeight().padding(4.dp), horizontalArrangement = Arrangement.Center) {
@@ -72,9 +72,10 @@ fun CardToBuy(activity: MainActivity, card: Card, price: Int, update: () -> Unit
                 ShowCardBack(activity, card, Modifier)
             }
 
+            val backName = card.getBack().nameIdWithBackFileName[card.getBackNumber()].first ?: 0
             TextFallout(
-                "${stringResource(card.rank.nameId)} $suit\n" +
-                        "(${stringResource(card.back.deckName)}${if (card.isAlt) " ALT!" else ""})",
+                "${rankToSuit.first} ${rankToSuit.second}\n" +
+                        "(${stringResource(backName)})",
                 getTextColor(activity),
                 getTextStrokeColor(activity),
                 16.sp,

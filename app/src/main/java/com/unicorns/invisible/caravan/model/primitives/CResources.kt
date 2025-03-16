@@ -6,13 +6,11 @@ import androidx.compose.runtime.setValue
 import com.unicorns.invisible.caravan.AnimationSpeed
 import com.unicorns.invisible.caravan.model.CardBack
 import kotlinx.coroutines.delay
-import kotlinx.serialization.Serializable
 import kotlin.random.Random
 
 
-@Serializable
 class CResources(private val deck: CustomDeck) {
-    constructor(back: CardBack, isAlt: Boolean) : this(CustomDeck(back, isAlt))
+    constructor(back: CardBack, backNumber: Int) : this(CustomDeck(back, backNumber))
 
     var recomposeResources by mutableIntStateOf(0)
 
@@ -27,15 +25,14 @@ class CResources(private val deck: CustomDeck) {
      */
     private fun getTopHand(facesLimitExcluded: Int = 6): List<Card> {
         val cards = deck.toList().toMutableList()
-        cards.removeAll { it.isWildWasteland() }
-
-        val nuclears = cards.filter { it.isNuclear() }
-        val faces = cards.filter { it.isOrdinary() && it.rank.isFace() }
-        val numbers = cards.filter { it.isOrdinary() && !it.rank.isFace() }
+        cards.removeAll { it is CardWildWasteland }
+        val nuclears = cards.filter { it is CardNuclear }
+        val faces = cards.filter { it is CardFace }
+        val numbers = cards.filter { it is CardBase }
 
         val startingHand = mutableListOf<Card>()
         if (!nuclears.isEmpty()) {
-            startingHand.add(nuclears.first())
+            startingHand.add(nuclears.random())
             startingHand.addAll(faces.take(Random.nextInt(0, facesLimitExcluded - 1)))
         } else {
             startingHand.addAll(faces.take(Random.nextInt(0, facesLimitExcluded)))
@@ -80,13 +77,12 @@ class CResources(private val deck: CustomDeck) {
     }
 
     private fun processHandAddedCard(card: Card) {
-        val type = Card.WildWastelandCardType.CAZADOR
-        if (card.getWildWastelandType() == type) {
-            val notSpecial = handMutable.filter { it.isOrdinary() }
+        if (card is CardWildWasteland && card.type == WWType.CAZADOR) {
+            val notSpecial = handMutable.filter { it is CardBase || it is CardFace }
             notSpecial.forEach { it.handAnimationMark = Card.AnimationMark.MOVED_OUT }
             handMutable.removeAll(notSpecial)
             repeat(notSpecial.size) {
-                handMutable.add(Card(type.rank, type.suit, CardBack.WILD_WASTELAND, false))
+                handMutable.add(CardWildWasteland(WWType.CAZADOR))
             }
             recomposeResources++
         }
@@ -107,20 +103,17 @@ class CResources(private val deck: CustomDeck) {
         recomposeResources++
     }
 
-    fun getDeckBack() = deck.firstOrNull()?.let { it.back to it.isAlt }
-
     fun shuffleDeck() = deck.shuffle()
 
     val deckSize: Int
         get() = deck.size
 
-    fun mutateFev(card: Card) {
-        if (card.rank.isFace()) return
+    fun mutateFev(card: CardBase) {
         val handSize = handMutable.size
         handMutable.forEach { it.handAnimationMark = Card.AnimationMark.MOVED_OUT }
         handMutable.clear()
         repeat(handSize) {
-            handMutable.add(Card(card.rank, card.suit, CardBack.WILD_WASTELAND, true))
+            handMutable.add(CardNumberWW(card.rank, card.suit))
         }
         recomposeResources++
     }
@@ -133,20 +126,16 @@ class CResources(private val deck: CustomDeck) {
     fun copyFrom(cResources: CResources) {
         addNewDeck(cResources.deck.copy())
         for (card in cResources.hand) {
-            handMutable.add(Card(card.rank, card.suit, card.back, card.isAlt))
+            handMutable.add(when (card) {
+                is CardNumber -> CardNumber(card.rank, card.suit, card.back, card.backNumber)
+                is CardNumberWW -> CardNumberWW(card.rank, card.suit)
+                is CardFaceSuited -> CardFaceSuited(card.rank, card.suit, card.back, card.backNumber)
+                is CardJoker -> CardJoker(card.number, card.back, card.backNumber)
+                is CardAtomic -> CardAtomic()
+                is CardFBomb -> CardFBomb()
+                is CardWildWasteland -> CardWildWasteland(card.type)
+            })
         }
-    }
-
-    fun isCustomDeckValid(): Boolean {
-        val numOfDecks = deck.toList().distinctBy { it.back }.size
-        val numOfNumbers = deck.count { it.isOrdinary() && !it.rank.isFace() }
-        return numOfDecks <= MAX_NUMBER_OF_DECKS &&
-                deckSize >= MIN_DECK_SIZE &&
-                numOfNumbers >= MIN_NUM_OF_NUMBERS
-    }
-
-    fun isDeckCourier6(): Boolean {
-        return deck.toList().all { it.rank in listOf(Rank.SIX, Rank.TEN, Rank.KING) }
     }
 
     companion object {

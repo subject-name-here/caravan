@@ -3,7 +3,6 @@ package com.unicorns.invisible.caravan.model.challenge
 import com.unicorns.invisible.caravan.MainActivity
 import com.unicorns.invisible.caravan.R
 import com.unicorns.invisible.caravan.model.Game
-import com.unicorns.invisible.caravan.model.enemy.Enemy
 import com.unicorns.invisible.caravan.model.enemy.EnemyBenny
 import com.unicorns.invisible.caravan.model.enemy.EnemyCrooker
 import com.unicorns.invisible.caravan.model.enemy.EnemyDrMobius
@@ -14,7 +13,6 @@ import com.unicorns.invisible.caravan.model.enemy.EnemyLuc10
 import com.unicorns.invisible.caravan.model.enemy.EnemyMadnessCardinal
 import com.unicorns.invisible.caravan.model.enemy.EnemyNash
 import com.unicorns.invisible.caravan.model.enemy.EnemyNoBark
-import com.unicorns.invisible.caravan.model.enemy.EnemyOliver
 import com.unicorns.invisible.caravan.model.enemy.EnemySnuffles
 import com.unicorns.invisible.caravan.model.enemy.EnemyTabitha
 import com.unicorns.invisible.caravan.model.enemy.EnemyTheManInTheMirror

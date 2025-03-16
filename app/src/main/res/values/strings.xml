@@ -23,19 +23,29 @@
     <string name="diamonds_name">of Diamonds</string>
     <string name="spades_name">of Spades</string>
 
-    <string name="standard_deck_name">standard deck</string>
+    <string name="standard_deck_name_1">standard deck</string>
+    <string name="standard_deck_name_2">standard deck (Uncommon)</string>
+    <string name="standard_deck_name_3">standard deck (Rare)</string>
+    <string name="standard_deck_name_4">standard deck (Mythic)</string>
+    <string name="standard_deck_name_5">standard deck (Legendary)</string>
     <string name="tops_deck_name">Tops deck</string>
+    <string name="tops_deck_alt_name">Tops deck (Royal Red)</string>
     <string name="ultra_luxe_deck_name">Ultra-Luxe deck</string>
+    <string name="ultra_luxe_deck_alt_name">Ultra-Luxe deck (Crime Scene)</string>
     <string name="gomorrah_deck_name">Gomorrah deck</string>
+    <string name="gomorrah_deck_alt_name">Gomorrah deck (Dark Room)</string>
     <string name="lucky_38_deck_name">Lucky 38 deck</string>
-    <string name="vault_21_deck_name">Vault 21 deck</string>
-    <string name="sierra_madre_deck_name">Sierra Madre deck</string>
+    <string name="lucky_38_deck_alt_name">Lucky 38 deck (Collector\'s Edition)</string>
+    <string name="vault_21_deck_name">Vault 21 deck (Day)</string>
+    <string name="vault_21_deck_alt_name">Vault 21 deck (Night)</string>
+    <string name="sierra_madre_deck_name">Sierra Madre deck (Dirty)</string>
+    <string name="sierra_madre_deck_alt_name">Sierra Madre deck (Brand New)</string>
     <string name="madness_deck_name">Madness deck</string>
     <string name="chinese_deck_name">Chinese deck</string>
     <string name="enclave_deck_name">Enclave deck</string>
     <string name="viking_deck_name">Viking deck</string>
-    <string name="ncr_deck_name">NCR deck</string>
-    <string name="legion_deck_name">Legion deck</string>
+    <string name="fnv_deck_west_name">NCR deck</string>
+    <string name="fnv_deck_east_name">Legion deck</string>
 
     <string name="ultra_luxe_trader_welcome">Greetings. I am Martin Luther. Welcome to Ultra-Luxe card market.</string>
     <string name="ultra_luxe_trader_empty">Apologies, but there are no valuable items for you. Please, wait for a resupply.</string>

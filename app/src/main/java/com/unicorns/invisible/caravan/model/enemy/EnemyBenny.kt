@@ -12,7 +12,7 @@ import kotlin.math.min
 @Serializable
 class EnemyBenny : EnemyPve {
     override fun getNameId() = R.string.benny
-    override fun createDeck() = CResources(CardBack.TOPS, true)
+    override fun createDeck() = CResources(CardBack.TOPS, 1)
     override fun isEven() = true
 
     private var bank = 0

@@ -6,7 +6,6 @@ import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.challenge.Challenge
 import com.unicorns.invisible.caravan.model.challenge.ChallengePlay188
 import com.unicorns.invisible.caravan.model.challenge.ChallengeWin5Games
-import com.unicorns.invisible.caravan.model.enemy.EnemyRingo
 import com.unicorns.invisible.caravan.model.enemy.EnemyBenny
 import com.unicorns.invisible.caravan.model.enemy.EnemyCaesar
 import com.unicorns.invisible.caravan.model.enemy.EnemyCrooker
@@ -16,12 +15,13 @@ import com.unicorns.invisible.caravan.model.enemy.EnemyElijah
 import com.unicorns.invisible.caravan.model.enemy.EnemyFisto
 import com.unicorns.invisible.caravan.model.enemy.EnemyGloria
 import com.unicorns.invisible.caravan.model.enemy.EnemyHanlon
-import com.unicorns.invisible.caravan.model.enemy.EnemySalt
 import com.unicorns.invisible.caravan.model.enemy.EnemyLuc10
 import com.unicorns.invisible.caravan.model.enemy.EnemyMadnessCardinal
 import com.unicorns.invisible.caravan.model.enemy.EnemyNash
 import com.unicorns.invisible.caravan.model.enemy.EnemyNoBark
 import com.unicorns.invisible.caravan.model.enemy.EnemyOliver
+import com.unicorns.invisible.caravan.model.enemy.EnemyRingo
+import com.unicorns.invisible.caravan.model.enemy.EnemySalt
 import com.unicorns.invisible.caravan.model.enemy.EnemySnuffles
 import com.unicorns.invisible.caravan.model.enemy.EnemyTabitha
 import com.unicorns.invisible.caravan.model.enemy.EnemyTheManInTheMirror
@@ -30,8 +30,11 @@ import com.unicorns.invisible.caravan.model.enemy.EnemyVeronica
 import com.unicorns.invisible.caravan.model.enemy.EnemyVictor
 import com.unicorns.invisible.caravan.model.enemy.EnemyViqueen
 import com.unicorns.invisible.caravan.model.enemy.EnemyVulpes
-import com.unicorns.invisible.caravan.model.primitives.Card
-import com.unicorns.invisible.caravan.model.primitives.CustomDeck
+import com.unicorns.invisible.caravan.model.primitives.CardFaceSuited
+import com.unicorns.invisible.caravan.model.primitives.CardJoker
+import com.unicorns.invisible.caravan.model.primitives.CardNumber
+import com.unicorns.invisible.caravan.model.primitives.CardWithPrice
+import com.unicorns.invisible.caravan.model.primitives.CollectibleDeck
 import com.unicorns.invisible.caravan.model.trading.ChineseTrader
 import com.unicorns.invisible.caravan.model.trading.EnclaveTrader
 import com.unicorns.invisible.caravan.model.trading.GomorrahTrader
@@ -52,59 +55,58 @@ import kotlinx.serialization.Serializable
 @Serializable
 class Save(var playerId: String? = null) {
     @EncodeDefault
-    var selectedDeck: Pair<CardBack, Boolean> = CardBack.STANDARD to false
+    var selectedDeck: Pair<CardBack, Int> = CardBack.STANDARD to 0
 
-    private val customDeck: CustomDeck = CustomDeck(CardBack.STANDARD, false)
-    private val altDecksChosen = CardBack.entries.associateWith { false }.toMutableMap()
+    private val customDeck: CollectibleDeck = CollectibleDeck(CardBack.STANDARD, 0)
+    private val backNumbersChosen = CardBack.entries.associateWith { 0 }.toMutableMap()
 
-    private val customDeck2: CustomDeck = CustomDeck(CardBack.STANDARD, false)
-    private val altDecksChosen2 = CardBack.entries.associateWith { false }.toMutableMap()
+    private val customDeck2: CollectibleDeck = CollectibleDeck(CardBack.STANDARD, 0)
+    private val backNumbersChosen2 = CardBack.entries.associateWith { 0 }.toMutableMap()
 
-    private val customDeck3: CustomDeck = CustomDeck(CardBack.STANDARD, false)
-    private val altDecksChosen3 = CardBack.entries.associateWith { false }.toMutableMap()
+    private val customDeck3: CollectibleDeck = CollectibleDeck(CardBack.STANDARD, 0)
+    private val backNumbersChosen3 = CardBack.entries.associateWith { 0 }.toMutableMap()
 
-    private val customDeck4: CustomDeck = CustomDeck(CardBack.STANDARD, false)
-    private val altDecksChosen4 = CardBack.entries.associateWith { false }.toMutableMap()
+    private val customDeck4: CollectibleDeck = CollectibleDeck(CardBack.STANDARD, 0)
+    private val backNumbersChosen4 = CardBack.entries.associateWith { 0 }.toMutableMap()
 
     @EncodeDefault
     var activeCustomDeck = 1
-    fun getCurrentCustomDeck(): CustomDeck = when (activeCustomDeck) {
+    fun getCurrentCustomDeck(): CollectibleDeck = when (activeCustomDeck) {
         2 -> customDeck2
         3 -> customDeck3
         4 -> customDeck4
         else -> customDeck
     }
-    fun getAltDecksChosenMap() = when (activeCustomDeck) {
-        2 -> altDecksChosen2
-        3 -> altDecksChosen3
-        4 -> altDecksChosen4
-        else -> altDecksChosen
+    fun getBackNumbersChosenMap() = when (activeCustomDeck) {
+        2 -> backNumbersChosen2
+        3 -> backNumbersChosen3
+        4 -> backNumbersChosen4
+        else -> backNumbersChosen
     }
 
     @EncodeDefault
-    private val availableCards: MutableSet<Card> = HashSet(CustomDeck(CardBack.STANDARD, false).toList())
-    fun isCardAvailableAlready(it: Card): Boolean {
-        return availableCards.any { ac ->
-            ac.rank == it.rank && ac.suit == it.suit && ac.back == it.back && ac.isAlt == it.isAlt
-        }
+    private val availableCards = CollectibleDeck(CardBack.STANDARD, 0)
+    fun isCardAvailableAlready(it: CardWithPrice): Boolean {
+        return it in availableCards
     }
-    fun addCard(card: Card) {
-        if (!isCardAvailableAlready(card)) {
-            availableCards.add(card)
-        }
+    fun addCard(card: CardWithPrice) {
+        availableCards.add(card)
     }
 
     val ownedDecks
-        get() = availableCards.filterNot { it.isAlt }.map { it.back }.distinct()
-    val ownedDecksAlt
-        get() = availableCards.filter { it.isAlt }.map { it.back }.distinct()
+        get() = availableCards.toList().map { it.getBack() }.distinct()
 
-    fun getCustomDeckCopy(): CustomDeck {
-        val deck = CustomDeck()
-        fun getIsAlt(back: CardBack): Boolean = getAltDecksChosenMap()[back] == true
+    fun getCurrentDeckCopy(): CollectibleDeck {
+        val deck = CollectibleDeck()
         getCurrentCustomDeck().toList().forEach {
-            if (it.isAlt == getIsAlt(it.back)) {
-                deck.add(Card(it.rank, it.suit, it.back, it.isAlt))
+            if (getBackNumbersChosenMap()[it.getBack()] == it.getBackNumber()) {
+                deck.add(
+                    when (it) {
+                        is CardFaceSuited -> CardFaceSuited(it.rank, it.suit, it.getBack(), it.backNumber)
+                        is CardJoker -> CardJoker(it.number, it.getBack(), it.backNumber)
+                        is CardNumber -> CardNumber(it.rank, it.suit, it.getBack(), it.backNumber)
+                    }
+                )
             }
         }
         return deck
@@ -142,6 +144,8 @@ class Save(var playerId: String? = null) {
     @EncodeDefault
     var capsInHand = 150
     @EncodeDefault
+    var silverRushChips = 100
+    @EncodeDefault
     var tickets = 5
 
     @EncodeDefault
@@ -157,6 +161,8 @@ class Save(var playerId: String? = null) {
         ChallengeWin5Games(),
         ChallengePlay188()
     )
+    // @EncodeDefault
+    // var challengesConst: MutableList<Challenge> = mutableListOf() // TODO: addProgression
 
     @EncodeDefault
     var towerLevel: Int = 0

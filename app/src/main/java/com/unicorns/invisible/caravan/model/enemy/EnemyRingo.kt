@@ -16,7 +16,7 @@ class EnemyRingo : EnemyPve {
     override fun isEven() = true
 
     override fun createDeck(): CResources {
-        return CResources(CustomDeck(CardBack.TOPS, false))
+        return CResources(CustomDeck(CardBack.TOPS, 0))
     }
 
     private var bank = 0

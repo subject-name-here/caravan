@@ -42,7 +42,6 @@ import com.unicorns.invisible.caravan.story.DialogEdge
 import com.unicorns.invisible.caravan.story.DialogFinishState
 import com.unicorns.invisible.caravan.story.DialogGraph
 import com.unicorns.invisible.caravan.story.DialogMiddleState
-import com.unicorns.invisible.caravan.story.DialogState
 import com.unicorns.invisible.caravan.story.StoryShow
 import com.unicorns.invisible.caravan.utils.MenuItemOpen
 import com.unicorns.invisible.caravan.utils.TextClassic
@@ -818,7 +817,7 @@ fun StartTowerGame(
     val playerCResources = CResources(if (isFrankSequence) {
         CustomDeck(save.selectedDeck.first, save.selectedDeck.second)
     } else {
-        save.getCustomDeckCopy()
+        CustomDeck().apply { addAll(save.getCurrentCustomDeck()) }
     })
     val game = rememberScoped {
         if (isFrankSequence) {
