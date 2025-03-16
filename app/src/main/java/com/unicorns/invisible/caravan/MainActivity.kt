@@ -78,6 +78,7 @@ import com.unicorns.invisible.caravan.utils.clickableOk
 import com.unicorns.invisible.caravan.utils.cronetEngine
 import com.unicorns.invisible.caravan.utils.dpToPx
 import com.unicorns.invisible.caravan.utils.dpToSp
+import com.unicorns.invisible.caravan.utils.getBackByStyle
 import com.unicorns.invisible.caravan.utils.getBackgroundColor
 import com.unicorns.invisible.caravan.utils.getCurrentDateHashCode
 import com.unicorns.invisible.caravan.utils.getDialogBackground
@@ -88,8 +89,10 @@ import com.unicorns.invisible.caravan.utils.getMusicMarqueesColor
 import com.unicorns.invisible.caravan.utils.getMusicPanelColor
 import com.unicorns.invisible.caravan.utils.getMusicTextBackColor
 import com.unicorns.invisible.caravan.utils.getMusicTextColor
+import com.unicorns.invisible.caravan.utils.getStrokeColorByStyle
 import com.unicorns.invisible.caravan.utils.getTextBackgroundColor
 import com.unicorns.invisible.caravan.utils.getTextColor
+import com.unicorns.invisible.caravan.utils.getTextColorByStyle
 import com.unicorns.invisible.caravan.utils.getTextStrokeColor
 import com.unicorns.invisible.caravan.utils.getTrackColor
 import com.unicorns.invisible.caravan.utils.nextSong
@@ -216,25 +219,35 @@ class MainActivity : SaveDataActivity() {
 
         setContent {
             Box(Modifier.safeDrawingPadding()) {
-                val (textColor, strokeColor, backgroundColor) = Triple(
-                    getTextColor(this@MainActivity),
-                    getTextStrokeColor(this@MainActivity),
-                    getBackgroundColor(this@MainActivity)
-                )
                 var isIntroScreen by rememberScoped { mutableStateOf(true) }
                 if (isIntroScreen) {
+                    val localSave = loadLocalSave(this@MainActivity)
+                    val (textColor, strokeColor, backColor) = if (localSave == null) {
+                        Triple(
+                            Color(this@MainActivity.getColor(R.color.colorText)),
+                            Color(this@MainActivity.getColor(R.color.colorTextStroke)),
+                            Color(this@MainActivity.getColor(R.color.colorBack))
+                        )
+                    } else {
+                        val style = Style.entries[localSave.styleId]
+                        Triple(
+                            getTextColorByStyle(this@MainActivity, style),
+                            getStrokeColorByStyle(this@MainActivity, style),
+                            getBackByStyle(this@MainActivity, style)
+                        )
+                    }
                     Box(
                         if (isSaveLoaded.value == true) {
                             Modifier
                                 .fillMaxSize()
-                                .background(backgroundColor)
+                                .background(backColor)
                                 .clickableOk(this@MainActivity) {
                                     isIntroScreen = false
                                 }
                         } else {
                             Modifier
                                 .fillMaxSize()
-                                .background(backgroundColor)
+                                .background(backColor)
                         },
                         contentAlignment = Alignment.Center
                     ) {
