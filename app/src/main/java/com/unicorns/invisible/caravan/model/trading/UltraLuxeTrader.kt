@@ -4,6 +4,7 @@ import com.unicorns.invisible.caravan.MainActivity
 import com.unicorns.invisible.caravan.R
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.primitives.Card
+import com.unicorns.invisible.caravan.model.primitives.CardWithPrice
 import com.unicorns.invisible.caravan.save
 import kotlinx.serialization.Serializable
 import java.util.Calendar
@@ -25,5 +26,5 @@ class UltraLuxeTrader : Trader {
 
     override fun getSymbol() = "UL"
 
-    override fun getCards(): List<Card> = getCards(CardBack.ULTRA_LUXE)
+    override fun getCards(): List<CardWithPrice> = getCards(CardBack.ULTRA_LUXE)
 }

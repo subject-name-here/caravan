@@ -29,6 +29,8 @@ import androidx.compose.ui.unit.sp
 import com.sebaslogen.resaca.rememberScoped
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.primitives.Card
+import com.unicorns.invisible.caravan.model.primitives.CardNumber
+import com.unicorns.invisible.caravan.model.primitives.RankNumber
 import com.unicorns.invisible.caravan.model.primitives.Suit
 import com.unicorns.invisible.caravan.save.saveData
 import com.unicorns.invisible.caravan.utils.MenuItemOpen
@@ -54,21 +56,21 @@ fun DeckSelection(
 ) {
     var selectedDeck by rememberScoped { mutableStateOf(save.selectedDeck) }
     @Composable
-    fun getModifier(cardBack: CardBack, isAlt: Boolean): Modifier {
-        if (!isAlt && cardBack !in save.ownedDecks || isAlt && cardBack !in save.ownedDecksAlt) {
+    fun getModifier(cardBack: CardBack, number: Int): Modifier {
+        if (cardBack to number !in save.availableDecks) {
             return Modifier.padding(4.dp).alpha(0.33f)
         }
 
-        val (backSelected, isAltSelected) = selectedDeck
-        return if (backSelected == cardBack && isAltSelected == isAlt) {
+        val (backSelected, numberSelected) = selectedDeck
+        return if (backSelected == cardBack && numberSelected == number) {
             Modifier.border(width = 3.dp, color = getSelectionColor(activity))
         } else {
             Modifier
         }
             .padding(4.dp)
             .clickableSelect(activity) {
-                selectedDeck = cardBack to isAlt
-                save.selectedDeck = cardBack to isAlt
+                selectedDeck = cardBack to number
+                save.selectedDeck = cardBack to number
                 saveData(activity)
             }
             .clip(RoundedCornerShape(6f))
@@ -124,43 +126,30 @@ fun DeckSelection(
                 )
 
                 @Composable
-                fun showDeckBack(back: CardBack, isAlt: Boolean) {
-                    ShowCardBack(activity, Card(Rank.ACE, Suit.HEARTS, back, isAlt), getModifier(back, isAlt))
+                fun showDeckBack(back: CardBack, number: Int) {
+                    ShowCardBack(
+                        activity,
+                        CardNumber(RankNumber.ACE, Suit.SPADES, back, number),
+                        getModifier(back, number)
+                    )
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))
-                Row(
+                Column(
                     Modifier,
-                    horizontalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
                 ) {
-                    Column(Modifier, verticalArrangement = Arrangement.Center) {
-                        showDeckBack(CardBack.STANDARD, false)
-                        showDeckBack(CardBack.TOPS, false)
-                        showDeckBack(CardBack.GOMORRAH, false)
-                        showDeckBack(CardBack.ULTRA_LUXE, false)
-                        showDeckBack(CardBack.LUCKY_38, false)
-                        showDeckBack(CardBack.VAULT_21, false)
-                        showDeckBack(CardBack.SIERRA_MADRE, false)
+                    @Composable
+                    fun ShowBacksRow(back: CardBack) {
+                        Row(Modifier, horizontalArrangement = Arrangement.Center) {
+                            repeat(back.nameIdWithBackFileName.size) {
+                                showDeckBack(back, it)
+                            }
+                        }
                     }
-                    Spacer(Modifier.width(8.dp))
-                    Column(Modifier, verticalArrangement = Arrangement.Center) {
-                        showDeckBack(CardBack.STANDARD, true)
-                        showDeckBack(CardBack.TOPS, true)
-                        showDeckBack(CardBack.GOMORRAH, true)
-                        showDeckBack(CardBack.ULTRA_LUXE, true)
-                        showDeckBack(CardBack.LUCKY_38, true)
-                        showDeckBack(CardBack.VAULT_21, true)
-                        showDeckBack(CardBack.SIERRA_MADRE, true)
-                    }
-                    Spacer(Modifier.width(8.dp))
-                    Column(Modifier, verticalArrangement = Arrangement.Center) {
-                        showDeckBack(CardBack.MADNESS, false)
-                        showDeckBack(CardBack.NCR, false)
-                        showDeckBack(CardBack.LEGION, false)
-                        showDeckBack(CardBack.VIKING, false)
-                        showDeckBack(CardBack.ENCLAVE, false)
-                        showDeckBack(CardBack.CHINESE, false)
-                    }
+
+                    CardBack.entries.forEach { ShowBacksRow(it); Spacer(Modifier.height(8.dp)) }
                 }
                 Spacer(modifier = Modifier.height(16.dp))
             }

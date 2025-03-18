@@ -107,6 +107,7 @@ class CResources(private val deck: CustomDeck) {
 
     val deckSize: Int
         get() = deck.size
+    fun getDeckBack() = deck.toList().firstOrNull()
 
     fun mutateFev(card: CardBase) {
         val handSize = handMutable.size
@@ -127,10 +128,10 @@ class CResources(private val deck: CustomDeck) {
         addNewDeck(cResources.deck.copy())
         for (card in cResources.hand) {
             handMutable.add(when (card) {
-                is CardNumber -> CardNumber(card.rank, card.suit, card.back, card.backNumber)
+                is CardNumber -> CardNumber(card.rank, card.suit, card.cardBack, card.cardBackNumber)
                 is CardNumberWW -> CardNumberWW(card.rank, card.suit)
-                is CardFaceSuited -> CardFaceSuited(card.rank, card.suit, card.back, card.backNumber)
-                is CardJoker -> CardJoker(card.number, card.back, card.backNumber)
+                is CardFaceSuited -> CardFaceSuited(card.rank, card.suit, card.cardBack, card.cardBackNumber)
+                is CardJoker -> CardJoker(card.number, card.cardBack, card.cardBackNumber)
                 is CardAtomic -> CardAtomic()
                 is CardFBomb -> CardFBomb()
                 is CardWildWasteland -> CardWildWasteland(card.type)

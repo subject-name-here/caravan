@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 enum class CardBack(
-    val nameIdWithBackFileName: List<Pair<Int?, String>>
+    val nameIdWithBackFileName: List<Pair<Int, String>>
 ) {
     STANDARD(listOf(
         R.string.standard_deck_name_1 to "FNV_Caravan_card_back_-_standard.webp",

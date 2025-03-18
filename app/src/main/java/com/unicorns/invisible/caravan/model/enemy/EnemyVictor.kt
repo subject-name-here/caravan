@@ -10,18 +10,25 @@ import kotlin.math.min
 
 
 @Serializable
-class EnemyVictor : EnemyPve {
-    override fun getNameId() = R.string.pve_enemy_victor
-    override fun isEven() = true
+class EnemyVictor : EnemyPvEWithBank() {
+    override val nameId
+        get() = R.string.pve_enemy_victor
+    override val isEven
+        get() = true
 
     override fun createDeck() = CResources(CardBack.LUCKY_38, 0)
 
-    private var bank = 0
-    override fun getBank(): Int { return bank }
-    override fun refreshBank() { bank = 50 }
-    override fun getBet(): Int { return min(bank, 25) }
-    override fun retractBet() { bank -= getBet() }
-    override fun addReward(reward: Int) { bank += reward }
+    override var bank: Int = 0
+    override val maxBank: Int
+        get() = 50
+    override val bet: Int
+        get() = 25
+
+    override var winsNoBet: Int = 0
+    override var winsBet: Int = 0
+    override var winsBlitzNoBet: Int = 0
+    override var winsBlitzBet: Int = 0
+
 
     override suspend fun makeMove(game: Game, speed: AnimationSpeed) {}
 }

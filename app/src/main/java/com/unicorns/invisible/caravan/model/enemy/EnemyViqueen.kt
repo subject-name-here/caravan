@@ -9,17 +9,17 @@ import kotlinx.serialization.Serializable
 
 
 @Serializable
-class EnemyViqueen : EnemyPve {
-    override fun getNameId() = R.string.viqueen
-    override fun isEven() = true
+class EnemyViqueen : EnemyPvENoBank() {
+    override val nameId
+        get() = R.string.viqueen
+    override val isEven
+        get() = true
+
+    override var wins: Int = 0
+    override var winsBlitz: Int = 0
 
     override fun createDeck(): CResources {
         return CResources(CardBack.VIKING, 0)
     }
-    override fun getBank(): Int { return 0 }
-    override fun refreshBank() {}
-    override fun getBet(): Int? { return null }
-    override fun retractBet() {}
-    override fun addReward(reward: Int) {}
     override suspend fun makeMove(game: Game, speed: AnimationSpeed) {}
 }

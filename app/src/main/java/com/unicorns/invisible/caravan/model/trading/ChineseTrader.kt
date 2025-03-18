@@ -4,6 +4,7 @@ import com.unicorns.invisible.caravan.MainActivity
 import com.unicorns.invisible.caravan.R
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.primitives.Card
+import com.unicorns.invisible.caravan.model.primitives.CardWithPrice
 import com.unicorns.invisible.caravan.save
 import kotlinx.serialization.Serializable
 
@@ -22,5 +23,5 @@ class ChineseTrader : Trader {
 
     override fun getSymbol(): String = "•"
 
-    override fun getCards(): List<Card> = getCards(CardBack.CHINESE)
+    override fun getCards(): List<CardWithPrice> = getCards(CardBack.CHINESE)
 }

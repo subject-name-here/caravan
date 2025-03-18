@@ -220,7 +220,7 @@ class MainActivity : SaveDataActivity() {
             Box(Modifier.safeDrawingPadding()) {
                 var isIntroScreen by rememberScoped { mutableStateOf(true) }
                 if (isIntroScreen) {
-                    val localSave = loadLocalSave(this@MainActivity)
+                    val localSave by rememberScoped { mutableStateOf(loadLocalSave(this@MainActivity)) }
                     val (textColor, strokeColor, backColor) = if (localSave == null) {
                         Triple(
                             Color(this@MainActivity.getColor(R.color.colorText)),
@@ -228,7 +228,7 @@ class MainActivity : SaveDataActivity() {
                             Color(this@MainActivity.getColor(R.color.colorBack))
                         )
                     } else {
-                        val style = Style.entries[localSave.styleId]
+                        val style = Style.entries[localSave!!.styleId]
                         Triple(
                             getTextColorByStyle(this@MainActivity, style),
                             getStrokeColorByStyle(this@MainActivity, style),

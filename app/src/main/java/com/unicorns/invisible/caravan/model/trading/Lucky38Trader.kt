@@ -4,6 +4,7 @@ import com.unicorns.invisible.caravan.MainActivity
 import com.unicorns.invisible.caravan.R
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.primitives.Card
+import com.unicorns.invisible.caravan.model.primitives.CardWithPrice
 import com.unicorns.invisible.caravan.save
 import kotlinx.serialization.Serializable
 
@@ -22,5 +23,5 @@ class Lucky38Trader : Trader {
 
     override fun getSymbol() = "38"
 
-    override fun getCards(): List<Card> = getCards(CardBack.LUCKY_38)
+    override fun getCards(): List<CardWithPrice> = getCards(CardBack.LUCKY_38)
 }

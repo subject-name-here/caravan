@@ -109,6 +109,10 @@
     <string name="deck_custom">Set Custom Deck</string>
     <string name="select_all">Select all</string>
     <string name="deselect_all">Deselect all</string>
+    <string name="custom_deck_1">Primary</string>
+    <string name="custom_deck_2">Experimental</string>
+    <string name="custom_deck_3">Exotic</string>
+    <string name="custom_deck_4">Special</string>
 
     <string name="custom_deck_size">Deck size: %1$s\n(must be at least %2$s)</string>
     <string name="custom_deck_non_faces">Number of non-face cards: %1$s\n(must be at least %2$s)</string>
@@ -339,23 +343,36 @@
 
     <string name="select">SELECT</string>
     <string name="buy">BUY</string>
-    <string name="cool_button">CooL BuTToN</string>
-    <string name="null_condition">It is already open, duh!</string>
+    <string name="tap_to_open">UNLOCK!</string>
 
     <string name="style_desert">Desert</string>
+    <string name="style_desert_condition">Win 5 PvE games (with a bet) in a row against different enemies.</string>
     <string name="style_pip_boy">Pip-Boy</string>
+    <string name="null_condition">It is already open, duh!</string>
     <string name="style_alaska">Alaska</string>
+    <string name="style_alaska_condition">Win 10 PvE games (with a bet) in a row against different enemies.</string>
     <string name="style_pip_girl">Pip-Girl</string>
+    <string name="style_pip_girl_condition">Win a game with a bet more than 969 caps/chips.</string>
     <string name="style_old_world">Old World</string>
+    <string name="style_old_world_condition">Spend 1000 caps/chips on cards.</string>
     <string name="style_new_world">New World</string>
+    <string name="style_new_world_condition">Spend 10000 caps/chips on cards.</string>
     <string name="style_sierra_madre">Sierra Madre</string>
+    <string name="style_sierra_madre_condition">Complete 100 challenges.</string>
     <string name="style_madre_roja">Madre Roja</string>
+    <string name="style_madre_roja_condition">Complete 1000 challenges.</string>
     <string name="style_vault_21">Vault 21</string>
+    <string name="style_vault_21_condition">Win 500 games with a bet.</string>
     <string name="style_vault_22">Vault 22</string>
+    <string name="style_vault_22_condition">Win 50 games with a bet.</string>
     <string name="style_black">Monochrome</string>
+    <string name="style_black_condition">Win 10 PvP games.</string>
     <string name="style_enclave">Enclave</string>
+    <string name="style_enclave_condition">Complete the Tower.</string>
     <string name="style_ncr">NCR</string>
+    <string name="style_ncr_condition">Defeat all enemies in PvE in Blitz with a bet at least once.</string>
     <string name="style_legion">Legion</string>
+    <string name="style_legion_condition">Defeat all enemies in PvE with a bet at least thrice.</string>
 
     <string name="pip_boy_main_screen">Device #50724: Luck-o-Meter.</string>
     <string name="heads">HEADS</string>
@@ -620,14 +637,19 @@
     <string name="achievements">Achievements</string>
 
     <string name="your_caps_in_hand">Your caps in hand: %1$s</string>
+    <string name="your_chips_in_hand">Your chips in hand: %1$s</string>
     <string name="buy_for_caps">%1$s caps</string>
+    <string name="buy_for_chips">%1$s Silver Rush chips</string>
 
     <string name="enemy_name">Enemy: %1$s</string>
     <string name="enemy_s_bet">Enemy\'s bet: %1$s</string>
     <string name="enter_your_bet">Enter your bet (between %1$s and %2$s), or leave empty to play for free:</string>
     <string name="your_expected_reward">Your expected reward: %1$s caps.</string>
+    <string name="your_expected_reward_chips">Your expected reward: %1$s Silver Rush chips.</string>
     <string name="your_reward_reward_caps">\nYour reward: %1$s caps!!</string>
+    <string name="your_reward_reward_chips">\nYour reward: %1$s Silver Rush chips!!</string>
     <string name="prize_caps">%1$s caps</string>
+    <string name="prize_chips">%1$s Silver Rush chips</string>
     <string name="you_have_won">\nYou have obtained: %1$s.</string>
 
     <string name="daily_update_head">It\'s a beautiful day!</string>

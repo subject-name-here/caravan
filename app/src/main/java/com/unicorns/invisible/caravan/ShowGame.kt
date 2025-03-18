@@ -61,9 +61,12 @@ import com.unicorns.invisible.caravan.model.challenge.Challenge
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.Caravan
 import com.unicorns.invisible.caravan.model.primitives.Card
+import com.unicorns.invisible.caravan.model.primitives.CardBase
+import com.unicorns.invisible.caravan.model.primitives.CardJoker
+import com.unicorns.invisible.caravan.model.primitives.CardModifier
+import com.unicorns.invisible.caravan.model.primitives.CardNuclear
+import com.unicorns.invisible.caravan.model.primitives.CardWildWasteland
 import com.unicorns.invisible.caravan.model.primitives.CardWithModifier
-import com.unicorns.invisible.caravan.model.primitives.Rank
-import com.unicorns.invisible.caravan.model.primitives.Suit
 import com.unicorns.invisible.caravan.utils.ShowCard
 import com.unicorns.invisible.caravan.utils.ShowCardBack
 import com.unicorns.invisible.caravan.utils.TextFallout
@@ -193,18 +196,18 @@ fun ShowGame(
 
         val cardIndex = selectedCard
         val card = game.playerCResources.hand.getOrNull(cardIndex) ?: return
-        if (game.isPlayerTurn && !game.isOver() && !(game.isInitStage() && card.isModifier())) {
-            if (card.isModifier()) {
+        if (game.isPlayerTurn && !game.isOver() && !(game.isInitStage() && card is CardModifier)) {
+            if (card is CardModifier) {
                 if (caravan.cards.getOrNull(position)?.canAddModifier(card) == true) {
                     game.canPlayerMove = false
                     resetSelected()
                     scope.launch {
                         playCardFlipSound(activity)
-                        val removedCard = game.playerCResources.removeFromHand(cardIndex, animationSpeed)
+                        val removedCard = game.playerCResources.removeFromHand(cardIndex, animationSpeed) as CardModifier
 
-                        if (card.getWildWastelandType() != null) {
+                        if (card is CardWildWasteland) {
                             playWWSound(activity)
-                        } else if (card.isNuclear()) {
+                        } else if (card is CardNuclear) {
                             playNukeBlownSound(activity)
                         }
                         caravan.cards[position].addModifier(removedCard, animationSpeed)
@@ -220,14 +223,14 @@ fun ShowGame(
                         game.canPlayerMove = true
                     }
                 }
-            } else {
+            } else if (card is CardBase) {
                 if (!isEnemy && !(game.isInitStage() && !caravan.isEmpty())) {
                     if (caravan.canPutCardOnTop(card)) {
                         game.canPlayerMove = false
                         resetSelected()
                         scope.launch {
                             playCardFlipSound(activity)
-                            val removedCard = game.playerCResources.removeFromHand(cardIndex, animationSpeed)
+                            val removedCard = game.playerCResources.removeFromHand(cardIndex, animationSpeed) as CardBase
                             caravan.putCardOnTop(removedCard, animationSpeed)
 
                             activity.processChallengesMove(Challenge.Move(
@@ -634,13 +637,13 @@ fun Hand(
 
             LaunchedEffect(it.handAnimationMark) {
                 if (it.handAnimationMark == Card.AnimationMark.NEW) {
-                    if (it.rank == Rank.JOKER) {
+                    if (it is CardJoker) {
                         playJokerReceivedSounds(activity)
                     }
                     it.handAnimationMark = Card.AnimationMark.STABLE
                     playCardFlipSound(activity)
                 } else if (it.handAnimationMark == Card.AnimationMark.MOVING_OUT) {
-                    if (it.rank == Rank.JOKER) {
+                    if (it is CardJoker) {
                         playJokerSounds(activity)
                     }
                 }
@@ -676,9 +679,9 @@ private fun canPutCard(
     index: Int
 ): Boolean {
     val cardOn = caravan.cards.getOrNull(index) ?: return false
-    return if (card.isModifier()) {
+    return if (card is CardModifier) {
         cardOn.canAddModifier(card)
-    } else if (isPlayerCaravan && index == caravan.size - 1) {
+    } else if (card is CardBase && isPlayerCaravan && index == caravan.size - 1) {
         caravan.canPutCardOnTop(card)
     } else {
         false
@@ -941,8 +944,8 @@ fun ShowDeck(cResources: CResources, activity: MainActivity, isKnown: Boolean = 
                 .background(getBackgroundColor(activity))
         )
         if (isKnown) {
-            val (back, isAlt) = cResources.getDeckBack() ?: (null to false)
-            if (back != null) {
+            val backCard = cResources.getDeckBack()
+            if (backCard != null) {
                 BoxWithConstraints(
                     Modifier
                         .fillMaxWidth()
@@ -957,7 +960,7 @@ fun ShowDeck(cResources: CResources, activity: MainActivity, isKnown: Boolean = 
                     val scale = min(scaleW, scaleH).coerceAtMost(0.75f)
                     ShowCardBack(
                         activity,
-                        Card(Rank.ACE, Suit.HEARTS, back, isAlt),
+                        backCard,
                         Modifier,
                         scale = scale
                     )

@@ -60,7 +60,7 @@ import com.unicorns.invisible.caravan.utils.scrollbar
 @Composable
 fun CardToBuy(activity: MainActivity, card: CardWithPrice, price: Int, update: () -> Unit) {
     val rankToSuit = when (card) {
-        is CardJoker -> stringResource(card.rank.nameId) to (card.number).toString()
+        is CardJoker -> stringResource(card.rank.nameId) to card.number.n.toString()
         is CardNumber -> stringResource(card.rank.nameId) to stringResource(card.suit.nameId)
         is CardFaceSuited -> stringResource(card.rank.nameId) to stringResource(card.suit.nameId)
     }
@@ -72,7 +72,8 @@ fun CardToBuy(activity: MainActivity, card: CardWithPrice, price: Int, update: (
                 ShowCardBack(activity, card, Modifier)
             }
 
-            val backName = card.getBack().nameIdWithBackFileName[card.getBackNumber()].first ?: 0
+            val backName = card.getBack().nameIdWithBackFileName[card.getBackNumber()].first
+
             TextFallout(
                 "${rankToSuit.first} ${rankToSuit.second}\n" +
                         "(${stringResource(backName)})",
@@ -85,7 +86,11 @@ fun CardToBuy(activity: MainActivity, card: CardWithPrice, price: Int, update: (
         }
 
         TextFallout(
-            stringResource(R.string.buy_for_caps, price),
+            if (card.getBackNumber() == 0) {
+                stringResource(R.string.buy_for_caps, price)
+            } else {
+                stringResource(R.string.buy_for_chips, price)
+            },
             getTextColor(activity),
             getTextStrokeColor(activity),
             16.sp,
@@ -94,10 +99,21 @@ fun CardToBuy(activity: MainActivity, card: CardWithPrice, price: Int, update: (
                 .padding(4.dp)
                 .background(getTextBackgroundColor(activity))
                 .clickable {
-                    if (save.capsInHand < price) {
+                    val cash = if (card.getBackNumber() == 0) {
+                        save.capsInHand
+                    } else {
+                        save.silverRushChips
+                    }
+                    if (cash < price) {
                         playNoBeep(activity)
                     } else {
-                        save.capsInHand -= price
+                        if (card.getBackNumber() == 0) {
+                            save.capsInHand -= price
+                            save.capsWasted += price
+                        } else {
+                            save.silverRushChips -= price
+                            save.chipsWasted += price
+                        }
                         save.addCard(card)
                         playCashSound(activity)
                         saveData(activity)
@@ -125,6 +141,13 @@ fun ShowTraders(activity: MainActivity, goBack: () -> Unit) {
             ) {
                 TextFallout(
                     stringResource(R.string.your_caps_in_hand, save.capsInHand),
+                    getTextColor(activity),
+                    getTextStrokeColor(activity),
+                    16.sp,
+                    Modifier.padding(4.dp),
+                )
+                TextFallout(
+                    stringResource(R.string.your_chips_in_hand, save.silverRushChips),
                     getTextColor(activity),
                     getTextStrokeColor(activity),
                     16.sp,

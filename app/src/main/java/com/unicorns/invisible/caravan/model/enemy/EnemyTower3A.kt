@@ -8,10 +8,10 @@ import com.unicorns.invisible.caravan.model.primitives.CResources
 
 data object EnemyTower3A : Enemy {
     override fun createDeck(): CResources {
-        return CResources(CardBack.LUCKY_38, true)
+        return CResources(CardBack.LUCKY_38, 1)
     }
 
     override suspend fun makeMove(game: Game, speed: AnimationSpeed) {
-
+        EnemyTower3.makeMove(game, speed)
     }
 }

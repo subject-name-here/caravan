@@ -13,15 +13,14 @@ import kotlinx.serialization.Serializable
 
 
 @Serializable
-class EnemyVulpes : EnemyPve {
-    override fun getNameId() = R.string.vulpes
-    override fun isEven() = false
+class EnemyVulpes : EnemyPvENoBank() {
+    override val nameId
+        get() = R.string.vulpes
+    override val isEven
+        get() = false
 
-    override fun getBank(): Int { return 0 }
-    override fun refreshBank() {}
-    override fun getBet(): Int? { return null }
-    override fun retractBet() {}
-    override fun addReward(reward: Int) {}
+    override var wins: Int = 0
+    override var winsBlitz: Int = 0
 
     override fun createDeck(): CResources = CResources(CustomDeck(CardBack.FNV_FACTION, 1).apply {
         removeAll {

@@ -4,15 +4,7 @@ import kotlinx.serialization.Serializable
 
 
 @Serializable
-sealed interface EnemyPve : Enemy {
-    fun getNameId(): Int
-
-    fun isEven(): Boolean
-
-    fun getBank(): Int
-    fun refreshBank()
-
-    fun getBet(): Int?
-    fun retractBet()
-    fun addReward(reward: Int)
+sealed class EnemyPve : Enemy {
+    abstract val nameId: Int
+    abstract val isEven: Boolean
 }

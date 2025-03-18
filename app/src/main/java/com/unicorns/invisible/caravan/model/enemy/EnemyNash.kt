@@ -10,18 +10,26 @@ import kotlin.math.min
 
 
 @Serializable
-class EnemyNash : EnemyPve {
-    override fun getNameId() = R.string.johnson_nash
-    override fun isEven() = false
+class EnemyNash : EnemyPvEWithBank() {
+    override val nameId
+        get() = R.string.johnson_nash
+    override val isEven
+        get() = false
 
     override fun createDeck(): CResources = CResources(CustomDeck())
 
-    private var bank = 0
-    override fun getBank(): Int { return bank }
-    override fun refreshBank() { bank = 30 }
-    override fun getBet(): Int { return min(bank, 10) }
-    override fun retractBet() { bank -= getBet() }
-    override fun addReward(reward: Int) { bank += reward }
+
+    override var bank: Int = 0
+    override val maxBank: Int
+        get() = 30
+    override val bet: Int
+        get() = 10
+
+    override var winsNoBet: Int = 0
+    override var winsBet: Int = 0
+    override var winsBlitzNoBet: Int = 0
+    override var winsBlitzBet: Int = 0
+
 
     override suspend fun makeMove(game: Game, speed: AnimationSpeed) {}
 }

@@ -11,6 +11,4 @@ sealed interface Enemy {
     fun isSpeedOverriding(): Boolean = false
 
     suspend fun makeMove(game: Game, speed: AnimationSpeed)
-
-    fun onVictory(isBlitz: Boolean) {}
 }

@@ -9,7 +9,6 @@ import com.unicorns.invisible.caravan.model.primitives.CardNumber
 import com.unicorns.invisible.caravan.model.primitives.CardNumberWW
 import com.unicorns.invisible.caravan.model.primitives.CardWildWasteland
 import com.unicorns.invisible.caravan.model.primitives.CardWithPrice
-import com.unicorns.invisible.caravan.model.primitives.Rank
 import com.unicorns.invisible.caravan.model.primitives.RankFace
 import com.unicorns.invisible.caravan.model.primitives.RankNumber
 import com.unicorns.invisible.caravan.model.primitives.Suit
@@ -281,8 +280,8 @@ private fun getLucky38Name(card: CardWithPrice): String {
 }
 
 private fun getLucky38AltName(card: CardWithPrice): String {
-    if (card.rank == Rank.JOKER) {
-        return if (card.suit == Suit.HEARTS) {
+    if (card is CardJoker) {
+        return if (card.number == CardJoker.Number.ONE) {
             "lucky38ALT/1J.webp"
         } else {
             "lucky38ALT/2J.webp"
@@ -300,20 +299,28 @@ private fun getVault21Name(card: CardWithPrice): String {
 }
 
 private fun getSvgName(card: CardWithPrice, dirName: String): String {
-    if (card.rank == Rank.JOKER) {
-        return if (card.suit == Suit.HEARTS) {
-            "$dirName/1J.svg"
-        } else {
-            "$dirName/2J.svg"
+    return when (card) {
+        is CardJoker -> {
+            if (card.number == CardJoker.Number.ONE) {
+                "$dirName/1J.svg"
+            } else {
+                "$dirName/2J.svg"
+            }
+        }
+        is CardFaceSuited -> {
+            val letter = card.rank.name.first().toString()
+            val suit = card.suit.name.first()
+            "$dirName/$letter$suit.svg"
+        }
+        is CardNumber -> {
+            val letter = when (card.rank.value) {
+                in (2..9) -> card.rank.value.toString()
+                else -> card.rank.name.first().toString()
+            }
+            val suit = card.suit.name.first()
+            "$dirName/$letter$suit.svg"
         }
     }
-
-    val letter = when (card.rank.value) {
-        in (2..9) -> card.rank.value.toString()
-        else -> card.rank.name.first().toString()
-    }
-    val suit = card.suit.name.first()
-    return "$dirName/$letter$suit.svg"
 }
 
 private fun getWildWastelandNumberName(card: CardNumberWW): String {
@@ -350,18 +357,23 @@ private fun getLegionName(card: CardWithPrice): String {
 }
 
 private fun getOGCardName(card: CardWithPrice, dirName: String): String {
-    if (card.rank == Rank.JOKER) {
-        return if (card.suit == Suit.HEARTS) {
-            "$dirName/Joker_1.webp"
-        } else {
-            "$dirName/Joker_2.webp"
+    return when (card) {
+        is CardJoker -> {
+            if (card.number == CardJoker.Number.ONE) {
+                "$dirName/1J.webp"
+            } else {
+                "$dirName/2J.webp"
+            }
+        }
+        is CardFaceSuited -> {
+            val letter = card.rank.name.first().toString()
+            val suit = card.suit.name.first()
+            "$dirName/$letter$suit.webp"
+        }
+        is CardNumber -> {
+            val letter = card.rank.value.toString()
+            val suit = card.suit.name.first()
+            "$dirName/$letter$suit.webp"
         }
     }
-
-    val letter = when (card.rank.value) {
-        in (1..10) -> card.rank.value.toString()
-        else -> card.rank.name.first().toString()
-    }
-    val suit = card.suit.name.first()
-    return "$dirName/${letter}_$suit.webp"
 }

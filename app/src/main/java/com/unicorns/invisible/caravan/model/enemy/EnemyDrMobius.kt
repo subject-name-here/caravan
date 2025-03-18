@@ -14,14 +14,15 @@ import com.unicorns.invisible.caravan.model.primitives.RankFace
 import com.unicorns.invisible.caravan.model.primitives.RankNumber
 import com.unicorns.invisible.caravan.model.primitives.Suit
 import kotlinx.serialization.Serializable
-import kotlin.math.min
 import kotlin.random.Random
 
 
 @Serializable
-class EnemyDrMobius : EnemyPve {
-    override fun getNameId() = R.string.dr_mobius
-    override fun isEven() = false
+class EnemyDrMobius : EnemyPvEWithBank() {
+    override val nameId
+        get() = R.string.dr_mobius
+    override val isEven: Boolean
+        get() = false
 
     override fun createDeck() = CResources(CustomDeck().apply {
         repeat(3) {
@@ -32,12 +33,16 @@ class EnemyDrMobius : EnemyPve {
         }
     })
 
-    private var bank = 0
-    override fun getBank(): Int { return bank }
-    override fun refreshBank() { bank = 80 }
-    override fun getBet(): Int { return min(bank, 8) }
-    override fun retractBet() { bank -= getBet() }
-    override fun addReward(reward: Int) { bank += reward }
+    override var bank: Int = 0
+    override val maxBank: Int
+        get() = 80
+    override val bet: Int
+        get() = 8
+
+    override var winsNoBet: Int = 0
+    override var winsBet: Int = 0
+    override var winsBlitzNoBet: Int = 0
+    override var winsBlitzBet: Int = 0
 
     override suspend fun makeMove(game: Game, speed: AnimationSpeed) {
         makeMoveInner(game)

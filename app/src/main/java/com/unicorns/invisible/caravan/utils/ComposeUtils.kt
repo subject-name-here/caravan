@@ -233,6 +233,53 @@ fun getFilter(back: CardBack, backNumber: Int): ColorFilter {
 }
 
 
+fun getBackFilter(back: CardBack, backNumber: Int): ColorFilter {
+    return when (back) {
+        STANDARD -> ColorFilter.colorMatrix(
+            when (backNumber) {
+                1 -> {
+                    ColorMatrix(floatArrayOf(
+                        0f, 1f, 0f, 0f, 0f,
+                        1f, 0f, 0f, 0f, 0f,
+                        0f, 0f, 1f, 0f, 0f,
+                        0f, 0f, 0f, 1f, 0f
+                    ))
+                }
+                2 -> {
+                    ColorMatrix(floatArrayOf(
+                        0f, 0f, 1f, 0f, 0f,
+                        0f, 1f, 0f, 0f, 0f,
+                        1f, 0f, 0f, 0f, 0f,
+                        0f, 0f, 0f, 1f, 0f
+                    ))
+                }
+                3 -> {
+                    ColorMatrix(floatArrayOf(
+                        1f, 0f, 0f, 0f, 0f,
+                        0f, 1f, 0f, 0f, 0f,
+                        1f, 0f, 1f, 0f, 0f,
+                        0f, 0f, 0f, 1f, 0f
+                    ))
+                }
+                4 -> {
+                    ColorMatrix(floatArrayOf(
+                        1f, 0f, 0f, 0f, 0f,
+                        1f, 1f, 0f, 0f, 0f,
+                        0f, 0f, 1f, 0f, 0f,
+                        0f, 0f, 0f, 1f, 0f
+                    ))
+                }
+                else -> {
+                    ColorMatrix()
+                }
+            }
+        )
+
+        else -> ColorFilter.colorMatrix(ColorMatrix())
+    }
+}
+
+
 @Composable
 fun ShowCard(activity: MainActivity, card: Card, modifier: Modifier, scale: Float = 1f) {
     AsyncImage(
@@ -271,6 +318,11 @@ fun ShowCardBack(activity: MainActivity, card: Card, modifier: Modifier, scale: 
         contentDescription = "",
         modifier.clip(RoundedCornerShape(5)),
         contentScale = FixedScale(scale),
+        colorFilter = if (card is CardWithPrice) {
+            getBackFilter(card.getBack(), card.getBackNumber())
+        } else {
+            ColorFilter.colorMatrix(ColorMatrix())
+        },
         alignment = BiasAlignment(-1f, -1f)
     )
 }

@@ -22,6 +22,7 @@ import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.enemy.EnemyTutorial
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.CardFaceSuited
+import com.unicorns.invisible.caravan.model.primitives.CardJoker
 import com.unicorns.invisible.caravan.model.primitives.CardModifier
 import com.unicorns.invisible.caravan.model.primitives.CardNumber
 import com.unicorns.invisible.caravan.model.primitives.CustomDeck
@@ -66,7 +67,7 @@ fun Tutorial(
                 add(CardFaceSuited(RankFace.JACK, Suit.HEARTS, CardBack.STANDARD, 0))
                 add(CardFaceSuited(RankFace.QUEEN, Suit.CLUBS, CardBack.STANDARD, 0))
                 add(CardFaceSuited(RankFace.KING, Suit.DIAMONDS, CardBack.STANDARD, 0))
-                add(CardFaceSuited(RankFace.JOKER, Suit.HEARTS, CardBack.STANDARD, 0))
+                add(CardJoker(CardJoker.Number.TWO, CardBack.STANDARD, 0))
                 add(CardNumber(RankNumber.TWO, Suit.HEARTS, CardBack.STANDARD, 0))
                 add(CardNumber(RankNumber.TWO, Suit.DIAMONDS, CardBack.STANDARD, 0))
                 add(CardNumber(RankNumber.TWO, Suit.CLUBS, CardBack.STANDARD, 0))

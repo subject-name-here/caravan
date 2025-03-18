@@ -276,6 +276,7 @@ fun TowerScreen(
                     save.towerLevel = 0
                     val inBank = 1536 + 512 * (cookCook - 1)
                     save.capsInHand += inBank
+                    save.towerBeaten = true
                     saveData(activity)
                     CoroutineScope(Dispatchers.Unconfined).launch {
                         repeat(4) {
@@ -846,7 +847,6 @@ fun StartTowerGame(
                     onQuitPressed
                 )
             }
-            enemy.onVictory(false)
             saveData(activity)
         }
         it.onLose = {

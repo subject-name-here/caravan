@@ -20,6 +20,7 @@ import com.unicorns.invisible.caravan.model.enemy.EnemyMadnessCardinal
 import com.unicorns.invisible.caravan.model.enemy.EnemyNash
 import com.unicorns.invisible.caravan.model.enemy.EnemyNoBark
 import com.unicorns.invisible.caravan.model.enemy.EnemyOliver
+import com.unicorns.invisible.caravan.model.enemy.EnemyPvEWithBank
 import com.unicorns.invisible.caravan.model.enemy.EnemyRingo
 import com.unicorns.invisible.caravan.model.enemy.EnemySalt
 import com.unicorns.invisible.caravan.model.enemy.EnemySnuffles
@@ -35,18 +36,11 @@ import com.unicorns.invisible.caravan.model.primitives.CardJoker
 import com.unicorns.invisible.caravan.model.primitives.CardNumber
 import com.unicorns.invisible.caravan.model.primitives.CardWithPrice
 import com.unicorns.invisible.caravan.model.primitives.CollectibleDeck
-import com.unicorns.invisible.caravan.model.trading.ChineseTrader
-import com.unicorns.invisible.caravan.model.trading.EnclaveTrader
-import com.unicorns.invisible.caravan.model.trading.GomorrahTrader
-import com.unicorns.invisible.caravan.model.trading.Lucky38Trader
-import com.unicorns.invisible.caravan.model.trading.SierraMadreTrader
-import com.unicorns.invisible.caravan.model.trading.TopsTrader
-import com.unicorns.invisible.caravan.model.trading.Trader
-import com.unicorns.invisible.caravan.model.trading.UltraLuxeTrader
-import com.unicorns.invisible.caravan.model.trading.Vault21Trader
+import com.unicorns.invisible.caravan.model.trading.*
 import kotlinx.serialization.EncodeDefault
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
+import kotlin.math.max
 
 
 // PlayerId == null => save is not loaded
@@ -93,8 +87,8 @@ class Save(var playerId: String? = null) {
         availableCards.add(card)
     }
 
-    val ownedDecks
-        get() = availableCards.toList().map { it.getBack() }.distinct()
+    val availableDecks
+        get() = availableCards.toList().map { it.getBack() to it.getBackNumber() }.distinct()
 
     fun getCurrentDeckCopy(): CollectibleDeck {
         val deck = CollectibleDeck()
@@ -102,9 +96,9 @@ class Save(var playerId: String? = null) {
             if (getBackNumbersChosenMap()[it.getBack()] == it.getBackNumber()) {
                 deck.add(
                     when (it) {
-                        is CardFaceSuited -> CardFaceSuited(it.rank, it.suit, it.getBack(), it.backNumber)
-                        is CardJoker -> CardJoker(it.number, it.getBack(), it.backNumber)
-                        is CardNumber -> CardNumber(it.rank, it.suit, it.getBack(), it.backNumber)
+                        is CardFaceSuited -> CardFaceSuited(it.rank, it.suit, it.getBack(), it.getBackNumber())
+                        is CardJoker -> CardJoker(it.number, it.getBack(), it.getBackNumber())
+                        is CardNumber -> CardNumber(it.rank, it.suit, it.getBack(), it.getBackNumber())
                     }
                 )
             }
@@ -118,7 +112,8 @@ class Save(var playerId: String? = null) {
     @EncodeDefault
     var styleId: Int = Style.PIP_BOY.ordinal
 
-    // TODO: a) more stats, and b) correctly count all the old one.
+
+    // STATS
     @EncodeDefault
     var gamesStarted = 0
     @EncodeDefault
@@ -126,9 +121,39 @@ class Save(var playerId: String? = null) {
     @EncodeDefault
     var wins = 0
     @EncodeDefault
+    var pvpWins = 0
+
+    @EncodeDefault
     var capsBet = 0
     @EncodeDefault
     var capsWon = 0
+    @EncodeDefault
+    var maxBetWon = 0
+    @EncodeDefault
+    var winsWithBet = 0
+
+    @EncodeDefault
+    var capsWasted = 0
+    @EncodeDefault
+    var chipsWasted = 0
+
+    @EncodeDefault
+    var challengesCompleted = 0
+
+    @EncodeDefault
+    var currentStrike: Int = 0
+        set(value) {
+            field = value
+            maxStrike = max(maxStrike, value)
+        }
+    @EncodeDefault
+    var maxStrike = 0
+        private set
+
+
+    // TODO: a) more stats, and b) correctly count all the old one.
+    // END STATS
+
 
     @EncodeDefault
     var radioVolume = 1f
@@ -161,8 +186,10 @@ class Save(var playerId: String? = null) {
         ChallengeWin5Games(),
         ChallengePlay188()
     )
-    // @EncodeDefault
-    // var challengesConst: MutableList<Challenge> = mutableListOf() // TODO: addProgression
+    @EncodeDefault
+    var challengesConst1: MutableList<Challenge> = mutableListOf(
+
+    )
 
     @EncodeDefault
     var towerLevel: Int = 0
@@ -170,6 +197,8 @@ class Save(var playerId: String? = null) {
     var cookCookMult: Int = 1
     @EncodeDefault
     var secondChances: Int = 0
+    @EncodeDefault
+    var towerBeaten: Boolean = false
 
     @EncodeDefault
     var storyProgress = 0
@@ -226,8 +255,14 @@ class Save(var playerId: String? = null) {
     )
     fun updateEnemiesBanks() {
         val enemies = enemiesGroups2.flatten()
-        enemies.forEach { enemy ->
-            enemy.refreshBank()
+        enemies.filterIsInstance<EnemyPvEWithBank>().forEach { enemy ->
+            enemy.bank = if (enemy is EnemySnuffles) {
+                val fromTable = table
+                table = 0
+                fromTable
+            } else {
+                enemy.maxBank
+            }
         }
     }
 

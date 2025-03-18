@@ -4,6 +4,7 @@ import com.unicorns.invisible.caravan.MainActivity
 import com.unicorns.invisible.caravan.R
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.primitives.Card
+import com.unicorns.invisible.caravan.model.primitives.CardWithPrice
 import com.unicorns.invisible.caravan.utils.booleanToPlusOrMinus
 import kotlinx.serialization.Serializable
 
@@ -29,5 +30,5 @@ class GomorrahTrader : Trader {
 
     override fun getSymbol() = "G"
 
-    override fun getCards(): List<Card> = getCards(CardBack.GOMORRAH)
+    override fun getCards(): List<CardWithPrice> = getCards(CardBack.GOMORRAH)
 }

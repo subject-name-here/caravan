@@ -39,9 +39,7 @@ import com.unicorns.invisible.caravan.model.enemy.EnemyPlayer
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.Card
 import com.unicorns.invisible.caravan.model.primitives.CustomDeck
-import com.unicorns.invisible.caravan.model.primitives.Rank
 import com.unicorns.invisible.caravan.model.primitives.Suit
-import com.unicorns.invisible.caravan.multiplayer.decodeMove
 import com.unicorns.invisible.caravan.save.json
 import com.unicorns.invisible.caravan.save.saveData
 import com.unicorns.invisible.caravan.utils.CheckboxCustom
@@ -75,30 +73,30 @@ import kotlin.uuid.Uuid
 
 
 // TODO: update mp (number of decks!)
-fun customDeckToInts(customDeck: CustomDeck): List<ULong> {
-    val result = ArrayList<ULong>()
-
-    CardBack.entries.forEachIndexed { _, cardBack ->
-        var code = 0UL
-        fun updateCode(card: Card) {
-            val cnt = card.rank.ordinal * Suit.entries.size + card.suit.ordinal
-            code = code or (1UL shl cnt)
-        }
-        var isAlt = false
-        customDeck.toList().forEach {
-            if (it.back == cardBack) {
-                updateCode(it)
-                isAlt = isAlt || it.isAlt
-            }
-        }
-
-        if (isAlt) {
-            code = code or (1UL shl 60)
-        }
-        result.add(code)
-    }
-    return result
-}
+//fun customDeckToInts(customDeck: CustomDeck): List<ULong> {
+//    val result = ArrayList<ULong>()
+//
+//    CardBack.entries.forEachIndexed { _, cardBack ->
+//        var code = 0UL
+//        fun updateCode(card: Card) {
+//            val cnt = card.rank.ordinal * Suit.entries.size + card.suit.ordinal
+//            code = code or (1UL shl cnt)
+//        }
+//        var isAlt = false
+//        customDeck.toList().forEach {
+//            if (it.back == cardBack) {
+//                updateCode(it)
+//                isAlt = isAlt || it.isAlt
+//            }
+//        }
+//
+//        if (isAlt) {
+//            code = code or (1UL shl 60)
+//        }
+//        result.add(code)
+//    }
+//    return result
+//}
 
 fun Boolean.toPythonBool(): String {
     return this.toString().replaceFirstChar { it.uppercase() }
@@ -118,6 +116,10 @@ fun ShowPvP(
     showAlertDialog: (String, String, (() -> Unit)?) -> Unit,
     goBack: () -> Unit
 ) {
+    goBack()
+    return
+
+
     var roomNumber by rememberSaveable { mutableStateOf("") }
     var checkedCustomDeck by rememberSaveable { mutableStateOf(true) }
     var checkedWild by rememberSaveable { mutableStateOf(false) }
@@ -151,27 +153,27 @@ fun ShowPvP(
         }
 
         val cardsList = mutableListOf<Card>()
-        fun processCard(cardBackIndex: Int, card: Card) {
-            val index = card.rank.ordinal * Suit.entries.size + card.suit.ordinal
-            val n = response[cardBackIndex]
-            if ((n shr index) and 1UL == 1UL) {
-                cardsList.add(card)
-            }
-        }
-
-        CardBack.entries.forEachIndexed { index, cardBack ->
-            val isAlt = (response[index] shr 60) and 1UL == 1UL
-            Rank.entries.forEach { rank ->
-                if (rank == Rank.JOKER) {
-                    processCard(index, Card(rank, Suit.HEARTS, cardBack, isAlt))
-                    processCard(index, Card(rank, Suit.CLUBS, cardBack, isAlt))
-                } else {
-                    Suit.entries.forEach { suit ->
-                        processCard(index, Card(rank, suit, cardBack, isAlt))
-                    }
-                }
-            }
-        }
+//        fun processCard(cardBackIndex: Int, card: Card) {
+//            val index = card.rank.ordinal * Suit.entries.size + card.suit.ordinal
+//            val n = response[cardBackIndex]
+//            if ((n shr index) and 1UL == 1UL) {
+//                cardsList.add(card)
+//            }
+//        }
+//
+//        CardBack.entries.forEachIndexed { index, cardBack ->
+//            val isAlt = (response[index] shr 60) and 1UL == 1UL
+//            Rank.entries.forEach { rank ->
+//                if (rank == Rank.JOKER) {
+//                    processCard(index, Card(rank, Suit.HEARTS, cardBack, isAlt))
+//                    processCard(index, Card(rank, Suit.CLUBS, cardBack, isAlt))
+//                } else {
+//                    Suit.entries.forEach { suit ->
+//                        processCard(index, Card(rank, suit, cardBack, isAlt))
+//                    }
+//                }
+//            }
+//        }
 
         if (!isCreator) {
             checkedCustomDeck = (response[0] shr 55) and 1UL == 1UL
@@ -212,39 +214,39 @@ fun ShowPvP(
         }
         isRoomCreated = roomNumber.toIntOrNull() ?: return
         val deckPair = save.selectedDeck
-        val deckCodes = customDeckToInts(
-            if (checkedCustomDeck)
-                save.getCustomDeckCopy()
-            else
-                CustomDeck(deckPair.first, deckPair.second)
-        )
-        sendRequest(
-            "${crvnUrl}/crvn/create?is_custom=${checkedCustomDeck.toPythonBool()}" +
-                    "&room=${isRoomCreated}" +
-                    "&is_private=${checkedPrivateRoom.toPythonBool()}" +
-                    "&is_new=True" +
-                    "&is_wild=${checkedWild.toPythonBool()}" +
-                    "&cid=$id" +
-                    "&deck0=${deckCodes[0]}" +
-                    "&deck1=${deckCodes[1]}" +
-                    "&deck2=${deckCodes[2]}" +
-                    "&deck3=${deckCodes[3]}" +
-                    "&deck4=${deckCodes[4]}" +
-                    "&deck5=${deckCodes[5]}" +
-                    "&deck6=${deckCodes[6]}" +
-                    "&deck7=${deckCodes[7]}" +
-                    "&deck8=${deckCodes[8]}" +
-                    "&deck9=${deckCodes[9]}" +
-                    "&deck10=${deckCodes[10]}"
-        ) { result ->
-            val response = result.toString()
-            if (response.contains("exists")) {
-                showFailure(activity.getString(R.string.room_exists_already))
-                return@sendRequest
-            }
-            isCreator = true
-            checkRoomForJoiner()
-        }
+//        val deckCodes = customDeckToInts(
+//            if (checkedCustomDeck)
+//                save.getCustomDeckCopy()
+//            else
+//                CustomDeck(deckPair.first, deckPair.second)
+//        )
+//        sendRequest(
+//            "${crvnUrl}/crvn/create?is_custom=${checkedCustomDeck.toPythonBool()}" +
+//                    "&room=${isRoomCreated}" +
+//                    "&is_private=${checkedPrivateRoom.toPythonBool()}" +
+//                    "&is_new=True" +
+//                    "&is_wild=${checkedWild.toPythonBool()}" +
+//                    "&cid=$id" +
+//                    "&deck0=${deckCodes[0]}" +
+//                    "&deck1=${deckCodes[1]}" +
+//                    "&deck2=${deckCodes[2]}" +
+//                    "&deck3=${deckCodes[3]}" +
+//                    "&deck4=${deckCodes[4]}" +
+//                    "&deck5=${deckCodes[5]}" +
+//                    "&deck6=${deckCodes[6]}" +
+//                    "&deck7=${deckCodes[7]}" +
+//                    "&deck8=${deckCodes[8]}" +
+//                    "&deck9=${deckCodes[9]}" +
+//                    "&deck10=${deckCodes[10]}"
+//        ) { result ->
+//            val response = result.toString()
+//            if (response.contains("exists")) {
+//                showFailure(activity.getString(R.string.room_exists_already))
+//                return@sendRequest
+//            }
+//            isCreator = true
+//            checkRoomForJoiner()
+//        }
     }
 
     fun joinRoom() {
@@ -256,83 +258,83 @@ fun ShowPvP(
             return
         }
         isRoomCreated = roomNumber.toIntOrNull() ?: return
-        val deckCodes = customDeckToInts(save.getCustomDeckCopy())
-        sendRequest(
-            "${crvnUrl}/crvn/join?room=$isRoomCreated" +
-                    "&jid=$id" +
-                    "&back=${save.selectedDeck.first.ordinal}" +
-                    "&is_alt=${save.selectedDeck.second.toPythonBool()}" +
-                    "&deck0=${deckCodes[0]}" +
-                    "&deck1=${deckCodes[1]}" +
-                    "&deck2=${deckCodes[2]}" +
-                    "&deck3=${deckCodes[3]}" +
-                    "&deck4=${deckCodes[4]}" +
-                    "&deck5=${deckCodes[5]}" +
-                    "&deck6=${deckCodes[6]}" +
-                    "&deck7=${deckCodes[7]}" +
-                    "&deck8=${deckCodes[8]}" +
-                    "&deck9=${deckCodes[9]}" +
-                    "&deck10=${deckCodes[10]}"
-        ) { result ->
-            val response = try {
-                json.decodeFromString<List<ULong>>(result.getString("body"))
-            } catch (_: Exception) {
-                showFailure(result.getString("body"))
-                return@sendRequest
-            }
-            isCreator = false
-            processResponse(response)
-        }
+//        val deckCodes = customDeckToInts(save.getCustomDeckCopy())
+//        sendRequest(
+//            "${crvnUrl}/crvn/join?room=$isRoomCreated" +
+//                    "&jid=$id" +
+//                    "&back=${save.selectedDeck.first.ordinal}" +
+//                    "&is_alt=${save.selectedDeck.second.toPythonBool()}" +
+//                    "&deck0=${deckCodes[0]}" +
+//                    "&deck1=${deckCodes[1]}" +
+//                    "&deck2=${deckCodes[2]}" +
+//                    "&deck3=${deckCodes[3]}" +
+//                    "&deck4=${deckCodes[4]}" +
+//                    "&deck5=${deckCodes[5]}" +
+//                    "&deck6=${deckCodes[6]}" +
+//                    "&deck7=${deckCodes[7]}" +
+//                    "&deck8=${deckCodes[8]}" +
+//                    "&deck9=${deckCodes[9]}" +
+//                    "&deck10=${deckCodes[10]}"
+//        ) { result ->
+//            val response = try {
+//                json.decodeFromString<List<ULong>>(result.getString("body"))
+//            } catch (_: Exception) {
+//                showFailure(result.getString("body"))
+//                return@sendRequest
+//            }
+//            isCreator = false
+//            processResponse(response)
+//        }
     }
-
-    if (enemyDeck.size >= 10) {
-        fun makeDeckWild(deck: CustomDeck) {
-            deck.apply {
-                add(Card(Rank.ACE, Suit.HEARTS, CardBack.ENCLAVE, true))
-                add(Card(Rank.ACE, Suit.CLUBS, CardBack.ENCLAVE, true))
-                add(Card(Rank.ACE, Suit.DIAMONDS, CardBack.ENCLAVE, true))
-                add(Card(Rank.KING, Suit.HEARTS, CardBack.MADNESS, true))
-                add(Card(Rank.KING, Suit.CLUBS, CardBack.MADNESS, true))
-                add(Card(Rank.KING, Suit.DIAMONDS, CardBack.MADNESS, true))
-                add(Card(Rank.KING, Suit.SPADES, CardBack.MADNESS, true))
-                add(Card(Rank.JACK, Suit.HEARTS, CardBack.MADNESS, true))
-                add(Card(Rank.QUEEN, Suit.HEARTS, CardBack.MADNESS, true))
-            }
-        }
-
-        StartPvP(
-            activity = activity,
-            playerCResources = run {
-                val deck = if (checkedCustomDeck)
-                    save.getCustomDeckCopy()
-                else
-                    CustomDeck(save.selectedDeck.first, save.selectedDeck.second)
-
-                if (checkedWild) {
-                    makeDeckWild(deck)
-                }
-
-                CResources(deck)
-            },
-            enemyStartDeck = run {
-                val deck = CustomDeck()
-                repeat(enemyDeck.size) {
-                    deck.add(enemyDeck[it])
-                }
-                if (checkedWild) {
-                    makeDeckWild(deck)
-                }
-                deck
-            },
-            roomNumber = isRoomCreated,
-            isCreator = isCreator,
-            showAlertDialog = showAlertDialog
-        ) {
-            enemyDeck = CustomDeck()
-            isRoomCreated = 0
-        }
-        return
-    }
+//
+//    if (enemyDeck.size >= 10) {
+//        fun makeDeckWild(deck: CustomDeck) {
+//            deck.apply {
+//                add(Card(Rank.ACE, Suit.HEARTS, CardBack.ENCLAVE, true))
+//                add(Card(Rank.ACE, Suit.CLUBS, CardBack.ENCLAVE, true))
+//                add(Card(Rank.ACE, Suit.DIAMONDS, CardBack.ENCLAVE, true))
+//                add(Card(Rank.KING, Suit.HEARTS, CardBack.MADNESS, true))
+//                add(Card(Rank.KING, Suit.CLUBS, CardBack.MADNESS, true))
+//                add(Card(Rank.KING, Suit.DIAMONDS, CardBack.MADNESS, true))
+//                add(Card(Rank.KING, Suit.SPADES, CardBack.MADNESS, true))
+//                add(Card(Rank.JACK, Suit.HEARTS, CardBack.MADNESS, true))
+//                add(Card(Rank.QUEEN, Suit.HEARTS, CardBack.MADNESS, true))
+//            }
+//        }
+//
+//        StartPvP(
+//            activity = activity,
+//            playerCResources = run {
+//                val deck = if (checkedCustomDeck)
+//                    save.getCustomDeckCopy()
+//                else
+//                    CustomDeck(save.selectedDeck.first, save.selectedDeck.second)
+//
+//                if (checkedWild) {
+//                    makeDeckWild(deck)
+//                }
+//
+//                CResources(deck)
+//            },
+//            enemyStartDeck = run {
+//                val deck = CustomDeck()
+//                repeat(enemyDeck.size) {
+//                    deck.add(enemyDeck[it])
+//                }
+//                if (checkedWild) {
+//                    makeDeckWild(deck)
+//                }
+//                deck
+//            },
+//            roomNumber = isRoomCreated,
+//            isCreator = isCreator,
+//            showAlertDialog = showAlertDialog
+//        ) {
+//            enemyDeck = CustomDeck()
+//            isRoomCreated = 0
+//        }
+//        return
+//    }
 
     MenuItemOpen(activity, stringResource(R.string.menu_pvp), "<-", {
         if (isRoomCreated == 0) {
@@ -572,7 +574,7 @@ fun StartPvP(
             playWinSound(activity)
             showAlertDialog(
                 activity.getString(R.string.result),
-                activity.getString(R.string.you_win) + winCard(activity, CardBack.STANDARD, isAlt = true),
+                activity.getString(R.string.you_win) + winCard(activity, CardBack.STANDARD, 2, false),
                 null
             )
             saveData(activity)
@@ -616,49 +618,49 @@ fun StartPvP(
                 showAlertDialog(activity.getString(R.string.failed_to_start_the_game), body, null)
                 return@sendRequest
             }
-
-            val move = try {
-                decodeMove(body)
-            } catch (_: Exception) {
-                CoroutineScope(Dispatchers.Unconfined).launch {
-                    delay(1900L)
-                    pingForMove(sendHandCard)
-                }
-                return@sendRequest
-            }
-
-            if (move.newCardInHandBack in CardBack.entries.indices) {
-                val cardReceived = Card(
-                    Rank.entries[move.newCardInHandRank],
-                    Suit.entries[move.newCardInHandSuit],
-                    CardBack.entries[move.newCardInHandBack],
-                    isAlt = move.isNewCardAlt
-                )
-                game.enemyCResources.addCardToHandDirect(cardReceived)
-                updateEnemyHand()
-
-                if (game.playerCResources.hand.size < 8) {
-                    sendHandCard()
-                    return@sendRequest
-                }
-                game.isPlayerTurn = isCreator
-                game.canPlayerMove = isCreator
-                updateCaravans()
-            } else {
-                (game.enemy as EnemyPlayer).latestMoveResponse = move
-                game.isPlayerTurn = isCreator
-
-                CoroutineScope(Dispatchers.Unconfined).launch {
-                    // game.enemy.makeMove(game)
-                    updateEnemyHand()
-                    game.processField(AnimationSpeed.NONE)
-
-                    updateCaravans()
-
-                    game.isPlayerTurn = true
-                    game.checkOnGameOver()
-                }
-            }
+//
+//            val move = try {
+//                decodeMove(body)
+//            } catch (_: Exception) {
+//                CoroutineScope(Dispatchers.Unconfined).launch {
+//                    delay(1900L)
+//                    pingForMove(sendHandCard)
+//                }
+//                return@sendRequest
+//            }
+//
+//            if (move.newCardInHandBack in CardBack.entries.indices) {
+//                val cardReceived = Card(
+//                    Rank.entries[move.newCardInHandRank],
+//                    Suit.entries[move.newCardInHandSuit],
+//                    CardBack.entries[move.newCardInHandBack],
+//                    isAlt = move.isNewCardAlt
+//                )
+//                game.enemyCResources.addCardToHandDirect(cardReceived)
+//                updateEnemyHand()
+//
+//                if (game.playerCResources.hand.size < 8) {
+//                    sendHandCard()
+//                    return@sendRequest
+//                }
+//                game.isPlayerTurn = isCreator
+//                game.canPlayerMove = isCreator
+//                updateCaravans()
+//            } else {
+//                (game.enemy as EnemyPlayer).latestMoveResponse = move
+//                game.isPlayerTurn = isCreator
+//
+//                CoroutineScope(Dispatchers.Unconfined).launch {
+//                    // game.enemy.makeMove(game)
+//                    updateEnemyHand()
+//                    game.processField(AnimationSpeed.NONE)
+//
+//                    updateCaravans()
+//
+//                    game.isPlayerTurn = true
+//                    game.checkOnGameOver()
+//                }
+//            }
         }
     }
 
@@ -666,17 +668,17 @@ fun StartPvP(
         game.playerCResources.addToHand()
         val card = game.playerCResources.hand.last()
         updatePlayerHand()
-
-        val link = "${crvnUrl}/crvn/move?room=$roomNumber" +
-                "&is_creators_move=${isCreator.toPythonBool()}" +
-                "&move_code=0" +
-                "&new_card_back_in_hand_code=${card.back.ordinal}" +
-                "&new_card_rank_in_hand_code=${card.rank.ordinal}" +
-                "&new_card_suit_in_hand_code=${card.suit.ordinal}" +
-                "&is_alt=${card.isAlt.toPythonBool()}"
-        sendRequest(link) { _ ->
-            pingForMove(::sendHandCard)
-        }
+//
+//        val link = "${crvnUrl}/crvn/move?room=$roomNumber" +
+//                "&is_creators_move=${isCreator.toPythonBool()}" +
+//                "&move_code=0" +
+//                "&new_card_back_in_hand_code=${card.back.ordinal}" +
+//                "&new_card_rank_in_hand_code=${card.rank.ordinal}" +
+//                "&new_card_suit_in_hand_code=${card.suit.ordinal}" +
+//                "&is_alt=${card.isAlt.toPythonBool()}"
+//        sendRequest(link) { _ ->
+//            pingForMove(::sendHandCard)
+//        }
     }
 
     if (
@@ -695,24 +697,24 @@ fun StartPvP(
         return
     }
 
-    ShowGamePvP(
-        activity,
-        game,
-        isCreator,
-        roomNumber,
-        showAlertDialog,
-        ::updateEnemyHand,
-        ::updateCaravans,
-        ::updatePlayerHand
-    ) lambda@{
-        if (game.isOver()) {
-            quit()
-        } else {
-            showAlertDialog(
-                activity.getString(R.string.check_back_to_menu),
-                "",
-                quit
-            )
-        }
-    }
+//    ShowGamePvP(
+//        activity,
+//        game,
+//        isCreator,
+//        roomNumber,
+//        showAlertDialog,
+//        ::updateEnemyHand,
+//        ::updateCaravans,
+//        ::updatePlayerHand
+//    ) lambda@{
+//        if (game.isOver()) {
+//            quit()
+//        } else {
+//            showAlertDialog(
+//                activity.getString(R.string.check_back_to_menu),
+//                "",
+//                quit
+//            )
+//        }
+//    }
 }

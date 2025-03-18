@@ -2,6 +2,7 @@ package com.unicorns.invisible.caravan.model.enemy
 
 import com.unicorns.invisible.caravan.AnimationSpeed
 import com.unicorns.invisible.caravan.R
+import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.CustomDeck
@@ -10,18 +11,26 @@ import kotlin.math.min
 
 
 @Serializable
-class EnemyCrooker : EnemyPve {
-    override fun getNameId() = R.string.crooker
-    override fun isEven() = false
+class EnemyCrooker : EnemyPvEWithBank() {
+    override val nameId
+        get() = R.string.crooker
+    override val isEven: Boolean
+        get() = false
 
     override fun createDeck(): CResources = CResources(CustomDeck())
 
-    private var bank = 0
-    override fun getBank(): Int { return bank }
-    override fun refreshBank() { bank = 150 }
-    override fun getBet(): Int { return min(bank, 25) }
-    override fun retractBet() { bank -= getBet() }
-    override fun addReward(reward: Int) { bank += reward }
+    override var bank: Int = 0
+    override val maxBank: Int
+        get() = 150
+    override val bet: Int
+        get() = 25
 
-    override suspend fun makeMove(game: Game, speed: AnimationSpeed) {}
+    override var winsNoBet: Int = 0
+    override var winsBet: Int = 0
+    override var winsBlitzNoBet: Int = 0
+    override var winsBlitzBet: Int = 0
+
+    override suspend fun makeMove(game: Game, speed: AnimationSpeed) {
+
+    }
 }

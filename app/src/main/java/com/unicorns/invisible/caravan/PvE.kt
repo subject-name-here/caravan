@@ -43,11 +43,17 @@ import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.enemy.EnemyHanlon
 import com.unicorns.invisible.caravan.model.enemy.EnemyMadnessCardinal
+import com.unicorns.invisible.caravan.model.enemy.EnemyPvENoBank
+import com.unicorns.invisible.caravan.model.enemy.EnemyPvEWithBank
 import com.unicorns.invisible.caravan.model.enemy.EnemyPve
 import com.unicorns.invisible.caravan.model.enemy.EnemyViqueen
 import com.unicorns.invisible.caravan.model.enemy.EnemyVulpes
 import com.unicorns.invisible.caravan.model.primitives.CResources
+import com.unicorns.invisible.caravan.model.primitives.CardFaceSuited
+import com.unicorns.invisible.caravan.model.primitives.CardJoker
+import com.unicorns.invisible.caravan.model.primitives.CardNumber
 import com.unicorns.invisible.caravan.model.primitives.CardWithPrice
+import com.unicorns.invisible.caravan.model.primitives.CollectibleDeck
 import com.unicorns.invisible.caravan.model.primitives.CustomDeck
 import com.unicorns.invisible.caravan.save.saveData
 import com.unicorns.invisible.caravan.utils.CheckboxCustom
@@ -70,11 +76,12 @@ import com.unicorns.invisible.caravan.utils.playSelectSound
 import com.unicorns.invisible.caravan.utils.playVatsEnter
 import com.unicorns.invisible.caravan.utils.playWWSound
 import com.unicorns.invisible.caravan.utils.playWinSound
+import com.unicorns.invisible.caravan.utils.playWinSoundAlone
 import com.unicorns.invisible.caravan.utils.scrollbar
 import com.unicorns.invisible.caravan.utils.startAmbient
 import com.unicorns.invisible.caravan.utils.stopAmbient
 import java.util.Locale
-import kotlin.math.pow
+import kotlin.math.max
 
 
 @Composable
@@ -283,10 +290,10 @@ fun ShowPvE(
     @Composable
     fun StartWithEnemy(enemy: EnemyPve, goBack: () -> Unit) {
         StartGame(
-            activity, if (enemy.isEven())
-                CResources(save.selectedDeck.first, save.selectedDeck.second)
+            activity, if (enemy.isEven)
+                CollectibleDeck(save.selectedDeck.first, save.selectedDeck.second)
             else
-                CResources(CustomDeck().apply { addAll(save.getCurrentDeckCopy()) }),
+                save.getCurrentDeckCopy(),
             enemy, showAlertDialog, goBack
         )
     }
@@ -379,25 +386,28 @@ fun ShowPvE(
 
             @Composable
             fun OpponentItem(enemy: EnemyPve, onClick: () -> Unit) {
-                val line = if (enemy.getBet() == null) {
-                    val deckNameId = when (enemy) {
-                        is EnemyHanlon -> CardBack.NCR
-                        is EnemyVulpes -> CardBack.LEGION
-                        is EnemyMadnessCardinal -> CardBack.MADNESS
-                        is EnemyViqueen -> CardBack.VIKING
-                        else -> null
-                    }?.deckName ?: 0
-                    stringResource(R.string.enemy_with_card,
-                        stringResource(enemy.getNameId()),
-                        stringResource(deckNameId)
-                    )
-                } else
-                    stringResource(
-                        R.string.enemy_with_caps,
-                        stringResource(enemy.getNameId()),
-                        enemy.getBank(),
-                        enemy.getBet() ?: 0
-                    )
+                val line = when (enemy) {
+                    is EnemyPvENoBank -> {
+                        val (back, backNumber) = when (enemy) {
+                            is EnemyHanlon -> CardBack.FNV_FACTION to 0
+                            is EnemyVulpes -> CardBack.FNV_FACTION to 1
+                            is EnemyMadnessCardinal -> CardBack.MADNESS to 0
+                            is EnemyViqueen -> CardBack.VIKING to 0
+                        }
+                        stringResource(R.string.enemy_with_card,
+                            stringResource(enemy.nameId),
+                            stringResource(back.nameIdWithBackFileName[backNumber].first)
+                        )
+                    }
+                    is EnemyPvEWithBank -> {
+                        stringResource(
+                            R.string.enemy_with_caps,
+                            stringResource(enemy.nameId),
+                            enemy.bank,
+                            enemy.bet
+                        )
+                    }
+                }
                 TextFallout(
                     line,
                     getTextColor(activity),
@@ -443,35 +453,39 @@ fun ShowPvE(
 @Composable
 fun StartGame(
     activity: MainActivity,
-    playerCResources: CResources,
+    playerDeck: CollectibleDeck,
     enemy: EnemyPve,
     showAlertDialog: (String, String, (() -> Unit)?) -> Unit,
     goBack: () -> Unit,
 ) {
-    var showBettingScreen by rememberScoped { mutableStateOf(enemy.getBet() != null) }
+    var showBettingScreen by rememberScoped { mutableStateOf(enemy is EnemyPvEWithBank) }
     var myBet by rememberScoped { mutableIntStateOf(0) }
     var reward: Int by rememberScoped { mutableIntStateOf(0) }
     var isBlitz: Boolean by rememberScoped { mutableStateOf(false) }
 
     if (showBettingScreen) {
         ShowBettingScreen(
-            activity, enemy, { myBet = it }, { isBlitz = it }, { reward = it }, goBack, {
+            activity, enemy as EnemyPvEWithBank, { myBet = it }, { isBlitz = it }, { reward = it }, goBack, {
                 showBettingScreen = false
             }
         )
         return
     }
-    // TODO: val isDeckCourier6 by rememberScoped { mutableStateOf(playerCResources.isDeckCourier6()) }
 
+    val isDeckCourier6 by rememberScoped { mutableStateOf(playerDeck.isDeckCourier6()) }
     val game: Game = rememberScoped {
         Game(
-            playerCResources,
+            CResources(CustomDeck().apply { addAll(playerDeck) }),
             enemy
         ).also {
-            if (myBet > 0) {
-                enemy.retractBet()
+            if (myBet > 0 && enemy is EnemyPvEWithBank) {
+                enemy.bank -= enemy.bet
             }
-            save.capsInHand -= myBet
+            if (isBlitz) {
+                save.silverRushChips -= myBet
+            } else {
+                save.capsInHand -= myBet
+            }
             save.table += reward
 
             save.gamesStarted++
@@ -494,15 +508,25 @@ fun StartGame(
 
             activity.processChallengesGameOver(it)
 
-            playWinSound(activity)
             save.gamesFinished++
             save.wins++
 
-            if (enemy.getBet() != null) {
-                save.capsInHand += reward
+            if (reward == 0) {
+                playWinSoundAlone(activity)
+            } else {
+                playWinSound(activity)
+            }
+
+            if (enemy is EnemyPvEWithBank) {
+                if (isBlitz) {
+                    save.silverRushChips += reward
+                } else {
+                    save.capsInHand += reward
+                }
                 save.table -= reward
 
                 save.capsWon += reward
+                save.maxBetWon = max(save.maxBetWon, reward)
                 showAlertDialog(
                     activity.getString(R.string.result),
                     activity.getString(R.string.you_win) +
@@ -510,20 +534,25 @@ fun StartGame(
                             ""
                         else
                             activity.getString(
-                                R.string.your_reward_reward_caps,
+                                if (isBlitz) {
+                                    R.string.your_reward_reward_chips
+                                } else {
+                                    R.string.your_reward_reward_caps
+                                },
                                 reward.toString()
                             ),
                     onQuitPressed
                 )
             } else {
-                when (enemy) {
-                    is EnemyHanlon -> CardBack.NCR
-                    is EnemyVulpes -> CardBack.LEGION
-                    is EnemyMadnessCardinal -> CardBack.MADNESS
-                    is EnemyViqueen -> CardBack.VIKING
-                    else -> null
-                }?.let {
-                    val rewardCard = winCard(activity, it, false)
+                val (back, number) = when (enemy) {
+                    is EnemyHanlon -> CardBack.FNV_FACTION to 0
+                    is EnemyVulpes -> CardBack.FNV_FACTION to 1
+                    is EnemyMadnessCardinal -> CardBack.MADNESS to 0
+                    is EnemyViqueen -> CardBack.VIKING to 0
+                    else -> null to null
+                }
+                if (back != null && number != null) {
+                    val rewardCard = winCard(activity, back, number, isBlitz)
 
                     showAlertDialog(
                         activity.getString(R.string.result),
@@ -533,14 +562,15 @@ fun StartGame(
                 }
             }
 
-            enemy.onVictory(isBlitz)
             saveData(activity)
         }
         it.onLose = {
             playLoseSound(activity)
 
             save.table -= reward
-            enemy.addReward(reward)
+            if (enemy is EnemyPvEWithBank) {
+                enemy.bank += reward
+            }
 
             save.gamesFinished++
             saveData(activity)
@@ -573,20 +603,20 @@ fun StartGame(
 @Composable
 fun ShowBettingScreen(
     activity: MainActivity,
-    enemy: EnemyPve,
+    enemy: EnemyPvEWithBank,
     setBet: (Int) -> Unit,
     setIsBlitz: (Boolean) -> Unit,
     setReward: (Int) -> Unit,
     goBack: () -> Unit,
     goForward: () -> Unit
 ) {
-    val enemyName = stringResource(enemy.getNameId())
+    val enemyName = stringResource(enemy.nameId)
     var bet by rememberScoped { mutableStateOf("") }
-    val enemyBet by rememberScoped { mutableIntStateOf(enemy.getBet() ?: 0) }
+    val enemyBet by rememberScoped { mutableIntStateOf(enemy.bet) }
     var isBlitz: Boolean by rememberScoped { mutableStateOf(false) }
 
     fun countRewardLocal(): Int {
-        return bet.toIntOrNull()?.let { countReward(it, enemyBet, isBlitz) } ?: 0
+        return bet.toIntOrNull()?.let { countReward(it, enemyBet) } ?: 0
     }
 
     val state = rememberLazyListState()
@@ -651,7 +681,11 @@ fun ShowBettingScreen(
                                     text = stringResource(
                                         R.string.enter_your_bet,
                                         enemyBet,
-                                        save.capsInHand
+                                        if (isBlitz) {
+                                            save.silverRushChips
+                                        } else {
+                                            save.capsInHand
+                                        }
                                     ),
                                     getTextColor(activity),
                                     getTextStrokeColor(activity),
@@ -675,28 +709,41 @@ fun ShowBettingScreen(
                                 18.sp,
                                 Modifier.padding(8.dp),
                             )
-                            CheckboxCustom(activity, { isBlitz }, { isBlitz = it }) { true }
+                            CheckboxCustom(activity, { isBlitz }, { isBlitz = it; bet = "" }) { true }
 
                         }
 
                         TextFallout(
-                            stringResource(R.string.your_expected_reward, countRewardLocal()),
+                            stringResource(
+                                if (isBlitz)
+                                    R.string.your_expected_reward_chips
+                                else
+                                    R.string.your_expected_reward,
+                                countRewardLocal()
+                            ),
                             getTextColor(activity),
                             getTextStrokeColor(activity),
                             18.sp,
                             Modifier.fillMaxWidth().padding(8.dp),
                         )
 
-                        val modifier = if (bet == "" || bet.toIntOrNull().let { it != null && it >= enemyBet && it <= save.capsInHand }) {
+                        val modifier = if (bet == "" || bet.toIntOrNull().let {
+                            it != null && it >= enemyBet &&
+                                    it <= if (isBlitz) save.silverRushChips else save.capsInHand
+                            }) {
                             Modifier
                                 .clickableOk(activity) {
                                     setIsBlitz(isBlitz)
                                     setBet(bet.toIntOrNull() ?: 0)
                                     setReward(countRewardLocal())
 
-                                    save.capsInHand -= (bet.toIntOrNull() ?: 0)
-                                    saveData(activity)
+                                    if (isBlitz) {
+                                        save.silverRushChips -= (bet.toIntOrNull() ?: 0)
+                                    } else {
+                                        save.capsInHand -= (bet.toIntOrNull() ?: 0)
+                                    }
 
+                                    saveData(activity)
                                     goForward()
                                 }
                                 .background(getTextBackgroundColor(activity))
@@ -721,46 +768,45 @@ fun ShowBettingScreen(
 }
 
 
-fun countReward(playerBet: Int, enemyBet: Int, isBlitz: Boolean): Int {
+fun countReward(playerBet: Int, enemyBet: Int): Int {
     return if (playerBet == 0) {
         0
-    } else if (!isBlitz) {
-        playerBet + enemyBet
     } else {
-        // Gain is O(log^2(k))
-        // TODO: think of interesting bet
-        val k = (playerBet + enemyBet).toDouble()
-        k.pow(k.pow(1.0 / k)).toInt()
+        playerBet + enemyBet
     }
 }
 
-fun winCard(activity: MainActivity, back: CardBack, isAlt: Boolean): String {
+fun winCard(activity: MainActivity, back: CardBack, number: Int, isBlitz: Boolean): String {
     fun isCardNew(card: CardWithPrice): Boolean {
         return !save.isCardAvailableAlready(card)
     }
 
     val isNew = if (back == CardBack.STANDARD) true else ((0..3).random() > 0)
-    val deck = CustomDeck(back, isAlt)
-    deck.shuffle()
+    val deck = CollectibleDeck(back, number)
     val card = if (isNew) {
-        deck.toList().firstOrNull(::isCardNew)
+        deck.toList().filter(::isCardNew).randomOrNull()
     } else {
         null
     }
 
     val message = if (card != null) {
         save.addCard(card)
-        val suit = if (card.rank == Rank.JOKER) {
-            (card.suit.ordinal + 1).toString()
-        } else {
-            activity.getString(card.suit.nameId)
+        val rankSuit = when (card) {
+            is CardFaceSuited -> activity.getString(card.rank.nameId) to activity.getString(card.suit.nameId)
+            is CardJoker -> activity.getString(card.rank.nameId) to card.number.n.toString()
+            is CardNumber -> activity.getString(card.rank.nameId) to activity.getString(card.suit.nameId)
         }
-        val isAlt = if (isAlt) " (ALT!)" else ""
-        "${activity.getString(card.rank.nameId)} $suit, ${activity.getString(back.deckName!!)}$isAlt"
+        val backName = card.getBack().nameIdWithBackFileName[card.getBackNumber()].first
+        "${rankSuit.first} ${rankSuit.second} ${activity.getString(backName)}"
     } else {
-        val prize = if (isAlt) 50 else 15
-        save.capsInHand += prize
-        activity.getString(R.string.prize_caps, prize.toString())
+        val prize = (back.getRarityMult(number) * 10.0).toInt()
+        if (isBlitz) {
+            save.silverRushChips += prize
+            activity.getString(R.string.prize_chips, prize.toString())
+        } else {
+            save.capsInHand += prize
+            activity.getString(R.string.prize_caps, prize.toString())
+        }
     }
     saveData(activity)
 

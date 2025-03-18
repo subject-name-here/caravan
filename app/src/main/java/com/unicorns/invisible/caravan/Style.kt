@@ -71,6 +71,32 @@ import com.unicorns.invisible.caravan.Style.PIP_GIRL
 import com.unicorns.invisible.caravan.Style.SIERRA_MADRE
 import com.unicorns.invisible.caravan.Style.VAULT_21
 import com.unicorns.invisible.caravan.Style.VAULT_22
+import com.unicorns.invisible.caravan.model.enemy.EnemyBenny
+import com.unicorns.invisible.caravan.model.enemy.EnemyCaesar
+import com.unicorns.invisible.caravan.model.enemy.EnemyCrooker
+import com.unicorns.invisible.caravan.model.enemy.EnemyDrMobius
+import com.unicorns.invisible.caravan.model.enemy.EnemyEasyPete
+import com.unicorns.invisible.caravan.model.enemy.EnemyElijah
+import com.unicorns.invisible.caravan.model.enemy.EnemyFisto
+import com.unicorns.invisible.caravan.model.enemy.EnemyGloria
+import com.unicorns.invisible.caravan.model.enemy.EnemyHanlon
+import com.unicorns.invisible.caravan.model.enemy.EnemyLuc10
+import com.unicorns.invisible.caravan.model.enemy.EnemyMadnessCardinal
+import com.unicorns.invisible.caravan.model.enemy.EnemyNash
+import com.unicorns.invisible.caravan.model.enemy.EnemyNoBark
+import com.unicorns.invisible.caravan.model.enemy.EnemyOliver
+import com.unicorns.invisible.caravan.model.enemy.EnemyPvENoBank
+import com.unicorns.invisible.caravan.model.enemy.EnemyPvEWithBank
+import com.unicorns.invisible.caravan.model.enemy.EnemyRingo
+import com.unicorns.invisible.caravan.model.enemy.EnemySalt
+import com.unicorns.invisible.caravan.model.enemy.EnemySnuffles
+import com.unicorns.invisible.caravan.model.enemy.EnemyTabitha
+import com.unicorns.invisible.caravan.model.enemy.EnemyTheManInTheMirror
+import com.unicorns.invisible.caravan.model.enemy.EnemyUlysses
+import com.unicorns.invisible.caravan.model.enemy.EnemyVeronica
+import com.unicorns.invisible.caravan.model.enemy.EnemyVictor
+import com.unicorns.invisible.caravan.model.enemy.EnemyViqueen
+import com.unicorns.invisible.caravan.model.enemy.EnemyVulpes
 import com.unicorns.invisible.caravan.save.saveData
 import com.unicorns.invisible.caravan.utils.TextFallout
 import com.unicorns.invisible.caravan.utils.dpToPx
@@ -89,21 +115,55 @@ import kotlin.math.min
 import kotlin.random.Random
 
 
-enum class Style(val styleNameId: Int, val conditionToOpenId: Int = R.string.null_condition) {
-    DESERT(R.string.style_desert),
-    ALASKA_FRONTIER(R.string.style_alaska),
-    PIP_BOY(R.string.style_pip_boy),
-    PIP_GIRL(R.string.style_pip_girl),
-    OLD_WORLD(R.string.style_old_world),
-    NEW_WORLD(R.string.style_new_world),
-    SIERRA_MADRE(R.string.style_sierra_madre),
-    MADRE_ROJA(R.string.style_madre_roja),
-    VAULT_21(R.string.style_vault_21),
-    VAULT_22(R.string.style_vault_22),
-    BLACK(R.string.style_black),
-    ENCLAVE(R.string.style_enclave),
-    NCR(R.string.style_ncr),
-    LEGION(R.string.style_legion);
+enum class Style(
+    val styleNameId: Int,
+    val conditionToOpenId: Int,
+    val checkCondition: () -> Boolean
+) {
+    DESERT(R.string.style_desert, R.string.style_desert_condition, {
+        save.maxStrike >= 5
+    }),
+    ALASKA_FRONTIER(R.string.style_alaska, R.string.style_alaska_condition, {
+        save.maxStrike >= 10
+    }),
+    PIP_BOY(R.string.style_pip_boy, R.string.null_condition, { true }),
+    PIP_GIRL(R.string.style_pip_girl, R.string.style_pip_girl_condition, {
+        save.maxBetWon >= 969
+    }),
+    OLD_WORLD(R.string.style_old_world, R.string.style_old_world_condition, {
+        save.capsWasted + save.chipsWasted >= 1000
+    }),
+    NEW_WORLD(R.string.style_new_world, R.string.style_new_world_condition, {
+        save.capsWasted + save.chipsWasted >= 10000
+    }),
+    SIERRA_MADRE(R.string.style_sierra_madre, R.string.style_sierra_madre_condition, {
+        save.challengesCompleted >= 100
+    }),
+    MADRE_ROJA(R.string.style_madre_roja, R.string.style_madre_roja_condition, {
+        save.challengesCompleted >= 1000
+    }),
+    VAULT_21(R.string.style_vault_21, R.string.style_vault_21_condition, {
+        save.winsWithBet >= 500
+    }),
+    VAULT_22(R.string.style_vault_22, R.string.style_vault_22_condition, {
+        save.winsWithBet >= 50
+    }),
+    BLACK(R.string.style_black, R.string.style_black_condition, {
+        save.pvpWins >= 10
+    }),
+    ENCLAVE(R.string.style_enclave, R.string.style_enclave_condition, { save.towerBeaten }),
+    NCR(R.string.style_ncr, R.string.style_ncr_condition, {
+        save.enemiesGroups2.flatten().all { (when (it) {
+            is EnemyPvENoBank -> it.winsBlitz
+            is EnemyPvEWithBank -> it.winsBlitzBet
+        }) > 0 }
+    }),
+    LEGION(R.string.style_legion, R.string.style_legion_condition, {
+        save.enemiesGroups2.flatten().all { (when (it) {
+            is EnemyPvENoBank -> it.winsBlitz + it.wins
+            is EnemyPvEWithBank -> it.winsBlitzBet + it.winsBet
+        }) > 0 }
+    });
 }
 
 

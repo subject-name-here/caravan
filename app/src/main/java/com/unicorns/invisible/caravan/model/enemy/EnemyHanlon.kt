@@ -9,17 +9,16 @@ import kotlinx.serialization.Serializable
 
 
 @Serializable
-class EnemyHanlon : EnemyPve {
-    override fun getNameId() = R.string.pve_enemy_chief_hanlon
-    override fun isEven() = true
+class EnemyHanlon : EnemyPvENoBank() {
+    override val nameId
+        get() = R.string.pve_enemy_chief_hanlon
+    override val isEven
+        get() = true
+
+    override var wins: Int = 0
+    override var winsBlitz: Int = 0
 
     override fun createDeck() = CResources(CardBack.FNV_FACTION, 0)
-
-    override fun getBank() = 0
-    override fun refreshBank() {}
-    override fun getBet() = null
-    override fun retractBet() {}
-    override fun addReward(reward: Int) {}
 
     override suspend fun makeMove(game: Game, speed: AnimationSpeed) {}
 }

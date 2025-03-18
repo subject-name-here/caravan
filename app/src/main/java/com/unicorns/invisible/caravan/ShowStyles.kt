@@ -25,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.unicorns.invisible.caravan.save.saveData
 import com.unicorns.invisible.caravan.utils.MenuItemOpen
 import com.unicorns.invisible.caravan.utils.TextFallout
 import com.unicorns.invisible.caravan.utils.clickableOk
@@ -40,6 +41,7 @@ import com.unicorns.invisible.caravan.utils.getTextColor
 import com.unicorns.invisible.caravan.utils.getTextColorByStyle
 import com.unicorns.invisible.caravan.utils.getTextStrokeColor
 import com.unicorns.invisible.caravan.utils.getTrackColorByStyle
+import com.unicorns.invisible.caravan.utils.playPimpBoySound
 import com.unicorns.invisible.caravan.utils.scrollbar
 
 
@@ -144,13 +146,32 @@ fun ShowStyles(
                                                 .padding(4.dp),
                                         )
                                     } else {
-                                        TextFallout(
-                                            stringResource(watchedStyle.conditionToOpenId),
-                                            getTextColorByStyle(activity, watchedStyle),
-                                            getStrokeColorByStyle(activity, watchedStyle),
-                                            20.sp,
-                                            Modifier.padding(4.dp),
-                                        )
+                                        if (watchedStyle.checkCondition()) {
+                                            TextFallout(
+                                                stringResource(R.string.tap_to_open),
+                                                getTextColorByStyle(activity, watchedStyle),
+                                                getStrokeColorByStyle(activity, watchedStyle),
+                                                20.sp,
+                                                Modifier
+                                                    .background(getTextBackByStyle(activity, watchedStyle))
+                                                    .clickableOk(activity) {
+                                                        save.ownedStyles.add(watchedStyle)
+                                                        saveData(activity)
+                                                        playPimpBoySound(activity)
+                                                        styleInt = watchedStyle.ordinal
+                                                        selectStyle(watchedStyle.ordinal)
+                                                    }
+                                                    .padding(4.dp),
+                                            )
+                                        } else {
+                                            TextFallout(
+                                                stringResource(watchedStyle.conditionToOpenId),
+                                                getTextColorByStyle(activity, watchedStyle),
+                                                getStrokeColorByStyle(activity, watchedStyle),
+                                                20.sp,
+                                                Modifier.padding(4.dp),
+                                            )
+                                        }
                                     }
                                 }
                             }

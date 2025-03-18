@@ -6,39 +6,48 @@ import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.Card
+import com.unicorns.invisible.caravan.model.primitives.CardFaceSuited
+import com.unicorns.invisible.caravan.model.primitives.CardJoker
+import com.unicorns.invisible.caravan.model.primitives.CardNumber
 import com.unicorns.invisible.caravan.model.primitives.CustomDeck
-import com.unicorns.invisible.caravan.model.primitives.Rank
+import com.unicorns.invisible.caravan.model.primitives.RankFace
+import com.unicorns.invisible.caravan.model.primitives.RankNumber
 import com.unicorns.invisible.caravan.model.primitives.Suit
 import kotlinx.serialization.Serializable
-import kotlin.math.min
 
 
 @Serializable
-class EnemyElijah : EnemyPve {
-    override fun getNameId() = R.string.elijah
-    override fun isEven() = false
+class EnemyElijah : EnemyPvEWithBank() {
+    override val nameId
+        get() = R.string.elijah
+    override val isEven
+        get() = false
 
     override fun createDeck(): CResources = CResources(CustomDeck().apply {
         listOf(CardBack.STANDARD, CardBack.VAULT_21, CardBack.SIERRA_MADRE).forEach { back ->
-            listOf(true, false).forEach { isAlt ->
+            listOf(0, 1).forEach { isAlt ->
                 Suit.entries.forEach { suit ->
-                    add(Card(Rank.SIX, suit, back, isAlt))
-                    add(Card(Rank.TEN, suit, back, isAlt))
-                    add(Card(Rank.KING, suit, back, isAlt))
-                    add(Card(Rank.JACK, suit, back, isAlt))
+                    add(CardNumber(RankNumber.SIX, suit, back, 0))
+                    add(CardNumber(RankNumber.TEN, suit, back, 0))
+                    add(CardFaceSuited(RankFace.KING, suit, back, 0))
+                    add(CardFaceSuited(RankFace.JACK, suit, back, 0))
                 }
-                add(Card(Rank.JOKER, Suit.HEARTS, back, isAlt))
-                add(Card(Rank.JOKER, Suit.CLUBS, back, isAlt))
+                add(CardJoker(CardJoker.Number.ONE, back, 0))
+                add(CardJoker(CardJoker.Number.TWO, back, 0))
             }
         }
     })
 
-    private var bank = 0
-    override fun getBank(): Int { return bank }
-    override fun refreshBank() { bank = 60 }
-    override fun getBet(): Int { return min(bank, 20) }
-    override fun retractBet() { bank -= getBet() }
-    override fun addReward(reward: Int) { bank += reward }
+    override var bank: Int = 0
+    override val maxBank: Int
+        get() = 60
+    override val bet: Int
+        get() = 10
+
+    override var winsNoBet: Int = 0
+    override var winsBet: Int = 0
+    override var winsBlitzNoBet: Int = 0
+    override var winsBlitzBet: Int = 0
 
     override suspend fun makeMove(game: Game, speed: AnimationSpeed) {}
 }

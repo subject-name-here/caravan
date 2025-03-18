@@ -16,7 +16,7 @@ android {
         minSdk = 23
         targetSdk = 35
         versionCode = 108
-        versionName = "3.0.-2"
+        versionName = "3.0.A"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -50,7 +50,7 @@ dependencies {
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
 
-    val composeBom = platform("androidx.compose:compose-bom:2025.01.00")
+    val composeBom = platform("androidx.compose:compose-bom:2025.02.00")
     implementation(composeBom)
     androidTestImplementation(composeBom)
 

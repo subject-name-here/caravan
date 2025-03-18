@@ -37,6 +37,7 @@ class CollectibleDeck() {
     }
     fun toList() = cards.toList()
     fun add(c: CardWithPrice) = cards.add(c)
+    fun remove(c: CardWithPrice) = cards.remove(c)
     operator fun contains(c: CardWithPrice): Boolean {
         return c in cards
     }

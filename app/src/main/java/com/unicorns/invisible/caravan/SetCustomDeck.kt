@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -36,11 +37,21 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.sebaslogen.resaca.rememberScoped
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.Card
+import com.unicorns.invisible.caravan.model.primitives.CardAtomic
+import com.unicorns.invisible.caravan.model.primitives.CardFBomb
+import com.unicorns.invisible.caravan.model.primitives.CardFaceSuited
+import com.unicorns.invisible.caravan.model.primitives.CardJoker
+import com.unicorns.invisible.caravan.model.primitives.CardNumber
+import com.unicorns.invisible.caravan.model.primitives.CardNumberWW
+import com.unicorns.invisible.caravan.model.primitives.CardWildWasteland
+import com.unicorns.invisible.caravan.model.primitives.CardWithPrice
+import com.unicorns.invisible.caravan.model.primitives.CollectibleDeck
 import com.unicorns.invisible.caravan.model.primitives.CustomDeck
-import com.unicorns.invisible.caravan.model.primitives.Rank
+import com.unicorns.invisible.caravan.model.primitives.RankNumber
 import com.unicorns.invisible.caravan.model.primitives.Suit
 import com.unicorns.invisible.caravan.save.saveData
 import com.unicorns.invisible.caravan.utils.CheckboxCustom
@@ -61,6 +72,7 @@ import com.unicorns.invisible.caravan.utils.playClickSound
 import com.unicorns.invisible.caravan.utils.playCloseSound
 import com.unicorns.invisible.caravan.utils.playSelectSound
 import com.unicorns.invisible.caravan.utils.scrollbar
+import kotlin.collections.count
 
 
 @Composable
@@ -68,13 +80,13 @@ fun SetCustomDeck(
     activity: MainActivity,
     goBack: () -> Unit,
 ) {
-    fun isInCustomDeck(card: Card) = card in save.getCurrentCustomDeck()
-    fun isAvailable(card: Card) = save.isCardAvailableAlready(card)
+    fun isInCustomDeck(card: CardWithPrice) = card in save.getCurrentCustomDeck()
+    fun isAvailable(card: CardWithPrice) = save.isCardAvailableAlready(card)
 
-    fun toggleToCustomDeck(card: Card) {
+    fun toggleToCustomDeck(card: CardWithPrice) {
         save.getCurrentCustomDeck().let { deck ->
             if (card in deck) {
-                deck.removeAll(listOf(card))
+                deck.remove(card)
             } else {
                 deck.add(card)
             }
@@ -88,9 +100,9 @@ fun SetCustomDeck(
     var updateAll by remember { mutableStateOf(false) }
 
     fun getSelectedDeckIndex() = selectedDeck - 1
-    fun selectDeck(d: Int) {
-        selectedDeck = d
-        save.activeCustomDeck = d
+    fun selectDeck(deck: Int) {
+        selectedDeck = deck
+        save.activeCustomDeck = deck
         updateCharacteristics = !updateCharacteristics
         updateAll = !updateAll
         saveData(activity)
@@ -123,7 +135,13 @@ fun SetCustomDeck(
                         unselectedContentColor = getTextBackgroundColor(activity)
                     ) {
                         TextFallout(
-                            d.toString(),
+                            stringResource(when (d) {
+                                1 -> R.string.custom_deck_1
+                                2 -> R.string.custom_deck_2
+                                3 -> R.string.custom_deck_3
+                                4 -> R.string.custom_deck_4
+                                else -> R.string.empty_string
+                            }),
                             getTextColor(activity),
                             getTextStrokeColor(activity),
                             16.sp,
@@ -157,25 +175,63 @@ fun SetCustomDeck(
                 mainState
             ) {
                 items(CardBack.entries) { back ->
-                    if (back.deckName == null) return@items
+                    val backToNumber = save.getBackNumbersChosenMap()
                     var updateInfo by remember { mutableStateOf(false) }
                     var updateCards by remember { mutableStateOf(false) }
+                    var backNumber by rememberScoped { mutableIntStateOf(backToNumber[back] ?: 0) }
                     key (updateAll, updateInfo) {
-                        var check by remember { mutableStateOf(save.getAltDecksChosenMap()[back] == true) }
+                        @Composable
+                        fun ChangeBackNumber(text: String, operation: (Int) -> Int) {
+                            TextFallout(
+                                text,
+                                getTextColor(activity),
+                                getTextStrokeColor(activity),
+                                24.sp,
+                                Modifier
+                                    .fillMaxSize()
+                                    .background(getTextBackgroundColor(activity))
+                                    .clickableSelect(activity) {
+                                        backNumber = operation(backNumber)
+                                        val last = back.nameIdWithBackFileName.lastIndex
+                                        if (backNumber < 0) {
+                                            backNumber = last
+                                        } else if (backNumber > last) {
+                                            backNumber = 0
+                                        }
+
+                                        save.getBackNumbersChosenMap()[back] = backNumber
+                                        saveData(activity)
+                                        playClickSound(activity)
+                                        updateCharacteristics = !updateCharacteristics
+                                        updateInfo = !updateInfo
+                                        updateCards = !updateCards
+                                    }
+                                    .padding(4.dp),
+                            )
+                        }
+
                         Row(
                             Modifier
                                 .fillMaxWidth()
                                 .padding(4.dp),
-                            horizontalArrangement = Arrangement.Start,
+                            horizontalArrangement = Arrangement.Center,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Column(
+                                Modifier.fillMaxHeight().weight(0.1f),
+                                verticalArrangement = Arrangement.Center,
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                ChangeBackNumber("<", Int::dec)
+                            }
+
+                            Column(
                                 Modifier
                                     .padding(horizontal = 8.dp)
-                                    .fillMaxWidth(0.33f)
+                                    .weight(0.33f)
                             ) {
                                 TextFallout(
-                                    stringResource(back.deckName),
+                                    stringResource(back.nameIdWithBackFileName[backNumber].first),
                                     getTextColor(activity),
                                     getTextStrokeColor(activity),
                                     14.sp,
@@ -184,17 +240,17 @@ fun SetCustomDeck(
                                 )
                                 ShowCardBack(
                                     activity,
-                                    Card(Rank.ACE, Suit.CLUBS, back, check),
+                                    CardNumber(RankNumber.ACE, Suit.CLUBS, back, backNumber),
                                     Modifier.align(Alignment.CenterHorizontally),
                                 )
                             }
                             Column(
                                 Modifier
                                     .padding(horizontal = 8.dp)
-                                    .fillMaxWidth(0.5f)
+                                    .weight(0.33f)
                             ) {
                                 @Composable
-                                fun Button(text: String, action: (Card) -> Unit) {
+                                fun Button(text: String, action: (CardWithPrice) -> Unit) {
                                     TextFallout(
                                         text,
                                         getTextColor(activity),
@@ -204,7 +260,7 @@ fun SetCustomDeck(
                                             .fillMaxWidth()
                                             .background(getTextBackgroundColor(activity))
                                             .clickableSelect(activity) {
-                                                CustomDeck(back, check).toList()
+                                                save.getCurrentCustomDeck().toList()
                                                     .filter { isAvailable(it) }
                                                     .forEach(action)
                                                 updateCharacteristics = !updateCharacteristics
@@ -223,38 +279,13 @@ fun SetCustomDeck(
                                     if (isInCustomDeck(it)) { toggleToCustomDeck(it) }
                                 }
                             }
+
                             Column(
-                                Modifier
-                                    .fillMaxSize()
-                                    .padding(8.dp),
+                                Modifier.fillMaxHeight().weight(0.1f),
                                 verticalArrangement = Arrangement.Center,
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
-                                if (back.hasAlt()) {
-                                    TextFallout(
-                                        text = "ALT!",
-                                        getTextColor(activity),
-                                        getTextStrokeColor(activity),
-                                        12.sp,
-                                        Modifier.wrapContentHeight(),
-                                    )
-                                    CheckboxCustom(
-                                        activity, { check },
-                                        {
-                                            check = !check
-                                            save.getAltDecksChosenMap()[back] = check
-                                            saveData(activity)
-                                            if (check) {
-                                                playClickSound(activity)
-                                            } else {
-                                                playCloseSound(activity)
-                                            }
-                                            updateCharacteristics = !updateCharacteristics
-                                            updateInfo = !updateInfo
-                                            updateCards = !updateCards
-                                        }
-                                    ) { back in save.ownedDecksAlt }
-                                }
+                                ChangeBackNumber(">", Int::inc)
                             }
                         }
                     }
@@ -273,17 +304,48 @@ fun SetCustomDeck(
                                 .padding(bottom = 4.dp),
                             state = state
                         ) lambda@{
-                            val isAlt = save.getAltDecksChosenMap()[back] == true
-                            items(CustomDeck(back, isAlt).toList().sortedWith { o1, o2 ->
-                                if (o1.rank != o2.rank) {
-                                    o2.rank.value - o1.rank.value
-                                } else {
-                                    o1.suit.ordinal - o2.suit.ordinal
+                            items(CollectibleDeck(back, backNumber).toList().sortedWith { o1, o2 ->
+                                -when (o1) {
+                                    is CardJoker -> {
+                                        if (o2 is CardJoker) {
+                                            o1.number.ordinal - o2.number.ordinal
+                                        } else {
+                                            1
+                                        }
+                                    }
+                                    is CardFaceSuited -> {
+                                        when (o2) {
+                                            is CardJoker -> {
+                                                -1
+                                            }
+                                            is CardFaceSuited -> {
+                                                if (o1.rank != o2.rank) {
+                                                    o2.rank.value - o1.rank.value
+                                                } else {
+                                                    o1.suit.ordinal - o2.suit.ordinal
+                                                }
+                                            }
+                                            is CardNumber -> {
+                                                1
+                                            }
+                                        }
+                                    }
+                                    is CardNumber -> {
+                                        if (o2 !is CardNumber) {
+                                            -1
+                                        } else {
+                                            if (o1.rank != o2.rank) {
+                                                o2.rank.value - o1.rank.value
+                                            } else {
+                                                o1.suit.ordinal - o2.suit.ordinal
+                                            }
+                                        }
+                                    }
                                 }
                             }) { card ->
                                 var isSelected by remember { mutableStateOf(isInCustomDeck(card)) }
                                 if (isAvailable(card)) {
-                                    ShowCard(activity, card, Modifier
+                                    ShowCard(activity, card as Card, Modifier
                                         .clickable {
                                             toggleToCustomDeck(card)
                                             isSelected = !isSelected
@@ -302,7 +364,7 @@ fun SetCustomDeck(
                                         .padding(4.dp)
                                         .alpha(if (isSelected) 1f else 0.55f))
                                 } else {
-                                    ShowCardBack(activity, card, Modifier
+                                    ShowCardBack(activity, card as Card, Modifier
                                         .padding(4.dp)
                                         .alpha(0.33f))
                                 }
@@ -322,7 +384,7 @@ fun ShowCharacteristics(activity: MainActivity) {
             .fillMaxWidth()
             .wrapContentHeight()
     ) {
-        val deck = save.getCustomDeckCopy()
+        val deck = save.getCurrentCustomDeck()
         Row(
             Modifier.padding(vertical = 8.dp),
             verticalAlignment = Alignment.CenterVertically
@@ -337,7 +399,7 @@ fun ShowCharacteristics(activity: MainActivity) {
                 14.sp,
                 Modifier.fillMaxWidth(0.5f),
             )
-            val nonFaces = deck.count { !it.rank.isFace() }
+            val nonFaces = deck.toList().count { it is CardNumber }
             val nonFacesMin = CResources.MIN_NUM_OF_NUMBERS
             val color3 = if (nonFaces < nonFacesMin) Color.Red else getTextColor(activity)
             val color4 = if (nonFaces < nonFacesMin) Color.Red else getTextStrokeColor(activity)
@@ -356,7 +418,7 @@ fun ShowCharacteristics(activity: MainActivity) {
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center
         ) {
-            val decksUsed = deck.toList().distinctBy { it.back }.size
+            val decksUsed = deck.toList().distinctBy { it.getBack() }.size
             val decksUsedMax = CResources.MAX_NUMBER_OF_DECKS
             val color1 = if (decksUsed > decksUsedMax) Color.Red else getTextColor(activity)
             val color2 = if (decksUsed > decksUsedMax) Color.Red else getTextStrokeColor(activity)
