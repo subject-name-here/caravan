@@ -41,6 +41,7 @@ import com.unicorns.invisible.caravan.cheats.CheatLaggySpeed
 import com.unicorns.invisible.caravan.cheats.CheatLevel10
 import com.unicorns.invisible.caravan.cheats.CheatPapaSmurf
 import com.unicorns.invisible.caravan.cheats.CheatRadioPseudonyms
+import com.unicorns.invisible.caravan.cheats.CheatUltimate
 import com.unicorns.invisible.caravan.cheats.stash.CheatStash1234
 import com.unicorns.invisible.caravan.cheats.stash.CheatStash1969
 import com.unicorns.invisible.caravan.cheats.stash.CheatStashEventfulYear
@@ -164,6 +165,7 @@ fun ShowTrueSettings(
                             CheatLaggySpeed,
                             CheatFightJoshua,
                             Cheat666,
+                            CheatUltimate,
                         )
                         TextFallout(
                             text = stringResource(R.string.cheats),

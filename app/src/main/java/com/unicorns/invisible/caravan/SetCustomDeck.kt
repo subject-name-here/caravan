@@ -41,20 +41,14 @@ import com.sebaslogen.resaca.rememberScoped
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.Card
-import com.unicorns.invisible.caravan.model.primitives.CardAtomic
-import com.unicorns.invisible.caravan.model.primitives.CardFBomb
 import com.unicorns.invisible.caravan.model.primitives.CardFaceSuited
 import com.unicorns.invisible.caravan.model.primitives.CardJoker
 import com.unicorns.invisible.caravan.model.primitives.CardNumber
-import com.unicorns.invisible.caravan.model.primitives.CardNumberWW
-import com.unicorns.invisible.caravan.model.primitives.CardWildWasteland
 import com.unicorns.invisible.caravan.model.primitives.CardWithPrice
 import com.unicorns.invisible.caravan.model.primitives.CollectibleDeck
-import com.unicorns.invisible.caravan.model.primitives.CustomDeck
 import com.unicorns.invisible.caravan.model.primitives.RankNumber
 import com.unicorns.invisible.caravan.model.primitives.Suit
 import com.unicorns.invisible.caravan.save.saveData
-import com.unicorns.invisible.caravan.utils.CheckboxCustom
 import com.unicorns.invisible.caravan.utils.MenuItemOpen
 import com.unicorns.invisible.caravan.utils.ShowCard
 import com.unicorns.invisible.caravan.utils.ShowCardBack
@@ -210,6 +204,8 @@ fun SetCustomDeck(
                             )
                         }
 
+                        val numbers = back.nameIdWithBackFileName.size
+
                         Row(
                             Modifier
                                 .fillMaxWidth()
@@ -222,7 +218,9 @@ fun SetCustomDeck(
                                 verticalArrangement = Arrangement.Center,
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
-                                ChangeBackNumber("<", Int::dec)
+                                if (numbers > 0) {
+                                    ChangeBackNumber("<", Int::dec)
+                                }
                             }
 
                             Column(
@@ -230,8 +228,9 @@ fun SetCustomDeck(
                                     .padding(horizontal = 8.dp)
                                     .weight(0.33f)
                             ) {
+                                val name = stringResource(back.nameIdWithBackFileName[backNumber].first)
                                 TextFallout(
-                                    stringResource(back.nameIdWithBackFileName[backNumber].first),
+                                    name.replace(" (", "\n("),
                                     getTextColor(activity),
                                     getTextStrokeColor(activity),
                                     14.sp,
@@ -260,7 +259,7 @@ fun SetCustomDeck(
                                             .fillMaxWidth()
                                             .background(getTextBackgroundColor(activity))
                                             .clickableSelect(activity) {
-                                                save.getCurrentCustomDeck().toList()
+                                                CollectibleDeck(back, backNumber).toList()
                                                     .filter { isAvailable(it) }
                                                     .forEach(action)
                                                 updateCharacteristics = !updateCharacteristics
@@ -285,7 +284,9 @@ fun SetCustomDeck(
                                 verticalArrangement = Arrangement.Center,
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
-                                ChangeBackNumber(">", Int::inc)
+                                if (numbers > 0) {
+                                    ChangeBackNumber(">", Int::inc)
+                                }
                             }
                         }
                     }
@@ -305,18 +306,22 @@ fun SetCustomDeck(
                             state = state
                         ) lambda@{
                             items(CollectibleDeck(back, backNumber).toList().sortedWith { o1, o2 ->
-                                -when (o1) {
-                                    is CardJoker -> {
-                                        if (o2 is CardJoker) {
-                                            o1.number.ordinal - o2.number.ordinal
-                                        } else {
+                                when (o1) {
+                                    is CardNumber -> {
+                                        if (o2 !is CardNumber) {
                                             1
+                                        } else {
+                                            if (o1.rank != o2.rank) {
+                                                o2.rank.value - o1.rank.value
+                                            } else {
+                                                o1.suit.ordinal - o2.suit.ordinal
+                                            }
                                         }
                                     }
                                     is CardFaceSuited -> {
                                         when (o2) {
                                             is CardJoker -> {
-                                                -1
+                                                1
                                             }
                                             is CardFaceSuited -> {
                                                 if (o1.rank != o2.rank) {
@@ -326,19 +331,15 @@ fun SetCustomDeck(
                                                 }
                                             }
                                             is CardNumber -> {
-                                                1
+                                                -1
                                             }
                                         }
                                     }
-                                    is CardNumber -> {
-                                        if (o2 !is CardNumber) {
-                                            -1
+                                    is CardJoker -> {
+                                        if (o2 is CardJoker) {
+                                            o2.number.ordinal - o1.number.ordinal
                                         } else {
-                                            if (o1.rank != o2.rank) {
-                                                o2.rank.value - o1.rank.value
-                                            } else {
-                                                o1.suit.ordinal - o2.suit.ordinal
-                                            }
+                                            -1
                                         }
                                     }
                                 }
@@ -390,8 +391,8 @@ fun ShowCharacteristics(activity: MainActivity) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             val deckSizeMin = CResources.MIN_DECK_SIZE
-            val color1 = if (deck.size < deckSizeMin) Color.Red else getTextColor(activity)
-            val color2 = if (deck.size < deckSizeMin) Color.Red else getTextStrokeColor(activity)
+            val color1 = if (save.getCurrentDeckCopy().size < deckSizeMin) Color.Red else getTextColor(activity)
+            val color2 = if (save.getCurrentDeckCopy().size < deckSizeMin) Color.Red else getTextStrokeColor(activity)
             TextFallout(
                 text = stringResource(R.string.custom_deck_size, deck.size, deckSizeMin),
                 color1,

@@ -770,13 +770,15 @@ fun RowScope.CaravanOnField(
                     ) {
                         var prevStateHeight by rememberScoped { mutableStateOf(modifier.caravanAnimationMark) }
                         var prevStateWidth by rememberScoped { mutableStateOf(it.card.caravanAnimationMark) }
+                        var needsSnap = prevStateHeight == modifier.caravanAnimationMark &&
+                                prevStateWidth == it.card.caravanAnimationMark
                         val offsetHeightMult by animateFloatAsState(when (modifier.caravanAnimationMark) {
                             Card.AnimationMark.STABLE -> 0f
                             Card.AnimationMark.NEW -> 2f * enemyTurnMult
                             Card.AnimationMark.MOVING_OUT -> 0f
                             Card.AnimationMark.MOVING_OUT_ALT -> 0f
                             Card.AnimationMark.MOVED_OUT -> 0f
-                        }, if (prevStateHeight != Card.AnimationMark.STABLE && prevStateHeight != Card.AnimationMark.NEW) {
+                        }, if (modifier.caravanAnimationMark == Card.AnimationMark.MOVED_OUT || needsSnap) {
                             SnapSpec()
                         } else {
                             tween(animationSpeed.delay.toInt())
@@ -789,14 +791,14 @@ fun RowScope.CaravanOnField(
                             Card.AnimationMark.MOVING_OUT -> 2f
                             Card.AnimationMark.MOVING_OUT_ALT -> 2f
                             Card.AnimationMark.MOVED_OUT -> 2f
-                        }, if (prevStateWidth != Card.AnimationMark.STABLE && prevStateWidth != Card.AnimationMark.NEW) {
+                        }, if (it.card.caravanAnimationMark == Card.AnimationMark.MOVED_OUT || needsSnap) {
                             SnapSpec()
                         } else {
                             tween(animationSpeed.delay.toInt())
                         }
                         ) { _ -> prevStateWidth = it.card.caravanAnimationMark }
 
-                        LaunchedEffect(it.card.caravanAnimationMark) {
+                        LaunchedEffect(it.card.caravanAnimationMark, modifier.caravanAnimationMark) {
                             if (modifier.caravanAnimationMark == Card.AnimationMark.NEW) {
                                 playCardFlipSound(activity)
                                 modifier.caravanAnimationMark = Card.AnimationMark.STABLE
@@ -827,13 +829,14 @@ fun RowScope.CaravanOnField(
                         index: Int
                     ) {
                         var prevState by rememberScoped { mutableStateOf(it.card.caravanAnimationMark) }
+                        val needsSnap = prevState == it.card.caravanAnimationMark
                         val offsetHeightMult by animateFloatAsState(when (it.card.caravanAnimationMark) {
                             Card.AnimationMark.STABLE -> 0f
                             Card.AnimationMark.NEW -> 3f * enemyTurnMult
                             Card.AnimationMark.MOVING_OUT -> 0f
                             Card.AnimationMark.MOVING_OUT_ALT -> 0f
                             Card.AnimationMark.MOVED_OUT -> 0f
-                        }, if (prevState != Card.AnimationMark.STABLE && prevState != Card.AnimationMark.NEW) {
+                        }, if (it.card.caravanAnimationMark == Card.AnimationMark.MOVED_OUT || needsSnap) {
                             SnapSpec()
                         } else {
                             tween(animationSpeed.delay.toInt())
@@ -846,7 +849,7 @@ fun RowScope.CaravanOnField(
                             Card.AnimationMark.MOVING_OUT -> 2f
                             Card.AnimationMark.MOVING_OUT_ALT -> 2f
                             Card.AnimationMark.MOVED_OUT -> 2f
-                        }, if (prevState != Card.AnimationMark.STABLE && prevState != Card.AnimationMark.NEW) {
+                        }, if (it.card.caravanAnimationMark == Card.AnimationMark.MOVED_OUT || needsSnap) {
                             SnapSpec()
                         } else {
                             tween(animationSpeed.delay.toInt())
@@ -1077,10 +1080,7 @@ fun Caravans(
                 repeat(3) {
                     val caravan = getEnemyCaravan(it)
                     val opposingValue = getPlayerCaravan(it).getValue()
-                    key (caravan.recomposeResources) {
-                        recomposeKey++
-                        Score(activity, it, caravan, opposingValue)
-                    }
+                    Score(activity, it, caravan, opposingValue)
                 }
             }
 
@@ -1139,10 +1139,7 @@ fun Caravans(
                 repeat(3) {
                     val caravan = getPlayerCaravan(it)
                     val opposingValue = getEnemyCaravan(it).getValue()
-                    key (caravan.recomposeResources) {
-                        recomposeKey++
-                        Score(activity, it + 3, caravan, opposingValue)
-                    }
+                    Score(activity, it + 3, caravan, opposingValue)
                 }
             }
         }

@@ -1,5 +1,8 @@
 package com.unicorns.invisible.caravan.model
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.setValue
 import com.unicorns.invisible.caravan.AnimationSpeed
 import com.unicorns.invisible.caravan.model.enemy.Enemy
 import com.unicorns.invisible.caravan.model.enemy.EnemyMadnessCardinal
@@ -11,7 +14,10 @@ import com.unicorns.invisible.caravan.model.primitives.CardNuclear
 import com.unicorns.invisible.caravan.model.primitives.CardWithModifier
 import com.unicorns.invisible.caravan.model.primitives.CustomDeck
 import com.unicorns.invisible.caravan.model.primitives.RankNumber
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.util.UUID
 
 
@@ -19,13 +25,23 @@ class Game(
     val playerCResources: CResources,
     val enemy: Enemy
 ) {
+    var recomposeResources by mutableIntStateOf(0)
+
     val playerCaravans = listOf(Caravan(), Caravan(), Caravan())
     val enemyCaravans = listOf(Caravan(), Caravan(), Caravan())
 
     val enemyCResources = enemy.createDeck()
 
     var isPlayerTurn = true
+        set(value) {
+            field = value
+            recomposeResources++
+        }
     var canPlayerMove = false
+        set(value) {
+            field = value
+            recomposeResources++
+        }
 
     var id = UUID.randomUUID().toString()
 
@@ -195,12 +211,14 @@ class Game(
         val isFBomb = bombOwner.modifiersCopy().findLast { it is CardNuclear } is CardFBomb
         (playerCaravans + enemyCaravans).forEach {
             if (bombOwner !in it.cards) {
-                if (isFBomb) {
-                    // TODO: some bonus
-                    it.dropCaravan(speed)
-                } else {
-                    if (it.cards.all { card -> !card.isProtectedByMuggy }) {
+                CoroutineScope(Dispatchers.Unconfined).launch() {
+                    if (isFBomb) {
+                        // TODO: some bonus
                         it.dropCaravan(speed)
+                    } else {
+                        if (it.cards.all { card -> !card.isProtectedByMuggy }) {
+                            it.dropCaravan(speed)
+                        }
                     }
                 }
             }

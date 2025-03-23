@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxColors
@@ -79,45 +80,7 @@ fun getFilter(back: CardBack, backNumber: Int): ColorFilter {
         return ColorFilter.colorMatrix(ColorMatrix())
     }
     return when (back) {
-        STANDARD -> ColorFilter.colorMatrix(
-            when (backNumber) {
-                1 -> {
-                    ColorMatrix(floatArrayOf(
-                        0f, 1f, 0f, 0f, 0f,
-                        1f, 0f, 0f, 0f, 0f,
-                        0f, 0f, 1f, 0f, 0f,
-                        0f, 0f, 0f, 1f, 0f
-                    ))
-                }
-                2 -> {
-                    ColorMatrix(floatArrayOf(
-                        0f, 0f, 1f, 0f, 0f,
-                        0f, 1f, 0f, 0f, 0f,
-                        1f, 0f, 0f, 0f, 0f,
-                        0f, 0f, 0f, 1f, 0f
-                    ))
-                }
-                3 -> {
-                    ColorMatrix(floatArrayOf(
-                        1f, 0f, 0f, 0f, 0f,
-                        0f, 1f, 0f, 0f, 0f,
-                        1f, 0f, 1f, 0f, 0f,
-                        0f, 0f, 0f, 1f, 0f
-                    ))
-                }
-                4 -> {
-                    ColorMatrix(floatArrayOf(
-                        1f, 0f, 0f, 0f, 0f,
-                        1f, 1f, 0f, 0f, 0f,
-                        0f, 0f, 1f, 0f, 0f,
-                        0f, 0f, 0f, 1f, 0f
-                    ))
-                }
-                else -> {
-                    ColorMatrix()
-                }
-            }
-        )
+        STANDARD -> getBackFilter(back, backNumber)
 
         TOPS -> ColorFilter.colorMatrix(ColorMatrix().apply {
             timesAssign(
@@ -235,46 +198,48 @@ fun getFilter(back: CardBack, backNumber: Int): ColorFilter {
 
 fun getBackFilter(back: CardBack, backNumber: Int): ColorFilter {
     return when (back) {
-        STANDARD -> ColorFilter.colorMatrix(
+        STANDARD ->
             when (backNumber) {
                 1 -> {
-                    ColorMatrix(floatArrayOf(
+                    ColorFilter.colorMatrix(ColorMatrix(floatArrayOf(
                         0f, 1f, 0f, 0f, 0f,
                         1f, 0f, 0f, 0f, 0f,
                         0f, 0f, 1f, 0f, 0f,
                         0f, 0f, 0f, 1f, 0f
-                    ))
+                    )))
                 }
                 2 -> {
-                    ColorMatrix(floatArrayOf(
+                    ColorFilter.colorMatrix(ColorMatrix(floatArrayOf(
                         0f, 0f, 1f, 0f, 0f,
                         0f, 1f, 0f, 0f, 0f,
                         1f, 0f, 0f, 0f, 0f,
                         0f, 0f, 0f, 1f, 0f
-                    ))
+                    )))
                 }
                 3 -> {
-                    ColorMatrix(floatArrayOf(
-                        1f, 0f, 0f, 0f, 0f,
-                        0f, 1f, 0f, 0f, 0f,
-                        1f, 0f, 1f, 0f, 0f,
-                        0f, 0f, 0f, 1f, 0f
-                    ))
+                    ColorFilter.colorMatrix(
+                        ColorMatrix(
+                            floatArrayOf(
+                                1f, 0f, 0f, 0f, 0f,
+                                0f, 1f, 0f, 0f, 0f,
+                                1f, 0f, 0f, 0f, 0f,
+                                0f, 0f, 0f, 1f, 0f
+                            )
+                        )
+                    )
                 }
                 4 -> {
-                    ColorMatrix(floatArrayOf(
+                    ColorFilter.colorMatrix(ColorMatrix(floatArrayOf(
                         1f, 0f, 0f, 0f, 0f,
-                        1f, 1f, 0f, 0f, 0f,
+                        1f, 0f, 0f, 0f, 0f,
                         0f, 0f, 1f, 0f, 0f,
                         0f, 0f, 0f, 1f, 0f
-                    ))
+                    )))
                 }
                 else -> {
-                    ColorMatrix()
+                    ColorFilter.colorMatrix(ColorMatrix())
                 }
             }
-        )
-
         else -> ColorFilter.colorMatrix(ColorMatrix())
     }
 }
@@ -349,6 +314,87 @@ fun Modifier.scrollbar(
             }
 
             val firstItemSize = firstVisibleItem.size
+            val estimatedFullListSize = firstItemSize * state.layoutInfo.totalItemsCount - 1
+
+            if (viewportSize > estimatedFullListSize) {
+                return@drawWithContent
+            }
+
+            val viewportOffsetInFullListSpace =
+                state.firstVisibleItemIndex * firstItemSize + state.firstVisibleItemScrollOffset
+
+            // Where we should render the knob in our composable.
+            val knobPosition = (viewportSize / estimatedFullListSize) * viewportOffsetInFullListSpace
+            // How large should the knob be.
+            val knobSize = (viewportSize / estimatedFullListSize) * viewportSize
+
+            // Draw the track
+            drawRoundRect(
+                color = trackColor,
+                topLeft = when {
+                    // When the scrollbar is horizontal and aligned to the bottom:
+                    horizontal && alignEnd -> Offset(0f, size.height - thickness)
+                    // When the scrollbar is horizontal and aligned to the top:
+                    horizontal && !alignEnd -> Offset(0f, 0f)
+                    // When the scrollbar is vertical and aligned to the end:
+                    alignEnd -> Offset(size.width - thickness, 0f)
+                    // When the scrollbar is vertical and aligned to the start:
+                    else -> Offset(0f, 0f)
+                },
+                size = if (horizontal) {
+                    Size(size.width, thickness.toFloat())
+                } else {
+                    Size(thickness.toFloat(), size.height)
+                },
+            )
+
+            // Draw the knob
+            drawRoundRect(
+                color = knobColor,
+                topLeft =
+                    when {
+                        // When the scrollbar is horizontal and aligned to the bottom:
+                        horizontal && alignEnd -> Offset(
+                            knobPosition,
+                            size.height - thickness * 3 / 4
+                        )
+                        // When the scrollbar is horizontal and aligned to the top:
+                        horizontal && !alignEnd -> Offset(knobPosition, thickness / 4f)
+                        // When the scrollbar is vertical and aligned to the end:
+                        alignEnd -> Offset(size.width - thickness * 3 / 4, knobPosition)
+                        // When the scrollbar is vertical and aligned to the start:
+                        else -> Offset(thickness / 4f, knobPosition)
+                    },
+                size = if (horizontal) {
+                    Size(knobSize, thickness.toFloat() / 2)
+                } else {
+                    Size(thickness.toFloat() / 2, knobSize)
+                },
+            )
+        }
+    }
+}
+
+@Composable
+fun Modifier.scrollbar(
+    state: LazyGridState,
+    horizontal: Boolean = false,
+    alignEnd: Boolean = true,
+    thickness: Int = 8,
+    knobColor: Color,
+    trackColor: Color,
+): Modifier {
+    return drawWithContent {
+        drawContent()
+
+        state.layoutInfo.visibleItemsInfo.firstOrNull()?.let { firstVisibleItem ->
+            val viewportSize = if (horizontal) {
+                size.width
+            } else {
+                size.height
+            }
+
+            val firstItemSize = if (horizontal) firstVisibleItem.size.width else firstVisibleItem.size.height
             val estimatedFullListSize = firstItemSize * state.layoutInfo.totalItemsCount - 1
 
             if (viewportSize > estimatedFullListSize) {
@@ -704,7 +750,7 @@ fun MenuItemOpen(
         Box(Modifier
             .padding(innerPadding)
             .background(getBackgroundColor(activity))
-            .padding(horizontal = 12.dp - 4.pxToDp())
+            .padding(horizontal = 12.dp - 4.pxToDp(), vertical = 4.dp)
         ) {
             mainBlock()
         }

@@ -11,6 +11,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
@@ -46,6 +51,7 @@ import com.unicorns.invisible.caravan.utils.getTextBackgroundColor
 import com.unicorns.invisible.caravan.utils.getTextColor
 import com.unicorns.invisible.caravan.utils.getTextStrokeColor
 import com.unicorns.invisible.caravan.utils.getTrackColor
+import com.unicorns.invisible.caravan.utils.pxToDp
 import com.unicorns.invisible.caravan.utils.scrollbar
 
 
@@ -83,8 +89,9 @@ fun DeckSelection(
     }
 
     MenuItemOpen(activity, stringResource(R.string.menu_deck), "<-", goBack) {
-        val state = rememberLazyListState()
-        LazyColumn(
+        val state = rememberLazyGridState()
+        LazyVerticalGrid(
+            columns = GridCells.FixedSize(183.pxToDp() + 8.dp),
             modifier = Modifier
                 .fillMaxSize()
                 .background(getBackgroundColor(activity))
@@ -93,65 +100,52 @@ fun DeckSelection(
                     knobColor = getKnobColor(activity),
                     trackColor = getTrackColor(activity),
                     horizontal = false
-                ),
-            state = state,
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Top,
+                ).padding(4.dp),
+            horizontalArrangement = Arrangement.Center
         ) {
-            item {
+            item(span = { GridItemSpan(maxLineSpan) }) {
                 Spacer(modifier = Modifier.height(16.dp))
-                TextFallout(
-                    stringResource(R.string.deck_custom),
-                    getTextColor(activity),
-                    getTextStrokeColor(activity),
-                    20.sp,
-                    Modifier
-                        .background(getTextBackgroundColor(activity))
-                        .clickableOk(activity) {
-                            setCustomDeck = true
-                        }
-                        .padding(8.dp),
-                )
+                Column(verticalArrangement = Arrangement.Top, horizontalAlignment = Alignment.CenterHorizontally) {
+                    TextFallout(
+                        stringResource(R.string.deck_custom),
+                        getTextColor(activity),
+                        getTextStrokeColor(activity),
+                        20.sp,
+                        Modifier
+                            .background(getTextBackgroundColor(activity))
+                            .clickableOk(activity) {
+                                setCustomDeck = true
+                            }
+                            .padding(8.dp),
+                    )
 
-                Spacer(modifier = Modifier.height(16.dp))
-                HorizontalDivider(color = getDividerColor(activity))
-                Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(16.dp))
+                    HorizontalDivider(color = getDividerColor(activity))
+                    Spacer(modifier = Modifier.height(16.dp))
 
-                TextFallout(
-                    stringResource(R.string.deck_select),
-                    getTextColor(activity),
-                    getTextStrokeColor(activity),
-                    24.sp,
-                    Modifier,
-                )
-
-                @Composable
-                fun showDeckBack(back: CardBack, number: Int) {
-                    ShowCardBack(
-                        activity,
-                        CardNumber(RankNumber.ACE, Suit.SPADES, back, number),
-                        getModifier(back, number)
+                    TextFallout(
+                        stringResource(R.string.deck_select),
+                        getTextColor(activity),
+                        getTextStrokeColor(activity),
+                        24.sp,
+                        Modifier,
                     )
                 }
+            }
 
-                Spacer(modifier = Modifier.height(16.dp))
-                Column(
-                    Modifier,
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    @Composable
-                    fun ShowBacksRow(back: CardBack) {
-                        Row(Modifier, horizontalArrangement = Arrangement.Center) {
-                            repeat(back.nameIdWithBackFileName.size) {
-                                showDeckBack(back, it)
-                            }
-                        }
-                    }
+            @Composable
+            fun showDeckBack(back: CardBack, number: Int) {
+                ShowCardBack(
+                    activity,
+                    CardNumber(RankNumber.ACE, Suit.SPADES, back, number),
+                    getModifier(back, number)
+                )
+            }
 
-                    CardBack.entries.forEach { ShowBacksRow(it); Spacer(Modifier.height(8.dp)) }
+            CardBack.entries.forEach { back ->
+                items(count = back.nameIdWithBackFileName.size) { index ->
+                    showDeckBack(back, index)
                 }
-                Spacer(modifier = Modifier.height(16.dp))
             }
         }
     }
