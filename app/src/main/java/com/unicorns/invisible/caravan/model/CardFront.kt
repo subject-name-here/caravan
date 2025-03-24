@@ -360,20 +360,20 @@ private fun getOGCardName(card: CardWithPrice, dirName: String): String {
     return when (card) {
         is CardJoker -> {
             if (card.number == CardJoker.Number.ONE) {
-                "$dirName/1J.webp"
+                "$dirName/Joker_1.webp"
             } else {
-                "$dirName/2J.webp"
+                "$dirName/Joker_2.webp"
             }
         }
         is CardFaceSuited -> {
             val letter = card.rank.name.first().toString()
             val suit = card.suit.name.first()
-            "$dirName/$letter$suit.webp"
+            "$dirName/${letter}_$suit.webp"
         }
         is CardNumber -> {
             val letter = card.rank.value.toString()
             val suit = card.suit.name.first()
-            "$dirName/$letter$suit.webp"
+            "$dirName/${letter}_$suit.webp"
         }
     }
 }

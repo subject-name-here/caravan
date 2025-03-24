@@ -660,18 +660,22 @@ fun Hand(
             if (isEnemy) {
                 ShowCardBack(activity, it, modifier.padding(4.dp), scale)
             } else {
-                ShowCard(
-                    activity,
-                    it,
-                    modifier
+                Box(modifier
                         .border(
                             width = if (index == (selectedCard ?: -1)) 3.dp else (-1).dp,
                             color = selectedCardColor
                         )
                         .padding(4.dp)
-                        .clickable { if (offsetMult == 0f) { onClick(index) } },
-                    scale
-                )
+                ) {
+                    ShowCard(
+                        activity,
+                        it,
+                        Modifier
+
+                            .clickable { if (offsetMult == 0f) { onClick(index) } },
+                        scale
+                    )
+                }
             }
         }
     }

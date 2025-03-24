@@ -6,7 +6,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -23,8 +26,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.BiasAlignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
@@ -44,6 +50,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -61,9 +68,15 @@ import com.unicorns.invisible.caravan.model.getCardName
 import com.unicorns.invisible.caravan.model.primitives.Card
 import com.unicorns.invisible.caravan.model.primitives.CardAtomic
 import com.unicorns.invisible.caravan.model.primitives.CardFBomb
+import com.unicorns.invisible.caravan.model.primitives.CardFaceSuited
+import com.unicorns.invisible.caravan.model.primitives.CardJoker
+import com.unicorns.invisible.caravan.model.primitives.CardNumber
 import com.unicorns.invisible.caravan.model.primitives.CardNumberWW
 import com.unicorns.invisible.caravan.model.primitives.CardWildWasteland
 import com.unicorns.invisible.caravan.model.primitives.CardWithPrice
+import com.unicorns.invisible.caravan.model.primitives.Suit
+import kotlin.random.Random
+import kotlin.random.nextInt
 
 
 @Composable
@@ -247,22 +260,103 @@ fun getBackFilter(back: CardBack, backNumber: Int): ColorFilter {
 
 @Composable
 fun ShowCard(activity: MainActivity, card: Card, modifier: Modifier, scale: Float = 1f) {
-    AsyncImage(
-        model = ImageRequest.Builder(activity)
-            .data("file:///android_asset/caravan_cards/${getCardName(card)}")
-            .size(183, 256)
-            .decoderFactory(SvgDecoder.Factory())
-            .build(),
-        contentDescription = "",
-        modifier.clip(RoundedCornerShape(5)),
-        colorFilter = if (card is CardWithPrice) {
-            getFilter(card.getBack(), card.getBackNumber())
-        } else {
-            ColorFilter.colorMatrix(ColorMatrix())
-        },
-        contentScale = FixedScale(scale),
-        alignment = BiasAlignment(-1f, -1f)
-    )
+    Box(Modifier.wrapContentSize()) {
+        AsyncImage(
+            model = ImageRequest.Builder(activity)
+                .data("file:///android_asset/caravan_cards/${getCardName(card)}")
+                .size(183, 256)
+                .decoderFactory(SvgDecoder.Factory())
+                .build(),
+            contentDescription = "",
+            modifier.clip(RoundedCornerShape(5)),
+            colorFilter = if (card is CardWithPrice) {
+                getFilter(card.getBack(), card.getBackNumber())
+            } else {
+                ColorFilter.colorMatrix(ColorMatrix())
+            },
+            contentScale = FixedScale(scale),
+            alignment = BiasAlignment(-1f, -1f)
+        )
+        if (card is CardWithPrice && card.getBack() == CardBack.FNV_FACTION && card.getBackNumber() == 0) {
+            Box(Modifier.size(183.pxToDp() * scale, 256.pxToDp() * scale).clipToBounds()) {
+                @Composable
+                fun SuitToStamp(suit: Suit, extra: Int) {
+                    val rand = Random(22229 + extra + suit.ordinal)
+                    when (suit) {
+                        Suit.HEARTS -> {
+                            val rotation = rand.nextDouble(-5.0, 5.0)
+                            AsyncImage(
+                                model = ImageRequest.Builder(activity)
+                                    .data(R.drawable.ncr_stamp_date)
+                                    .decoderFactory(SvgDecoder.Factory())
+                                    .build(),
+                                contentDescription = "",
+                                modifier = Modifier.scale(0.75f).offset { IntOffset(0, 120) * scale }.rotate(rotation.toFloat()),
+                            )
+                        }
+                        Suit.CLUBS -> {
+                            val rotation = rand.nextDouble(-40.0, -30.0)
+                            AsyncImage(
+                                model = ImageRequest.Builder(activity)
+                                    .data(R.drawable.ncr_stamp_ncr)
+                                    .decoderFactory(SvgDecoder.Factory())
+                                    .build(),
+                                contentDescription = "",
+                                Modifier.offset { IntOffset(90, 0) * scale) }.rotate(rotation.toFloat()),
+                            )
+                        }
+                        Suit.DIAMONDS -> {
+                            val rotation = rand.nextDouble(-10.0, 10.0)
+                            val offset = IntOffset(rand.nextInt(-5, 70).toInt(), rand.nextInt(-10, 170).toInt()) * scale
+                            AsyncImage(
+                                model = ImageRequest.Builder(activity)
+                                    .data(R.drawable.ncr_stamp_usage_apprvd)
+                                    .decoderFactory(SvgDecoder.Factory())
+                                    .build(),
+                                contentDescription = "",
+                                Modifier.offset { offset }.rotate(rotation.toFloat()),
+                            )
+                        }
+                        Suit.SPADES -> {
+                            val rotation1 = rand.nextDouble(-10.0, 10.0)
+                            val rotation2 = rand.nextDouble(-2.5, 2.5)
+                            Box(Modifier.scale(0.75f).offset { IntOffset(0, 150) * scale }.rotate(rotation1.toFloat())) {
+                                AsyncImage(
+                                    model = ImageRequest.Builder(activity)
+                                        .data(R.drawable.ncr_stamp_validated_by_qm)
+                                        .decoderFactory(SvgDecoder.Factory())
+                                        .build(),
+                                    contentDescription = "",
+                                )
+                                AsyncImage(
+                                    model = ImageRequest.Builder(activity)
+                                        .data(R.drawable.ncr_signature)
+                                        .decoderFactory(SvgDecoder.Factory())
+                                        .build(),
+                                    contentDescription = "",
+                                    Modifier.scale(0.5f).offset { IntOffset(115, 25) * scale }.rotate(rotation2.toFloat()),
+                                )
+                            }
+                        }
+                    }
+                }
+
+                when (card) {
+                    is CardFaceSuited -> {
+                        val rand = Random(22229 + card.rank.value * 113 + card.suit.ordinal)
+                        SuitToStamp(card.suit, card.rank.value * 133)
+                    }
+                    is CardJoker -> {
+                        val rand = Random(22229 + card.rank.value * 117 + card.number.n)
+                        // TODO
+                    }
+                    is CardNumber -> {
+                        SuitToStamp(card.suit, card.rank.value * 131)
+                    }
+                }
+            }
+        }
+    }
 }
 
 @Composable
