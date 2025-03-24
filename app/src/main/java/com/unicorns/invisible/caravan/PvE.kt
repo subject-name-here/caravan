@@ -519,8 +519,18 @@ fun StartGame(
 
             if (enemy is EnemyPvEWithBank) {
                 if (isBlitz) {
+                    if (reward > 0) {
+                        enemy.winsBlitzBet++
+                    } else {
+                        enemy.winsBlitzNoBet++
+                    }
                     save.silverRushChips += reward
                 } else {
+                    if (reward > 0) {
+                        enemy.winsBet++
+                    } else {
+                        enemy.winsNoBet++
+                    }
                     save.capsInHand += reward
                 }
                 save.table -= reward
@@ -543,23 +553,25 @@ fun StartGame(
                             ),
                     onQuitPressed
                 )
-            } else {
+            } else if (enemy is EnemyPvENoBank) {
                 val (back, number) = when (enemy) {
                     is EnemyHanlon -> CardBack.FNV_FACTION to 0
                     is EnemyVulpes -> CardBack.FNV_FACTION to 1
                     is EnemyMadnessCardinal -> CardBack.MADNESS to 0
                     is EnemyViqueen -> CardBack.VIKING to 0
-                    else -> null to null
                 }
-                if (back != null && number != null) {
-                    val rewardCard = winCard(activity, back, number, isBlitz)
+                if (isBlitz) {
+                    enemy.winsBlitz++
+                } else {
+                    enemy.wins++
+                }
+                val rewardCard = winCard(activity, back, number, isBlitz)
 
-                    showAlertDialog(
-                        activity.getString(R.string.result),
-                        activity.getString(R.string.you_win) + rewardCard,
-                        onQuitPressed
-                    )
-                }
+                showAlertDialog(
+                    activity.getString(R.string.result),
+                    activity.getString(R.string.you_win) + rewardCard,
+                    onQuitPressed
+                )
             }
 
             saveData(activity)

@@ -654,7 +654,7 @@ fun Hand(
                 }
             }
 
-            val widthOffset = index * (maxWidth.dpToPx() - 183 * scale) / (cards.size - 1)
+            val widthOffset = index * (maxWidth.dpToPx() - 183 * scale) / max(4, cards.size - 1)
             val modifier = Modifier.offset { IntOffset(widthOffset.toInt(), (256f * scale * offsetMult).toInt()) }
 
             if (isEnemy) {
@@ -1093,7 +1093,7 @@ fun Caravans(
                 repeat(3) {
                     val caravan = getEnemyCaravan(it)
                     val opposingValue = getPlayerCaravan(it).getValue()
-                    key(caravan.recomposeResources) {
+                    key(caravan.recomposeResources, getGameUpdated()) {
                         Score(activity, it, caravan, opposingValue)
                     }
                 }
@@ -1150,7 +1150,7 @@ fun Caravans(
                 repeat(3) {
                     val caravan = getPlayerCaravan(it)
                     val opposingValue = getEnemyCaravan(it).getValue()
-                    key(caravan.recomposeResources) {
+                    key(caravan.recomposeResources, getGameUpdated()) {
                         Score(activity, it + 3, caravan, opposingValue)
                     }
                 }

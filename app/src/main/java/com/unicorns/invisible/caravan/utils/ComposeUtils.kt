@@ -302,7 +302,7 @@ fun ShowCard(activity: MainActivity, card: Card, modifier: Modifier, scale: Floa
                                     .decoderFactory(SvgDecoder.Factory())
                                     .build(),
                                 contentDescription = "",
-                                Modifier.offset { IntOffset(90, 0) * scale) }.rotate(rotation.toFloat()),
+                                Modifier.offset { IntOffset(90, 0) * scale }.rotate(rotation.toFloat()),
                             )
                         }
                         Suit.DIAMONDS -> {

@@ -87,8 +87,8 @@ class EnemyVeronica : EnemyPvEWithBank() {
                         val cards = game.enemyCaravans.flatMap { it.cards }.shuffled()
                         if (cards.isNotEmpty()) {
                             cards.random().addModifier(game.enemyCResources.removeFromHand(index, speed) as CardModifier, speed)
+                            return
                         }
-                        return
                     }
                 }
             }
