@@ -221,11 +221,26 @@ fun getCheckBoxFillColor(activity: MainActivity): Color = when (activity.styleId
 }
 
 fun getTrackColor(activity: MainActivity): Color = getDividerColor(activity)
-fun getTrackColorByStyle(activity: MainActivity, style: Style): Color = getDividerColorByStyle(activity, style)
+fun getTrackColorByStyle(activity: MainActivity, style: Style): Color = when (style) {
+    Style.DESERT -> Color(activity.getColor(R.color.desertAccent))
+    Style.PIP_BOY -> Color(activity.getColor(R.color.colorTextBack))
+    Style.ALASKA_FRONTIER -> Color(activity.getColor(R.color.alaskaYellow))
+    Style.PIP_GIRL -> Color(activity.getColor(R.color.pipGirlWhite))
+    Style.OLD_WORLD -> Color(activity.getColor(R.color.oldWorldTextBack))
+    Style.NEW_WORLD -> Color(activity.getColor(R.color.newWorldStroke))
+    Style.SIERRA_MADRE -> Color(activity.getColor(R.color.sierraMadreTextBack))
+    Style.MADRE_ROJA -> Color(activity.getColor(R.color.madreRojaTextBack))
+    Style.VAULT_21 -> Color(activity.getColor(R.color.vault21Accent))
+    Style.VAULT_22 -> Color(activity.getColor(R.color.vault22Accent))
+    Style.ENCLAVE -> Color(activity.getColor(R.color.enclaveStroke))
+    Style.BLACK -> Color.Black
+    Style.NCR -> Color(activity.getColor(R.color.ncrAccent))
+    Style.LEGION -> Color(activity.getColor(R.color.legionTextBack))
+}
 fun getKnobColor(activity: MainActivity): Color = getKnobColorByStyle(activity, activity.styleId)
 fun getKnobColorByStyle(activity: MainActivity, style: Style): Color = when (style) {
     Style.DESERT -> Color(activity.getColor(R.color.desertAccent))
-    Style.PIP_BOY -> Color(activity.getColor(R.color.colorTextBack))
+    Style.PIP_BOY -> Color(activity.getColor(R.color.colorTextStroke))
     Style.ALASKA_FRONTIER -> Color(activity.getColor(R.color.alaskaYellow))
     Style.PIP_GIRL -> Color(activity.getColor(R.color.pipGirlWhite))
     Style.OLD_WORLD -> Color(activity.getColor(R.color.oldWorldTextBack))

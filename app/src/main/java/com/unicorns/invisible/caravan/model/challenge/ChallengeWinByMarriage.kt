@@ -10,7 +10,7 @@ import kotlinx.serialization.Transient
 
 
 @Serializable
-class ChallengeWinByMarriage : Challenge {
+class ChallengeWinByMarriage : ChallengeDaily {
     @Transient
     private var wasLastMoveMarriage = false
     private var completedFlag = false

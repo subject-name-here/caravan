@@ -187,7 +187,11 @@ class Save(var playerId: String? = null) {
         ChallengePlay188()
     )
     @EncodeDefault
-    var challengesConst1: MutableList<Challenge> = mutableListOf(
+    var challenges1: MutableList<Challenge> = mutableListOf(
+
+    )
+    @EncodeDefault
+    var challenges2: MutableList<Challenge> = mutableListOf(
 
     )
 

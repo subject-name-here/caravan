@@ -446,8 +446,9 @@
     <string name="play_188_challenge">188 - Challenge</string>
     <string name="play_188_challenge_descr">Play 188 cards.</string>
 
-    <string name="claim_caps">Claim %1$s Caps</string>
-    <string name="claim_tickets">Claim %1$s Ticket</string>
+    <string name="complete_all_dailys">Up To The Challenge</string>
+    <string name="complete_all_dailys_descr">Complete all daily missions.</string>
+
 
     <string name="tower_presents">VAULT-TEC\nproudly presents</string>
     <string name="tower">TOWER!</string>
@@ -635,6 +636,14 @@
 
 
     <string name="achievements">Achievements</string>
+    <string name="daily_missions">Daily Missions</string>
+    <string name="infinite_missions">Recurring Missions</string>
+    <string name="one_time_missions">Challenges</string>
+    <string name="one_time_missions_requiem">Road to Requiem.</string>
+    <string name="no_more_challenges">There are no more challenges of ths type!</string>
+    <string name="claim_caps">Claim %1$s Caps</string>
+    <string name="claim_tickets">Claim %1$s Ticket</string>
+    <string name="claim_card">Claim Uncommon Card</string>
 
     <string name="your_caps_in_hand">Your caps in hand: %1$s</string>
     <string name="your_chips_in_hand">Your chips in hand: %1$s</string>

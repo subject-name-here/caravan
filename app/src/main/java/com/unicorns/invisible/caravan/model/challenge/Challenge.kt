@@ -15,10 +15,9 @@ sealed interface Challenge {
     fun getName(activity: MainActivity): String
     fun getDescription(activity: MainActivity): String
     fun getProgress(): String
+    fun reward(activity: MainActivity): List<Pair<String, () -> Unit>>
 
     fun isCompleted(): Boolean
-
-    fun restartChallenge() {}
 
     data class Move(
         val moveCode: Int,
@@ -29,6 +28,8 @@ sealed interface Challenge {
         fun initChallenges(seed: Int): MutableList<Challenge> {
             val rand = Random(seed)
             val challenges = mutableListOf<Challenge>()
+
+            challenges.add(ChallengeDailyAll())
 
             challenges.add(ChallengePlayCard((1..14).random(rand)))
             challenges.add(ChallengeDoNotPlayCards((1..7).random(rand))) // TODO: add more variations

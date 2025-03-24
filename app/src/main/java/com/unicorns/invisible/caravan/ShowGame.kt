@@ -422,7 +422,8 @@ fun ShowGameRaw(
                             ::canDiscard,
                             { game.isOver() },
                             { num -> game.playerCaravans[num] },
-                            { num -> game.enemyCaravans[num] }
+                            { num -> game.enemyCaravans[num] },
+                            { game.recomposeResources }
                         )
                     }
                 } else {
@@ -463,7 +464,8 @@ fun ShowGameRaw(
                             ::canDiscard,
                             { game.isOver() },
                             { num -> game.playerCaravans[num] },
-                            { num -> game.enemyCaravans[num] }
+                            { num -> game.enemyCaravans[num] },
+                            { game.recomposeResources }
                         )
                         PlayerSide(
                             activity,
@@ -607,7 +609,11 @@ fun Hand(
     val enemyMult = if (isEnemy) -1f else 1f
     val cards = cResources.hand
 
-    LaunchedEffect(cResources.recomposeResources) {}
+    LaunchedEffect(cResources.recomposeResources) {
+        repeat(cards.count { it.handAnimationMark == Card.AnimationMark.NEW }) {
+            playCardFlipSound(activity)
+        }
+    }
 
     BoxWithConstraints(
         Modifier.fillMaxWidth(0.83f).fillMaxHeight(),
@@ -637,11 +643,10 @@ fun Hand(
 
             LaunchedEffect(it.handAnimationMark) {
                 if (it.handAnimationMark == Card.AnimationMark.NEW) {
-                    if (it is CardJoker) {
+                    if (it is CardJoker && !isEnemy) {
                         playJokerReceivedSounds(activity)
                     }
                     it.handAnimationMark = Card.AnimationMark.STABLE
-                    playCardFlipSound(activity)
                 } else if (it.handAnimationMark == Card.AnimationMark.MOVING_OUT) {
                     if (it is CardJoker) {
                         playJokerSounds(activity)
@@ -649,7 +654,7 @@ fun Hand(
                 }
             }
 
-            val widthOffset = index * maxWidth.dpToPx() / cards.size
+            val widthOffset = index * (maxWidth.dpToPx() - 183 * scale) / (cards.size - 1)
             val modifier = Modifier.offset { IntOffset(widthOffset.toInt(), (256f * scale * offsetMult).toInt()) }
 
             if (isEnemy) {
@@ -699,7 +704,8 @@ fun RowScope.CaravanOnField(
     state: LazyListState,
     selectCaravan: () -> Unit = {},
     canPutSelectedCardOn: (Int) -> Boolean,
-    addSelectedCardOnPosition: (Int) -> Unit
+    addSelectedCardOnPosition: (Int) -> Unit,
+    getGameUpdated: () -> Int,
 ) {
     var width by remember { mutableIntStateOf(0) }
     LaunchedEffect(width) {
@@ -863,6 +869,7 @@ fun RowScope.CaravanOnField(
                             }
                         }
 
+                        LaunchedEffect(getGameUpdated()) { }
                         val coverColor = if (canPutSelectedCardOn(index)) {
                             Color(0f, 1f, 0f, 0.33f)
                         } else {
@@ -1041,8 +1048,8 @@ fun Caravans(
     isGameOver: () -> Boolean,
     getPlayerCaravan: (Int) -> Caravan,
     getEnemyCaravan: (Int) -> Caravan,
+    getGameUpdated: () -> Int
 ) {
-    var recomposeKey by remember { mutableIntStateOf(0) }
     Column(
         modifier = Modifier
             .fillMaxWidth().height(height.toInt().pxToDp()),
@@ -1068,11 +1075,13 @@ fun Caravans(
                         getSelectedCard()?.let { canPutCard(it, caravan, false, index) } == true
                     },
                     { card -> addCardToEnemyCaravan(it, card) },
+                    getGameUpdated
                 )
             }
         }
 
         Column(Modifier.wrapContentHeight()) {
+            LaunchedEffect(getGameUpdated()) {}
             Row(
                 Modifier
                     .fillMaxWidth()
@@ -1080,14 +1089,14 @@ fun Caravans(
                 repeat(3) {
                     val caravan = getEnemyCaravan(it)
                     val opposingValue = getPlayerCaravan(it).getValue()
-                    Score(activity, it, caravan, opposingValue)
+                    key(caravan.recomposeResources) {
+                        Score(activity, it, caravan, opposingValue)
+                    }
                 }
             }
-
-            LaunchedEffect(recomposeKey) {}
             val text = when {
                 isGameOver() -> stringResource(R.string.can_t_act)
-                !isPlayersTurn() -> stringResource(R.string.wait)
+                !isPlayersTurn() || !canPlayerMove() -> stringResource(R.string.wait)
                 getIsInitStage() -> stringResource(R.string.init_stage)
                 getSelectedCard() != null -> {
                     stringResource(R.string.discard_card)
@@ -1119,7 +1128,6 @@ fun Caravans(
                     }
                 }
                 .padding(horizontal = 8.dp, vertical = 4.dp)
-
             Box(Modifier
                 .fillMaxWidth()
                 .wrapContentHeight(), contentAlignment = Alignment.Center) {
@@ -1131,7 +1139,6 @@ fun Caravans(
                     modifier,
                 )
             }
-
             Row(
                 Modifier
                     .fillMaxWidth()
@@ -1139,7 +1146,9 @@ fun Caravans(
                 repeat(3) {
                     val caravan = getPlayerCaravan(it)
                     val opposingValue = getEnemyCaravan(it).getValue()
-                    Score(activity, it + 3, caravan, opposingValue)
+                    key(caravan.recomposeResources) {
+                        Score(activity, it + 3, caravan, opposingValue)
+                    }
                 }
             }
         }
@@ -1172,6 +1181,7 @@ fun Caravans(
                         canPlayerMove() && !getIsInitStage() && canPutCard(selectedCard, caravan, true, index)
                     },
                     { card -> addCardToPlayerCaravan(it, card) },
+                    getGameUpdated
                 )
             }
         }

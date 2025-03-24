@@ -37,7 +37,7 @@ class EnemySnuffles : EnemyPvEWithBank() {
     override val maxBank: Int
         get() = Int.MAX_VALUE
     override val bet: Int
-        get() = max(bank / 2, 1)
+        get() = if (bank == 0) 0 else max(bank / 2, 1)
 
     override var winsNoBet: Int = 0
     override var winsBet: Int = 0

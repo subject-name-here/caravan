@@ -7,7 +7,7 @@ import kotlinx.serialization.Serializable
 
 
 @Serializable
-class ChallengePlay188 : Challenge {
+class ChallengePlay188 : ChallengeInfinite {
     private var cardsPlayed = 0
 
     override fun processMove(move: Challenge.Move, game: Game) {

@@ -12,7 +12,7 @@ import kotlinx.serialization.Transient
 
 
 @Serializable
-class ChallengePlayCard(val rankValue: Int) : Challenge {
+class ChallengePlayCard(val rankValue: Int) : ChallengeDaily {
     private var counter = 0
 
     @Transient

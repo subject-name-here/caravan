@@ -8,7 +8,7 @@ import kotlinx.serialization.Transient
 
 
 @Serializable
-class ChallengeWinByDiscard : Challenge {
+class ChallengeWinByDiscard : ChallengeDaily {
     @Transient
     private var wasLastMoveDiscard = false
     private var completedFlag = false

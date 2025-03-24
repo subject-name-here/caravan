@@ -14,7 +14,7 @@ import kotlinx.serialization.Transient
 
 
 @Serializable
-class ChallengeDoNotPlayCards(private val code: Int) : Challenge {
+class ChallengeDoNotPlayCards(private val code: Int) : ChallengeDaily {
     @Transient
     private var notPlayed = true
     override fun processMove(move: Challenge.Move, game: Game) {

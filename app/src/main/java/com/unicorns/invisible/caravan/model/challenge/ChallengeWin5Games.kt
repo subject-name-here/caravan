@@ -7,7 +7,7 @@ import kotlinx.serialization.Serializable
 
 
 @Serializable
-class ChallengeWin5Games : Challenge {
+class ChallengeWin5Games : ChallengeInfinite {
     private val beatenEnemies = mutableListOf<String>()
 
     override fun processMove(move: Challenge.Move, game: Game) {}

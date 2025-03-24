@@ -4,6 +4,7 @@ import com.unicorns.invisible.caravan.AnimationSpeed
 import com.unicorns.invisible.caravan.R
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
+import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyInit
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.CardBase
 import com.unicorns.invisible.caravan.model.primitives.CardModifier
@@ -35,9 +36,7 @@ class EnemyOliver : EnemyPvEWithBank() {
 
     override suspend fun makeMove(game: Game, speed: AnimationSpeed) {
         if (game.isInitStage()) {
-            val card = game.enemyCResources.hand.withIndex().filter { it.value is CardBase }.random()
-            val caravan = game.enemyCaravans.filter { it.isEmpty() }.random()
-            caravan.putCardOnTop(game.enemyCResources.removeFromHand(card.index, speed) as CardBase, speed)
+            StrategyInit(StrategyInit.Type.RANDOM).move(game, speed)
             return
         }
 

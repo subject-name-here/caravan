@@ -25,6 +25,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.unicorns.invisible.caravan.model.challenge.Challenge
+import com.unicorns.invisible.caravan.model.challenge.ChallengeInfinite
 import com.unicorns.invisible.caravan.save.Save
 import com.unicorns.invisible.caravan.save.saveData
 import com.unicorns.invisible.caravan.utils.MenuItemOpen
@@ -60,25 +61,12 @@ fun ShowDailys(
                         horizontal = false,
                         knobColor = getKnobColor(activity),
                         trackColor = getTrackColor(activity)
-                    ),
+                    )
+                    .padding(horizontal = 4.dp),
                 mainState,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 item {
-                    Spacer(Modifier.height(16.dp))
-                    save.challengesNew.forEach { challenge ->
-                        ShowChallenge(activity, challenge, challenge.isCompleted(), false) {
-                            updateKey = !updateKey
-                        }
-                        Spacer(Modifier.height(16.dp))
-                    }
-                    save.challengesInf.forEach { challenge ->
-                        ShowChallenge(activity, challenge, challenge.isCompleted(), true) {
-                            updateKey = !updateKey
-                        }
-                        Spacer(Modifier.height(16.dp))
-                    }
-                    HorizontalDivider(color = getDividerColor(activity))
                     Spacer(modifier = Modifier.height(16.dp))
                     Row(
                         Modifier.fillMaxWidth(),
@@ -103,6 +91,47 @@ fun ShowDailys(
                             boxAlignment = Alignment.Center
                         )
                     }
+                    Spacer(Modifier.height(16.dp))
+
+                    @Composable
+                    fun Challenges(typeName: String, challenges: List<Challenge>) {
+                        HorizontalDivider(color = getDividerColor(activity))
+                        Spacer(Modifier.height(16.dp))
+                        TextFallout(
+                            typeName,
+                            getTextColor(activity),
+                            getTextStrokeColor(activity),
+                            22.sp,
+                            Modifier.fillMaxWidth(),
+                            boxAlignment = Alignment.Center,
+                            textAlignment = TextAlign.Center
+                        )
+                        Spacer(modifier = Modifier.height(16.dp))
+                        if (challenges.isEmpty()) {
+                            TextFallout(
+                                stringResource(R.string.no_more_challenges),
+                                getTextColor(activity),
+                                getTextStrokeColor(activity),
+                                18.sp,
+                                Modifier.fillMaxWidth(),
+                                boxAlignment = Alignment.Center,
+                                textAlignment = TextAlign.Center
+                            )
+                            Spacer(Modifier.height(16.dp))
+                        } else {
+                            challenges.forEach { challenge ->
+                                ShowChallenge(activity, challenge, challenge.isCompleted()) {
+                                    updateKey = !updateKey
+                                }
+                                Spacer(Modifier.height(16.dp))
+                            }
+                        }
+                    }
+
+                    Challenges(stringResource(R.string.daily_missions), save.challengesNew)
+                    Challenges(stringResource(R.string.infinite_missions), save.challengesInf)
+                    Challenges(stringResource(R.string.one_time_missions), save.challenges1)
+                    Challenges(stringResource(R.string.one_time_missions_requiem), save.challenges2)
                 }
             }
         }
@@ -110,7 +139,7 @@ fun ShowDailys(
 }
 
 @Composable
-fun ShowChallenge(activity: MainActivity, challenge: Challenge, isCompleted: Boolean, isInfinite: Boolean, updater: () -> Unit) {
+fun ShowChallenge(activity: MainActivity, challenge: Challenge, isCompleted: Boolean, updater: () -> Unit) {
     Column(Modifier.fillMaxWidth().padding(horizontal = 8.dp)) {
         Row {
             TextFallout(
@@ -144,52 +173,32 @@ fun ShowChallenge(activity: MainActivity, challenge: Challenge, isCompleted: Boo
 
         if (isCompleted) {
             fun dailyCompleted(save: Save) {
-                if (isInfinite) {
+                if (challenge is ChallengeInfinite) {
                     challenge.restartChallenge()
-                    saveData(activity)
-                    playDailyCompleted(activity)
-                    updater()
                 } else {
                     save.challengesNew.remove(challenge)
-                    saveData(activity)
-                    playDailyCompleted(activity)
-                    // TODO: redo this achievement!!
-                    // TODO: redo all achievements!!
-                    if (save.challengesNew.size <= 1) {
-                        activity.achievementsClient?.unlock(activity.getString(R.string.achievement_done_for_today))
-                    }
-                    updater()
                 }
+                saveData(activity)
+                playDailyCompleted(activity)
+                updater()
             }
             Spacer(Modifier.height(8.dp))
-            // TODO: custom rewards!!
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
-                TextFallout(
-                    activity.getString(R.string.claim_tickets, "1"),
-                    getTextColor(activity),
-                    getTextStrokeColor(activity),
-                    20.sp,
-                    Modifier
-                        .background(getTextBackgroundColor(activity))
-                        .clickableOk(activity) {
-                            save.tickets += 1
-                            dailyCompleted(save)
-                        }
-                        .padding(8.dp),
-                )
-                TextFallout(
-                    activity.getString(R.string.claim_caps, "20"),
-                    getTextColor(activity),
-                    getTextStrokeColor(activity),
-                    20.sp,
-                    Modifier
-                        .background(getTextBackgroundColor(activity))
-                        .clickableOk(activity) {
-                            save.capsInHand += 20
-                            dailyCompleted(save)
-                        }
-                        .padding(8.dp),
-                )
+                challenge.reward(activity).forEach {
+                    TextFallout(
+                        it.first,
+                        getTextColor(activity),
+                        getTextStrokeColor(activity),
+                        20.sp,
+                        Modifier
+                            .background(getTextBackgroundColor(activity))
+                            .clickableOk(activity) {
+                                it.second()
+                                dailyCompleted(save)
+                            }
+                            .padding(8.dp),
+                    )
+                }
             }
         }
     }

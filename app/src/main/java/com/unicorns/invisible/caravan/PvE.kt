@@ -736,13 +736,6 @@ fun ShowBettingScreen(
                                     setIsBlitz(isBlitz)
                                     setBet(bet.toIntOrNull() ?: 0)
                                     setReward(countRewardLocal())
-
-                                    if (isBlitz) {
-                                        save.silverRushChips -= (bet.toIntOrNull() ?: 0)
-                                    } else {
-                                        save.capsInHand -= (bet.toIntOrNull() ?: 0)
-                                    }
-
                                     saveData(activity)
                                     goForward()
                                 }

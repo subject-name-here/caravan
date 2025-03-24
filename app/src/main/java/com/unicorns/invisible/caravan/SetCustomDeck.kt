@@ -218,7 +218,7 @@ fun SetCustomDeck(
                                 verticalArrangement = Arrangement.Center,
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
-                                if (numbers > 0) {
+                                if (numbers > 1) {
                                     ChangeBackNumber("<", Int::dec)
                                 }
                             }
@@ -284,7 +284,7 @@ fun SetCustomDeck(
                                 verticalArrangement = Arrangement.Center,
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
-                                if (numbers > 0) {
+                                if (numbers > 1) {
                                     ChangeBackNumber(">", Int::inc)
                                 }
                             }
@@ -385,14 +385,14 @@ fun ShowCharacteristics(activity: MainActivity) {
             .fillMaxWidth()
             .wrapContentHeight()
     ) {
-        val deck = save.getCurrentCustomDeck()
+        val deck = save.getCurrentDeckCopy()
         Row(
             Modifier.padding(vertical = 8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             val deckSizeMin = CResources.MIN_DECK_SIZE
-            val color1 = if (save.getCurrentDeckCopy().size < deckSizeMin) Color.Red else getTextColor(activity)
-            val color2 = if (save.getCurrentDeckCopy().size < deckSizeMin) Color.Red else getTextStrokeColor(activity)
+            val color1 = if (deck.size < deckSizeMin) Color.Red else getTextColor(activity)
+            val color2 = if (deck.size < deckSizeMin) Color.Red else getTextStrokeColor(activity)
             TextFallout(
                 text = stringResource(R.string.custom_deck_size, deck.size, deckSizeMin),
                 color1,

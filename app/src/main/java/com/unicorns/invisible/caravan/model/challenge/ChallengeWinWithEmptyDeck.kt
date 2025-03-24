@@ -7,7 +7,7 @@ import kotlinx.serialization.Serializable
 
 
 @Serializable
-class ChallengeWinWithEmptyDeck : Challenge {
+class ChallengeWinWithEmptyDeck : ChallengeDaily {
     private var completedFlag = false
     override fun processMove(move: Challenge.Move, game: Game) {}
 

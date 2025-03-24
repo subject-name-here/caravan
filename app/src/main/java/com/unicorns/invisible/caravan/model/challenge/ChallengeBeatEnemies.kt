@@ -24,7 +24,7 @@ import kotlinx.serialization.Serializable
 
 
 @Serializable
-class ChallengeBeatEnemies(private val code: Int) : Challenge {
+class ChallengeBeatEnemies(private val code: Int) : ChallengeDaily {
     private val enemyList: List<String?>
         get() = when (code) {
             1 -> listOf(EnemyVeronica::class.simpleName, EnemyElijah::class.simpleName)

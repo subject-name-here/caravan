@@ -7,7 +7,7 @@ import kotlinx.serialization.Serializable
 
 
 @Serializable
-class ChallengeAll26(private val weight: Int) : Challenge {
+class ChallengeAll26(private val weight: Int) : ChallengeDaily {
     override fun processMove(
         move: Challenge.Move,
         game: Game
