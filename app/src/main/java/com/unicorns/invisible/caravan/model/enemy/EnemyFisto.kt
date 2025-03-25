@@ -46,7 +46,7 @@ class EnemyFisto : EnemyPvEWithBank() {
     override val maxBank: Int
         get() = 30
     override val bet: Int
-        get() = 10
+        get() = if (bank == 0) 0 else min(bank, 10)
 
     override var winsNoBet: Int = 0
     override var winsBet: Int = 0

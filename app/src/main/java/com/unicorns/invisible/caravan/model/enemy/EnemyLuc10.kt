@@ -22,7 +22,7 @@ class EnemyLuc10 : EnemyPvEWithBank() {
     override val maxBank: Int
         get() = 100
     override val bet: Int
-        get() = 50
+        get() = if (bank == 0) 0 else min(bank, 50)
 
     override var winsNoBet: Int = 0
     override var winsBet: Int = 0

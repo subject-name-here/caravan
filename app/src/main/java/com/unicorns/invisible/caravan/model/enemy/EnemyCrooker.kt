@@ -23,7 +23,7 @@ class EnemyCrooker : EnemyPvEWithBank() {
     override val maxBank: Int
         get() = 150
     override val bet: Int
-        get() = 25
+        get() = if (bank == 0) 0 else min(bank, 25)
 
     override var winsNoBet: Int = 0
     override var winsBet: Int = 0

@@ -14,6 +14,7 @@ import com.unicorns.invisible.caravan.model.primitives.RankFace
 import com.unicorns.invisible.caravan.model.primitives.RankNumber
 import com.unicorns.invisible.caravan.model.primitives.Suit
 import kotlinx.serialization.Serializable
+import kotlin.math.min
 
 
 @Serializable
@@ -42,7 +43,7 @@ class EnemyElijah : EnemyPvEWithBank() {
     override val maxBank: Int
         get() = 60
     override val bet: Int
-        get() = 10
+        get() = if (bank == 0) 0 else min(bank, 10)
 
     override var winsNoBet: Int = 0
     override var winsBet: Int = 0

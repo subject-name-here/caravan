@@ -23,7 +23,7 @@ class EnemyTabitha : EnemyPvEWithBank() {
     override val maxBank: Int
         get() = 40
     override val bet: Int
-        get() = 20
+        get() = if (bank == 0) 0 else min(bank, 20)
 
     override var winsNoBet: Int = 0
     override var winsBet: Int = 0

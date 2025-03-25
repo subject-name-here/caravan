@@ -25,7 +25,7 @@ class ChallengeDailyAll : Challenge {
 
     override fun getProgress(): String {
         val dailys = save.challengesNew
-        return "${dailys.size} / 5"
+        return "${5 - dailys.size} / 5"
     }
 
     override fun reward(activity: MainActivity): List<Pair<String, () -> Unit>> {

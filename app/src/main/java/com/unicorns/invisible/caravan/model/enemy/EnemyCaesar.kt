@@ -25,7 +25,7 @@ class EnemyCaesar : EnemyPvEWithBank() {
     override val maxBank: Int
         get() = 87
     override val bet: Int
-        get() = 29
+        get() = if (bank == 0) 0 else min(bank, 29)
 
     override var winsNoBet: Int = 0
     override var winsBet: Int = 0

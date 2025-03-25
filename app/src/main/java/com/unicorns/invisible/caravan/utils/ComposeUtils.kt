@@ -74,9 +74,10 @@ import com.unicorns.invisible.caravan.model.primitives.CardNumber
 import com.unicorns.invisible.caravan.model.primitives.CardNumberWW
 import com.unicorns.invisible.caravan.model.primitives.CardWildWasteland
 import com.unicorns.invisible.caravan.model.primitives.CardWithPrice
+import com.unicorns.invisible.caravan.model.primitives.RankFace
+import com.unicorns.invisible.caravan.model.primitives.RankNumber
 import com.unicorns.invisible.caravan.model.primitives.Suit
 import kotlin.random.Random
-import kotlin.random.nextInt
 
 
 @Composable
@@ -343,15 +344,54 @@ fun ShowCard(activity: MainActivity, card: Card, modifier: Modifier, scale: Floa
 
                 when (card) {
                     is CardFaceSuited -> {
-                        val rand = Random(22229 + card.rank.value * 113 + card.suit.ordinal)
-                        SuitToStamp(card.suit, card.rank.value * 133)
+                        SuitToStamp(card.suit, card.rank.value * 113)
+                        if (card.rank == RankFace.JACK && card.suit == Suit.HEARTS) {
+                            SuitToStamp(Suit.DIAMONDS, 257)
+                        } else if (card.rank == RankFace.JACK && card.suit == Suit.SPADES) {
+                            val rand = Random(22229 + 147)
+                            val rotation = rand.nextDouble(-4.0, 4.0)
+                            val offset = IntOffset(0, 120) * scale
+                            AsyncImage(
+                                model = ImageRequest.Builder(activity)
+                                    .data(R.drawable.ncr_stamp_warning)
+                                    .decoderFactory(SvgDecoder.Factory())
+                                    .build(),
+                                contentDescription = "",
+                                Modifier.offset { offset }.rotate(rotation.toFloat()),
+                            )
+                        }
                     }
                     is CardJoker -> {
                         val rand = Random(22229 + card.rank.value * 117 + card.number.n)
-                        // TODO
+                        if (card.number == CardJoker.Number.ONE) {
+                            // Moo-ve along.
+                        } else {
+                            SuitToStamp(Suit.DIAMONDS, card.rank.value * 155)
+                            SuitToStamp(Suit.HEARTS, card.rank.value * 175)
+                            SuitToStamp(Suit.SPADES, card.rank.value * 195)
+                            SuitToStamp(Suit.CLUBS, card.rank.value * 215)
+                        }
                     }
                     is CardNumber -> {
-                        SuitToStamp(card.suit, card.rank.value * 131)
+                        if (card.rank == RankNumber.SIX && card.suit == Suit.SPADES) {
+                            val rand = Random(22229 + 214)
+                            val rotation = rand.nextDouble(-4.0, 4.0)
+                            val offset = IntOffset(0, 120) * scale
+                            AsyncImage(
+                                model = ImageRequest.Builder(activity)
+                                    .data(R.drawable.ncr_stamp_usage_denied)
+                                    .decoderFactory(SvgDecoder.Factory())
+                                    .build(),
+                                contentDescription = "",
+                                Modifier.offset { offset }.rotate(rotation.toFloat()),
+                            )
+                        } else {
+                            SuitToStamp(card.suit, card.rank.value * 131)
+                            if (card.rank == RankNumber.FOUR && card.suit == Suit.DIAMONDS) {
+                                SuitToStamp(card.suit, card.rank.value * 134)
+                                SuitToStamp(card.suit, card.rank.value * 138)
+                            }
+                        }
                     }
                 }
             }
