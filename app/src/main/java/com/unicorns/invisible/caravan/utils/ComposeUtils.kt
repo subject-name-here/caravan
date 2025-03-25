@@ -3,15 +3,23 @@ package com.unicorns.invisible.caravan.utils
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.BoxWithConstraintsScope
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.grid.LazyGridState
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxColors
@@ -57,6 +65,10 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.decode.SvgDecoder
 import coil.request.ImageRequest
+import com.composables.core.ScrollArea
+import com.composables.core.Thumb
+import com.composables.core.VerticalScrollbar
+import com.composables.core.rememberScrollAreaState
 import com.unicorns.invisible.caravan.MainActivity
 import com.unicorns.invisible.caravan.R
 import com.unicorns.invisible.caravan.model.CardBack
@@ -292,7 +304,7 @@ fun ShowCard(activity: MainActivity, card: Card, modifier: Modifier, scale: Floa
                                     .decoderFactory(SvgDecoder.Factory())
                                     .build(),
                                 contentDescription = "",
-                                modifier = Modifier.scale(0.75f).offset { IntOffset(0, 120) * scale }.rotate(rotation.toFloat()),
+                                modifier = Modifier.scale(0.75f).offset { IntOffset(0, rand.nextInt(90, 150)) * scale }.rotate(rotation.toFloat()),
                             )
                         }
                         Suit.CLUBS -> {
@@ -306,7 +318,7 @@ fun ShowCard(activity: MainActivity, card: Card, modifier: Modifier, scale: Floa
                                 Modifier.offset { IntOffset(90, 0) * scale }.rotate(rotation.toFloat()),
                             )
                         }
-                        Suit.DIAMONDS -> {
+                        Suit.SPADES -> {
                             val rotation = rand.nextDouble(-10.0, 10.0)
                             val offset = IntOffset(rand.nextInt(-5, 70).toInt(), rand.nextInt(-10, 170).toInt()) * scale
                             AsyncImage(
@@ -318,7 +330,7 @@ fun ShowCard(activity: MainActivity, card: Card, modifier: Modifier, scale: Floa
                                 Modifier.offset { offset }.rotate(rotation.toFloat()),
                             )
                         }
-                        Suit.SPADES -> {
+                        Suit.DIAMONDS -> {
                             val rotation1 = rand.nextDouble(-10.0, 10.0)
                             val rotation2 = rand.nextDouble(-2.5, 2.5)
                             Box(Modifier.scale(0.75f).offset { IntOffset(0, 150) * scale }.rotate(rotation1.toFloat())) {
@@ -346,8 +358,8 @@ fun ShowCard(activity: MainActivity, card: Card, modifier: Modifier, scale: Floa
                     is CardFaceSuited -> {
                         SuitToStamp(card.suit, card.rank.value * 113)
                         if (card.rank == RankFace.JACK && card.suit == Suit.HEARTS) {
-                            SuitToStamp(Suit.DIAMONDS, 257)
-                        } else if (card.rank == RankFace.JACK && card.suit == Suit.SPADES) {
+                            SuitToStamp(Suit.CLUBS, 257)
+                        } else if (card.rank == RankFace.JACK && card.suit == Suit.CLUBS) {
                             val rand = Random(22229 + 147)
                             val rotation = rand.nextDouble(-4.0, 4.0)
                             val offset = IntOffset(0, 120) * scale
@@ -362,9 +374,25 @@ fun ShowCard(activity: MainActivity, card: Card, modifier: Modifier, scale: Floa
                         }
                     }
                     is CardJoker -> {
-                        val rand = Random(22229 + card.rank.value * 117 + card.number.n)
                         if (card.number == CardJoker.Number.ONE) {
-                            // Moo-ve along.
+                            Box(Modifier.offset { IntOffset(0, 50) * scale }.rotate(4f)) {
+                                AsyncImage(
+                                    model = ImageRequest.Builder(activity)
+                                        .data(R.drawable.moove_along_1)
+                                        .decoderFactory(SvgDecoder.Factory())
+                                        .build(),
+                                    contentDescription = "",
+                                    Modifier.scale(0.75f)
+                                )
+                                AsyncImage(
+                                    model = ImageRequest.Builder(activity)
+                                        .data(R.drawable.moove_along_2)
+                                        .decoderFactory(SvgDecoder.Factory())
+                                        .build(),
+                                    contentDescription = "",
+                                    Modifier.scale(0.8f).offset { IntOffset(50, 100) * scale }.rotate(5f),
+                                )
+                            }
                         } else {
                             SuitToStamp(Suit.DIAMONDS, card.rank.value * 155)
                             SuitToStamp(Suit.HEARTS, card.rank.value * 175)
@@ -387,7 +415,7 @@ fun ShowCard(activity: MainActivity, card: Card, modifier: Modifier, scale: Floa
                             )
                         } else {
                             SuitToStamp(card.suit, card.rank.value * 131)
-                            if (card.rank == RankNumber.FOUR && card.suit == Suit.DIAMONDS) {
+                            if (card.rank == RankNumber.FOUR && card.suit == Suit.SPADES) {
                                 SuitToStamp(card.suit, card.rank.value * 134)
                                 SuitToStamp(card.suit, card.rank.value * 138)
                             }
@@ -448,87 +476,6 @@ fun Modifier.scrollbar(
             }
 
             val firstItemSize = firstVisibleItem.size
-            val estimatedFullListSize = firstItemSize * state.layoutInfo.totalItemsCount - 1
-
-            if (viewportSize > estimatedFullListSize) {
-                return@drawWithContent
-            }
-
-            val viewportOffsetInFullListSpace =
-                state.firstVisibleItemIndex * firstItemSize + state.firstVisibleItemScrollOffset
-
-            // Where we should render the knob in our composable.
-            val knobPosition = (viewportSize / estimatedFullListSize) * viewportOffsetInFullListSpace
-            // How large should the knob be.
-            val knobSize = (viewportSize / estimatedFullListSize) * viewportSize
-
-            // Draw the track
-            drawRoundRect(
-                color = trackColor,
-                topLeft = when {
-                    // When the scrollbar is horizontal and aligned to the bottom:
-                    horizontal && alignEnd -> Offset(0f, size.height - thickness)
-                    // When the scrollbar is horizontal and aligned to the top:
-                    horizontal && !alignEnd -> Offset(0f, 0f)
-                    // When the scrollbar is vertical and aligned to the end:
-                    alignEnd -> Offset(size.width - thickness, 0f)
-                    // When the scrollbar is vertical and aligned to the start:
-                    else -> Offset(0f, 0f)
-                },
-                size = if (horizontal) {
-                    Size(size.width, thickness.toFloat())
-                } else {
-                    Size(thickness.toFloat(), size.height)
-                },
-            )
-
-            // Draw the knob
-            drawRoundRect(
-                color = knobColor,
-                topLeft =
-                    when {
-                        // When the scrollbar is horizontal and aligned to the bottom:
-                        horizontal && alignEnd -> Offset(
-                            knobPosition,
-                            size.height - thickness * 3 / 4
-                        )
-                        // When the scrollbar is horizontal and aligned to the top:
-                        horizontal && !alignEnd -> Offset(knobPosition, thickness / 4f)
-                        // When the scrollbar is vertical and aligned to the end:
-                        alignEnd -> Offset(size.width - thickness * 3 / 4, knobPosition)
-                        // When the scrollbar is vertical and aligned to the start:
-                        else -> Offset(thickness / 4f, knobPosition)
-                    },
-                size = if (horizontal) {
-                    Size(knobSize, thickness.toFloat() / 2)
-                } else {
-                    Size(thickness.toFloat() / 2, knobSize)
-                },
-            )
-        }
-    }
-}
-
-@Composable
-fun Modifier.scrollbar(
-    state: LazyGridState,
-    horizontal: Boolean = false,
-    alignEnd: Boolean = true,
-    thickness: Int = 8,
-    knobColor: Color,
-    trackColor: Color,
-): Modifier {
-    return drawWithContent {
-        drawContent()
-
-        state.layoutInfo.visibleItemsInfo.firstOrNull()?.let { firstVisibleItem ->
-            val viewportSize = if (horizontal) {
-                size.width
-            } else {
-                size.height
-            }
-
-            val firstItemSize = if (horizontal) firstVisibleItem.size.width else firstVisibleItem.size.height
             val estimatedFullListSize = firstItemSize * state.layoutInfo.totalItemsCount - 1
 
             if (viewportSize > estimatedFullListSize) {
@@ -830,7 +777,7 @@ fun MenuItemOpen(
     activity: MainActivity,
     name: String, back: String,
     goBack: () -> Unit,
-    mainBlock: @Composable () -> Unit
+    mainBlock: @Composable BoxWithConstraintsScope.() -> Unit
 ) {
     Scaffold(bottomBar = {
         Row(Modifier
@@ -881,12 +828,29 @@ fun MenuItemOpen(
             }
         }
     }) { innerPadding ->
-        Box(Modifier
+        BoxWithConstraints(Modifier
             .padding(innerPadding)
             .background(getBackgroundColor(activity))
             .padding(horizontal = 12.dp - 4.pxToDp(), vertical = 4.dp)
         ) {
-            mainBlock()
+            val lazyListState = rememberLazyListState()
+            val state = rememberScrollAreaState(lazyListState)
+            ScrollArea(state) {
+                LazyColumn(state = lazyListState, modifier = Modifier.fillMaxSize()) {
+                    item {
+                        mainBlock()
+                    }
+                }
+                VerticalScrollbar(
+                    modifier = Modifier.align(Alignment.TopEnd)
+                        .fillMaxHeight()
+                        .background(getTrackColor(activity))
+                        .width(10.dp)
+                ) {
+                    Thumb(Modifier.background(getKnobColor(activity)).width(4.dp))
+                }
+            }
+
         }
     }
 }

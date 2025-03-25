@@ -43,8 +43,7 @@ data object EnemyStory1 : Enemy {
                     }
                 }
             }
-            card as CardFace
-            if (card.rank == RankFace.JACK) {
+            if (card is CardFace && card.rank == RankFace.JACK) {
                 val caravan = game.enemyCaravans.filter { it.getValue() > 26 }.randomOrNull()
                 if (caravan != null) {
                     val cardToAdd = caravan.cards.maxBy { it.getValue() }
@@ -54,7 +53,7 @@ data object EnemyStory1 : Enemy {
                     }
                 }
             }
-            if (card.rank == RankFace.KING) {
+            if (card is CardFace && card.rank == RankFace.KING) {
                 val caravan =
                     game.enemyCaravans.filter { it.getValue() < 21 }.randomOrNull()
                 if (caravan != null) {

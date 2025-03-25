@@ -79,4 +79,5 @@ dependencies {
 
     implementation(libs.compose.runtime)
     implementation(libs.resaca)
+    implementation(libs.scrollbar)
 }

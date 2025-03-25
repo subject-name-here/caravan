@@ -33,14 +33,15 @@ class ChallengeDailyAll : Challenge {
             return !save.isCardAvailableAlready(card)
         }
 
-        val deck = CollectibleDeck(CardBack.STANDARD, 1)
+        val rewardBack = CardBack.STANDARD_UNCOMMON
+        val deck = CollectibleDeck(rewardBack)
         val card = deck.toList().filter(::isCardNew).randomOrNull(Random(save.dailyHash))
 
         return listOf(
             if (card != null) {
                 activity.getString(R.string.claim_card) to { save.addCard(card) }
             } else {
-                val prize = (CardBack.STANDARD.getRarityMult(1) * 10.0).toInt()
+                val prize = (rewardBack.getRarityMult() * CardBack.BASE_CARD_COST).toInt()
                 activity.getString(R.string.claim_caps, prize.toString()) to { save.capsInHand += prize }
             }
         )

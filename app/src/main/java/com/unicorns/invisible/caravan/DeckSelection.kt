@@ -31,6 +31,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.composables.core.ScrollArea
+import com.composables.core.VerticalScrollbar
 import com.sebaslogen.resaca.rememberScoped
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.primitives.Card
@@ -62,7 +64,7 @@ fun DeckSelection(
 ) {
     var selectedDeck by rememberScoped { mutableStateOf(save.selectedDeck) }
     @Composable
-    fun getModifier(cardBack: CardBack, number: Int): Modifier {
+    fun getModifier(cardBack: CardBack): Modifier {
         if (cardBack to number !in save.availableDecks) {
             return Modifier.padding(4.dp).alpha(0.33f)
         }
@@ -89,63 +91,47 @@ fun DeckSelection(
     }
 
     MenuItemOpen(activity, stringResource(R.string.menu_deck), "<-", goBack) {
-        val state = rememberLazyGridState()
-        LazyVerticalGrid(
-            columns = GridCells.FixedSize(183.pxToDp() + 8.dp),
-            modifier = Modifier
-                .fillMaxSize()
-                .background(getBackgroundColor(activity))
-                .scrollbar(
-                    state,
-                    knobColor = getKnobColor(activity),
-                    trackColor = getTrackColor(activity),
-                    horizontal = false
-                ).padding(4.dp),
-            horizontalArrangement = Arrangement.Center
-        ) {
-            item(span = { GridItemSpan(maxLineSpan) }) {
-                Spacer(modifier = Modifier.height(16.dp))
-                Column(verticalArrangement = Arrangement.Top, horizontalAlignment = Alignment.CenterHorizontally) {
-                    TextFallout(
-                        stringResource(R.string.deck_custom),
-                        getTextColor(activity),
-                        getTextStrokeColor(activity),
-                        20.sp,
-                        Modifier
-                            .background(getTextBackgroundColor(activity))
-                            .clickableOk(activity) {
-                                setCustomDeck = true
-                            }
-                            .padding(8.dp),
-                    )
 
-                    Spacer(modifier = Modifier.height(16.dp))
-                    HorizontalDivider(color = getDividerColor(activity))
-                    Spacer(modifier = Modifier.height(16.dp))
+        Column(Modifier.fillMaxSize(), verticalArrangement = Arrangement.Top, horizontalAlignment = Alignment.CenterHorizontally) {
+            Spacer(modifier = Modifier.height(16.dp))
+            TextFallout(
+                stringResource(R.string.deck_custom),
+                getTextColor(activity),
+                getTextStrokeColor(activity),
+                20.sp,
+                Modifier
+                    .background(getTextBackgroundColor(activity))
+                    .clickableOk(activity) {
+                        setCustomDeck = true
+                    }
+                    .padding(8.dp),
+            )
 
-                    TextFallout(
-                        stringResource(R.string.deck_select),
-                        getTextColor(activity),
-                        getTextStrokeColor(activity),
-                        24.sp,
-                        Modifier,
-                    )
-                }
-            }
+            Spacer(modifier = Modifier.height(16.dp))
+            HorizontalDivider(color = getDividerColor(activity))
+            Spacer(modifier = Modifier.height(16.dp))
+
+            TextFallout(
+                stringResource(R.string.deck_select),
+                getTextColor(activity),
+                getTextStrokeColor(activity),
+                24.sp,
+                Modifier,
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
 
             @Composable
-            fun showDeckBack(back: CardBack, number: Int) {
+            fun showDeckBack(back: CardBack) {
                 ShowCardBack(
                     activity,
-                    CardNumber(RankNumber.ACE, Suit.SPADES, back, number),
-                    getModifier(back, number)
+                    CardNumber(RankNumber.ACE, Suit.SPADES, back),
+                    getModifier(back)
                 )
             }
 
             CardBack.entries.forEach { back ->
-                items(count = back.nameIdWithBackFileName.size) { index ->
-                    showDeckBack(back, index)
-                }
+                showDeckBack(back)
             }
         }
     }

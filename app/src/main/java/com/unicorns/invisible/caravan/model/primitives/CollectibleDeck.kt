@@ -13,19 +13,19 @@ class CollectibleDeck() {
     val size: Int
         get() = cards.size
 
-    constructor(back: CardBack, backNumber: Int): this() {
+    constructor(back: CardBack): this() {
         RankNumber.entries.forEach { rank ->
             Suit.entries.forEach { suit ->
-                cards.add(CardNumber(rank, suit, back, backNumber))
+                cards.add(CardNumber(rank, suit, back))
             }
         }
         Suit.entries.forEach { suit ->
-            cards.add(CardFaceSuited(RankFace.JACK, suit, back, backNumber))
-            cards.add(CardFaceSuited(RankFace.QUEEN, suit, back, backNumber))
-            cards.add(CardFaceSuited(RankFace.KING, suit, back, backNumber))
+            cards.add(CardFaceSuited(RankFace.JACK, suit, back))
+            cards.add(CardFaceSuited(RankFace.QUEEN, suit, back))
+            cards.add(CardFaceSuited(RankFace.KING, suit, back))
         }
-        cards.add(CardJoker(CardJoker.Number.ONE, back, backNumber))
-        cards.add(CardJoker(CardJoker.Number.TWO, back, backNumber))
+        cards.add(CardJoker(CardJoker.Number.ONE, back))
+        cards.add(CardJoker(CardJoker.Number.TWO, back))
     }
 
     fun toCardList(): List<Card> = cards.map {

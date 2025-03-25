@@ -16,10 +16,9 @@ data object CheatUltimate : Cheat {
         showAlertDialog: (String, String) -> Unit
     ) {
         CardBack.entries.forEach { back ->
-            back.nameIdWithBackFileName.indices.forEach { backNum ->
-                val deck = CollectibleDeck(back, backNum)
-                save.addCard(deck.toList().random())
-            }
+            val deck = CollectibleDeck(back)
+            save.addCard(deck.toList().random())
+            save.addCard(deck.toList().random())
         }
 
         saveData(activity)

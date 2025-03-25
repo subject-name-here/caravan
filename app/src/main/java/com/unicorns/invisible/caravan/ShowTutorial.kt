@@ -64,16 +64,16 @@ fun Tutorial(
     val game: Game = rememberScoped {
         Game(
             CResources(CustomDeck().apply {
-                add(CardFaceSuited(RankFace.JACK, Suit.HEARTS, CardBack.STANDARD, 0))
-                add(CardFaceSuited(RankFace.QUEEN, Suit.CLUBS, CardBack.STANDARD, 0))
-                add(CardFaceSuited(RankFace.KING, Suit.DIAMONDS, CardBack.STANDARD, 0))
-                add(CardJoker(CardJoker.Number.TWO, CardBack.STANDARD, 0))
-                add(CardNumber(RankNumber.TWO, Suit.HEARTS, CardBack.STANDARD, 0))
-                add(CardNumber(RankNumber.TWO, Suit.DIAMONDS, CardBack.STANDARD, 0))
-                add(CardNumber(RankNumber.TWO, Suit.CLUBS, CardBack.STANDARD, 0))
-                add(CardNumber(RankNumber.THREE, Suit.HEARTS, CardBack.STANDARD, 0))
-                add(CardNumber(RankNumber.FOUR, Suit.DIAMONDS, CardBack.STANDARD, 0))
-                add(CardNumber(RankNumber.ACE, Suit.DIAMONDS, CardBack.STANDARD, 0))
+                add(CardFaceSuited(RankFace.JACK, Suit.HEARTS, CardBack.STANDARD))
+                add(CardFaceSuited(RankFace.QUEEN, Suit.CLUBS, CardBack.STANDARD))
+                add(CardFaceSuited(RankFace.KING, Suit.DIAMONDS, CardBack.STANDARD))
+                add(CardJoker(CardJoker.Number.TWO, CardBack.STANDARD))
+                add(CardNumber(RankNumber.TWO, Suit.HEARTS, CardBack.STANDARD))
+                add(CardNumber(RankNumber.TWO, Suit.DIAMONDS, CardBack.STANDARD))
+                add(CardNumber(RankNumber.TWO, Suit.CLUBS, CardBack.STANDARD))
+                add(CardNumber(RankNumber.THREE, Suit.HEARTS, CardBack.STANDARD))
+                add(CardNumber(RankNumber.FOUR, Suit.DIAMONDS, CardBack.STANDARD))
+                add(CardNumber(RankNumber.ACE, Suit.DIAMONDS, CardBack.STANDARD))
             }),
             EnemyTutorial().apply {
                 onRemoveFromHand = { updater = !updater }

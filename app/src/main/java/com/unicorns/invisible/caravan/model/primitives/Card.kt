@@ -30,13 +30,11 @@ sealed class CardBase : Card() {
 @Serializable
 sealed interface CardWithPrice {
     fun getBack(): CardBack
-    fun getBackNumber(): Int
     fun getRankPriceMult(): Double
     fun getPriceOfCard(): Int {
         val base = 15.0
         val back = getBack()
-        val backNumber = getBackNumber()
-        val rarityMult = back.getRarityMult(backNumber)
+        val rarityMult = back.getRarityMult()
         return (base * getRankPriceMult() * rarityMult).toInt()
     }
 }
@@ -46,10 +44,8 @@ data class CardNumber(
     override val rank: RankNumber,
     override val suit: Suit,
     val cardBack: CardBack,
-    val cardBackNumber: Int,
 ) : CardBase(), CardWithPrice {
     override fun getBack() = cardBack
-    override fun getBackNumber() = cardBackNumber
     override fun getRankPriceMult(): Double {
         return when (rank) {
             RankNumber.ACE, RankNumber.SIX -> 1.0
@@ -70,10 +66,8 @@ data class CardNumberWW(
 sealed class CardFace : CardModifier(), CardWithPrice {
     abstract val rank: RankFace
     abstract val cardBack: CardBack
-    abstract val cardBackNumber: Int
 
     override fun getBack() = cardBack
-    override fun getBackNumber() = cardBackNumber
     override fun getRankPriceMult(): Double {
         return when (rank) {
             RankFace.JACK -> 1.35
@@ -87,7 +81,6 @@ sealed class CardFace : CardModifier(), CardWithPrice {
 data class CardJoker(
     val number: Number,
     override val cardBack: CardBack,
-    override val cardBackNumber: Int
 ) : CardFace() {
     enum class Number(val n: Int) {
         ONE(1),
@@ -102,7 +95,6 @@ data class CardFaceSuited(
     override val rank: RankFace,
     val suit: Suit,
     override val cardBack: CardBack,
-    override val cardBackNumber: Int,
 ) : CardFace()
 
 enum class WWType {

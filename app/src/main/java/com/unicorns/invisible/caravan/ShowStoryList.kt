@@ -248,18 +248,18 @@ fun getDeck(chapterNumber: Int): CustomDeck {
         }
         12 -> {
             CustomDeck(CardBack.STANDARD, 0).apply {
-                add(CardNumber(RankNumber.ACE, Suit.SPADES, CardBack.SIERRA_MADRE, 1))
-                add(CardFaceSuited(RankFace.KING, Suit.SPADES, CardBack.SIERRA_MADRE, 1))
-                add(CardFaceSuited(RankFace.QUEEN, Suit.SPADES, CardBack.SIERRA_MADRE, 1))
-                add(CardFaceSuited(RankFace.JACK, Suit.SPADES, CardBack.SIERRA_MADRE, 1))
-                add(CardNumber(RankNumber.TEN, Suit.SPADES, CardBack.SIERRA_MADRE, 1))
+                add(CardNumber(RankNumber.ACE, Suit.SPADES, CardBack.SIERRA_MADRE_CLEAN))
+                add(CardFaceSuited(RankFace.KING, Suit.SPADES, CardBack.SIERRA_MADRE_CLEAN))
+                add(CardFaceSuited(RankFace.QUEEN, Suit.SPADES, CardBack.SIERRA_MADRE_CLEAN))
+                add(CardFaceSuited(RankFace.JACK, Suit.SPADES, CardBack.SIERRA_MADRE_CLEAN))
+                add(CardNumber(RankNumber.TEN, Suit.SPADES, CardBack.SIERRA_MADRE_CLEAN))
             }
         }
         13 -> {
             CustomDeck().apply {
-                add(CardNumber(RankNumber.ACE, Suit.SPADES, CardBack.GOMORRAH, 0))
-                add(CardNumber(RankNumber.ACE, Suit.SPADES, CardBack.ULTRA_LUXE, 0))
-                add(CardNumber(RankNumber.ACE, Suit.SPADES, CardBack.TOPS, 0))
+                add(CardNumber(RankNumber.ACE, Suit.SPADES, CardBack.GOMORRAH))
+                add(CardNumber(RankNumber.ACE, Suit.SPADES, CardBack.ULTRA_LUXE))
+                add(CardNumber(RankNumber.ACE, Suit.SPADES, CardBack.TOPS))
             }
         }
         else -> CustomDeck()
@@ -444,7 +444,7 @@ fun ShowStoryChapter3(
             {},
             { gameResult = 1; advanceChapter() },
             { gameResult = -1 },
-            { isGame = false }
+            { if (gameResult == 0) gameResult = -1; isGame = false }
         )
         return
     }

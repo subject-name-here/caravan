@@ -74,8 +74,7 @@ class EnemyStory2 : Enemy {
                     }
                 }
             }
-            card as CardFace
-            if (card.rank == RankFace.JACK) {
+            if (card is CardFace && card.rank == RankFace.JACK) {
                 val caravan =
                     game.playerCaravans.filter { it.getValue() in (21..26) }.randomOrNull()
                 if (caravan != null) {

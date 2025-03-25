@@ -106,99 +106,84 @@ fun ShowRules(activity: MainActivity, goBack: () -> Unit) {
 
             Spacer(Modifier.height(8.dp))
 
-            val state = rememberLazyListState()
-            LazyColumn(
-                Modifier
-                    .fillMaxSize()
-                    .background(getBackgroundColor(activity))
-                    .scrollbar(
-                        state,
-                        horizontal = false,
-                        knobColor = getKnobColor(activity),
-                        trackColor = getTrackColor(activity),
-                    ), state = state
-            ) {
-                item {
-                    Spacer(modifier = Modifier.height(16.dp))
-                    when (selectedTab) {
-                        0 -> {
-                            Column {
-                                @Composable
-                                fun ShowRulesSection(s: String) {
-                                    Spacer(modifier = Modifier.height(16.dp))
-                                    TextFallout(
-                                        s,
-                                        getTextColor(activity),
-                                        getTextStrokeColor(activity),
-                                        20.sp,
-                                        Modifier.padding(horizontal = 8.dp),
-                                        textAlignment = TextAlign.Start
-                                    )
-                                    Spacer(modifier = Modifier.height(16.dp))
-                                }
-                                ShowRulesSection(stringResource(R.string.better_rules_body_1))
-                                ShowRulesSection(stringResource(R.string.better_rules_body_2))
-                                ShowRulesSection(stringResource(R.string.better_rules_body_3))
-                                ShowRulesSection(stringResource(R.string.better_rules_body_4))
-                                ShowRulesSection(stringResource(R.string.better_rules_body_5))
-                                ShowRulesSection(stringResource(R.string.better_rules_body_6))
-                                ShowRulesSection(stringResource(R.string.better_rules_body_7))
-                                HorizontalDivider(color = getDividerColor(activity))
-                                ShowRulesSection(stringResource(R.string.better_rules_body_finale))
-                            }
-                        }
-                        1 -> {
+            Spacer(Modifier.height(16.dp))
+            when (selectedTab) {
+                0 -> {
+                    Column {
+                        @Composable
+                        fun ShowRulesSection(s: String) {
+                            Spacer(modifier = Modifier.height(16.dp))
                             TextFallout(
-                                rules,
+                                s,
                                 getTextColor(activity),
                                 getTextStrokeColor(activity),
                                 20.sp,
                                 Modifier.padding(horizontal = 8.dp),
                                 textAlignment = TextAlign.Start
                             )
+                            Spacer(modifier = Modifier.height(16.dp))
                         }
-                        2 -> {
-                            @Composable
-                            fun showQA(line: String) {
-                                TextFallout(
-                                    line,
-                                    getTextColor(activity),
-                                    getTextStrokeColor(activity),
-                                    18.sp,
-                                    Modifier.padding(horizontal = 8.dp),
-                                    textAlignment = TextAlign.Start
-                                )
-                            }
-                            Spacer(Modifier.height(20.dp))
-                            showQA(stringResource(R.string.faq_q1))
-                            Spacer(Modifier.height(8.dp))
-                            showQA(stringResource(R.string.faq_a1))
-                            Spacer(Modifier.height(20.dp))
-                            showQA(stringResource(R.string.faq_q2))
-                            Spacer(Modifier.height(8.dp))
-                            showQA(stringResource(R.string.faq_a2))
-                            Spacer(Modifier.height(20.dp))
-                            showQA(stringResource(R.string.faq_q3))
-                            Spacer(Modifier.height(8.dp))
-                            showQA(stringResource(R.string.faq_a3))
-                            Spacer(Modifier.height(20.dp))
-                            showQA(stringResource(R.string.faq_q4))
-                            Spacer(Modifier.height(8.dp))
-                            showQA(stringResource(R.string.faq_a4))
-                            Spacer(Modifier.height(20.dp))
-                            showQA(stringResource(R.string.faq_q5))
-                            Spacer(Modifier.height(8.dp))
-                            showQA(stringResource(R.string.faq_a5))
-                            Spacer(Modifier.height(20.dp))
-                            showQA(stringResource(R.string.faq_ql))
-                            Spacer(Modifier.height(8.dp))
-                            showQA(stringResource(R.string.faq_al))
-                            Spacer(Modifier.height(20.dp))
-                        }
+                        ShowRulesSection(stringResource(R.string.better_rules_body_1))
+                        ShowRulesSection(stringResource(R.string.better_rules_body_2))
+                        ShowRulesSection(stringResource(R.string.better_rules_body_3))
+                        ShowRulesSection(stringResource(R.string.better_rules_body_4))
+                        ShowRulesSection(stringResource(R.string.better_rules_body_5))
+                        ShowRulesSection(stringResource(R.string.better_rules_body_6))
+                        ShowRulesSection(stringResource(R.string.better_rules_body_7))
+                        HorizontalDivider(color = getDividerColor(activity))
+                        ShowRulesSection(stringResource(R.string.better_rules_body_finale))
                     }
-                    Spacer(modifier = Modifier.height(16.dp))
+                }
+                1 -> {
+                    TextFallout(
+                        rules,
+                        getTextColor(activity),
+                        getTextStrokeColor(activity),
+                        20.sp,
+                        Modifier.padding(horizontal = 8.dp),
+                        textAlignment = TextAlign.Start
+                    )
+                }
+                2 -> {
+                    @Composable
+                    fun showQA(line: String) {
+                        TextFallout(
+                            line,
+                            getTextColor(activity),
+                            getTextStrokeColor(activity),
+                            18.sp,
+                            Modifier.padding(horizontal = 8.dp),
+                            textAlignment = TextAlign.Start
+                        )
+                    }
+                    Spacer(Modifier.height(20.dp))
+                    showQA(stringResource(R.string.faq_q1))
+                    Spacer(Modifier.height(8.dp))
+                    showQA(stringResource(R.string.faq_a1))
+                    Spacer(Modifier.height(20.dp))
+                    showQA(stringResource(R.string.faq_q2))
+                    Spacer(Modifier.height(8.dp))
+                    showQA(stringResource(R.string.faq_a2))
+                    Spacer(Modifier.height(20.dp))
+                    showQA(stringResource(R.string.faq_q3))
+                    Spacer(Modifier.height(8.dp))
+                    showQA(stringResource(R.string.faq_a3))
+                    Spacer(Modifier.height(20.dp))
+                    showQA(stringResource(R.string.faq_q4))
+                    Spacer(Modifier.height(8.dp))
+                    showQA(stringResource(R.string.faq_a4))
+                    Spacer(Modifier.height(20.dp))
+                    showQA(stringResource(R.string.faq_q5))
+                    Spacer(Modifier.height(8.dp))
+                    showQA(stringResource(R.string.faq_a5))
+                    Spacer(Modifier.height(20.dp))
+                    showQA(stringResource(R.string.faq_ql))
+                    Spacer(Modifier.height(8.dp))
+                    showQA(stringResource(R.string.faq_al))
+                    Spacer(Modifier.height(20.dp))
                 }
             }
+            Spacer(modifier = Modifier.height(16.dp))
         }
     }
 }

@@ -84,8 +84,7 @@ class EnemyStory3(val showMessage: (Int) -> Unit) : Enemy {
                     }
                 }
             }
-            card as CardFace
-            if (card.rank == RankFace.JACK) {
+            if (card is CardFace && card.rank == RankFace.JACK) {
                 val caravan = game.enemyCaravans.filter { it.getValue() > 26 }.randomOrNull()
                 if (caravan != null) {
                     val cardToAdd = caravan.cards.maxBy { it.getValue() }
@@ -95,7 +94,7 @@ class EnemyStory3(val showMessage: (Int) -> Unit) : Enemy {
                     }
                 }
             }
-            if (card.rank == RankFace.JACK) {
+            if (card is CardFace && card.rank == RankFace.JACK) {
                 val caravan = game.playerCaravans.filter { it.getValue() in (16..26) }
                     .maxByOrNull { it.getValue() }
                 val cardToJack = caravan?.cards?.maxBy { it.getValue() }
@@ -104,7 +103,7 @@ class EnemyStory3(val showMessage: (Int) -> Unit) : Enemy {
                     return
                 }
             }
-            if (card.rank == RankFace.KING) {
+            if (card is CardFace && card.rank == RankFace.KING) {
                 val caravan =
                     game.enemyCaravans.filter { it.getValue() < 21 }.randomOrNull()
                 if (caravan != null) {
@@ -117,7 +116,7 @@ class EnemyStory3(val showMessage: (Int) -> Unit) : Enemy {
                     }
                 }
             }
-            if (card.rank == RankFace.KING) {
+            if (card is CardFace && card.rank == RankFace.KING) {
                 val caravan =
                     game.playerCaravans.filter { it.getValue() in (21..26) }.randomOrNull()
                 if (caravan != null) {
@@ -129,7 +128,7 @@ class EnemyStory3(val showMessage: (Int) -> Unit) : Enemy {
                 }
             }
 
-            if (card is CardJoker) {
+            if (card is CardFace && card is CardJoker) {
                 val cards = (game.playerCaravans + game.enemyCaravans).flatMap { it.cards }.groupBy { it.card.rank }
                 val maxRank = cards.entries.maxBy { it.value.size }
                 val cardsRank = maxRank.value

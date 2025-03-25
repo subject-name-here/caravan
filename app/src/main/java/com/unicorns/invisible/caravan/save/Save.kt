@@ -49,19 +49,12 @@ import kotlin.math.max
 @Serializable
 class Save(var playerId: String? = null) {
     @EncodeDefault
-    var selectedDeck: Pair<CardBack, Int> = CardBack.STANDARD to 0
+    var selectedDeck: CardBack = CardBack.STANDARD
 
-    private val customDeck: CollectibleDeck = CollectibleDeck(CardBack.STANDARD, 0)
-    private val backNumbersChosen = CardBack.entries.associateWith { 0 }.toMutableMap()
-
-    private val customDeck2: CollectibleDeck = CollectibleDeck(CardBack.STANDARD, 0)
-    private val backNumbersChosen2 = CardBack.entries.associateWith { 0 }.toMutableMap()
-
-    private val customDeck3: CollectibleDeck = CollectibleDeck(CardBack.STANDARD, 0)
-    private val backNumbersChosen3 = CardBack.entries.associateWith { 0 }.toMutableMap()
-
-    private val customDeck4: CollectibleDeck = CollectibleDeck(CardBack.STANDARD, 0)
-    private val backNumbersChosen4 = CardBack.entries.associateWith { 0 }.toMutableMap()
+    private val customDeck: CollectibleDeck = CollectibleDeck(CardBack.STANDARD)
+    private val customDeck2: CollectibleDeck = CollectibleDeck(CardBack.STANDARD)
+    private val customDeck3: CollectibleDeck = CollectibleDeck(CardBack.STANDARD)
+    private val customDeck4: CollectibleDeck = CollectibleDeck(CardBack.STANDARD)
 
     @EncodeDefault
     var activeCustomDeck = 1
@@ -71,15 +64,9 @@ class Save(var playerId: String? = null) {
         4 -> customDeck4
         else -> customDeck
     }
-    fun getBackNumbersChosenMap() = when (activeCustomDeck) {
-        2 -> backNumbersChosen2
-        3 -> backNumbersChosen3
-        4 -> backNumbersChosen4
-        else -> backNumbersChosen
-    }
 
     @EncodeDefault
-    private val availableCards = CollectibleDeck(CardBack.STANDARD, 0)
+    private val availableCards = CollectibleDeck(CardBack.STANDARD)
     fun isCardAvailableAlready(it: CardWithPrice): Boolean {
         return it in availableCards
     }
@@ -88,20 +75,18 @@ class Save(var playerId: String? = null) {
     }
 
     val availableDecks
-        get() = availableCards.toList().map { it.getBack() to it.getBackNumber() }.distinct()
+        get() = availableCards.toList().map { it.getBack() }.distinct()
 
     fun getCurrentDeckCopy(): CollectibleDeck {
         val deck = CollectibleDeck()
         getCurrentCustomDeck().toList().forEach {
-            if (getBackNumbersChosenMap()[it.getBack()] == it.getBackNumber()) {
-                deck.add(
-                    when (it) {
-                        is CardFaceSuited -> CardFaceSuited(it.rank, it.suit, it.getBack(), it.getBackNumber())
-                        is CardJoker -> CardJoker(it.number, it.getBack(), it.getBackNumber())
-                        is CardNumber -> CardNumber(it.rank, it.suit, it.getBack(), it.getBackNumber())
-                    }
-                )
-            }
+            deck.add(
+                when (it) {
+                    is CardFaceSuited -> CardFaceSuited(it.rank, it.suit, it.getBack())
+                    is CardJoker -> CardJoker(it.number, it.getBack())
+                    is CardNumber -> CardNumber(it.rank, it.suit, it.getBack())
+                }
+            )
         }
         return deck
     }
@@ -169,7 +154,7 @@ class Save(var playerId: String? = null) {
     @EncodeDefault
     var capsInHand = 150
     @EncodeDefault
-    var silverRushChips = 100
+    var silverRushChips = 75
     @EncodeDefault
     var tickets = 5
 

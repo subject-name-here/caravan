@@ -48,6 +48,8 @@ ac3 = { group = "com.google.android.libraries.identity.googleid", name = "google
 
 resaca = { group = "io.github.sebaslogen", name = "resaca", version = "4.4.1" }
 
+scrollbar = { group = "com.composables", name = "core", version = "1.20.1" }
+
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 jetbrainsKotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }

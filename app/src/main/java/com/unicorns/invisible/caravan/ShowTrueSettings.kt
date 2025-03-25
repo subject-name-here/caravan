@@ -35,7 +35,6 @@ import com.unicorns.invisible.caravan.cheats.Cheat666
 import com.unicorns.invisible.caravan.cheats.CheatChangeTrack
 import com.unicorns.invisible.caravan.cheats.CheatChina
 import com.unicorns.invisible.caravan.cheats.CheatEraseStoryProgress
-import com.unicorns.invisible.caravan.cheats.CheatFightJoshua
 import com.unicorns.invisible.caravan.cheats.CheatFinalBossesHeroicMusic
 import com.unicorns.invisible.caravan.cheats.CheatLaggySpeed
 import com.unicorns.invisible.caravan.cheats.CheatLevel10
@@ -163,7 +162,6 @@ fun ShowTrueSettings(
                             CheatStash1969,
                             CheatStashEventfulYear,
                             CheatLaggySpeed,
-                            CheatFightJoshua,
                             Cheat666,
                             CheatUltimate,
                         )

@@ -17,6 +17,7 @@ import com.unicorns.invisible.caravan.model.primitives.RankNumber
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 import java.util.UUID
 
@@ -209,9 +210,9 @@ class Game(
 
     private suspend fun processBomb(bombOwner: CardWithModifier, speed: AnimationSpeed) {
         val isFBomb = bombOwner.modifiersCopy().findLast { it is CardNuclear } is CardFBomb
-        (playerCaravans + enemyCaravans).forEach {
-            if (bombOwner !in it.cards) {
-                CoroutineScope(Dispatchers.Unconfined).launch() {
+        (playerCaravans + enemyCaravans).map {
+            CoroutineScope(Dispatchers.Unconfined).launch {
+                if (bombOwner !in it.cards) {
                     if (isFBomb) {
                         // TODO: some bonus
                         it.dropCaravan(speed)
@@ -222,7 +223,7 @@ class Game(
                     }
                 }
             }
-        }
+        }.joinAll()
         bombOwner.deactivateBomb()
     }
 
@@ -284,13 +285,17 @@ class Game(
     private suspend fun putJokerOntoCard(cardWithModifier: CardWithModifier, speed: AnimationSpeed) {
         val card = cardWithModifier.card
         if (card.rank == RankNumber.ACE) {
-            (playerCaravans + enemyCaravans).forEach { caravan ->
-                caravan.jokerRemoveAllSuits(card, speed)
-            }
+            (playerCaravans + enemyCaravans).map { caravan ->
+                CoroutineScope(Dispatchers.Unconfined).launch {
+                    caravan.jokerRemoveAllSuits(card, speed)
+                }
+            }.joinAll()
         } else {
-            (playerCaravans + enemyCaravans).forEach { caravan ->
-                caravan.jokerRemoveAllRanks(card, speed)
-            }
+            (playerCaravans + enemyCaravans).map { caravan ->
+                CoroutineScope(Dispatchers.Unconfined).launch {
+                    caravan.jokerRemoveAllRanks(card, speed)
+                }
+            }.joinAll()
         }
     }
 }

@@ -72,7 +72,7 @@ fun CardToBuy(activity: MainActivity, card: CardWithPrice, price: Int, update: (
                 ShowCardBack(activity, card, Modifier)
             }
 
-            val backName = card.getBack().nameIdWithBackFileName[card.getBackNumber()].first
+            val backName = card.getBack().nameIdWithBackFileName.first
 
             TextFallout(
                 "${rankToSuit.first} ${rankToSuit.second}\n" +
