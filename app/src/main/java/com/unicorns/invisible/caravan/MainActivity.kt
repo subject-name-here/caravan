@@ -22,8 +22,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -93,15 +91,12 @@ import com.unicorns.invisible.caravan.utils.getTextBackgroundColor
 import com.unicorns.invisible.caravan.utils.getTextColor
 import com.unicorns.invisible.caravan.utils.getTextColorByStyle
 import com.unicorns.invisible.caravan.utils.getTextStrokeColor
-import com.unicorns.invisible.caravan.utils.getTrackColor
 import com.unicorns.invisible.caravan.utils.nextSong
 import com.unicorns.invisible.caravan.utils.pauseActivitySound
 import com.unicorns.invisible.caravan.utils.pauseRadio
 import com.unicorns.invisible.caravan.utils.playNotificationSound
-import com.unicorns.invisible.caravan.utils.pxToDp
 import com.unicorns.invisible.caravan.utils.resumeActivitySound
 import com.unicorns.invisible.caravan.utils.resumeRadio
-import com.unicorns.invisible.caravan.utils.scrollbar
 import com.unicorns.invisible.caravan.utils.setAmbientVolume
 import com.unicorns.invisible.caravan.utils.setRadioVolume
 import com.unicorns.invisible.caravan.utils.startRadio
@@ -969,61 +964,43 @@ class MainActivity : SaveDataActivity() {
 
             showStyledMenu()
 
-            val state = rememberLazyListState()
-            LazyColumn(
+            Column(
                 horizontalAlignment = Alignment.Start,
                 verticalArrangement = Arrangement.Center,
                 modifier = Modifier
                     .fillMaxWidth(0.5f)
                     .fillMaxHeight()
                     .padding(bottom = 48.dp, top = 32.dp)
-                    .padding(horizontal = 12.dp - 4.pxToDp())
-                    .scrollbar(
-                        state,
-                        alignEnd = false,
-                        knobColor = getKnobColor(this@MainActivity),
-                        trackColor = getTrackColor(this@MainActivity),
-                        horizontal = false
-                    ),
-                state = state
+                    .padding(horizontal = 20.dp),
             ) {
-                item {
-                    Column(
+                @Composable
+                fun MenuItem(text: String, onClick: () -> Unit) {
+                    TextFallout(
+                        text,
+                        getTextColor(this@MainActivity),
+                        getTextStrokeColor(this@MainActivity),
+                        20.sp,
                         Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 8.dp),
-                        verticalArrangement = Arrangement.Center
-                    ) {
-                        @Composable
-                        fun MenuItem(text: String, onClick: () -> Unit) {
-                            TextFallout(
-                                text,
-                                getTextColor(this@MainActivity),
-                                getTextStrokeColor(this@MainActivity),
-                                20.sp,
-                                Modifier
-                                    .clickableOk(this@MainActivity) {
-                                        onClick()
-                                    }
-                                    .background(getTextBackgroundColor(this@MainActivity))
-                                    .padding(8.dp),
-                            )
-                        }
-                        Spacer(Modifier.height(32.dp))
-                        MenuItem(stringResource(R.string.menu_pve), showPvE)
-                        Spacer(modifier = Modifier.height(16.dp))
-                        MenuItem(stringResource(R.string.menu_pvp), showPvP)
-                        Spacer(modifier = Modifier.height(16.dp))
-                        MenuItem(stringResource(R.string.menu_rules), showRules)
-                        Spacer(modifier = Modifier.height(16.dp))
-                        MenuItem(stringResource(R.string.menu_deck), showDeckSelection)
-                        Spacer(modifier = Modifier.height(16.dp))
-                        MenuItem(stringResource(R.string.missions), showDailys)
-                        Spacer(modifier = Modifier.height(16.dp))
-                        MenuItem(stringResource(R.string.market), showMarket)
-                        Spacer(modifier = Modifier.height(32.dp))
-                    }
+                            .clickableOk(this@MainActivity) {
+                                onClick()
+                            }
+                            .background(getTextBackgroundColor(this@MainActivity))
+                            .padding(8.dp),
+                    )
                 }
+                Spacer(Modifier.height(32.dp))
+                MenuItem(stringResource(R.string.menu_pve), showPvE)
+                Spacer(modifier = Modifier.height(16.dp))
+                MenuItem(stringResource(R.string.menu_pvp), showPvP)
+                Spacer(modifier = Modifier.height(16.dp))
+                MenuItem(stringResource(R.string.menu_rules), showRules)
+                Spacer(modifier = Modifier.height(16.dp))
+                MenuItem(stringResource(R.string.menu_deck), showDeckSelection)
+                Spacer(modifier = Modifier.height(16.dp))
+                MenuItem(stringResource(R.string.missions), showDailys)
+                Spacer(modifier = Modifier.height(16.dp))
+                MenuItem(stringResource(R.string.market), showMarket)
+                Spacer(modifier = Modifier.height(32.dp))
             }
         }
     }

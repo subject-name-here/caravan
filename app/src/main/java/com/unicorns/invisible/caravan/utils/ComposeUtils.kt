@@ -2,6 +2,7 @@ package com.unicorns.invisible.caravan.utils
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.BoxWithConstraintsScope
@@ -16,10 +17,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxColors
@@ -36,11 +34,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.scale
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.ColorMatrix
@@ -72,10 +67,13 @@ import com.composables.core.rememberScrollAreaState
 import com.unicorns.invisible.caravan.MainActivity
 import com.unicorns.invisible.caravan.R
 import com.unicorns.invisible.caravan.model.CardBack
-import com.unicorns.invisible.caravan.model.CardBack.GOMORRAH
-import com.unicorns.invisible.caravan.model.CardBack.STANDARD
-import com.unicorns.invisible.caravan.model.CardBack.TOPS
-import com.unicorns.invisible.caravan.model.CardBack.ULTRA_LUXE
+import com.unicorns.invisible.caravan.model.CardBack.GOMORRAH_DARK
+import com.unicorns.invisible.caravan.model.CardBack.STANDARD_LEGENDARY
+import com.unicorns.invisible.caravan.model.CardBack.STANDARD_MYTHIC
+import com.unicorns.invisible.caravan.model.CardBack.STANDARD_RARE
+import com.unicorns.invisible.caravan.model.CardBack.STANDARD_UNCOMMON
+import com.unicorns.invisible.caravan.model.CardBack.TOPS_RED
+import com.unicorns.invisible.caravan.model.CardBack.ULTRA_LUXE_CRIME
 import com.unicorns.invisible.caravan.model.getCardName
 import com.unicorns.invisible.caravan.model.primitives.Card
 import com.unicorns.invisible.caravan.model.primitives.CardAtomic
@@ -101,14 +99,9 @@ fun Dp.dpToPx() = with(LocalDensity.current) { this@dpToPx.toPx() }
 
 
 
-fun getFilter(back: CardBack, backNumber: Int): ColorFilter {
-    if (backNumber == 0) {
-        return ColorFilter.colorMatrix(ColorMatrix())
-    }
+fun getFilter(back: CardBack): ColorFilter {
     return when (back) {
-        STANDARD -> getBackFilter(back, backNumber)
-
-        TOPS -> ColorFilter.colorMatrix(ColorMatrix().apply {
+        TOPS_RED -> ColorFilter.colorMatrix(ColorMatrix().apply {
             timesAssign(
                 ColorMatrix(
                     floatArrayOf(
@@ -151,7 +144,7 @@ fun getFilter(back: CardBack, backNumber: Int): ColorFilter {
             )
         })
 
-        ULTRA_LUXE -> ColorFilter.colorMatrix(ColorMatrix().apply {
+        ULTRA_LUXE_CRIME -> ColorFilter.colorMatrix(ColorMatrix().apply {
             timesAssign(
                 ColorMatrix(
                     floatArrayOf(
@@ -184,7 +177,7 @@ fun getFilter(back: CardBack, backNumber: Int): ColorFilter {
             )
         })
 
-        GOMORRAH -> ColorFilter.colorMatrix(ColorMatrix().apply {
+        GOMORRAH_DARK -> ColorFilter.colorMatrix(ColorMatrix().apply {
             timesAssign(
                 ColorMatrix(
                     floatArrayOf(
@@ -217,55 +210,53 @@ fun getFilter(back: CardBack, backNumber: Int): ColorFilter {
             )
         })
 
+        STANDARD_UNCOMMON -> getBackFilter(back)
+        STANDARD_RARE -> getBackFilter(back)
+        STANDARD_MYTHIC -> getBackFilter(back)
+        STANDARD_LEGENDARY -> getBackFilter(back)
         else -> ColorFilter.colorMatrix(ColorMatrix())
     }
 }
 
 
-fun getBackFilter(back: CardBack, backNumber: Int): ColorFilter {
+fun getBackFilter(back: CardBack): ColorFilter {
     return when (back) {
-        STANDARD ->
-            when (backNumber) {
-                1 -> {
-                    ColorFilter.colorMatrix(ColorMatrix(floatArrayOf(
+        STANDARD_UNCOMMON -> {
+            ColorFilter.colorMatrix(ColorMatrix(floatArrayOf(
+                0f, 1f, 0f, 0f, 0f,
+                1f, 0f, 0f, 0f, 0f,
+                0f, 0f, 1f, 0f, 0f,
+                0f, 0f, 0f, 1f, 0f
+            )))
+        }
+        STANDARD_RARE -> {
+            ColorFilter.colorMatrix(ColorMatrix(floatArrayOf(
+                0f, 0f, 1f, 0f, 0f,
+                0f, 1f, 0f, 0f, 0f,
+                1f, 0f, 0f, 0f, 0f,
+                0f, 0f, 0f, 1f, 0f
+            )))
+        }
+        STANDARD_MYTHIC -> {
+            ColorFilter.colorMatrix(
+                ColorMatrix(
+                    floatArrayOf(
+                        1f, 0f, 0f, 0f, 0f,
                         0f, 1f, 0f, 0f, 0f,
                         1f, 0f, 0f, 0f, 0f,
-                        0f, 0f, 1f, 0f, 0f,
                         0f, 0f, 0f, 1f, 0f
-                    )))
-                }
-                2 -> {
-                    ColorFilter.colorMatrix(ColorMatrix(floatArrayOf(
-                        0f, 0f, 1f, 0f, 0f,
-                        0f, 1f, 0f, 0f, 0f,
-                        1f, 0f, 0f, 0f, 0f,
-                        0f, 0f, 0f, 1f, 0f
-                    )))
-                }
-                3 -> {
-                    ColorFilter.colorMatrix(
-                        ColorMatrix(
-                            floatArrayOf(
-                                1f, 0f, 0f, 0f, 0f,
-                                0f, 1f, 0f, 0f, 0f,
-                                1f, 0f, 0f, 0f, 0f,
-                                0f, 0f, 0f, 1f, 0f
-                            )
-                        )
                     )
-                }
-                4 -> {
-                    ColorFilter.colorMatrix(ColorMatrix(floatArrayOf(
-                        1f, 0f, 0f, 0f, 0f,
-                        1f, 0f, 0f, 0f, 0f,
-                        0f, 0f, 1f, 0f, 0f,
-                        0f, 0f, 0f, 1f, 0f
-                    )))
-                }
-                else -> {
-                    ColorFilter.colorMatrix(ColorMatrix())
-                }
-            }
+                )
+            )
+        }
+        STANDARD_LEGENDARY -> {
+            ColorFilter.colorMatrix(ColorMatrix(floatArrayOf(
+                1f, 0f, 0f, 0f, 0f,
+                1f, 0f, 0f, 0f, 0f,
+                0f, 0f, 1f, 0f, 0f,
+                0f, 0f, 0f, 1f, 0f
+            )))
+        }
         else -> ColorFilter.colorMatrix(ColorMatrix())
     }
 }
@@ -283,14 +274,14 @@ fun ShowCard(activity: MainActivity, card: Card, modifier: Modifier, scale: Floa
             contentDescription = "",
             modifier.clip(RoundedCornerShape(5)),
             colorFilter = if (card is CardWithPrice) {
-                getFilter(card.getBack(), card.getBackNumber())
+                getFilter(card.getBack())
             } else {
                 ColorFilter.colorMatrix(ColorMatrix())
             },
             contentScale = FixedScale(scale),
             alignment = BiasAlignment(-1f, -1f)
         )
-        if (card is CardWithPrice && card.getBack() == CardBack.FNV_FACTION && card.getBackNumber() == 0) {
+        if (card is CardWithPrice && card.getBack() == CardBack.NCR) {
             Box(Modifier.size(183.pxToDp() * scale, 256.pxToDp() * scale).clipToBounds()) {
                 @Composable
                 fun SuitToStamp(suit: Suit, extra: Int) {
@@ -430,7 +421,7 @@ fun ShowCard(activity: MainActivity, card: Card, modifier: Modifier, scale: Floa
 @Composable
 fun ShowCardBack(activity: MainActivity, card: Card, modifier: Modifier, scale: Float = 1f) {
     val asset = when (card) {
-        is CardWithPrice -> card.getBack().nameIdWithBackFileName[card.getBackNumber()].second
+        is CardWithPrice -> card.getBack().nameIdWithBackFileName.second
         is CardNumberWW -> "ww_back.webp"
         is CardAtomic -> "nuclear_back.webp"
         is CardFBomb -> "ccp_alt_back.webp"
@@ -446,7 +437,7 @@ fun ShowCardBack(activity: MainActivity, card: Card, modifier: Modifier, scale: 
         modifier.clip(RoundedCornerShape(5)),
         contentScale = FixedScale(scale),
         colorFilter = if (card is CardWithPrice) {
-            getBackFilter(card.getBack(), card.getBackNumber())
+            getBackFilter(card.getBack())
         } else {
             ColorFilter.colorMatrix(ColorMatrix())
         },
@@ -454,88 +445,6 @@ fun ShowCardBack(activity: MainActivity, card: Card, modifier: Modifier, scale: 
     )
 }
 
-
-// TODO: doesn't work everywhere from the colors pov
-@Composable
-fun Modifier.scrollbar(
-    state: LazyListState,
-    horizontal: Boolean = false,
-    alignEnd: Boolean = true,
-    thickness: Int = 8,
-    knobColor: Color,
-    trackColor: Color,
-): Modifier {
-    return drawWithContent {
-        drawContent()
-
-        state.layoutInfo.visibleItemsInfo.firstOrNull()?.let { firstVisibleItem ->
-            val viewportSize = if (horizontal) {
-                size.width
-            } else {
-                size.height
-            }
-
-            val firstItemSize = firstVisibleItem.size
-            val estimatedFullListSize = firstItemSize * state.layoutInfo.totalItemsCount - 1
-
-            if (viewportSize > estimatedFullListSize) {
-                return@drawWithContent
-            }
-
-            val viewportOffsetInFullListSpace =
-                state.firstVisibleItemIndex * firstItemSize + state.firstVisibleItemScrollOffset
-
-            // Where we should render the knob in our composable.
-            val knobPosition = (viewportSize / estimatedFullListSize) * viewportOffsetInFullListSpace
-            // How large should the knob be.
-            val knobSize = (viewportSize / estimatedFullListSize) * viewportSize
-
-            // Draw the track
-            drawRoundRect(
-                color = trackColor,
-                topLeft = when {
-                    // When the scrollbar is horizontal and aligned to the bottom:
-                    horizontal && alignEnd -> Offset(0f, size.height - thickness)
-                    // When the scrollbar is horizontal and aligned to the top:
-                    horizontal && !alignEnd -> Offset(0f, 0f)
-                    // When the scrollbar is vertical and aligned to the end:
-                    alignEnd -> Offset(size.width - thickness, 0f)
-                    // When the scrollbar is vertical and aligned to the start:
-                    else -> Offset(0f, 0f)
-                },
-                size = if (horizontal) {
-                    Size(size.width, thickness.toFloat())
-                } else {
-                    Size(thickness.toFloat(), size.height)
-                },
-            )
-
-            // Draw the knob
-            drawRoundRect(
-                color = knobColor,
-                topLeft =
-                    when {
-                        // When the scrollbar is horizontal and aligned to the bottom:
-                        horizontal && alignEnd -> Offset(
-                            knobPosition,
-                            size.height - thickness * 3 / 4
-                        )
-                        // When the scrollbar is horizontal and aligned to the top:
-                        horizontal && !alignEnd -> Offset(knobPosition, thickness / 4f)
-                        // When the scrollbar is vertical and aligned to the end:
-                        alignEnd -> Offset(size.width - thickness * 3 / 4, knobPosition)
-                        // When the scrollbar is vertical and aligned to the start:
-                        else -> Offset(thickness / 4f, knobPosition)
-                    },
-                size = if (horizontal) {
-                    Size(knobSize, thickness.toFloat() / 2)
-                } else {
-                    Size(thickness.toFloat() / 2, knobSize)
-                },
-            )
-        }
-    }
-}
 
 @Composable
 fun CheckboxCustom(
@@ -779,6 +688,7 @@ fun MenuItemOpen(
     goBack: () -> Unit,
     mainBlock: @Composable BoxWithConstraintsScope.() -> Unit
 ) {
+    val scrollbarWidth = 4.dp.dpToPx()
     Scaffold(bottomBar = {
         Row(Modifier
             .fillMaxWidth()
@@ -811,7 +721,7 @@ fun MenuItemOpen(
                                 lineTo(size.width, size.height)
                             },
                             color = getDividerColor(activity),
-                            style = Stroke(width = 8f),
+                            style = Stroke(width = scrollbarWidth),
                         )
                     }
             ) {
@@ -831,26 +741,29 @@ fun MenuItemOpen(
         BoxWithConstraints(Modifier
             .padding(innerPadding)
             .background(getBackgroundColor(activity))
-            .padding(horizontal = 12.dp - 4.pxToDp(), vertical = 4.dp)
+            .padding(start = 12.dp, end = 10.dp, top = 4.dp, bottom = 4.dp)
         ) {
             val lazyListState = rememberLazyListState()
             val state = rememberScrollAreaState(lazyListState)
-            ScrollArea(state) {
-                LazyColumn(state = lazyListState, modifier = Modifier.fillMaxSize()) {
+            ScrollArea(state, Modifier.fillMaxSize()) {
+                LazyColumn(
+                    state = lazyListState, modifier = Modifier.fillMaxSize().padding(end = 8.dp),
+                    verticalArrangement = Arrangement.Center
+                ) {
                     item {
                         mainBlock()
                     }
                 }
                 VerticalScrollbar(
                     modifier = Modifier.align(Alignment.TopEnd)
+                        .padding(vertical = 4.dp)
                         .fillMaxHeight()
                         .background(getTrackColor(activity))
-                        .width(10.dp)
+                        .width(4.dp)
                 ) {
-                    Thumb(Modifier.background(getKnobColor(activity)).width(4.dp))
+                    Thumb(Modifier.background(getKnobColor(activity)))
                 }
             }
-
         }
     }
 }

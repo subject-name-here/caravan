@@ -5,11 +5,10 @@ import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.CustomDeck
-import kotlin.random.Random
 
 
 data object EnemyTower1 : Enemy {
-    override fun createDeck(): CResources = CResources(CustomDeck(CardBack.STANDARD, 0).apply {
+    override fun createDeck(): CResources = CResources(CustomDeck(CardBack.STANDARD).apply {
         // removeAll(toList().filter { it.rank == Rank.QUEEN || it.rank == Rank.JOKER })
     })
 

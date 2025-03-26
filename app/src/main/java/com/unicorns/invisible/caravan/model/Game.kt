@@ -74,7 +74,7 @@ class Game(
     fun startGame() {
         if (enemy is EnemyMadnessCardinal) {
             while (enemyCResources.deckSize < playerCResources.deckSize + 17) {
-                enemyCResources.addNewDeck(CustomDeck(CardBack.MADNESS, 0))
+                enemyCResources.addNewDeck(CustomDeck(CardBack.MADNESS))
             }
         }
 

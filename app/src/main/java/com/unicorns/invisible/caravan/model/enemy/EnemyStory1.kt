@@ -7,14 +7,13 @@ import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.CardBase
 import com.unicorns.invisible.caravan.model.primitives.CardFace
 import com.unicorns.invisible.caravan.model.primitives.CardFaceSuited
-import com.unicorns.invisible.caravan.model.primitives.CardModifier
 import com.unicorns.invisible.caravan.model.primitives.CustomDeck
 import com.unicorns.invisible.caravan.model.primitives.RankFace
 import kotlin.random.Random
 
 
 data object EnemyStory1 : Enemy {
-    override fun createDeck(): CResources = CResources(CustomDeck(CardBack.SIERRA_MADRE, 1))
+    override fun createDeck(): CResources = CResources(CustomDeck(CardBack.SIERRA_MADRE_CLEAN))
 
     override suspend fun makeMove(game: Game, speed: AnimationSpeed) {
         val hand = game.enemyCResources.hand

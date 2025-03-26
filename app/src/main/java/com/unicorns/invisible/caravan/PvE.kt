@@ -11,8 +11,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Tab
@@ -63,12 +61,10 @@ import com.unicorns.invisible.caravan.utils.clickableOk
 import com.unicorns.invisible.caravan.utils.clickableSelect
 import com.unicorns.invisible.caravan.utils.getBackgroundColor
 import com.unicorns.invisible.caravan.utils.getDividerColor
-import com.unicorns.invisible.caravan.utils.getKnobColor
 import com.unicorns.invisible.caravan.utils.getSelectionColor
 import com.unicorns.invisible.caravan.utils.getTextBackgroundColor
 import com.unicorns.invisible.caravan.utils.getTextColor
 import com.unicorns.invisible.caravan.utils.getTextStrokeColor
-import com.unicorns.invisible.caravan.utils.getTrackColor
 import com.unicorns.invisible.caravan.utils.playJokerSounds
 import com.unicorns.invisible.caravan.utils.playLoseSound
 import com.unicorns.invisible.caravan.utils.playNukeBlownSound
@@ -77,7 +73,6 @@ import com.unicorns.invisible.caravan.utils.playVatsEnter
 import com.unicorns.invisible.caravan.utils.playWWSound
 import com.unicorns.invisible.caravan.utils.playWinSound
 import com.unicorns.invisible.caravan.utils.playWinSoundAlone
-import com.unicorns.invisible.caravan.utils.scrollbar
 import com.unicorns.invisible.caravan.utils.startAmbient
 import com.unicorns.invisible.caravan.utils.stopAmbient
 import java.util.Locale
@@ -120,47 +115,38 @@ fun ShowSelectPvE(
     }
 
     MenuItemOpen(activity, stringResource(R.string.menu_pve), "<-", goBack) {
-        val state = rememberLazyListState()
-        LazyColumn(
+        Column(
             Modifier
                 .fillMaxSize()
-                .background(getBackgroundColor(activity))
-                .scrollbar(
-                    state,
-                    knobColor = getKnobColor(activity), trackColor = getTrackColor(activity),
-                    horizontal = false,
-                ),
+                .background(getBackgroundColor(activity)),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
-            state = state
         ) {
-            item {
-                @Composable
-                fun SubMenuItem(name: String, onClick: () -> Unit) {
-                    TextFallout(
-                        name,
-                        getTextColor(activity),
-                        getTextStrokeColor(activity),
-                        28.sp,
-                        Modifier
-                            .clickableSelect(activity) { onClick() }
-                            .background(getTextBackgroundColor(activity))
-                            .padding(8.dp),
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(12.dp))
-                SubMenuItem(stringResource(R.string.select_enemy)) { showSelectEnemy = true }
-                Spacer(modifier = Modifier.height(12.dp))
-                SubMenuItem(stringResource(R.string.tower)) { showTower = true }
-                Spacer(modifier = Modifier.height(12.dp))
-                SubMenuItem(stringResource(R.string.story_mode)) { showStory = true }
-                Spacer(modifier = Modifier.height(12.dp))
-                SubMenuItem(stringResource(R.string.pve_stats)) { showStats = true }
-                Spacer(modifier = Modifier.height(12.dp))
-                SubMenuItem(stringResource(R.string.tutorial)) { showTutorial = true }
-                Spacer(modifier = Modifier.height(12.dp))
+            @Composable
+            fun SubMenuItem(name: String, onClick: () -> Unit) {
+                TextFallout(
+                    name,
+                    getTextColor(activity),
+                    getTextStrokeColor(activity),
+                    28.sp,
+                    Modifier
+                        .clickableSelect(activity) { onClick() }
+                        .background(getTextBackgroundColor(activity))
+                        .padding(8.dp),
+                )
             }
+
+            Spacer(modifier = Modifier.height(12.dp))
+            SubMenuItem(stringResource(R.string.select_enemy)) { showSelectEnemy = true }
+            Spacer(modifier = Modifier.height(12.dp))
+            SubMenuItem(stringResource(R.string.tower)) { showTower = true }
+            Spacer(modifier = Modifier.height(12.dp))
+            SubMenuItem(stringResource(R.string.story_mode)) { showStory = true }
+            Spacer(modifier = Modifier.height(12.dp))
+            SubMenuItem(stringResource(R.string.pve_stats)) { showStats = true }
+            Spacer(modifier = Modifier.height(12.dp))
+            SubMenuItem(stringResource(R.string.tutorial)) { showTutorial = true }
+            Spacer(modifier = Modifier.height(12.dp))
         }
     }
 }
@@ -176,103 +162,94 @@ fun ShowStats(
         val finished = save.gamesFinished
         val won = save.wins
         val loss = finished - won
-        val state2 = rememberLazyListState()
-        LazyColumn(
+        Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(getBackgroundColor(activity))
-                .scrollbar(
-                    state2,
-                    knobColor = getKnobColor(activity), trackColor = getTrackColor(activity),
-                    horizontal = false,
-                ),
-            state = state2,
+                .background(getBackgroundColor(activity)),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            item {
-                Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(12.dp))
+            TextFallout(
+                stringResource(R.string.pve_stats),
+                getTextColor(activity),
+                getTextStrokeColor(activity),
+                20.sp,
+                Modifier,
+            )
+            Spacer(modifier = Modifier.height(12.dp))
+            @Composable
+            fun StatsItem(text: String) {
                 TextFallout(
-                    stringResource(R.string.pve_stats),
+                    text,
                     getTextColor(activity),
                     getTextStrokeColor(activity),
-                    20.sp,
+                    16.sp,
                     Modifier,
                 )
-                Spacer(modifier = Modifier.height(12.dp))
-                @Composable
-                fun StatsItem(text: String) {
-                    TextFallout(
-                        text,
-                        getTextColor(activity),
-                        getTextStrokeColor(activity),
-                        16.sp,
-                        Modifier,
-                    )
-                }
-                StatsItem(text = stringResource(R.string.pve_games_started, started))
-                Spacer(modifier = Modifier.height(8.dp))
-                StatsItem(text = stringResource(R.string.pve_games_finished, finished))
-                Spacer(modifier = Modifier.height(8.dp))
-                StatsItem(text = stringResource(R.string.pve_games_won, won))
-                Spacer(modifier = Modifier.height(8.dp))
-                StatsItem(text = stringResource(R.string.pve_caps_bet, save.capsBet))
-                Spacer(modifier = Modifier.height(8.dp))
-                StatsItem(text = stringResource(R.string.pve_caps_won, save.capsWon))
-                Spacer(modifier = Modifier.height(12.dp))
-                TextFallout(
-                    stringResource(R.string.pve_percentiles),
-                    getTextColor(activity),
-                    getTextStrokeColor(activity),
-                    20.sp,
-                    Modifier,
-                )
-                Spacer(modifier = Modifier.height(12.dp))
-                StatsItem(
-                    text = stringResource(
-                        R.string.pve_w_to_l,
-                        if (loss == 0) "-" else String.format(
-                            Locale.UK,
-                            "%.3f",
-                            won.toDouble() / loss
-                        )
-                    ),
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                StatsItem(
-                    text = stringResource(
-                        R.string.pve_w_to_finished,
-                        if (finished == 0) "-" else String.format(
-                            Locale.UK,
-                            "%.2f",
-                            (won.toDouble() / finished) * 100
-                        )
-                    ),
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                StatsItem(
-                    text = stringResource(
-                        R.string.pve_w_to_started,
-                        if (started == 0) "-" else String.format(
-                            Locale.UK,
-                            "%.2f",
-                            won.toDouble() / started * 100.0
-                        )
-                    ),
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                StatsItem(
-                    text = stringResource(
-                        R.string.pve_finished_to_started,
-                        if (started == 0) "-" else String.format(
-                            Locale.UK,
-                            "%.1f",
-                            finished.toDouble() / started * 100.0
-                        )
-                    ),
-                )
-                Spacer(modifier = Modifier.height(12.dp))
             }
+            StatsItem(text = stringResource(R.string.pve_games_started, started))
+            Spacer(modifier = Modifier.height(8.dp))
+            StatsItem(text = stringResource(R.string.pve_games_finished, finished))
+            Spacer(modifier = Modifier.height(8.dp))
+            StatsItem(text = stringResource(R.string.pve_games_won, won))
+            Spacer(modifier = Modifier.height(8.dp))
+            StatsItem(text = stringResource(R.string.pve_caps_bet, save.capsBet))
+            Spacer(modifier = Modifier.height(8.dp))
+            StatsItem(text = stringResource(R.string.pve_caps_won, save.capsWon))
+            Spacer(modifier = Modifier.height(12.dp))
+            TextFallout(
+                stringResource(R.string.pve_percentiles),
+                getTextColor(activity),
+                getTextStrokeColor(activity),
+                20.sp,
+                Modifier,
+            )
+            Spacer(modifier = Modifier.height(12.dp))
+            StatsItem(
+                text = stringResource(
+                    R.string.pve_w_to_l,
+                    if (loss == 0) "-" else String.format(
+                        Locale.UK,
+                        "%.3f",
+                        won.toDouble() / loss
+                    )
+                ),
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            StatsItem(
+                text = stringResource(
+                    R.string.pve_w_to_finished,
+                    if (finished == 0) "-" else String.format(
+                        Locale.UK,
+                        "%.2f",
+                        (won.toDouble() / finished) * 100
+                    )
+                ),
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            StatsItem(
+                text = stringResource(
+                    R.string.pve_w_to_started,
+                    if (started == 0) "-" else String.format(
+                        Locale.UK,
+                        "%.2f",
+                        won.toDouble() / started * 100.0
+                    )
+                ),
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            StatsItem(
+                text = stringResource(
+                    R.string.pve_finished_to_started,
+                    if (started == 0) "-" else String.format(
+                        Locale.UK,
+                        "%.1f",
+                        finished.toDouble() / started * 100.0
+                    )
+                ),
+            )
+            Spacer(modifier = Modifier.height(12.dp))
         }
     }
 }
@@ -291,7 +268,7 @@ fun ShowPvE(
     fun StartWithEnemy(enemy: EnemyPve, goBack: () -> Unit) {
         StartGame(
             activity, if (enemy.isEven)
-                CollectibleDeck(save.selectedDeck.first, save.selectedDeck.second)
+                CollectibleDeck(save.selectedDeck)
             else
                 save.getCurrentDeckCopy(),
             enemy, showAlertDialog, goBack
@@ -388,15 +365,15 @@ fun ShowPvE(
             fun OpponentItem(enemy: EnemyPve, onClick: () -> Unit) {
                 val line = when (enemy) {
                     is EnemyPvENoBank -> {
-                        val (back, backNumber) = when (enemy) {
-                            is EnemyHanlon -> CardBack.FNV_FACTION to 0
-                            is EnemyVulpes -> CardBack.FNV_FACTION to 1
-                            is EnemyMadnessCardinal -> CardBack.MADNESS to 0
-                            is EnemyViqueen -> CardBack.VIKING to 0
+                        val back = when (enemy) {
+                            is EnemyHanlon -> CardBack.NCR
+                            is EnemyVulpes -> CardBack.LEGION
+                            is EnemyMadnessCardinal -> CardBack.MADNESS
+                            is EnemyViqueen -> CardBack.VIKING
                         }
                         stringResource(R.string.enemy_with_card,
                             stringResource(enemy.nameId),
-                            stringResource(back.nameIdWithBackFileName[backNumber].first)
+                            stringResource(back.nameIdWithBackFileName.first)
                         )
                     }
                     is EnemyPvEWithBank -> {
@@ -420,29 +397,20 @@ fun ShowPvE(
                 )
             }
 
-            val state = rememberLazyListState()
-            LazyColumn(
+            Column(
                 Modifier
-                    .fillMaxSize()
-                    .scrollbar(
-                        state,
-                        knobColor = getKnobColor(activity), trackColor = getTrackColor(activity),
-                        horizontal = false,
-                    ),
+                    .fillMaxSize(),
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.CenterHorizontally,
-                state = state
             ) {
-                item {
-                    val enemies = save.enemiesGroups2[selectedTab]
-                    Spacer(modifier = Modifier.height(8.dp))
-                    enemies.forEach {
-                        OpponentItem(it) {
-                            playVatsEnter(activity)
-                            playAgainstEnemy = save.enemiesGroups2.flatten().indexOf(it)
-                        }
-                        Spacer(modifier = Modifier.height(8.dp))
+                val enemies = save.enemiesGroups2[selectedTab]
+                Spacer(modifier = Modifier.height(8.dp))
+                enemies.forEach {
+                    OpponentItem(it) {
+                        playVatsEnter(activity)
+                        playAgainstEnemy = save.enemiesGroups2.flatten().indexOf(it)
                     }
+                    Spacer(modifier = Modifier.height(8.dp))
                 }
             }
         }
@@ -482,7 +450,7 @@ fun StartGame(
                 enemy.bank -= enemy.bet
             }
             if (isBlitz) {
-                save.silverRushChips -= myBet
+                save.sierraMadreChips -= myBet
             } else {
                 save.capsInHand -= myBet
             }
@@ -524,7 +492,7 @@ fun StartGame(
                     } else {
                         enemy.winsBlitzNoBet++
                     }
-                    save.silverRushChips += reward
+                    save.sierraMadreChips += reward
                 } else {
                     if (reward > 0) {
                         enemy.winsBet++
@@ -554,18 +522,18 @@ fun StartGame(
                     onQuitPressed
                 )
             } else if (enemy is EnemyPvENoBank) {
-                val (back, number) = when (enemy) {
-                    is EnemyHanlon -> CardBack.FNV_FACTION to 0
-                    is EnemyVulpes -> CardBack.FNV_FACTION to 1
-                    is EnemyMadnessCardinal -> CardBack.MADNESS to 0
-                    is EnemyViqueen -> CardBack.VIKING to 0
+                val back = when (enemy) {
+                    is EnemyHanlon -> CardBack.NCR
+                    is EnemyVulpes -> CardBack.LEGION
+                    is EnemyMadnessCardinal -> CardBack.MADNESS
+                    is EnemyViqueen -> CardBack.VIKING
                 }
                 if (isBlitz) {
                     enemy.winsBlitz++
                 } else {
                     enemy.wins++
                 }
-                val rewardCard = winCard(activity, back, number, isBlitz)
+                val rewardCard = winCard(activity, back, isBlitz)
 
                 showAlertDialog(
                     activity.getString(R.string.result),
@@ -631,141 +599,132 @@ fun ShowBettingScreen(
         return bet.toIntOrNull()?.let { countReward(it, enemyBet) } ?: 0
     }
 
-    val state = rememberLazyListState()
     MenuItemOpen(activity, "$$$", "<-", { goBack() }) {
         Box(Modifier.fillMaxSize().padding(bottom = 8.dp), contentAlignment = Alignment.Center) {
             Box(Modifier.fillMaxSize().rotate(180f)) {
                 Box(Modifier.fillMaxSize().getTableBackground()) {}
             }
-            LazyColumn(
+            Column(
                 Modifier
-                    .background(getBackgroundColor(activity))
-                    .scrollbar(
-                        state,
-                        knobColor = getKnobColor(activity), trackColor = getTrackColor(activity),
-                        horizontal = false,
-                    ),
+                    .background(getBackgroundColor(activity)),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally,
-                state = state
             ) {
-                item {
-                    Column(
-                        Modifier.background(getBackgroundColor(activity)),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center
-                    ) {
-                        TextFallout(
-                            stringResource(R.string.enemy_name, enemyName),
-                            getTextColor(activity),
-                            getTextStrokeColor(activity),
-                            16.sp,
-                            Modifier
-                                .fillMaxWidth()
-                                .padding(8.dp),
-                        )
-                        TextFallout(
-                            stringResource(R.string.enemy_s_bet, enemyBet),
-                            getTextColor(activity),
-                            getTextStrokeColor(activity),
-                            16.sp,
-                            Modifier
-                                .fillMaxWidth()
-                                .padding(8.dp),
-                        )
+                Column(
+                    Modifier.background(getBackgroundColor(activity)),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    TextFallout(
+                        stringResource(R.string.enemy_name, enemyName),
+                        getTextColor(activity),
+                        getTextStrokeColor(activity),
+                        16.sp,
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(8.dp),
+                    )
+                    TextFallout(
+                        stringResource(R.string.enemy_s_bet, enemyBet),
+                        getTextColor(activity),
+                        getTextStrokeColor(activity),
+                        16.sp,
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(8.dp),
+                    )
 
-                        Spacer(Modifier.height(16.dp))
+                    Spacer(Modifier.height(16.dp))
 
-                        TextField(
-                            modifier = Modifier.fillMaxWidth(0.5f),
-                            singleLine = true,
-                            enabled = true,
-                            value = bet,
-                            onValueChange = { bet = it },
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                            textStyle = TextStyle(
-                                fontSize = 14.sp,
-                                color = getTextColor(activity),
-                                fontFamily = FontFamily(Font(R.font.monofont))
-                            ),
-                            label = {
-                                TextFallout(
-                                    text = stringResource(
-                                        R.string.enter_your_bet,
-                                        enemyBet,
-                                        if (isBlitz) {
-                                            save.silverRushChips
-                                        } else {
-                                            save.capsInHand
-                                        }
-                                    ),
-                                    getTextColor(activity),
-                                    getTextStrokeColor(activity),
-                                    14.sp,
-                                    Modifier,
-                                )
-                            },
-                            colors = TextFieldDefaults.colors().copy(
-                                cursorColor = getTextColor(activity),
-                                focusedContainerColor = getTextBackgroundColor(activity),
-                                unfocusedContainerColor = getTextBackgroundColor(activity),
-                                disabledContainerColor = getBackgroundColor(activity),
-                            )
-                        )
-
-                        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
+                    TextField(
+                        modifier = Modifier.fillMaxWidth(0.5f),
+                        singleLine = true,
+                        enabled = true,
+                        value = bet,
+                        onValueChange = { bet = it },
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                        textStyle = TextStyle(
+                            fontSize = 14.sp,
+                            color = getTextColor(activity),
+                            fontFamily = FontFamily(Font(R.font.monofont))
+                        ),
+                        label = {
                             TextFallout(
-                                stringResource(R.string.time_limit_anyone),
+                                text = stringResource(
+                                    R.string.enter_your_bet,
+                                    enemyBet,
+                                    if (isBlitz) {
+                                        save.sierraMadreChips
+                                    } else {
+                                        save.capsInHand
+                                    }
+                                ),
                                 getTextColor(activity),
                                 getTextStrokeColor(activity),
-                                18.sp,
-                                Modifier.padding(8.dp),
+                                14.sp,
+                                Modifier,
                             )
-                            CheckboxCustom(activity, { isBlitz }, { isBlitz = it; bet = "" }) { true }
+                        },
+                        colors = TextFieldDefaults.colors().copy(
+                            cursorColor = getTextColor(activity),
+                            focusedContainerColor = getTextBackgroundColor(activity),
+                            unfocusedContainerColor = getTextBackgroundColor(activity),
+                            disabledContainerColor = getBackgroundColor(activity),
+                        )
+                    )
 
-                        }
-
+                    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
                         TextFallout(
-                            stringResource(
-                                if (isBlitz)
-                                    R.string.your_expected_reward_chips
-                                else
-                                    R.string.your_expected_reward,
-                                countRewardLocal()
-                            ),
+                            stringResource(R.string.time_limit_anyone),
                             getTextColor(activity),
                             getTextStrokeColor(activity),
                             18.sp,
-                            Modifier.fillMaxWidth().padding(8.dp),
+                            Modifier.padding(8.dp),
                         )
+                        CheckboxCustom(activity, { isBlitz }, { isBlitz = it; bet = "" }) { true }
 
-                        val modifier = if (bet == "" || bet.toIntOrNull().let {
-                            it != null && it >= enemyBet &&
-                                    it <= if (isBlitz) save.silverRushChips else save.capsInHand
-                            }) {
-                            Modifier
-                                .clickableOk(activity) {
-                                    setIsBlitz(isBlitz)
-                                    setBet(bet.toIntOrNull() ?: 0)
-                                    setReward(countRewardLocal())
-                                    saveData(activity)
-                                    goForward()
-                                }
-                                .background(getTextBackgroundColor(activity))
-                                .padding(8.dp)
-                        } else {
-                            Modifier
-                                .padding(8.dp)
-                        }
-                        TextFallout(
-                            stringResource(R.string.let_s_go),
-                            getTextColor(activity),
-                            getTextStrokeColor(activity),
-                            24.sp,
-                            modifier,
-                        )
-                        Spacer(Modifier.height(12.dp))
                     }
+
+                    TextFallout(
+                        stringResource(
+                            if (isBlitz)
+                                R.string.your_expected_reward_chips
+                            else
+                                R.string.your_expected_reward,
+                            countRewardLocal()
+                        ),
+                        getTextColor(activity),
+                        getTextStrokeColor(activity),
+                        18.sp,
+                        Modifier.fillMaxWidth().padding(8.dp),
+                    )
+
+                    val modifier = if (bet == "" || bet.toIntOrNull().let {
+                            it != null && it >= enemyBet &&
+                                    it <= if (isBlitz) save.sierraMadreChips else save.capsInHand
+                        }) {
+                        Modifier
+                            .clickableOk(activity) {
+                                setIsBlitz(isBlitz)
+                                setBet(bet.toIntOrNull() ?: 0)
+                                setReward(countRewardLocal())
+                                saveData(activity)
+                                goForward()
+                            }
+                            .background(getTextBackgroundColor(activity))
+                            .padding(8.dp)
+                    } else {
+                        Modifier
+                            .padding(8.dp)
+                    }
+                    TextFallout(
+                        stringResource(R.string.let_s_go),
+                        getTextColor(activity),
+                        getTextStrokeColor(activity),
+                        24.sp,
+                        modifier,
+                    )
+                    Spacer(Modifier.height(12.dp))
                 }
             }
         }
@@ -781,13 +740,13 @@ fun countReward(playerBet: Int, enemyBet: Int): Int {
     }
 }
 
-fun winCard(activity: MainActivity, back: CardBack, number: Int, isBlitz: Boolean): String {
+fun winCard(activity: MainActivity, back: CardBack, isBlitz: Boolean): String {
     fun isCardNew(card: CardWithPrice): Boolean {
         return !save.isCardAvailableAlready(card)
     }
 
     val isNew = if (back == CardBack.STANDARD) true else ((0..3).random() > 0)
-    val deck = CollectibleDeck(back, number)
+    val deck = CollectibleDeck(back)
     val card = if (isNew) {
         deck.toList().filter(::isCardNew).randomOrNull()
     } else {
@@ -801,12 +760,12 @@ fun winCard(activity: MainActivity, back: CardBack, number: Int, isBlitz: Boolea
             is CardJoker -> activity.getString(card.rank.nameId) to card.number.n.toString()
             is CardNumber -> activity.getString(card.rank.nameId) to activity.getString(card.suit.nameId)
         }
-        val backName = card.getBack().nameIdWithBackFileName[card.getBackNumber()].first
+        val backName = card.getBack().nameIdWithBackFileName.first
         "${rankSuit.first} ${rankSuit.second} ${activity.getString(backName)}"
     } else {
-        val prize = (back.getRarityMult(number) * 10.0).toInt()
+        val prize = (back.getRarityMult() * 10.0).toInt()
         if (isBlitz) {
-            save.silverRushChips += prize
+            save.sierraMadreChips += prize
             activity.getString(R.string.prize_chips, prize.toString())
         } else {
             save.capsInHand += prize

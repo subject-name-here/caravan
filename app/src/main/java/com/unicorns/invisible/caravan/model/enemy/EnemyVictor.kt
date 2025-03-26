@@ -16,13 +16,13 @@ class EnemyVictor : EnemyPvEWithBank() {
     override val isEven
         get() = true
 
-    override fun createDeck() = CResources(CardBack.LUCKY_38, 0)
+    override fun createDeck() = CResources(CardBack.LUCKY_38)
 
     override var bank: Int = 0
     override val maxBank: Int
         get() = 50
     override val bet: Int
-        get() = if (bank == 0) 0 else min(bank, 25)
+        get() = min(bank, 25)
 
     override var winsNoBet: Int = 0
     override var winsBet: Int = 0

@@ -26,7 +26,7 @@ class EnemySnuffles : EnemyPvEWithBank() {
 
     override fun createDeck(): CResources = CResources(CustomDeck().apply {
         listOf(CardBack.LUCKY_38, CardBack.GOMORRAH, CardBack.ULTRA_LUXE, CardBack.TOPS).forEach { back ->
-            addAll(CollectibleDeck(back, 0))
+            addAll(CollectibleDeck(back))
         }
         repeat(4) { add(CardAtomic()) }
         WWType.entries.forEach { add(CardWildWasteland(it)) }

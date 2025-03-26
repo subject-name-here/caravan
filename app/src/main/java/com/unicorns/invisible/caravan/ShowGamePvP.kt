@@ -1,40 +1,5 @@
 package com.unicorns.invisible.caravan
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.key
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import com.unicorns.invisible.caravan.model.Game
-import com.unicorns.invisible.caravan.model.enemy.EnemyPlayer
-import com.unicorns.invisible.caravan.utils.TextFallout
-import com.unicorns.invisible.caravan.utils.crvnUrl
-import com.unicorns.invisible.caravan.utils.getTextBackgroundColor
-import com.unicorns.invisible.caravan.utils.getTextColor
-import com.unicorns.invisible.caravan.utils.getTextStrokeColor
-import com.unicorns.invisible.caravan.utils.playCloseSound
-import com.unicorns.invisible.caravan.utils.playNoBeep
-import com.unicorns.invisible.caravan.utils.playSelectSound
-import com.unicorns.invisible.caravan.utils.sendRequest
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.isActive
-import kotlinx.coroutines.launch
-
 //
 //// TODO: update this!!!
 //fun afterPlayerMove(

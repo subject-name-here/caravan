@@ -22,7 +22,7 @@ class EnemyVulpes : EnemyPvENoBank() {
     override var wins: Int = 0
     override var winsBlitz: Int = 0
 
-    override fun createDeck(): CResources = CResources(CustomDeck(CardBack.FNV_FACTION, 1).apply {
+    override fun createDeck(): CResources = CResources(CustomDeck(CardBack.LEGION).apply {
         removeAll {
             it is CardNumber && it.rank.value <= 5 || it is CardFace && it.rank == RankFace.QUEEN
         }

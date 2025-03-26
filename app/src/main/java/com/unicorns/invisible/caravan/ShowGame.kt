@@ -55,6 +55,10 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.composables.core.ScrollArea
+import com.composables.core.Thumb
+import com.composables.core.VerticalScrollbar
+import com.composables.core.rememberScrollAreaState
 import com.sebaslogen.resaca.rememberScoped
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.challenge.Challenge
@@ -94,7 +98,6 @@ import com.unicorns.invisible.caravan.utils.playSelectSound
 import com.unicorns.invisible.caravan.utils.playVatsReady
 import com.unicorns.invisible.caravan.utils.playWWSound
 import com.unicorns.invisible.caravan.utils.pxToDp
-import com.unicorns.invisible.caravan.utils.scrollbar
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
@@ -754,186 +757,193 @@ fun RowScope.CaravanOnField(
                 }
             )
         }
-        LazyColumn(
-            state = state,
-            verticalArrangement = Arrangement.Top,
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier
-                .fillMaxHeight()
-                .wrapContentWidth(align = Alignment.CenterHorizontally)
-                .scrollbar(
-                    state,
-                    horizontal = false,
-                    knobColor = getKnobColor(activity),
-                    trackColor = getTrackColor(activity),
-                )
-        ) {
-            item {
-                Box(Modifier.wrapContentHeight(unbounded = true)) {
-                    LaunchedEffect(caravan.recomposeResources) {}
-                    val enemyTurnMult = if (isPlayerTurn()) 1 else -1
-                    @Composable
-                    fun ModifierOnCardInCaravan(
-                        modifier: Card,
-                        modifierIndex: Int,
-                        it: CardWithModifier
-                    ) {
-                        var prevStateHeight by rememberScoped { mutableStateOf(modifier.caravanAnimationMark) }
-                        var prevStateWidth by rememberScoped { mutableStateOf(it.card.caravanAnimationMark) }
-                        var needsSnap = prevStateHeight == modifier.caravanAnimationMark &&
-                                prevStateWidth == it.card.caravanAnimationMark
-                        val offsetHeightMult by animateFloatAsState(when (modifier.caravanAnimationMark) {
-                            Card.AnimationMark.STABLE -> 0f
-                            Card.AnimationMark.NEW -> 2f * enemyTurnMult
-                            Card.AnimationMark.MOVING_OUT -> 0f
-                            Card.AnimationMark.MOVING_OUT_ALT -> 0f
-                            Card.AnimationMark.MOVED_OUT -> 0f
-                        }, if (modifier.caravanAnimationMark == Card.AnimationMark.MOVED_OUT || needsSnap) {
-                            SnapSpec()
-                        } else {
-                            tween(animationSpeed.delay.toInt())
-                        }
-                        ) { _ -> prevStateHeight = modifier.caravanAnimationMark }
+        val lazyListState = rememberLazyListState()
+        val state = rememberScrollAreaState(lazyListState)
+        ScrollArea(state, Modifier.fillMaxSize()) {
+            LazyColumn(
+                state = lazyListState,
+                verticalArrangement = Arrangement.Top,
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .wrapContentWidth(align = Alignment.CenterHorizontally)
+            ) {
+                item {
+                    Box(Modifier.wrapContentHeight(unbounded = true)) {
+                        LaunchedEffect(caravan.recomposeResources) {}
+                        val enemyTurnMult = if (isPlayerTurn()) 1 else -1
+                        @Composable
+                        fun ModifierOnCardInCaravan(
+                            modifier: Card,
+                            modifierIndex: Int,
+                            it: CardWithModifier
+                        ) {
+                            var prevStateHeight by rememberScoped { mutableStateOf(modifier.caravanAnimationMark) }
+                            var prevStateWidth by rememberScoped { mutableStateOf(it.card.caravanAnimationMark) }
+                            var needsSnap = prevStateHeight == modifier.caravanAnimationMark &&
+                                    prevStateWidth == it.card.caravanAnimationMark
+                            val offsetHeightMult by animateFloatAsState(when (modifier.caravanAnimationMark) {
+                                Card.AnimationMark.STABLE -> 0f
+                                Card.AnimationMark.NEW -> 2f * enemyTurnMult
+                                Card.AnimationMark.MOVING_OUT -> 0f
+                                Card.AnimationMark.MOVING_OUT_ALT -> 0f
+                                Card.AnimationMark.MOVED_OUT -> 0f
+                            }, if (modifier.caravanAnimationMark == Card.AnimationMark.MOVED_OUT || needsSnap) {
+                                SnapSpec()
+                            } else {
+                                tween(animationSpeed.delay.toInt())
+                            }
+                            ) { _ -> prevStateHeight = modifier.caravanAnimationMark }
 
-                        val offsetWidthMult by animateFloatAsState(when (it.card.caravanAnimationMark) {
-                            Card.AnimationMark.STABLE -> 0f
-                            Card.AnimationMark.NEW -> 0f
-                            Card.AnimationMark.MOVING_OUT -> 2f
-                            Card.AnimationMark.MOVING_OUT_ALT -> 2f
-                            Card.AnimationMark.MOVED_OUT -> 2f
-                        }, if (it.card.caravanAnimationMark == Card.AnimationMark.MOVED_OUT || needsSnap) {
-                            SnapSpec()
-                        } else {
-                            tween(animationSpeed.delay.toInt())
-                        }
-                        ) { _ -> prevStateWidth = it.card.caravanAnimationMark }
+                            val offsetWidthMult by animateFloatAsState(when (it.card.caravanAnimationMark) {
+                                Card.AnimationMark.STABLE -> 0f
+                                Card.AnimationMark.NEW -> 0f
+                                Card.AnimationMark.MOVING_OUT -> 2f
+                                Card.AnimationMark.MOVING_OUT_ALT -> 2f
+                                Card.AnimationMark.MOVED_OUT -> 2f
+                            }, if (it.card.caravanAnimationMark == Card.AnimationMark.MOVED_OUT || needsSnap) {
+                                SnapSpec()
+                            } else {
+                                tween(animationSpeed.delay.toInt())
+                            }
+                            ) { _ -> prevStateWidth = it.card.caravanAnimationMark }
 
-                        LaunchedEffect(it.card.caravanAnimationMark, modifier.caravanAnimationMark) {
-                            if (modifier.caravanAnimationMark == Card.AnimationMark.NEW) {
-                                playCardFlipSound(activity)
-                                modifier.caravanAnimationMark = Card.AnimationMark.STABLE
+                            LaunchedEffect(it.card.caravanAnimationMark, modifier.caravanAnimationMark) {
+                                if (modifier.caravanAnimationMark == Card.AnimationMark.NEW) {
+                                    playCardFlipSound(activity)
+                                    modifier.caravanAnimationMark = Card.AnimationMark.STABLE
+                                }
+                            }
+
+                            Box(modifier = Modifier
+                                .layout { measurable, constraints ->
+                                    val placeable = measurable.measure(constraints)
+                                    val placeableHeight = placeable.height.toInt()
+                                    val placeableWidth = placeable.width.toInt()
+                                    val modifierOffset = (modifierOffset * (modifierIndex + 1)).toPx()
+                                    layout(placeableWidth.coerceAtLeast(0), placeableHeight) {
+                                        placeable.place(
+                                            (modifierOffset + placeableWidth * offsetWidthMult).toInt(),
+                                            (placeableHeight * offsetHeightMult).toInt()
+                                        )
+                                    }
+                                })
+                            {
+                                ShowCard(activity, modifier, Modifier)
                             }
                         }
 
-                        Box(modifier = Modifier
-                            .layout { measurable, constraints ->
-                                val placeable = measurable.measure(constraints)
-                                val placeableHeight = placeable.height.toInt()
-                                val placeableWidth = placeable.width.toInt()
-                                val modifierOffset = (modifierOffset * (modifierIndex + 1)).toPx()
-                                layout(placeableWidth.coerceAtLeast(0), placeableHeight) {
-                                    placeable.place(
-                                        (modifierOffset + placeableWidth * offsetWidthMult).toInt(),
-                                        (placeableHeight * offsetHeightMult).toInt()
-                                    )
+                        @Composable
+                        fun CardInCaravan(
+                            it: CardWithModifier,
+                            index: Int
+                        ) {
+                            var prevState by rememberScoped { mutableStateOf(it.card.caravanAnimationMark) }
+                            val needsSnap = prevState == it.card.caravanAnimationMark
+                            val offsetHeightMult by animateFloatAsState(when (it.card.caravanAnimationMark) {
+                                Card.AnimationMark.STABLE -> 0f
+                                Card.AnimationMark.NEW -> 3f * enemyTurnMult
+                                Card.AnimationMark.MOVING_OUT -> 0f
+                                Card.AnimationMark.MOVING_OUT_ALT -> 0f
+                                Card.AnimationMark.MOVED_OUT -> 0f
+                            }, if (it.card.caravanAnimationMark == Card.AnimationMark.MOVED_OUT || needsSnap) {
+                                SnapSpec()
+                            } else {
+                                tween(animationSpeed.delay.toInt())
+                            }
+                            ) { _ -> prevState = it.card.caravanAnimationMark }
+
+                            val offsetWidthMult by animateFloatAsState(when (it.card.caravanAnimationMark) {
+                                Card.AnimationMark.STABLE -> 0f
+                                Card.AnimationMark.NEW -> 0f
+                                Card.AnimationMark.MOVING_OUT -> 2f
+                                Card.AnimationMark.MOVING_OUT_ALT -> 2f
+                                Card.AnimationMark.MOVED_OUT -> 2f
+                            }, if (it.card.caravanAnimationMark == Card.AnimationMark.MOVED_OUT || needsSnap) {
+                                SnapSpec()
+                            } else {
+                                tween(animationSpeed.delay.toInt())
+                            }
+                            ) { _ -> prevState = it.card.caravanAnimationMark }
+
+                            LaunchedEffect(it.card.caravanAnimationMark) {
+                                if (it.card.caravanAnimationMark == Card.AnimationMark.NEW) {
+                                    it.card.caravanAnimationMark = Card.AnimationMark.STABLE
+                                    playCardFlipSound(activity)
                                 }
-                            })
-                        {
-                            ShowCard(activity, modifier, Modifier)
-                        }
-                    }
+                            }
 
-                    @Composable
-                    fun CardInCaravan(
-                        it: CardWithModifier,
-                        index: Int
-                    ) {
-                        var prevState by rememberScoped { mutableStateOf(it.card.caravanAnimationMark) }
-                        val needsSnap = prevState == it.card.caravanAnimationMark
-                        val offsetHeightMult by animateFloatAsState(when (it.card.caravanAnimationMark) {
-                            Card.AnimationMark.STABLE -> 0f
-                            Card.AnimationMark.NEW -> 3f * enemyTurnMult
-                            Card.AnimationMark.MOVING_OUT -> 0f
-                            Card.AnimationMark.MOVING_OUT_ALT -> 0f
-                            Card.AnimationMark.MOVED_OUT -> 0f
-                        }, if (it.card.caravanAnimationMark == Card.AnimationMark.MOVED_OUT || needsSnap) {
-                            SnapSpec()
-                        } else {
-                            tween(animationSpeed.delay.toInt())
-                        }
-                        ) { _ -> prevState = it.card.caravanAnimationMark }
+                            LaunchedEffect(getGameUpdated()) { }
+                            val coverColor = if (canPutSelectedCardOn(index)) {
+                                Color(0f, 1f, 0f, 0.33f)
+                            } else {
+                                Color.Transparent
+                            }
+                            val modifier = Modifier
+                                .layout { measurable, constraints ->
+                                    val placeable = measurable.measure(constraints)
+                                    val placeableHeight = placeable.height.toInt()
+                                    val placeableWidth = placeable.width.toInt()
+                                    val cardOffsetWidth = constraints.maxWidth / 2 - placeable.width / 2
+                                    val cardOffsetHeight = placeableHeight * 3 / 7 * index
 
-                        val offsetWidthMult by animateFloatAsState(when (it.card.caravanAnimationMark) {
-                            Card.AnimationMark.STABLE -> 0f
-                            Card.AnimationMark.NEW -> 0f
-                            Card.AnimationMark.MOVING_OUT -> 2f
-                            Card.AnimationMark.MOVING_OUT_ALT -> 2f
-                            Card.AnimationMark.MOVED_OUT -> 2f
-                        }, if (it.card.caravanAnimationMark == Card.AnimationMark.MOVED_OUT || needsSnap) {
-                            SnapSpec()
-                        } else {
-                            tween(animationSpeed.delay.toInt())
-                        }
-                        ) { _ -> prevState = it.card.caravanAnimationMark }
+                                    val layoutSize = lazyListState.layoutInfo.viewportSize.height - 2
+                                    val caravanHeight =
+                                        placeableHeight * 3 / 7 * (caravan.size - 1) + placeableHeight
+                                    val finalCaravanHeight = if (isEnemyCaravan) {
+                                        max(caravanHeight, layoutSize)
+                                    } else {
+                                        caravanHeight
+                                    }
 
-                        LaunchedEffect(it.card.caravanAnimationMark) {
-                            if (it.card.caravanAnimationMark == Card.AnimationMark.NEW) {
-                                it.card.caravanAnimationMark = Card.AnimationMark.STABLE
-                                playCardFlipSound(activity)
+                                    val finalHeightOffset = if (isEnemyCaravan) {
+                                        finalCaravanHeight - cardOffsetHeight - placeableHeight
+                                    } else {
+                                        cardOffsetHeight
+                                    }
+
+                                    layout(constraints.maxWidth, finalCaravanHeight) {
+                                        placeable.place(
+                                            cardOffsetWidth + (placeableWidth * offsetWidthMult).toInt(),
+                                            finalHeightOffset + (placeableHeight * offsetHeightMult).toInt()
+                                        )
+                                    }
+                                }
+                                .drawWithContent {
+                                    drawContent()
+                                    drawRect(coverColor)
+                                }
+
+
+                            Box(modifier = modifier) {
+                                LaunchedEffect(it.recomposeResources) { }
+                                ShowCard(
+                                    activity, it.card,
+                                    Modifier.clickable {
+                                        addSelectedCardOnPosition(caravan.cards.indexOf(it))
+                                    }
+                                )
+
+                                it.modifiersCopy().forEachIndexed { modifierIndex, card ->
+                                    ModifierOnCardInCaravan(card, modifierIndex, it)
+                                }
                             }
                         }
 
-                        LaunchedEffect(getGameUpdated()) { }
-                        val coverColor = if (canPutSelectedCardOn(index)) {
-                            Color(0f, 1f, 0f, 0.33f)
-                        } else {
-                            Color.Transparent
+                        caravan.cards.forEachIndexed { index, it ->
+                            CardInCaravan(it, index)
                         }
-                        val modifier = Modifier
-                            .layout { measurable, constraints ->
-                                val placeable = measurable.measure(constraints)
-                                val placeableHeight = placeable.height.toInt()
-                                val placeableWidth = placeable.width.toInt()
-                                val cardOffsetWidth = constraints.maxWidth / 2 - placeable.width / 2
-                                val cardOffsetHeight = placeableHeight * 3 / 7 * index
-
-                                val layoutSize = state.layoutInfo.viewportSize.height - 2
-                                val caravanHeight =
-                                    placeableHeight * 3 / 7 * (caravan.size - 1) + placeableHeight
-                                val finalCaravanHeight = if (isEnemyCaravan) {
-                                    max(caravanHeight, layoutSize)
-                                } else {
-                                    caravanHeight
-                                }
-
-                                val finalHeightOffset = if (isEnemyCaravan) {
-                                    finalCaravanHeight - cardOffsetHeight - placeableHeight
-                                } else {
-                                    cardOffsetHeight
-                                }
-
-                                layout(constraints.maxWidth, finalCaravanHeight) {
-                                    placeable.place(
-                                        cardOffsetWidth + (placeableWidth * offsetWidthMult).toInt(),
-                                        finalHeightOffset + (placeableHeight * offsetHeightMult).toInt()
-                                    )
-                                }
-                            }
-                            .drawWithContent {
-                                drawContent()
-                                drawRect(coverColor)
-                            }
-
-
-                        Box(modifier = modifier) {
-                            LaunchedEffect(it.recomposeResources) { }
-                            ShowCard(
-                                activity, it.card,
-                                Modifier.clickable {
-                                    addSelectedCardOnPosition(caravan.cards.indexOf(it))
-                                }
-                            )
-
-                            it.modifiersCopy().forEachIndexed { modifierIndex, card ->
-                                ModifierOnCardInCaravan(card, modifierIndex, it)
-                            }
-                        }
-                    }
-
-                    caravan.cards.forEachIndexed { index, it ->
-                        CardInCaravan(it, index)
                     }
                 }
+            }
+            VerticalScrollbar(
+                modifier = Modifier.align(Alignment.TopEnd)
+                    .fillMaxHeight()
+                    .background(getTrackColor(activity))
+                    .width(4.dp)
+                    .padding(end = 4.dp)
+            ) {
+                Thumb(Modifier.background(getKnobColor(activity)).width(1.5.dp))
             }
         }
     }

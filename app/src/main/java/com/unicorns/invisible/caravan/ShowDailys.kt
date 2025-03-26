@@ -9,8 +9,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -33,13 +31,10 @@ import com.unicorns.invisible.caravan.utils.TextFallout
 import com.unicorns.invisible.caravan.utils.clickableOk
 import com.unicorns.invisible.caravan.utils.getBackgroundColor
 import com.unicorns.invisible.caravan.utils.getDividerColor
-import com.unicorns.invisible.caravan.utils.getKnobColor
 import com.unicorns.invisible.caravan.utils.getTextBackgroundColor
 import com.unicorns.invisible.caravan.utils.getTextColor
 import com.unicorns.invisible.caravan.utils.getTextStrokeColor
-import com.unicorns.invisible.caravan.utils.getTrackColor
 import com.unicorns.invisible.caravan.utils.playDailyCompleted
-import com.unicorns.invisible.caravan.utils.scrollbar
 
 
 @Composable
@@ -47,92 +42,82 @@ fun ShowDailys(
     activity: MainActivity,
     goBack: () -> Unit
 ) {
-    val mainState = rememberLazyListState()
     var updateKey by remember { mutableStateOf(false) }
 
     MenuItemOpen(activity, stringResource(R.string.missions), "<-", goBack) {
         key(updateKey) {
-            LazyColumn(
+            Column(
                 Modifier
                     .fillMaxSize()
                     .background(getBackgroundColor(activity))
-                    .scrollbar(
-                        mainState,
-                        horizontal = false,
-                        knobColor = getKnobColor(activity),
-                        trackColor = getTrackColor(activity)
-                    )
                     .padding(horizontal = 4.dp),
-                mainState,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                item {
-                    Spacer(modifier = Modifier.height(16.dp))
-                    Row(
+                Spacer(modifier = Modifier.height(16.dp))
+                Row(
+                    Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    TextFallout(
+                        stringResource(R.string.achievements),
+                        getTextColor(activity),
+                        getTextStrokeColor(activity),
+                        18.sp,
+                        Modifier
+                            .fillMaxWidth(0.66f)
+                            .padding(horizontal = 8.dp)
+                            .background(getTextBackgroundColor(activity))
+                            .padding(4.dp)
+                            .clickableOk(activity) {
+                                activity.achievementsClient?.achievementsIntent?.let {
+                                    activity.openAchievements(it)
+                                }
+                            },
+                        boxAlignment = Alignment.Center
+                    )
+                }
+                Spacer(Modifier.height(16.dp))
+
+                @Composable
+                fun Challenges(typeName: String, challenges: List<Challenge>) {
+                    HorizontalDivider(color = getDividerColor(activity))
+                    Spacer(Modifier.height(16.dp))
+                    TextFallout(
+                        typeName,
+                        getTextColor(activity),
+                        getTextStrokeColor(activity),
+                        22.sp,
                         Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Center
-                    ) {
+                        boxAlignment = Alignment.Center,
+                        textAlignment = TextAlign.Center
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+                    if (challenges.isEmpty()) {
                         TextFallout(
-                            stringResource(R.string.achievements),
+                            stringResource(R.string.no_more_challenges),
                             getTextColor(activity),
                             getTextStrokeColor(activity),
                             18.sp,
-                            Modifier
-                                .fillMaxWidth(0.66f)
-                                .padding(horizontal = 8.dp)
-                                .background(getTextBackgroundColor(activity))
-                                .padding(4.dp)
-                                .clickableOk(activity) {
-                                    activity.achievementsClient?.achievementsIntent?.let {
-                                        activity.openAchievements(it)
-                                    }
-                                },
-                            boxAlignment = Alignment.Center
-                        )
-                    }
-                    Spacer(Modifier.height(16.dp))
-
-                    @Composable
-                    fun Challenges(typeName: String, challenges: List<Challenge>) {
-                        HorizontalDivider(color = getDividerColor(activity))
-                        Spacer(Modifier.height(16.dp))
-                        TextFallout(
-                            typeName,
-                            getTextColor(activity),
-                            getTextStrokeColor(activity),
-                            22.sp,
                             Modifier.fillMaxWidth(),
                             boxAlignment = Alignment.Center,
                             textAlignment = TextAlign.Center
                         )
-                        Spacer(modifier = Modifier.height(16.dp))
-                        if (challenges.isEmpty()) {
-                            TextFallout(
-                                stringResource(R.string.no_more_challenges),
-                                getTextColor(activity),
-                                getTextStrokeColor(activity),
-                                18.sp,
-                                Modifier.fillMaxWidth(),
-                                boxAlignment = Alignment.Center,
-                                textAlignment = TextAlign.Center
-                            )
-                            Spacer(Modifier.height(16.dp))
-                        } else {
-                            challenges.forEach { challenge ->
-                                ShowChallenge(activity, challenge, challenge.isCompleted()) {
-                                    updateKey = !updateKey
-                                }
-                                Spacer(Modifier.height(16.dp))
+                        Spacer(Modifier.height(16.dp))
+                    } else {
+                        challenges.forEach { challenge ->
+                            ShowChallenge(activity, challenge, challenge.isCompleted()) {
+                                updateKey = !updateKey
                             }
+                            Spacer(Modifier.height(16.dp))
                         }
                     }
-
-                    Challenges(stringResource(R.string.daily_missions), save.challengesNew)
-                    Challenges(stringResource(R.string.infinite_missions), save.challengesInf)
-                    Challenges(stringResource(R.string.one_time_missions), save.challenges1)
-                    Challenges(stringResource(R.string.one_time_missions_requiem), save.challenges2)
                 }
+
+                Challenges(stringResource(R.string.daily_missions), save.challengesNew)
+                Challenges(stringResource(R.string.infinite_missions), save.challengesInf)
+                Challenges(stringResource(R.string.one_time_missions), save.challenges1)
+                Challenges(stringResource(R.string.one_time_missions_requiem), save.challenges2)
             }
         }
     }

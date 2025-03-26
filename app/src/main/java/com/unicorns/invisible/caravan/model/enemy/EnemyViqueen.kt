@@ -19,7 +19,7 @@ class EnemyViqueen : EnemyPvENoBank() {
     override var winsBlitz: Int = 0
 
     override fun createDeck(): CResources {
-        return CResources(CardBack.VIKING, 0)
+        return CResources(CardBack.VIKING)
     }
     override suspend fun makeMove(game: Game, speed: AnimationSpeed) {}
 }

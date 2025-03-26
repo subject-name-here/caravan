@@ -3,12 +3,11 @@ package com.unicorns.invisible.caravan
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.AlertDialog
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -54,11 +53,9 @@ import com.unicorns.invisible.caravan.utils.TextFallout
 import com.unicorns.invisible.caravan.utils.clickableCancel
 import com.unicorns.invisible.caravan.utils.clickableSelect
 import com.unicorns.invisible.caravan.utils.getBackgroundColor
-import com.unicorns.invisible.caravan.utils.getKnobColor
 import com.unicorns.invisible.caravan.utils.getTextBackgroundColor
 import com.unicorns.invisible.caravan.utils.getTextColor
 import com.unicorns.invisible.caravan.utils.getTextStrokeColor
-import com.unicorns.invisible.caravan.utils.getTrackColor
 import com.unicorns.invisible.caravan.utils.nextSong
 import com.unicorns.invisible.caravan.utils.playHeartbeatSound
 import com.unicorns.invisible.caravan.utils.playJokerSounds
@@ -66,7 +63,6 @@ import com.unicorns.invisible.caravan.utils.playLoseSound
 import com.unicorns.invisible.caravan.utils.playNukeBlownSound
 import com.unicorns.invisible.caravan.utils.playWWSound
 import com.unicorns.invisible.caravan.utils.playWinSound
-import com.unicorns.invisible.caravan.utils.scrollbar
 import com.unicorns.invisible.caravan.utils.stopRadio
 import kotlinx.coroutines.delay
 
@@ -113,127 +109,118 @@ fun ShowStoryList(
     }
 
     MenuItemOpen(activity, stringResource(R.string.story_mode), "<-", goBack) {
-        val state = rememberLazyListState()
-        LazyColumn(
+        Column(
             Modifier
                 .fillMaxSize()
-                .background(getBackgroundColor(activity))
-                .scrollbar(
-                    state,
-                    knobColor = getKnobColor(activity), trackColor = getTrackColor(activity),
-                    horizontal = false,
-                ),
+                .background(getBackgroundColor(activity)),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
-            state = state
         ) {
-            item {
-                Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(16.dp))
+            TextFallout(
+                stringResource(R.string.select_the_chapter),
+                getTextColor(activity),
+                getTextStrokeColor(activity),
+                22.sp,
+                Modifier,
+            )
+
+            @Composable
+            fun Intro() {
                 TextFallout(
-                    stringResource(R.string.select_the_chapter),
+                    stringResource(R.string.intro),
                     getTextColor(activity),
                     getTextStrokeColor(activity),
-                    22.sp,
-                    Modifier,
+                    16.sp,
+                    Modifier
+                        .padding(4.dp)
+                        .clickableSelect(activity) { showChapter = 0 }
+                        .background(getTextBackgroundColor(activity))
+                        .padding(4.dp)
                 )
+            }
 
-                @Composable
-                fun Intro() {
-                    TextFallout(
-                        stringResource(R.string.intro),
-                        getTextColor(activity),
-                        getTextStrokeColor(activity),
-                        16.sp,
+            @Composable
+            fun Act(number: Int) {
+                val text = when (number) {
+                    0 -> stringResource(R.string.act_1_name)
+                    1 -> stringResource(R.string.act_2_name)
+                    2 -> stringResource(R.string.act_3_name)
+                    3 -> stringResource(R.string.act_4_name)
+                    4 -> stringResource(R.string.act_5_name)
+                    else -> "???"
+                }
+                TextFallout(
+                    text,
+                    getTextColor(activity),
+                    getTextStrokeColor(activity),
+                    20.sp,
+                    Modifier.padding(4.dp)
+                )
+            }
+
+            @Composable
+            fun Chapter(number: Int, isAvailable: Boolean) {
+                val text = if (!isAvailable) {
+                    "???"
+                } else when (number) {
+                    11 -> stringResource(R.string.chapter_1_name)
+                    12 -> stringResource(R.string.chapter_2_name)
+                    13 -> stringResource(R.string.chapter_3_name)
+                    19 -> stringResource(R.string.end_1_name)
+                    24 -> stringResource(R.string.chapter_4_name)
+                    25 -> stringResource(R.string.chapter_5_name)
+                    26 -> stringResource(R.string.chapter_6_name)
+                    29 -> stringResource(R.string.end_2_name)
+                    37 -> stringResource(R.string.chapter_7_name)
+                    38 -> stringResource(R.string.chapter_8_name)
+                    39 -> stringResource(R.string.end_3_name)
+                    409 -> stringResource(R.string.chapter_9_name)
+                    410 -> stringResource(R.string.chapter_10_name)
+                    411 -> stringResource(R.string.chapter_11_name)
+                    412-> stringResource(R.string.chapter_12_name)
+                    499 -> stringResource(R.string.end_4_name)
+                    513 -> stringResource(R.string.chapter_13_name)
+                    999 -> stringResource(R.string.chapter_end_name)
+                    else -> "???"
+                }
+                TextFallout(
+                    text,
+                    getTextColor(activity),
+                    getTextStrokeColor(activity),
+                    16.sp,
+                    if (isAvailable) {
                         Modifier
                             .padding(4.dp)
-                            .clickableSelect(activity) { showChapter = 0 }
+                            .clickableSelect(activity) { showChapter = number }
                             .background(getTextBackgroundColor(activity))
-                            .padding(4.dp)
-                    )
-                }
-
-                @Composable
-                fun Act(number: Int) {
-                    val text = when (number) {
-                        0 -> stringResource(R.string.act_1_name)
-                        1 -> stringResource(R.string.act_2_name)
-                        2 -> stringResource(R.string.act_3_name)
-                        3 -> stringResource(R.string.act_4_name)
-                        4 -> stringResource(R.string.act_5_name)
-                        else -> "???"
+                    } else {
+                        Modifier
                     }
-                    TextFallout(
-                        text,
-                        getTextColor(activity),
-                        getTextStrokeColor(activity),
-                        20.sp,
-                        Modifier.padding(4.dp)
-                    )
-                }
-
-                @Composable
-                fun Chapter(number: Int, isAvailable: Boolean) {
-                    val text = if (!isAvailable) {
-                        "???"
-                    } else when (number) {
-                        11 -> stringResource(R.string.chapter_1_name)
-                        12 -> stringResource(R.string.chapter_2_name)
-                        13 -> stringResource(R.string.chapter_3_name)
-                        19 -> stringResource(R.string.end_1_name)
-                        24 -> stringResource(R.string.chapter_4_name)
-                        25 -> stringResource(R.string.chapter_5_name)
-                        26 -> stringResource(R.string.chapter_6_name)
-                        29 -> stringResource(R.string.end_2_name)
-                        37 -> stringResource(R.string.chapter_7_name)
-                        38 -> stringResource(R.string.chapter_8_name)
-                        39 -> stringResource(R.string.end_3_name)
-                        409 -> stringResource(R.string.chapter_9_name)
-                        410 -> stringResource(R.string.chapter_10_name)
-                        411 -> stringResource(R.string.chapter_11_name)
-                        412-> stringResource(R.string.chapter_12_name)
-                        499 -> stringResource(R.string.end_4_name)
-                        513 -> stringResource(R.string.chapter_13_name)
-                        999 -> stringResource(R.string.chapter_end_name)
-                        else -> "???"
-                    }
-                    TextFallout(
-                        text,
-                        getTextColor(activity),
-                        getTextStrokeColor(activity),
-                        16.sp,
-                        if (isAvailable) {
-                            Modifier
-                                .padding(4.dp)
-                                .clickableSelect(activity) { showChapter = number }
-                                .background(getTextBackgroundColor(activity))
-                        } else {
-                            Modifier
-                        }
-                            .padding(4.dp)
-                    )
-                }
-
-                val acts = listOf(
-                    listOf(11, 12, 13, 19),
-                    listOf(24, 25, 26, 29),
-                    listOf(37, 38, 39),
-                    listOf(409, 410, 411, 412, 499),
-                    listOf(513, 999)
+                        .padding(4.dp)
                 )
-                val actsRevealed = when (save.storyProgress) {
-                    in (500..999) -> 5
-                    in (400..499) -> 4
-                    in (30..39) -> 3
-                    in (20..29) -> 2
-                    in (11..19) -> 1
-                    else -> 0
-                }
-                Intro()
-                repeat(actsRevealed) {
-                    Act(it)
-                    for (chapter in acts[it]) {
-                        Chapter(chapter, chapter <= save.storyProgress)
-                    }
+            }
+
+            val acts = listOf(
+                listOf(11, 12, 13, 19),
+                listOf(24, 25, 26, 29),
+                listOf(37, 38, 39),
+                listOf(409, 410, 411, 412, 499),
+                listOf(513, 999)
+            )
+            val actsRevealed = when (save.storyProgress) {
+                in (500..999) -> 5
+                in (400..499) -> 4
+                in (30..39) -> 3
+                in (20..29) -> 2
+                in (11..19) -> 1
+                else -> 0
+            }
+            Intro()
+            repeat(actsRevealed) {
+                Act(it)
+                for (chapter in acts[it]) {
+                    Chapter(chapter, chapter <= save.storyProgress)
                 }
             }
         }
@@ -244,10 +231,10 @@ fun ShowStoryList(
 fun getDeck(chapterNumber: Int): CustomDeck {
     return when (chapterNumber) {
         11 -> {
-            CustomDeck(CardBack.STANDARD, 0)
+            CustomDeck(CardBack.STANDARD)
         }
         12 -> {
-            CustomDeck(CardBack.STANDARD, 0).apply {
+            CustomDeck(CardBack.STANDARD).apply {
                 add(CardNumber(RankNumber.ACE, Suit.SPADES, CardBack.SIERRA_MADRE_CLEAN))
                 add(CardFaceSuited(RankFace.KING, Suit.SPADES, CardBack.SIERRA_MADRE_CLEAN))
                 add(CardFaceSuited(RankFace.QUEEN, Suit.SPADES, CardBack.SIERRA_MADRE_CLEAN))

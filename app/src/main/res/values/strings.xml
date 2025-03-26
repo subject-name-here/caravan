@@ -648,17 +648,17 @@
     <string name="your_caps_in_hand">Your caps in hand: %1$s</string>
     <string name="your_chips_in_hand">Your chips in hand: %1$s</string>
     <string name="buy_for_caps">%1$s caps</string>
-    <string name="buy_for_chips">%1$s Silver Rush chips</string>
+    <string name="buy_for_chips">%1$s Sierra Madre chips</string>
 
     <string name="enemy_name">Enemy: %1$s</string>
     <string name="enemy_s_bet">Enemy\'s bet: %1$s</string>
     <string name="enter_your_bet">Enter your bet (between %1$s and %2$s), or leave empty to play for free:</string>
     <string name="your_expected_reward">Your expected reward: %1$s caps.</string>
-    <string name="your_expected_reward_chips">Your expected reward: %1$s Silver Rush chips.</string>
+    <string name="your_expected_reward_chips">Your expected reward: %1$s Sierra Madre chips.</string>
     <string name="your_reward_reward_caps">\nYour reward: %1$s caps!!</string>
-    <string name="your_reward_reward_chips">\nYour reward: %1$s Silver Rush chips!!</string>
+    <string name="your_reward_reward_chips">\nYour reward: %1$s Sierra Madre chips!!</string>
     <string name="prize_caps">%1$s caps</string>
-    <string name="prize_chips">%1$s Silver Rush chips</string>
+    <string name="prize_chips">%1$s Sierra Madre chips</string>
     <string name="you_have_won">\nYou have obtained: %1$s.</string>
 
     <string name="daily_update_head">It\'s a beautiful day!</string>

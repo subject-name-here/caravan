@@ -4,26 +4,18 @@ import com.unicorns.invisible.caravan.AnimationSpeed
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.primitives.CResources
-import com.unicorns.invisible.caravan.model.primitives.Card
-import com.unicorns.invisible.caravan.model.primitives.CardAtomic
 import com.unicorns.invisible.caravan.model.primitives.CardBase
-import com.unicorns.invisible.caravan.model.primitives.CardFBomb
 import com.unicorns.invisible.caravan.model.primitives.CardFace
-import com.unicorns.invisible.caravan.model.primitives.CardFaceSuited
-import com.unicorns.invisible.caravan.model.primitives.CardJoker
 import com.unicorns.invisible.caravan.model.primitives.CardModifier
-import com.unicorns.invisible.caravan.model.primitives.CardNumber
-import com.unicorns.invisible.caravan.model.primitives.CardNumberWW
 import com.unicorns.invisible.caravan.model.primitives.CardWildWasteland
 import com.unicorns.invisible.caravan.model.primitives.CustomDeck
 import com.unicorns.invisible.caravan.model.primitives.RankFace
 import com.unicorns.invisible.caravan.model.primitives.RankNumber
-import com.unicorns.invisible.caravan.model.primitives.Suit
 import com.unicorns.invisible.caravan.model.primitives.WWType
 
 
 class EnemyStory2 : Enemy {
-    override fun createDeck(): CResources = CResources(CustomDeck(CardBack.TOPS, 0).apply {
+    override fun createDeck(): CResources = CResources(CustomDeck(CardBack.TOPS).apply {
         removeAll(toList().filter { it is CardModifier && !(it is CardFace && it.rank == RankFace.JACK) })
     })
 

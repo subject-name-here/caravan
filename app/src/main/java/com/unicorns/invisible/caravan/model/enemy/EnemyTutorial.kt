@@ -5,11 +5,10 @@ import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.CardBase
-import com.unicorns.invisible.caravan.model.primitives.CardModifier
 
 
 class EnemyTutorial : Enemy {
-    override fun createDeck(): CResources = CResources(CardBack.STANDARD, 1)
+    override fun createDeck(): CResources = CResources(CardBack.STANDARD_UNCOMMON)
 
     var onRemoveFromHand: () -> Unit = {}
 

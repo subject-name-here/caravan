@@ -22,7 +22,7 @@ class EnemyTheManInTheMirror : EnemyPvEWithBank() {
     override val maxBank: Int
         get() = 88
     override val bet: Int
-        get() = if (bank == 0) 0 else min(bank, 11)
+        get() = min(bank, 11)
 
     override var winsNoBet: Int = 0
     override var winsBet: Int = 0

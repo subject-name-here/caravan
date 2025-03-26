@@ -8,14 +8,9 @@ import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyInit
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJackToSelfSimple
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyKingToSelfSimple
 import com.unicorns.invisible.caravan.model.primitives.CResources
-import com.unicorns.invisible.caravan.model.primitives.CardAtomic
 import com.unicorns.invisible.caravan.model.primitives.CardBase
-import com.unicorns.invisible.caravan.model.primitives.CardFBomb
 import com.unicorns.invisible.caravan.model.primitives.CardFace
-import com.unicorns.invisible.caravan.model.primitives.CardFaceSuited
-import com.unicorns.invisible.caravan.model.primitives.CardJoker
 import com.unicorns.invisible.caravan.model.primitives.CardModifier
-import com.unicorns.invisible.caravan.model.primitives.CardWildWasteland
 import com.unicorns.invisible.caravan.model.primitives.RankFace
 import kotlinx.serialization.Serializable
 import kotlin.math.min
@@ -29,13 +24,13 @@ class EnemyVeronica : EnemyPvEWithBank() {
     override val isEven
         get() = true
 
-    override fun createDeck() = CResources(CardBack.ULTRA_LUXE, 0)
+    override fun createDeck() = CResources(CardBack.ULTRA_LUXE)
 
     override var bank: Int = 0
     override val maxBank: Int
         get() = 30
     override val bet: Int
-        get() = if (bank == 0) 0 else min(bank, if (bank == 0) 0 else min(bank, 15))
+        get() = min(bank, 15)
 
     override var winsNoBet: Int = 0
     override var winsBet: Int = 0

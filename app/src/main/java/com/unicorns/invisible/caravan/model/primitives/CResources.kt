@@ -10,7 +10,7 @@ import kotlin.random.Random
 
 
 class CResources(private val deck: CustomDeck) {
-    constructor(back: CardBack, backNumber: Int) : this(CustomDeck(back, backNumber))
+    constructor(back: CardBack) : this(CustomDeck(back))
 
     var recomposeResources by mutableIntStateOf(0)
 
@@ -128,10 +128,10 @@ class CResources(private val deck: CustomDeck) {
         addNewDeck(cResources.deck.copy())
         for (card in cResources.hand) {
             handMutable.add(when (card) {
-                is CardNumber -> CardNumber(card.rank, card.suit, card.cardBack, card.cardBackNumber)
+                is CardNumber -> CardNumber(card.rank, card.suit, card.cardBack)
                 is CardNumberWW -> CardNumberWW(card.rank, card.suit)
-                is CardFaceSuited -> CardFaceSuited(card.rank, card.suit, card.cardBack, card.cardBackNumber)
-                is CardJoker -> CardJoker(card.number, card.cardBack, card.cardBackNumber)
+                is CardFaceSuited -> CardFaceSuited(card.rank, card.suit, card.cardBack)
+                is CardJoker -> CardJoker(card.number, card.cardBack)
                 is CardAtomic -> CardAtomic()
                 is CardFBomb -> CardFBomb()
                 is CardWildWasteland -> CardWildWasteland(card.type)

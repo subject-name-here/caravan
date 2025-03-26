@@ -36,7 +36,15 @@ import com.unicorns.invisible.caravan.model.primitives.CardJoker
 import com.unicorns.invisible.caravan.model.primitives.CardNumber
 import com.unicorns.invisible.caravan.model.primitives.CardWithPrice
 import com.unicorns.invisible.caravan.model.primitives.CollectibleDeck
-import com.unicorns.invisible.caravan.model.trading.*
+import com.unicorns.invisible.caravan.model.trading.ChineseTrader
+import com.unicorns.invisible.caravan.model.trading.EnclaveTrader
+import com.unicorns.invisible.caravan.model.trading.GomorrahTrader
+import com.unicorns.invisible.caravan.model.trading.Lucky38Trader
+import com.unicorns.invisible.caravan.model.trading.SierraMadreTrader
+import com.unicorns.invisible.caravan.model.trading.TopsTrader
+import com.unicorns.invisible.caravan.model.trading.Trader
+import com.unicorns.invisible.caravan.model.trading.UltraLuxeTrader
+import com.unicorns.invisible.caravan.model.trading.Vault21Trader
 import kotlinx.serialization.EncodeDefault
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
@@ -154,7 +162,7 @@ class Save(var playerId: String? = null) {
     @EncodeDefault
     var capsInHand = 150
     @EncodeDefault
-    var silverRushChips = 75
+    var sierraMadreChips = 75
     @EncodeDefault
     var tickets = 5
 

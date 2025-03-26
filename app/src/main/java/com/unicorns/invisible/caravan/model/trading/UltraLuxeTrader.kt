@@ -3,7 +3,6 @@ package com.unicorns.invisible.caravan.model.trading
 import com.unicorns.invisible.caravan.MainActivity
 import com.unicorns.invisible.caravan.R
 import com.unicorns.invisible.caravan.model.CardBack
-import com.unicorns.invisible.caravan.model.primitives.Card
 import com.unicorns.invisible.caravan.model.primitives.CardWithPrice
 import com.unicorns.invisible.caravan.save
 import kotlinx.serialization.Serializable
@@ -26,5 +25,6 @@ class UltraLuxeTrader : Trader {
 
     override fun getSymbol() = "UL"
 
-    override fun getCards(): List<CardWithPrice> = getCards(CardBack.ULTRA_LUXE)
+    override fun getCards(): List<CardWithPrice> =
+        getCards(CardBack.ULTRA_LUXE) + getCards(CardBack.ULTRA_LUXE_CRIME)
 }

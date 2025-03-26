@@ -33,15 +33,6 @@ sealed interface Trader {
 
         val n = 7
 
-        val cards0 = shuffleCards(CollectibleDeck(back, 0)).take(n)
-        val cards1 = if (back.nameIdWithBackFileName.size > 1) {
-            shuffleCards(CollectibleDeck(back, 1)).take(n)
-        } else {
-            emptyList()
-        }
-
-        // TODO: generate standard cards
-
-        return (cards0 + cards1).toList()
+        return shuffleCards(CollectibleDeck(back)).take(n)
     }
 }

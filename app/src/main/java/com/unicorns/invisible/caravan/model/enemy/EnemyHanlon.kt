@@ -18,7 +18,7 @@ class EnemyHanlon : EnemyPvENoBank() {
     override var wins: Int = 0
     override var winsBlitz: Int = 0
 
-    override fun createDeck() = CResources(CardBack.FNV_FACTION, 0)
+    override fun createDeck() = CResources(CardBack.NCR)
 
     override suspend fun makeMove(game: Game, speed: AnimationSpeed) {}
 }

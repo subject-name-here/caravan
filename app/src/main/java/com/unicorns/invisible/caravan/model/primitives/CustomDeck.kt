@@ -5,8 +5,8 @@ import com.unicorns.invisible.caravan.model.CardBack
 class CustomDeck() {
     private val cards = ArrayList<Card>()
 
-    constructor(back: CardBack, backNumber: Int): this() {
-        addAll(CollectibleDeck(back, backNumber))
+    constructor(back: CardBack): this() {
+        addAll(CollectibleDeck(back))
     }
 
     val size: Int
@@ -21,9 +21,9 @@ class CustomDeck() {
 
     private fun getEqPredicate(it: Card): (Card) -> Boolean = { c ->
         when (c) {
-            is CardFaceSuited -> it is CardFaceSuited && it.rank == c.rank && it.suit == c.suit && it.cardBack == c.cardBack && it.cardBackNumber == c.cardBackNumber
-            is CardJoker -> it is CardJoker && it.number == c.number && it.cardBack == c.cardBack && it.cardBackNumber == c.cardBackNumber
-            is CardNumber -> it is CardNumber && it.rank == c.rank && it.suit == c.suit && it.cardBack == c.cardBack && it.cardBackNumber == c.cardBackNumber
+            is CardFaceSuited -> it is CardFaceSuited && it.rank == c.rank && it.suit == c.suit && it.cardBack == c.cardBack
+            is CardJoker -> it is CardJoker && it.number == c.number && it.cardBack == c.cardBack
+            is CardNumber -> it is CardNumber && it.rank == c.rank && it.suit == c.suit && it.cardBack == c.cardBack
             is CardNumberWW -> it is CardNumberWW && it.rank == c.rank && it.suit == c.suit
             is CardAtomic -> it is CardAtomic
             is CardFBomb -> it is CardFBomb
@@ -54,9 +54,9 @@ class CustomDeck() {
         val res = CustomDeck()
         for (card in cards) {
             res.add(when (card) {
-                is CardFaceSuited -> CardFaceSuited(card.rank, card.suit, card.cardBack, card.cardBackNumber)
-                is CardJoker -> CardJoker(card.number, card.cardBack, card.cardBackNumber)
-                is CardNumber -> CardNumber(card.rank, card.suit, card.cardBack, card.cardBackNumber)
+                is CardFaceSuited -> CardFaceSuited(card.rank, card.suit, card.cardBack)
+                is CardJoker -> CardJoker(card.number, card.cardBack)
+                is CardNumber -> CardNumber(card.rank, card.suit, card.cardBack)
                 is CardNumberWW -> CardNumberWW(card.rank, card.suit)
                 is CardAtomic -> CardAtomic()
                 is CardFBomb -> CardFBomb()

@@ -3,7 +3,6 @@ package com.unicorns.invisible.caravan.model.trading
 import com.unicorns.invisible.caravan.MainActivity
 import com.unicorns.invisible.caravan.R
 import com.unicorns.invisible.caravan.model.CardBack
-import com.unicorns.invisible.caravan.model.primitives.Card
 import com.unicorns.invisible.caravan.model.primitives.CardWithPrice
 import com.unicorns.invisible.caravan.utils.booleanToPlusOrMinus
 import kotlinx.serialization.Serializable
@@ -30,5 +29,6 @@ class TopsTrader : Trader {
 
     override fun getSymbol() = "T"
 
-    override fun getCards(): List<CardWithPrice> = getCards(CardBack.TOPS)
+    override fun getCards(): List<CardWithPrice> =
+        getCards(CardBack.TOPS) + getCards(CardBack.TOPS_RED)
 }

@@ -25,17 +25,28 @@ fun getCardName(card: Card): String {
             val back = card.getBack()
             when (back) {
                 CardBack.STANDARD -> getStandardName(card)
-                CardBack.GOMORRAH -> getGomorrahName(card)
+                CardBack.STANDARD_UNCOMMON -> getStandardName(card)
+                CardBack.STANDARD_RARE -> getStandardName(card)
+                CardBack.STANDARD_MYTHIC -> getStandardName(card)
+                CardBack.STANDARD_LEGENDARY -> getStandardName(card)
                 CardBack.TOPS -> getTopsName(card)
+                CardBack.TOPS_RED -> getTopsName(card)
                 CardBack.ULTRA_LUXE -> getUltraLuxeName(card)
-                CardBack.LUCKY_38 -> if (card.getBackNumber() == 0) getLucky38Name(card) else getLucky38AltName(card)
-                CardBack.VAULT_21 -> if (card.getBackNumber() == 0) getVault21Name(card) else getVault21AltName(card)
-                CardBack.SIERRA_MADRE -> if (card.getBackNumber() == 0) getStandardName(card) else getSmCleanName(card)
+                CardBack.ULTRA_LUXE_CRIME -> getUltraLuxeName(card)
+                CardBack.GOMORRAH -> getGomorrahName(card)
+                CardBack.GOMORRAH_DARK -> getGomorrahName(card)
+                CardBack.LUCKY_38 -> getLucky38Name(card)
+                CardBack.LUCKY_38_SPECIAL ->  getLucky38AltName(card)
+                CardBack.VAULT_21_DAY -> getVault21Name(card)
+                CardBack.VAULT_21_NIGHT -> getVault21AltName(card)
+                CardBack.SIERRA_MADRE_DIRTY -> getStandardName(card)
+                CardBack.SIERRA_MADRE_CLEAN -> getSmCleanName(card)
                 CardBack.CHINESE -> getChineseName(card)
                 CardBack.ENCLAVE -> getEnclaveName(card)
+                CardBack.NCR -> getNcrName(card)
+                CardBack.LEGION -> getLegionName(card)
                 CardBack.MADNESS -> getMadnessName(card)
                 CardBack.VIKING -> getVikingName(card)
-                CardBack.FNV_FACTION -> if (card.getBackNumber() == 0) getNcrName(card) else getLegionName(card)
             }
         }
     }
@@ -261,7 +272,6 @@ private fun getUltraLuxeName(card: CardWithPrice): String {
 }
 
 private fun getNcrName(card: CardWithPrice): String {
-    // TODO: apply stamps
     return getStandardName(card)
 }
 

@@ -18,14 +18,14 @@ class EnemyCaesar : EnemyPvEWithBank() {
         get() = false
 
     override fun createDeck(): CResources {
-        return CResources(CustomDeck(CardBack.FNV_FACTION, 1))
+        return CResources(CustomDeck(CardBack.LEGION))
     }
 
     override var bank: Int = 0
     override val maxBank: Int
         get() = 87
     override val bet: Int
-        get() = if (bank == 0) 0 else min(bank, 29)
+        get() = min(bank, 29)
 
     override var winsNoBet: Int = 0
     override var winsBet: Int = 0

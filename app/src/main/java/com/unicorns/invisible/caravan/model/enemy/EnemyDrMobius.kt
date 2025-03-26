@@ -38,7 +38,7 @@ class EnemyDrMobius : EnemyPvEWithBank() {
     override val maxBank: Int
         get() = 80
     override val bet: Int
-        get() = if (bank == 0) 0 else min(bank, 8)
+        get() = min(bank, 8)
 
     override var winsNoBet: Int = 0
     override var winsBet: Int = 0
@@ -48,7 +48,7 @@ class EnemyDrMobius : EnemyPvEWithBank() {
     override suspend fun makeMove(game: Game, speed: AnimationSpeed) {
         makeMoveInner(game)
         if (game.enemyCResources.hand.size < 5) {
-            game.enemyCResources.addOnTop(if (Random.nextInt(14) >= 10) generateCardFace() else generateCardNumber())
+            game.enemyCResources.addOnTop(if (Random.nextInt(14) < 10) generateCardNumber() else generateCardFace())
         }
     }
 
@@ -58,17 +58,24 @@ class EnemyDrMobius : EnemyPvEWithBank() {
 
     fun generateCardFace(): CardFace {
         val rank = RankFace.entries.random()
-        val deckIndex = CardBack.STANDARD.nameIdWithBackFileName.indices.random()
         return if (rank == RankFace.JOKER) {
-            CardJoker(CardJoker.Number.entries.random(), CardBack.STANDARD, deckIndex)
+            CardJoker(CardJoker.Number.entries.random(), generateBack())
         } else {
-            CardFaceSuited(rank, Suit.entries.random(), CardBack.STANDARD, deckIndex)
+            CardFaceSuited(rank, Suit.entries.random(), generateBack())
         }
     }
 
     fun generateCardNumber(): CardNumber {
         val rank = RankNumber.entries.random()
-        val deckIndex = CardBack.STANDARD.nameIdWithBackFileName.indices.random()
-        return CardNumber(rank, Suit.entries.random(), CardBack.STANDARD, deckIndex)
+        val back =
+        return CardNumber(rank, Suit.entries.random(), generateBack())
     }
+
+    fun generateBack() = listOf(
+        CardBack.STANDARD,
+        CardBack.STANDARD_UNCOMMON,
+        CardBack.STANDARD_RARE,
+        CardBack.STANDARD_MYTHIC,
+        CardBack.STANDARD_LEGENDARY,
+    ).random()
 }

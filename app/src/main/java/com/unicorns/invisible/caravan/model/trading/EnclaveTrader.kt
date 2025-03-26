@@ -3,7 +3,6 @@ package com.unicorns.invisible.caravan.model.trading
 import com.unicorns.invisible.caravan.MainActivity
 import com.unicorns.invisible.caravan.R
 import com.unicorns.invisible.caravan.model.CardBack
-import com.unicorns.invisible.caravan.model.primitives.Card
 import com.unicorns.invisible.caravan.model.primitives.CardWithPrice
 import kotlinx.serialization.Serializable
 

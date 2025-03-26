@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -33,6 +34,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.composables.core.ScrollArea
+import com.composables.core.Thumb
+import com.composables.core.VerticalScrollbar
+import com.composables.core.rememberScrollAreaState
+import com.unicorns.invisible.caravan.model.Currency
 import com.unicorns.invisible.caravan.model.primitives.CardFaceSuited
 import com.unicorns.invisible.caravan.model.primitives.CardJoker
 import com.unicorns.invisible.caravan.model.primitives.CardNumber
@@ -54,7 +60,6 @@ import com.unicorns.invisible.caravan.utils.getTrackColor
 import com.unicorns.invisible.caravan.utils.playCashSound
 import com.unicorns.invisible.caravan.utils.playNoBeep
 import com.unicorns.invisible.caravan.utils.playSelectSound
-import com.unicorns.invisible.caravan.utils.scrollbar
 
 
 @Composable
@@ -86,10 +91,10 @@ fun CardToBuy(activity: MainActivity, card: CardWithPrice, price: Int, update: (
         }
 
         TextFallout(
-            if (card.getBackNumber() == 0) {
-                stringResource(R.string.buy_for_caps, price)
-            } else {
-                stringResource(R.string.buy_for_chips, price)
+            when (card.getBack().currency) {
+                Currency.CAPS -> stringResource(R.string.buy_for_caps, price)
+                Currency.SIERRA_MADRE_CHIPS -> stringResource(R.string.buy_for_chips, price)
+                Currency.NOT_FOR_SALE -> stringResource(R.string.empty_string)
             },
             getTextColor(activity),
             getTextStrokeColor(activity),
@@ -99,20 +104,20 @@ fun CardToBuy(activity: MainActivity, card: CardWithPrice, price: Int, update: (
                 .padding(4.dp)
                 .background(getTextBackgroundColor(activity))
                 .clickable {
-                    val cash = if (card.getBackNumber() == 0) {
-                        save.capsInHand
+                    val cash = if (card.getBack().currency == Currency.SIERRA_MADRE_CHIPS) {
+                        save.sierraMadreChips
                     } else {
-                        save.silverRushChips
+                        save.capsInHand
                     }
                     if (cash < price) {
                         playNoBeep(activity)
                     } else {
-                        if (card.getBackNumber() == 0) {
+                        if (card.getBack().currency == Currency.SIERRA_MADRE_CHIPS) {
+                            save.sierraMadreChips -= price
+                            save.chipsWasted += price
+                        } else {
                             save.capsInHand -= price
                             save.capsWasted += price
-                        } else {
-                            save.silverRushChips -= price
-                            save.chipsWasted += price
                         }
                         save.addCard(card)
                         playCashSound(activity)
@@ -147,7 +152,7 @@ fun ShowTraders(activity: MainActivity, goBack: () -> Unit) {
                     Modifier.padding(4.dp),
                 )
                 TextFallout(
-                    stringResource(R.string.your_chips_in_hand, save.silverRushChips),
+                    stringResource(R.string.your_chips_in_hand, save.sierraMadreChips),
                     getTextColor(activity),
                     getTextStrokeColor(activity),
                     16.sp,
@@ -190,61 +195,69 @@ fun ShowTraders(activity: MainActivity, goBack: () -> Unit) {
                 }
 
                 val selectedTrader = save.traders[selectedTab]
-                LazyColumn(
-                    Modifier
-                        .fillMaxSize()
-                        .background(getBackgroundColor(activity))
-                        .scrollbar(
-                            state,
-                            horizontal = false,
-                            knobColor = getKnobColor(activity),
-                            trackColor = getTrackColor(activity),
-                        ), state = state
-                ) {
-                    item {
-                        Column(
-                            Modifier
-                                .fillMaxSize()
-                                .padding(4.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Top
-                        ) {
-                            if (selectedTrader.isOpen()) {
-                                val cards = selectedTrader.getCards()
-                                    .filter { !save.isCardAvailableAlready(it) }
+                val lazyListState = rememberLazyListState()
+                val state = rememberScrollAreaState(lazyListState)
+                ScrollArea(state, Modifier.fillMaxSize()) {
+                    LazyColumn(
+                        Modifier
+                            .fillMaxSize()
+                            .background(getBackgroundColor(activity)),
+                        state = lazyListState
+                    ) {
+                        item {
+                            Column(
+                                Modifier
+                                    .fillMaxSize()
+                                    .padding(4.dp),
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.Top
+                            ) {
+                                if (selectedTrader.isOpen()) {
+                                    val cards = selectedTrader.getCards()
+                                        .filter { !save.isCardAvailableAlready(it) }
 
-                                TextFallout(
-                                    if (cards.isEmpty()) {
-                                        stringResource(selectedTrader.getEmptyStoreMessage())
-                                    } else {
-                                        stringResource(selectedTrader.getWelcomeMessage())
-                                    },
-                                    getTextColor(activity),
-                                    getTextStrokeColor(activity),
-                                    18.sp,
-                                    Modifier.fillMaxWidth().padding(4.dp),
-                                )
-                                cards.forEach {
+                                    TextFallout(
+                                        if (cards.isEmpty()) {
+                                            stringResource(selectedTrader.getEmptyStoreMessage())
+                                        } else {
+                                            stringResource(selectedTrader.getWelcomeMessage())
+                                        },
+                                        getTextColor(activity),
+                                        getTextStrokeColor(activity),
+                                        18.sp,
+                                        Modifier.fillMaxWidth().padding(4.dp),
+                                    )
+                                    cards.forEach {
+                                        Spacer(modifier = Modifier.height(4.dp))
+                                        HorizontalDivider(thickness = 1.dp, color = getDividerColor(activity))
+                                        Spacer(modifier = Modifier.height(4.dp))
+                                        CardToBuy(activity, it, it.getPriceOfCard()) {
+                                            update = !update
+                                        }
+                                    }
                                     Spacer(modifier = Modifier.height(4.dp))
                                     HorizontalDivider(thickness = 1.dp, color = getDividerColor(activity))
                                     Spacer(modifier = Modifier.height(4.dp))
-                                    CardToBuy(activity, it, it.getPriceOfCard()) {
-                                        update = !update
-                                    }
+                                } else {
+                                    TextFallout(
+                                        selectedTrader.openingCondition(activity),
+                                        getTextColor(activity),
+                                        getTextStrokeColor(activity),
+                                        18.sp,
+                                        Modifier.fillMaxWidth().padding(4.dp),
+                                    )
                                 }
-                                Spacer(modifier = Modifier.height(4.dp))
-                                HorizontalDivider(thickness = 1.dp, color = getDividerColor(activity))
-                                Spacer(modifier = Modifier.height(4.dp))
-                            } else {
-                                TextFallout(
-                                    selectedTrader.openingCondition(activity),
-                                    getTextColor(activity),
-                                    getTextStrokeColor(activity),
-                                    18.sp,
-                                    Modifier.fillMaxWidth().padding(4.dp),
-                                )
                             }
                         }
+                    }
+                    VerticalScrollbar(
+                        modifier = Modifier.align(Alignment.TopEnd)
+                            .fillMaxHeight()
+                            .background(getTrackColor(activity))
+                            .width(6.dp)
+                            .padding(end = 6.dp)
+                    ) {
+                        Thumb(Modifier.background(getKnobColor(activity)).width(2.dp))
                     }
                 }
             }

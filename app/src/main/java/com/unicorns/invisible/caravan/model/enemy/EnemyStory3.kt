@@ -4,17 +4,11 @@ import com.unicorns.invisible.caravan.AnimationSpeed
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.primitives.CResources
-import com.unicorns.invisible.caravan.model.primitives.Card
-import com.unicorns.invisible.caravan.model.primitives.CardAtomic
 import com.unicorns.invisible.caravan.model.primitives.CardBase
-import com.unicorns.invisible.caravan.model.primitives.CardFBomb
 import com.unicorns.invisible.caravan.model.primitives.CardFace
 import com.unicorns.invisible.caravan.model.primitives.CardFaceSuited
 import com.unicorns.invisible.caravan.model.primitives.CardJoker
-import com.unicorns.invisible.caravan.model.primitives.CardModifier
 import com.unicorns.invisible.caravan.model.primitives.CardNumber
-import com.unicorns.invisible.caravan.model.primitives.CardNumberWW
-import com.unicorns.invisible.caravan.model.primitives.CardWildWasteland
 import com.unicorns.invisible.caravan.model.primitives.CustomDeck
 import com.unicorns.invisible.caravan.model.primitives.RankFace
 import com.unicorns.invisible.caravan.model.primitives.RankNumber
@@ -22,11 +16,11 @@ import com.unicorns.invisible.caravan.model.primitives.Suit
 
 
 class EnemyStory3(val showMessage: (Int) -> Unit) : Enemy {
-    override fun createDeck(): CResources = CResources(CustomDeck(CardBack.GOMORRAH, 0).apply {
+    override fun createDeck(): CResources = CResources(CustomDeck(CardBack.GOMORRAH).apply {
         removeAll(toList().filter { it is CardNumber && it.rank.value < 5 || it is CardFace && it.rank == RankFace.QUEEN })
-        add(CardFaceSuited(RankFace.JACK, Suit.SPADES, CardBack.GOMORRAH, 1))
-        add(CardFaceSuited(RankFace.KING, Suit.SPADES, CardBack.GOMORRAH, 1))
-        add(CardNumber(RankNumber.ACE, Suit.SPADES, CardBack.GOMORRAH, 1))
+        add(CardFaceSuited(RankFace.JACK, Suit.SPADES, CardBack.GOMORRAH_DARK))
+        add(CardFaceSuited(RankFace.KING, Suit.SPADES, CardBack.GOMORRAH_DARK))
+        add(CardNumber(RankNumber.ACE, Suit.SPADES, CardBack.GOMORRAH_DARK))
     })
 
     private var shownMessage = false
@@ -36,17 +30,17 @@ class EnemyStory3(val showMessage: (Int) -> Unit) : Enemy {
         if (game.isInitStage()) {
             when (hand.size) {
                 8 -> {
-                    game.playerCResources.addCardToHandDirect(CardNumber(RankNumber.TWO, Suit.HEARTS, CardBack.STANDARD, 0))
+                    game.playerCResources.addCardToHandDirect(CardNumber(RankNumber.TWO, Suit.HEARTS, CardBack.STANDARD))
                     showMessage(1)
                 }
                 7 -> {
-                    game.playerCResources.addCardToHandDirect(CardNumber(RankNumber.TWO, Suit.HEARTS, CardBack.LUCKY_38, 1))
-                    game.playerCResources.addCardToHandDirect(CardNumber(RankNumber.TWO, Suit.HEARTS, CardBack.VAULT_21, 0))
+                    game.playerCResources.addCardToHandDirect(CardNumber(RankNumber.TWO, Suit.HEARTS, CardBack.LUCKY_38_SPECIAL))
+                    game.playerCResources.addCardToHandDirect(CardNumber(RankNumber.TWO, Suit.HEARTS, CardBack.VAULT_21_DAY))
                     showMessage(2)
                 }
                 6 -> {
-                    game.playerCResources.addCardToHandDirect(CardNumber(RankNumber.TWO, Suit.HEARTS, CardBack.GOMORRAH, 0))
-                    game.playerCResources.addCardToHandDirect(CardNumber(RankNumber.TWO, Suit.HEARTS, CardBack.VAULT_21, 1))
+                    game.playerCResources.addCardToHandDirect(CardNumber(RankNumber.TWO, Suit.HEARTS, CardBack.GOMORRAH))
+                    game.playerCResources.addCardToHandDirect(CardNumber(RankNumber.TWO, Suit.HEARTS, CardBack.VAULT_21_NIGHT))
                     showMessage(3)
                 }
             }
@@ -60,10 +54,10 @@ class EnemyStory3(val showMessage: (Int) -> Unit) : Enemy {
         if (!shownMessage) {
             shownMessage = true
             showMessage(4)
-            game.playerCResources.addNewDeck(CustomDeck(CardBack.STANDARD, 2).apply {
+            game.playerCResources.addNewDeck(CustomDeck(CardBack.STANDARD_RARE).apply {
                 removeAll(toList().filter { it is CardNumber && it.rank.value < 5 || it is CardFace && it.rank == RankFace.QUEEN })
             })
-            game.playerCResources.addCardToHandDirect(CardFaceSuited(RankFace.KING, Suit.HEARTS, CardBack.STANDARD, 1))
+            game.playerCResources.addCardToHandDirect(CardFaceSuited(RankFace.KING, Suit.HEARTS, CardBack.STANDARD_UNCOMMON))
             game.playerCResources.shuffleDeck()
         }
 

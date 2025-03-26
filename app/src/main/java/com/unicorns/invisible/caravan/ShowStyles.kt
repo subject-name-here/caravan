@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
@@ -25,13 +26,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.composables.core.ScrollArea
+import com.composables.core.Thumb
+import com.composables.core.VerticalScrollbar
+import com.composables.core.rememberScrollAreaState
 import com.unicorns.invisible.caravan.save.saveData
 import com.unicorns.invisible.caravan.utils.MenuItemOpen
 import com.unicorns.invisible.caravan.utils.TextFallout
 import com.unicorns.invisible.caravan.utils.clickableOk
 import com.unicorns.invisible.caravan.utils.clickableSelect
 import com.unicorns.invisible.caravan.utils.getBackByStyle
-import com.unicorns.invisible.caravan.utils.getKnobColorByStyle
+import com.unicorns.invisible.caravan.utils.getKnobColor
 import com.unicorns.invisible.caravan.utils.getMusicPanelColorByStyle
 import com.unicorns.invisible.caravan.utils.getSelectionColorByStyle
 import com.unicorns.invisible.caravan.utils.getStrokeColorByStyle
@@ -40,9 +45,8 @@ import com.unicorns.invisible.caravan.utils.getTextBackgroundColor
 import com.unicorns.invisible.caravan.utils.getTextColor
 import com.unicorns.invisible.caravan.utils.getTextColorByStyle
 import com.unicorns.invisible.caravan.utils.getTextStrokeColor
-import com.unicorns.invisible.caravan.utils.getTrackColorByStyle
+import com.unicorns.invisible.caravan.utils.getTrackColor
 import com.unicorns.invisible.caravan.utils.playPimpBoySound
-import com.unicorns.invisible.caravan.utils.scrollbar
 
 
 @Composable
@@ -102,80 +106,88 @@ fun ShowStyles(
                             .background(getMusicPanelColorByStyle(activity, watchedStyle))
                         ) {}
 
-                        val state = rememberLazyListState()
-                        LazyColumn(
-                            Modifier
-                                .fillMaxSize()
-                                .background(getBackByStyle(activity, watchedStyle))
-                                .scrollbar(
-                                    state,
-                                    knobColor = getKnobColorByStyle(activity, watchedStyle),
-                                    trackColor = getTrackColorByStyle(activity, watchedStyle),
-                                    horizontal = false,
-                                ),
-                            verticalArrangement = Arrangement.Center,
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            state = state
-                        ) {
-                            item {
-                                Column(
-                                    Modifier.fillMaxSize(),
-                                    verticalArrangement = Arrangement.SpaceEvenly,
-                                    horizontalAlignment = Alignment.CenterHorizontally
-                                ) {
-                                    TextFallout(
-                                        stringResource(watchedStyle.styleNameId),
-                                        getTextColorByStyle(activity, watchedStyle),
-                                        getStrokeColorByStyle(activity, watchedStyle),
-                                        24.sp,
-                                        Modifier.padding(4.dp),
-                                    )
-                                    Spacer(Modifier.height(16.dp))
-                                    if (watchedStyle in save.ownedStyles) {
+                        val lazyListState = rememberLazyListState()
+                        val state = rememberScrollAreaState(lazyListState)
+                        ScrollArea(state, Modifier.fillMaxSize()) {
+                            LazyColumn(
+                                Modifier
+                                    .fillMaxSize()
+                                    .background(getBackByStyle(activity, watchedStyle)),
+                                verticalArrangement = Arrangement.Center,
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                state = lazyListState
+                            ) {
+                                item {
+                                    Column(
+                                        Modifier.fillMaxSize(),
+                                        verticalArrangement = Arrangement.SpaceEvenly,
+                                        horizontalAlignment = Alignment.CenterHorizontally
+                                    ) {
                                         TextFallout(
-                                            stringResource(R.string.select),
+                                            stringResource(watchedStyle.styleNameId),
                                             getTextColorByStyle(activity, watchedStyle),
                                             getStrokeColorByStyle(activity, watchedStyle),
-                                            18.sp,
-                                            Modifier
-                                                .background(getTextBackByStyle(activity, watchedStyle))
-                                                .clickableOk(activity) {
-                                                    styleInt = watchedStyle.ordinal
-                                                    selectStyle(watchedStyle.ordinal)
-                                                }
-                                                .padding(4.dp),
+                                            24.sp,
+                                            Modifier.padding(4.dp),
                                         )
-                                    } else {
-                                        if (watchedStyle.checkCondition()) {
+                                        Spacer(Modifier.height(16.dp))
+                                        if (watchedStyle in save.ownedStyles) {
                                             TextFallout(
-                                                stringResource(R.string.tap_to_open),
+                                                stringResource(R.string.select),
                                                 getTextColorByStyle(activity, watchedStyle),
                                                 getStrokeColorByStyle(activity, watchedStyle),
-                                                20.sp,
+                                                18.sp,
                                                 Modifier
                                                     .background(getTextBackByStyle(activity, watchedStyle))
                                                     .clickableOk(activity) {
-                                                        save.ownedStyles.add(watchedStyle)
-                                                        saveData(activity)
-                                                        playPimpBoySound(activity)
                                                         styleInt = watchedStyle.ordinal
                                                         selectStyle(watchedStyle.ordinal)
                                                     }
                                                     .padding(4.dp),
                                             )
                                         } else {
-                                            TextFallout(
-                                                stringResource(watchedStyle.conditionToOpenId),
-                                                getTextColorByStyle(activity, watchedStyle),
-                                                getStrokeColorByStyle(activity, watchedStyle),
-                                                20.sp,
-                                                Modifier.padding(4.dp),
-                                            )
+                                            if (watchedStyle.checkCondition()) {
+                                                TextFallout(
+                                                    stringResource(R.string.tap_to_open),
+                                                    getTextColorByStyle(activity, watchedStyle),
+                                                    getStrokeColorByStyle(activity, watchedStyle),
+                                                    20.sp,
+                                                    Modifier
+                                                        .background(getTextBackByStyle(activity, watchedStyle))
+                                                        .clickableOk(activity) {
+                                                            save.ownedStyles.add(watchedStyle)
+                                                            saveData(activity)
+                                                            playPimpBoySound(activity)
+                                                            styleInt = watchedStyle.ordinal
+                                                            selectStyle(watchedStyle.ordinal)
+                                                        }
+                                                        .padding(4.dp),
+                                                )
+                                            } else {
+                                                TextFallout(
+                                                    stringResource(watchedStyle.conditionToOpenId),
+                                                    getTextColorByStyle(activity, watchedStyle),
+                                                    getStrokeColorByStyle(activity, watchedStyle),
+                                                    20.sp,
+                                                    Modifier.padding(4.dp),
+                                                )
+                                            }
                                         }
                                     }
                                 }
                             }
+                            VerticalScrollbar(
+                                modifier = Modifier.align(Alignment.TopEnd)
+                                    .fillMaxHeight()
+                                    .background(getTrackColor(activity))
+                                    .width(6.dp)
+                                    .padding(end = 6.dp)
+                            ) {
+                                Thumb(Modifier.background(getKnobColor(activity)).width(2.dp))
+                            }
                         }
+
+
                     }
 
                     Column(

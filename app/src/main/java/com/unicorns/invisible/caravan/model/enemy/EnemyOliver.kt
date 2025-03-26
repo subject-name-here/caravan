@@ -19,7 +19,7 @@ class EnemyOliver : EnemyPvEWithBank() {
     override val isEven
         get() = true
 
-    override fun createDeck() = CResources(CardBack.STANDARD, 0)
+    override fun createDeck() = CResources(CardBack.STANDARD)
 
 
     override var bank: Int = 0

@@ -7,13 +7,13 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -37,7 +37,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.sebaslogen.resaca.rememberScoped
+import com.composables.core.ScrollArea
+import com.composables.core.rememberScrollAreaState
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.Card
@@ -56,17 +57,12 @@ import com.unicorns.invisible.caravan.utils.TextFallout
 import com.unicorns.invisible.caravan.utils.clickableSelect
 import com.unicorns.invisible.caravan.utils.getBackgroundColor
 import com.unicorns.invisible.caravan.utils.getDividerColor
-import com.unicorns.invisible.caravan.utils.getKnobColor
 import com.unicorns.invisible.caravan.utils.getSelectionColor
 import com.unicorns.invisible.caravan.utils.getTextBackgroundColor
 import com.unicorns.invisible.caravan.utils.getTextColor
 import com.unicorns.invisible.caravan.utils.getTextStrokeColor
-import com.unicorns.invisible.caravan.utils.getTrackColor
-import com.unicorns.invisible.caravan.utils.playClickSound
 import com.unicorns.invisible.caravan.utils.playCloseSound
 import com.unicorns.invisible.caravan.utils.playSelectSound
-import com.unicorns.invisible.caravan.utils.scrollbar
-import kotlin.collections.count
 
 
 @Composable
@@ -157,222 +153,168 @@ fun SetCustomDeck(
             HorizontalDivider(color = getDividerColor(activity))
             Spacer(modifier = Modifier.height(12.dp))
 
-            LazyColumn(
-                Modifier
-                    .fillMaxSize()
-                    .scrollbar(
-                        mainState,
-                        horizontal = false,
-                        knobColor = getKnobColor(activity),
-                        trackColor = getTrackColor(activity)
-                    ),
-                mainState
-            ) {
-                items(CardBack.entries) { back ->
-                    val backToNumber = save.getBackNumbersChosenMap()
+            Column(Modifier.fillMaxSize()) {
+                CardBack.entries.forEach { back ->
                     var updateInfo by remember { mutableStateOf(false) }
                     var updateCards by remember { mutableStateOf(false) }
-                    var backNumber by rememberScoped { mutableIntStateOf(backToNumber[back] ?: 0) }
-                    key (updateAll, updateInfo) {
+                    key(updateAll, updateInfo) {
                         @Composable
-                        fun ChangeBackNumber(text: String, operation: (Int) -> Int) {
+                        fun Button(text: String, action: (CardWithPrice) -> Unit) {
                             TextFallout(
                                 text,
                                 getTextColor(activity),
                                 getTextStrokeColor(activity),
-                                24.sp,
+                                18.sp,
                                 Modifier
-                                    .fillMaxSize()
+                                    .fillMaxWidth()
                                     .background(getTextBackgroundColor(activity))
                                     .clickableSelect(activity) {
-                                        backNumber = operation(backNumber)
-                                        val last = back.nameIdWithBackFileName.lastIndex
-                                        if (backNumber < 0) {
-                                            backNumber = last
-                                        } else if (backNumber > last) {
-                                            backNumber = 0
-                                        }
-
-                                        save.getBackNumbersChosenMap()[back] = backNumber
-                                        saveData(activity)
-                                        playClickSound(activity)
+                                        CollectibleDeck(back).toList()
+                                            .filter { isAvailable(it) }
+                                            .forEach(action)
                                         updateCharacteristics = !updateCharacteristics
-                                        updateInfo = !updateInfo
                                         updateCards = !updateCards
                                     }
-                                    .padding(4.dp),
+                                    .padding(vertical = 4.dp),
+                                boxAlignment = Alignment.Center
                             )
                         }
 
-                        val numbers = back.nameIdWithBackFileName.size
-
-                        Row(
-                            Modifier
-                                .fillMaxWidth()
-                                .padding(4.dp),
-                            horizontalArrangement = Arrangement.Center,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Column(
-                                Modifier.fillMaxHeight().weight(0.1f),
-                                verticalArrangement = Arrangement.Center,
-                                horizontalAlignment = Alignment.CenterHorizontally
-                            ) {
-                                if (numbers > 1) {
-                                    ChangeBackNumber("<", Int::dec)
-                                }
-                            }
-
-                            Column(
+                        val lazyRowState = rememberLazyListState()
+                        val state = rememberScrollAreaState(lazyRowState)
+                        ScrollArea(state, Modifier.fillMaxSize()) {
+                            LazyRow(
                                 Modifier
-                                    .padding(horizontal = 8.dp)
-                                    .weight(0.33f)
+                                    .fillMaxWidth()
+                                    .padding(4.dp),
+                                horizontalArrangement = Arrangement.Start,
+                                verticalAlignment = Alignment.CenterVertically,
+                                state = lazyRowState
                             ) {
-                                val name = stringResource(back.nameIdWithBackFileName[backNumber].first)
-                                TextFallout(
-                                    name.replace(" (", "\n("),
-                                    getTextColor(activity),
-                                    getTextStrokeColor(activity),
-                                    14.sp,
-                                    Modifier.fillMaxWidth(),
-                                    boxAlignment = Alignment.Center
-                                )
-                                ShowCardBack(
-                                    activity,
-                                    CardNumber(RankNumber.ACE, Suit.CLUBS, back, backNumber),
-                                    Modifier.align(Alignment.CenterHorizontally),
-                                )
-                            }
-                            Column(
-                                Modifier
-                                    .padding(horizontal = 8.dp)
-                                    .weight(0.33f)
-                            ) {
-                                @Composable
-                                fun Button(text: String, action: (CardWithPrice) -> Unit) {
-                                    TextFallout(
-                                        text,
-                                        getTextColor(activity),
-                                        getTextStrokeColor(activity),
-                                        18.sp,
-                                        Modifier
-                                            .fillMaxWidth()
-                                            .background(getTextBackgroundColor(activity))
-                                            .clickableSelect(activity) {
-                                                CollectibleDeck(back, backNumber).toList()
-                                                    .filter { isAvailable(it) }
-                                                    .forEach(action)
-                                                updateCharacteristics = !updateCharacteristics
-                                                updateCards = !updateCards
-                                            }
-                                            .padding(vertical = 4.dp),
-                                        boxAlignment = Alignment.Center
-                                    )
-                                }
-
-                                Button(activity.getString(R.string.select_all)) {
-                                    if (!isInCustomDeck(it)) { toggleToCustomDeck(it) }
-                                }
-                                HorizontalDivider(color = getDividerColor(activity))
-                                Button(activity.getString(R.string.deselect_all)) {
-                                    if (isInCustomDeck(it)) { toggleToCustomDeck(it) }
-                                }
-                            }
-
-                            Column(
-                                Modifier.fillMaxHeight().weight(0.1f),
-                                verticalArrangement = Arrangement.Center,
-                                horizontalAlignment = Alignment.CenterHorizontally
-                            ) {
-                                if (numbers > 1) {
-                                    ChangeBackNumber(">", Int::inc)
-                                }
-                            }
-                        }
-                    }
-
-                    val state = rememberLazyListState()
-                    key(updateAll, updateCards) {
-                        LazyRow(
-                            Modifier
-                                .scrollbar(
-                                    state,
-                                    knobColor = getKnobColor(activity),
-                                    trackColor = getTrackColor(activity),
-                                    horizontal = true
-                                )
-                                .padding(horizontal = 4.dp)
-                                .padding(bottom = 4.dp),
-                            state = state
-                        ) lambda@{
-                            items(CollectibleDeck(back, backNumber).toList().sortedWith { o1, o2 ->
-                                when (o1) {
-                                    is CardNumber -> {
-                                        if (o2 !is CardNumber) {
-                                            1
-                                        } else {
-                                            if (o1.rank != o2.rank) {
-                                                o2.rank.value - o1.rank.value
-                                            } else {
-                                                o1.suit.ordinal - o2.suit.ordinal
-                                            }
-                                        }
-                                    }
-                                    is CardFaceSuited -> {
-                                        when (o2) {
-                                            is CardJoker -> {
-                                                1
-                                            }
-                                            is CardFaceSuited -> {
-                                                if (o1.rank != o2.rank) {
-                                                    o2.rank.value - o1.rank.value
-                                                } else {
-                                                    o1.suit.ordinal - o2.suit.ordinal
-                                                }
-                                            }
-                                            is CardNumber -> {
-                                                -1
-                                            }
-                                        }
-                                    }
-                                    is CardJoker -> {
-                                        if (o2 is CardJoker) {
-                                            o2.number.ordinal - o1.number.ordinal
-                                        } else {
-                                            -1
-                                        }
-                                    }
-                                }
-                            }) { card ->
-                                var isSelected by remember { mutableStateOf(isInCustomDeck(card)) }
-                                if (isAvailable(card)) {
-                                    ShowCard(activity, card as Card, Modifier
-                                        .clickable {
-                                            toggleToCustomDeck(card)
-                                            isSelected = !isSelected
-                                            if (isSelected) {
-                                                playSelectSound(activity)
-                                            } else {
-                                                playCloseSound(activity)
-                                            }
-                                            updateCharacteristics = !updateCharacteristics
-                                            updateCards = !updateCards
-                                        }
-                                        .border(
-                                            width = (if (isSelected) 3 else 0).dp,
-                                            color = getSelectionColor(activity)
+                                item {
+                                    Column(Modifier.padding(horizontal = 8.dp)) {
+                                        val name = stringResource(back.nameIdWithBackFileName.first)
+                                        TextFallout(
+                                            name.replace(" (", "\n("),
+                                            getTextColor(activity),
+                                            getTextStrokeColor(activity),
+                                            14.sp,
+                                            Modifier.fillMaxWidth(),
+                                            boxAlignment = Alignment.Center
                                         )
-                                        .padding(4.dp)
-                                        .alpha(if (isSelected) 1f else 0.55f))
-                                } else {
-                                    ShowCardBack(activity, card as Card, Modifier
-                                        .padding(4.dp)
-                                        .alpha(0.33f))
+                                        ShowCardBack(
+                                            activity,
+                                            CardNumber(RankNumber.ACE, Suit.CLUBS, back),
+                                            Modifier.align(Alignment.CenterHorizontally),
+                                        )
+
+                                        Button(activity.getString(R.string.select_all)) {
+                                            if (!isInCustomDeck(it)) { toggleToCustomDeck(it) }
+                                        }
+                                        HorizontalDivider(color = getDividerColor(activity))
+                                        Button(activity.getString(R.string.deselect_all)) {
+                                            if (isInCustomDeck(it)) { toggleToCustomDeck(it) }
+                                        }
+
+                                        val state2 = rememberLazyListState()
+                                        key(updateAll, updateCards) {
+                                            CardsColumn(
+                                                activity,
+                                                back,
+                                                state2,
+                                                {
+                                                    updateCharacteristics = !updateCharacteristics
+                                                    updateCards = !updateCards
+                                                },
+                                                ::isInCustomDeck,
+                                                ::isAvailable,
+                                                ::toggleToCustomDeck
+                                            )
+                                        }
+                                    }
                                 }
                             }
                         }
                     }
                 }
+            }
+        }
+    }
+}
+
+@Composable
+fun CardsColumn(
+    activity: MainActivity,
+    back: CardBack,
+    state2: LazyListState,
+    updateKeys: () -> Unit,
+    isInCustomDeck: (CardWithPrice) -> Boolean,
+    isAvailable: (CardWithPrice) -> Boolean,
+    toggleToCustomDeck: (CardWithPrice) -> Unit,
+) {
+    LazyColumn(Modifier, state = state2) lambda@{
+        items(CollectibleDeck(back).toList().sortedWith { o1, o2 ->
+            when (o1) {
+                is CardNumber -> {
+                    if (o2 !is CardNumber) {
+                        1
+                    } else {
+                        if (o1.rank != o2.rank) {
+                            o2.rank.value - o1.rank.value
+                        } else {
+                            o1.suit.ordinal - o2.suit.ordinal
+                        }
+                    }
+                }
+                is CardFaceSuited -> {
+                    when (o2) {
+                        is CardJoker -> {
+                            1
+                        }
+                        is CardFaceSuited -> {
+                            if (o1.rank != o2.rank) {
+                                o2.rank.value - o1.rank.value
+                            } else {
+                                o1.suit.ordinal - o2.suit.ordinal
+                            }
+                        }
+                        is CardNumber -> {
+                            -1
+                        }
+                    }
+                }
+                is CardJoker -> {
+                    if (o2 is CardJoker) {
+                        o2.number.ordinal - o1.number.ordinal
+                    } else {
+                        -1
+                    }
+                }
+            }
+        }) { card ->
+            var isSelected by remember { mutableStateOf(isInCustomDeck(card)) }
+            if (isAvailable(card)) {
+                ShowCard(activity, card as Card, Modifier
+                    .clickable {
+                        toggleToCustomDeck(card)
+                        isSelected = !isSelected
+                        if (isSelected) {
+                            playSelectSound(activity)
+                        } else {
+                            playCloseSound(activity)
+                        }
+                        updateKeys()
+                    }
+                    .border(
+                        width = (if (isSelected) 3 else 0).dp,
+                        color = getSelectionColor(activity)
+                    )
+                    .padding(4.dp)
+                    .alpha(if (isSelected) 1f else 0.55f))
+            } else {
+                ShowCardBack(activity, card as Card, Modifier
+                    .padding(4.dp)
+                    .alpha(0.33f))
             }
         }
     }

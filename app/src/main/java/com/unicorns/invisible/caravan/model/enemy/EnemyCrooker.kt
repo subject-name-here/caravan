@@ -2,7 +2,6 @@ package com.unicorns.invisible.caravan.model.enemy
 
 import com.unicorns.invisible.caravan.AnimationSpeed
 import com.unicorns.invisible.caravan.R
-import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.CustomDeck
@@ -23,7 +22,7 @@ class EnemyCrooker : EnemyPvEWithBank() {
     override val maxBank: Int
         get() = 150
     override val bet: Int
-        get() = if (bank == 0) 0 else min(bank, 25)
+        get() = min(bank, 25)
 
     override var winsNoBet: Int = 0
     override var winsBet: Int = 0

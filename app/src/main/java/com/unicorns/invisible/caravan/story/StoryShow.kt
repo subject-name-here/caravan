@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -39,19 +40,24 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.composables.core.ScrollArea
+import com.composables.core.Thumb
+import com.composables.core.VerticalScrollbar
+import com.composables.core.rememberScrollAreaState
 import com.sebaslogen.resaca.rememberScoped
 import com.unicorns.invisible.caravan.MainActivity
 import com.unicorns.invisible.caravan.R
 import com.unicorns.invisible.caravan.Style
 import com.unicorns.invisible.caravan.utils.TextClassic
+import com.unicorns.invisible.caravan.utils.getKnobColor
 import com.unicorns.invisible.caravan.utils.getStrokeColorByStyle
 import com.unicorns.invisible.caravan.utils.getTextBackByStyle
 import com.unicorns.invisible.caravan.utils.getTextColorByStyle
+import com.unicorns.invisible.caravan.utils.getTrackColor
 import com.unicorns.invisible.caravan.utils.playDeathPhrase
 import com.unicorns.invisible.caravan.utils.playSelectSound
 import com.unicorns.invisible.caravan.utils.playSlideSound
 import com.unicorns.invisible.caravan.utils.pxToDp
-import com.unicorns.invisible.caravan.utils.scrollbar
 import com.unicorns.invisible.caravan.utils.weightedRandom
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -90,101 +96,107 @@ fun StoryShow(activity: MainActivity, graph: DialogGraph, onEnd: () -> Unit) {
                 Modifier
                     .fillMaxSize()
                     .background(Color.Black)) {
-                val state = rememberLazyListState()
-                LazyColumn(
-                    Modifier
-                        .fillMaxSize()
-                        .background(Color.Black)
-                        .scrollbar(
-                            state,
-                            knobColor = getTextColorByStyle(activity, Style.PIP_BOY),
-                            trackColor = getStrokeColorByStyle(activity, Style.PIP_BOY),
-                            horizontal = false,
-                        ),
-                    verticalArrangement = Arrangement.Top,
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    state = state
-                ) { item {
-                    var isSlideVisible by rememberScoped { mutableStateOf(false) }
-                    LaunchedEffect(dialogState) {
-                        if (stableDialogState.intro == PicEffect.SLIDE) {
-                            playSlideSound(activity)
+                val lazyListState = rememberLazyListState()
+                val state = rememberScrollAreaState(lazyListState)
+                ScrollArea(state, Modifier.fillMaxSize()) {
+                    LazyColumn(
+                        Modifier
+                            .fillMaxSize()
+                            .background(Color.Black),
+                        verticalArrangement = Arrangement.Top,
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        state = lazyListState
+                    ) { item {
+                        var isSlideVisible by rememberScoped { mutableStateOf(false) }
+                        LaunchedEffect(dialogState) {
+                            if (stableDialogState.intro == PicEffect.SLIDE) {
+                                playSlideSound(activity)
+                            }
+                            isSlideVisible = true
                         }
-                        isSlideVisible = true
-                    }
 
-                    Box(Modifier.width(640.pxToDp()).height(480.pxToDp()).clipToBounds(), contentAlignment = Alignment.TopCenter) {
-                        AnimatedVisibility(
-                            visible = stableDialogState.intro == PicEffect.SLIDE && isSlideVisible,
-                            enter = slideInHorizontally(
-                                animationSpec = spring(stiffness = Spring.StiffnessMediumLow, visibilityThreshold = IntOffset.VisibilityThreshold),
-                                initialOffsetX = { it -> -it }
-                            ),
-                            exit = slideOutHorizontally(targetOffsetX = { it -> it })
-                        ) {
-                            AsyncImage(
-                                model = ImageRequest.Builder(activity)
-                                    .data(stableDialogState.picId)
-                                    .build(),
-                                contentScale = ContentScale.FillBounds,
-                                contentDescription = "",
+                        Box(Modifier.width(640.pxToDp()).height(480.pxToDp()).clipToBounds(), contentAlignment = Alignment.TopCenter) {
+                            AnimatedVisibility(
+                                visible = stableDialogState.intro == PicEffect.SLIDE && isSlideVisible,
+                                enter = slideInHorizontally(
+                                    animationSpec = spring(stiffness = Spring.StiffnessMediumLow, visibilityThreshold = IntOffset.VisibilityThreshold),
+                                    initialOffsetX = { it -> -it }
+                                ),
+                                exit = slideOutHorizontally(targetOffsetX = { it -> it })
+                            ) {
+                                AsyncImage(
+                                    model = ImageRequest.Builder(activity)
+                                        .data(stableDialogState.picId)
+                                        .build(),
+                                    contentScale = ContentScale.FillBounds,
+                                    contentDescription = "",
+                                )
+                            }
+                            Box(Modifier.fillMaxSize()
+                                .paint(painterResource(id = R.drawable.crt_1))
                             )
                         }
-                        Box(Modifier.fillMaxSize()
-                            .paint(painterResource(id = R.drawable.crt_1))
-                        )
-                    }
-                    Column(Modifier.fillMaxWidth()) {
-                        val response = stringResource(stableDialogState.responseId)
-                        if (response.isNotEmpty()) {
-                            TextClassic(
-                                response,
-                                getTextColorByStyle(activity, Style.PIP_BOY),
-                                getStrokeColorByStyle(activity, Style.PIP_BOY),
-                                16.sp,
-                                Modifier
-                                    .background(getTextBackByStyle(activity, Style.PIP_BOY))
-                                    .padding(horizontal = 8.dp, vertical = 4.dp),
-                                textAlignment = TextAlign.Start
-                            )
-                        }
+                        Column(Modifier.fillMaxWidth()) {
+                            val response = stringResource(stableDialogState.responseId)
+                            if (response.isNotEmpty()) {
+                                TextClassic(
+                                    response,
+                                    getTextColorByStyle(activity, Style.PIP_BOY),
+                                    getStrokeColorByStyle(activity, Style.PIP_BOY),
+                                    16.sp,
+                                    Modifier
+                                        .background(getTextBackByStyle(activity, Style.PIP_BOY))
+                                        .padding(horizontal = 8.dp, vertical = 4.dp),
+                                    textAlignment = TextAlign.Start
+                                )
+                            }
 
-                        Spacer(Modifier.height(16.dp))
+                            Spacer(Modifier.height(16.dp))
 
-                        graph.edges.forEachIndexed { edgeIndex, edge ->
-                            if (edge.oldState == dialogState) {
-                                val edge = graph.edges[edgeIndex]
-                                if (graph.visitedStates[edge.newState]) {
-                                    return@forEachIndexed
-                                }
-                                DialogLine(activity, stringResource(edge.lineId)) {
-                                    CoroutineScope(Dispatchers.Unconfined).launch {
-                                        isSlideVisible = false
-                                        when (stableDialogState.outro) {
-                                            PicEffect.SLIDE -> {
-                                                playSlideSound(activity)
-                                                delay(1000L)
+                            graph.edges.forEachIndexed { edgeIndex, edge ->
+                                if (edge.oldState == dialogState) {
+                                    val edge = graph.edges[edgeIndex]
+                                    if (graph.visitedStates[edge.newState]) {
+                                        return@forEachIndexed
+                                    }
+                                    DialogLine(activity, stringResource(edge.lineId)) {
+                                        CoroutineScope(Dispatchers.Unconfined).launch {
+                                            isSlideVisible = false
+                                            when (stableDialogState.outro) {
+                                                PicEffect.SLIDE -> {
+                                                    playSlideSound(activity)
+                                                    delay(1000L)
+                                                }
+                                                PicEffect.SELECT -> {
+                                                    playSelectSound(activity)
+                                                }
+                                                PicEffect.NONE -> {}
                                             }
-                                            PicEffect.SELECT -> {
-                                                playSelectSound(activity)
-                                            }
-                                            PicEffect.NONE -> {}
-                                        }
-                                        dialogState = edge.newState
-                                        graph.visitedStates[dialogState] = true
-                                        var visitedEdgeResult = edge.onVisited()
-                                        while (visitedEdgeResult in graph.edges.indices) {
-                                            val otherEdge = graph.edges[visitedEdgeResult]
-                                            dialogState = otherEdge.newState
+                                            dialogState = edge.newState
                                             graph.visitedStates[dialogState] = true
-                                            visitedEdgeResult = otherEdge.onVisited()
+                                            var visitedEdgeResult = edge.onVisited()
+                                            while (visitedEdgeResult in graph.edges.indices) {
+                                                val otherEdge = graph.edges[visitedEdgeResult]
+                                                dialogState = otherEdge.newState
+                                                graph.visitedStates[dialogState] = true
+                                                visitedEdgeResult = otherEdge.onVisited()
+                                            }
                                         }
                                     }
                                 }
                             }
                         }
+                    } }
+                    VerticalScrollbar(
+                        modifier = Modifier.align(Alignment.TopEnd)
+                            .fillMaxHeight()
+                            .background(getTrackColor(activity))
+                            .width(6.dp)
+                            .padding(end = 6.dp)
+                    ) {
+                        Thumb(Modifier.background(getKnobColor(activity)).width(2.dp))
                     }
-                } }
+                }
             }
         }
     }
@@ -227,52 +239,59 @@ fun ShowDeathScreen(activity: MainActivity, code: DeathCode, leave: () -> Unit) 
         Modifier
             .fillMaxSize()
             .background(Color.Black)) {
-        val state = rememberLazyListState()
-        LazyColumn(
-            Modifier
-                .fillMaxSize()
-                .background(Color.Black)
-                .scrollbar(
-                    state,
-                    knobColor = getTextColorByStyle(activity, Style.PIP_BOY),
-                    trackColor = getStrokeColorByStyle(activity, Style.PIP_BOY),
-                    horizontal = false,
-                ),
-            verticalArrangement = Arrangement.Top,
-            horizontalAlignment = Alignment.CenterHorizontally,
-            state = state
-        ) { item {
-            Box(
+        val lazyListState = rememberLazyListState()
+        val state = rememberScrollAreaState(lazyListState)
+        ScrollArea(state, Modifier.fillMaxSize()) {
+            LazyColumn(
                 Modifier
-                    .fillMaxWidth()
-                    .padding(8.dp)
-                    .paint(
-                        painterResource(
-                            id = R.drawable.death_screen
-                        )
-                    ))
-
-            LaunchedEffect(Unit) {
-                playDeathPhrase(activity, info.first.first)
-            }
-
-            Column(Modifier.fillMaxWidth()) {
-                TextClassic(
-                    stringResource(info.first.second),
-                    getTextColorByStyle(activity, Style.PIP_BOY),
-                    getStrokeColorByStyle(activity, Style.PIP_BOY),
-                    16.sp,
+                    .fillMaxSize()
+                    .background(Color.Black),
+                verticalArrangement = Arrangement.Top,
+                horizontalAlignment = Alignment.CenterHorizontally,
+                state = lazyListState
+            ) { item {
+                Box(
                     Modifier
-                        .background(getTextBackByStyle(activity, Style.PIP_BOY))
-                        .padding(horizontal = 8.dp, vertical = 4.dp),
-                    textAlignment = TextAlign.Start
-                )
+                        .fillMaxWidth()
+                        .padding(8.dp)
+                        .paint(
+                            painterResource(
+                                id = R.drawable.death_screen
+                            ),
+                            contentScale = ContentScale.Fit
+                        ))
 
-                Spacer(Modifier.height(16.dp))
+                LaunchedEffect(Unit) {
+                    playDeathPhrase(activity, info.first.first)
+                }
 
-                DialogLine(activity, stringResource(R.string.finish)) { leave() }
+                Column(Modifier.fillMaxWidth()) {
+                    TextClassic(
+                        stringResource(info.first.second),
+                        getTextColorByStyle(activity, Style.PIP_BOY),
+                        getStrokeColorByStyle(activity, Style.PIP_BOY),
+                        16.sp,
+                        Modifier
+                            .background(getTextBackByStyle(activity, Style.PIP_BOY))
+                            .padding(horizontal = 8.dp, vertical = 4.dp),
+                        textAlignment = TextAlign.Start
+                    )
+
+                    Spacer(Modifier.height(16.dp))
+
+                    DialogLine(activity, stringResource(R.string.finish)) { leave() }
+                }
+            } }
+            VerticalScrollbar(
+                modifier = Modifier.align(Alignment.TopEnd)
+                    .fillMaxHeight()
+                    .background(getTrackColor(activity))
+                    .width(6.dp)
+                    .padding(end = 6.dp)
+            ) {
+                Thumb(Modifier.background(getKnobColor(activity)).width(2.dp))
             }
-        } }
+        }
     }
 }
 
