@@ -11,7 +11,8 @@ import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 
 
-expect @Composable fun ShowImageFromPath(
+@Composable
+expect fun ShowImageFromPath(
     path: String,
     size: IntSize,
     modifier: Modifier,
