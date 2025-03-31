@@ -18,8 +18,8 @@ data object Colors {
     val DesertAccent = Color(0xFFDDCC66)
 
     val ColorBack = Color(0xFF001601)
-    val ColorText = Color(0xFF084F08)
-    val ColorTextBack = Color(0xFF09980A)
+    val ColorText = Color(0xFF09980A)
+    val ColorTextBack = Color(0xFF084F08)
     val ColorTextStroke = Color(0xFF01C902)
 
     val PipGirlBlue = Color(0xFF5BCEFA)
