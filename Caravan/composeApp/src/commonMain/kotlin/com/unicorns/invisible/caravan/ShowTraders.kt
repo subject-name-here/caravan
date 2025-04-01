@@ -3,6 +3,9 @@ package com.unicorns.invisible.caravan
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.BoxWithConstraintsScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -14,6 +17,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
@@ -48,9 +53,11 @@ import com.unicorns.invisible.caravan.model.primitives.CardWithPrice
 import com.unicorns.invisible.caravan.model.trading.Trader
 import com.unicorns.invisible.caravan.save.saveData
 import com.unicorns.invisible.caravan.utils.MenuItemOpen
+import com.unicorns.invisible.caravan.utils.MenuItemOpenNoScroll
 import com.unicorns.invisible.caravan.utils.ShowCard
 import com.unicorns.invisible.caravan.utils.ShowCardBack
 import com.unicorns.invisible.caravan.utils.TextFallout
+import com.unicorns.invisible.caravan.utils.VertScrollbar
 import com.unicorns.invisible.caravan.utils.getBackgroundColor
 import com.unicorns.invisible.caravan.utils.getDividerColor
 import com.unicorns.invisible.caravan.utils.getSelectionColor
@@ -60,6 +67,7 @@ import com.unicorns.invisible.caravan.utils.getTextStrokeColor
 import com.unicorns.invisible.caravan.utils.playCashSound
 import com.unicorns.invisible.caravan.utils.playNoBeep
 import com.unicorns.invisible.caravan.utils.playSelectSound
+import io.github.oikvpqya.compose.fastscroller.VerticalScrollbar
 import org.jetbrains.compose.resources.stringResource
 
 
@@ -133,121 +141,125 @@ fun CardToBuy(card: CardWithPrice, price: Int, update: () -> Unit) {
 
 @Composable
 fun ShowTraders(goBack: () -> Unit) {
-    MenuItemOpen(stringResource(Res.string.market), "<-", goBack) {
+    MenuItemOpenNoScroll(stringResource(Res.string.market), "<-", goBack) {
         Spacer(Modifier.height(8.dp))
 
         var selectedTab by rememberSaveable { mutableIntStateOf(0) }
         var update by remember { mutableStateOf(false) }
-        key(update) {
-            Column(
-                Modifier,
-                verticalArrangement = Arrangement.Top,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                TextFallout(
-                    stringResource(Res.string.your_caps_in_hand, save.capsInHand),
-                    getTextColor(),
-                    getTextStrokeColor(),
-                    16.sp,
-                    Modifier.padding(4.dp),
-                )
-                TextFallout(
-                    stringResource(Res.string.your_chips_in_hand, save.sierraMadreChips),
-                    getTextColor(),
-                    getTextStrokeColor(),
-                    16.sp,
-                    Modifier.padding(4.dp),
-                )
+        key(selectedTab) {
+            val state = rememberScrollState()
 
-                TabRow(
-                    selectedTab, Modifier.fillMaxWidth(),
-                    containerColor = getBackgroundColor(),
-                    indicator = { tabPositions ->
-                        if (selectedTab < tabPositions.size) {
-                            TabRowDefaults.SecondaryIndicator(
-                                Modifier.tabIndicatorOffset(tabPositions[selectedTab]),
-                                color = getSelectionColor()
-                            )
-                        }
-                    },
-                    divider = {
-                        HorizontalDivider(color = getDividerColor())
-                    }
+            key(update) {
+                Column(
+                    Modifier,
+                    verticalArrangement = Arrangement.Top,
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    @Composable
-                    fun TraderTab(tabNumber: Int, trader: Trader) {
-                        Tab(selectedTab == tabNumber, { selectedTab = tabNumber; playSelectSound() },
-                            selectedContentColor = getSelectionColor(),
-                            unselectedContentColor = getTextBackgroundColor()
-                        ) {
-                            TextFallout(
-                                trader.getSymbol(),
-                                getTextColor(),
-                                getTextStrokeColor(),
-                                12.sp,
-                                Modifier.padding(4.dp),
-                            )
-                        }
-                    }
-                    save.traders.forEachIndexed { index, t ->
-                        TraderTab(index, t)
-                    }
-                }
+                    TextFallout(
+                        stringResource(Res.string.your_caps_in_hand, save.capsInHand),
+                        getTextColor(),
+                        getTextStrokeColor(),
+                        16.sp,
+                        Modifier.padding(4.dp),
+                    )
+                    TextFallout(
+                        stringResource(Res.string.your_chips_in_hand, save.sierraMadreChips),
+                        getTextColor(),
+                        getTextStrokeColor(),
+                        16.sp,
+                        Modifier.padding(4.dp),
+                    )
 
-                val selectedTrader = save.traders[selectedTab]
-                val lazyListState = rememberLazyListState()
-                LazyColumn(
-                    Modifier
-                        .fillMaxSize()
-                        .background(getBackgroundColor()),
-                    state = lazyListState
-                ) {
-                    item {
-                        Column(
-                            Modifier
-                                .fillMaxSize()
-                                .padding(4.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Top
-                        ) {
-                            if (selectedTrader.isOpen()) {
-                                val cards = selectedTrader.getCards()
-                                    .filter { !save.isCardAvailableAlready(it) }
-
-                                TextFallout(
-                                    if (cards.isEmpty()) {
-                                        stringResource(selectedTrader.getEmptyStoreMessage())
-                                    } else {
-                                        stringResource(selectedTrader.getWelcomeMessage())
-                                    },
-                                    getTextColor(),
-                                    getTextStrokeColor(),
-                                    18.sp,
-                                    Modifier.fillMaxWidth().padding(4.dp),
-                                )
-                                cards.forEach {
-                                    Spacer(modifier = Modifier.height(4.dp))
-                                    HorizontalDivider(thickness = 1.dp, color = getDividerColor())
-                                    Spacer(modifier = Modifier.height(4.dp))
-                                    CardToBuy(it, it.getPriceOfCard()) {
-                                        update = !update
-                                    }
-                                }
-                                Spacer(modifier = Modifier.height(4.dp))
-                                HorizontalDivider(thickness = 1.dp, color = getDividerColor())
-                                Spacer(modifier = Modifier.height(4.dp))
-                            } else {
-                                val cond by produceState("") {
-                                    value = selectedTrader.openingCondition()
-                                }
-                                TextFallout(
-                                    cond,
-                                    getTextColor(),
-                                    getTextStrokeColor(),
-                                    18.sp,
-                                    Modifier.fillMaxWidth().padding(4.dp),
+                    TabRow(
+                        selectedTab, Modifier.fillMaxWidth(),
+                        containerColor = getBackgroundColor(),
+                        indicator = { tabPositions ->
+                            if (selectedTab < tabPositions.size) {
+                                TabRowDefaults.SecondaryIndicator(
+                                    Modifier.tabIndicatorOffset(tabPositions[selectedTab]),
+                                    color = getSelectionColor()
                                 )
                             }
+                        },
+                        divider = {
+                            HorizontalDivider(color = getDividerColor())
+                        }
+                    ) {
+                        @Composable
+                        fun TraderTab(tabNumber: Int, trader: Trader) {
+                            Tab(selectedTab == tabNumber, { selectedTab = tabNumber; playSelectSound() },
+                                selectedContentColor = getSelectionColor(),
+                                unselectedContentColor = getTextBackgroundColor()
+                            ) {
+                                TextFallout(
+                                    trader.getSymbol(),
+                                    getTextColor(),
+                                    getTextStrokeColor(),
+                                    12.sp,
+                                    Modifier.padding(4.dp),
+                                )
+                            }
+                        }
+                        save.traders.forEachIndexed { index, t ->
+                            TraderTab(index, t)
+                        }
+                    }
+
+                    val selectedTrader = save.traders[selectedTab]
+                    Column(
+                        Modifier
+                            .fillMaxSize()
+                            .padding(4.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Top
+                    ) {
+                        if (selectedTrader.isOpen()) {
+                            val cards = selectedTrader.getCards()
+                                .filter { !save.isCardAvailableAlready(it) }
+
+                            TextFallout(
+                                if (cards.isEmpty()) {
+                                    stringResource(selectedTrader.getEmptyStoreMessage())
+                                } else {
+                                    stringResource(selectedTrader.getWelcomeMessage())
+                                },
+                                getTextColor(),
+                                getTextStrokeColor(),
+                                18.sp,
+                                Modifier.fillMaxWidth().padding(4.dp),
+                            )
+                            Spacer(modifier = Modifier.height(4.dp))
+                            HorizontalDivider(thickness = 1.dp, color = getDividerColor())
+
+                            BoxWithConstraints(Modifier.fillMaxSize()) {
+                                Column(
+                                    modifier = Modifier.fillMaxSize().verticalScroll(state = state).padding(end = 4.dp),
+                                    verticalArrangement = Arrangement.Top
+                                ) {
+                                    cards.forEach {
+                                        Spacer(modifier = Modifier.height(4.dp))
+                                        CardToBuy(it, it.getPriceOfCard()) {
+                                            update = !update
+                                        }
+                                        Spacer(modifier = Modifier.height(4.dp))
+                                        HorizontalDivider(thickness = 1.dp, color = getDividerColor())
+                                    }
+                                }
+
+                                VertScrollbar(state)
+                            }
+                            Spacer(modifier = Modifier.height(4.dp))
+                        } else {
+                            val cond by produceState("") {
+                                value = selectedTrader.openingCondition()
+                            }
+                            TextFallout(
+                                cond,
+                                getTextColor(),
+                                getTextStrokeColor(),
+                                18.sp,
+                                Modifier.fillMaxWidth().padding(4.dp),
+                            )
                         }
                     }
                 }

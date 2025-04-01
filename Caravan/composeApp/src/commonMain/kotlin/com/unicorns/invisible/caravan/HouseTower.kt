@@ -1002,5 +1002,5 @@ fun ShowFrank(goBack: () -> Unit) {
             },
             DialogEdge(9, 10, Res.string.finish)
         )
-    ), goBack)
+    ), goBack, goBack)
 }

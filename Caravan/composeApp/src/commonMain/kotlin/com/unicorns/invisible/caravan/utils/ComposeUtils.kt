@@ -1,5 +1,6 @@
 package com.unicorns.invisible.caravan.utils
 
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -667,88 +668,128 @@ fun MenuItemOpen(
     goBack: () -> Unit,
     mainBlock: @Composable BoxWithConstraintsScope.() -> Unit
 ) {
-    val scrollbarWidth = 4.dp.dpToPx()
+    val scrollbarWidth = 4.dp
     Scaffold(bottomBar = {
-        Row(Modifier
-            .fillMaxWidth()
-            .height(48.dp)
-            .background(getBackgroundColor())
-            .padding(start = 12.dp))
-        {
-            TextFallout(
-                back,
-                getTextColor(),
-                getTextStrokeColor(),
-                24.sp,
-                Modifier
-                    .background(getTextBackgroundColor())
-                    .clickableCancel {
-                        goBack()
-                    }
-                    .padding(8.dp)
-            )
-            Box(
-                Modifier.fillMaxWidth()
-                    .background(getBackgroundColor())
-                    .padding(start = 8.dp, end = 12.dp)
-                    .drawBehind {
-                        drawPath(
-                            Path().apply {
-                                moveTo(0f, size.height / 2)
-                                lineTo(size.width, size.height / 2)
-                                lineTo(size.width, 0f)
-                                lineTo(size.width, size.height)
-                            },
-                            color = getDividerColor(),
-                            style = Stroke(width = scrollbarWidth),
-                        )
-                    }
-            ) {
-                TextFallout(
-                    name,
-                    getTextColor(),
-                    getTextStrokeColor(),
-                    24.sp,
-                    Modifier
-                        .align(Alignment.Center)
-                        .background(getBackgroundColor())
-                        .padding(8.dp),
-                )
-            }
-        }
+        MenuBottomBar(name, back, scrollbarWidth.dpToPx(), goBack)
     }) { innerPadding ->
         BoxWithConstraints(Modifier
             .padding(innerPadding)
             .background(getBackgroundColor())
-            .padding(start = 8.dp, end = 4.dp, top = 4.dp, bottom = 4.dp)
+            .padding(start = 8.dp, end = 8.dp - scrollbarWidth, top = 4.dp, bottom = 4.dp)
         ) {
             val verticalScrollState = rememberScrollState()
             Column(
                 modifier = Modifier.fillMaxSize().verticalScroll(state = verticalScrollState).padding(horizontal = 4.dp),
-                verticalArrangement = Arrangement.spacedBy(0.dp, Alignment.CenterVertically)
+                verticalArrangement = Arrangement.Top
             ) {
                 mainBlock(this@BoxWithConstraints)
             }
 
-            VerticalScrollbar(
-                modifier = Modifier.align(Alignment.CenterEnd).fillMaxHeight().padding(vertical = 4.dp),
-                adapter = rememberScrollbarAdapter(verticalScrollState),
-                style = ScrollbarStyle(
-                    minimalHeight = 0.dp,
-                    thickness = 4.dp,
-                    hoverDurationMillis = 0,
-                    thumbStyle = ThumbStyle(
-                        shape = RoundedCornerShape(100),
-                        unhoverColor = getKnobColor(),
-                        hoverColor = getKnobColor()
-                    ),
-                    trackStyle = TrackStyle(
-                        shape = RoundedCornerShape(100),
-                        unhoverColor = getTrackColor(),
-                        hoverColor = getTrackColor()
+            VertScrollbar(verticalScrollState)
+        }
+    }
+}
+
+@Composable
+fun MenuItemOpenNoScroll(
+    name: String, back: String,
+    goBack: () -> Unit,
+    mainBlock: @Composable BoxWithConstraintsScope.() -> Unit
+) {
+    Scaffold(bottomBar = {
+        MenuBottomBar(name, back, 4.dp.dpToPx(), goBack)
+    }) { innerPadding ->
+        BoxWithConstraints(Modifier
+            .padding(innerPadding)
+            .background(getBackgroundColor())
+            .padding(start = 8.dp, end = 8.dp, top = 4.dp, bottom = 4.dp)
+        ) {
+            Column(
+                modifier = Modifier.fillMaxSize().padding(horizontal = 4.dp),
+                verticalArrangement = Arrangement.Top
+            ) {
+                mainBlock(this@BoxWithConstraints)
+            }
+        }
+    }
+}
+
+@Composable
+fun MenuBottomBar(
+    name: String, back: String,
+    scrollbarWidth: Float,
+    goBack: () -> Unit,
+) {
+    Row(Modifier
+        .fillMaxWidth()
+        .height(48.dp)
+        .background(getBackgroundColor())
+        .padding(start = 12.dp))
+    {
+        TextFallout(
+            back,
+            getTextColor(),
+            getTextStrokeColor(),
+            24.sp,
+            Modifier
+                .background(getTextBackgroundColor())
+                .clickableCancel {
+                    goBack()
+                }
+                .padding(8.dp)
+        )
+        Box(
+            Modifier.fillMaxWidth()
+                .background(getBackgroundColor())
+                .padding(start = 8.dp, end = 12.dp)
+                .drawBehind {
+                    drawPath(
+                        Path().apply {
+                            moveTo(0f, size.height / 2)
+                            lineTo(size.width, size.height / 2)
+                            lineTo(size.width, 0f)
+                            lineTo(size.width, size.height)
+                        },
+                        color = getDividerColor(),
+                        style = Stroke(width = scrollbarWidth),
                     )
-                )
+                }
+        ) {
+            TextFallout(
+                name,
+                getTextColor(),
+                getTextStrokeColor(),
+                24.sp,
+                Modifier
+                    .align(Alignment.Center)
+                    .background(getBackgroundColor())
+                    .padding(8.dp),
             )
         }
     }
+}
+
+@Composable
+fun BoxWithConstraintsScope.VertScrollbar(
+    state: ScrollState
+) {
+    VerticalScrollbar(
+        modifier = Modifier.align(Alignment.CenterEnd).fillMaxHeight().padding(vertical = 4.dp),
+        adapter = rememberScrollbarAdapter(state),
+        style = ScrollbarStyle(
+            minimalHeight = 0.dp,
+            thickness = 4.dp,
+            hoverDurationMillis = 0,
+            thumbStyle = ThumbStyle(
+                shape = RoundedCornerShape(100),
+                unhoverColor = getKnobColor(),
+                hoverColor = getKnobColor()
+            ),
+            trackStyle = TrackStyle(
+                shape = RoundedCornerShape(100),
+                unhoverColor = getTrackColor(),
+                hoverColor = getTrackColor()
+            )
+        )
+    )
 }

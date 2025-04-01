@@ -93,13 +93,13 @@ fun DialogLine(line: String, onClick: () -> Unit) {
 }
 
 @Composable
-fun StoryShow(graph: DialogGraph, onEnd: () -> Unit) {
+fun StoryShow(graph: DialogGraph, onBadEnd: () -> Unit, onGoodEnd: () -> Unit) {
     var dialogState by rememberScoped { mutableIntStateOf(0) }
     val stableDialogState: DialogState = graph.states[dialogState]
 
     when (stableDialogState) {
         is DialogFinishState -> {
-            ShowDeathScreen(stableDialogState.code, onEnd)
+            ShowDeathScreen(stableDialogState.code, onBadEnd, onGoodEnd)
         }
         is DialogMiddleState -> {
             Box(
@@ -151,7 +151,7 @@ fun StoryShow(graph: DialogGraph, onEnd: () -> Unit) {
                                 16.sp,
                                 Modifier
                                     .background(getTextBackByStyle(Style.PIP_BOY))
-                                    .padding(horizontal = 8.dp, vertical = 4.dp),
+                                    .padding(horizontal = 8.dp, vertical = 2.dp),
                                 textAlignment = TextAlign.Start
                             )
                         }
@@ -198,9 +198,9 @@ fun StoryShow(graph: DialogGraph, onEnd: () -> Unit) {
 }
 
 @Composable
-fun ShowDeathScreen(code: DeathCode, leave: () -> Unit) {
+fun ShowDeathScreen(code: DeathCode, onBadEnd: () -> Unit, onGoodEnd: () -> Unit) {
     if (code == DeathCode.ALIVE) {
-        leave()
+        onGoodEnd()
         return
     }
 
@@ -225,8 +225,9 @@ fun ShowDeathScreen(code: DeathCode, leave: () -> Unit) {
     )
     val map = mapOf(
         DeathCode.AGAINST_DEATH to listOf(0, 1, 2, 3, 4, 7, 9, 10, 12, 14, 15, 16),
+        DeathCode.EXPLODED to listOf(0, 1, 2, 3, 4, 9, 10, 11, 12, 14, 16),
     )
-    val messagesInfos = map[code]?.mapNotNull { messages[it] } ?: run { leave(); return }
+    val messagesInfos = map[code]?.mapNotNull { messages[it] } ?: run { onBadEnd(); return }
     val index = weightedRandom(messagesInfos.map { it.second })
     val info = messagesInfos[index]
 
@@ -270,7 +271,7 @@ fun ShowDeathScreen(code: DeathCode, leave: () -> Unit) {
 
                 Spacer(Modifier.height(16.dp))
 
-                DialogLine(stringResource(Res.string.finish)) { leave() }
+                DialogLine(stringResource(Res.string.finish)) { onBadEnd() }
             }
         } }
     }
@@ -278,5 +279,6 @@ fun ShowDeathScreen(code: DeathCode, leave: () -> Unit) {
 
 enum class DeathCode(val code: Int) {
     ALIVE(0),
+    EXPLODED(-1),
     AGAINST_DEATH(-13),
 }

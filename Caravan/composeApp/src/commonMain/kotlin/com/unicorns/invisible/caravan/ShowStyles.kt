@@ -4,6 +4,8 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -14,6 +16,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
@@ -30,7 +34,9 @@ import caravan.composeapp.generated.resources.tap_to_open
 import caravan.composeapp.generated.resources.themes
 import com.unicorns.invisible.caravan.save.saveData
 import com.unicorns.invisible.caravan.utils.MenuItemOpen
+import com.unicorns.invisible.caravan.utils.MenuItemOpenNoScroll
 import com.unicorns.invisible.caravan.utils.TextFallout
+import com.unicorns.invisible.caravan.utils.VertScrollbar
 import com.unicorns.invisible.caravan.utils.clickableOk
 import com.unicorns.invisible.caravan.utils.clickableSelect
 import com.unicorns.invisible.caravan.utils.getBackByStyle
@@ -77,7 +83,7 @@ fun ShowStyles(
     }
 
     key(styleInt) {
-        MenuItemOpen(stringResource(Res.string.themes), "<-", goBack) {
+        MenuItemOpenNoScroll(stringResource(Res.string.themes), "<-", goBack) {
             key(currentlyWatchedStyle) {
                 Row(Modifier.fillMaxSize(), verticalAlignment = Alignment.CenterVertically) {
                     Column(
@@ -102,73 +108,69 @@ fun ShowStyles(
                             .background(getMusicPanelColorByStyle(watchedStyle))
                         ) {}
 
-                        val lazyListState = rememberLazyListState()
-                        LazyColumn(
+                        val state = rememberScrollState()
+                        BoxWithConstraints(
                             Modifier
                                 .fillMaxSize()
                                 .background(getBackByStyle(watchedStyle)),
-                            verticalArrangement = Arrangement.Center,
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            state = lazyListState
                         ) {
-                            item {
-                                Column(
-                                    Modifier.fillMaxSize(),
-                                    verticalArrangement = Arrangement.SpaceEvenly,
-                                    horizontalAlignment = Alignment.CenterHorizontally
-                                ) {
+                            Column(
+                                Modifier.fillMaxSize().verticalScroll(state).padding(end = 4.dp),
+                                verticalArrangement = Arrangement.SpaceEvenly,
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                TextFallout(
+                                    stringResource(watchedStyle.styleNameId),
+                                    getTextColorByStyle(watchedStyle),
+                                    getStrokeColorByStyle(watchedStyle),
+                                    24.sp,
+                                    Modifier.padding(4.dp),
+                                )
+                                Spacer(Modifier.height(16.dp))
+                                if (watchedStyle in save.ownedStyles) {
                                     TextFallout(
-                                        stringResource(watchedStyle.styleNameId),
+                                        stringResource(Res.string.select),
                                         getTextColorByStyle(watchedStyle),
                                         getStrokeColorByStyle(watchedStyle),
-                                        24.sp,
-                                        Modifier.padding(4.dp),
+                                        18.sp,
+                                        Modifier
+                                            .background(getTextBackByStyle(watchedStyle))
+                                            .clickableOk {
+                                                styleInt = watchedStyle.ordinal
+                                                selectStyle(watchedStyle.ordinal)
+                                            }
+                                            .padding(4.dp),
                                     )
-                                    Spacer(Modifier.height(16.dp))
-                                    if (watchedStyle in save.ownedStyles) {
+                                } else {
+                                    if (watchedStyle.checkCondition()) {
                                         TextFallout(
-                                            stringResource(Res.string.select),
+                                            stringResource(Res.string.tap_to_open),
                                             getTextColorByStyle(watchedStyle),
                                             getStrokeColorByStyle(watchedStyle),
-                                            18.sp,
+                                            20.sp,
                                             Modifier
                                                 .background(getTextBackByStyle(watchedStyle))
                                                 .clickableOk {
+                                                    save.ownedStyles.add(watchedStyle)
+                                                    saveData()
+                                                    playPimpBoySound()
                                                     styleInt = watchedStyle.ordinal
                                                     selectStyle(watchedStyle.ordinal)
                                                 }
                                                 .padding(4.dp),
                                         )
                                     } else {
-                                        if (watchedStyle.checkCondition()) {
-                                            TextFallout(
-                                                stringResource(Res.string.tap_to_open),
-                                                getTextColorByStyle(watchedStyle),
-                                                getStrokeColorByStyle(watchedStyle),
-                                                20.sp,
-                                                Modifier
-                                                    .background(getTextBackByStyle(watchedStyle))
-                                                    .clickableOk {
-                                                        save.ownedStyles.add(watchedStyle)
-                                                        saveData()
-                                                        playPimpBoySound()
-                                                        styleInt = watchedStyle.ordinal
-                                                        selectStyle(watchedStyle.ordinal)
-                                                    }
-                                                    .padding(4.dp),
-                                            )
-                                        } else {
-                                            TextFallout(
-                                                stringResource(watchedStyle.conditionToOpenId),
-                                                getTextColorByStyle(watchedStyle),
-                                                getStrokeColorByStyle(watchedStyle),
-                                                20.sp,
-                                                Modifier.padding(4.dp),
-                                            )
-                                        }
+                                        TextFallout(
+                                            stringResource(watchedStyle.conditionToOpenId),
+                                            getTextColorByStyle(watchedStyle),
+                                            getStrokeColorByStyle(watchedStyle),
+                                            20.sp,
+                                            Modifier.padding(4.dp),
+                                        )
                                     }
                                 }
                             }
+                            VertScrollbar(state)
                         }
                     }
                     Column(

@@ -32,6 +32,31 @@ import caravan.composeapp.generated.resources.act_4_name
 import caravan.composeapp.generated.resources.act_5_name
 import caravan.composeapp.generated.resources.black_back
 import caravan.composeapp.generated.resources.c4_t1
+import caravan.composeapp.generated.resources.ch1_1
+import caravan.composeapp.generated.resources.ch1_10
+import caravan.composeapp.generated.resources.ch1_10a
+import caravan.composeapp.generated.resources.ch1_11
+import caravan.composeapp.generated.resources.ch1_11a
+import caravan.composeapp.generated.resources.ch1_12
+import caravan.composeapp.generated.resources.ch1_12a
+import caravan.composeapp.generated.resources.ch1_13
+import caravan.composeapp.generated.resources.ch1_1a
+import caravan.composeapp.generated.resources.ch1_1b
+import caravan.composeapp.generated.resources.ch1_2
+import caravan.composeapp.generated.resources.ch1_2a
+import caravan.composeapp.generated.resources.ch1_2b
+import caravan.composeapp.generated.resources.ch1_3
+import caravan.composeapp.generated.resources.ch1_4
+import caravan.composeapp.generated.resources.ch1_4a
+import caravan.composeapp.generated.resources.ch1_4b
+import caravan.composeapp.generated.resources.ch1_5
+import caravan.composeapp.generated.resources.ch1_6
+import caravan.composeapp.generated.resources.ch1_6a
+import caravan.composeapp.generated.resources.ch1_6b
+import caravan.composeapp.generated.resources.ch1_6c
+import caravan.composeapp.generated.resources.ch1_7
+import caravan.composeapp.generated.resources.ch1_8
+import caravan.composeapp.generated.resources.ch1_9
 import caravan.composeapp.generated.resources.ch4_m1
 import caravan.composeapp.generated.resources.ch4_m2
 import caravan.composeapp.generated.resources.ch4_m3
@@ -343,7 +368,7 @@ fun ShowIntro(
             DialogEdge(9, 10, Res.string.next_slide),
             DialogEdge(10, 11, Res.string.finish)
         )
-    )) {
+    ), goBack) {
         advanceChapter()
         goBack()
     }
@@ -358,6 +383,7 @@ fun ShowStoryChapter1(
 ) {
     var isGame by rememberSaveable { mutableStateOf(false) }
     var gameResult by rememberSaveable { mutableIntStateOf(0) }
+
     if (isGame) {
         StartStoryGame(
             EnemyStory1,
@@ -366,12 +392,78 @@ fun ShowStoryChapter1(
             {},
             { gameResult = 1; advanceChapter() },
             { gameResult = -1 },
-            { goBack() }
+            { if (gameResult == 0) gameResult = -1; isGame = false }
         )
         return
     }
 
-    LaunchedEffect(Unit) { isGame = true }
+    when (gameResult) {
+        1 -> {
+            StoryShow(DialogGraph(
+                listOf(
+                    DialogMiddleState(Res.drawable.black_back, Res.string.ch1_10),
+                    DialogMiddleState(Res.drawable.black_back, Res.string.ch1_11),
+                    DialogMiddleState(Res.drawable.black_back, Res.string.ch1_12),
+                    DialogMiddleState(Res.drawable.black_back, Res.string.ch1_13),
+                    DialogFinishState(DeathCode.ALIVE),
+                ),
+                listOf(
+                    DialogEdge(0, 1, Res.string.ch1_10a),
+                    DialogEdge(1, 2, Res.string.ch1_11a),
+                    DialogEdge(2, 3, Res.string.ch1_12a),
+                    DialogEdge(3, 4, Res.string.finish),
+                )
+            ), goBack) { goBack() }
+            return
+        }
+        -1 -> {
+            StoryShow(DialogGraph(
+                listOf(
+                    DialogMiddleState(Res.drawable.black_back, Res.string.ch1_9),
+                    DialogFinishState(DeathCode.EXPLODED)
+                ),
+                listOf(
+                    DialogEdge(0, 1, Res.string.finish),
+                )
+            ), goBack) { goBack() }
+            return
+        }
+        else -> {}
+    }
+
+    StoryShow(DialogGraph(
+        listOf(
+            DialogMiddleState(Res.drawable.black_back, Res.string.ch1_1),
+            DialogMiddleState(Res.drawable.black_back, Res.string.ch1_2),
+            DialogMiddleState(Res.drawable.black_back, Res.string.ch1_3),
+            DialogMiddleState(Res.drawable.black_back, Res.string.ch1_4),
+            DialogMiddleState(Res.drawable.black_back, Res.string.ch1_5),
+            DialogMiddleState(Res.drawable.black_back, Res.string.ch1_6),
+            DialogMiddleState(Res.drawable.black_back, Res.string.ch1_7),
+            DialogMiddleState(Res.drawable.black_back, Res.string.ch1_8),
+            DialogFinishState(DeathCode.ALIVE),
+            DialogFinishState(DeathCode.EXPLODED)
+        ),
+        listOf(
+            DialogEdge(0, 3, Res.string.ch1_1a),
+            DialogEdge(0, 1, Res.string.ch1_1b),
+            DialogEdge(1, 2, Res.string.ch1_2b),
+            DialogEdge(2, 9, Res.string.finish),
+            DialogEdge(1, 3, Res.string.ch1_2a),
+            DialogEdge(3, 4, Res.string.ch1_4a),
+            DialogEdge(4, 9, Res.string.finish),
+            DialogEdge(3, 5, Res.string.ch1_4b),
+            DialogEdge(5, 6, Res.string.ch1_6a),
+            DialogEdge(5, 7, Res.string.ch1_6b),
+            DialogEdge(5, 8, Res.string.ch1_6c),
+            DialogEdge(6, 7, Res.string.ch1_6b),
+            DialogEdge(6, 8, Res.string.ch1_6c),
+            DialogEdge(7, 6, Res.string.ch1_6a),
+            DialogEdge(7, 8, Res.string.ch1_6c),
+        )
+    ), goBack) {
+        isGame = true
+    }
 }
 
 @Composable
@@ -491,14 +583,14 @@ fun ShowStoryChapter3(
             StoryShow(DialogGraph(
                 states = listOf(DialogFinishState(DeathCode.ALIVE)),
                 edges = emptyList(),
-            )) { goBack() }
+            ), goBack) { goBack() }
             return
         }
         -1 -> {
             StoryShow(DialogGraph(
                 states = listOf(DialogFinishState(DeathCode.AGAINST_DEATH)),
                 edges = emptyList(),
-            )) { goBack() }
+            ), goBack) { goBack() }
             return
         }
         else -> {}
@@ -514,7 +606,7 @@ fun ShowStoryChapter3(
             DialogEdge(0, 1, Res.string.ch4_q1),
             DialogEdge(1, 2, Res.string.finish),
         )
-    )) {
+    ), goBack) {
         isGame = true
     }
 }
