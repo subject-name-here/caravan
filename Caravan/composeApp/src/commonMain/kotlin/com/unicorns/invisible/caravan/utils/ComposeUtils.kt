@@ -667,6 +667,7 @@ fun Modifier.clickableSelect(block: () -> Unit): Modifier {
 @Composable
 fun MenuItemOpen(
     name: String, back: String,
+    contentAlignment: Alignment,
     goBack: () -> Unit,
     mainBlock: @Composable BoxWithConstraintsScope.() -> Unit
 ) {
@@ -674,15 +675,17 @@ fun MenuItemOpen(
     Scaffold(bottomBar = {
         MenuBottomBar(name, back, scrollbarWidth.dpToPx(), goBack)
     }) { innerPadding ->
-        BoxWithConstraints(Modifier
-            .padding(innerPadding)
-            .fillMaxSize()
-            .background(getBackgroundColor())
-            .padding(start = 8.dp, end = 8.dp - scrollbarWidth, top = 4.dp, bottom = 4.dp)
+        BoxWithConstraints(
+            Modifier
+                .padding(innerPadding)
+                .fillMaxSize()
+                .background(getBackgroundColor())
+                .padding(start = 8.dp, end = 8.dp - scrollbarWidth, top = 4.dp, bottom = 4.dp),
+            contentAlignment
         ) {
             val verticalScrollState = rememberScrollState()
             Column(
-                modifier = Modifier.fillMaxSize().verticalScroll(state = verticalScrollState).padding(horizontal = 4.dp),
+                modifier = Modifier.verticalScroll(state = verticalScrollState).padding(horizontal = 4.dp),
                 verticalArrangement = Arrangement.Top
             ) {
                 mainBlock(this@BoxWithConstraints)

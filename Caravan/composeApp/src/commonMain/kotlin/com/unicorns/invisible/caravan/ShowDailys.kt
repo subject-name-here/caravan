@@ -52,7 +52,7 @@ fun ShowDailys(
 ) {
     var updateKey by remember { mutableStateOf(false) }
 
-    MenuItemOpen(stringResource(Res.string.missions), "<-", goBack) {
+    MenuItemOpen(stringResource(Res.string.missions), "<-", Alignment.TopCenter, goBack) {
         key(updateKey) {
             Column(
                 Modifier

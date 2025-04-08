@@ -50,7 +50,7 @@ import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun ShowAbout(goBack: () -> Unit) {
-    MenuItemOpen(stringResource(Res.string.menu_about), "<-", goBack) {
+    MenuItemOpen(stringResource(Res.string.menu_about), "<-", Alignment.Center, goBack) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,

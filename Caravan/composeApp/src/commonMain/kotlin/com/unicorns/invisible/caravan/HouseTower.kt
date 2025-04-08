@@ -249,7 +249,7 @@ fun TowerScreen(
     }
 
     var showFrankWarning by rememberSaveable { mutableStateOf(false) }
-    MenuItemOpen(stringResource(Res.string.tower), "<-", { if (level != 13) goBack() }) {
+    MenuItemOpen(stringResource(Res.string.tower), "<-", Alignment.Center, { if (level != 13) goBack() }) {
         val scope = rememberCoroutineScope()
         when (level) {
             0 -> {

@@ -12,3 +12,8 @@ plugins {
 }
 
 tasks.register("prepareKotlinIdeaImport")
+
+tasks.register<Copy>("copyCommonResources") {
+    from("$rootDir/composeApp/src/commonMain/composeResources/files")
+    into("$rootDir/composeApp/src/androidMain/assets")
+}

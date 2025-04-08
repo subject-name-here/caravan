@@ -305,7 +305,7 @@ fun ShowPvP(
 //        return
 //    }
 
-    MenuItemOpen(stringResource(Res.string.menu_pvp), "<-", {
+    MenuItemOpen(stringResource(Res.string.menu_pvp), "<-", Alignment.TopCenter, {
         if (isRoomCreated == 0) {
             goBack()
         }

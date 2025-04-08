@@ -75,7 +75,7 @@ fun ShowTrueSettings(
     var playInBack by remember { mutableStateOf(save.playRadioInBack) }
     val scope = rememberCoroutineScope()
 
-    MenuItemOpen(stringResource(Res.string.menu_settings), stringResource(Res.string.save), {
+    MenuItemOpen(stringResource(Res.string.menu_settings), stringResource(Res.string.save), Alignment.TopCenter, {
         save.animationSpeed = speed
         save.useCaravanIntro = intro
         save.playRadioInBack = playInBack

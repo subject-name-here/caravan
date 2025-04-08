@@ -64,7 +64,7 @@ import org.jetbrains.compose.resources.stringResource
 fun ShowRules(goBack: () -> Unit) {
     var selectedTab by rememberSaveable { mutableIntStateOf(0) }
     val rules = stringResource(Res.string.rules)
-    MenuItemOpen(stringResource(Res.string.menu_rules), "<-", goBack) {
+    MenuItemOpen(stringResource(Res.string.menu_rules), "<-", Alignment.TopCenter, goBack) {
         Spacer(Modifier.height(8.dp))
         Column(Modifier, verticalArrangement = Arrangement.Top, horizontalAlignment = Alignment.CenterHorizontally) {
             TabRow(

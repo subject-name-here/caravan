@@ -80,7 +80,7 @@ fun DeckSelection(
         return
     }
 
-    MenuItemOpen(stringResource(Res.string.menu_deck), "<-", goBack) {
+    MenuItemOpen(stringResource(Res.string.menu_deck), "<-", Alignment.TopCenter, goBack) {
         val cardsInRow = (maxWidth / (183.pxToDp() + 8.dp)).toInt()
         Column(Modifier.fillMaxSize(), verticalArrangement = Arrangement.Top, horizontalAlignment = Alignment.CenterHorizontally) {
             Spacer(modifier = Modifier.height(16.dp))

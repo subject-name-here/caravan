@@ -223,7 +223,7 @@ fun ShowStoryList(
         return
     }
 
-    MenuItemOpen(stringResource(Res.string.story_mode), "<-", goBack) {
+    MenuItemOpen(stringResource(Res.string.story_mode), "<-", Alignment.Center, goBack) {
         Column(
             Modifier
                 .fillMaxSize()
