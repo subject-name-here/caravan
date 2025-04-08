@@ -643,6 +643,79 @@
     <string name="so_back_header" translatable="false">Go back to main menu?</string>
     <string name="so_back_body" translatable="false">This will kill your significant other.</string>
 
+    <string name="ch2_1">
+        Before going to New Vegas you have to exchange the gold bar for bottle caps.
+        Your destination is Hub - one of the richest markets of West America. You have chosen the safest road - famous Long 15.
+        As you go, you see a dust cloud in front. Probably, some wind gusts.
+        On the side of the road, there is a half-destroyed house.
+    </string>
+    <string name="ch2_1a"><![CDATA[[Science 53/75] <Try to analyze the weather.>]]></string>
+    <string name="ch2_1b"><![CDATA[<Continue going to Hub.>]]></string>
+    <string name="ch2_1c"><![CDATA[<Hide in the house.>]]></string>
+    <string name="ch2_2">
+        [FAILED] All you can say is that the storm is coming from the Divide. Will it be of danger or not - you have no idea.
+    </string>
+    <string name="ch2_3">
+        The gusts are getting stronger. Sand scratches your face. You now have no choice but to hide.
+    </string>
+    <string name="ch2_3a"><![CDATA[<Go back and hide in the house.>]]></string>
+    <string name="ch2_4">
+        The house provides little to no shelter, however, there is a door on the floor.
+    </string>
+    <string name="ch2_4a"><![CDATA[<Stay in the house.>]]></string>
+    <string name="ch2_4b"><![CDATA[<Go down.>]]></string>
+    <string name="ch2_5">
+        The sand swirls around faster and faster, tearing skin apart…
+    </string>
+    <string name="ch2_5a"><![CDATA[<Go down.>]]></string>
+    <string name="ch2_6">
+        As you climb down, you slip on the ladder and fall down, then roll down, then fall down again.
+        When you stop moving and stand up, all dirty, you see the Vault door! Without any numbers, which is weird.
+    </string>
+    <string name="ch2_6a"><![CDATA[<Get inside.>]]></string>
+    <string name="ch2_6b"><![CDATA[<Stay here.>]]></string>
+    <string name="ch2_7">
+        While the sand can't hurt you under the house, you face another enemy - hunger and thirst.
+        All the supplies in your bag are full of sand, and the trusty flask you used to take a sip from is empty.
+    </string>
+    <string name="ch2_7a"><![CDATA[<Look for food and water in the Vault.>]]></string>
+    <string name="ch2_8">
+        You get inside the vault. The lights are on, but not a soul. And suspicious bloodstains on the floor…
+    </string>
+    <string name="ch2_8a"><![CDATA[<Get out.>]]></string>
+    <string name="ch2_8b"><![CDATA[<Continue going deeper.>]]></string>
+    <string name="ch2_9">
+        In one of the rooms you see the bloody remains of, quite possibly, human. Pieces of meat are torn apart.
+    </string>
+    <string name="ch2_9a"><![CDATA[<Run away in terror.>]]></string>
+    <string name="ch2_10">
+        Too late! A swarm of wild cazadors appears!
+    </string>
+    <string name="ch2_10a"><![CDATA[[Medicine 50][Guns 50] <Fight!>]]></string>
+    <string name="ch2_10b"><![CDATA[<Run away!>]]></string>
+    <string name="ch2_11">
+        You try to run, but cazadors are faster. You get a stab in your back from the small Cazador, which, thankfully, doesn't penetrate the armor.
+        Running is a bad option.
+    </string>
+    <string name="ch2_11a"><![CDATA[[Medicine 50][Guns 50] <Fight!>]]></string>
+    <string name="ch2_11b"><![CDATA[<Try to run faster!>]]></string>
+    <string name="ch2_12">
+        You make another dash to the exit, but big Cazador knocks you down.
+        Next minute you get mercilessly stabbed as poison slowly replaces blood in your veins. Then you die.
+    </string>
+    <string name="ch2_13">
+        [FAILED] You lose. You take all cazadors with you in the grave, but too much poison and too deep wounds have killed you.
+    </string>
+    <string name="ch2_14">
+        [SUCCEEDED] You win!
+    </string>
+    <string name="ch2_14a">Fuck yeah!</string>
+    <string name="ch2_15">
+        Although, you are almost dead:
+        you are out of stimpacks, and no antivenom makes you fall on the floor,because during the fight you were hit by cazadors, and not once.
+        Looks like this is the end…
+    </string>
+
     <!--achievement Test Achievement-->
     <string name="achievement_test_achievement" translatable="false">CgkIvtnbpMwbEAIQAQ</string>
     <!--achievement Madre Roja-->

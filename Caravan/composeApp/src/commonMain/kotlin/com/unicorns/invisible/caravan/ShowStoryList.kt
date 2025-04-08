@@ -57,6 +57,39 @@ import caravan.composeapp.generated.resources.ch1_6c
 import caravan.composeapp.generated.resources.ch1_7
 import caravan.composeapp.generated.resources.ch1_8
 import caravan.composeapp.generated.resources.ch1_9
+import caravan.composeapp.generated.resources.ch2_1
+import caravan.composeapp.generated.resources.ch2_10
+import caravan.composeapp.generated.resources.ch2_10a
+import caravan.composeapp.generated.resources.ch2_10b
+import caravan.composeapp.generated.resources.ch2_11
+import caravan.composeapp.generated.resources.ch2_11a
+import caravan.composeapp.generated.resources.ch2_11b
+import caravan.composeapp.generated.resources.ch2_12
+import caravan.composeapp.generated.resources.ch2_13
+import caravan.composeapp.generated.resources.ch2_14
+import caravan.composeapp.generated.resources.ch2_14a
+import caravan.composeapp.generated.resources.ch2_15
+import caravan.composeapp.generated.resources.ch2_1a
+import caravan.composeapp.generated.resources.ch2_1b
+import caravan.composeapp.generated.resources.ch2_1c
+import caravan.composeapp.generated.resources.ch2_2
+import caravan.composeapp.generated.resources.ch2_3
+import caravan.composeapp.generated.resources.ch2_3a
+import caravan.composeapp.generated.resources.ch2_4
+import caravan.composeapp.generated.resources.ch2_4a
+import caravan.composeapp.generated.resources.ch2_4b
+import caravan.composeapp.generated.resources.ch2_5
+import caravan.composeapp.generated.resources.ch2_5a
+import caravan.composeapp.generated.resources.ch2_6
+import caravan.composeapp.generated.resources.ch2_6a
+import caravan.composeapp.generated.resources.ch2_6b
+import caravan.composeapp.generated.resources.ch2_7
+import caravan.composeapp.generated.resources.ch2_7a
+import caravan.composeapp.generated.resources.ch2_8
+import caravan.composeapp.generated.resources.ch2_8a
+import caravan.composeapp.generated.resources.ch2_8b
+import caravan.composeapp.generated.resources.ch2_9
+import caravan.composeapp.generated.resources.ch2_9a
 import caravan.composeapp.generated.resources.ch4_m1
 import caravan.composeapp.generated.resources.ch4_m2
 import caravan.composeapp.generated.resources.ch4_m3
@@ -475,6 +508,7 @@ fun ShowStoryChapter2(
 ) {
     var isGame by rememberSaveable { mutableStateOf(false) }
     var gameResult by rememberSaveable { mutableIntStateOf(0) }
+
     if (isGame) {
         StartStoryGame(
             EnemyStory2(),
@@ -483,12 +517,84 @@ fun ShowStoryChapter2(
             {},
             { gameResult = 1; advanceChapter() },
             { gameResult = -1 },
-            { goBack() }
+            { if (gameResult == 0) gameResult = -1; isGame = false }
         )
         return
     }
 
-    LaunchedEffect(Unit) { isGame = true }
+
+    when (gameResult) {
+        1 -> {
+            StoryShow(DialogGraph(
+                listOf(
+                    DialogMiddleState(Res.drawable.black_back, Res.string.ch2_14),
+                    DialogMiddleState(Res.drawable.black_back, Res.string.ch2_15),
+                    DialogFinishState(DeathCode.ALIVE),
+                ),
+                listOf(
+                    DialogEdge(0, 1, Res.string.ch2_14a),
+                    DialogEdge(1, 2, Res.string.finish),
+                )
+            ), goBack) { goBack() }
+            return
+        }
+        -1 -> {
+            StoryShow(DialogGraph(
+                listOf(
+                    DialogMiddleState(Res.drawable.black_back, Res.string.ch2_13),
+                    DialogFinishState(DeathCode.STABBED_BY_CAZADORS)
+                ),
+                listOf(
+                    DialogEdge(0, 1, Res.string.finish),
+                )
+            ), goBack) { goBack() }
+            return
+        }
+        else -> {}
+    }
+
+    StoryShow(DialogGraph(
+        listOf(
+            DialogMiddleState(Res.drawable.black_back, Res.string.ch2_1),
+            DialogMiddleState(Res.drawable.black_back, Res.string.ch2_2),
+            DialogMiddleState(Res.drawable.black_back, Res.string.ch2_3),
+            DialogMiddleState(Res.drawable.black_back, Res.string.ch2_4),
+            DialogMiddleState(Res.drawable.black_back, Res.string.ch2_5),
+            DialogMiddleState(Res.drawable.black_back, Res.string.ch2_6),
+            DialogMiddleState(Res.drawable.black_back, Res.string.ch2_7),
+            DialogMiddleState(Res.drawable.black_back, Res.string.ch2_8),
+            DialogMiddleState(Res.drawable.black_back, Res.string.ch2_9),
+            DialogMiddleState(Res.drawable.black_back, Res.string.ch2_10),
+            DialogMiddleState(Res.drawable.black_back, Res.string.ch2_11),
+            DialogMiddleState(Res.drawable.black_back, Res.string.ch2_12),
+            DialogFinishState(DeathCode.ALIVE),
+            DialogFinishState(DeathCode.STABBED_BY_CAZADORS_ON_THE_RUN)
+        ),
+        listOf(
+            DialogEdge(0, 1, Res.string.ch2_1a),
+            DialogEdge(0, 2, Res.string.ch2_1b),
+            DialogEdge(0, 3, Res.string.ch2_1c),
+            DialogEdge(1, 2, Res.string.ch2_1b),
+            DialogEdge(1, 3, Res.string.ch2_1c),
+            DialogEdge(2, 3, Res.string.ch2_3a),
+            DialogEdge(3, 4, Res.string.ch2_4a),
+            DialogEdge(3, 5, Res.string.ch2_4b),
+            DialogEdge(4, 5, Res.string.ch2_5a),
+            DialogEdge(5, 7, Res.string.ch2_6b),
+            DialogEdge(5, 6, Res.string.ch2_6a),
+            DialogEdge(6, 7, Res.string.ch2_7a),
+            DialogEdge(7, 9, Res.string.ch2_8a),
+            DialogEdge(7, 8, Res.string.ch2_8b),
+            DialogEdge(8, 9, Res.string.ch2_9a),
+            DialogEdge(9, 12, Res.string.ch2_10a),
+            DialogEdge(9, 10, Res.string.ch2_10b),
+            DialogEdge(10, 12, Res.string.ch2_11a),
+            DialogEdge(10, 11, Res.string.ch2_11b),
+            DialogEdge(11, 13, Res.string.finish),
+        )
+    ), goBack) {
+        isGame = true
+    }
 }
 
 @Composable

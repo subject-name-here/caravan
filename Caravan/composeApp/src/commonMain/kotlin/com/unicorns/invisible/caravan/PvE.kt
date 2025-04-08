@@ -7,10 +7,12 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Tab
@@ -615,132 +617,124 @@ fun ShowBettingScreen(
     }
 
     MenuItemOpen("$$$", "<-", { goBack() }) {
-        Box(Modifier.fillMaxSize().padding(bottom = 8.dp), contentAlignment = Alignment.Center) {
-            Box(Modifier.fillMaxSize().rotate(180f)) {
-                Box(Modifier.fillMaxSize().getTableBackground()) {}
-            }
+        Box(Modifier.fillMaxSize().getTableBackground().padding(bottom = 8.dp), contentAlignment = Alignment.Center) {
             Column(
                 Modifier
+                    .fillMaxHeight().wrapContentWidth()
                     .background(getBackgroundColor()),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                Column(
-                    Modifier.background(getBackgroundColor()),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    TextFallout(
-                        stringResource(Res.string.enemy_name, enemyName),
-                        getTextColor(),
-                        getTextStrokeColor(),
-                        16.sp,
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(8.dp),
-                    )
-                    TextFallout(
-                        stringResource(Res.string.enemy_s_bet, enemyBet),
-                        getTextColor(),
-                        getTextStrokeColor(),
-                        16.sp,
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(8.dp),
-                    )
+                TextFallout(
+                    stringResource(Res.string.enemy_name, enemyName),
+                    getTextColor(),
+                    getTextStrokeColor(),
+                    16.sp,
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp),
+                )
+                TextFallout(
+                    stringResource(Res.string.enemy_s_bet, enemyBet),
+                    getTextColor(),
+                    getTextStrokeColor(),
+                    16.sp,
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp),
+                )
 
-                    Spacer(Modifier.height(16.dp))
+                Spacer(Modifier.height(16.dp))
 
-                    TextField(
-                        modifier = Modifier.fillMaxWidth(0.5f),
-                        singleLine = true,
-                        enabled = true,
-                        value = bet,
-                        onValueChange = { bet = it },
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                        textStyle = TextStyle(
-                            fontSize = 14.sp,
-                            color = getTextColor(),
-                            fontFamily = FontFamily(Font(Res.font.monofont))
-                        ),
-                        label = {
-                            TextFallout(
-                                text = stringResource(
-                                    Res.string.enter_your_bet,
-                                    enemyBet,
-                                    if (isBlitz) {
-                                        save.sierraMadreChips
-                                    } else {
-                                        save.capsInHand
-                                    }
-                                ),
-                                getTextColor(),
-                                getTextStrokeColor(),
-                                14.sp,
-                                Modifier,
-                            )
-                        },
-                        colors = TextFieldDefaults.colors().copy(
-                            cursorColor = getTextColor(),
-                            focusedContainerColor = getTextBackgroundColor(),
-                            unfocusedContainerColor = getTextBackgroundColor(),
-                            disabledContainerColor = getBackgroundColor(),
-                        )
-                    )
-
-                    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
+                TextField(
+                    modifier = Modifier.fillMaxWidth(0.5f),
+                    singleLine = true,
+                    enabled = true,
+                    value = bet,
+                    onValueChange = { bet = it },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    textStyle = TextStyle(
+                        fontSize = 14.sp,
+                        color = getTextColor(),
+                        fontFamily = FontFamily(Font(Res.font.monofont))
+                    ),
+                    label = {
                         TextFallout(
-                            stringResource(Res.string.time_limit_anyone),
+                            text = stringResource(
+                                Res.string.enter_your_bet,
+                                enemyBet,
+                                if (isBlitz) {
+                                    save.sierraMadreChips
+                                } else {
+                                    save.capsInHand
+                                }
+                            ),
                             getTextColor(),
                             getTextStrokeColor(),
-                            18.sp,
-                            Modifier.padding(8.dp),
+                            14.sp,
+                            Modifier,
                         )
-                        CheckboxCustom({ isBlitz }, { isBlitz = it; bet = "" }) { true }
+                    },
+                    colors = TextFieldDefaults.colors().copy(
+                        cursorColor = getTextColor(),
+                        focusedContainerColor = getTextBackgroundColor(),
+                        unfocusedContainerColor = getTextBackgroundColor(),
+                        disabledContainerColor = getBackgroundColor(),
+                    )
+                )
 
-                    }
-
+                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
                     TextFallout(
-                        stringResource(
-                            if (isBlitz)
-                                Res.string.your_expected_reward_chips
-                            else
-                                Res.string.your_expected_reward,
-                            countRewardLocal()
-                        ),
+                        stringResource(Res.string.time_limit_anyone),
                         getTextColor(),
                         getTextStrokeColor(),
                         18.sp,
-                        Modifier.fillMaxWidth().padding(8.dp),
+                        Modifier.padding(8.dp),
                     )
+                    CheckboxCustom({ isBlitz }, { isBlitz = it; bet = "" }) { true }
 
-                    val modifier = if (bet == "" || bet.toIntOrNull().let {
-                            it != null && it >= enemyBet &&
-                                    it <= if (isBlitz) save.sierraMadreChips else save.capsInHand
-                        }) {
-                        Modifier
-                            .clickableOk() {
-                                setIsBlitz(isBlitz)
-                                setBet(bet.toIntOrNull() ?: 0)
-                                setReward(countRewardLocal())
-                                saveData()
-                                goForward()
-                            }
-                            .background(getTextBackgroundColor())
-                            .padding(8.dp)
-                    } else {
-                        Modifier
-                            .padding(8.dp)
-                    }
-                    TextFallout(
-                        stringResource(Res.string.let_s_go),
-                        getTextColor(),
-                        getTextStrokeColor(),
-                        24.sp,
-                        modifier,
-                    )
-                    Spacer(Modifier.height(12.dp))
                 }
+
+                TextFallout(
+                    stringResource(
+                        if (isBlitz)
+                            Res.string.your_expected_reward_chips
+                        else
+                            Res.string.your_expected_reward,
+                        countRewardLocal()
+                    ),
+                    getTextColor(),
+                    getTextStrokeColor(),
+                    18.sp,
+                    Modifier.fillMaxWidth().padding(8.dp),
+                )
+
+                val modifier = if (bet == "" || bet.toIntOrNull().let {
+                        it != null && it >= enemyBet &&
+                                it <= if (isBlitz) save.sierraMadreChips else save.capsInHand
+                    }) {
+                    Modifier
+                        .clickableOk() {
+                            setIsBlitz(isBlitz)
+                            setBet(bet.toIntOrNull() ?: 0)
+                            setReward(countRewardLocal())
+                            saveData()
+                            goForward()
+                        }
+                        .background(getTextBackgroundColor())
+                        .padding(8.dp)
+                } else {
+                    Modifier
+                        .padding(8.dp)
+                }
+                TextFallout(
+                    stringResource(Res.string.let_s_go),
+                    getTextColor(),
+                    getTextStrokeColor(),
+                    24.sp,
+                    modifier,
+                )
+                Spacer(Modifier.height(12.dp))
             }
         }
     }

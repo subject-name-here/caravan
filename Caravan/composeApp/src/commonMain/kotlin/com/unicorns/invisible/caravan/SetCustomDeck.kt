@@ -3,7 +3,10 @@ package com.unicorns.invisible.caravan
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -11,12 +14,17 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
@@ -59,19 +67,28 @@ import com.unicorns.invisible.caravan.model.primitives.CollectibleDeck
 import com.unicorns.invisible.caravan.model.primitives.RankNumber
 import com.unicorns.invisible.caravan.model.primitives.Suit
 import com.unicorns.invisible.caravan.save.saveData
-import com.unicorns.invisible.caravan.utils.MenuItemOpen
+import com.unicorns.invisible.caravan.utils.MenuItemOpenNoScroll
 import com.unicorns.invisible.caravan.utils.ShowCard
 import com.unicorns.invisible.caravan.utils.ShowCardBack
 import com.unicorns.invisible.caravan.utils.TextFallout
 import com.unicorns.invisible.caravan.utils.clickableSelect
 import com.unicorns.invisible.caravan.utils.getBackgroundColor
 import com.unicorns.invisible.caravan.utils.getDividerColor
+import com.unicorns.invisible.caravan.utils.getKnobColor
 import com.unicorns.invisible.caravan.utils.getSelectionColor
 import com.unicorns.invisible.caravan.utils.getTextBackgroundColor
 import com.unicorns.invisible.caravan.utils.getTextColor
 import com.unicorns.invisible.caravan.utils.getTextStrokeColor
+import com.unicorns.invisible.caravan.utils.getTrackColor
 import com.unicorns.invisible.caravan.utils.playCloseSound
 import com.unicorns.invisible.caravan.utils.playSelectSound
+import com.unicorns.invisible.caravan.utils.pxToDp
+import com.unicorns.invisible.caravan.utils.spToPx
+import io.github.oikvpqya.compose.fastscroller.HorizontalScrollbar
+import io.github.oikvpqya.compose.fastscroller.ScrollbarStyle
+import io.github.oikvpqya.compose.fastscroller.ThumbStyle
+import io.github.oikvpqya.compose.fastscroller.TrackStyle
+import io.github.oikvpqya.compose.fastscroller.rememberScrollbarAdapter
 import org.jetbrains.compose.resources.stringResource
 
 
@@ -106,10 +123,11 @@ fun SetCustomDeck(
         saveData()
     }
 
-    MenuItemOpen(stringResource(Res.string.deck_custom), "<-", goBack) {
+    MenuItemOpenNoScroll(stringResource(Res.string.deck_custom), "<-", goBack) {
         Column(Modifier
             .fillMaxSize()
-            .background(getBackgroundColor())) {
+            .background(getBackgroundColor())
+        ) {
             TabRow(
                 getSelectedDeckIndex(), Modifier.fillMaxWidth(),
                 containerColor = getBackgroundColor(),
@@ -161,80 +179,103 @@ fun SetCustomDeck(
             HorizontalDivider(color = getDividerColor())
             Spacer(modifier = Modifier.height(12.dp))
 
-            val lazyRowState = rememberLazyListState()
-            LazyRow(
-                Modifier
-                    .fillMaxWidth()
-                    .padding(4.dp),
-                horizontalArrangement = Arrangement.Start,
-                verticalAlignment = Alignment.CenterVertically,
-                state = lazyRowState
-            ) {
-                items(CardBack.entries) { back ->
-                    var updateInfo by remember { mutableStateOf(false) }
-                    var updateCards by remember { mutableStateOf(false) }
-                    key(updateAll, updateInfo) {
-                        @Composable
-                        fun Button(text: String, action: (CardWithPrice) -> Unit) {
-                            TextFallout(
-                                text,
-                                getTextColor(),
-                                getTextStrokeColor(),
-                                18.sp,
-                                Modifier
-                                    .fillMaxWidth()
-                                    .background(getTextBackgroundColor())
-                                    .clickableSelect {
-                                        CollectibleDeck(back).toList()
-                                            .filter { isAvailable(it) }
-                                            .forEach(action)
-                                        updateCharacteristics = !updateCharacteristics
-                                        updateCards = !updateCards
-                                    }
-                                    .padding(vertical = 4.dp),
-                                boxAlignment = Alignment.Center
-                            )
-                        }
-                        Column(Modifier.padding(horizontal = 8.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-                            val name = stringResource(back.nameIdWithBackFileName.first)
-                            TextFallout(
-                                name.replace(" (", "\n("),
-                                getTextColor(),
-                                getTextStrokeColor(),
-                                14.sp,
-                                Modifier.fillMaxWidth(),
-                                boxAlignment = Alignment.Center
-                            )
-                            ShowCardBack(
-                                CardNumber(RankNumber.ACE, Suit.CLUBS, back),
-                                Modifier.align(Alignment.CenterHorizontally),
-                            )
+            BoxWithConstraints(Modifier.fillMaxSize().padding(4.dp)) {
+                val state = rememberScrollState()
+                val horizontalState = rememberLazyListState()
+                HorizontalScrollbar(
+                    modifier = Modifier.align(Alignment.TopCenter).fillMaxWidth().padding(horizontal = 4.dp),
+                    adapter = rememberScrollbarAdapter(state),
+                    style = ScrollbarStyle(
+                        minimalHeight = 0.dp,
+                        thickness = 4.dp,
+                        hoverDurationMillis = 0,
+                        thumbStyle = ThumbStyle(
+                            shape = RoundedCornerShape(100),
+                            unhoverColor = getKnobColor(),
+                            hoverColor = getKnobColor()
+                        ),
+                        trackStyle = TrackStyle(
+                            shape = RoundedCornerShape(100),
+                            unhoverColor = getTrackColor(),
+                            hoverColor = getTrackColor()
+                        )
+                    )
+                )
 
-                            Button(stringResource(Res.string.select_all)) {
-                                if (!isInCustomDeck(it)) {
-                                    toggleToCustomDeck(it)
-                                }
-                            }
-                            HorizontalDivider(color = getDividerColor())
-                            Button(stringResource(Res.string.deselect_all)) {
-                                if (isInCustomDeck(it)) {
-                                    toggleToCustomDeck(it)
-                                }
-                            }
-
-                            val state2 = rememberLazyListState()
-                            key(updateAll, updateCards) {
-                                CardsColumn(
-                                    back,
-                                    state2,
-                                    {
-                                        updateCharacteristics = !updateCharacteristics
-                                        updateCards = !updateCards
-                                    },
-                                    ::isInCustomDeck,
-                                    ::isAvailable,
-                                    ::toggleToCustomDeck
+                LazyRow(
+                    Modifier.height(maxHeight).width(maxWidth).padding(top = 4.dp),
+                    state = horizontalState,
+                    horizontalArrangement = Arrangement.Start,
+                    verticalAlignment = Alignment.Top
+                ) {
+                    items(CardBack.entries) { back ->
+                        var updateInfo by remember { mutableStateOf(false) }
+                        var updateCards by remember { mutableStateOf(false) }
+                        val verticalState = rememberLazyListState()
+                        key(updateAll, updateInfo) {
+                            @Composable
+                            fun Button(text: String, action: (CardWithPrice) -> Unit) {
+                                TextFallout(
+                                    text,
+                                    getTextColor(),
+                                    getTextStrokeColor(),
+                                    18.sp,
+                                    Modifier
+                                        .fillMaxWidth()
+                                        .background(getTextBackgroundColor())
+                                        .clickableSelect {
+                                            CollectibleDeck(back).toList()
+                                                .filter { isAvailable(it) }
+                                                .forEach(action)
+                                            updateCharacteristics = !updateCharacteristics
+                                            updateCards = !updateCards
+                                        }
+                                        .padding(vertical = 4.dp),
+                                    boxAlignment = Alignment.Center
                                 )
+                            }
+                            Column(Modifier.padding(horizontal = 8.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+                                val name = stringResource(back.nameIdWithBackFileName.first)
+                                Box(Modifier.height((14.sp.spToPx() * 4).toInt().pxToDp()), contentAlignment = Alignment.Center) {
+                                    TextFallout(
+                                        name.replace(" (", "\n("),
+                                        getTextColor(),
+                                        getTextStrokeColor(),
+                                        14.sp,
+                                        Modifier.fillMaxWidth(),
+                                        boxAlignment = Alignment.Center
+                                    )
+                                }
+                                ShowCardBack(
+                                    CardNumber(RankNumber.ACE, Suit.CLUBS, back),
+                                    Modifier.align(Alignment.CenterHorizontally),
+                                )
+
+                                Button(stringResource(Res.string.select_all)) {
+                                    if (!isInCustomDeck(it)) {
+                                        toggleToCustomDeck(it)
+                                    }
+                                }
+                                HorizontalDivider(color = getDividerColor())
+                                Button(stringResource(Res.string.deselect_all)) {
+                                    if (isInCustomDeck(it)) {
+                                        toggleToCustomDeck(it)
+                                    }
+                                }
+
+                                key(updateAll, updateCards) {
+                                    CardsColumn(
+                                        back,
+                                        verticalState,
+                                        {
+                                            updateCharacteristics = !updateCharacteristics
+                                            updateCards = !updateCards
+                                        },
+                                        ::isInCustomDeck,
+                                        ::isAvailable,
+                                        ::toggleToCustomDeck
+                                    )
+                                }
                             }
                         }
                     }

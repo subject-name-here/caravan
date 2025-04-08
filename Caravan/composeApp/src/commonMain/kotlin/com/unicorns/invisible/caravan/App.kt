@@ -419,6 +419,7 @@ fun Screen() {
                     getDialogBackground(),
                     18.sp,
                     Modifier
+                        .padding(bottom = 4.dp)
                         .background(getDialogTextColor())
                         .clickableCancel { hideAlertDialog() }
                         .padding(4.dp),
@@ -437,6 +438,7 @@ fun Screen() {
                         getDialogBackground(),
                         getDialogBackground(), 18.sp,
                         Modifier
+                            .padding(bottom = 4.dp)
                             .background(getDialogTextColor())
                             .clickableCancel {
                                 hideAlertDialog()

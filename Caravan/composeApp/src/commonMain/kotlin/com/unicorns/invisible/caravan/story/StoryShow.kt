@@ -226,6 +226,8 @@ fun ShowDeathScreen(code: DeathCode, onBadEnd: () -> Unit, onGoodEnd: () -> Unit
     val map = mapOf(
         DeathCode.AGAINST_DEATH to listOf(0, 1, 2, 3, 4, 7, 9, 10, 12, 14, 15, 16),
         DeathCode.EXPLODED to listOf(0, 1, 2, 3, 4, 9, 10, 11, 12, 14, 16),
+        DeathCode.STABBED_BY_CAZADORS to listOf(0, 1, 2, 3, 4, 7, 9, 10, 12, 14, 15, 16),
+        DeathCode.STABBED_BY_CAZADORS_ON_THE_RUN to listOf(0, 1, 2, 3, 4, 7, 9, 10, 11, 12, 14, 15, 16),
     )
     val messagesInfos = map[code]?.mapNotNull { messages[it] } ?: run { onBadEnd(); return }
     val index = weightedRandom(messagesInfos.map { it.second })
@@ -280,5 +282,7 @@ fun ShowDeathScreen(code: DeathCode, onBadEnd: () -> Unit, onGoodEnd: () -> Unit
 enum class DeathCode(val code: Int) {
     ALIVE(0),
     EXPLODED(-1),
+    STABBED_BY_CAZADORS(-2),
+    STABBED_BY_CAZADORS_ON_THE_RUN(-3),
     AGAINST_DEATH(-13),
 }

@@ -110,6 +110,8 @@ fun Int.pxToDp() = with(LocalDensity.current) { this@pxToDp.toDp() }
 @Composable
 fun Dp.dpToSp() = with(LocalDensity.current) { this@dpToSp.toSp() }
 @Composable
+fun TextUnit.spToPx() = with(LocalDensity.current) { this@spToPx.toPx() }
+@Composable
 fun Dp.dpToPx() = with(LocalDensity.current) { this@dpToPx.toPx() }
 
 
@@ -674,6 +676,7 @@ fun MenuItemOpen(
     }) { innerPadding ->
         BoxWithConstraints(Modifier
             .padding(innerPadding)
+            .fillMaxSize()
             .background(getBackgroundColor())
             .padding(start = 8.dp, end = 8.dp - scrollbarWidth, top = 4.dp, bottom = 4.dp)
         ) {
