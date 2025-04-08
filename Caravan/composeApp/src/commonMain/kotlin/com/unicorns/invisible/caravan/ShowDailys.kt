@@ -169,6 +169,7 @@ fun ShowChallenge(challenge: Challenge, isCompleted: Boolean, updater: () -> Uni
                     challenge.restartChallenge()
                 } else {
                     save.challengesNew.remove(challenge)
+                    save.challengesCompleted++
                 }
                 saveData()
                 playDailyCompleted()

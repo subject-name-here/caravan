@@ -1,56 +1,31 @@
 package com.unicorns.invisible.caravan
 
-import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.core.AnimationVector2D
-import androidx.compose.animation.core.TweenSpec
-import androidx.compose.animation.core.TwoWayConverter
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.BoxWithConstraintsScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.paint
-import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.draw.scale
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.ColorMatrix
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.layout.FixedScale
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import caravan.composeapp.generated.resources.Res
 import caravan.composeapp.generated.resources.heads
-import caravan.composeapp.generated.resources.help
 import caravan.composeapp.generated.resources.null_condition
 import caravan.composeapp.generated.resources.pip_boy_main_screen
 import caravan.composeapp.generated.resources.style_alaska
@@ -100,74 +75,80 @@ import com.unicorns.invisible.caravan.model.enemy.EnemyPvENoBank
 import com.unicorns.invisible.caravan.model.enemy.EnemyPvEWithBank
 import com.unicorns.invisible.caravan.save.saveData
 import com.unicorns.invisible.caravan.utils.TextFallout
-import com.unicorns.invisible.caravan.utils.dpToPx
 import com.unicorns.invisible.caravan.utils.getTextBackgroundColor
 import com.unicorns.invisible.caravan.utils.getTextColor
 import com.unicorns.invisible.caravan.utils.getTextStrokeColor
 import com.unicorns.invisible.caravan.utils.playFanfares
 import com.unicorns.invisible.caravan.utils.playNoBeep
 import com.unicorns.invisible.caravan.utils.playYesBeep
-import com.unicorns.invisible.caravan.utils.pxToDp
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.isActive
-import org.jetbrains.compose.resources.Font
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
-import kotlin.math.atan2
-import kotlin.math.hypot
-import kotlin.math.min
 import kotlin.random.Random
 
 
 enum class Style(
     val styleNameId: StringResource,
     val conditionToOpenId: StringResource,
+    val progress: () -> String,
     val checkCondition: () -> Boolean
 ) {
-    DESERT(Res.string.style_desert, Res.string.style_desert_condition, {
+    DESERT(Res.string.style_desert, Res.string.style_desert_condition, { "${save.maxStrike} / 5" }, {
         save.maxStrike >= 5
     }),
-    ALASKA_FRONTIER(Res.string.style_alaska, Res.string.style_alaska_condition, {
+    ALASKA_FRONTIER(Res.string.style_alaska, Res.string.style_alaska_condition, { "${save.maxStrike} / 10" }, {
         save.maxStrike >= 10
     }),
-    PIP_BOY(Res.string.style_pip_boy, Res.string.null_condition, { true }),
-    PIP_GIRL(Res.string.style_pip_girl, Res.string.style_pip_girl_condition, {
+    PIP_BOY(Res.string.style_pip_boy, Res.string.null_condition, { "0 / 0" }, { true }),
+    PIP_GIRL(Res.string.style_pip_girl, Res.string.style_pip_girl_condition, { "${save.maxBetWon} / 969" }, {
         save.maxBetWon >= 969
     }),
-    OLD_WORLD(Res.string.style_old_world, Res.string.style_old_world_condition, {
+    OLD_WORLD(Res.string.style_old_world, Res.string.style_old_world_condition, { "${save.capsWasted + save.chipsWasted} / 1000" }, {
         save.capsWasted + save.chipsWasted >= 1000
     }),
-    NEW_WORLD(Res.string.style_new_world, Res.string.style_new_world_condition, {
+    NEW_WORLD(Res.string.style_new_world, Res.string.style_new_world_condition, { "${save.capsWasted + save.chipsWasted} / 10000" }, {
         save.capsWasted + save.chipsWasted >= 10000
     }),
-    SIERRA_MADRE(Res.string.style_sierra_madre, Res.string.style_sierra_madre_condition, {
+    SIERRA_MADRE(Res.string.style_sierra_madre, Res.string.style_sierra_madre_condition, { "${save.challengesCompleted} / 100" }, {
         save.challengesCompleted >= 100
     }),
-    MADRE_ROJA(Res.string.style_madre_roja, Res.string.style_madre_roja_condition, {
+    MADRE_ROJA(Res.string.style_madre_roja, Res.string.style_madre_roja_condition, { "${save.challengesCompleted} / 1000" }, {
         save.challengesCompleted >= 1000
     }),
-    VAULT_21(Res.string.style_vault_21, Res.string.style_vault_21_condition, {
+    VAULT_21(Res.string.style_vault_21, Res.string.style_vault_21_condition, { "${save.winsWithBet} / 500" }, {
         save.winsWithBet >= 500
     }),
-    VAULT_22(Res.string.style_vault_22, Res.string.style_vault_22_condition, {
+    VAULT_22(Res.string.style_vault_22, Res.string.style_vault_22_condition, { "${save.winsWithBet} / 50" }, {
         save.winsWithBet >= 50
     }),
-    BLACK(Res.string.style_black, Res.string.style_black_condition, {
+    BLACK(Res.string.style_black, Res.string.style_black_condition, { "${save.pvpWins} / 10" }, {
         save.pvpWins >= 10
     }),
-    ENCLAVE(Res.string.style_enclave, Res.string.style_enclave_condition, { save.towerBeaten }),
+    ENCLAVE(Res.string.style_enclave, Res.string.style_enclave_condition, { if (save.towerBeaten) "1 / 1" else "0 / 1" }, { save.towerBeaten }),
     NCR(Res.string.style_ncr, Res.string.style_ncr_condition, {
+        val blitzWins = save.enemiesGroups2.flatten().count { (when (it) {
+            is EnemyPvENoBank -> it.winsBlitz
+            is EnemyPvEWithBank -> it.winsBlitzBet
+        }) > 0 }
+        "$blitzWins / ${save.enemiesGroups2.flatten().size}"
+    }, {
         save.enemiesGroups2.flatten().all { (when (it) {
             is EnemyPvENoBank -> it.winsBlitz
             is EnemyPvEWithBank -> it.winsBlitzBet
         }) > 0 }
     }),
     LEGION(Res.string.style_legion, Res.string.style_legion_condition, {
+        val winsThrice = save.enemiesGroups2.flatten().count { (when (it) {
+            is EnemyPvENoBank -> it.winsBlitz + it.wins
+            is EnemyPvEWithBank -> it.winsBlitzBet + it.winsBet
+        }) >= 3 }
+        "$winsThrice / ${save.enemiesGroups2.flatten().size}"
+    }, {
         save.enemiesGroups2.flatten().all { (when (it) {
             is EnemyPvENoBank -> it.winsBlitz + it.wins
             is EnemyPvEWithBank -> it.winsBlitzBet + it.winsBet
-        }) > 0 }
+        }) >= 3 }
     });
 }
 

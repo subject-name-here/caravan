@@ -4,7 +4,6 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -14,8 +13,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
@@ -33,7 +30,6 @@ import caravan.composeapp.generated.resources.select
 import caravan.composeapp.generated.resources.tap_to_open
 import caravan.composeapp.generated.resources.themes
 import com.unicorns.invisible.caravan.save.saveData
-import com.unicorns.invisible.caravan.utils.MenuItemOpen
 import com.unicorns.invisible.caravan.utils.MenuItemOpenNoScroll
 import com.unicorns.invisible.caravan.utils.TextFallout
 import com.unicorns.invisible.caravan.utils.VertScrollbar
@@ -115,7 +111,7 @@ fun ShowStyles(
                                 .background(getBackByStyle(watchedStyle)),
                         ) {
                             Column(
-                                Modifier.fillMaxSize().verticalScroll(state).padding(end = 4.dp),
+                                Modifier.fillMaxSize().verticalScroll(state).padding(horizontal = 8.dp),
                                 verticalArrangement = Arrangement.SpaceEvenly,
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
@@ -162,6 +158,13 @@ fun ShowStyles(
                                     } else {
                                         TextFallout(
                                             stringResource(watchedStyle.conditionToOpenId),
+                                            getTextColorByStyle(watchedStyle),
+                                            getStrokeColorByStyle(watchedStyle),
+                                            20.sp,
+                                            Modifier.padding(4.dp),
+                                        )
+                                        TextFallout(
+                                            watchedStyle.progress(),
                                             getTextColorByStyle(watchedStyle),
                                             getStrokeColorByStyle(watchedStyle),
                                             20.sp,

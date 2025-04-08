@@ -134,11 +134,13 @@ class Save(var playerId: String? = null) {
     var challengesCompleted = 0
 
     @EncodeDefault
-    var currentStrike: Int = 0 // TODO
+    var currentStrike: Int = 0
         set(value) {
             field = value
             maxStrike = max(maxStrike, value)
         }
+    @EncodeDefault
+    var enemiesDefeated = ArrayList<String>()
     @EncodeDefault
     var maxStrike = 0
         private set

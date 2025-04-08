@@ -1,8 +1,6 @@
 package com.unicorns.invisible.caravan.utils
 
-import android.media.MediaDataSource
 import android.media.MediaPlayer
-import caravan.composeapp.generated.resources.Res
 import com.unicorns.invisible.caravan.activity
 import com.unicorns.invisible.caravan.playingSongName
 import com.unicorns.invisible.caravan.save
