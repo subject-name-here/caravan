@@ -88,7 +88,7 @@ fun CardToBuy(card: CardWithPrice, price: Int, update: () -> Unit) {
 
             TextFallout(
                 "${rankToSuit.first} ${rankToSuit.second}\n" +
-                        "(${stringResource(backName)})",
+                        "${stringResource(backName)}",
                 getTextColor(),
                 getTextStrokeColor(),
                 16.sp,

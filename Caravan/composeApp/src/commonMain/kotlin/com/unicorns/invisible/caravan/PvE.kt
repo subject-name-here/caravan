@@ -551,6 +551,11 @@ fun StartGame(
 
                 save.capsWon += reward
                 save.maxBetWon = max(save.maxBetWon, reward)
+
+                if (reward > 0) {
+                    save.winsWithBet++
+                }
+
                 scope.launch {
                     showAlertDialog(
                         getString(Res.string.result),

@@ -777,10 +777,11 @@ fun MenuBottomBar(
 
 @Composable
 fun BoxWithConstraintsScope.VertScrollbar(
-    state: ScrollState
+    state: ScrollState,
+    alignment: Alignment = Alignment.CenterEnd
 ) {
     VerticalScrollbar(
-        modifier = Modifier.align(Alignment.CenterEnd).fillMaxHeight().padding(vertical = 4.dp),
+        modifier = Modifier.align(alignment).fillMaxHeight().padding(vertical = 4.dp, horizontal = 2.dp),
         adapter = rememberScrollbarAdapter(state),
         style = ScrollbarStyle(
             minimalHeight = 0.dp,

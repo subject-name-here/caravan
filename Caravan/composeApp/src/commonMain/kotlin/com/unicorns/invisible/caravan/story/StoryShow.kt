@@ -36,6 +36,7 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import caravan.composeapp.generated.resources.Res
+import caravan.composeapp.generated.resources.back_to_menu
 import caravan.composeapp.generated.resources.crt_1
 import caravan.composeapp.generated.resources.death_message_any_1
 import caravan.composeapp.generated.resources.death_message_any_2
@@ -59,6 +60,7 @@ import caravan.composeapp.generated.resources.finish
 import com.sebaslogen.resaca.rememberScoped
 import com.unicorns.invisible.caravan.Style
 import com.unicorns.invisible.caravan.utils.TextClassic
+import com.unicorns.invisible.caravan.utils.clickableOk
 import com.unicorns.invisible.caravan.utils.getStrokeColorByStyle
 import com.unicorns.invisible.caravan.utils.getTextBackByStyle
 import com.unicorns.invisible.caravan.utils.getTextColorByStyle
@@ -150,9 +152,11 @@ fun StoryShow(graph: DialogGraph, onBadEnd: () -> Unit, onGoodEnd: () -> Unit) {
                                 getStrokeColorByStyle(Style.PIP_BOY),
                                 16.sp,
                                 Modifier
+                                    .fillMaxWidth()
                                     .background(getTextBackByStyle(Style.PIP_BOY))
                                     .padding(horizontal = 8.dp, vertical = 2.dp),
-                                textAlignment = TextAlign.Start
+                                textAlignment = TextAlign.Start,
+                                boxAlignment = Alignment.CenterStart
                             )
                         }
 
@@ -194,6 +198,21 @@ fun StoryShow(graph: DialogGraph, onBadEnd: () -> Unit, onGoodEnd: () -> Unit) {
                 } }
             }
         }
+    }
+
+    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
+        TextClassic(
+            stringResource(Res.string.back_to_menu),
+            getTextColorByStyle(Style.PIP_BOY),
+            getStrokeColorByStyle(Style.PIP_BOY),
+            16.sp,
+            Modifier
+                .fillMaxWidth()
+                .background(getTextBackByStyle(Style.PIP_BOY))
+                .padding(horizontal = 8.dp, vertical = 4.dp)
+                .clickableOk { onBadEnd() },
+            textAlignment = TextAlign.Start
+        )
     }
 }
 

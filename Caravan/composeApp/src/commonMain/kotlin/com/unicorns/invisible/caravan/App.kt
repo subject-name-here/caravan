@@ -3,6 +3,7 @@ package com.unicorns.invisible.caravan
 import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.border
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -10,13 +11,17 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.displayCutoutPadding
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
@@ -119,6 +124,7 @@ import com.unicorns.invisible.caravan.save.loadLocalSave
 import com.unicorns.invisible.caravan.save.saveData
 import com.unicorns.invisible.caravan.utils.SliderCustom
 import com.unicorns.invisible.caravan.utils.TextFallout
+import com.unicorns.invisible.caravan.utils.VertScrollbar
 import com.unicorns.invisible.caravan.utils.clickableCancel
 import com.unicorns.invisible.caravan.utils.clickableOk
 import com.unicorns.invisible.caravan.utils.dpToPx
@@ -132,6 +138,7 @@ import com.unicorns.invisible.caravan.utils.getDividerColor
 import com.unicorns.invisible.caravan.utils.getKnobColor
 import com.unicorns.invisible.caravan.utils.getMusicMarqueesColor
 import com.unicorns.invisible.caravan.utils.getMusicPanelColor
+import com.unicorns.invisible.caravan.utils.getMusicPanelColorByStyle
 import com.unicorns.invisible.caravan.utils.getMusicTextBackColor
 import com.unicorns.invisible.caravan.utils.getMusicTextColor
 import com.unicorns.invisible.caravan.utils.getStrokeColorByStyle
@@ -168,7 +175,7 @@ var playingSongName by mutableStateOf("")
 
 val styleId
     get() = Style.entries.getOrElse(save.styleId) { Style.PIP_BOY }
-
+private var styleIdMutableData by mutableStateOf(styleId)
 
 @Composable
 fun App() {
@@ -202,176 +209,197 @@ fun App() {
     ).random(Random(id.hashCode()))
     // TODO: more advices!!!!
 
-    Box(Modifier.safeDrawingPadding()) {
-        var isIntroScreen by rememberScoped { mutableStateOf(true) }
-        if (isIntroScreen) {
-            val localSave by produceState<Save?>(Save()) {
-                value = loadLocalSave()
-            }
-            val (textColor, strokeColor, backColor) = if (localSave == null) {
-                Triple(
-                    Colors.ColorText,
-                    Colors.ColorTextStroke,
-                    Colors.ColorBack
-                )
-            } else {
-                val style = Style.entries[localSave!!.styleId]
-                Triple(
-                    getTextColorByStyle(style),
-                    getStrokeColorByStyle(style),
-                    getBackByStyle(style)
-                )
-            }
-            Box(
-                if (isSaveLoaded== true) {
-                    Modifier
-                        .fillMaxSize()
-                        .background(backColor)
-                        .clickableOk {
-                            isIntroScreen = false
-                        }
+
+    var isIntroScreen by rememberScoped { mutableStateOf(true) }
+    Box(
+        Modifier
+            .fillMaxSize()
+            .background(getMusicPanelColorByStyle(styleIdMutableData))
+            .statusBarsPadding()
+            .displayCutoutPadding()
+    ) {
+        Box(
+            Modifier
+                .fillMaxSize()
+                .background(getBackByStyle(styleIdMutableData))
+                .navigationBarsPadding()
+
+        ) {
+            if (isIntroScreen) {
+                val localSave by produceState<Save?>(Save()) {
+                    value = loadLocalSave()
+                }
+                val (textColor, strokeColor, backColor) = if (localSave == null) {
+                    Triple(
+                        Colors.ColorText,
+                        Colors.ColorTextStroke,
+                        Colors.ColorBack
+                    )
                 } else {
-                    Modifier
-                        .fillMaxSize()
-                        .background(backColor)
-                },
-                contentAlignment = Alignment.Center
-            ) {
-                @Composable
-                fun ColumnScope.CaravanTitle(weight: Float) {
-                    Box(Modifier
-                        .fillMaxWidth()
-                        .weight(weight)
-                        .padding(vertical = 4.dp)
-                        .zIndex(5f)) {
-                        Column(
-                            Modifier.fillMaxSize(),
-                            verticalArrangement = Arrangement.Center,
-                            horizontalAlignment = Alignment.CenterHorizontally
+                    val style = Style.entries[localSave!!.styleId]
+                    styleIdMutableData = style
+                    Triple(
+                        getTextColorByStyle(style),
+                        getStrokeColorByStyle(style),
+                        getBackByStyle(style)
+                    )
+                }
+                Box(
+                    if (isSaveLoaded == true) {
+                        Modifier
+                            .fillMaxSize()
+                            .background(backColor)
+                            .clickableOk {
+                                isIntroScreen = false
+                            }
+                    } else {
+                        Modifier
+                            .fillMaxSize()
+                            .background(backColor)
+                    },
+                    contentAlignment = Alignment.Center
+                ) {
+                    @Composable
+                    fun ColumnScope.CaravanTitle(weight: Float) {
+                        Box(
+                            Modifier
+                                .fillMaxWidth()
+                                .weight(weight)
+                                .padding(vertical = 4.dp)
+                                .zIndex(5f)
                         ) {
-                            if (isSaveLoaded == true) {
+                            Column(
+                                Modifier.fillMaxSize(),
+                                verticalArrangement = Arrangement.Center,
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                if (isSaveLoaded == true) {
+                                    TextFallout(
+                                        "CARAVAN",
+                                        textColor,
+                                        strokeColor,
+                                        40.sp,
+                                        Modifier.padding(top = 8.dp),
+                                    )
+                                    TextFallout(
+                                        stringResource(Res.string.tap_to_play),
+                                        textColor,
+                                        strokeColor,
+                                        24.sp,
+                                        Modifier.padding(4.dp),
+                                    )
+                                } else {
+                                    TextFallout(
+                                        "PLEASE\nSTAND BY",
+                                        textColor,
+                                        strokeColor,
+                                        32.sp,
+                                        Modifier.padding(4.dp),
+                                    )
+                                }
+                                Spacer(Modifier.height(8.dp))
                                 TextFallout(
-                                    "CARAVAN",
+                                    stringResource(advice),
                                     textColor,
                                     strokeColor,
-                                    40.sp,
-                                    Modifier.padding(top = 8.dp),
-                                )
-                                TextFallout(
-                                    stringResource(Res.string.tap_to_play),
-                                    textColor,
-                                    strokeColor,
-                                    24.sp,
-                                    Modifier.padding(4.dp),
-                                )
-                            } else {
-                                TextFallout(
-                                    "PLEASE\nSTAND BY",
-                                    textColor,
-                                    strokeColor,
-                                    32.sp,
-                                    Modifier.padding(4.dp),
+                                    18.sp,
+                                    Modifier.padding(vertical = 4.dp, horizontal = 12.dp),
                                 )
                             }
-                            Spacer(Modifier.height(8.dp))
+                        }
+                    }
+
+                    @Composable
+                    fun ColumnScope.Picture(weight: Float) {
+                        Box(
+                            Modifier
+                                .fillMaxWidth()
+                                .weight(weight)
+                                .paint(
+                                    painterResource(Res.drawable.caravan_main2),
+                                    contentScale = ContentScale.Fit
+                                )
+                        )
+                    }
+
+                    @Composable
+                    fun ColumnScope.PicAuthorLink(weight: Float) {
+                        Box(
+                            Modifier
+                                .fillMaxWidth()
+                                .weight(weight),
+                            contentAlignment = Alignment.BottomEnd
+                        ) {
+                            val annotatedString = buildAnnotatedString {
+                                append("Pic creator: ")
+                                withLink(
+                                    link = LinkAnnotation.Url(
+                                        url = "https://steamcommunity.com/profiles/76561199409356196/",
+                                        styles = TextLinkStyles(
+                                            style = SpanStyle(
+                                                color = textColor,
+                                                fontFamily = FontFamily(Font(Res.font.monofont)),
+                                                textDecoration = TextDecoration.Underline
+                                            )
+                                        )
+                                    ),
+                                ) {
+                                    append("bunkeran")
+                                }
+                            }
                             TextFallout(
-                                stringResource(advice),
+                                annotatedString,
                                 textColor,
                                 strokeColor,
-                                18.sp,
-                                Modifier.padding(vertical = 4.dp, horizontal = 12.dp),
+                                14.sp,
+                                Modifier,
                             )
                         }
                     }
-                }
-                @Composable
-                fun ColumnScope.Picture(weight: Float) {
-                    Box(Modifier
-                        .fillMaxWidth()
-                        .weight(weight)
-                        .paint(
-                            painterResource(Res.drawable.caravan_main2),
-                            contentScale = ContentScale.Fit
-                        )
-                    )
-                }
-                @Composable
-                fun ColumnScope.PicAuthorLink(weight: Float) {
-                    Box(
-                        Modifier
-                            .fillMaxWidth()
-                            .weight(weight),
-                        contentAlignment = Alignment.BottomEnd
-                    ) {
-                        val annotatedString = buildAnnotatedString {
-                            append("Pic creator: ")
-                            withLink(
-                                link = LinkAnnotation.Url(
-                                    url = "https://steamcommunity.com/profiles/76561199409356196/",
-                                    styles = TextLinkStyles(
-                                        style = SpanStyle(
-                                            color = textColor,
-                                            fontFamily = FontFamily(Font(Res.font.monofont)),
-                                            textDecoration = TextDecoration.Underline
-                                        )
-                                    )
-                                ),
-                            ) {
-                                append("bunkeran")
-                            }
-                        }
-                        TextFallout(
-                            annotatedString,
-                            textColor,
-                            strokeColor,
-                            14.sp,
-                            Modifier,
-                        )
-                    }
-                }
-                key(isSaveLoaded) {
-                    BoxWithConstraints(Modifier.fillMaxSize()) {
-                        if (maxHeight > maxWidth) {
-                            Column(
-                                Modifier
-                                    .fillMaxSize()
-                                    .padding(4.dp),
-                                horizontalAlignment = Alignment.CenterHorizontally,
-                                verticalArrangement = Arrangement.Center
-                            ) {
-                                CaravanTitle(0.29f)
-                                Picture(0.66f)
-                                PicAuthorLink(0.05f)
-                            }
-                        } else {
-                            Row(Modifier.fillMaxSize()) {
+                    key(isSaveLoaded) {
+                        BoxWithConstraints(Modifier.fillMaxSize()) {
+                            if (maxHeight > maxWidth) {
                                 Column(
                                     Modifier
-                                        .fillMaxHeight()
-                                        .weight(2f),
+                                        .fillMaxSize()
+                                        .padding(4.dp),
                                     horizontalAlignment = Alignment.CenterHorizontally,
                                     verticalArrangement = Arrangement.Center
                                 ) {
-                                    CaravanTitle(1f)
-                                }
-                                Column(
-                                    Modifier
-                                        .fillMaxHeight()
-                                        .weight(1f),
-                                    horizontalAlignment = Alignment.CenterHorizontally,
-                                    verticalArrangement = Arrangement.Center
-                                ) {
-                                    Box(Modifier.weight(0.05f))
-                                    Picture(0.9f)
+                                    CaravanTitle(0.29f)
+                                    Picture(0.66f)
                                     PicAuthorLink(0.05f)
                                 }
+                            } else {
+                                Row(Modifier.fillMaxSize()) {
+                                    Column(
+                                        Modifier
+                                            .fillMaxHeight()
+                                            .weight(2f),
+                                        horizontalAlignment = Alignment.CenterHorizontally,
+                                        verticalArrangement = Arrangement.Center
+                                    ) {
+                                        CaravanTitle(1f)
+                                    }
+                                    Column(
+                                        Modifier
+                                            .fillMaxHeight()
+                                            .weight(1f),
+                                        horizontalAlignment = Alignment.CenterHorizontally,
+                                        verticalArrangement = Arrangement.Center
+                                    ) {
+                                        Box(Modifier.weight(0.05f))
+                                        Picture(0.9f)
+                                        PicAuthorLink(0.05f)
+                                    }
+                                }
                             }
                         }
                     }
                 }
+            } else {
+                Screen()
             }
-        } else {
-            Screen()
         }
     }
 }
@@ -390,7 +418,6 @@ fun Screen() {
     var showAbout by rememberSaveable { mutableStateOf(false) }
     var showSettings by rememberSaveable { mutableStateOf(false) }
     var showVision by rememberSaveable { mutableStateOf(false) }
-    var styleIdForTop by rememberSaveable { mutableStateOf(styleId) }
 
     var showSoundSettings by remember { mutableStateOf(false) }
 
@@ -578,7 +605,7 @@ fun Screen() {
     Scaffold(
         topBar = {
             var isPaused by rememberScoped { mutableStateOf(false) }
-            key(styleIdForTop, soundReduced, playingSongName) {
+            key(styleIdMutableData, soundReducedLiveData, playingSongName) {
                 Row(
                     Modifier
                         .fillMaxWidth()
@@ -589,7 +616,7 @@ fun Screen() {
                 ) {
                     Text(
                         text = playingSongName.let {
-                            if (it.isEmpty() || isPaused || soundReduced)
+                            if (it.isEmpty() || isPaused || soundReducedLiveData)
                                 "[NONE]"
                             else
                                 it
@@ -609,12 +636,12 @@ fun Screen() {
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         BoxWithConstraints(Modifier.fillMaxSize()) {
-                            val button1Text = if (!isPaused && !soundReduced)
+                            val button1Text = if (!isPaused && !soundReducedLiveData)
                                 stringResource(Res.string.next_song)
                             else
                                 stringResource(Res.string.none)
                             val button2Text = when {
-                                soundReduced -> stringResource(Res.string.none)
+                                soundReducedLiveData -> stringResource(Res.string.none)
                                 isPaused -> stringResource(Res.string.resume_radio)
                                 else -> stringResource(Res.string.pause_radio)
                             }
@@ -711,8 +738,8 @@ fun Screen() {
                 }
                 showVision -> {
                     ShowStyles({
-                        styleIdForTop = Style.entries[it]
                         save.styleId = it
+                        styleIdMutableData = Style.entries[it]
                         saveData()
                     }) { showVision = false }
                 }
@@ -778,7 +805,7 @@ fun MainMenu(
     showDailys: () -> Unit,
     showMarket: () -> Unit,
 ) {
-    Box(
+    BoxWithConstraints(
         Modifier
             .fillMaxSize()
             .background(getBackgroundColor())
@@ -967,6 +994,10 @@ fun MainMenu(
 
         showStyledMenu()
 
+        val state = rememberScrollState()
+
+        VertScrollbar(state, alignment = Alignment.CenterStart)
+
         Column(
             horizontalAlignment = Alignment.Start,
             verticalArrangement = Arrangement.Center,
@@ -974,7 +1005,8 @@ fun MainMenu(
                 .fillMaxWidth(0.5f)
                 .fillMaxHeight()
                 .padding(bottom = 48.dp, top = 32.dp)
-                .padding(horizontal = 20.dp),
+                .padding(horizontal = 20.dp)
+                .verticalScroll(state),
         ) {
             @Composable
             fun MenuItem(text: String, onClick: () -> Unit) {

@@ -57,7 +57,7 @@
     <string name="sierra_madre_trader_empty">*silence*</string>
     <string name="sierra_madre_trader_cond">Complete Chapter 1 of the Story mode.</string>
 
-    <string name="tops_trader_welcome">If you ask me \"Hey, Max, what is the swankiest-smoothiest card store?\", I will tell you, baby, that you are standing in it.</string>
+    <string name="tops_trader_welcome">If you ask me "Hey, Max, what is the swankiest-smoothest card store?", I will tell you, baby, that you are standing in it!</string>
     <string name="tops_trader_empty">Hey, the store is empty, but that will change faster than the Mojave weather. Come again soooooon.</string>
     <string name="tops_trader_condition">Win a game with a bet of at least 500 caps/chips.</string>
 
@@ -115,6 +115,7 @@
     <string name="custom_deck_size">Deck size: %1$s\n(must be at least %2$s)</string>
     <string name="custom_deck_non_faces">Number of non-face cards: %1$s\n(must be at least %2$s)</string>
     <string name="custom_deck_num_of_decks">Decks used: %1$s\n(must be at most %2$s)</string>
+    <string name="custom_decks_conflict">Decks conflicting: %1$s, %2$s</string>
 
     <string name="pve_enemy_oliver_real">Oliver Swanick</string>
     <string name="pve_enemy_veronica">Veronica</string>
@@ -620,7 +621,7 @@
     </string>
     <string name="ch1_10">
         [SUCCEEDED] Terminal contains many, many secret documents regarding the location of bomb shelters: Vaults, military bases, private and public shelters.
-        You, not really interested in exploring old and dangerous shelters, wanted to leave, but your eyes got stuck on one word “Oasis”.
+        You, not really interested in exploring old and dangerous places, wanted to leave, but your eyes got stuck on one word “Oasis”.
     </string>
     <string name="ch1_10a"><![CDATA[<Read about Oasis.>]]></string>
     <string name="ch1_11">
@@ -699,13 +700,13 @@
     <string name="ch2_10">
         Too late! A swarm of wild cazadors appears!
     </string>
-    <string name="ch2_10a"><![CDATA[[Medicine 50][Guns 50] <Fight!>]]></string>
+    <string name="ch2_10a"><![CDATA[[Medicine 50] [Guns 50] <Fight!>]]></string>
     <string name="ch2_10b"><![CDATA[<Run away!>]]></string>
     <string name="ch2_11">
         You try to run, but cazadors are faster. You get a stab in your back from the small Cazador, which, thankfully, doesn't penetrate the armor.
         Running is a bad option.
     </string>
-    <string name="ch2_11a"><![CDATA[[Medicine 50][Guns 50] <Fight!>]]></string>
+    <string name="ch2_11a"><![CDATA[[Medicine 50] [Guns 50] <Fight!>]]></string>
     <string name="ch2_11b"><![CDATA[<Try to run faster!>]]></string>
     <string name="ch2_12">
         You make another dash to the exit, but big Cazador knocks you down.
@@ -720,47 +721,125 @@
     <string name="ch2_14a">Fuck yeah!</string>
     <string name="ch2_15">
         Although, you are almost dead:
-        you are out of stimpacks, and no antivenom makes you fall on the floor,because during the fight you were hit by cazadors, and not once.
+        you are out of stimpacks, and no antivenom makes you fall on the floor, because during the fight you were hit by cazadors, and not once.
         Looks like this is the end…
     </string>
 
-    <!--achievement Test Achievement-->
-    <string name="achievement_test_achievement" translatable="false">CgkIvtnbpMwbEAIQAQ</string>
-    <!--achievement Madre Roja-->
-    <string name="achievement_madre_roja" translatable="false">CgkIvtnbpMwbEAIQAg</string>
-    <!--achievement What Do We Say To The God of Death?-->
-    <string name="achievement_what_do_we_say_to_the_god_of_death" translatable="false">CgkIvtnbpMwbEAIQAw</string>
-    <!--achievement Penultimatum-->
-    <string name="achievement_penultimatum" translatable="false">CgkIvtnbpMwbEAIQBA</string>
-    <!--achievement You Can Be Hero-->
-    <string name="achievement_you_can_be_hero" translatable="false">CgkIvtnbpMwbEAIQBQ</string>
-    <!--achievement You Can Be So Much More-->
-    <string name="achievement_you_can_be_so_much_more" translatable="false">CgkIvtnbpMwbEAIQBg</string>
-    <!--achievement Five Down, Five To Go-->
-    <string name="achievement_five_down_five_to_go" translatable="false">CgkIvtnbpMwbEAIQBw</string>
-    <!--achievement 10/10-->
-    <string name="achievement_1010" translatable="false">CgkIvtnbpMwbEAIQCA</string>
-    <!--achievement AIN'T NO WAY DEV-->
-    <string name="achievement_aint_no_way_dev" translatable="false">CgkIvtnbpMwbEAIQCQ</string>
-    <!--achievement Done for today!-->
-    <string name="achievement_done_for_today" translatable="false">CgkIvtnbpMwbEAIQCg</string>
-    <!--achievement Who are you, that do not know your history?-->
-    <string name="achievement_who_are_you_that_do_not_know_your_history" translatable="false">CgkIvtnbpMwbEAIQCw</string>
-    <!--achievement Just load everything up with sixes and tens and kings-->
-    <string name="achievement_just_load_everything_up_with_sixes_and_tens_and_kings" translatable="false">CgkIvtnbpMwbEAIQDA</string>
-    <!--achievement Bravo.-->
-    <string name="achievement_bravo" translatable="false">CgkIvtnbpMwbEAIQDQ</string>
-    <!--achievement Look-a-Like-->
-    <string name="achievement_lookalike" translatable="false">CgkIvtnbpMwbEAIQDg</string>
-    <!--achievement Winner-winner, brahmin dinner!-->
-    <string name="achievement_winnerwinner_brahmin_dinner" translatable="false">CgkIvtnbpMwbEAIQDw</string>
-    <!--achievement Float like a Butterfly...-->
-    <string name="achievement_float_like_a_butterfly" translatable="false">CgkIvtnbpMwbEAIQEA</string>
-    <!--achievement THE INTERNET HAS YOU-->
-    <string name="achievement_the_internet_has_you" translatable="false">CgkIvtnbpMwbEAIQEQ</string>
-    <!--achievement Pyrrhic victory-->
-    <string name="achievement_pyrrhic_victory" translatable="false">CgkIvtnbpMwbEAIQEg</string>
-
+    <string name="p1e_1">
+        You have survived.
+    </string>
+    <string name="p1e_1a">…</string>
+    <string name="p1e_2">
+        Despite a hard heartache, you stand up. You feel dizzy, the head is spinning, but… you are alive.
+    </string>
+    <string name="p1e_2a">…</string>
+    <string name="p1e_3">
+        Half-dreaming, you reach some room and lock yourself in.
+    </string>
+    <string name="p1e_3a">…aaaaah…</string>
+    <string name="p1e_4">
+        You see: auto-doc.
+    </string>
+    <string name="p1e_4a"><![CDATA[<Turn something on.>]]></string>
+    <string name="p1e_5">
+        Auto-doc is buzzing and loading. Nice robotic voice says “Hello! How can I help you?”
+    </string>
+    <string name="p1e_5a">Heal me.</string>
+    <string name="p1e_5b">You talk?</string>
+    <string name="p1e_6">
+        Within the programmed limits, of course, but yes. How can I help you?
+    </string>
+    <string name="p1e_6a">Heal me.</string>
+    <string name="p1e_7">
+        As soon as you say it, you turn unconscious.
+    </string>
+    <string name="p1e_7a">…</string>
+    <string name="p1e_8">
+        When you wake up, you feel… much, much better. Heartache, though, hasn't gone.
+    </string>
+    <string name="p1e_8a">Robot..? Are you here?</string>
+    <string name="p1e_9">
+        Yes, I am here. And I have to share some grave news…
+    </string>
+    <string name="p1e_9a">Go on.</string>
+    <string name="p1e_9b">I almost died. What can be worse than that?</string>
+    <string name="p1e_9c">The day gets better and better…</string>
+    <string name="p1e_10">
+        I restored your health, but you have had too much insect poison in your blood system. Your heart is damaged beyond repair.
+    </string>
+    <string name="p1e_10a">So..?</string>
+    <string name="p1e_11">
+        The heart transplantation is recommended. Unfortunately, right now all the heart implants are used for the needs of soldiers in Anchorage…
+    </string>
+    <string name="p1e_11a">Anchorage?</string>
+    <string name="p1e_11b">Heart implants… I heard about a place with some of them, but it's too far…</string>
+    <string name="p1e_12">
+        Yes, right now there are fierce fights in Anchorage, and every blood drop is used to save our brave soldiers.
+    </string>
+    <string name="p1e_12a">Ehmm… What year do you think it is?</string>
+    <string name="p1e_13">
+        2067, of course.
+    </string>
+    <string name="p1e_13a">It's 2275.</string>
+    <string name="p1e_13b">[Speech 57/60] What flag do you fly, tin can?!</string>
+    <string name="p1e_14">
+        [FAILED] Our flag, of course. Why do you ask?
+    </string>
+    <string name="p1e_15">
+        What? And who is the strongest nation in the world? Who leads the world to the bright future?
+    </string>
+    <string name="p1e_15a">NCR.</string>
+    <string name="p1e_15b">Legion.</string>
+    <string name="p1e_15c">Depends on who you ask.</string>
+    <string name="p1e_15d">I don't know.</string>
+    <string name="p1e_16">
+        “Hmmm. I see.” The machine stayed silent for some time, then said: “Anyway, is there anything I can help you with?”
+    </string>
+    <string name="p1e_17">
+        Too far? Well, that's a problem. You have three months to live, plus or minus a few days. Then - painful, insufferable death.
+    </string>
+    <string name="p1e_17a">Hmmm... I might make it through... Vancouver and Anchorage.</string>
+    <string name="p1e_18">
+        Okay, but you have to go this instant. No time to waste!
+    </string>
+    <string name="p1e_18a">Last question: where are the supplies in the vault?</string>
+    <string name="p1e_19">
+        Go down, turn left, then right, second turn left, go straight for a kilometer, then turn left, sharp right, straight, left, right, left, right, up, down, and - you are there!
+    </string>
+    <string name="p1e_19a">Can you write it down for me?</string>
+    <string name="p1e_20">
+        Ha! It was a joke! I am funny, am I not? Supplies are here, in the safe.
+    </string>
+    <string name="p1e_20a">Haha. Funny.</string>
+    <string name="p1e_20b">Thank you.</string>
+    <string name="p1e_20c">Thank you, robot, for saving me.</string>
+    <string name="p1e_21">
+        You're welcome. Add oil!
+    </string>
+    <string name="p1e_21a">What?</string>
+    <string name="p1e_21b"><![CDATA[Thanks, I guess. <Go to safe.>]]></string>
+    <string name="p1e_22">
+        N-n-nothing! Good luck!
+    </string>
+    <string name="p1e_23">
+        You see: safe. Its height is about 7 feet, and it's not closed.
+    </string>
+    <string name="p1e_23a"><![CDATA[<Open the safe.>]]></string>
+    <string name="p1e_24">
+        Inside the safe there is…
+    </string>
+    <string name="p1e_24a">Is this..? No way!</string>
+    <string name="p1e_25">
+        You saw this on propaganda posters. Chinese stealth suit!!!
+    </string>
+    <string name="p1e_25a">Bin-fucking-go.</string>
+    <string name="p1e_26">
+        Apart from the suit, there are a lot of automatic stimpaks for it, canned food and water… as if someone wanted you to be prepared for the journey to Alaska..!
+    </string>
+    <string name="p1e_26a">Suspicious… But I am not gonna throw it away.</string>
+    <string name="p1e_27">
+        You have left the NCR territory and wandered North, to Vancouver. On the way, you were keeping a low profile, thanks to the stealth suit.
+    </string>
 
     <string name="achievements">Achievements</string>
     <string name="daily_missions">Daily Missions</string>

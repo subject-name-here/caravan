@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
-import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import com.google.android.gms.games.AchievementsClient
 import com.google.android.gms.games.PlayGames
@@ -51,8 +50,6 @@ abstract class SaveDataActivity : ComponentActivity() {
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        enableEdgeToEdge()
 
         achievementsClient = PlayGames.getAchievementsClient(this)
 
