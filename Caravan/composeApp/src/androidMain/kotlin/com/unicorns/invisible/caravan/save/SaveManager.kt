@@ -49,17 +49,17 @@ actual fun saveData() {
     CoroutineScope(Dispatchers.IO).launch { activity?.uploadDataToDrive(bytes) }
 }
 
+fun failToLoad() {
+    MainScope().launch {
+        Toast.makeText(
+            activity ?: return@launch,
+            "Failed to load from GD :(",
+            Toast.LENGTH_SHORT
+        ).show()
+    }
+}
 
 actual suspend fun loadGDSave(): Save? {
-    fun failToLoad() {
-        MainScope().launch {
-            Toast.makeText(
-                activity,
-                "Failed to load from GD :(",
-                Toast.LENGTH_SHORT
-            ).show()
-        }
-    }
     return try {
         val data = activity?.fetchDataFromDrive()?.toString(StandardCharsets.UTF_8)
         if (data != null && data != "" && data != "null") {
@@ -84,13 +84,7 @@ actual suspend fun loadLocalSave(): Save? {
             json.decodeFromString<Save>(text)
         }
     } catch (_: Exception) {
-        MainScope().launch {
-            Toast.makeText(
-                activity,
-                "Failed to load local save :(",
-                Toast.LENGTH_SHORT
-            ).show()
-        }
+        failToLoad()
         null
     }
 }

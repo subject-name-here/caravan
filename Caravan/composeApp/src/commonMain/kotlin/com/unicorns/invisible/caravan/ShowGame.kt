@@ -616,6 +616,15 @@ fun Hand(
     ) {
         val scale = (maxHeight - 4.dp * 2).dpToPx() / 256f
         cards.forEachIndexed { index, it ->
+            LaunchedEffect(it.handAnimationMark) {
+                if (it.handAnimationMark == Card.AnimationMark.NEW) {
+                    if (it is CardJoker && !isEnemy) {
+                        playJokerReceivedSounds()
+                    }
+                    it.handAnimationMark = Card.AnimationMark.STABLE
+                }
+            }
+
             var prevState by rememberScoped { mutableStateOf(it.handAnimationMark) }
             val needsSnap = prevState == it.handAnimationMark
             val offsetMult by animateFloatAsState(
@@ -634,23 +643,6 @@ fun Hand(
                 label = "$index $it"
             ) { newOffset ->
                 prevState = it.handAnimationMark
-            }
-
-            LaunchedEffect(it.handAnimationMark) {
-                if (it.handAnimationMark == Card.AnimationMark.NEW) {
-                    if (it is CardJoker && !isEnemy) {
-                        playJokerReceivedSounds()
-                    }
-                    it.handAnimationMark = Card.AnimationMark.STABLE
-                } else if (it.handAnimationMark == Card.AnimationMark.MOVING_OUT) {
-                    if (it is CardJoker) {
-                        playJokerSounds()
-                    } else if (it is CardWildWasteland) {
-                        playWWSound()
-                    } else if (it is CardNuclear) {
-                        playNukeBlownSound()
-                    }
-                }
             }
 
             val widthOffset = index * (maxWidth.dpToPx() - 183 * scale) / max(4, cards.size - 1)

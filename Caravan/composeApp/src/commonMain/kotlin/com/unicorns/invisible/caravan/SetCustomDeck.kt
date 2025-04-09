@@ -49,9 +49,11 @@ import caravan.composeapp.generated.resources.custom_deck_4
 import caravan.composeapp.generated.resources.custom_deck_non_faces
 import caravan.composeapp.generated.resources.custom_deck_num_of_decks
 import caravan.composeapp.generated.resources.custom_deck_size
+import caravan.composeapp.generated.resources.custom_decks_conflict
 import caravan.composeapp.generated.resources.deck_custom
 import caravan.composeapp.generated.resources.deselect_all
 import caravan.composeapp.generated.resources.empty_string
+import caravan.composeapp.generated.resources.none
 import caravan.composeapp.generated.resources.select_all
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.primitives.CResources
@@ -398,7 +400,6 @@ fun ShowCharacteristics() {
                 .fillMaxWidth()
                 .padding(8.dp),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
         ) {
             val decksUsed = deck.toList().distinctBy { it.getBack() }.size
             val decksUsedMax = CResources.MAX_NUMBER_OF_DECKS
@@ -410,6 +411,23 @@ fun ShowCharacteristics() {
                 color2,
                 14.sp,
                 Modifier.fillMaxWidth(0.5f),
+            )
+
+            val hasNCR = deck.toList().any { it.getBack() == CardBack.NCR }
+            val hasLegion = deck.toList().any { it.getBack() == CardBack.LEGION }
+            val hasConflict = hasNCR && hasLegion
+            val color3 = if (hasConflict) Color.Red else getTextColor()
+            val color4 = if (hasConflict) Color.Red else getTextStrokeColor()
+            TextFallout(
+                text = stringResource(
+                    Res.string.custom_decks_conflict,
+                    stringResource(if (hasConflict) CardBack.NCR.nameIdWithBackFileName.first else Res.string.none),
+                    stringResource(if (hasConflict) CardBack.LEGION.nameIdWithBackFileName.first else Res.string.none),
+                ),
+                color3,
+                color4,
+                14.sp,
+                Modifier.fillMaxWidth(),
             )
         }
     }

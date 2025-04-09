@@ -5,10 +5,6 @@ import com.unicorns.invisible.caravan.activity
 import com.unicorns.invisible.caravan.playingSongName
 import com.unicorns.invisible.caravan.save
 import com.unicorns.invisible.caravan.soundReduced
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import java.util.concurrent.locks.ReentrantLock
 import kotlin.concurrent.withLock
@@ -27,26 +23,24 @@ actual fun stopSoundEffects() {
 actual fun playEffectPlayerSound(soundPath: String, volumeFraction: Int) {
     val vol = save.soundVolume / volumeFraction
     val act = activity ?: return
-    CoroutineScope(Dispatchers.Unconfined).launch {
-        val player = MediaPlayer()
-        val afd = act.assets.openFd(soundPath.removePrefix("files/"))
-        player.apply {
-            setDataSource(afd.fileDescriptor, afd.startOffset, afd.length)
-            setVolume(vol, vol)
-            setOnCompletionListener {
-                effectPlayersLock.withLock {
-                    effectPlayers.remove(this)
-                    release()
-                }
+    val player = MediaPlayer()
+    val afd = act.assets.openFd(soundPath.removePrefix("files/"))
+    player.apply {
+        setDataSource(afd.fileDescriptor, afd.startOffset, afd.length)
+        setVolume(vol, vol)
+        setOnCompletionListener {
+            effectPlayersLock.withLock {
+                effectPlayers.remove(this)
+                release()
             }
-            setOnPreparedListener {
-                effectPlayersLock.withLock {
-                    effectPlayers.add(this)
-                    start()
-                }
-            }
-            prepare()
         }
+        setOnPreparedListener {
+            effectPlayersLock.withLock {
+                effectPlayers.add(this)
+                start()
+            }
+        }
+        prepare()
     }
 }
 
@@ -73,30 +67,28 @@ actual fun startAmbient() {
     val act = activity ?: return
     val vol = save.ambientVolume / 2
 
-    CoroutineScope(Dispatchers.Unconfined).launch {
-        val soundPath = "files/raw/ambient${(1..8).random()}.ogg"
-        val player = MediaPlayer()
-        val afd = act.assets.openFd(soundPath.removePrefix("files/"))
-        player.apply {
-            setDataSource(afd.fileDescriptor, afd.startOffset, afd.length)
-            setVolume(vol, vol)
-            setOnCompletionListener {
-                ambientPlayersLock.withLock {
-                    ambientPlayers.remove(this)
-                    release()
-                }
-                startAmbient()
+    val soundPath = "files/raw/ambient${(1..8).random()}.ogg"
+    val player = MediaPlayer()
+    val afd = act.assets.openFd(soundPath.removePrefix("files/"))
+    player.apply {
+        setDataSource(afd.fileDescriptor, afd.startOffset, afd.length)
+        setVolume(vol, vol)
+        setOnCompletionListener {
+            ambientPlayersLock.withLock {
+                ambientPlayers.remove(this)
+                release()
             }
-            setOnPreparedListener {
-                ambientPlayersLock.withLock {
-                    ambientPlayers.add(this)
-                    if (!wasAmbientPaused) {
-                        start()
-                    }
-                }
-            }
-            prepare()
+            startAmbient()
         }
+        setOnPreparedListener {
+            ambientPlayersLock.withLock {
+                ambientPlayers.add(this)
+                if (!wasAmbientPaused) {
+                    start()
+                }
+            }
+        }
+        prepare()
     }
 }
 
@@ -115,35 +107,32 @@ private var radioState = RadioState.PLAYING
 actual fun playSongFromRadio() {
     val vol = save.radioVolume
     val act = activity ?: return
-    CoroutineScope(Dispatchers.Unconfined).launch {
-        try {
-            val songName = getSongByIndex()!!
-            val soundPath = songName.first
-            val player = MediaPlayer()
-            val afd = act.assets.openFd(soundPath.removePrefix("files/"))
-            player.apply {
-                setDataSource(afd.fileDescriptor, afd.startOffset, afd.length)
-                playingSongName = songName.second
-                setOnCompletionListener {
-                    radioPlayers.remove(this)
-                    release()
-                    nextSong()
-                }
-                setVolume(vol, vol)
-                setOnPreparedListener {
-                    radioLock.withLock {
-                        radioPlayers.add(this)
-                        if (radioState == RadioState.PLAYING) {
-                            start()
-                        }
+    try {
+        val songName = getSongByIndex()!!
+        val soundPath = songName.first
+        val player = MediaPlayer()
+        val afd = act.assets.openFd(soundPath.removePrefix("files/"))
+        player.apply {
+            setDataSource(afd.fileDescriptor, afd.startOffset, afd.length)
+            playingSongName = songName.second
+            setOnCompletionListener {
+                radioPlayers.remove(this)
+                release()
+                nextSong()
+            }
+            setVolume(vol, vol)
+            setOnPreparedListener {
+                radioLock.withLock {
+                    radioPlayers.add(this)
+                    if (radioState == RadioState.PLAYING) {
+                        start()
                     }
                 }
-                prepare()
             }
-        } catch (_: Exception) {
-            delay(760L)
-            nextSong()
+            prepare()
         }
+    } catch (_: Exception) {
+        nextSong()
     }
 }
 
@@ -230,77 +219,71 @@ actual fun playTheme(themePath: String) {
     stopRadio()
     val vol = save.radioVolume
 
-    CoroutineScope(Dispatchers.Unconfined).launch {
-        val player = MediaPlayer()
-        val afd = (activity ?: return@launch).assets.openFd(themePath.removePrefix("files/"))
-        player.apply {
-            setDataSource(afd.fileDescriptor, afd.startOffset, afd.length)
-            isLooping = true
-            setVolume(vol, vol)
-            setOnCompletionListener {
-                radioLock.withLock {
-                    it.stop()
-                    radioPlayers.remove(it)
-                    it.release()
-                }
+    val player = MediaPlayer()
+    val afd = (activity ?: return).assets.openFd(themePath.removePrefix("files/"))
+    player.apply {
+        setDataSource(afd.fileDescriptor, afd.startOffset, afd.length)
+        isLooping = true
+        setVolume(vol, vol)
+        setOnCompletionListener {
+            radioLock.withLock {
+                it.stop()
+                radioPlayers.remove(it)
+                it.release()
             }
-            setOnPreparedListener {
-                radioLock.withLock {
-                    radioPlayers.add(this)
-                    if (radioState != RadioState.PAUSED_BY_LEAVING_ACTIVITY) {
-                        start()
-                    }
-                }
-            }
-            prepare()
         }
+        setOnPreparedListener {
+            radioLock.withLock {
+                radioPlayers.add(this)
+                if (radioState != RadioState.PAUSED_BY_LEAVING_ACTIVITY) {
+                    start()
+                }
+            }
+        }
+        prepare()
     }
 }
 
 @OptIn(ExperimentalResourceApi::class)
 actual fun playFrankPhrase(phrasePath: String) {
     val vol = save.soundVolume / 2
-    CoroutineScope(Dispatchers.Unconfined).launch {
-        val player = MediaPlayer()
-        val afd = (activity ?: return@launch).assets.openFd(phrasePath.removePrefix("files/"))
-        player.apply {
-            setDataSource(afd.fileDescriptor, afd.startOffset, afd.length)
-            setVolume(vol, vol)
-            setOnCompletionListener {
-                effectPlayersLock.withLock {
-                    effectPlayers.remove(this)
-                    release()
-                }
+    val player = MediaPlayer()
+    val afd = (activity ?: return).assets.openFd(phrasePath.removePrefix("files/"))
+    player.apply {
+        setDataSource(afd.fileDescriptor, afd.startOffset, afd.length)
+        setVolume(vol, vol)
+        setOnCompletionListener {
+            effectPlayersLock.withLock {
+                effectPlayers.remove(this)
+                release()
             }
-            setOnPreparedListener {
-                effectPlayersLock.withLock {
-                    stopSoundEffects()
-                    effectPlayers.add(this)
-                    start()
-                }
-            }
-            prepare()
         }
+        setOnPreparedListener {
+            effectPlayersLock.withLock {
+                stopSoundEffects()
+                effectPlayers.add(this)
+                start()
+            }
+        }
+        prepare()
     }
 }
 
 @OptIn(ExperimentalResourceApi::class)
 actual fun playDeathPhrase(phrasePath: String) {
     val vol = save.radioVolume
-    CoroutineScope(Dispatchers.Unconfined).launch {
-        val player = MediaPlayer()
-        val soundPath = "files/death_messages/${phrasePath}"
-        val afd = (activity ?: return@launch).assets.openFd(soundPath.removePrefix("files/"))
-        player.apply {
-            setDataSource(afd.fileDescriptor, afd.startOffset, afd.length)
-            setVolume(vol, vol)
-            setOnCompletionListener {
-                release()
-            }
-            setOnPreparedListener {
-                start()
-            }
-            prepare()
+    val player = MediaPlayer()
+    val soundPath = "files/death_messages/${phrasePath}"
+    val afd = (activity ?: return).assets.openFd(soundPath.removePrefix("files/"))
+    player.apply {
+        setDataSource(afd.fileDescriptor, afd.startOffset, afd.length)
+        setVolume(vol, vol)
+        setOnCompletionListener {
+            release()
         }
+        setOnPreparedListener {
+            start()
+        }
+        prepare()
     }
 }

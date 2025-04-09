@@ -5,6 +5,9 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.setValue
 import com.unicorns.invisible.caravan.AnimationSpeed
 import com.unicorns.invisible.caravan.model.CardBack
+import com.unicorns.invisible.caravan.utils.playJokerSounds
+import com.unicorns.invisible.caravan.utils.playNukeBlownSound
+import com.unicorns.invisible.caravan.utils.playWWSound
 import kotlinx.coroutines.delay
 import kotlin.random.Random
 
@@ -69,13 +72,6 @@ class CResources(private val deck: CustomDeck) {
         processHandAddedCard(card)
     }
 
-    fun removeFirstCardFromDeck() {
-        if (deck.size == 0) {
-            return
-        }
-        deck.removeFirst()
-    }
-
     private fun processHandAddedCard(card: Card) {
         if (card is CardWildWasteland && card.type == WWType.CAZADOR) {
             val notSpecial = handMutable.filter { it is CardBase || it is CardFace }
@@ -90,6 +86,13 @@ class CResources(private val deck: CustomDeck) {
 
     suspend fun removeFromHand(index: Int, speed: AnimationSpeed): Card {
         handMutable[index].handAnimationMark = Card.AnimationMark.MOVING_OUT
+        if (handMutable[index] is CardJoker) {
+            playJokerSounds()
+        } else if (handMutable[index] is CardWildWasteland) {
+            playWWSound()
+        } else if (handMutable[index] is CardNuclear) {
+            playNukeBlownSound()
+        }
         delay(speed.delay)
         val removedCard = handMutable.removeAt(index)
         recomposeResources++

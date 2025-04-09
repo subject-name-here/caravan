@@ -43,11 +43,13 @@ class CollectibleDeck() {
     }
 
     fun isCustomDeckValid(): Boolean {
+        val hasNCR = cards.any { it.getBack() == CardBack.NCR }
+        val hasLegion = cards.any { it.getBack() == CardBack.LEGION }
         val numOfDecks = cards.distinctBy { it.getBack() }.size
         val numOfNumbers = cards.count { it is CardNumber }
         return size >= MIN_DECK_SIZE &&
                 numOfNumbers >= MIN_NUM_OF_NUMBERS &&
-                numOfDecks <= MAX_NUMBER_OF_DECKS
+                numOfDecks <= MAX_NUMBER_OF_DECKS && !(hasNCR && hasLegion)
     }
 
     fun isDeckCourier6(): Boolean {
