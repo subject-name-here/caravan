@@ -138,7 +138,8 @@ fun ShowStyles(
                                             .padding(4.dp),
                                     )
                                 } else {
-                                    if (watchedStyle.checkCondition()) {
+                                    val progress = watchedStyle.progress()
+                                    if (progress.first >= progress.second) {
                                         TextFallout(
                                             stringResource(Res.string.tap_to_open),
                                             getTextColorByStyle(watchedStyle),
@@ -164,7 +165,7 @@ fun ShowStyles(
                                             Modifier.padding(4.dp),
                                         )
                                         TextFallout(
-                                            watchedStyle.progress(),
+                                            "${progress.first} / ${progress.second}",
                                             getTextColorByStyle(watchedStyle),
                                             getStrokeColorByStyle(watchedStyle),
                                             20.sp,

@@ -35,17 +35,21 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import caravan.composeapp.generated.resources.Res
+import caravan.composeapp.generated.resources.buy_chips
 import caravan.composeapp.generated.resources.buy_for_caps
 import caravan.composeapp.generated.resources.buy_for_chips
+import caravan.composeapp.generated.resources.buy_ticket
 import caravan.composeapp.generated.resources.empty_string
 import caravan.composeapp.generated.resources.market
 import caravan.composeapp.generated.resources.your_caps_in_hand
 import caravan.composeapp.generated.resources.your_chips_in_hand
+import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Currency
 import com.unicorns.invisible.caravan.model.primitives.CardFaceSuited
 import com.unicorns.invisible.caravan.model.primitives.CardJoker
 import com.unicorns.invisible.caravan.model.primitives.CardNumber
 import com.unicorns.invisible.caravan.model.primitives.CardWithPrice
+import com.unicorns.invisible.caravan.model.trading.SierraMadreTrader
 import com.unicorns.invisible.caravan.model.trading.Trader
 import com.unicorns.invisible.caravan.save.saveData
 import com.unicorns.invisible.caravan.utils.MenuItemOpenNoScroll
@@ -132,6 +136,93 @@ fun CardToBuy(card: CardWithPrice, price: Int, update: () -> Unit) {
         )
     }
 }
+
+
+
+@Composable
+fun TicketToBuy(price: Int, update: () -> Unit) {
+    Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+        Column(Modifier.weight(2f).wrapContentHeight()) {
+            TextFallout(
+                stringResource(Res.string.buy_ticket),
+                getTextColor(),
+                getTextStrokeColor(),
+                16.sp,
+                Modifier.fillMaxWidth().wrapContentHeight().padding(4.dp),
+                textAlignment = TextAlign.Center
+            )
+        }
+
+        TextFallout(
+            stringResource(Res.string.buy_for_chips, price),
+            getTextColor(),
+            getTextStrokeColor(),
+            16.sp,
+            Modifier
+                .weight(1f)
+                .padding(4.dp)
+                .background(getTextBackgroundColor())
+                .clickable {
+                    val cash = save.sierraMadreChips
+                    if (cash < price) {
+                        playNoBeep()
+                    } else {
+                        save.sierraMadreChips -= price
+                        save.chipsWasted += price
+                        save.tickets++
+                        playCashSound()
+                        saveData()
+                        update()
+                    }
+                },
+            boxAlignment = Alignment.Center
+        )
+    }
+}
+
+@Composable
+fun ChipsToBuy(price: Int, update: () -> Unit) {
+    Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+        Column(Modifier.weight(2f).wrapContentHeight()) {
+            TextFallout(
+                stringResource(Res.string.buy_chips),
+                getTextColor(),
+                getTextStrokeColor(),
+                16.sp,
+                Modifier.fillMaxWidth().wrapContentHeight().padding(4.dp),
+                textAlignment = TextAlign.Center
+            )
+        }
+
+        TextFallout(
+            stringResource(Res.string.buy_for_caps, price),
+            getTextColor(),
+            getTextStrokeColor(),
+            16.sp,
+            Modifier
+                .weight(1f)
+                .padding(4.dp)
+                .background(getTextBackgroundColor())
+                .clickable {
+                    val cash = save.capsInHand
+                    if (cash < price) {
+                        playNoBeep()
+                    } else {
+                        save.capsInHand -= price
+                        save.capsWasted += price
+
+                        save.sierraMadreChips += 10
+                        save.tickets++
+                        playCashSound()
+                        saveData()
+                        update()
+                    }
+                },
+            boxAlignment = Alignment.Center
+        )
+    }
+}
+
 
 @Composable
 fun ShowTraders(goBack: () -> Unit) {
@@ -233,6 +324,21 @@ fun ShowTraders(goBack: () -> Unit) {
                                     cards.forEach {
                                         Spacer(modifier = Modifier.height(4.dp))
                                         CardToBuy(it, it.getPriceOfCard()) {
+                                            update = !update
+                                        }
+                                        Spacer(modifier = Modifier.height(4.dp))
+                                        HorizontalDivider(thickness = 1.dp, color = getDividerColor())
+                                    }
+
+                                    if (selectedTrader is SierraMadreTrader) {
+                                        Spacer(modifier = Modifier.height(4.dp))
+                                        TicketToBuy(50) {
+                                            update = !update
+                                        }
+                                        Spacer(modifier = Modifier.height(4.dp))
+                                        HorizontalDivider(thickness = 1.dp, color = getDividerColor())
+                                        Spacer(modifier = Modifier.height(4.dp))
+                                        ChipsToBuy(40) {
                                             update = !update
                                         }
                                         Spacer(modifier = Modifier.height(4.dp))

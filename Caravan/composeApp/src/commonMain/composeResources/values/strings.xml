@@ -55,23 +55,23 @@
 
     <string name="sierra_madre_trader_welcome">*welcoming beeping and looped celebratory music from Sierra Madre BottleCaps Exchange Machine*</string>
     <string name="sierra_madre_trader_empty">*silence*</string>
-    <string name="sierra_madre_trader_cond">Defeat Elijah, Ulysses and Dr. Mobius. (%1$s, %2$s, %3$s)</string>
+    <string name="sierra_madre_trader_cond">Complete Chapter 1 of the Story mode.</string>
 
     <string name="tops_trader_welcome">If you ask me \"Hey, Max, what is the swankiest-smoothiest card store?\", I will tell you, baby, that you are standing in it.</string>
     <string name="tops_trader_empty">Hey, the store is empty, but that will change faster than the Mojave weather. Come again soooooon.</string>
-    <string name="tops_trader_condition">Defeat Benny, LUC10 and Victor. (%1$s, %2$s, %3$s)</string>
+    <string name="tops_trader_condition">Win a game with a bet of at least 500 caps/chips.</string>
 
     <string name="gomorrah_trader_welcome">My name is Ben Broadson. I sell cards. Who are you - I don't care.</string>
     <string name="gomorrah_trader_empty">Come soon again. Restocks are happening very often.</string>
-    <string name="gomorrah_trader_condition">Defeat Vulpes Inculta, Oliver Swanick and Madness Cardinal. (%1$s, %2$s, %3$s)</string>
+    <string name="gomorrah_trader_condition">Finish at least 666 games.</string>
 
     <string name="lucky_38_trader_welcome">Hello, sweetie, we are Marylin &amp; Jane - companions of Mr. House! We are so happy to see you!</string>
     <string name="lucky_38_trader_empty">Sugar, come again tomorrow!</string>
-    <string name="lucky_38_trader_cond">Beat Mr. House in Tower.</string>
+    <string name="lucky_38_trader_cond">Have on your hands at least 1000 caps.</string>
 
     <string name="chinese_trader_welcome">Nihao! I am Warlord Li Xuan. Here is the loot from the peasants my army robbed yesterday.</string>
     <string name="chinese_trader_empty">Laowai, wait until tomorrow for another portion of loot.</string>
-    <string name="chinese_trader_condition">Finish the Story mode and answer the question: what year CCP was established?</string>
+    <string name="chinese_trader_condition">Finish the Story mode.</string>
 
     <string name="enclave_trader_welcome">I am Savanth. Don't touch the merchandise.</string>
     <string name="enclave_trader_empty">Come tomorrow.</string>
@@ -150,13 +150,21 @@
     <string name="pve_games_started">Games started: %1$s</string>
     <string name="pve_games_finished">Games finished: %1$s</string>
     <string name="pve_games_won">Games won: %1$s</string>
+    <string name="pve_games_won_with_bet">Games won with bet: %1$s</string>
+    <string name="pve_games_won_pvp">PvP games won: %1$s</string>
     <string name="pve_caps_bet">Caps bet: %1$s</string>
     <string name="pve_caps_won">Caps won: %1$s</string>
+    <string name="pve_max_bet_won">Max bet won: %1$s</string>
     <string name="pve_percentiles">Rates</string>
     <string name="pve_w_to_l">Success coefficient (W/L): %1$s</string>
-    <string name="pve_w_to_finished">Win rate (W/Finished): %1$s \%%</string>
-    <string name="pve_w_to_started">Win-No-Quit rate (W/Started): %1$s \%%</string>
-    <string name="pve_finished_to_started">No-Quit rate (Finished/Started): %1$s \%%</string>
+    <string name="pve_w_to_finished">Win rate (W/Finished): %1$s %</string>
+    <string name="pve_w_to_started">Win-No-Quit rate (W/Started): %1$s %</string>
+    <string name="pve_finished_to_started">No-Quit rate (Finished/Started): %1$s %</string>
+    <string name="pve_more_stats">Other Stats</string>
+    <string name="pve_caps_wasted">Caps wasted: %1$s</string>
+    <string name="pve_chips_wasted">Chips wasted: %1$s</string>
+    <string name="pve_challenges_completed">Challenges completed: %1$s</string>
+    <string name="pve_max_strike">Max different enemies defeated in a row: %1$s</string>
 
     <string name="custom_deck_is_illegal">Custom deck is illegal!</string>
     <string name="deck_illegal_body">Deck uses more than 6 backs, has less than 30 cards or less than 15 numbered cards!</string>
@@ -344,11 +352,11 @@
     <string name="tap_to_open">UNLOCK!</string>
 
     <string name="style_desert">Desert</string>
-    <string name="style_desert_condition">Win 5 PvE games (with a bet) in a row against different enemies.</string>
+    <string name="style_desert_condition">Win 6 PvE games (with a bet) in a row against different enemies.</string>
     <string name="style_pip_boy">Pip-Boy</string>
     <string name="null_condition">It is already open, duh!</string>
     <string name="style_alaska">Alaska</string>
-    <string name="style_alaska_condition">Win 10 PvE games (with a bet) in a row against different enemies.</string>
+    <string name="style_alaska_condition">Win 12 PvE games (with a bet) in a row against different enemies.</string>
     <string name="style_pip_girl">Pip-Girl</string>
     <string name="style_pip_girl_condition">Win a game with a bet more than 969 caps/chips.</string>
     <string name="style_old_world">Old World</string>
@@ -356,13 +364,13 @@
     <string name="style_new_world">New World</string>
     <string name="style_new_world_condition">Spend 10000 caps/chips on cards.</string>
     <string name="style_sierra_madre">Sierra Madre</string>
-    <string name="style_sierra_madre_condition">Complete 100 challenges.</string>
+    <string name="style_sierra_madre_condition">Complete 150 challenges.</string>
     <string name="style_madre_roja">Madre Roja</string>
-    <string name="style_madre_roja_condition">Complete 1000 challenges.</string>
+    <string name="style_madre_roja_condition">Complete 1500 challenges.</string>
     <string name="style_vault_21">Vault 21</string>
-    <string name="style_vault_21_condition">Win 500 games with a bet.</string>
+    <string name="style_vault_21_condition">Win 1000 games with a bet.</string>
     <string name="style_vault_22">Vault 22</string>
-    <string name="style_vault_22_condition">Win 50 games with a bet.</string>
+    <string name="style_vault_22_condition">Win 100 games with a bet.</string>
     <string name="style_black">Monochrome</string>
     <string name="style_black_condition">Win 10 PvP games.</string>
     <string name="style_enclave">Enclave</string>
@@ -768,6 +776,8 @@
     <string name="your_chips_in_hand">Your chips in hand: %1$s</string>
     <string name="buy_for_caps">%1$s caps</string>
     <string name="buy_for_chips">%1$s Sierra Madre chips</string>
+    <string name="buy_ticket">1 ticket to Tower</string>
+    <string name="buy_chips">10 Sierra Madre chips</string>
 
     <string name="enemy_name">Enemy: %1$s</string>
     <string name="enemy_s_bet">Enemy's bet: %1$s</string>
@@ -962,7 +972,8 @@ If this helped you understand the game, thank the author Kyle! To do this, go to
     <string name="congrats">Congrats!</string>
     <string name="prize1_body">You have found a secret stash in a stone wall! +1969 caps!</string>
     <string name="prize2_body">You have found a secret stash! It was an eventful year, huh? +2024 caps!</string>
-    <string name="prize3_body">You have found a badly hidden stash! +12 caps!</string>
+    <string name="prize3_body">You have found a badly hidden stash! +123 caps!</string>
+    <string name="prize5_body">You have found a birthday gift! +500 caps!</string>
     <string name="story_progress_is_deleted">Story progress is deleted.</string>
     <string name="you_have_found_cards_from_standard_alt_deck">You have found cards from Standard ALT deck!</string>
     <string name="you_have_found_cards_from_enclave_deck">You have found cards from Enclave deck!</string>

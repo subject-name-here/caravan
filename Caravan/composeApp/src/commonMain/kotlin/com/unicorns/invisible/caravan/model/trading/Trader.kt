@@ -1,6 +1,9 @@
 package com.unicorns.invisible.caravan.model.trading
 
 import com.unicorns.invisible.caravan.model.CardBack
+import com.unicorns.invisible.caravan.model.primitives.CardFaceSuited
+import com.unicorns.invisible.caravan.model.primitives.CardJoker
+import com.unicorns.invisible.caravan.model.primitives.CardNumber
 import com.unicorns.invisible.caravan.model.primitives.CardWithPrice
 import com.unicorns.invisible.caravan.model.primitives.CollectibleDeck
 import com.unicorns.invisible.caravan.save
@@ -29,10 +32,54 @@ sealed interface Trader {
         val todayHash = save.dailyHash
         val rand = Random(todayHash xor (b * 31 + 22229) xor (b * b * b + 13))
 
-        fun shuffleCards(deck: CollectibleDeck) = deck.toList().shuffled(rand)
+        fun shuffleCards(deck: CollectibleDeck) = deck.toList().sortedWith { o1, o2 ->
+            when (o1) {
+                is CardNumber -> {
+                    if (o2 !is CardNumber) {
+                        1
+                    } else {
+                        if (o1.rank != o2.rank) {
+                            o2.rank.value - o1.rank.value
+                        } else {
+                            o1.suit.ordinal - o2.suit.ordinal
+                        }
+                    }
+                }
+                is CardFaceSuited -> {
+                    when (o2) {
+                        is CardJoker -> {
+                            1
+                        }
+                        is CardFaceSuited -> {
+                            if (o1.rank != o2.rank) {
+                                o2.rank.value - o1.rank.value
+                            } else {
+                                o1.suit.ordinal - o2.suit.ordinal
+                            }
+                        }
+                        is CardNumber -> {
+                            -1
+                        }
+                    }
+                }
+                is CardJoker -> {
+                    if (o2 is CardJoker) {
+                        o2.number.ordinal - o1.number.ordinal
+                    } else {
+                        -1
+                    }
+                }
+            }
+        }.shuffled(rand)
 
         val n = 7
 
-        return shuffleCards(CollectibleDeck(back)).take(n)
+        val extra = if (rand.nextBoolean()) {
+            shuffleCards(CollectibleDeck(CardBack.STANDARD_UNCOMMON)).take(1)
+        } else {
+            emptyList()
+        }
+
+        return extra + shuffleCards(CollectibleDeck(back)).take(n)
     }
 }

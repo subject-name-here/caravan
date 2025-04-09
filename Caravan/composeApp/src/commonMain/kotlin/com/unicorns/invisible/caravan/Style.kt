@@ -91,64 +91,31 @@ import kotlin.random.Random
 enum class Style(
     val styleNameId: StringResource,
     val conditionToOpenId: StringResource,
-    val progress: () -> String,
-    val checkCondition: () -> Boolean
+    val progress: () -> Pair<Int, Int>
 ) {
-    DESERT(Res.string.style_desert, Res.string.style_desert_condition, { "${save.maxStrike} / 5" }, {
-        save.maxStrike >= 5
-    }),
-    ALASKA_FRONTIER(Res.string.style_alaska, Res.string.style_alaska_condition, { "${save.maxStrike} / 10" }, {
-        save.maxStrike >= 10
-    }),
-    PIP_BOY(Res.string.style_pip_boy, Res.string.null_condition, { "0 / 0" }, { true }),
-    PIP_GIRL(Res.string.style_pip_girl, Res.string.style_pip_girl_condition, { "${save.maxBetWon} / 969" }, {
-        save.maxBetWon >= 969
-    }),
-    OLD_WORLD(Res.string.style_old_world, Res.string.style_old_world_condition, { "${save.capsWasted + save.chipsWasted} / 1000" }, {
-        save.capsWasted + save.chipsWasted >= 1000
-    }),
-    NEW_WORLD(Res.string.style_new_world, Res.string.style_new_world_condition, { "${save.capsWasted + save.chipsWasted} / 10000" }, {
-        save.capsWasted + save.chipsWasted >= 10000
-    }),
-    SIERRA_MADRE(Res.string.style_sierra_madre, Res.string.style_sierra_madre_condition, { "${save.challengesCompleted} / 100" }, {
-        save.challengesCompleted >= 100
-    }),
-    MADRE_ROJA(Res.string.style_madre_roja, Res.string.style_madre_roja_condition, { "${save.challengesCompleted} / 1000" }, {
-        save.challengesCompleted >= 1000
-    }),
-    VAULT_21(Res.string.style_vault_21, Res.string.style_vault_21_condition, { "${save.winsWithBet} / 500" }, {
-        save.winsWithBet >= 500
-    }),
-    VAULT_22(Res.string.style_vault_22, Res.string.style_vault_22_condition, { "${save.winsWithBet} / 50" }, {
-        save.winsWithBet >= 50
-    }),
-    BLACK(Res.string.style_black, Res.string.style_black_condition, { "${save.pvpWins} / 10" }, {
-        save.pvpWins >= 10
-    }),
-    ENCLAVE(Res.string.style_enclave, Res.string.style_enclave_condition, { if (save.towerBeaten) "1 / 1" else "0 / 1" }, { save.towerBeaten }),
+    DESERT(Res.string.style_desert, Res.string.style_desert_condition, { save.maxStrike to 6 }),
+    ALASKA_FRONTIER(Res.string.style_alaska, Res.string.style_alaska_condition, { save.maxStrike to 12 }),
+    PIP_BOY(Res.string.style_pip_boy, Res.string.null_condition, { 0 to 0 }),
+    PIP_GIRL(Res.string.style_pip_girl, Res.string.style_pip_girl_condition, { save.maxBetWon to 969 }),
+    OLD_WORLD(Res.string.style_old_world, Res.string.style_old_world_condition, { save.capsWasted + save.chipsWasted to 1000 }),
+    NEW_WORLD(Res.string.style_new_world, Res.string.style_new_world_condition, { save.capsWasted + save.chipsWasted to 10000 }),
+    SIERRA_MADRE(Res.string.style_sierra_madre, Res.string.style_sierra_madre_condition, { save.challengesCompleted to 150 }),
+    MADRE_ROJA(Res.string.style_madre_roja, Res.string.style_madre_roja_condition, { save.challengesCompleted to 1500 }),
+    VAULT_21(Res.string.style_vault_21, Res.string.style_vault_21_condition, { save.winsWithBet to 1000 }),
+    VAULT_22(Res.string.style_vault_22, Res.string.style_vault_22_condition, { save.winsWithBet to 100 }),
+    BLACK(Res.string.style_black, Res.string.style_black_condition, { save.pvpWins to 10 }),
+    ENCLAVE(Res.string.style_enclave, Res.string.style_enclave_condition, { (if (save.towerBeaten) 1 else 0) to 1 }),
     NCR(Res.string.style_ncr, Res.string.style_ncr_condition, {
-        val blitzWins = save.enemiesGroups2.flatten().count { (when (it) {
+        save.enemiesGroups2.flatten().count { (when (it) {
             is EnemyPvENoBank -> it.winsBlitz
             is EnemyPvEWithBank -> it.winsBlitzBet
-        }) > 0 }
-        "$blitzWins / ${save.enemiesGroups2.flatten().size}"
-    }, {
-        save.enemiesGroups2.flatten().all { (when (it) {
-            is EnemyPvENoBank -> it.winsBlitz
-            is EnemyPvEWithBank -> it.winsBlitzBet
-        }) > 0 }
+        }) > 0 } to save.enemiesGroups2.flatten().size
     }),
     LEGION(Res.string.style_legion, Res.string.style_legion_condition, {
-        val winsThrice = save.enemiesGroups2.flatten().count { (when (it) {
+        save.enemiesGroups2.flatten().count { (when (it) {
             is EnemyPvENoBank -> it.winsBlitz + it.wins
             is EnemyPvEWithBank -> it.winsBlitzBet + it.winsBet
-        }) >= 3 }
-        "$winsThrice / ${save.enemiesGroups2.flatten().size}"
-    }, {
-        save.enemiesGroups2.flatten().all { (when (it) {
-            is EnemyPvENoBank -> it.winsBlitz + it.wins
-            is EnemyPvEWithBank -> it.winsBlitzBet + it.winsBet
-        }) >= 3 }
+        }) >= 3 } to save.enemiesGroups2.flatten().size
     });
 }
 

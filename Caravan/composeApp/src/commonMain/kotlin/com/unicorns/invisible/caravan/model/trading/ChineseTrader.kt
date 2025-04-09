@@ -13,8 +13,7 @@ import org.jetbrains.compose.resources.getString
 
 @Serializable
 class ChineseTrader : Trader {
-    var is1921Entered = false
-    override fun isOpen() = is1921Entered && save.storyCompleted
+    override fun isOpen() = save.storyCompleted
     override suspend fun openingCondition() = getString(Res.string.chinese_trader_condition)
 
     override fun getUpdateRate() = 1

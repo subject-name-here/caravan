@@ -17,7 +17,7 @@ import org.jetbrains.compose.resources.getString
 class UltraLuxeTrader : Trader {
     override fun isOpen(): Boolean {
         val dayNumber = getNow().dayOfWeek
-        return dayNumber == DayOfWeek.MONDAY || dayNumber == DayOfWeek.THURSDAY || save.betaReward
+        return dayNumber == DayOfWeek.MONDAY || dayNumber == DayOfWeek.THURSDAY
     }
 
     override suspend fun openingCondition() = getString(Res.string.ultra_luxe_trader_condition)

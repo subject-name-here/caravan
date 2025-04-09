@@ -36,18 +36,16 @@ import caravan.composeapp.generated.resources.menu_settings
 import caravan.composeapp.generated.resources.monofont
 import caravan.composeapp.generated.resources.non_stop_radio
 import caravan.composeapp.generated.resources.save
-import com.unicorns.invisible.caravan.cheats.Cheat666
 import com.unicorns.invisible.caravan.cheats.CheatChangeTrack
-import com.unicorns.invisible.caravan.cheats.CheatChina
 import com.unicorns.invisible.caravan.cheats.CheatEraseStoryProgress
 import com.unicorns.invisible.caravan.cheats.CheatFinalBossesHeroicMusic
 import com.unicorns.invisible.caravan.cheats.CheatLaggySpeed
 import com.unicorns.invisible.caravan.cheats.CheatLevel10
 import com.unicorns.invisible.caravan.cheats.CheatPapaSmurf
 import com.unicorns.invisible.caravan.cheats.CheatRadioPseudonyms
-import com.unicorns.invisible.caravan.cheats.CheatUltimate
 import com.unicorns.invisible.caravan.cheats.stash.CheatStash1234
 import com.unicorns.invisible.caravan.cheats.stash.CheatStash1969
+import com.unicorns.invisible.caravan.cheats.stash.CheatStashCumpleanos
 import com.unicorns.invisible.caravan.cheats.stash.CheatStashEventfulYear
 import com.unicorns.invisible.caravan.save.saveData
 import com.unicorns.invisible.caravan.utils.MenuItemOpen
@@ -148,7 +146,6 @@ fun ShowTrueSettings(
                     var secretCode by remember { mutableStateOf<Int?>(null) }
                     val cheats = listOf(
                         CheatChangeTrack,
-                        CheatChina,
                         CheatEraseStoryProgress,
                         CheatFinalBossesHeroicMusic,
                         CheatLevel10,
@@ -157,9 +154,8 @@ fun ShowTrueSettings(
                         CheatStash1234,
                         CheatStash1969,
                         CheatStashEventfulYear,
+                        CheatStashCumpleanos,
                         CheatLaggySpeed,
-                        Cheat666,
-                        CheatUltimate,
                     )
                     TextFallout(
                         text = stringResource(Res.string.cheats),

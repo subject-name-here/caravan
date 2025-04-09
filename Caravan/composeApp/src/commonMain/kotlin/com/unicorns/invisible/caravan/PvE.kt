@@ -52,11 +52,19 @@ import caravan.composeapp.generated.resources.monofont
 import caravan.composeapp.generated.resources.prize_caps
 import caravan.composeapp.generated.resources.prize_chips
 import caravan.composeapp.generated.resources.pve_caps_bet
+import caravan.composeapp.generated.resources.pve_caps_wasted
 import caravan.composeapp.generated.resources.pve_caps_won
+import caravan.composeapp.generated.resources.pve_challenges_completed
+import caravan.composeapp.generated.resources.pve_chips_wasted
 import caravan.composeapp.generated.resources.pve_finished_to_started
 import caravan.composeapp.generated.resources.pve_games_finished
 import caravan.composeapp.generated.resources.pve_games_started
 import caravan.composeapp.generated.resources.pve_games_won
+import caravan.composeapp.generated.resources.pve_games_won_pvp
+import caravan.composeapp.generated.resources.pve_games_won_with_bet
+import caravan.composeapp.generated.resources.pve_max_bet_won
+import caravan.composeapp.generated.resources.pve_max_strike
+import caravan.composeapp.generated.resources.pve_more_stats
 import caravan.composeapp.generated.resources.pve_percentiles
 import caravan.composeapp.generated.resources.pve_stats
 import caravan.composeapp.generated.resources.pve_w_to_finished
@@ -142,16 +150,18 @@ fun ShowSelectPvE(
             return
         }
         showTower -> {
-            TowerScreen(showAlertDialog) { showTower = false }
-            return
+            showTower = false
+            //TowerScreen(showAlertDialog) { showTower = false }
+            //return
         }
         showStory -> {
             ShowStoryList(showAlertDialog) { showStory = false }
             return
         }
         showTutorial -> {
-            Tutorial { showTutorial = false }
-            return
+            showTutorial = false
+            //Tutorial { showTutorial = false }
+            //return
         }
     }
 
@@ -232,9 +242,15 @@ fun ShowStats(goBack: () -> Unit) {
             Spacer(modifier = Modifier.height(8.dp))
             StatsItem(text = stringResource(Res.string.pve_games_won, won))
             Spacer(modifier = Modifier.height(8.dp))
+            StatsItem(text = stringResource(Res.string.pve_games_won_with_bet, save.winsWithBet))
+            Spacer(modifier = Modifier.height(8.dp))
+            StatsItem(text = stringResource(Res.string.pve_games_won_pvp, save.pvpWins))
+            Spacer(modifier = Modifier.height(8.dp))
             StatsItem(text = stringResource(Res.string.pve_caps_bet, save.capsBet))
             Spacer(modifier = Modifier.height(8.dp))
             StatsItem(text = stringResource(Res.string.pve_caps_won, save.capsWon))
+            Spacer(modifier = Modifier.height(8.dp))
+            StatsItem(text = stringResource(Res.string.pve_max_bet_won, save.maxBetWon))
             Spacer(modifier = Modifier.height(12.dp))
             TextFallout(
                 stringResource(Res.string.pve_percentiles),
@@ -271,6 +287,22 @@ fun ShowStats(goBack: () -> Unit) {
                     if (started == 0) "-" else (finished.toDouble() / started * 100.0).toString(1)
                 ),
             )
+            Spacer(modifier = Modifier.height(12.dp))
+            TextFallout(
+                stringResource(Res.string.pve_more_stats),
+                getTextColor(),
+                getTextStrokeColor(),
+                20.sp,
+                Modifier,
+            )
+            Spacer(modifier = Modifier.height(12.dp))
+            StatsItem(text = stringResource(Res.string.pve_caps_wasted, save.capsWasted))
+            Spacer(modifier = Modifier.height(8.dp))
+            StatsItem(text = stringResource(Res.string.pve_chips_wasted, save.chipsWasted))
+            Spacer(modifier = Modifier.height(8.dp))
+            StatsItem(text = stringResource(Res.string.pve_challenges_completed, save.challengesCompleted))
+            Spacer(modifier = Modifier.height(8.dp))
+            StatsItem(text = stringResource(Res.string.pve_max_strike, save.maxStrike))
             Spacer(modifier = Modifier.height(12.dp))
         }
     }
@@ -575,6 +607,7 @@ fun StartGame(
 
             save.gamesFinished++
             save.currentStrike = 0
+            save.enemiesDefeated.clear()
             saveData()
 
             scope.launch {

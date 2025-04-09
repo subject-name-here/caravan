@@ -79,7 +79,6 @@ import com.unicorns.invisible.caravan.utils.ShowCard
 import com.unicorns.invisible.caravan.utils.ShowCardBack
 import com.unicorns.invisible.caravan.utils.TextFallout
 import com.unicorns.invisible.caravan.utils.TextSymbola
-import com.unicorns.invisible.caravan.utils.VertScrollbar
 import com.unicorns.invisible.caravan.utils.clickableCancel
 import com.unicorns.invisible.caravan.utils.clickableOk
 import com.unicorns.invisible.caravan.utils.dpToPx
@@ -218,12 +217,6 @@ fun ShowGame(
                     scope.launch {
                         playCardFlipSound()
                         val removedCard = game.playerCResources.removeFromHand(cardIndex, animationSpeed) as CardModifier
-
-                        if (card is CardWildWasteland) {
-                            playWWSound()
-                        } else if (card is CardNuclear) {
-                            playNukeBlownSound()
-                        }
                         caravan.cards[position].addModifier(removedCard, animationSpeed)
                         caravan.recomposeResources++
 
@@ -652,6 +645,10 @@ fun Hand(
                 } else if (it.handAnimationMark == Card.AnimationMark.MOVING_OUT) {
                     if (it is CardJoker) {
                         playJokerSounds()
+                    } else if (it is CardWildWasteland) {
+                        playWWSound()
+                    } else if (it is CardNuclear) {
+                        playNukeBlownSound()
                     }
                 }
             }

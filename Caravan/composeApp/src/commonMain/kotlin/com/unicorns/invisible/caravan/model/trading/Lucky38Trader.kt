@@ -13,8 +13,7 @@ import org.jetbrains.compose.resources.getString
 
 @Serializable
 class Lucky38Trader : Trader {
-    var isMrHouseBeaten = false
-    override fun isOpen() = isMrHouseBeaten || save.betaReward
+    override fun isOpen() = save.capsInHand >= 1000
     override suspend fun openingCondition() = getString(Res.string.lucky_38_trader_cond)
 
     override fun getUpdateRate() = 24

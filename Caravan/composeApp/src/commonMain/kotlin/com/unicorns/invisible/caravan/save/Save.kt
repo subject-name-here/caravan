@@ -146,7 +146,7 @@ class Save(var playerId: String? = null) {
         private set
 
 
-    // TODO: a) more stats, and b) correctly count all the old one.
+    // TODO: more stats
     // END STATS
 
 
@@ -207,8 +207,6 @@ class Save(var playerId: String? = null) {
     @EncodeDefault
     val activatedPrizes = HashSet<Int>()
 
-    @EncodeDefault
-    var betaReward = false
     @EncodeDefault
     var papaSmurfActive = false
     @EncodeDefault

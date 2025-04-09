@@ -6,24 +6,15 @@ import caravan.composeapp.generated.resources.gomorrah_trader_empty
 import caravan.composeapp.generated.resources.gomorrah_trader_welcome
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.primitives.CardWithPrice
-import com.unicorns.invisible.caravan.utils.booleanToPlusOrMinus
+import com.unicorns.invisible.caravan.save
 import kotlinx.serialization.Serializable
 import org.jetbrains.compose.resources.getString
 
 
 @Serializable
 class GomorrahTrader : Trader {
-    var vulpesDefeated = false
-    var oliverDefeated = false
-    var cardinalDefeated = false
-    override fun isOpen() = vulpesDefeated && oliverDefeated && cardinalDefeated
-    override suspend fun openingCondition() =
-        getString(
-            Res.string.gomorrah_trader_condition,
-            booleanToPlusOrMinus(vulpesDefeated),
-            booleanToPlusOrMinus(oliverDefeated),
-            booleanToPlusOrMinus(cardinalDefeated),
-        )
+    override fun isOpen() = save.gamesFinished >= 666
+    override suspend fun openingCondition() = getString(Res.string.gomorrah_trader_condition)
 
     override fun getUpdateRate() = 12
 

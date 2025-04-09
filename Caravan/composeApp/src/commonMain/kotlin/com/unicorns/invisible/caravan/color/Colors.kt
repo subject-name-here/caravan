@@ -8,7 +8,6 @@ data object Colors {
     val White = Color(0xFFFFFFFF)
     val GrayHalfTransparent = Color(0xCC707070)
     val Red = Color(0xFFFF0000)
-    val DarkRed = Color(0xFFBB0000)
     val Green = Color(0xFF00FF00)
     val DarkGreen = Color(0xFF009900)
     

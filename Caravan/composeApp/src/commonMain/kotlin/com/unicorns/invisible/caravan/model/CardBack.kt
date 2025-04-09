@@ -39,7 +39,7 @@ enum class CardBack(
     ),
     STANDARD_UNCOMMON(
         Res.string.standard_deck_name_2 to "FNV_Caravan_card_back_-_standard.webp",
-        Currency.NOT_FOR_SALE
+        Currency.SIERRA_MADRE_CHIPS
     ),
     STANDARD_RARE(
         Res.string.standard_deck_name_3 to "FNV_Caravan_card_back_-_standard.webp",
@@ -109,6 +109,6 @@ enum class CardBack(
     }
 
     companion object {
-        const val BASE_CARD_COST = 10.0
+        const val BASE_CARD_COST = 15.0
     }
 }
