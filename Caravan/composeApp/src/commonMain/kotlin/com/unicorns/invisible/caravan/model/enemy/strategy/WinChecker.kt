@@ -23,8 +23,8 @@ fun gameToState(game: Game): State {
 
 fun checkTheOutcome(state: State): Int {
     val o1 = check(state.player.v1, state.enemy.v1)
-    val o2 = check(state.player.v1, state.enemy.v1)
-    val o3 = check(state.player.v1, state.enemy.v1)
+    val o2 = check(state.player.v2, state.enemy.v2)
+    val o3 = check(state.player.v3, state.enemy.v3)
     if (o1 == 0 || o2 == 0 || o3 == 0) {
          return 0
     }
@@ -48,5 +48,25 @@ private fun check(vp: Int, ve: Int): Int {
         -1
     } else {
         0
+    }
+}
+
+fun checkIfPlayerVictoryIsClose(state: State): Boolean {
+    val o1 = check(state.player.v1, state.enemy.v1)
+    val o2 = check(state.player.v2, state.enemy.v2)
+    val o3 = check(state.player.v3, state.enemy.v3)
+    return o1 + o2 + o3 >= 2
+}
+
+fun checkIfEnemyVictoryIsClose(state: State, index: Int): Boolean {
+    val o1 = check(state.player.v1, state.enemy.v1)
+    val o2 = check(state.player.v2, state.enemy.v2)
+    val o3 = check(state.player.v3, state.enemy.v3)
+    return if (index == 0) {
+        o2 != 0 && o3 != 0
+    } else if (index == 1) {
+        o1 != 0 && o3 != 0
+    } else {
+        o1 != 0 && o2 != 0
     }
 }

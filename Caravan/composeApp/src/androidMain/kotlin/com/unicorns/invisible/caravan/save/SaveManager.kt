@@ -30,12 +30,12 @@ val json = Json {
 }
 
 private fun getOldLocalSaveFile(activity: MainActivity): ByteArray? {
-    val file = activity.filesDir.resolve("saveMkII")
+    val file = activity.filesDir.resolve("saveMkII") // TODO
     return if (file.exists()) file.readBytes() else null
 }
 
 private fun getLocalSaveFile(activity: MainActivity): File {
-    return activity.filesDir.resolve("saveMkV").apply { if (!exists()) createNewFile() }
+    return activity.filesDir.resolve("saveMk3").apply { if (!exists()) createNewFile() }
 }
 
 actual fun saveData() {

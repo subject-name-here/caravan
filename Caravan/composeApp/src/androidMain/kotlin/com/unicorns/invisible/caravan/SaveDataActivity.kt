@@ -154,7 +154,7 @@ abstract class SaveDataActivity : ComponentActivity() {
     suspend fun fetchOldSave() = fetchFileFromDrive(OLD_SAVE_FILE_NAME)
 
     companion object {
-        const val SAVE_FILE_NAME = "saveFileMkV"
+        const val SAVE_FILE_NAME = "saveFileMk3"
         const val OLD_SAVE_FILE_NAME = "saveFileMkII"
     }
 }

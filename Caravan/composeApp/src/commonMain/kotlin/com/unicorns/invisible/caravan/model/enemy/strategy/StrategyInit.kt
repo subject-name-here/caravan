@@ -22,6 +22,17 @@ class StrategyInit(val type: Type) : Strategy {
                 val caravan = game.enemyCaravans.filter { it.isEmpty() }.random()
                 caravan to card
             }
+
+            Type.RANDOM_TO_LTR -> {
+                val card = game.enemyCResources.hand.filterIsInstance<CardBase>().random()
+                val caravan = game.enemyCaravans.first { it.isEmpty() }
+                caravan to card
+            }
+            Type.RANDOM_TO_RTL -> {
+                val card = game.enemyCResources.hand.filterIsInstance<CardBase>().random()
+                val caravan = game.enemyCaravans.last { it.isEmpty() }
+                caravan to card
+            }
         }
         val index = game.enemyCResources.hand.indexOf(card)
         caravan.putCardOnTop(game.enemyCResources.removeFromHand(index, speed) as CardBase, speed)
@@ -32,5 +43,7 @@ class StrategyInit(val type: Type) : Strategy {
         RANDOM,
         MAX_FIRST_TO_RANDOM,
         MIN_FIRST_TO_RANDOM,
+        RANDOM_TO_LTR,
+        RANDOM_TO_RTL,
     }
 }
