@@ -121,7 +121,9 @@ class Game(
             val queensBlock = cazadorOwners.all { owner -> owner.isQueenReversingSequence() }
 
             if (cazadorOwners.isNotEmpty()) {
-                it.getCazadorPoison(queensBlock, speed)
+                if (it in playerCaravans && isPlayerTurn || it in enemyCaravans && !isPlayerTurn) {
+                    it.getCazadorPoison(queensBlock, speed)
+                }
             }
         }
     }

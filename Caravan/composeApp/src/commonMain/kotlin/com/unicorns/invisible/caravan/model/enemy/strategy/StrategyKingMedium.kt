@@ -26,8 +26,9 @@ class StrategyKingMedium(val index: Int) : Strategy {
         }
 
         val cardB = game.enemyCaravans
-            .filter { it.getValue() > 26 }
+            .filter { it.getValue() < 26 }
             .flatMap { it.cards }
+            .filter { it.canAddModifier(game.enemyCResources.hand[index] as CardModifier) }
             .filter { cardB ->
                 val state = gameToState(game)
                 val indexC = game.enemyCaravans.withIndex().first { cardB in it.value.cards }.index
@@ -36,7 +37,7 @@ class StrategyKingMedium(val index: Int) : Strategy {
                     1 -> state.enemy.v2 += cardB.getValue()
                     2 -> state.enemy.v3 += cardB.getValue()
                 }
-                checkTheOutcome(state) != 1
+                checkTheOutcome(state) != 1 && game.enemyCaravans[indexC].getValue() + cardB.getValue() <= 26
             }
             .maxByOrNull { it.getValue() }
         if (cardB != null) {

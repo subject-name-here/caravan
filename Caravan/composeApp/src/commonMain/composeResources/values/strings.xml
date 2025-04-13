@@ -77,6 +77,10 @@
     <string name="enclave_trader_empty">Come tomorrow.</string>
     <string name="enclave_trader_cond">Complete the Tower.</string>
 
+    <string name="common_trader_welcome">TODO</string>
+    <string name="common_trader_empty">Come later, when I print new tickets and chips.</string>
+    <string name="common_trader_cond">The Monday is a day off. Come tomorrow.</string>
+
 
     <string name="menu_pve">Single player</string>
     <string name="menu_pvp">Multiplayer</string>
@@ -910,11 +914,7 @@
     <string name="you_have_won">\nYou have obtained: %1$s.</string>
 
     <string name="daily_update_head">It's a beautiful day!</string>
-    <string name="daily_update_body">
-        Challenges, bottlecaps of enemies and inventory of traders are refreshed!
-
-        And you have found %1$s bottlecaps!
-    </string>
+    <string name="daily_update_body">Challenges, bottlecaps of enemies and inventory of traders are refreshed!\nAnd you have found %1$s bottlecaps!</string>
 
     <string name="time_limit_anyone">Time limit anyone?</string>
     <string name="let_s_go">LET'S GO!</string>
@@ -934,7 +934,6 @@
     <string name="faq">FAQ</string>
 
     <string name="better_rules_body_1">
-
 Rules of Caravan in the App!
 
 1.0 REQUIREMENTS

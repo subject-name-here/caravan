@@ -12,6 +12,7 @@ import org.jetbrains.compose.resources.getString
 
 @Serializable
 class EnclaveTrader : Trader {
+    // TODO: remove this, and remove traders from save.
     var isTowerBeaten = false
     override fun isOpen() = isTowerBeaten
     override suspend fun openingCondition() = getString(Res.string.enclave_trader_cond)

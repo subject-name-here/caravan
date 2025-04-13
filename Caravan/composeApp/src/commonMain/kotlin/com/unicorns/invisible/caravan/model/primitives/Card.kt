@@ -40,7 +40,7 @@ sealed interface CardWithPrice {
 }
 
 @Serializable
-data class CardNumber(
+class CardNumber(
     override val rank: RankNumber,
     override val suit: Suit,
     val cardBack: CardBack,
@@ -57,7 +57,7 @@ data class CardNumber(
         }
     }
 }
-data class CardNumberWW(
+class CardNumberWW(
     override val rank: RankNumber,
     override val suit: Suit,
 ) : CardBase()
@@ -78,7 +78,7 @@ sealed class CardFace : CardModifier(), CardWithPrice {
     }
 }
 @Serializable
-data class CardJoker(
+class CardJoker(
     val number: Number,
     override val cardBack: CardBack,
 ) : CardFace() {
@@ -91,7 +91,7 @@ data class CardJoker(
         get() = RankFace.JOKER
 }
 @Serializable
-data class CardFaceSuited(
+class CardFaceSuited(
     override val rank: RankFace,
     val suit: Suit,
     override val cardBack: CardBack,
@@ -105,8 +105,8 @@ enum class WWType {
     DIFFICULT_PETE,
     FEV
 }
-data class CardWildWasteland(val type: WWType) : CardModifier()
+class CardWildWasteland(val type: WWType) : CardModifier()
 
 sealed class CardNuclear : CardModifier()
-data class CardAtomic(val dummy: Unit = Unit) : CardNuclear()
-data class CardFBomb(val dummy: Unit = Unit) : CardNuclear()
+class CardAtomic(val dummy: Unit = Unit) : CardNuclear()
+class CardFBomb(val dummy: Unit = Unit) : CardNuclear()

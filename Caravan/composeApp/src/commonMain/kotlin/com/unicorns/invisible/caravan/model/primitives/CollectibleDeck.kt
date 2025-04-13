@@ -9,7 +9,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 class CollectibleDeck() {
-    private val cards = HashSet<CardWithPrice>()
+    private val cards = ArrayList<CardWithPrice>()
     val size: Int
         get() = cards.size
 
@@ -36,10 +36,25 @@ class CollectibleDeck() {
         }
     }
     fun toList() = cards.toList()
-    fun add(c: CardWithPrice) = cards.add(c)
-    fun remove(c: CardWithPrice) = cards.remove(c)
+    fun add(c: CardWithPrice): Boolean {
+        return if (c !in this) {
+            cards.add(c)
+        } else {
+            false
+        }
+    }
+    fun remove(c: CardWithPrice): Boolean {
+        return cards.remove(find(c))
+    }
     operator fun contains(c: CardWithPrice): Boolean {
-        return c in cards
+        return find(c) != null
+    }
+    fun find(c: CardWithPrice) = cards.find {
+        when (c) {
+            is CardFaceSuited -> it is CardFaceSuited && it.rank == c.rank && it.suit == c.suit && it.cardBack == c.cardBack
+            is CardJoker -> it is CardJoker && it.number == c.number && it.cardBack == c.cardBack
+            is CardNumber -> it is CardNumber && it.rank == c.rank && it.suit == c.suit && it.cardBack == c.cardBack
+        }
     }
 
     fun isCustomDeckValid(): Boolean {
@@ -50,12 +65,5 @@ class CollectibleDeck() {
         return size >= MIN_DECK_SIZE &&
                 numOfNumbers >= MIN_NUM_OF_NUMBERS &&
                 numOfDecks <= MAX_NUMBER_OF_DECKS && !(hasNCR && hasLegion)
-    }
-
-    fun isDeckCourier6(): Boolean {
-        return toCardList().all {
-            it is CardFaceSuited && it.rank == RankFace.KING ||
-                    it is CardNumber && it.rank in listOf(RankNumber.SIX, RankNumber.TEN)
-        }
     }
 }
