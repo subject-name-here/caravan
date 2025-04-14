@@ -20,7 +20,7 @@ class StrategyJokerSimple(val index: Int) : Strategy {
             if (card.card.rank == RankNumber.ACE) {
                 game.playerCaravans.forEachIndexed { index, caravan ->
                     val caravanDelta = caravan.cards
-                        .filter { it.card.suit == card.card.suit }
+                        .filter { it.card.suit == card.card.suit && it != card }
                         .sumOf { it.getValue() }
                     when (index) {
                         0 -> {
@@ -37,7 +37,7 @@ class StrategyJokerSimple(val index: Int) : Strategy {
                 }
                 game.enemyCaravans.forEachIndexed { index, caravan ->
                     val caravanDelta = caravan.cards
-                        .filter { it.card.suit == card.card.suit }
+                        .filter { it.card.suit == card.card.suit && it != card }
                         .sumOf { it.getValue() }
                     when (index) {
                         0 -> {
@@ -55,7 +55,7 @@ class StrategyJokerSimple(val index: Int) : Strategy {
             } else {
                 game.playerCaravans.forEachIndexed { index, caravan ->
                     val caravanDelta = caravan.cards
-                        .filter { it.card.rank == card.card.rank }
+                        .filter { it.card.rank == card.card.rank && it != card }
                         .sumOf { it.getValue() }
                     when (index) {
                         0 -> {
@@ -72,7 +72,7 @@ class StrategyJokerSimple(val index: Int) : Strategy {
                 }
                 game.enemyCaravans.forEachIndexed { index, caravan ->
                     val caravanDelta = caravan.cards
-                        .filter { it.card.rank == card.card.rank }
+                        .filter { it.card.rank == card.card.rank && it != card }
                         .sumOf { it.getValue() }
                     when (index) {
                         0 -> {
