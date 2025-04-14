@@ -9,6 +9,7 @@ import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyDropLadiesFir
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyInit
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJackMedium
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyKingMedium
+import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyPutNumbersMedium
 import com.unicorns.invisible.caravan.model.enemy.strategy.checkTheOutcome
 import com.unicorns.invisible.caravan.model.enemy.strategy.gameToState
 import com.unicorns.invisible.caravan.model.primitives.CResources
@@ -47,24 +48,8 @@ class EnemyVictor : EnemyPvEWithBank() {
             return
         }
 
-        val baseCards = game.enemyCResources.hand.filterIsInstance<CardBase>().shuffled()
-        val caravans = game.enemyCaravans.shuffled()
-        baseCards.forEach { card ->
-            caravans.forEachIndexed { indexC, caravan ->
-                if (caravan.canPutCardOnTop(card) && caravan.getValue() + card.rank.value <= 26) {
-                    val state = gameToState(game)
-                    when (indexC) {
-                        0 -> state.enemy.v1 += card.rank.value
-                        1 -> state.enemy.v2 += card.rank.value
-                        2 -> state.enemy.v3 += card.rank.value
-                    }
-                    if (checkTheOutcome(state) != 1) {
-                        val index = game.enemyCResources.hand.indexOf(card)
-                        caravan.putCardOnTop(game.enemyCResources.removeFromHand(index, speed) as CardBase, speed)
-                        return
-                    }
-                }
-            }
+        if (StrategyPutNumbersMedium().move(game, speed)) {
+            return
         }
 
         val modifiers = game.enemyCResources.hand.filterIsInstance<CardFace>().shuffled()

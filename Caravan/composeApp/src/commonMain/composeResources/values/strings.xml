@@ -77,9 +77,9 @@
     <string name="enclave_trader_empty">Come tomorrow.</string>
     <string name="enclave_trader_cond">Complete the Tower.</string>
 
-    <string name="common_trader_welcome">TODO</string>
+    <string name="common_trader_welcome">Name's Johnny Cheaps, but you know what? My goods ain't no cheap.</string>
     <string name="common_trader_empty">Come later, when I print new tickets and chips.</string>
-    <string name="common_trader_cond">The Monday is a day off. Come tomorrow.</string>
+    <string name="common_trader_cond">The Sunday is a day off. Come tomorrow.</string>
 
 
     <string name="menu_pve">Single player</string>

@@ -62,7 +62,6 @@ class EnemyRingo : EnemyPvEWithBank() {
         }
 
         val modifiers = game.enemyCResources.hand.filterIsInstance<CardFace>().shuffled()
-
         modifiers.forEach { modifier ->
             val index = game.enemyCResources.hand.indexOf(modifier)
             when (modifier.rank) {

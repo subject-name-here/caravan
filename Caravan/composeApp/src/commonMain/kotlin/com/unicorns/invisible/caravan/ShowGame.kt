@@ -72,8 +72,6 @@ import com.unicorns.invisible.caravan.model.primitives.Card
 import com.unicorns.invisible.caravan.model.primitives.CardBase
 import com.unicorns.invisible.caravan.model.primitives.CardJoker
 import com.unicorns.invisible.caravan.model.primitives.CardModifier
-import com.unicorns.invisible.caravan.model.primitives.CardNuclear
-import com.unicorns.invisible.caravan.model.primitives.CardWildWasteland
 import com.unicorns.invisible.caravan.model.primitives.CardWithModifier
 import com.unicorns.invisible.caravan.utils.ShowCard
 import com.unicorns.invisible.caravan.utils.ShowCardBack
@@ -94,13 +92,10 @@ import com.unicorns.invisible.caravan.utils.getTrackColor
 import com.unicorns.invisible.caravan.utils.playCardFlipSound
 import com.unicorns.invisible.caravan.utils.playCloseSound
 import com.unicorns.invisible.caravan.utils.playJokerReceivedSounds
-import com.unicorns.invisible.caravan.utils.playJokerSounds
 import com.unicorns.invisible.caravan.utils.playNoBeep
 import com.unicorns.invisible.caravan.utils.playNoCardAlarm
-import com.unicorns.invisible.caravan.utils.playNukeBlownSound
 import com.unicorns.invisible.caravan.utils.playSelectSound
 import com.unicorns.invisible.caravan.utils.playVatsReady
-import com.unicorns.invisible.caravan.utils.playWWSound
 import com.unicorns.invisible.caravan.utils.pxToDp
 import io.github.oikvpqya.compose.fastscroller.ScrollbarStyle
 import io.github.oikvpqya.compose.fastscroller.ThumbStyle
@@ -339,14 +334,12 @@ fun ShowGameRaw(
     val state3Enemy = rememberLazyListState()
     val state3Player = rememberLazyListState()
 
-    // TODO: scroll to the place of change
     fun addCardToEnemyCaravan(caravanNum: Int, position: Int) {
         addCardToCaravan(game.enemyCaravans[caravanNum], caravanNum, position, true)
     }
     fun addCardToPlayerCaravan(caravanNum: Int, position: Int) {
         addCardToCaravan(game.playerCaravans[caravanNum], caravanNum, position, false)
     }
-
     fun isInitStage(): Boolean {
         return game.isInitStage()
     }

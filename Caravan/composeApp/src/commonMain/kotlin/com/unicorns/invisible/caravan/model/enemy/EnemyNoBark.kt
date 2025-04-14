@@ -77,9 +77,9 @@ class EnemyNoBark : EnemyPvEWithBank() {
             }
         }
 
-        val caravans = game.enemyCaravans.shuffled()
+        val caravans = game.enemyCaravans.withIndex().shuffled()
         baseCards.forEach { card ->
-            caravans.forEachIndexed { indexC, caravan ->
+            caravans.forEach { (indexC, caravan) ->
                 if (caravan.canPutCardOnTop(card) && caravan.getValue() + card.rank.value <= 26) {
                     val state = gameToState(game)
                     when (indexC) {

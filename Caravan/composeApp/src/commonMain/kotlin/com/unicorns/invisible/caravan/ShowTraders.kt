@@ -49,8 +49,16 @@ import com.unicorns.invisible.caravan.model.primitives.CardFaceSuited
 import com.unicorns.invisible.caravan.model.primitives.CardJoker
 import com.unicorns.invisible.caravan.model.primitives.CardNumber
 import com.unicorns.invisible.caravan.model.primitives.CardWithPrice
+import com.unicorns.invisible.caravan.model.trading.ChineseTrader
+import com.unicorns.invisible.caravan.model.trading.CommonTrader
+import com.unicorns.invisible.caravan.model.trading.EnclaveTrader
+import com.unicorns.invisible.caravan.model.trading.GomorrahTrader
+import com.unicorns.invisible.caravan.model.trading.Lucky38Trader
 import com.unicorns.invisible.caravan.model.trading.SierraMadreTrader
+import com.unicorns.invisible.caravan.model.trading.TopsTrader
 import com.unicorns.invisible.caravan.model.trading.Trader
+import com.unicorns.invisible.caravan.model.trading.UltraLuxeTrader
+import com.unicorns.invisible.caravan.model.trading.Vault21Trader
 import com.unicorns.invisible.caravan.save.saveData
 import com.unicorns.invisible.caravan.utils.MenuItemOpenNoScroll
 import com.unicorns.invisible.caravan.utils.ShowCard
@@ -226,6 +234,18 @@ fun ChipsToBuy(price: Int, update: () -> Unit) {
 
 @Composable
 fun ShowTraders(goBack: () -> Unit) {
+    val traders = listOf<Trader>(
+        CommonTrader(),
+        UltraLuxeTrader(),
+        TopsTrader(),
+        GomorrahTrader(),
+        Lucky38Trader(),
+        Vault21Trader(),
+        SierraMadreTrader(),
+        EnclaveTrader(),
+        ChineseTrader(),
+    )
+
     MenuItemOpenNoScroll(stringResource(Res.string.market), "<-", goBack) {
         Spacer(Modifier.height(8.dp))
 
@@ -285,12 +305,12 @@ fun ShowTraders(goBack: () -> Unit) {
                                 )
                             }
                         }
-                        save.traders.forEachIndexed { index, t ->
+                        traders.forEachIndexed { index, t ->
                             TraderTab(index, t)
                         }
                     }
 
-                    val selectedTrader = save.traders[selectedTab]
+                    val selectedTrader = traders[selectedTab]
                     Column(
                         Modifier
                             .fillMaxSize()
@@ -303,7 +323,7 @@ fun ShowTraders(goBack: () -> Unit) {
                                 .filter { !save.isCardAvailableAlready(it) }
 
                             TextFallout(
-                                if (cards.isEmpty()) {
+                                if (cards.isEmpty() && selectedTrader !is CommonTrader) {
                                     stringResource(selectedTrader.getEmptyStoreMessage())
                                 } else {
                                     stringResource(selectedTrader.getWelcomeMessage())
@@ -330,7 +350,7 @@ fun ShowTraders(goBack: () -> Unit) {
                                         HorizontalDivider(thickness = 1.dp, color = getDividerColor())
                                     }
 
-                                    if (selectedTrader is SierraMadreTrader) {
+                                    if (selectedTrader is CommonTrader) {
                                         Spacer(modifier = Modifier.height(4.dp))
                                         TicketToBuy(50) {
                                             update = !update

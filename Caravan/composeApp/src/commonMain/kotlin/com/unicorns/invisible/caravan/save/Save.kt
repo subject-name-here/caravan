@@ -265,16 +265,4 @@ class Save(var playerId: String? = null) {
 
     // This one is for Snuffles bank update!
     var table: Int = 0
-
-    @EncodeDefault
-    val traders = listOf<Trader>(
-        UltraLuxeTrader(),
-        TopsTrader(),
-        GomorrahTrader(),
-        Lucky38Trader(),
-        Vault21Trader(),
-        SierraMadreTrader(),
-        EnclaveTrader(),
-        ChineseTrader(),
-    )
 }

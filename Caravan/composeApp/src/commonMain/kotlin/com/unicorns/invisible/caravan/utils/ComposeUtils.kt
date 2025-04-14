@@ -530,7 +530,7 @@ fun TextSymbola(
 ) {
     Box(boxModifier, contentAlignment = boxAlignment) {
         Text(
-            text = text.trim(), color = textColor,
+            text = text, color = textColor,
             fontFamily = FontFamily(Font(Res.font.symbola)),
             style = TextStyle(
                 color = textColor,
@@ -611,7 +611,7 @@ fun TextCustom(
     val strokeWidth = getStrokeWidth(textSize)
     Box(boxModifier, contentAlignment = boxAlignment) {
         Text(
-            text = text.trim(), color = textColor,
+            text = text, color = textColor,
             fontFamily = FontFamily(Font(font)),
             style = TextStyle(
                 color = textColor,
@@ -625,7 +625,7 @@ fun TextCustom(
             return@Box
         }
         Text(
-            text = text.trim(), color = strokeColor,
+            text = text, color = strokeColor,
             fontFamily = FontFamily(Font(font)),
             style = TextStyle(
                 color = strokeColor,

@@ -8,6 +8,7 @@ import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyInit
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJackToSelfSimple
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyKingToSelfSimple
+import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyPutNumbersSimple
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.CardBase
 import com.unicorns.invisible.caravan.model.primitives.CardFace
@@ -45,16 +46,8 @@ class EnemyVeronica : EnemyPvEWithBank() {
             return
         }
 
-        val baseCards = game.enemyCResources.hand.filterIsInstance<CardBase>()
-        val caravans = game.enemyCaravans.shuffled()
-        baseCards.forEach { card ->
-            caravans.forEach { caravan ->
-                if (caravan.canPutCardOnTop(card) && caravan.getValue() + card.rank.value <= 26) {
-                    val index = game.enemyCResources.hand.indexOf(card)
-                    caravan.putCardOnTop(game.enemyCResources.removeFromHand(index, speed) as CardBase, speed)
-                    return
-                }
-            }
+        if (StrategyPutNumbersSimple().move(game, speed)) {
+            return
         }
 
         val modifiers = game.enemyCResources.hand.filterIsInstance<CardFace>()

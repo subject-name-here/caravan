@@ -9,6 +9,7 @@ import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.CardAtomic
 import com.unicorns.invisible.caravan.model.primitives.CardBase
 import com.unicorns.invisible.caravan.model.primitives.CardModifier
+import com.unicorns.invisible.caravan.model.primitives.CardNuclear
 import com.unicorns.invisible.caravan.model.primitives.CardWildWasteland
 import com.unicorns.invisible.caravan.model.primitives.CollectibleDeck
 import com.unicorns.invisible.caravan.model.primitives.CustomDeck
@@ -30,7 +31,7 @@ class EnemySnuffles : EnemyPvEWithBank() {
             addAll(CollectibleDeck(back))
         }
         repeat(4) { add(CardAtomic()) }
-        WWType.entries.forEach { add(CardWildWasteland(it)) }
+        WWType.entries.forEach { ww -> repeat(2) { add(CardWildWasteland(ww)) } }
     })
 
 
@@ -52,6 +53,18 @@ class EnemySnuffles : EnemyPvEWithBank() {
             val caravan = game.enemyCaravans.filter { it.isEmpty() }.random()
             caravan.putCardOnTop(game.enemyCResources.removeFromHand(card.index, speed) as CardBase, speed)
             return
+        }
+        val crazys = game.enemyCResources.hand.withIndex()
+            .filter { it.value is CardWildWasteland || it.value is CardNuclear }
+            .shuffled()
+        val cardsAll = (game.playerCaravans + game.enemyCaravans).flatMap { it.cards }.shuffled()
+        cardsAll.forEach { card ->
+            crazys.forEach { modifier ->
+                if (card.canAddModifier(modifier.value as CardModifier) && Random.nextBoolean()) {
+                    card.addModifier(game.enemyCResources.removeFromHand(modifier.index, speed) as CardModifier, speed)
+                    return
+                }
+            }
         }
 
         val cards = game.enemyCResources.hand.withIndex()
