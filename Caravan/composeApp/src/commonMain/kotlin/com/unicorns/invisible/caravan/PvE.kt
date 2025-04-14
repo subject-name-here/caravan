@@ -822,7 +822,7 @@ suspend fun winCard(back: CardBack, isBlitz: Boolean): String {
             is CardNumber -> getString(card.rank.nameId) to getString(card.suit.nameId)
         }
         val backName = card.getBack().nameIdWithBackFileName.first
-        "${rankSuit.first} ${rankSuit.second} ${getString(backName)}"
+        "${rankSuit.first} ${rankSuit.second} (${getString(backName)})"
     } else {
         val prize = (back.getRarityMult() * 10.0).toInt()
         if (isBlitz) {
