@@ -109,6 +109,7 @@ import caravan.composeapp.generated.resources.monofont
 import caravan.composeapp.generated.resources.next_song
 import caravan.composeapp.generated.resources.none
 import caravan.composeapp.generated.resources.pause_radio
+import caravan.composeapp.generated.resources.pve_stats
 import caravan.composeapp.generated.resources.radio
 import caravan.composeapp.generated.resources.resume_radio
 import caravan.composeapp.generated.resources.save
@@ -407,17 +408,18 @@ fun App() {
 
 @Composable
 fun Screen() {
-    var showPvE by rememberSaveable { mutableStateOf(false) }
-    var showPvP by rememberSaveable { mutableStateOf(false) }
-    var deckSelection by rememberSaveable { mutableStateOf(false) }
-    var customDeckSelection by rememberSaveable { mutableStateOf(false) }
-    var showRules by rememberSaveable { mutableStateOf(false) }
-    var showDailys by rememberSaveable { mutableStateOf(false) }
-    var showMarket by rememberSaveable { mutableStateOf(false) }
+    var showPvE by rememberScoped { mutableStateOf(false) }
+    var showPvP by rememberScoped { mutableStateOf(false) }
+    var deckSelection by rememberScoped { mutableStateOf(false) }
+    var customDeckSelection by rememberScoped { mutableStateOf(false) }
+    var showRules by rememberScoped { mutableStateOf(false) }
+    var showDailys by rememberScoped { mutableStateOf(false) }
+    var showMarket by rememberScoped { mutableStateOf(false) }
 
-    var showAbout by rememberSaveable { mutableStateOf(false) }
-    var showSettings by rememberSaveable { mutableStateOf(false) }
-    var showVision by rememberSaveable { mutableStateOf(false) }
+    var showAbout by rememberScoped { mutableStateOf(false) }
+    var showSettings by rememberScoped { mutableStateOf(false) }
+    var showVision by rememberScoped { mutableStateOf(false) }
+    var showStats by rememberScoped { mutableStateOf(false) }
 
     var showSoundSettings by remember { mutableStateOf(false) }
 
@@ -431,6 +433,7 @@ fun Screen() {
         alertDialogHeader = header
         alertDialogMessage = message
         alertGoBack = goBack
+        playNotificationSound()
         showAlertDialog = true
     }
 
@@ -440,9 +443,6 @@ fun Screen() {
     }
 
     if (showAlertDialog) {
-        LaunchedEffect(Unit) {
-            playNotificationSound()
-        }
         AlertDialog(
             onDismissRequest = { hideAlertDialog() },
             confirmButton = @Composable {
@@ -752,6 +752,9 @@ fun Screen() {
                 showMarket -> {
                     ShowTraders { showMarket = false }
                 }
+                showStats -> {
+                    ShowStats { showStats = false }
+                }
                 else -> {
                     LaunchedEffect(Unit) {
                         val currentHash = getCurrentDateHashCode()
@@ -783,7 +786,8 @@ fun Screen() {
                             { showVision = true },
                             { showSettings = true },
                             { showDailys = true },
-                            { showMarket = true }
+                            { showMarket = true },
+                            { showStats = true }
                         )
                     }
                 }
@@ -804,6 +808,7 @@ fun MainMenu(
     showSettings: () -> Unit,
     showDailys: () -> Unit,
     showMarket: () -> Unit,
+    showStats: () -> Unit
 ) {
     BoxWithConstraints(
         Modifier
@@ -1027,6 +1032,8 @@ fun MainMenu(
             MenuItem(stringResource(Res.string.menu_pve), showPvE)
             Spacer(modifier = Modifier.height(16.dp))
             MenuItem(stringResource(Res.string.menu_pvp), showPvP)
+            Spacer(modifier = Modifier.height(16.dp))
+            MenuItem(stringResource(Res.string.pve_stats), showStats)
             Spacer(modifier = Modifier.height(16.dp))
             MenuItem(stringResource(Res.string.menu_rules), showRules)
             Spacer(modifier = Modifier.height(16.dp))

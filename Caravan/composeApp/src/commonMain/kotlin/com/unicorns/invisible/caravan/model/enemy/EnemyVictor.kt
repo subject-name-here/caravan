@@ -27,6 +27,8 @@ class EnemyVictor : EnemyPvEWithBank() {
         get() = Res.string.pve_enemy_victor
     override val isEven
         get() = true
+    override val isAvailable: Boolean
+        get() = true
 
     override fun createDeck() = CResources(CardBack.LUCKY_38)
 

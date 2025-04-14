@@ -32,9 +32,10 @@ import kotlin.random.Random
 class EnemyNoBark : EnemyPvEWithBank() {
     override val nameId
         get() = Res.string.no_bark
-
     override val isEven
         get() = false
+    override val isAvailable: Boolean
+        get() = true
 
     override fun createDeck(): CResources = CResources(CustomDeck(CardBack.GOMORRAH_DARK).apply {
         Suit.entries.forEach { suit ->

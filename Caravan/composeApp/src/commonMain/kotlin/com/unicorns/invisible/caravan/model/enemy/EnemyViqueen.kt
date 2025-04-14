@@ -29,6 +29,8 @@ class EnemyViqueen : EnemyPvENoBank() {
         get() = Res.string.viqueen
     override val isEven
         get() = true
+    override val isAvailable: Boolean
+        get() = true
 
     override var wins: Int = 0
     override var winsBlitz: Int = 0

@@ -87,13 +87,8 @@ class CResources(private val deck: CustomDeck) {
     suspend fun removeFromHand(index: Int, speed: AnimationSpeed): Card {
         if (handMutable[index] is CardJoker) {
             playJokerSounds()
-            delay(380L)
         } else if (handMutable[index] is CardWildWasteland) {
             playWWSound()
-            delay(380L)
-        } else if (handMutable[index] is CardNuclear) {
-            playNukeBlownSound()
-            delay(380L)
         }
         handMutable[index].handAnimationMark = Card.AnimationMark.MOVING_OUT
         delay(speed.delay)

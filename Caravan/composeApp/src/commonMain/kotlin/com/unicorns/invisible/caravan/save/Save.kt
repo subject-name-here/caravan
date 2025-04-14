@@ -114,6 +114,8 @@ class Save(var playerId: String? = null) {
     @EncodeDefault
     var wins = 0
     @EncodeDefault
+    var pvpGames = 0
+    @EncodeDefault
     var pvpWins = 0
 
     @EncodeDefault

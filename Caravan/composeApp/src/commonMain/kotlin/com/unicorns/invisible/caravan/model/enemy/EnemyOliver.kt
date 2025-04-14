@@ -19,6 +19,8 @@ class EnemyOliver : EnemyPvEWithBank() {
         get() = Res.string.pve_enemy_oliver_real
     override val isEven
         get() = true
+    override val isAvailable: Boolean
+        get() = true
 
     override fun createDeck() = CResources(CardBack.STANDARD)
 

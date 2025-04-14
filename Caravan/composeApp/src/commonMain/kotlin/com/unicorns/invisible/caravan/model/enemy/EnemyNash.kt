@@ -32,6 +32,8 @@ class EnemyNash : EnemyPvEWithBank() {
         get() = Res.string.johnson_nash
     override val isEven
         get() = false
+    override val isAvailable: Boolean
+        get() = true
 
     override fun createDeck(): CResources = CResources(CustomDeck().apply {
         listOf(

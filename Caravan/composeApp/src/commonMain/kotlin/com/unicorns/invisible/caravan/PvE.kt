@@ -51,25 +51,6 @@ import caravan.composeapp.generated.resources.menu_pve
 import caravan.composeapp.generated.resources.monofont
 import caravan.composeapp.generated.resources.prize_caps
 import caravan.composeapp.generated.resources.prize_chips
-import caravan.composeapp.generated.resources.pve_caps_bet
-import caravan.composeapp.generated.resources.pve_caps_wasted
-import caravan.composeapp.generated.resources.pve_caps_won
-import caravan.composeapp.generated.resources.pve_challenges_completed
-import caravan.composeapp.generated.resources.pve_chips_wasted
-import caravan.composeapp.generated.resources.pve_finished_to_started
-import caravan.composeapp.generated.resources.pve_games_finished
-import caravan.composeapp.generated.resources.pve_games_started
-import caravan.composeapp.generated.resources.pve_games_won
-import caravan.composeapp.generated.resources.pve_games_won_pvp
-import caravan.composeapp.generated.resources.pve_games_won_with_bet
-import caravan.composeapp.generated.resources.pve_max_bet_won
-import caravan.composeapp.generated.resources.pve_max_strike
-import caravan.composeapp.generated.resources.pve_more_stats
-import caravan.composeapp.generated.resources.pve_percentiles
-import caravan.composeapp.generated.resources.pve_stats
-import caravan.composeapp.generated.resources.pve_w_to_finished
-import caravan.composeapp.generated.resources.pve_w_to_l
-import caravan.composeapp.generated.resources.pve_w_to_started
 import caravan.composeapp.generated.resources.result
 import caravan.composeapp.generated.resources.select_enemy
 import caravan.composeapp.generated.resources.story_mode
@@ -121,7 +102,6 @@ import com.unicorns.invisible.caravan.utils.playWinSound
 import com.unicorns.invisible.caravan.utils.playWinSoundAlone
 import com.unicorns.invisible.caravan.utils.startAmbient
 import com.unicorns.invisible.caravan.utils.stopAmbient
-import com.unicorns.invisible.caravan.utils.toString
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.Font
 import org.jetbrains.compose.resources.getString
@@ -134,22 +114,18 @@ fun ShowSelectPvE(
     showAlertDialog: (String, String, (() -> Unit)?) -> Unit,
     goBack: () -> Unit
 ) {
-    var showStats by rememberScoped { mutableStateOf(false) }
     var showStory by rememberScoped { mutableStateOf(false) }
     var showSelectEnemy by rememberScoped { mutableStateOf(false) }
     var showTower by rememberScoped { mutableStateOf(false) }
     var showTutorial by rememberScoped { mutableStateOf(false) }
 
     when {
-        showStats -> {
-            ShowStats { showStats = false }
-            return
-        }
         showSelectEnemy -> {
             ShowPvE(showAlertDialog) { showSelectEnemy = false }
             return
         }
         showTower -> {
+            showAlertDialog("[CLOSED]", "This content is unavailable.", null)
             showTower = false
             //TowerScreen(showAlertDialog) { showTower = false }
             //return
@@ -159,6 +135,7 @@ fun ShowSelectPvE(
             return
         }
         showTutorial -> {
+            showAlertDialog("[CLOSED]", "This content is unavailable.", null)
             showTutorial = false
             //Tutorial { showTutorial = false }
             //return
@@ -194,115 +171,7 @@ fun ShowSelectPvE(
             Spacer(modifier = Modifier.height(12.dp))
             SubMenuItem(stringResource(Res.string.story_mode)) { showStory = true }
             Spacer(modifier = Modifier.height(12.dp))
-            SubMenuItem(stringResource(Res.string.pve_stats)) { showStats = true }
-            Spacer(modifier = Modifier.height(12.dp))
             SubMenuItem(stringResource(Res.string.tutorial)) { showTutorial = true }
-            Spacer(modifier = Modifier.height(12.dp))
-        }
-    }
-}
-
-
-@Composable
-fun ShowStats(goBack: () -> Unit) {
-    MenuItemOpen(stringResource(Res.string.pve_stats), "<-", Alignment.TopCenter, goBack) {
-        val started = save.gamesStarted
-        val finished = save.gamesFinished
-        val won = save.wins
-        val loss = finished - won
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(getBackgroundColor()),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Spacer(modifier = Modifier.height(12.dp))
-            TextFallout(
-                stringResource(Res.string.pve_stats),
-                getTextColor(),
-                getTextStrokeColor(),
-                20.sp,
-                Modifier,
-            )
-            Spacer(modifier = Modifier.height(12.dp))
-            @Composable
-            fun StatsItem(text: String) {
-                TextFallout(
-                    text,
-                    getTextColor(),
-                    getTextStrokeColor(),
-                    16.sp,
-                    Modifier,
-                )
-            }
-            StatsItem(text = stringResource(Res.string.pve_games_started, started))
-            Spacer(modifier = Modifier.height(8.dp))
-            StatsItem(text = stringResource(Res.string.pve_games_finished, finished))
-            Spacer(modifier = Modifier.height(8.dp))
-            StatsItem(text = stringResource(Res.string.pve_games_won, won))
-            Spacer(modifier = Modifier.height(8.dp))
-            StatsItem(text = stringResource(Res.string.pve_games_won_with_bet, save.winsWithBet))
-            Spacer(modifier = Modifier.height(8.dp))
-            StatsItem(text = stringResource(Res.string.pve_games_won_pvp, save.pvpWins))
-            Spacer(modifier = Modifier.height(8.dp))
-            StatsItem(text = stringResource(Res.string.pve_caps_bet, save.capsBet))
-            Spacer(modifier = Modifier.height(8.dp))
-            StatsItem(text = stringResource(Res.string.pve_caps_won, save.capsWon))
-            Spacer(modifier = Modifier.height(8.dp))
-            StatsItem(text = stringResource(Res.string.pve_max_bet_won, save.maxBetWon))
-            Spacer(modifier = Modifier.height(12.dp))
-            TextFallout(
-                stringResource(Res.string.pve_percentiles),
-                getTextColor(),
-                getTextStrokeColor(),
-                20.sp,
-                Modifier,
-            )
-            Spacer(modifier = Modifier.height(12.dp))
-            StatsItem(
-                text = stringResource(
-                    Res.string.pve_w_to_l,
-                    if (loss == 0) "-" else (won.toDouble() / loss).toString(3)
-                )
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            StatsItem(
-                text = stringResource(
-                    Res.string.pve_w_to_finished,
-                    if (finished == 0) "-" else ((won.toDouble() / finished) * 100).toString(2)
-                ),
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            StatsItem(
-                text = stringResource(
-                    Res.string.pve_w_to_started,
-                    if (started == 0) "-" else (won.toDouble() / started * 100.0).toString(2)
-                ),
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            StatsItem(
-                text = stringResource(
-                    Res.string.pve_finished_to_started,
-                    if (started == 0) "-" else (finished.toDouble() / started * 100.0).toString(1)
-                ),
-            )
-            Spacer(modifier = Modifier.height(12.dp))
-            TextFallout(
-                stringResource(Res.string.pve_more_stats),
-                getTextColor(),
-                getTextStrokeColor(),
-                20.sp,
-                Modifier,
-            )
-            Spacer(modifier = Modifier.height(12.dp))
-            StatsItem(text = stringResource(Res.string.pve_caps_wasted, save.capsWasted))
-            Spacer(modifier = Modifier.height(8.dp))
-            StatsItem(text = stringResource(Res.string.pve_chips_wasted, save.chipsWasted))
-            Spacer(modifier = Modifier.height(8.dp))
-            StatsItem(text = stringResource(Res.string.pve_challenges_completed, save.challengesCompleted))
-            Spacer(modifier = Modifier.height(8.dp))
-            StatsItem(text = stringResource(Res.string.pve_max_strike, save.maxStrike))
             Spacer(modifier = Modifier.height(12.dp))
         }
     }
@@ -439,7 +308,7 @@ fun ShowPvE(
                     }
                 }
                 TextFallout(
-                    line,
+                    if (enemy.isAvailable) line else "[CLOSED]",
                     getTextColor(),
                     getTextStrokeColor(),
                     18.sp,
@@ -460,8 +329,12 @@ fun ShowPvE(
                 Spacer(modifier = Modifier.height(8.dp))
                 enemies.forEach {
                     OpponentItem(it) {
-                        playVatsEnter()
-                        playAgainstEnemy = save.enemiesGroups2.flatten().indexOf(it)
+                        if (it.isAvailable) {
+                            playVatsEnter()
+                            playAgainstEnemy = save.enemiesGroups2.flatten().indexOf(it)
+                        } else {
+                            showAlertDialog("[CLOSED]", "This content is unavailable.", null)
+                        }
                     }
                     Spacer(modifier = Modifier.height(8.dp))
                 }

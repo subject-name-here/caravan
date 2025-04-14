@@ -14,6 +14,7 @@ import com.unicorns.invisible.caravan.model.primitives.CardNuclear
 import com.unicorns.invisible.caravan.model.primitives.CardWithModifier
 import com.unicorns.invisible.caravan.model.primitives.CustomDeck
 import com.unicorns.invisible.caravan.model.primitives.RankNumber
+import com.unicorns.invisible.caravan.utils.playNukeBlownSound
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -92,6 +93,8 @@ class Game(
 
         cards.forEach {
             if (it.hasBomb) {
+                playNukeBlownSound()
+                delay(2400L)
                 processBomb(it, speed)
             }
         }

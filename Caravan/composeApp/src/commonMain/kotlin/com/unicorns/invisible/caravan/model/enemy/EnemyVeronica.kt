@@ -25,6 +25,8 @@ class EnemyVeronica : EnemyPvEWithBank() {
         get() = Res.string.pve_enemy_veronica
     override val isEven
         get() = true
+    override val isAvailable: Boolean
+        get() = true
 
     override fun createDeck() = CResources(CardBack.ULTRA_LUXE)
 

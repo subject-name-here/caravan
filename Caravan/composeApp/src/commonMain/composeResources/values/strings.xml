@@ -153,6 +153,7 @@
     <string name="pve_games_finished">Games finished: %1$s</string>
     <string name="pve_games_won">Games won: %1$s</string>
     <string name="pve_games_won_with_bet">Games won with bet: %1$s</string>
+    <string name="pve_games_started_pvp">PvP games started: %1$s</string>
     <string name="pve_games_won_pvp">PvP games won: %1$s</string>
     <string name="pve_caps_bet">Caps bet: %1$s</string>
     <string name="pve_caps_won">Caps won: %1$s</string>
