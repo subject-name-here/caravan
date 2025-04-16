@@ -97,7 +97,7 @@
 
     <string name="select_enemy">Select Enemy</string>
     <string name="story_mode">Story Mode</string>
-    <string name="pve_stats">Stats</string>
+    <string name="pve_stats">LVL &amp; Stats</string>
     <string name="tutorial">Tutorial</string>
 
     <string name="none" translatable="false">[NONE]</string>
@@ -149,6 +149,8 @@
     <string name="salt">Salt-Upon-Wounds</string>
     <string name="gloria_van_graff">Gloria Van Graff</string>
 
+    <string name="player_level">Level: %1$s</string>
+    <string name="xp_left">XP to next level: %1$s</string>
     <string name="pve_games_started">Games started: %1$s</string>
     <string name="pve_games_finished">Games finished: %1$s</string>
     <string name="pve_games_won">Games won: %1$s</string>
@@ -904,8 +906,12 @@
     <string name="buy_chips">10 Sierra Madre chips</string>
 
     <string name="enemy_name">Enemy: %1$s</string>
+    <string name="your_caps">You have: %1$s caps</string>
+    <string name="your_chips">You have: %1$s Sierra Madre chips</string>
     <string name="enemy_s_bet">Enemy's bet: %1$s</string>
-    <string name="enter_your_bet">Enter your bet (between %1$s and %2$s), or leave empty to play for free:</string>
+    <string name="enemy_s_bet_can_raise">Enemy's bet: %1$s (can raise to %2$s)</string>
+    <string name="bet_call">Call</string>
+    <string name="bet_raise2">Raise (x2)!</string>
     <string name="your_expected_reward">Your expected reward: %1$s caps.</string>
     <string name="your_expected_reward_chips">Your expected reward: %1$s Sierra Madre chips.</string>
     <string name="your_reward_reward_caps">\nYour reward: %1$s caps!!</string>
@@ -1065,7 +1071,7 @@ If this helped you understand the game, thank the author Kyle! To do this, go to
 
     </string>
     <string name="this_game_will_be_counted_as_lost">This game will be counted as lost!!</string>
-    <string name="enemy_with_caps">%1$s (bank: %2$s, bet: %3$s)</string>
+    <string name="enemy_with_caps">%1$s (bank: %2$s x %3$s caps)</string>
     <string name="enemy_with_card">%1$s (%2$s cards)</string>
     <string name="enemy_empty" translatable="false">%1$s</string>
 

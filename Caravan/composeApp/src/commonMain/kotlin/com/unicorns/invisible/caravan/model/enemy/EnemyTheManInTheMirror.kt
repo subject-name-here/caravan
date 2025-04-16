@@ -19,11 +19,11 @@ class EnemyTheManInTheMirror : EnemyPvEWithBank() {
 
     override fun createDeck() = CResources(CustomDeck())
 
-    override var bank: Int = 0
-    override val maxBank: Int
-        get() = 88
+    override val maxBets: Int
+        get() = 8
+    override var curBets: Int = maxBets
     override val bet: Int
-        get() = min(bank, 11)
+        get() = 11
 
     override var winsNoBet: Int = 0
     override var winsBet: Int = 0

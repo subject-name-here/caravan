@@ -132,7 +132,7 @@ fun ShowChallenge(challenge: Challenge, isCompleted: Boolean, updater: () -> Uni
     Column(Modifier.fillMaxWidth().padding(horizontal = 8.dp)) {
         Row {
             TextFallout(
-                stringResource(challenge.getName()),
+                stringResource(challenge.getName()) + " (${challenge.getXp()} XP)",
                 getTextColor(),
                 getTextStrokeColor(),
                 22.sp,
@@ -171,6 +171,7 @@ fun ShowChallenge(challenge: Challenge, isCompleted: Boolean, updater: () -> Uni
                     save.challengesNew.remove(challenge)
                 }
                 save.challengesCompleted++
+                save.increaseXp(challenge.getXp())
                 saveData()
                 playDailyCompleted()
                 updater()

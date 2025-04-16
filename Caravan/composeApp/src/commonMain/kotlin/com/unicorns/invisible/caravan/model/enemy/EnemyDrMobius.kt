@@ -35,11 +35,11 @@ class EnemyDrMobius : EnemyPvEWithBank() {
         }
     })
 
-    override var bank: Int = 0
-    override val maxBank: Int
-        get() = 80
+    override val maxBets: Int
+        get() = 8
+    override var curBets: Int = maxBets
     override val bet: Int
-        get() = min(bank, 8)
+        get() = 88
 
     override var winsNoBet: Int = 0
     override var winsBet: Int = 0

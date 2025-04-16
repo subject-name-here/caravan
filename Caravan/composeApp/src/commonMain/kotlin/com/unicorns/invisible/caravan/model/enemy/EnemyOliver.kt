@@ -19,17 +19,17 @@ class EnemyOliver : EnemyPvEWithBank() {
         get() = Res.string.pve_enemy_oliver_real
     override val isEven
         get() = true
-    override val isAvailable: Boolean
-        get() = true
+    override val isAvailable: Int
+        get() = 1
 
     override fun createDeck() = CResources(CardBack.STANDARD)
 
 
-    override var bank: Int = 0
-    override val maxBank: Int
-        get() = 15
+    override val maxBets: Int
+        get() = 1
+    override var curBets: Int = maxBets
     override val bet: Int
-        get() = bank
+        get() = 15
 
     override var winsNoBet: Int = 0
     override var winsBet: Int = 0

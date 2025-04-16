@@ -21,6 +21,8 @@ class ChallengeDailyAll : Challenge {
     override fun processMove(move: Challenge.Move, game: Game) {}
     override fun processGameResult(game: Game) {}
 
+    override fun getXp(): Int = 50
+
     override fun getName(): StringResource {
         return Res.string.complete_all_dailys
     }

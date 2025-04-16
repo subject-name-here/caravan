@@ -26,18 +26,18 @@ class EnemyRingo : EnemyPvEWithBank() {
         get() = Res.string.ringo
     override val isEven
         get() = true
-    override val isAvailable: Boolean
-        get() = true
+    override val isAvailable: Int
+        get() = 1
 
     override fun createDeck(): CResources {
         return CResources(CustomDeck(CardBack.TOPS))
     }
 
-    override var bank: Int = 0
-    override val maxBank: Int
-        get() = 45
+    override val maxBets: Int
+        get() = 1
+    override var curBets: Int = maxBets
     override val bet: Int
-        get() = min(bank, 15)
+        get() = 30
 
     override var winsNoBet: Int = 0
     override var winsBet: Int = 0

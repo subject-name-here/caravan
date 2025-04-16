@@ -13,12 +13,10 @@ import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyPutNumbersMed
 import com.unicorns.invisible.caravan.model.enemy.strategy.checkTheOutcome
 import com.unicorns.invisible.caravan.model.enemy.strategy.gameToState
 import com.unicorns.invisible.caravan.model.primitives.CResources
-import com.unicorns.invisible.caravan.model.primitives.CardBase
 import com.unicorns.invisible.caravan.model.primitives.CardFace
 import com.unicorns.invisible.caravan.model.primitives.CardModifier
 import com.unicorns.invisible.caravan.model.primitives.RankFace
 import kotlinx.serialization.Serializable
-import kotlin.math.min
 
 
 @Serializable
@@ -27,16 +25,16 @@ class EnemyVictor : EnemyPvEWithBank() {
         get() = Res.string.pve_enemy_victor
     override val isEven
         get() = true
-    override val isAvailable: Boolean
-        get() = true
+    override val isAvailable: Int
+        get() = 10
 
     override fun createDeck() = CResources(CardBack.LUCKY_38)
 
-    override var bank: Int = 0
-    override val maxBank: Int
-        get() = 50
+    override val maxBets: Int
+        get() = 2
+    override var curBets: Int = maxBets
     override val bet: Int
-        get() = min(bank, 25)
+        get() = 25
 
     override var winsNoBet: Int = 0
     override var winsBet: Int = 0

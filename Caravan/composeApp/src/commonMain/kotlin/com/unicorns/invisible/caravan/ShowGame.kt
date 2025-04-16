@@ -252,6 +252,7 @@ fun ShowGame(
 
     ShowGameRaw(
         false,
+        isBlitz,
         game,
         goBack,
         animationSpeed,
@@ -313,6 +314,7 @@ fun ShowGame(
 @Composable
 fun ShowGameRaw(
     isPvP: Boolean,
+    isBlitz: Boolean,
     game: Game,
     goBack: () -> Unit,
     animationSpeed: AnimationSpeed,

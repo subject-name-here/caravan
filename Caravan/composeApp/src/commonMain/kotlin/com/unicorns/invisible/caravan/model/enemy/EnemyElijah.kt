@@ -39,11 +39,11 @@ class EnemyElijah : EnemyPvEWithBank() {
         }
     })
 
-    override var bank: Int = 0
-    override val maxBank: Int
-        get() = 60
+    override val maxBets: Int
+        get() = 6
+    override var curBets: Int = maxBets
     override val bet: Int
-        get() = min(bank, 10)
+        get() = 10
 
     override var winsNoBet: Int = 0
     override var winsBet: Int = 0

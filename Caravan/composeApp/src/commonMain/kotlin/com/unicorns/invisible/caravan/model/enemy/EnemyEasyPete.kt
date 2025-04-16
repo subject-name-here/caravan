@@ -19,11 +19,11 @@ class EnemyEasyPete : EnemyPvEWithBank() {
 
     override fun createDeck(): CResources = CResources(CustomDeck())
 
-    override var bank: Int = 0
-    override val maxBank: Int
-        get() = 21
+    override val maxBets: Int
+        get() = 3
+    override var curBets: Int = maxBets
     override val bet: Int
-        get() = min(bank, 7)
+        get() = 7
 
     override var winsNoBet: Int = 0
     override var winsBet: Int = 0

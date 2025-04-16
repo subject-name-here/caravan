@@ -19,11 +19,11 @@ class EnemyBenny : EnemyPvEWithBank() {
 
     override fun createDeck() = CResources(CardBack.TOPS_RED)
 
-    override var bank: Int = 0
-    override val maxBank: Int
-        get() = 90
+    override val maxBets: Int
+        get() = 6
+    override var curBets: Int = maxBets
     override val bet: Int
-        get() = min(bank, 45)
+        get() = 45
 
     override var winsNoBet: Int = 0
     override var winsBet: Int = 0

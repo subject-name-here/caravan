@@ -10,6 +10,8 @@ import org.jetbrains.compose.resources.getString
 
 @Serializable
 sealed interface ChallengeDaily : Challenge {
+    override fun getXp(): Int = 50
+
     override suspend fun reward(): List<Pair<String, () -> Unit>> {
         val caps = 30
         val tickets = 2

@@ -106,16 +106,16 @@ enum class Style(
     BLACK(Res.string.style_black, Res.string.style_black_condition, { save.pvpWins to 10 }),
     ENCLAVE(Res.string.style_enclave, Res.string.style_enclave_condition, { (if (save.towerBeaten) 1 else 0) to 1 }),
     NCR(Res.string.style_ncr, Res.string.style_ncr_condition, {
-        save.enemiesGroups2.flatten().count { (when (it) {
+        save.enemiesGroups3.flatten().count { (when (it) {
             is EnemyPvENoBank -> it.winsBlitz
             is EnemyPvEWithBank -> it.winsBlitzBet
-        }) > 0 } to save.enemiesGroups2.flatten().size
+        }) > 0 } to save.enemiesGroups3.flatten().size
     }),
     LEGION(Res.string.style_legion, Res.string.style_legion_condition, {
-        save.enemiesGroups2.flatten().count { (when (it) {
+        save.enemiesGroups3.flatten().count { (when (it) {
             is EnemyPvENoBank -> it.winsBlitz + it.wins
             is EnemyPvEWithBank -> it.winsBlitzBet + it.winsBet
-        }) >= 3 } to save.enemiesGroups2.flatten().size
+        }) >= 3 } to save.enemiesGroups3.flatten().size
     });
 }
 

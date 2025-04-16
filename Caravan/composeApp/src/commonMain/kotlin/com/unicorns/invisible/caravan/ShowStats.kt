@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import caravan.composeapp.generated.resources.Res
+import caravan.composeapp.generated.resources.player_level
 import caravan.composeapp.generated.resources.pve_caps_bet
 import caravan.composeapp.generated.resources.pve_caps_wasted
 import caravan.composeapp.generated.resources.pve_caps_won
@@ -32,6 +33,7 @@ import caravan.composeapp.generated.resources.pve_stats
 import caravan.composeapp.generated.resources.pve_w_to_finished
 import caravan.composeapp.generated.resources.pve_w_to_l
 import caravan.composeapp.generated.resources.pve_w_to_started
+import caravan.composeapp.generated.resources.xp_left
 import com.unicorns.invisible.caravan.utils.MenuItemOpen
 import com.unicorns.invisible.caravan.utils.TextFallout
 import com.unicorns.invisible.caravan.utils.getBackgroundColor
@@ -55,15 +57,6 @@ fun ShowStats(goBack: () -> Unit) {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.height(12.dp))
-            TextFallout(
-                stringResource(Res.string.pve_stats),
-                getTextColor(),
-                getTextStrokeColor(),
-                20.sp,
-                Modifier,
-            )
-            Spacer(modifier = Modifier.height(12.dp))
             @Composable
             fun StatsItem(text: String) {
                 TextFallout(
@@ -74,6 +67,32 @@ fun ShowStats(goBack: () -> Unit) {
                     Modifier,
                 )
             }
+            Spacer(modifier = Modifier.height(12.dp))
+            TextFallout(
+                stringResource(Res.string.player_level, save.level),
+                getTextColor(),
+                getTextStrokeColor(),
+                24.sp,
+                Modifier,
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            TextFallout(
+                stringResource(Res.string.xp_left, save.needXpToNextLevel() - save.xp),
+                getTextColor(),
+                getTextStrokeColor(),
+                16.sp,
+                Modifier,
+            )
+            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(12.dp))
+            TextFallout(
+                stringResource(Res.string.pve_stats),
+                getTextColor(),
+                getTextStrokeColor(),
+                20.sp,
+                Modifier,
+            )
+            Spacer(modifier = Modifier.height(12.dp))
             StatsItem(text = stringResource(Res.string.pve_games_started, started))
             Spacer(modifier = Modifier.height(8.dp))
             StatsItem(text = stringResource(Res.string.pve_games_finished, finished))

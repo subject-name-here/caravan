@@ -19,11 +19,11 @@ class EnemyUlysses : EnemyPvEWithBank() {
 
     override fun createDeck() = CResources(CardBack.VAULT_21_NIGHT)
 
-    override var bank: Int = 0
-    override val maxBank: Int
-        get() = 45
+    override val maxBets: Int
+        get() = 4
+    override var curBets: Int = maxBets
     override val bet: Int
-        get() = min(bank, 15)
+        get() = 15
 
     override var winsNoBet: Int = 0
     override var winsBet: Int = 0

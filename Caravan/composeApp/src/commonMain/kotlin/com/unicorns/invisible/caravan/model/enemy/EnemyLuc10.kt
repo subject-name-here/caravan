@@ -19,11 +19,11 @@ class EnemyLuc10 : EnemyPvEWithBank() {
 
     override fun createDeck() = CResources(CardBack.LUCKY_38_SPECIAL)
 
-    override var bank: Int = 0
-    override val maxBank: Int
-        get() = 100
+    override val maxBets: Int
+        get() = 3
+    override var curBets: Int = maxBets
     override val bet: Int
-        get() = min(bank, 50)
+        get() = 50
 
     override var winsNoBet: Int = 0
     override var winsBet: Int = 0

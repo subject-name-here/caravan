@@ -25,16 +25,16 @@ class EnemyVeronica : EnemyPvEWithBank() {
         get() = Res.string.pve_enemy_veronica
     override val isEven
         get() = true
-    override val isAvailable: Boolean
-        get() = true
+    override val isAvailable: Int
+        get() = 1
 
     override fun createDeck() = CResources(CardBack.ULTRA_LUXE)
 
-    override var bank: Int = 0
-    override val maxBank: Int
-        get() = 30
+    override val maxBets: Int
+        get() = 2
+    override var curBets: Int = maxBets
     override val bet: Int
-        get() = min(bank, 15)
+        get() = 15
 
     override var winsNoBet: Int = 0
     override var winsBet: Int = 0

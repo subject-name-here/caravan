@@ -34,8 +34,8 @@ class EnemyTabitha : EnemyPvEWithBank() {
         get() = Res.string.tabitha
     override val isEven
         get() = false
-    override val isAvailable: Boolean
-        get() = true
+    override val isAvailable: Int
+        get() = 30
 
     override fun createDeck(): CResources = CResources(CustomDeck().apply {
         val backs = listOf(
@@ -63,11 +63,11 @@ class EnemyTabitha : EnemyPvEWithBank() {
         }
     })
 
-    override var bank: Int = 0
-    override val maxBank: Int
-        get() = 40
+    override val maxBets: Int
+        get() = 2
+    override var curBets: Int = maxBets
     override val bet: Int
-        get() = min(bank, 20)
+        get() = 25
 
     override var winsNoBet: Int = 0
     override var winsBet: Int = 0

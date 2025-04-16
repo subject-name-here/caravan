@@ -15,6 +15,7 @@ sealed interface Challenge {
     fun getName(): StringResource
     suspend fun getDescription(): String
     fun getProgress(): String
+    fun getXp(): Int
     suspend fun reward(): List<Pair<String, () -> Unit>>
 
     fun isCompleted(): Boolean

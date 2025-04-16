@@ -36,15 +36,6 @@ import com.unicorns.invisible.caravan.model.primitives.CardJoker
 import com.unicorns.invisible.caravan.model.primitives.CardNumber
 import com.unicorns.invisible.caravan.model.primitives.CardWithPrice
 import com.unicorns.invisible.caravan.model.primitives.CollectibleDeck
-import com.unicorns.invisible.caravan.model.trading.ChineseTrader
-import com.unicorns.invisible.caravan.model.trading.EnclaveTrader
-import com.unicorns.invisible.caravan.model.trading.GomorrahTrader
-import com.unicorns.invisible.caravan.model.trading.Lucky38Trader
-import com.unicorns.invisible.caravan.model.trading.SierraMadreTrader
-import com.unicorns.invisible.caravan.model.trading.TopsTrader
-import com.unicorns.invisible.caravan.model.trading.Trader
-import com.unicorns.invisible.caravan.model.trading.UltraLuxeTrader
-import com.unicorns.invisible.caravan.model.trading.Vault21Trader
 import kotlinx.serialization.EncodeDefault
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
@@ -164,6 +155,21 @@ class Save(var playerId: String? = null) {
     var animationSpeed = AnimationSpeed.NORMAL
 
     @EncodeDefault
+    var level = 1
+        private set
+    fun needXpToNextLevel() = 200 + 150 * (level - 1)
+    @EncodeDefault
+    var xp = 0
+        private set
+    fun increaseXp(add: Int) {
+        xp += add
+        while (xp >= needXpToNextLevel()) {
+            xp -= needXpToNextLevel()
+            level++
+        }
+    }
+
+    @EncodeDefault
     var capsInHand = 150
     @EncodeDefault
     var sierraMadreChips = 75
@@ -217,7 +223,7 @@ class Save(var playerId: String? = null) {
     var isRadioUsesPseudonyms = false
 
     @EncodeDefault
-    val enemiesGroups2 = listOf(
+    val enemiesGroups3 = listOf(
         listOf(
             EnemyOliver(),
             EnemyVeronica(),
@@ -227,8 +233,8 @@ class Save(var playerId: String? = null) {
             EnemyBenny()
         ),
         listOf(
-            EnemyNoBark(),
             EnemyNash(),
+            EnemyNoBark(),
             EnemyTabitha(),
             EnemyVulpes(),
             EnemyElijah(),
@@ -253,14 +259,14 @@ class Save(var playerId: String? = null) {
 
     )
     fun updateEnemiesBanks() {
-        val enemies = enemiesGroups2.flatten()
+        val enemies = enemiesGroups3.flatten()
         enemies.filterIsInstance<EnemyPvEWithBank>().forEach { enemy ->
-            enemy.bank = if (enemy is EnemySnuffles) {
+            enemy.curBets = if (enemy is EnemySnuffles) {
                 val fromTable = table
                 table = 0
-                fromTable
+                fromTable / 5
             } else {
-                enemy.maxBank
+                enemy.maxBets
             }
         }
     }

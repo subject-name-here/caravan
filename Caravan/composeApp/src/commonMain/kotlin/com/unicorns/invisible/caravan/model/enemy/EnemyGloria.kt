@@ -19,11 +19,11 @@ class EnemyGloria : EnemyPvEWithBank() {
 
     override fun createDeck(): CResources = CResources(CustomDeck())
 
-    override var bank: Int = 0
-    override val maxBank: Int
-        get() = 125
+    override val maxBets: Int
+        get() = 6
+    override var curBets: Int = maxBets
     override val bet: Int
-        get() = min(bank, 25)
+        get() = 25
 
     override var winsNoBet: Int = 0
     override var winsBet: Int = 0

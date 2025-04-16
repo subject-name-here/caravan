@@ -22,11 +22,11 @@ class EnemyCaesar : EnemyPvEWithBank() {
         return CResources(CustomDeck(CardBack.LEGION))
     }
 
-    override var bank: Int = 0
-    override val maxBank: Int
-        get() = 87
+    override val maxBets: Int
+        get() = 1
+    override var curBets: Int = maxBets
     override val bet: Int
-        get() = min(bank, 29)
+        get() = 87
 
     override var winsNoBet: Int = 0
     override var winsBet: Int = 0
