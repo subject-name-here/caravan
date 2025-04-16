@@ -35,7 +35,7 @@ class EnemyNoBark : EnemyPvEWithBank() {
     override val isEven
         get() = false
     override val isAvailable: Int
-        get() = 5
+        get() = 3
 
     override fun createDeck(): CResources = CResources(CustomDeck(CardBack.GOMORRAH_DARK).apply {
         Suit.entries.forEach { suit ->

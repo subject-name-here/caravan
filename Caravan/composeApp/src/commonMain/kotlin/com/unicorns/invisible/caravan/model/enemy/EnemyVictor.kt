@@ -26,7 +26,7 @@ class EnemyVictor : EnemyPvEWithBank() {
     override val isEven
         get() = true
     override val isAvailable: Int
-        get() = 10
+        get() = 3
 
     override fun createDeck() = CResources(CardBack.LUCKY_38)
 

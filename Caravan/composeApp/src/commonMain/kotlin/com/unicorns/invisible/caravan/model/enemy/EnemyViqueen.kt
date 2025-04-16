@@ -30,7 +30,7 @@ class EnemyViqueen : EnemyPvENoBank() {
     override val isEven
         get() = true
     override val isAvailable: Int
-        get() = 15
+        get() = 3
 
     override var wins: Int = 0
     override var winsBlitz: Int = 0

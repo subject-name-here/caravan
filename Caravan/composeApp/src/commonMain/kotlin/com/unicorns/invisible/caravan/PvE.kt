@@ -37,6 +37,7 @@ import caravan.composeapp.generated.resources.bet_call
 import caravan.composeapp.generated.resources.bet_raise2
 import caravan.composeapp.generated.resources.check_back_to_menu
 import caravan.composeapp.generated.resources.check_back_to_menu_body
+import caravan.composeapp.generated.resources.closed
 import caravan.composeapp.generated.resources.custom_deck
 import caravan.composeapp.generated.resources.deck_o_54
 import caravan.composeapp.generated.resources.enemy_name
@@ -45,6 +46,7 @@ import caravan.composeapp.generated.resources.enemy_s_bet_can_raise
 import caravan.composeapp.generated.resources.enemy_with_caps
 import caravan.composeapp.generated.resources.enemy_with_card
 import caravan.composeapp.generated.resources.let_s_go
+import caravan.composeapp.generated.resources.lvl_is_not_enough
 import caravan.composeapp.generated.resources.menu_pve
 import caravan.composeapp.generated.resources.prize_caps
 import caravan.composeapp.generated.resources.prize_chips
@@ -65,6 +67,7 @@ import caravan.composeapp.generated.resources.your_expected_reward
 import caravan.composeapp.generated.resources.your_expected_reward_chips
 import caravan.composeapp.generated.resources.your_reward_reward_caps
 import caravan.composeapp.generated.resources.your_reward_reward_chips
+import caravan.composeapp.generated.resources.your_reward_reward_xp
 import com.sebaslogen.resaca.rememberScoped
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
@@ -105,7 +108,6 @@ import com.unicorns.invisible.caravan.utils.stopAmbient
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.getString
 import org.jetbrains.compose.resources.stringResource
-import kotlin.math.max
 
 
 @Composable
@@ -307,7 +309,11 @@ fun ShowPvE(
                     }
                 }
                 TextFallout(
-                    if (enemy.isAvailable != 0 && enemy.isAvailable <= save.level) line else "[CLOSED]",
+                    when {
+                        enemy.isAvailable == 0 -> "[&*$#]"
+                        enemy.isAvailable > save.level -> stringResource(Res.string.closed)
+                        else -> line
+                    },
                     getTextColor(),
                     getTextStrokeColor(),
                     18.sp,
@@ -326,13 +332,20 @@ fun ShowPvE(
             ) {
                 val enemies = save.enemiesGroups3[selectedTab]
                 Spacer(modifier = Modifier.height(8.dp))
+                val m1 = stringResource(Res.string.closed)
+                val m2 = "This content is unavailable."
+                val m3 = stringResource(Res.string.lvl_is_not_enough)
                 enemies.forEach {
                     OpponentItem(it) {
                         if (it.isAvailable != 0 && it.isAvailable <= save.level) {
                             playVatsEnter()
                             playAgainstEnemy = save.enemiesGroups3.flatten().indexOf(it)
                         } else {
-                            showAlertDialog("[CLOSED]", "This content is unavailable.", null)
+                            if (it.isAvailable == 0) {
+                                showAlertDialog(m1, m2, null)
+                            } else {
+                                showAlertDialog(m1, m3, null)
+                            }
                         }
                     }
                     Spacer(modifier = Modifier.height(8.dp))
@@ -423,36 +436,57 @@ fun StartGame(
                 save.table -= reward
 
                 save.capsWon += reward
-                save.maxBetWon = max(save.maxBetWon, reward)
-
                 if (reward > 0) {
                     save.winsWithBet++
                 }
 
-                val xpReward = if (myBet == 0) {
-                    10 * enemy.isAvailable
-                } else if (!isBlitz) {
-                    50 * enemy.isAvailable
-                } else {
-                    50 * enemy.isAvailable + 100 + if (enemy.isAvailable >= 10) 100 else 0
+                val xpReward = when (enemy.isAvailable) {
+                    1 -> {
+                        if (myBet == 0) {
+                            0
+                        } else if (!isBlitz) {
+                            25
+                        } else {
+                            50
+                        }
+                    }
+                    in (2..4) -> {
+                        if (myBet == 0) {
+                            25 * (enemy.isAvailable - 1)
+                        } else if (!isBlitz) {
+                            50 * (enemy.isAvailable - 1)
+                        } else {
+                            100 * (enemy.isAvailable - 1)
+                        }
+                    }
+                    else -> {
+                        if (myBet == 0) {
+                            50 * (enemy.isAvailable - 1)
+                        } else if (!isBlitz) {
+                            100 * (enemy.isAvailable - 1)
+                        } else {
+                            200 * (enemy.isAvailable - 1)
+                        }
+                    }
                 }
                 save.increaseXp(xpReward)
 
                 scope.launch {
+                    val rewardLine = if (reward == 0) {
+                        ""
+                    } else {
+                        getString(
+                            if (isBlitz) {
+                                Res.string.your_reward_reward_chips
+                            } else {
+                                Res.string.your_reward_reward_caps
+                            },
+                            reward.toString()
+                        )
+                    }
                     showAlertDialog(
                         getString(Res.string.result),
-                        getString(Res.string.you_win) +
-                            if (reward == 0)
-                                ""
-                            else
-                                getString(
-                                    if (isBlitz) {
-                                        Res.string.your_reward_reward_chips
-                                    } else {
-                                        Res.string.your_reward_reward_caps
-                                    },
-                                    reward.toString()
-                                ),
+                        getString(Res.string.you_win) + rewardLine + getString(Res.string.your_reward_reward_xp, xpReward),
                         onQuitPressed
                     )
                 }
@@ -488,10 +522,12 @@ fun StartGame(
             playLoseSound()
             if (enemy is EnemyPvEWithBank) {
                 save.table -= myBet + enemyBet
-                enemy.curBets++
+                enemy.curBets += enemyBet / enemy.bet
             }
 
             save.gamesFinished++
+            val xpReward = if (isBlitz) 20 else 10
+            save.increaseXp(xpReward)
             save.currentStrike = 0
             save.enemiesDefeated.clear()
             saveData()
@@ -499,7 +535,7 @@ fun StartGame(
             scope.launch {
                 showAlertDialog(
                     getString(Res.string.result),
-                    getString(Res.string.you_lose),
+                    getString(Res.string.you_lose) + getString(Res.string.your_reward_reward_xp, xpReward),
                     onQuitPressed
                 )
             }
@@ -599,7 +635,7 @@ fun ShowBettingScreen(
                                     .padding(8.dp),
                             )
                         }
-                        if (isBlitz) {
+                        if (!isBlitz) {
                             TextFallout(
                                 stringResource(Res.string.your_caps, save.capsInHand),
                                 getTextColor(),

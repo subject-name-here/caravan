@@ -59,7 +59,7 @@
 
     <string name="tops_trader_welcome">If you ask me "Hey, Max, what is the swankiest-smoothest card store?", I will tell you, baby, that you are standing in it!</string>
     <string name="tops_trader_empty">Hey, the store is empty, but that will change faster than the Mojave weather. Come again soooooon.</string>
-    <string name="tops_trader_condition">Win a game with a bet of at least 500 caps/chips.</string>
+    <string name="tops_trader_condition">Reach level 5.</string>
 
     <string name="gomorrah_trader_welcome">My name is Ben Broadson. I sell cards. Who are you - I don't care.</string>
     <string name="gomorrah_trader_empty">Come soon again. Restocks are happening very often.</string>
@@ -173,6 +173,8 @@
 
     <string name="custom_deck_is_illegal">Custom deck is illegal!</string>
     <string name="deck_illegal_body">Deck uses conflicting decks or more than 6 backs, has less than 30 cards or less than 15 numbered cards!</string>
+    <string name="closed">[CLOSED]</string>
+    <string name="lvl_is_not_enough">Your LVL is not high enough.</string>
 
     <string name="result">Result</string>
     <string name="you_win">You win!</string>
@@ -389,7 +391,7 @@
     <string name="style_alaska">Alaska</string>
     <string name="style_alaska_condition">Win 12 PvE games (with a bet) in a row against different enemies.</string>
     <string name="style_pip_girl">Pip-Girl</string>
-    <string name="style_pip_girl_condition">Win a game with a bet more than 969 caps/chips.</string>
+    <string name="style_pip_girl_condition">Reach Level 6.</string>
     <string name="style_old_world">Old World</string>
     <string name="style_old_world_condition">Spend 1000 caps/chips on cards.</string>
     <string name="style_new_world">New World</string>
@@ -916,6 +918,7 @@
     <string name="your_expected_reward_chips">Your expected reward: %1$s Sierra Madre chips.</string>
     <string name="your_reward_reward_caps">\nYour reward: %1$s caps!!</string>
     <string name="your_reward_reward_chips">\nYour reward: %1$s Sierra Madre chips!!</string>
+    <string name="your_reward_reward_xp">\nYou received: %1$s XP!!</string>
     <string name="prize_caps">%1$s caps</string>
     <string name="prize_chips">%1$s Sierra Madre chips</string>
     <string name="you_have_won">\nYou have obtained: %1$s.</string>
@@ -1087,8 +1090,6 @@ If this helped you understand the game, thank the author Kyle! To do this, go to
     <string name="easter_egg">Easter egg!</string>
     <string name="papa_khan_was_replaced_by_papa_smurf">Papa Khan was replaced by Papa Smurf.</string>
     <string name="papa_smurf_was_replaced_by_papa_khan">Papa Smurf was replaced by Papa Khan.</string>
-    <string name="tops_are_replaced_by_bottoms">Tops are replaced by Bottoms.</string>
-    <string name="bottoms_are_replaced_by_tops">Bottoms are replaced by Tops.</string>
     <string name="supreme_leader_and_tower_boss_have_new_music">Supreme Leader and Tower boss have new music!</string>
     <string name="supreme_leader_and_tower_boss_have_default_music">Supreme Leader and Tower boss have default music!</string>
     <string name="radio_uses_pseudonyms_now">Radio uses fictional names now.</string>

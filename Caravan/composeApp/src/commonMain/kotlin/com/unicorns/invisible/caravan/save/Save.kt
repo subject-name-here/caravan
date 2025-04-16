@@ -36,6 +36,7 @@ import com.unicorns.invisible.caravan.model.primitives.CardJoker
 import com.unicorns.invisible.caravan.model.primitives.CardNumber
 import com.unicorns.invisible.caravan.model.primitives.CardWithPrice
 import com.unicorns.invisible.caravan.model.primitives.CollectibleDeck
+import com.unicorns.invisible.caravan.utils.playFanfares
 import kotlinx.serialization.EncodeDefault
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
@@ -114,8 +115,6 @@ class Save(var playerId: String? = null) {
     @EncodeDefault
     var capsWon = 0
     @EncodeDefault
-    var maxBetWon = 0
-    @EncodeDefault
     var winsWithBet = 0
 
     @EncodeDefault
@@ -157,7 +156,7 @@ class Save(var playerId: String? = null) {
     @EncodeDefault
     var level = 1
         private set
-    fun needXpToNextLevel() = 200 + 150 * (level - 1)
+    fun needXpToNextLevel() = 200 + 300 * (level - 1)
     @EncodeDefault
     var xp = 0
         private set
@@ -166,6 +165,8 @@ class Save(var playerId: String? = null) {
         while (xp >= needXpToNextLevel()) {
             xp -= needXpToNextLevel()
             level++
+            updateEnemiesBanks()
+            playFanfares()
         }
     }
 

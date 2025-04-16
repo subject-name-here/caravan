@@ -35,7 +35,7 @@ class EnemyTabitha : EnemyPvEWithBank() {
     override val isEven
         get() = false
     override val isAvailable: Int
-        get() = 30
+        get() = 10
 
     override fun createDeck(): CResources = CResources(CustomDeck().apply {
         val backs = listOf(

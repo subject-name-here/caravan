@@ -96,7 +96,7 @@ enum class Style(
     DESERT(Res.string.style_desert, Res.string.style_desert_condition, { save.maxStrike to 6 }),
     ALASKA_FRONTIER(Res.string.style_alaska, Res.string.style_alaska_condition, { save.maxStrike to 12 }),
     PIP_BOY(Res.string.style_pip_boy, Res.string.null_condition, { 0 to 0 }),
-    PIP_GIRL(Res.string.style_pip_girl, Res.string.style_pip_girl_condition, { save.maxBetWon to 969 }),
+    PIP_GIRL(Res.string.style_pip_girl, Res.string.style_pip_girl_condition, { save.level to 6 }),
     OLD_WORLD(Res.string.style_old_world, Res.string.style_old_world_condition, { save.capsWasted + save.chipsWasted to 1000 }),
     NEW_WORLD(Res.string.style_new_world, Res.string.style_new_world_condition, { save.capsWasted + save.chipsWasted to 10000 }),
     SIERRA_MADRE(Res.string.style_sierra_madre, Res.string.style_sierra_madre_condition, { save.challengesCompleted to 150 }),

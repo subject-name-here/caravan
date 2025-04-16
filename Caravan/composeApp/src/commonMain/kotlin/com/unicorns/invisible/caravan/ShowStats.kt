@@ -108,8 +108,6 @@ fun ShowStats(goBack: () -> Unit) {
             StatsItem(text = stringResource(Res.string.pve_caps_bet, save.capsBet))
             Spacer(modifier = Modifier.height(8.dp))
             StatsItem(text = stringResource(Res.string.pve_caps_won, save.capsWon))
-            Spacer(modifier = Modifier.height(8.dp))
-            StatsItem(text = stringResource(Res.string.pve_max_bet_won, save.maxBetWon))
             Spacer(modifier = Modifier.height(12.dp))
             TextFallout(
                 stringResource(Res.string.pve_percentiles),

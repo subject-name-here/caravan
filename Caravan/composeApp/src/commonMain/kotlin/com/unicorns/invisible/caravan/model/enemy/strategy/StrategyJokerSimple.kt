@@ -2,8 +2,11 @@ package com.unicorns.invisible.caravan.model.enemy.strategy
 
 import com.unicorns.invisible.caravan.AnimationSpeed
 import com.unicorns.invisible.caravan.model.Game
+import com.unicorns.invisible.caravan.model.primitives.Card
+import com.unicorns.invisible.caravan.model.primitives.CardBase
 import com.unicorns.invisible.caravan.model.primitives.CardJoker
 import com.unicorns.invisible.caravan.model.primitives.CardModifier
+import com.unicorns.invisible.caravan.model.primitives.CardWithModifier
 import com.unicorns.invisible.caravan.model.primitives.RankNumber
 
 class StrategyJokerSimple(val index: Int) : Strategy {
@@ -14,7 +17,8 @@ class StrategyJokerSimple(val index: Int) : Strategy {
             .filter {
                 it.canAddModifier(joker)
             }
-        val best = cards.maxByOrNull { card ->
+
+        fun getValue(card: CardWithModifier): Int {
             val state = gameToState(game)
             var sum = 0
             if (card.card.rank == RankNumber.ACE) {
@@ -88,7 +92,7 @@ class StrategyJokerSimple(val index: Int) : Strategy {
                     sum -= caravanDelta / 3
                 }
             }
-            if (checkTheOutcome(state) == 1) {
+            return if (checkTheOutcome(state) == 1) {
                 -5000
             } else if (checkTheOutcome(state) == -1) {
                 5000
@@ -96,7 +100,9 @@ class StrategyJokerSimple(val index: Int) : Strategy {
                 sum
             }
         }
-        if (best != null) {
+
+        val best = cards.maxByOrNull { getValue(it) }
+        if (best != null && getValue(best) > 0) {
             best.addModifier(game.enemyCResources.removeFromHand(index, speed) as CardModifier, speed)
             return true
         }

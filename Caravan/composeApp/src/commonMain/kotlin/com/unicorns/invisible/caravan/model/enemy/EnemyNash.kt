@@ -33,7 +33,7 @@ class EnemyNash : EnemyPvEWithBank() {
     override val isEven
         get() = false
     override val isAvailable: Int
-        get() = 10
+        get() = 3
 
     override fun createDeck(): CResources = CResources(CustomDeck().apply {
         listOf(
