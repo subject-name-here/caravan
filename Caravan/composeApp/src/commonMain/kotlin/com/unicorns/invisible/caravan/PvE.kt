@@ -311,7 +311,7 @@ fun ShowPvE(
                 TextFallout(
                     when {
                         enemy.isAvailable == 0 -> "[&*$#]"
-                        enemy.isAvailable > save.level -> stringResource(Res.string.closed)
+                        enemy.isAvailable > save.lvl -> stringResource(Res.string.closed)
                         else -> line
                     },
                     getTextColor(),
@@ -337,7 +337,7 @@ fun ShowPvE(
                 val m3 = stringResource(Res.string.lvl_is_not_enough)
                 enemies.forEach {
                     OpponentItem(it) {
-                        if (it.isAvailable != 0 && it.isAvailable <= save.level) {
+                        if (it.isAvailable != 0 && it.isAvailable <= save.lvl) {
                             playVatsEnter()
                             playAgainstEnemy = save.enemiesGroups3.flatten().indexOf(it)
                         } else {
@@ -403,6 +403,17 @@ fun StartGame(
     val onQuitPressed = { stopAmbient(); goBack() }
 
     val enemyName = stringResource(enemy.nameId)
+    val blitzMult = if (isBlitz) 3.0 / 2.0 else 1.0
+    val mult = (when (enemy) {
+        is EnemyPvENoBank -> 5.0 / 4.0
+        is EnemyPvEWithBank -> {
+            when (enemyBet / enemy.bet) {
+                1 -> 1.0
+                2 -> 8.0 / 5.0
+                else -> 1.0 / 5.0
+            }
+        }
+    } * blitzMult).toInt()
     game.also {
         it.onWin = {
             processChallengesGameOver(it)
@@ -416,6 +427,7 @@ fun StartGame(
                 playWinSound()
             }
 
+            val xpReward = save.increaseXpFromDefeatingEnemy(enemy.isAvailable, mult)
             if (enemy is EnemyPvEWithBank) {
                 val reward = myBet + enemyBet
                 if (isBlitz) {
@@ -439,37 +451,6 @@ fun StartGame(
                 if (reward > 0) {
                     save.winsWithBet++
                 }
-
-                val xpReward = when (enemy.isAvailable) {
-                    1 -> {
-                        if (myBet == 0) {
-                            0
-                        } else if (!isBlitz) {
-                            25
-                        } else {
-                            50
-                        }
-                    }
-                    in (2..4) -> {
-                        if (myBet == 0) {
-                            25 * (enemy.isAvailable - 1)
-                        } else if (!isBlitz) {
-                            50 * (enemy.isAvailable - 1)
-                        } else {
-                            100 * (enemy.isAvailable - 1)
-                        }
-                    }
-                    else -> {
-                        if (myBet == 0) {
-                            50 * (enemy.isAvailable - 1)
-                        } else if (!isBlitz) {
-                            100 * (enemy.isAvailable - 1)
-                        } else {
-                            200 * (enemy.isAvailable - 1)
-                        }
-                    }
-                }
-                save.increaseXp(xpReward)
 
                 scope.launch {
                     val rewardLine = if (reward == 0) {
@@ -503,32 +484,6 @@ fun StartGame(
                     enemy.wins++
                 }
 
-
-                val xpReward = when (enemy.isAvailable) {
-                    1 -> {
-                        if (myBet == 0) {
-                            0
-                        } else {
-                            30
-                        }
-                    }
-                    in (2..4) -> {
-                        if (myBet == 0) {
-                            25 * (enemy.isAvailable - 1)
-                        } else {
-                            70 * (enemy.isAvailable - 1)
-                        }
-                    }
-                    else -> {
-                        if (myBet == 0) {
-                            50 * (enemy.isAvailable - 1)
-                        } else {
-                            120 * (enemy.isAvailable - 1)
-                        }
-                    }
-                }
-                save.increaseXp(xpReward)
-
                 scope.launch {
                     val rewardCard = winCard(back, isBlitz)
                     showAlertDialog(
@@ -553,8 +508,7 @@ fun StartGame(
             }
 
             save.gamesFinished++
-            val xpReward = if (isBlitz) 20 else 10
-            save.increaseXp(xpReward)
+            val xpReward = save.increaseXpFromLosingToEnemy(enemy.isAvailable, mult / 10)
             save.currentStrike = 0
             save.enemiesDefeated.clear()
             saveData()

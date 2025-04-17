@@ -13,7 +13,7 @@ import org.jetbrains.compose.resources.getString
 
 @Serializable
 class TopsTrader : Trader {
-    override fun isOpen() = save.level >= 5
+    override fun isOpen() = save.lvl >= 5
     override suspend fun openingCondition() = getString(Res.string.tops_trader_condition)
 
     override fun getUpdateRate() = 8

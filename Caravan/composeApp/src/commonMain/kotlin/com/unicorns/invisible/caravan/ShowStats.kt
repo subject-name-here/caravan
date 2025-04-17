@@ -25,7 +25,6 @@ import caravan.composeapp.generated.resources.pve_games_started_pvp
 import caravan.composeapp.generated.resources.pve_games_won
 import caravan.composeapp.generated.resources.pve_games_won_pvp
 import caravan.composeapp.generated.resources.pve_games_won_with_bet
-import caravan.composeapp.generated.resources.pve_max_bet_won
 import caravan.composeapp.generated.resources.pve_max_strike
 import caravan.composeapp.generated.resources.pve_more_stats
 import caravan.composeapp.generated.resources.pve_percentiles
@@ -69,7 +68,7 @@ fun ShowStats(goBack: () -> Unit) {
             }
             Spacer(modifier = Modifier.height(12.dp))
             TextFallout(
-                stringResource(Res.string.player_level, save.level),
+                stringResource(Res.string.player_level, save.lvl),
                 getTextColor(),
                 getTextStrokeColor(),
                 24.sp,

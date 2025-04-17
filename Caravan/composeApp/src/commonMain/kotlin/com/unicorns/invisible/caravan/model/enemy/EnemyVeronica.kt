@@ -26,7 +26,7 @@ class EnemyVeronica : EnemyPvEWithBank() {
     override val isEven
         get() = true
     override val isAvailable: Int
-        get() = 1
+        get() = 2
 
     override fun createDeck() = CResources(CardBack.ULTRA_LUXE)
 

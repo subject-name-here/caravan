@@ -41,6 +41,7 @@ import kotlinx.serialization.EncodeDefault
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
 import kotlin.math.max
+import kotlin.math.min
 
 
 // PlayerId == null => save is not loaded
@@ -154,9 +155,13 @@ class Save(var playerId: String? = null) {
     var animationSpeed = AnimationSpeed.NORMAL
 
     @EncodeDefault
-    var level = 1
+    var lvl = 1
         private set
-    fun needXpToNextLevel() = 200 + 300 * (level - 1)
+    fun needXpToNextLevel() = when (lvl) {
+        1, 2 -> 500 * lvl
+        3, 4, 5, 6 -> 750 * lvl
+        else -> 1000 * lvl
+    }
     @EncodeDefault
     var xp = 0
         private set
@@ -164,10 +169,21 @@ class Save(var playerId: String? = null) {
         xp += add
         while (xp >= needXpToNextLevel()) {
             xp -= needXpToNextLevel()
-            level++
+            lvl++
             updateEnemiesBanks()
+            // TODO: show message
             playFanfares()
         }
+    }
+    fun increaseXpFromDefeatingEnemy(enemyLvl: Int, mult: Int): Int {
+        val xp = max(25, 150 - 50 * (min(lvl, 6) - enemyLvl)) * mult
+        increaseXp(xp)
+        return xp
+    }
+    fun increaseXpFromLosingToEnemy(enemyLvl: Int, mult: Int): Int {
+        val xp = max(5, 20 - 5 * (min(lvl, 6) - enemyLvl)) * mult
+        increaseXp(xp)
+        return xp
     }
 
     @EncodeDefault

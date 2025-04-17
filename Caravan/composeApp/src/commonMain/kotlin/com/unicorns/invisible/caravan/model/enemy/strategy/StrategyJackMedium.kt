@@ -30,7 +30,7 @@ class StrategyJackMedium(val index: Int) : Strategy {
             .flatMap { it.cards }
             .filter { cardB ->
                 val state = gameToState(game)
-                val indexC = game.playerCaravans.withIndex().first { cardB in it.value.cards }.index
+                val indexC = game.enemyCaravans.withIndex().first { cardB in it.value.cards }.index
                 when (indexC) {
                     0 -> state.enemy.v1 -= cardB.getValue()
                     1 -> state.enemy.v2 -= cardB.getValue()
