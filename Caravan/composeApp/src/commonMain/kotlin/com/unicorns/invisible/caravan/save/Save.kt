@@ -158,8 +158,11 @@ class Save(var playerId: String? = null) {
     var lvl = 1
         private set
     fun needXpToNextLevel() = when (lvl) {
-        1, 2 -> 500 * lvl
-        3, 4, 5, 6 -> 750 * lvl
+        1 -> 250 * lvl
+        2 -> 350 * lvl
+        3, 4 -> 500 * lvl
+        5 -> 650 * lvl
+        6 -> 750 * lvl
         else -> 1000 * lvl
     }
     @EncodeDefault
@@ -175,13 +178,13 @@ class Save(var playerId: String? = null) {
             playFanfares()
         }
     }
-    fun increaseXpFromDefeatingEnemy(enemyLvl: Int, mult: Int): Int {
-        val xp = max(25, 150 - 50 * (min(lvl, 6) - enemyLvl)) * mult
+    fun increaseXpFromDefeatingEnemy(enemyLvl: Int, mult: Double): Int {
+        val xp = (max(25, 150 - 50 * (min(lvl, 6) - enemyLvl)) * mult).toInt()
         increaseXp(xp)
         return xp
     }
-    fun increaseXpFromLosingToEnemy(enemyLvl: Int, mult: Int): Int {
-        val xp = max(5, 20 - 5 * (min(lvl, 6) - enemyLvl)) * mult
+    fun increaseXpFromLosingToEnemy(enemyLvl: Int, mult: Double): Int {
+        val xp = (max(5, 20 - 5 * (min(lvl, 6) - enemyLvl)) * mult).toInt()
         increaseXp(xp)
         return xp
     }

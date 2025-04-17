@@ -404,7 +404,7 @@ fun StartGame(
 
     val enemyName = stringResource(enemy.nameId)
     val blitzMult = if (isBlitz) 3.0 / 2.0 else 1.0
-    val mult = (when (enemy) {
+    val mult = when (enemy) {
         is EnemyPvENoBank -> 5.0 / 4.0
         is EnemyPvEWithBank -> {
             when (enemyBet / enemy.bet) {
@@ -413,7 +413,7 @@ fun StartGame(
                 else -> 1.0 / 5.0
             }
         }
-    } * blitzMult).toInt()
+    } * blitzMult
     game.also {
         it.onWin = {
             processChallengesGameOver(it)
