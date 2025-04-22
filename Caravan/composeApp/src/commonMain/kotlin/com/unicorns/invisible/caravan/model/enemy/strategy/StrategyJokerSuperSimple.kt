@@ -2,15 +2,12 @@ package com.unicorns.invisible.caravan.model.enemy.strategy
 
 import com.unicorns.invisible.caravan.AnimationSpeed
 import com.unicorns.invisible.caravan.model.Game
-import com.unicorns.invisible.caravan.model.primitives.Card
-import com.unicorns.invisible.caravan.model.primitives.CardBase
 import com.unicorns.invisible.caravan.model.primitives.CardJoker
 import com.unicorns.invisible.caravan.model.primitives.CardModifier
 import com.unicorns.invisible.caravan.model.primitives.CardWithModifier
 import com.unicorns.invisible.caravan.model.primitives.RankNumber
 
-
-class StrategyJokerSimple(val index: Int) : Strategy {
+class StrategyJokerSuperSimple(val index: Int) : Strategy {
     override suspend fun move(game: Game, speed: AnimationSpeed): Boolean {
         val joker = game.enemyCResources.hand[index] as CardJoker
         val cards = (game.playerCaravans + game.enemyCaravans)
@@ -55,7 +52,7 @@ class StrategyJokerSimple(val index: Int) : Strategy {
                             state.enemy.v3 -= caravanDelta
                         }
                     }
-                    sum -= caravanDelta / 3
+                    sum -= caravanDelta
                 }
             } else {
                 game.playerCaravans.forEachIndexed { index, caravan ->
@@ -90,16 +87,10 @@ class StrategyJokerSimple(val index: Int) : Strategy {
                             state.enemy.v3 -= caravanDelta
                         }
                     }
-                    sum -= caravanDelta / 3
+                    sum -= caravanDelta
                 }
             }
-            return if (checkTheOutcome(state) == 1) {
-                -5000
-            } else if (checkTheOutcome(state) == -1) {
-                5000
-            } else {
-                sum
-            }
+            return sum
         }
 
         val best = cards.maxByOrNull { getValue(it) }
