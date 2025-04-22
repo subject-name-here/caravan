@@ -34,6 +34,7 @@ import com.unicorns.invisible.caravan.model.enemy.Enemy
 import com.unicorns.invisible.caravan.model.enemy.EnemyStory1
 import com.unicorns.invisible.caravan.model.enemy.EnemyStory2
 import com.unicorns.invisible.caravan.model.enemy.EnemyStory3
+import com.unicorns.invisible.caravan.model.enemy.EnemyStory4
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.Card
 import com.unicorns.invisible.caravan.model.primitives.CardFaceSuited
@@ -110,7 +111,10 @@ fun ShowStoryList(
                     saveData()
                 }) { showChapter = null }
             }
-            else -> { showChapter = null }
+            else -> {
+                showAlertDialog("[CLOSED]", "The chapter is not done yet.", null)
+                showChapter = null
+            }
         }
         return
     }
@@ -689,6 +693,155 @@ fun ShowStoryEndOfPart1(
         )
     ), goBack) {
         advanceChapter(); goBack()
+    }
+}
+
+
+
+@Composable
+fun ShowStoryChapter4(
+    deck: CustomDeck,
+    showAlertDialog: (String, String, (() -> Unit)?) -> Unit,
+    advanceChapter: () -> Unit,
+    goBack: () -> Unit,
+) {
+    var isGame by rememberSaveable { mutableStateOf(false) }
+    var gameResult by rememberSaveable { mutableIntStateOf(0) }
+
+    if (isGame) {
+        StartStoryGame(
+            EnemyStory4,
+            CResources(deck),
+            showAlertDialog,
+            {},
+            { gameResult = 1; advanceChapter() },
+            { gameResult = 1; advanceChapter() },
+            { if (gameResult == 0) gameResult = -1; isGame = false }
+        )
+        return
+    }
+
+    when (gameResult) {
+        1 -> {
+            StoryShow(DialogGraph(
+                listOf(
+                    DialogMiddleState(Res.drawable.black_back, Res.string.ch4_23),
+                    DialogMiddleState(Res.drawable.black_back, Res.string.ch4_24),
+                    DialogMiddleState(Res.drawable.black_back, Res.string.ch4_25),
+                    DialogMiddleState(Res.drawable.black_back, Res.string.ch4_26),
+                    DialogMiddleState(Res.drawable.black_back, Res.string.ch4_27),
+                    DialogMiddleState(Res.drawable.black_back, Res.string.ch4_28),
+                    DialogMiddleState(Res.drawable.black_back, Res.string.ch4_29),
+                    DialogMiddleState(Res.drawable.black_back, Res.string.ch4_30),
+                    DialogMiddleState(Res.drawable.black_back, Res.string.ch4_31),
+                    DialogMiddleState(Res.drawable.black_back, Res.string.ch4_32),
+                    DialogMiddleState(Res.drawable.black_back, Res.string.ch4_33),
+                    DialogMiddleState(Res.drawable.black_back, Res.string.ch4_34),
+                    DialogMiddleState(Res.drawable.black_back, Res.string.ch4_35),
+                    DialogMiddleState(Res.drawable.black_back, Res.string.ch4_36),
+                    DialogMiddleState(Res.drawable.black_back, Res.string.ch4_37),
+                    DialogMiddleState(Res.drawable.black_back, Res.string.ch4_38),
+                    DialogFinishState(DeathCode.ALIVE),
+                ),
+                listOf(
+                    DialogEdge(0, 1, Res.string.ch4_23a),
+                    DialogEdge(1, 2, Res.string.ch4_24a),
+                    DialogEdge(2, 3, Res.string.ch4_25a),
+                    DialogEdge(3, 4, Res.string.ch4_26a),
+                    DialogEdge(4, 15, Res.string.ch4_27a),
+                    DialogEdge(3, 5, Res.string.ch4_26b),
+                    DialogEdge(5, 6, Res.string.ch4_28a),
+                    DialogEdge(6, 7, Res.string.ch4_29a),
+                    DialogEdge(7, 8, Res.string.ch4_30a),
+                    DialogEdge(8, 9, Res.string.ch4_31a),
+                    DialogEdge(9, 10, Res.string.ch4_32a),
+                    DialogEdge(10, 11, Res.string.ch4_33a),
+                    DialogEdge(10, 15, Res.string.ch4_33b),
+                    DialogEdge(11, 12, Res.string.ch4_34a),
+                    DialogEdge(12, 13, Res.string.ch4_35a),
+                    DialogEdge(13, 14, Res.string.ch4_36a),
+                    DialogEdge(14, 15, Res.string.ch4_37a),
+                    DialogEdge(15, 16, Res.string.finish),
+                )
+            ), goBack) { goBack() }
+            return
+        }
+        -1 -> {
+            StoryShow(DialogGraph(
+                listOf(
+                    DialogMiddleState(Res.drawable.black_back, Res.string.ch4_minus_1),
+                    DialogFinishState(DeathCode.GOT_LOST)
+                ),
+                listOf(
+                    DialogEdge(0, 1, Res.string.finish),
+                )
+            ), goBack) { goBack() }
+            return
+        }
+        else -> {}
+    }
+
+    StoryShow(DialogGraph(
+        listOf(
+            DialogMiddleState(Res.drawable.black_back, Res.string.ch4_1),
+            DialogMiddleState(Res.drawable.black_back, Res.string.ch4_2),
+            DialogMiddleState(Res.drawable.black_back, Res.string.ch4_3),
+            DialogMiddleState(Res.drawable.black_back, Res.string.ch4_4),
+            DialogMiddleState(Res.drawable.black_back, Res.string.ch4_5),
+            DialogMiddleState(Res.drawable.black_back, Res.string.ch4_6),
+            DialogMiddleState(Res.drawable.black_back, Res.string.ch4_7),
+            DialogMiddleState(Res.drawable.black_back, Res.string.ch4_8),
+            DialogMiddleState(Res.drawable.black_back, Res.string.ch4_9),
+            DialogMiddleState(Res.drawable.black_back, Res.string.ch4_10),
+            DialogMiddleState(Res.drawable.black_back, Res.string.ch4_11),
+            DialogMiddleState(Res.drawable.black_back, Res.string.ch4_12),
+            DialogMiddleState(Res.drawable.black_back, Res.string.ch4_13),
+            DialogMiddleState(Res.drawable.black_back, Res.string.ch4_14),
+            DialogMiddleState(Res.drawable.black_back, Res.string.ch4_15),
+            DialogMiddleState(Res.drawable.black_back, Res.string.ch4_16),
+            DialogMiddleState(Res.drawable.black_back, Res.string.ch4_17),
+            DialogMiddleState(Res.drawable.black_back, Res.string.ch4_18),
+            DialogMiddleState(Res.drawable.black_back, Res.string.ch4_19),
+            DialogMiddleState(Res.drawable.black_back, Res.string.ch4_20),
+            DialogMiddleState(Res.drawable.black_back, Res.string.ch4_21),
+            DialogMiddleState(Res.drawable.black_back, Res.string.ch4_22),
+            DialogMiddleState(Res.drawable.black_back, Res.string.ch4_221),
+            DialogMiddleState(Res.drawable.black_back, Res.string.ch4_222),
+            DialogMiddleState(Res.drawable.black_back, Res.string.ch4_223),
+            DialogFinishState(DeathCode.ALIVE),
+        ),
+        listOf(
+            DialogEdge(0, 1, Res.string.ch4_1a),
+            DialogEdge(1, 2, Res.string.ch4_2a),
+            DialogEdge(2, 3, Res.string.ch4_3a),
+            DialogEdge(3, 4, Res.string.ch4_4a),
+            DialogEdge(4, 5, Res.string.ch4_5a),
+            DialogEdge(5, 6, Res.string.ch4_6a),
+            DialogEdge(6, 7, Res.string.ch4_7a),
+            DialogEdge(7, 8, Res.string.ch4_8a),
+            DialogEdge(8, 9, Res.string.ch4_9a),
+            DialogEdge(8, 10, Res.string.ch4_9b),
+            DialogEdge(10, 11, Res.string.ch4_11a),
+            DialogEdge(10, 18, Res.string.ch4_11b),
+            DialogEdge(10, 21, Res.string.ch4_11c),
+            DialogEdge(11, 12, Res.string.ch4_12a),
+            DialogEdge(12, 13, Res.string.ch4_13a),
+            DialogEdge(13, 14, Res.string.ch4_14a),
+            DialogEdge(14, 15, Res.string.ch4_15a),
+            DialogEdge(15, 16, Res.string.ch4_16a),
+            DialogEdge(16, 17, Res.string.ch4_17a),
+            DialogEdge(18, 19, Res.string.ch4_19a),
+            DialogEdge(18, 20, Res.string.ch4_19b),
+            DialogEdge(18, 21, Res.string.ch4_19c),
+            DialogEdge(21, 22, Res.string.ch4_22a),
+            DialogEdge(21, 22, Res.string.ch4_22b),
+            DialogEdge(21, 22, Res.string.ch4_22c),
+            DialogEdge(22, 23, Res.string.ch4_221a),
+            DialogEdge(23, 24, Res.string.ch4_222a),
+            DialogEdge(24, 25, Res.string.ch4_223a),
+        )
+    ), goBack) {
+        isGame = true
     }
 }
 

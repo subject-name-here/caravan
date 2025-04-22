@@ -26,7 +26,7 @@ class EnemySalt : EnemyPvEWithBank() {
     override val nameId
         get() = Res.string.salt
     override val isEven
-        get() = true
+        get() = false
     override val level: Int
         get() = 2
     override val isAvailable: Boolean

@@ -890,6 +890,181 @@
         You have left the NCR territory and wandered North, to Vancouver. On the way, you were keeping a low profile, thanks to the stealth suit.
     </string>
 
+
+    <string name="ch4_1">
+        After a very long journey, you're finally reached your destination!
+    </string>
+    <string name="ch4_1a">Yes, Oasis!</string>
+    <string name="ch4_2">
+        No, not Oasis.
+    </string>
+    <string name="ch4_2a">Ehmm… Anchorage?</string>
+    <string name="ch4_3">
+        No. Vancouver.
+    </string>
+    <string name="ch4_3a">Oh, yes, Vancouver! Place with a ship that will take me to Anchorage!</string>
+    <string name="ch4_4">
+        Unfortunately, you quickly realize it's not the right place…
+    </string>
+    <string name="ch4_4a">What?</string>
+    <string name="ch4_5">
+        Yeah, you need Vancouver in Canada. This one is in the USA, the former Washington state.
+    </string>
+    <string name="ch4_5a">[Intellect 4/6] Wait… I am near the US capital?</string>
+    <string name="ch4_6">
+        [FAILED] …really? A quick geography lesson: the US capital is Washington, DC, which is on the east coast of the country. And there is Washington state, which is on the west coast.
+        Which coast are you on: east or west?
+    </string>
+    <string name="ch4_6a">[Intellect 4/5] Well, I definitely turned right at some point, which means… east?</string>
+    <string name="ch4_7">
+        [FAILED] My gods…
+    </string>
+    <string name="ch4_7a">Hey, stop bullying me!</string>
+    <string name="ch4_8">
+        Anyway, you are in Vancouver, Washington. You stand on the southern shore of the Columbia river, and you see something astonishing.
+    </string>
+    <string name="ch4_8a">A giant wall?</string>
+    <string name="ch4_9">
+        Yes, a giant wall all along the northern shore. About 20 meters high and who knows how long - the ends are not seen.
+        But you have to go to the other side.
+    </string>
+    <string name="ch4_9a">[Agility 6/8] Climb the wall.</string>
+    <string name="ch4_9b">HEY! IS ANYONE HERE?!</string>
+    <string name="ch4_10">
+        [FAILED] You look at the wall, but you quickly realize that it is leaned to your side, which makes climbing almost impossible.
+    </string>
+    <string name="ch4_11">
+        “Oye, have you seen the time? It's early morning, moron!” - said a female voice.
+    </string>
+    <string name="ch4_11a">Judging by the sun, it's afternoon.</string>
+    <string name="ch4_11b">Who are you?</string>
+    <string name="ch4_11c">Excuse me, but I need to get to the other side!</string>
+    <string name="ch4_12">
+        Afternoon? After… noon..? Huh. You know that morning comes after noon.
+    </string>
+    <string name="ch4_12a">What? No, that is not correct.</string>
+    <string name="ch4_13">
+        That is. What comes after noon?
+    </string>
+    <string name="ch4_13a">Afternoon. It's the name.</string>
+    <string name="ch4_14">
+        And after it?
+    </string>
+    <string name="ch4_14a">What..? Evening.</string>
+    <string name="ch4_15">
+        And after evening?
+    </string>
+    <string name="ch4_15a">Night, but…</string>
+    <string name="ch4_16">
+        And after night comes morning. See where I go?
+    </string>
+    <string name="ch4_16a">Ah, you want to say that now is morning, because it's afternoon. Okay.</string>
+    <string name="ch4_17">
+        You start to get it. What's your name?
+    </string>
+    <string name="ch4_17a">The Prospector. Everyone calls me that.</string>
+    <string name="ch4_18">
+        Ah, no name? Interesting. Kinda like Hero of Kvatch or The Eternal Champion. Or the Vault Dweller.
+    </string>
+    <string name="ch4_19">
+        My name is Alice. Nice to meet ya.
+    </string>
+    <string name="ch4_19a">Alice? Nice name.</string>
+    <string name="ch4_19b">Hi, Alice.</string>
+    <string name="ch4_19c">I don't care, just get me to the other side.</string>
+    <string name="ch4_20">
+        Oh, thanks!
+    </string>
+    <string name="ch4_21">
+        Hi!
+    </string>
+    <string name="ch4_22">
+        Nope. Why do you need to go there?
+    </string>
+    <string name="ch4_22a">I need a new heart.</string>
+    <string name="ch4_22b">It's a long story…</string>
+    <string name="ch4_22c">None of your business.</string>
+    <string name="ch4_221">
+        Hmm… Let's say, I can show you the secret way, but I demand something!
+    </string>
+    <string name="ch4_221a">What do you want?</string>
+    <string name="ch4_222">
+        You are from the south, right? I’m a former NCR citizen, and I liked to play a simple game when I was younger. Unfortunately, not many people know the rules and have cards. I want you to play with me.
+    </string>
+    <string name="ch4_222a">Play what exactly?</string>
+    <string name="ch4_223">
+        Caravan. You know the rules, right?
+    </string>
+    <string name="ch4_223a">[Luck 7] Yes, I do!</string>
+    <string name="ch4_minus_1">Priestess looked at you and walked away, saying nothing. You are stuck forever in front of the wall.</string>
+    <string name="ch4_23">
+        New level! What do you want to put your skill points in?
+    </string>
+    <string name="ch4_23a">Speech.</string>
+    <string name="ch4_24">
+        Okay, saved.
+    </string>
+    <string name="ch4_24a">[Continue.]</string>
+    <string name="ch4_25">
+        [SUCCEEDED] Nice game. Wanna another?
+    </string>
+    <string name="ch4_25a">Sorry, but I have to go. I don't have much time left.</string>
+    <string name="ch4_26">
+        Aaaoooh! Well, maybe, at least, hear my jolly story?
+    </string>
+    <string name="ch4_26a">Sorry, no.</string>
+    <string name="ch4_26b">Yeah, why not? It's not like I have a time pressing issue with my heart…</string>
+    <string name="ch4_27">
+        Ooooh, what a shame! Okay, then let's go to the passage.
+    </string>
+    <string name="ch4_27a">Yeah.</string>
+    <string name="ch4_28">
+        Haha, yes! So, I grew up in Shady Sands, but soon my parents were imprisoned for contrabanda, and I was kidnapped and sold to slavery.
+    </string>
+    <string name="ch4_28a">Oh… that's not jolly.</string>
+    <string name="ch4_29">
+        Yes. But after some time my masters were killed, and I was adopted by a strange guy.
+    </string>
+    <string name="ch4_29a">Strange in what way?</string>
+    <string name="ch4_30">
+        Well, he was from this organization called Church of Madness. They worship inspiration as divine force and glorify craftsmanship and art.
+        The guy told me a lot, so I became the Priestess of the Church.
+    </string>
+    <string name="ch4_30a">Soooo… What do you do?</string>
+    <string name="ch4_31">
+        It shall be, quoting our Cardinal, "doest what induces rage, rapture and despair. Heed their calls, yet do not sin.” So, I built the wall.
+    </string>
+    <string name="ch4_31a">Wait… You built this wall?</string>
+    <string name="ch4_32">
+        Yeah, I have been building for about ten years already. Still building here and there.
+    </string>
+    <string name="ch4_32a">But it's huge! I can't see the end of it!</string>
+    <string name="ch4_33">
+        Yes, yes! It's the Despair talking to you! And then you probably thought “who the hell built this damn wall?” That was Rage. And when I told you there is a passage, you felt Rapture. See?
+    </string>
+    <string name="ch4_33a">Yeah. But who invented this religion?</string>
+    <string name="ch4_33b">Yeah. Let's go.</string>
+    <string name="ch4_34">
+        Oh, there were some raiders-cannibals on Jet, and when they robbed the Vault, there was a three-legged dog. And aliens came from the sky!
+    </string>
+    <string name="ch4_34a">Really?</string>
+    <string name="ch4_35">
+        Haha, no! It's a pre-War religion. The Cardinal found the books of that religion and started to spread it. We are not proselytizing religion, and we have only one church, so there aren't many followers.
+    </string>
+    <string name="ch4_35a">How can one join your religion?</string>
+    <string name="ch4_36">
+        You pass the exam. For this, you need to visit our Church. But you seem to hurry…
+    </string>
+    <string name="ch4_36a">Yeah, I was not asking for myself. Just curious.</string>
+    <string name="ch4_37">
+        Curiosity is good. It can cause you to act, to change the world around you.
+    </string>
+    <string name="ch4_37a">Welp… Let’s go already.</string>
+    <string name="ch4_38">
+        You reach the hidden passage. Alice bids you farewell and goes away. As you appear on the other side of the wall, you take your helmet on and go into invisibility.
+    </string>
+
+
     <string name="achievements">Achievements</string>
     <string name="daily_missions">Daily Missions</string>
     <string name="infinite_missions">Recurring Missions</string>
