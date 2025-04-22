@@ -111,6 +111,12 @@ fun ShowStoryList(
                     saveData()
                 }) { showChapter = null }
             }
+            24 -> {
+                ShowStoryChapter4(getDeck(showChapter!!), showAlertDialog, {
+                    saveGlobal.storyProgress = maxOf(saveGlobal.storyProgress, 25)
+                    saveData()
+                }) { showChapter = null }
+            }
             else -> {
                 showAlertDialog("[CLOSED]", "The chapter is not done yet.", null)
                 showChapter = null
@@ -258,6 +264,17 @@ fun getDeck(chapterNumber: Int): CustomDeck {
                 add(CardNumber(RankNumber.ACE, Suit.SPADES, CardBack.GOMORRAH))
                 add(CardNumber(RankNumber.ACE, Suit.SPADES, CardBack.ULTRA_LUXE))
                 add(CardNumber(RankNumber.ACE, Suit.SPADES, CardBack.TOPS))
+            }
+        }
+        24 -> {
+            CustomDeck(CardBack.STANDARD_RARE).apply {
+                add(CardNumber(RankNumber.ACE, Suit.SPADES, CardBack.SIERRA_MADRE_CLEAN))
+                add(CardFaceSuited(RankFace.KING, Suit.SPADES, CardBack.SIERRA_MADRE_CLEAN))
+                add(CardFaceSuited(RankFace.QUEEN, Suit.SPADES, CardBack.SIERRA_MADRE_CLEAN))
+                add(CardFaceSuited(RankFace.JACK, Suit.SPADES, CardBack.SIERRA_MADRE_CLEAN))
+                add(CardNumber(RankNumber.TEN, Suit.SPADES, CardBack.SIERRA_MADRE_CLEAN))
+                add(CardFaceSuited(RankFace.KING, Suit.HEARTS, CardBack.STANDARD_UNCOMMON))
+                add(CardNumber(RankNumber.TWO, Suit.HEARTS, CardBack.STANDARD))
             }
         }
         else -> CustomDeck()
