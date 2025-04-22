@@ -95,11 +95,11 @@ import org.jetbrains.compose.resources.stringResource
 fun SetCustomDeck(
     goBack: () -> Unit,
 ) {
-    fun isInCustomDeck(card: CardWithPrice) = card in save.getCurrentCustomDeck()
-    fun isAvailable(card: CardWithPrice) = save.isCardAvailableAlready(card)
+    fun isInCustomDeck(card: CardWithPrice) = card in saveGlobal.getCurrentCustomDeck()
+    fun isAvailable(card: CardWithPrice) = saveGlobal.isCardAvailableAlready(card)
 
     fun toggleToCustomDeck(card: CardWithPrice) {
-        save.getCurrentCustomDeck().let { deck ->
+        saveGlobal.getCurrentCustomDeck().let { deck ->
             if (card in deck) {
                 deck.remove(card)
             } else {
@@ -109,14 +109,14 @@ fun SetCustomDeck(
         saveData()
     }
 
-    var selectedDeck by rememberSaveable { mutableIntStateOf(save.activeCustomDeck) }
+    var selectedDeck by rememberSaveable { mutableIntStateOf(saveGlobal.activeCustomDeck) }
     var updateCharacteristics by remember { mutableStateOf(false) }
     var updateAll by remember { mutableStateOf(false) }
 
     fun getSelectedDeckIndex() = selectedDeck - 1
     fun selectDeck(deck: Int) {
         selectedDeck = deck
-        save.activeCustomDeck = deck
+        saveGlobal.activeCustomDeck = deck
         updateCharacteristics = !updateCharacteristics
         updateAll = !updateAll
         saveData()
@@ -368,7 +368,7 @@ fun ShowCharacteristics() {
             .fillMaxWidth()
             .wrapContentHeight()
     ) {
-        val deck = save.getCurrentDeckCopy()
+        val deck = saveGlobal.getCurrentDeckCopy()
         Row(
             Modifier.padding(vertical = 8.dp),
             verticalAlignment = Alignment.CenterVertically

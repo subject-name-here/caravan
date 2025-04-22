@@ -1026,8 +1026,8 @@ Player 2
 5.35) QUEEN - Reverses the current numerical direction of the caravan, and changes the suit of the caravan to that of the Queen. Multiple Queens can be used on the same card to reverse the effects.
 5.36) KING - Doubles the value of the card the King is played on. Multiple Kings can be used on the same card (e.g. 10+K = 20; 10+K+K = 40).
 5.37) JOKER:
-        - If played on an ace, it removes from both player's caravans all other number cards that share the suit of the ace (Queens altering the suit of a caravan will not save the card - the suit is considered what is printed on the number card).
-        - If played on a number card that is not an ace, it removes from both player's caravans all other number cards of the same value/instance. A played Joker only affects cards that have been played before it. In any case, the number card the Joker is played on is spared. All attaching face cards of the removed cards are also removed.
+        - If played on an ace, it removes all other number cards that share the suit of the ace (Queens altering the suit of a caravan will not save the card - the suit is considered what is printed on the number card) from both player's caravans .
+        - If played on a number card that is not an ace, it removes from both player's caravans all other number cards of the same value/instance. A played Joker only affects cards that have been played before it. In any case, the number card the Joker is played on is spared (for now). All attaching face cards of the removed cards are also removed.
 
 5.38) Face cards and Jokers can be played/attached with full effect on cards with other face cards and Jokers attached. There can be no more than three face cards or Jokers attached/played to a single number card at one time. The exception is a Jack: it can be attached as a fourth face card.
 
@@ -1059,8 +1059,8 @@ Player 2
 7.12) UFO - when it is put on a field, every card (except the card UFO is put on) has a chance of disappearing.
 7.13) MUGGY - when it is put on a caravan, no one can put any face card on any card of this caravan. Also protects from nuclear explosion.
 7.14) DIFFICULT PETE - when it is put on a field, all number cards are turning into 10s. Suit and attached face cards remain the same.
-7.15) YES MAN - if there is a YES MAN card on any card of the caravan, the bid of this caravan is 26, no matter what cards are there.
-7.16) FEV - if it is put on a card from one of the player's/enemy's caravans, all cards in hand of the player/enemy are turned into the FEV-host card.
+7.15) YES MAN - if there is a YES MAN card on any card of the caravan, the bid of this caravan is set to 26.
+7.16) FEV - when attached to a card from one of the player's/enemy's caravans, all cards in hand of the player/enemy are turned into the FEV-host card.
 
 7.17) NUCLEAR EXPLOSION - when it is put on a caravan X, every caravan is dropped, except caravan X (and caravans that are protected by Muggy).
 
@@ -1130,5 +1130,8 @@ If this helped you understand the game, thank the author Kyle! To do this, go to
     <string name="death_message_wasteland_3">Your life ends in the Wasteland.</string>
     <string name="empty_string" />
 
+
+    <string name="lvl_up">Level Up!</string>
+    <string name="lvl_up_body">Current level: %1$s.\nXP to next level: %2$s.</string>
 
 </resources>

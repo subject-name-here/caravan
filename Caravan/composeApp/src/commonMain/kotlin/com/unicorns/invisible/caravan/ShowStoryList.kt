@@ -81,32 +81,32 @@ fun ShowStoryList(
         when (showChapter) {
             0 -> {
                 ShowIntro({
-                    save.storyProgress = maxOf(save.storyProgress, 11)
+                    saveGlobal.storyProgress = maxOf(saveGlobal.storyProgress, 11)
                     saveData()
                 }) { showChapter = null }
             }
             11 -> {
                 ShowStoryChapter1(getDeck(showChapter!!), showAlertDialog, {
-                    save.storyProgress = maxOf(save.storyProgress, 12)
+                    saveGlobal.storyProgress = maxOf(saveGlobal.storyProgress, 12)
                     saveData()
                 }) { showChapter = null }
             }
             12 -> {
                 ShowStoryChapter2(getDeck(showChapter!!), showAlertDialog, {
-                    save.storyProgress = maxOf(save.storyProgress, 13)
+                    saveGlobal.storyProgress = maxOf(saveGlobal.storyProgress, 13)
                     saveData()
                 }) { showChapter = null }
             }
             13 -> {
                 LaunchedEffect(Unit) { stopRadio(); soundReduced = true }
                 ShowStoryChapter3(getDeck(showChapter!!), showAlertDialog, {
-                    save.storyProgress = maxOf(save.storyProgress, 19)
+                    saveGlobal.storyProgress = maxOf(saveGlobal.storyProgress, 19)
                     saveData()
                 }) { soundReduced = false; nextSong(); showChapter = null }
             }
             19 -> {
                 ShowStoryEndOfPart1({
-                    save.storyProgress = maxOf(save.storyProgress, 24)
+                    saveGlobal.storyProgress = maxOf(saveGlobal.storyProgress, 24)
                     saveData()
                 }) { showChapter = null }
             }
@@ -215,7 +215,7 @@ fun ShowStoryList(
                 listOf(409, 410, 411, 412, 499),
                 listOf(513, 999)
             )
-            val actsRevealed = when (save.storyProgress) {
+            val actsRevealed = when (saveGlobal.storyProgress) {
                 in (500..999) -> 5
                 in (400..499) -> 4
                 in (30..39) -> 3
@@ -227,7 +227,7 @@ fun ShowStoryList(
             repeat(actsRevealed) {
                 Act(it)
                 for (chapter in acts[it]) {
-                    Chapter(chapter, chapter <= save.storyProgress)
+                    Chapter(chapter, chapter <= saveGlobal.storyProgress)
                 }
             }
         }

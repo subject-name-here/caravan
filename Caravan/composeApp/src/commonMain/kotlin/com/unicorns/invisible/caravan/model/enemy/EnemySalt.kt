@@ -16,6 +16,10 @@ class EnemySalt : EnemyPvEWithBank() {
         get() = Res.string.salt
     override val isEven
         get() = true
+    override val level: Int
+        get() = 2
+    override val isAvailable: Boolean
+        get() = true
 
     override fun createDeck(): CResources = CResources(CustomDeck())
 

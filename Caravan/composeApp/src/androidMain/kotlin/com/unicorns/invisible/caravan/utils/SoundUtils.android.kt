@@ -3,7 +3,7 @@ package com.unicorns.invisible.caravan.utils
 import android.media.MediaPlayer
 import com.unicorns.invisible.caravan.activity
 import com.unicorns.invisible.caravan.playingSongName
-import com.unicorns.invisible.caravan.save
+import com.unicorns.invisible.caravan.saveGlobal
 import com.unicorns.invisible.caravan.soundReduced
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import java.util.concurrent.locks.ReentrantLock
@@ -21,7 +21,7 @@ actual fun stopSoundEffects() {
 
 @OptIn(ExperimentalResourceApi::class)
 actual fun playEffectPlayerSound(soundPath: String, volumeFraction: Int) {
-    val vol = save.soundVolume / volumeFraction
+    val vol = saveGlobal.soundVolume / volumeFraction
     val act = activity ?: return
     val player = MediaPlayer()
     val afd = act.assets.openFd(soundPath.removePrefix("files/"))
@@ -65,7 +65,7 @@ actual fun startAmbient() {
     if (soundReduced) return
 
     val act = activity ?: return
-    val vol = save.ambientVolume / 2
+    val vol = saveGlobal.ambientVolume / 2
 
     val soundPath = "files/raw/ambient${(1..8).random()}.ogg"
     val player = MediaPlayer()
@@ -105,7 +105,7 @@ private val radioLock = ReentrantLock()
 private var radioState = RadioState.PLAYING
 @OptIn(ExperimentalResourceApi::class)
 actual fun playSongFromRadio() {
-    val vol = save.radioVolume
+    val vol = saveGlobal.radioVolume
     val act = activity ?: return
     try {
         val songName = getSongByIndex()!!
@@ -217,7 +217,7 @@ actual fun setRadioVolume(volume: Float) {
 @OptIn(ExperimentalResourceApi::class)
 actual fun playTheme(themePath: String) {
     stopRadio()
-    val vol = save.radioVolume
+    val vol = saveGlobal.radioVolume
 
     val player = MediaPlayer()
     val afd = (activity ?: return).assets.openFd(themePath.removePrefix("files/"))
@@ -246,7 +246,7 @@ actual fun playTheme(themePath: String) {
 
 @OptIn(ExperimentalResourceApi::class)
 actual fun playFrankPhrase(phrasePath: String) {
-    val vol = save.soundVolume / 2
+    val vol = saveGlobal.soundVolume / 2
     val player = MediaPlayer()
     val afd = (activity ?: return).assets.openFd(phrasePath.removePrefix("files/"))
     player.apply {
@@ -271,7 +271,7 @@ actual fun playFrankPhrase(phrasePath: String) {
 
 @OptIn(ExperimentalResourceApi::class)
 actual fun playDeathPhrase(phrasePath: String) {
-    val vol = save.radioVolume
+    val vol = saveGlobal.radioVolume
     val player = MediaPlayer()
     val soundPath = "files/death_messages/${phrasePath}"
     val afd = (activity ?: return).assets.openFd(soundPath.removePrefix("files/"))

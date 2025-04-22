@@ -61,24 +61,24 @@ abstract class SaveDataActivity : ComponentActivity() {
 
     private fun onSnapshotClientInitialized(isInited: Boolean) {
         CoroutineScope(Dispatchers.IO).launch {
-            if (save.playerId == null) {
+            if (saveGlobal.playerId == null) {
                 val playerId = if (isInited) getPlayerId() else ""
 
                 val localSave = loadLocalSave()
                 if (localSave != null && (localSave.playerId == playerId || playerId == "")) {
-                    save = localSave
+                    saveGlobal = localSave
                 } else {
                     val loadedSave = loadGDSave()
                     if (loadedSave != null) {
-                        save = loadedSave
+                        saveGlobal = loadedSave
                     } else {
-                        save = Save(playerId)
+                        saveGlobal = Save(playerId)
                         saveData()
                     }
                 }
 
-                if (save.playerId == "" && playerId != "") {
-                    save.playerId = playerId
+                if (saveGlobal.playerId == "" && playerId != "") {
+                    saveGlobal.playerId = playerId
                     saveData()
                 }
 

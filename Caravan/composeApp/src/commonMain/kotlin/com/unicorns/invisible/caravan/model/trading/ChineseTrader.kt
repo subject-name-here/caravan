@@ -6,14 +6,14 @@ import caravan.composeapp.generated.resources.chinese_trader_empty
 import caravan.composeapp.generated.resources.chinese_trader_welcome
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.primitives.CardWithPrice
-import com.unicorns.invisible.caravan.save
+import com.unicorns.invisible.caravan.saveGlobal
 import kotlinx.serialization.Serializable
 import org.jetbrains.compose.resources.getString
 
 
 @Serializable
 class ChineseTrader : Trader {
-    override fun isOpen() = save.storyCompleted
+    override fun isOpen() = saveGlobal.storyCompleted
     override suspend fun openingCondition() = getString(Res.string.chinese_trader_condition)
 
     override fun getUpdateRate() = 1

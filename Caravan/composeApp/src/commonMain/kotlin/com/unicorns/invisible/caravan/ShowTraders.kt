@@ -43,7 +43,6 @@ import caravan.composeapp.generated.resources.empty_string
 import caravan.composeapp.generated.resources.market
 import caravan.composeapp.generated.resources.your_caps_in_hand
 import caravan.composeapp.generated.resources.your_chips_in_hand
-import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Currency
 import com.unicorns.invisible.caravan.model.primitives.CardFaceSuited
 import com.unicorns.invisible.caravan.model.primitives.CardJoker
@@ -120,21 +119,21 @@ fun CardToBuy(card: CardWithPrice, price: Int, update: () -> Unit) {
                 .background(getTextBackgroundColor())
                 .clickable {
                     val cash = if (card.getBack().currency == Currency.SIERRA_MADRE_CHIPS) {
-                        save.sierraMadreChips
+                        saveGlobal.sierraMadreChips
                     } else {
-                        save.capsInHand
+                        saveGlobal.capsInHand
                     }
                     if (cash < price) {
                         playNoBeep()
                     } else {
                         if (card.getBack().currency == Currency.SIERRA_MADRE_CHIPS) {
-                            save.sierraMadreChips -= price
-                            save.chipsWasted += price
+                            saveGlobal.sierraMadreChips -= price
+                            saveGlobal.chipsWasted += price
                         } else {
-                            save.capsInHand -= price
-                            save.capsWasted += price
+                            saveGlobal.capsInHand -= price
+                            saveGlobal.capsWasted += price
                         }
-                        save.addCard(card)
+                        saveGlobal.addCard(card)
                         playCashSound()
                         saveData()
                         update()
@@ -171,13 +170,13 @@ fun TicketToBuy(price: Int, update: () -> Unit) {
                 .padding(4.dp)
                 .background(getTextBackgroundColor())
                 .clickable {
-                    val cash = save.sierraMadreChips
+                    val cash = saveGlobal.sierraMadreChips
                     if (cash < price) {
                         playNoBeep()
                     } else {
-                        save.sierraMadreChips -= price
-                        save.chipsWasted += price
-                        save.tickets++
+                        saveGlobal.sierraMadreChips -= price
+                        saveGlobal.chipsWasted += price
+                        saveGlobal.tickets++
                         playCashSound()
                         saveData()
                         update()
@@ -212,15 +211,15 @@ fun ChipsToBuy(price: Int, update: () -> Unit) {
                 .padding(4.dp)
                 .background(getTextBackgroundColor())
                 .clickable {
-                    val cash = save.capsInHand
+                    val cash = saveGlobal.capsInHand
                     if (cash < price) {
                         playNoBeep()
                     } else {
-                        save.capsInHand -= price
-                        save.capsWasted += price
+                        saveGlobal.capsInHand -= price
+                        saveGlobal.capsWasted += price
 
-                        save.sierraMadreChips += 10
-                        save.tickets++
+                        saveGlobal.sierraMadreChips += 10
+                        saveGlobal.tickets++
                         playCashSound()
                         saveData()
                         update()
@@ -261,14 +260,14 @@ fun ShowTraders(goBack: () -> Unit) {
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     TextFallout(
-                        stringResource(Res.string.your_caps_in_hand, save.capsInHand),
+                        stringResource(Res.string.your_caps_in_hand, saveGlobal.capsInHand),
                         getTextColor(),
                         getTextStrokeColor(),
                         16.sp,
                         Modifier.padding(4.dp),
                     )
                     TextFallout(
-                        stringResource(Res.string.your_chips_in_hand, save.sierraMadreChips),
+                        stringResource(Res.string.your_chips_in_hand, saveGlobal.sierraMadreChips),
                         getTextColor(),
                         getTextStrokeColor(),
                         16.sp,
@@ -320,7 +319,7 @@ fun ShowTraders(goBack: () -> Unit) {
                     ) {
                         if (selectedTrader.isOpen()) {
                             val cards = selectedTrader.getCards()
-                                .filter { !save.isCardAvailableAlready(it) }
+                                .filter { !saveGlobal.isCardAvailableAlready(it) }
 
                             TextFallout(
                                 if (cards.isEmpty() && selectedTrader !is CommonTrader) {

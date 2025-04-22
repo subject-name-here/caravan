@@ -11,13 +11,12 @@ import com.unicorns.invisible.caravan.model.primitives.CardNumber
 import com.unicorns.invisible.caravan.model.primitives.RankFace
 import com.unicorns.invisible.caravan.model.primitives.RankNumber
 import com.unicorns.invisible.caravan.model.primitives.Suit
-import com.unicorns.invisible.caravan.save
+import com.unicorns.invisible.caravan.saveGlobal
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonObject
 import okio.ByteString.Companion.toByteString
 import org.json.JSONObject
 import java.io.File
@@ -44,7 +43,7 @@ actual fun saveData() {
         return
     }
 
-    val text = json.encodeToString(save)
+    val text = json.encodeToString(saveGlobal)
     try {
         val localSave = getLocalSaveFile(act)
         localSave.bufferedWriter().use {

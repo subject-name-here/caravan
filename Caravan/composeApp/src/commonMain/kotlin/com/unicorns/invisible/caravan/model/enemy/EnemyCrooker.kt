@@ -16,6 +16,8 @@ class EnemyCrooker : EnemyPvEWithBank() {
         get() = Res.string.crooker
     override val isEven: Boolean
         get() = false
+    override val level: Int
+        get() = 4
 
     override fun createDeck(): CResources = CResources(CustomDeck())
 

@@ -17,6 +17,8 @@ class EnemyCaesar : EnemyPvEWithBank() {
         get() = Res.string.caesar
     override val isEven: Boolean
         get() = false
+    override val level: Int
+        get() = 6
 
     override fun createDeck(): CResources {
         return CResources(CustomDeck(CardBack.LEGION))

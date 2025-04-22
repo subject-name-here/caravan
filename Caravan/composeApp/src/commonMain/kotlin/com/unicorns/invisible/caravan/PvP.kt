@@ -182,7 +182,7 @@ fun ShowPvP(
             return
         }
         isRoomCreated = roomNumber.toIntOrNull() ?: return
-        val deckPair = save.selectedDeck
+        val deckPair = saveGlobal.selectedDeck
 //        val deckCodes = customDeckToInts(
 //            if (checkedCustomDeck)
 //                save.getCustomDeckCopy()

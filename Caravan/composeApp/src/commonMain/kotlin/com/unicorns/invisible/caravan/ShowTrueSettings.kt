@@ -68,15 +68,15 @@ fun ShowTrueSettings(
     showAlertDialog: (String, String, (() -> Unit)?) -> Unit,
     goBack: () -> Unit
 ) {
-    var speed by remember { mutableStateOf(save.animationSpeed) }
-    var intro by remember { mutableStateOf(save.useCaravanIntro) }
-    var playInBack by remember { mutableStateOf(save.playRadioInBack) }
+    var speed by remember { mutableStateOf(saveGlobal.animationSpeed) }
+    var intro by remember { mutableStateOf(saveGlobal.useCaravanIntro) }
+    var playInBack by remember { mutableStateOf(saveGlobal.playRadioInBack) }
     val scope = rememberCoroutineScope()
 
     MenuItemOpen(stringResource(Res.string.menu_settings), stringResource(Res.string.save), Alignment.TopCenter, {
-        save.animationSpeed = speed
-        save.useCaravanIntro = intro
-        save.playRadioInBack = playInBack
+        saveGlobal.animationSpeed = speed
+        saveGlobal.useCaravanIntro = intro
+        saveGlobal.playRadioInBack = playInBack
         saveData()
         goBack()
     }) {
@@ -132,7 +132,7 @@ fun ShowTrueSettings(
                     } else {
                         AnimationSpeed.NORMAL
                     }
-                }) { save.animationSpeed != AnimationSpeed.LAGGY }
+                }) { saveGlobal.animationSpeed != AnimationSpeed.LAGGY }
                 Spacer(Modifier.height(12.dp))
                 SwitchSetting(stringResource(Res.string.intro_music), { intro }, { intro = !intro })
                 Spacer(Modifier.height(12.dp))

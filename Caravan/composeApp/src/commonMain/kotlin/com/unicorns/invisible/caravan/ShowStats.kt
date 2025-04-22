@@ -45,9 +45,9 @@ import org.jetbrains.compose.resources.stringResource
 @Composable
 fun ShowStats(goBack: () -> Unit) {
     MenuItemOpen(stringResource(Res.string.pve_stats), "<-", Alignment.TopCenter, goBack) {
-        val started = save.gamesStarted
-        val finished = save.gamesFinished
-        val won = save.wins
+        val started = saveGlobal.gamesStarted
+        val finished = saveGlobal.gamesFinished
+        val won = saveGlobal.wins
         val loss = finished - won
         Column(
             modifier = Modifier
@@ -68,7 +68,7 @@ fun ShowStats(goBack: () -> Unit) {
             }
             Spacer(modifier = Modifier.height(12.dp))
             TextFallout(
-                stringResource(Res.string.player_level, save.lvl),
+                stringResource(Res.string.player_level, saveGlobal.lvl),
                 getTextColor(),
                 getTextStrokeColor(),
                 24.sp,
@@ -76,7 +76,7 @@ fun ShowStats(goBack: () -> Unit) {
             )
             Spacer(modifier = Modifier.height(8.dp))
             TextFallout(
-                stringResource(Res.string.xp_left, save.needXpToNextLevel() - save.xp),
+                stringResource(Res.string.xp_left, saveGlobal.needXpToNextLevel() - saveGlobal.xp),
                 getTextColor(),
                 getTextStrokeColor(),
                 16.sp,
@@ -98,15 +98,15 @@ fun ShowStats(goBack: () -> Unit) {
             Spacer(modifier = Modifier.height(8.dp))
             StatsItem(text = stringResource(Res.string.pve_games_won, won))
             Spacer(modifier = Modifier.height(8.dp))
-            StatsItem(text = stringResource(Res.string.pve_games_won_with_bet, save.winsWithBet))
+            StatsItem(text = stringResource(Res.string.pve_games_won_with_bet, saveGlobal.winsWithBet))
             Spacer(modifier = Modifier.height(8.dp))
-            StatsItem(text = stringResource(Res.string.pve_games_started_pvp, save.pvpGames))
+            StatsItem(text = stringResource(Res.string.pve_games_started_pvp, saveGlobal.pvpGames))
             Spacer(modifier = Modifier.height(8.dp))
-            StatsItem(text = stringResource(Res.string.pve_games_won_pvp, save.pvpWins))
+            StatsItem(text = stringResource(Res.string.pve_games_won_pvp, saveGlobal.pvpWins))
             Spacer(modifier = Modifier.height(8.dp))
-            StatsItem(text = stringResource(Res.string.pve_caps_bet, save.capsBet))
+            StatsItem(text = stringResource(Res.string.pve_caps_bet, saveGlobal.capsBet))
             Spacer(modifier = Modifier.height(8.dp))
-            StatsItem(text = stringResource(Res.string.pve_caps_won, save.capsWon))
+            StatsItem(text = stringResource(Res.string.pve_caps_won, saveGlobal.capsWon))
             Spacer(modifier = Modifier.height(12.dp))
             TextFallout(
                 stringResource(Res.string.pve_percentiles),
@@ -152,13 +152,13 @@ fun ShowStats(goBack: () -> Unit) {
                 Modifier,
             )
             Spacer(modifier = Modifier.height(12.dp))
-            StatsItem(text = stringResource(Res.string.pve_caps_wasted, save.capsWasted))
+            StatsItem(text = stringResource(Res.string.pve_caps_wasted, saveGlobal.capsWasted))
             Spacer(modifier = Modifier.height(8.dp))
-            StatsItem(text = stringResource(Res.string.pve_chips_wasted, save.chipsWasted))
+            StatsItem(text = stringResource(Res.string.pve_chips_wasted, saveGlobal.chipsWasted))
             Spacer(modifier = Modifier.height(8.dp))
-            StatsItem(text = stringResource(Res.string.pve_challenges_completed, save.challengesCompleted))
+            StatsItem(text = stringResource(Res.string.pve_challenges_completed, saveGlobal.challengesCompleted))
             Spacer(modifier = Modifier.height(8.dp))
-            StatsItem(text = stringResource(Res.string.pve_max_strike, save.maxStrike))
+            StatsItem(text = stringResource(Res.string.pve_max_strike, saveGlobal.maxStrike))
             Spacer(modifier = Modifier.height(12.dp))
         }
     }

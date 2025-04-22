@@ -128,7 +128,7 @@ fun ShowGame(
             if (isBlitz || game.enemy.isSpeedOverriding())
                 AnimationSpeed.NONE
             else
-                save.animationSpeed
+                saveGlobal.animationSpeed
         )
     }
 
@@ -700,7 +700,7 @@ fun RowScope.CaravanOnField(
             width = state.layoutInfo.viewportSize.width
         }
     }
-    val modifierOffset = 14.dp * (if (isEnemyCaravan) -1 else 1)
+    val modifierOffset = 16.dp * (if (isEnemyCaravan) -1 else 1)
     Column(Modifier.wrapContentHeight().weight(0.25f)) {
         if (!isEnemyCaravan && !isInitStage && !caravan.isEmpty()) {
             LaunchedEffect(caravan.recomposeResources) {}

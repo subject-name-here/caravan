@@ -6,7 +6,7 @@ import caravan.composeapp.generated.resources.vault_21_trader_empty
 import caravan.composeapp.generated.resources.vault_21_trader_welcome
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.primitives.CardWithPrice
-import com.unicorns.invisible.caravan.save
+import com.unicorns.invisible.caravan.saveGlobal
 import com.unicorns.invisible.caravan.utils.getNow
 import kotlinx.serialization.Serializable
 import org.jetbrains.compose.resources.getString
@@ -16,7 +16,7 @@ import org.jetbrains.compose.resources.getString
 class Vault21Trader : Trader {
     override fun isOpen(): Boolean {
         val dayNumber = getNow().dayOfMonth
-        return dayNumber == 21 || save.wins >= 21
+        return dayNumber == 21 || saveGlobal.wins >= 21
     }
     override suspend fun openingCondition() =
         getString(Res.string.vault_21_trader_condition)

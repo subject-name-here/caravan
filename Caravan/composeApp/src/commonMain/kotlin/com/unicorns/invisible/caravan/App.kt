@@ -93,6 +93,8 @@ import caravan.composeapp.generated.resources.intro_tip_l11
 import caravan.composeapp.generated.resources.intro_tip_new_world
 import caravan.composeapp.generated.resources.intro_tip_snuffles
 import caravan.composeapp.generated.resources.intro_tip_vault
+import caravan.composeapp.generated.resources.lvl_up
+import caravan.composeapp.generated.resources.lvl_up_body
 import caravan.composeapp.generated.resources.market
 import caravan.composeapp.generated.resources.menu_about
 import caravan.composeapp.generated.resources.menu_deck
@@ -161,7 +163,7 @@ import org.jetbrains.compose.resources.stringResource
 import kotlin.random.Random
 
 
-var save = Save(null)
+var saveGlobal = Save(null)
 var isSaveLoaded by mutableStateOf(false)
 
 var soundReduced: Boolean = false
@@ -173,7 +175,7 @@ private var soundReducedLiveData by mutableStateOf(soundReduced)
 var playingSongName by mutableStateOf("")
 
 val styleId
-    get() = Style.entries.getOrElse(save.styleId) { Style.PIP_BOY }
+    get() = Style.entries.getOrElse(saveGlobal.styleId) { Style.PIP_BOY }
 private var styleIdMutableData by mutableStateOf(styleId)
 
 @Composable
@@ -427,6 +429,8 @@ fun Screen() {
     var alertGoBack: (() -> Unit)? by rememberScoped { mutableStateOf(null) }
     var isCustomDeckAlert by remember { mutableStateOf(false) }
 
+    var showAlertDialogLevelUp by remember { mutableStateOf(false) }
+
     fun showAlertDialog(header: String, message: String, goBack: (() -> Unit)?) {
         alertDialogHeader = header
         alertDialogMessage = message
@@ -440,40 +444,44 @@ fun Screen() {
         isCustomDeckAlert = false
     }
 
-    if (showAlertDialog) {
+    @Composable
+    fun AlertDialogCustom(
+        header: String,
+        body: String,
+        onDismissRequest: () -> Unit,
+        confirmButtonText: String,
+        onConfirmClick: () -> Unit,
+        dismissButtonText: String?,
+        onDismissClick: (() -> Unit)?,
+    ) {
         AlertDialog(
-            onDismissRequest = { hideAlertDialog() },
+            onDismissRequest = onDismissRequest,
             confirmButton = @Composable {
                 TextFallout(
-                    stringResource(Res.string.close),
+                    confirmButtonText,
                     getDialogBackground(),
                     getDialogBackground(),
                     18.sp,
                     Modifier
                         .padding(bottom = 4.dp)
                         .background(getDialogTextColor())
-                        .clickableCancel { hideAlertDialog() }
+                        .clickableCancel { onConfirmClick() }
                         .padding(4.dp),
                     textAlignment = TextAlign.Start
                 )
             },
             modifier = Modifier.border(width = 4.dp, color = getTextColor()),
             dismissButton = @Composable {
-                if (alertGoBack != null) {
+                if (dismissButtonText != null) {
                     TextFallout(
-                        if (isCustomDeckAlert) {
-                            stringResource(Res.string.deck_custom)
-                        } else {
-                            stringResource(Res.string.back_to_menu)
-                        },
+                        dismissButtonText,
                         getDialogBackground(),
                         getDialogBackground(), 18.sp,
                         Modifier
                             .padding(bottom = 4.dp)
                             .background(getDialogTextColor())
                             .clickableCancel {
-                                hideAlertDialog()
-                                alertGoBack?.invoke()
+                                onDismissClick?.invoke()
                             }
                             .padding(4.dp)
                     )
@@ -481,7 +489,7 @@ fun Screen() {
             },
             title = @Composable {
                 TextFallout(
-                    alertDialogHeader,
+                    header,
                     getDialogTextColor(),
                     getDialogTextColor(),
                     24.sp, Modifier,
@@ -490,7 +498,7 @@ fun Screen() {
             },
             text = @Composable {
                 TextFallout(
-                    alertDialogMessage,
+                    body,
                     getDialogTextColor(),
                     getDialogTextColor(),
                     16.sp, Modifier,
@@ -505,6 +513,36 @@ fun Screen() {
                 dismissOnClickOutside = false,
                 usePlatformDefaultWidth = true
             )
+        )
+    }
+
+    if (showAlertDialog) {
+        AlertDialogCustom(
+            alertDialogHeader,
+            alertDialogMessage,
+            ::hideAlertDialog,
+            stringResource(Res.string.close),
+            ::hideAlertDialog,
+            if (alertGoBack != null) {
+                if (isCustomDeckAlert) {
+                    stringResource(Res.string.deck_custom)
+                } else {
+                    stringResource(Res.string.back_to_menu)
+                }
+            } else {
+                null
+            }
+        ) { hideAlertDialog(); alertGoBack?.invoke() }
+    }
+
+    if (showAlertDialogLevelUp) {
+        AlertDialogCustom(
+            stringResource(Res.string.lvl_up),
+            stringResource(Res.string.lvl_up_body, saveGlobal.lvl, saveGlobal.needXpToNextLevel()),
+            { showAlertDialogLevelUp = false },
+            stringResource(Res.string.close),
+            { showAlertDialogLevelUp = false },
+            null, null
         )
     }
 
@@ -547,9 +585,9 @@ fun Screen() {
                 )
             },
             text = @Composable {
-                var radioVolume by remember { mutableFloatStateOf(save.radioVolume) }
-                var soundVolume by remember { mutableFloatStateOf(save.soundVolume) }
-                var ambientVolume by remember { mutableFloatStateOf(save.ambientVolume) }
+                var radioVolume by remember { mutableFloatStateOf(saveGlobal.radioVolume) }
+                var soundVolume by remember { mutableFloatStateOf(saveGlobal.soundVolume) }
+                var ambientVolume by remember { mutableFloatStateOf(saveGlobal.ambientVolume) }
 
                 @Composable
                 fun Setting(title: String, get: () -> Float, set: (Float) -> Unit, onFinished: () -> Unit) {
@@ -571,17 +609,17 @@ fun Screen() {
                 Column {
                     Setting(stringResource(Res.string.radio), { radioVolume }, {
                         radioVolume = it
-                        save.radioVolume = it
+                        saveGlobal.radioVolume = it
                         setRadioVolume(it)
                     }, {})
                     Setting(stringResource(Res.string.ambient), { ambientVolume }, {
                         ambientVolume = it
-                        save.ambientVolume = it
+                        saveGlobal.ambientVolume = it
                         setAmbientVolume(it / 2)
                     }, {})
                     Setting(stringResource(Res.string.sfx), { soundVolume }, {
                         soundVolume = it
-                        save.soundVolume = it
+                        saveGlobal.soundVolume = it
                     }) {
                         CoroutineScope(Dispatchers.Unconfined).launch {
                             playNotificationSound()
@@ -719,7 +757,7 @@ fun Screen() {
                     ShowAbout { showAbout = false }
                 }
                 showPvE -> {
-                    if (!save.getCurrentCustomDeck().isCustomDeckValid()) {
+                    if (!saveGlobal.getCurrentCustomDeck().isCustomDeckValid()) {
                         showAlertCustomDeck()
                         showPvE = false
                     } else {
@@ -727,7 +765,7 @@ fun Screen() {
                     }
                 }
                 showPvP -> {
-                    if (!save.getCurrentCustomDeck().isCustomDeckValid()) {
+                    if (!saveGlobal.getCurrentCustomDeck().isCustomDeckValid()) {
                         showAlertCustomDeck()
                         showPvP = false
                     } else {
@@ -736,7 +774,7 @@ fun Screen() {
                 }
                 showVision -> {
                     ShowStyles({
-                        save.styleId = it
+                        saveGlobal.styleId = it
                         styleIdMutableData = Style.entries[it]
                         saveData()
                     }) { showVision = false }
@@ -756,17 +794,17 @@ fun Screen() {
                 else -> {
                     LaunchedEffect(Unit) {
                         val currentHash = getCurrentDateHashCode()
-                        if (currentHash != save.dailyHash) {
+                        if (currentHash != saveGlobal.dailyHash) {
                             val capsFound = Random.nextInt(15, 31)
                             showAlertDialog(
                                 getString(Res.string.daily_update_head),
                                 getString(Res.string.daily_update_body, capsFound.toString()),
                                 null
                             )
-                            save.dailyHash = currentHash
-                            save.updateChallenges()
-                            save.updateEnemiesBanks()
-                            save.capsInHand += capsFound
+                            saveGlobal.dailyHash = currentHash
+                            saveGlobal.updateChallenges()
+                            saveGlobal.updateEnemiesBanks()
+                            saveGlobal.capsInHand += capsFound
                             saveData()
                         }
                     }
@@ -1046,12 +1084,12 @@ fun MainMenu(
 }
 
 fun processChallengesMove(move: Challenge.Move, game: Game) {
-    (save.challengesNew + save.challengesInf).forEach { challenge ->
+    (saveGlobal.challengesNew + saveGlobal.challengesInf).forEach { challenge ->
         challenge.processMove(move, game)
     }
 }
 fun processChallengesGameOver(game: Game) {
-    (save.challengesNew + save.challengesInf).forEach { challenge ->
+    (saveGlobal.challengesNew + saveGlobal.challengesInf).forEach { challenge ->
         challenge.processGameResult(game)
     }
 }

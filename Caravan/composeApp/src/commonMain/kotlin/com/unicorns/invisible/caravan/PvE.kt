@@ -5,6 +5,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -12,7 +13,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
@@ -56,8 +58,6 @@ import caravan.composeapp.generated.resources.story_mode
 import caravan.composeapp.generated.resources.time_limit_anyone
 import caravan.composeapp.generated.resources.tower
 import caravan.composeapp.generated.resources.tutorial
-import caravan.composeapp.generated.resources.wild_wasteland
-import caravan.composeapp.generated.resources.xtras
 import caravan.composeapp.generated.resources.you_have_won
 import caravan.composeapp.generated.resources.you_lose
 import caravan.composeapp.generated.resources.you_win
@@ -88,7 +88,9 @@ import com.unicorns.invisible.caravan.model.primitives.CustomDeck
 import com.unicorns.invisible.caravan.save.saveData
 import com.unicorns.invisible.caravan.utils.CheckboxCustom
 import com.unicorns.invisible.caravan.utils.MenuItemOpen
+import com.unicorns.invisible.caravan.utils.MenuItemOpenNoScroll
 import com.unicorns.invisible.caravan.utils.TextFallout
+import com.unicorns.invisible.caravan.utils.VertScrollbar
 import com.unicorns.invisible.caravan.utils.clickableOk
 import com.unicorns.invisible.caravan.utils.clickableSelect
 import com.unicorns.invisible.caravan.utils.getBackgroundColor
@@ -191,15 +193,15 @@ fun ShowPvE(
     fun StartWithEnemy(enemy: EnemyPve, goBack: () -> Unit) {
         StartGame(
             if (enemy.isEven)
-                CollectibleDeck(save.selectedDeck)
+                CollectibleDeck(saveGlobal.selectedDeck)
             else
-                save.getCurrentDeckCopy(),
+                saveGlobal.getCurrentDeckCopy(),
             enemy, showAlertDialog, goBack
         )
     }
 
     if (playAgainstEnemy != -1) {
-        val enemyList = save.enemiesGroups3.flatten()
+        val enemyList = saveGlobal.enemiesGroups3.flatten()
         if (playAgainstEnemy !in enemyList.indices) {
             playAgainstEnemy = -1
             return
@@ -231,62 +233,53 @@ fun ShowPvE(
                     HorizontalDivider(color = getDividerColor())
                 }
             ) {
-                Tab(selectedTab == 0, { playSelectSound(); selectedTab = 0 },
-                    selectedContentColor = getSelectionColor(),
-                    unselectedContentColor = getTextBackgroundColor()
-                ) {
-                    TextFallout(
-                        stringResource(Res.string.deck_o_54),
-                        getTextColor(),
-                        getTextStrokeColor(),
-                        16.sp,
-                        Modifier.padding(4.dp),
-                    )
+                @Composable
+                fun LevelTab(lvl: Int) {
+                    Tab(selectedTab == lvl - 1,
+                        {
+                            if (saveGlobal.lvl >= lvl) {
+                                playSelectSound(); selectedTab = lvl - 1
+                            } else {
+                                playCloseSound()
+                            }
+                        },
+                        selectedContentColor = getSelectionColor(),
+                        unselectedContentColor = getTextBackgroundColor()
+                    ) {
+                        TextFallout(
+                            "LVL $lvl",
+                            getTextColor(),
+                            getTextStrokeColor(),
+                            16.sp,
+                            Modifier.padding(4.dp),
+                        )
+                    }
                 }
-                Tab(
-                    selectedTab == 1, { playSelectSound(); selectedTab = 1 },
-                    selectedContentColor = getSelectionColor(),
-                    unselectedContentColor = getTextBackgroundColor()
-                ) {
-                    TextFallout(
-                        stringResource(Res.string.custom_deck),
-                        getTextColor(),
-                        getTextStrokeColor(),
-                        16.sp,
-                        Modifier.padding(4.dp),
-                    )
-                }
-                Tab(
-                    selectedTab == 2, { playSelectSound(); selectedTab = 2 },
-                    selectedContentColor = getSelectionColor(),
-                    unselectedContentColor = getTextBackgroundColor()
-                ) {
-                    TextFallout(
-                        stringResource(Res.string.wild_wasteland),
-                        getTextColor(),
-                        getTextStrokeColor(),
-                        16.sp,
-                        Modifier.padding(4.dp),
-                    )
-                }
-                Tab(
-                    selectedTab == 3, { playSelectSound(); selectedTab = 3 },
-                    selectedContentColor = getSelectionColor(),
-                    unselectedContentColor = getTextBackgroundColor()
-                ) {
-                    TextFallout(
-                        stringResource(Res.string.xtras),
-                        getTextColor(),
-                        getTextStrokeColor(),
-                        16.sp,
-                        Modifier.padding(4.dp),
-                    )
+
+                repeat(6) {
+                    LevelTab(it + 1)
                 }
             }
 
             @Composable
             fun OpponentItem(enemy: EnemyPve, onClick: () -> Unit) {
-                val line = when (enemy) {
+                if (!enemy.isAvailable) {
+                    TextFallout(
+                        "NOT AVAILABLE IN ALPHA",
+                        getTextColor(),
+                        getTextStrokeColor(),
+                        18.sp,
+                        Modifier
+                            .background(getTextBackgroundColor())
+                            .padding(4.dp),
+                    )
+                    return
+                }
+                val line = if (enemy.isEven) {
+                    stringResource(Res.string.deck_o_54)
+                } else {
+                    stringResource(Res.string.custom_deck)
+                } + ": " + when (enemy) {
                     is EnemyPvENoBank -> {
                         val back = when (enemy) {
                             is EnemyHanlon -> CardBack.NCR
@@ -309,11 +302,7 @@ fun ShowPvE(
                     }
                 }
                 TextFallout(
-                    when {
-                        enemy.isAvailable == 0 -> "[&*$#]"
-                        enemy.isAvailable > save.lvl -> stringResource(Res.string.closed)
-                        else -> line
-                    },
+                    line,
                     getTextColor(),
                     getTextStrokeColor(),
                     18.sp,
@@ -330,18 +319,18 @@ fun ShowPvE(
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                val enemies = save.enemiesGroups3[selectedTab]
+                val enemies = saveGlobal.enemiesGroups3.flatten().filter { it.level == selectedTab + 1 }
                 Spacer(modifier = Modifier.height(8.dp))
                 val m1 = stringResource(Res.string.closed)
                 val m2 = "This content is unavailable."
                 val m3 = stringResource(Res.string.lvl_is_not_enough)
                 enemies.forEach {
                     OpponentItem(it) {
-                        if (it.isAvailable != 0 && it.isAvailable <= save.lvl) {
+                        if (it.level != 0 && it.level <= saveGlobal.lvl) {
                             playVatsEnter()
-                            playAgainstEnemy = save.enemiesGroups3.flatten().indexOf(it)
+                            playAgainstEnemy = saveGlobal.enemiesGroups3.flatten().indexOf(it)
                         } else {
-                            if (it.isAvailable == 0) {
+                            if (it.level == 0) {
                                 showAlertDialog(m1, m2, null)
                             } else {
                                 showAlertDialog(m1, m3, null)
@@ -383,16 +372,16 @@ fun StartGame(
         ).also {
             if (enemy is EnemyPvEWithBank) {
                 if (isBlitz) {
-                    save.sierraMadreChips -= myBet
+                    saveGlobal.sierraMadreChips -= myBet
                 } else {
-                    save.capsInHand -= myBet
+                    saveGlobal.capsInHand -= myBet
                 }
-                save.capsBet += myBet
-                save.table += myBet + enemyBet
+                saveGlobal.capsBet += myBet
+                saveGlobal.table += myBet + enemyBet
                 enemy.curBets -= enemyBet / enemy.bet
             }
 
-            save.gamesStarted++
+            saveGlobal.gamesStarted++
             saveData()
             it.startGame()
         }
@@ -418,8 +407,8 @@ fun StartGame(
         it.onWin = {
             processChallengesGameOver(it)
 
-            save.gamesFinished++
-            save.wins++
+            saveGlobal.gamesFinished++
+            saveGlobal.wins++
 
             if (myBet == 0) {
                 playWinSoundAlone()
@@ -427,7 +416,7 @@ fun StartGame(
                 playWinSound()
             }
 
-            val xpReward = save.increaseXpFromDefeatingEnemy(enemy.isAvailable, mult)
+            val xpReward = saveGlobal.increaseXpFromDefeatingEnemy(enemy.level, mult)
             if (enemy is EnemyPvEWithBank) {
                 val reward = myBet + enemyBet
                 if (isBlitz) {
@@ -436,20 +425,20 @@ fun StartGame(
                     } else {
                         enemy.winsBlitzNoBet++
                     }
-                    save.sierraMadreChips += reward
+                    saveGlobal.sierraMadreChips += reward
                 } else {
                     if (myBet > 0) {
                         enemy.winsBet++
                     } else {
                         enemy.winsNoBet++
                     }
-                    save.capsInHand += reward
+                    saveGlobal.capsInHand += reward
                 }
-                save.table -= reward
+                saveGlobal.table -= reward
 
-                save.capsWon += reward
+                saveGlobal.capsWon += reward
                 if (reward > 0) {
-                    save.winsWithBet++
+                    saveGlobal.winsWithBet++
                 }
 
                 scope.launch {
@@ -494,23 +483,23 @@ fun StartGame(
                 }
             }
 
-            if (enemyName !in save.enemiesDefeated) {
-                save.enemiesDefeated.add(enemyName)
-                save.currentStrike++
+            if (enemyName !in saveGlobal.enemiesDefeated) {
+                saveGlobal.enemiesDefeated.add(enemyName)
+                saveGlobal.currentStrike++
             }
             saveData()
         }
         it.onLose = {
             playLoseSound()
             if (enemy is EnemyPvEWithBank) {
-                save.table -= myBet + enemyBet
+                saveGlobal.table -= myBet + enemyBet
                 enemy.curBets += enemyBet / enemy.bet
             }
 
-            save.gamesFinished++
-            val xpReward = save.increaseXpFromLosingToEnemy(enemy.isAvailable, mult / 10)
-            save.currentStrike = 0
-            save.enemiesDefeated.clear()
+            saveGlobal.gamesFinished++
+            val xpReward = saveGlobal.increaseXpFromLosingToEnemy(enemy.level, mult / 10)
+            saveGlobal.currentStrike = 0
+            saveGlobal.enemiesDefeated.clear()
             saveData()
 
             scope.launch {
@@ -571,195 +560,201 @@ fun ShowBettingScreen(
         }
     }
 
-    MenuItemOpen("$$$", "<-", Alignment.Center, { goBack() }) {
-        Box(Modifier.width(maxWidth).height(maxHeight), contentAlignment = Alignment.Center) {
+    MenuItemOpenNoScroll("$$$", "<-", { goBack() }) {
+        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             Box(Modifier.fillMaxSize().rotate(180f).getTableBackground()) {}
-            Box(
+            BoxWithConstraints(
                 Modifier.fillMaxSize().padding(bottom = 8.dp),
                 contentAlignment = Alignment.Center
-            ) { key(selectedOption) {
-                Column(
-                    Modifier
-                        .background(getBackgroundColor()),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                ) {
-                    TextFallout(
-                        stringResource(Res.string.enemy_name, enemyName),
-                        getTextColor(),
-                        getTextStrokeColor(),
-                        16.sp,
+            ) {
+                val verticalScrollState = rememberScrollState()
+                key(selectedOption) {
+                    Column(
                         Modifier
-                            .fillMaxWidth()
-                            .padding(8.dp),
-                    )
-
-                    if (enemy is EnemyPvEWithBank) {
-                        if (enemy.curBets > 1) {
-                            TextFallout(
-                                stringResource(Res.string.enemy_s_bet_can_raise, enemy.bet, enemy.bet * 2),
-                                getTextColor(),
-                                getTextStrokeColor(),
-                                16.sp,
-                                Modifier
-                                    .fillMaxWidth()
-                                    .padding(8.dp),
-                            )
-                        } else {
-                            TextFallout(
-                                stringResource(Res.string.enemy_s_bet, if (enemy.curBets == 0) 0 else enemy.bet),
-                                getTextColor(),
-                                getTextStrokeColor(),
-                                16.sp,
-                                Modifier
-                                    .fillMaxWidth()
-                                    .padding(8.dp),
-                            )
-                        }
-                        if (!isBlitz) {
-                            TextFallout(
-                                stringResource(Res.string.your_caps, save.capsInHand),
-                                getTextColor(),
-                                getTextStrokeColor(),
-                                16.sp,
-                                Modifier
-                                    .fillMaxWidth()
-                                    .padding(8.dp),
-                            )
-                        } else {
-                            TextFallout(
-                                stringResource(Res.string.your_chips, save.sierraMadreChips),
-                                getTextColor(),
-                                getTextStrokeColor(),
-                                16.sp,
-                                Modifier
-                                    .fillMaxWidth()
-                                    .padding(8.dp),
-                            )
-                        }
-                        Spacer(Modifier.height(16.dp))
-
-                        TextFallout(
-                            stringResource(Res.string.bet_call),
-                            getTextColor(),
-                            getTextStrokeColor(),
-                            24.sp,
-                            Modifier
-                                .let {
-                                    if (selectedOption == 1)
-                                        it.border(width = 3.dp, color = getTextBackgroundColor())
-                                    else
-                                        it
-                                }
-                                .padding(4.dp)
-                                .clickable {
-                                    if (isBlitz) {
-                                        if (enemy.bet <= save.sierraMadreChips) {
-                                            playSelectSound()
-                                            selectedOption = 1
-                                        } else {
-                                            playCloseSound()
-                                        }
-                                    } else {
-                                        if (enemy.bet <= save.capsInHand) {
-                                            playSelectSound()
-                                            selectedOption = 1
-                                        } else {
-                                            playCloseSound()
-                                        }
-                                    }
-                                }
-                                .background(getTextBackgroundColor())
-                                .padding(8.dp),
-                        )
-                        Spacer(Modifier.height(8.dp))
-
-                        TextFallout(
-                            stringResource(Res.string.bet_raise2),
-                            getTextColor(),
-                            getTextStrokeColor(),
-                            24.sp,
-                            Modifier
-                                .let {
-                                    if (selectedOption == 2)
-                                        it.border(width = 3.dp, color = getTextBackgroundColor())
-                                    else
-                                        it
-                                }
-                                .padding(4.dp)
-                                .clickable {
-                                    if (isBlitz) {
-                                        if (enemy.bet * 2 <= save.sierraMadreChips) {
-                                            playSelectSound()
-                                            selectedOption = 2
-                                        } else {
-                                            playCloseSound()
-                                        }
-                                    } else {
-                                        if (enemy.bet * 2 <= save.capsInHand) {
-                                            playSelectSound()
-                                            selectedOption = 2
-                                        } else {
-                                            playCloseSound()
-                                        }
-                                    }
-                                }
-                                .background(getTextBackgroundColor())
-                                .padding(8.dp),
-                        )
-                    }
-
-                    Spacer(Modifier.height(16.dp))
-                    Row(
-                        Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.Center,
-                        verticalAlignment = Alignment.CenterVertically
+                            .background(getBackgroundColor())
+                            .verticalScroll(state = verticalScrollState).padding(horizontal = 4.dp),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
                         TextFallout(
-                            stringResource(Res.string.time_limit_anyone),
+                            stringResource(Res.string.enemy_name, enemyName),
                             getTextColor(),
                             getTextStrokeColor(),
-                            18.sp,
-                            Modifier.padding(8.dp),
+                            16.sp,
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(8.dp),
                         )
-                        CheckboxCustom({ isBlitz }, { isBlitz = it; selectedOption = 0 }) { true }
 
-                    }
-
-                    if (enemy is EnemyPvEWithBank) {
-                        TextFallout(
-                            stringResource(
-                                if (isBlitz)
-                                    Res.string.your_expected_reward_chips
-                                else
-                                    Res.string.your_expected_reward,
-                                getMyBet() + getEnemyBet()
-                            ),
-                            getTextColor(),
-                            getTextStrokeColor(),
-                            18.sp,
-                            Modifier.fillMaxWidth().padding(8.dp),
-                        )
-                    }
-                    TextFallout(
-                        stringResource(Res.string.let_s_go),
-                        getTextColor(),
-                        getTextStrokeColor(),
-                        24.sp,
-                        Modifier
-                            .clickableOk {
-                                setIsBlitz(isBlitz)
-                                setBet(getMyBet())
-                                setEnemyBet(getEnemyBet())
-                                saveData()
-                                goForward()
+                        if (enemy is EnemyPvEWithBank) {
+                            if (enemy.curBets > 1) {
+                                TextFallout(
+                                    stringResource(Res.string.enemy_s_bet_can_raise, enemy.bet, enemy.bet * 2),
+                                    getTextColor(),
+                                    getTextStrokeColor(),
+                                    16.sp,
+                                    Modifier
+                                        .fillMaxWidth()
+                                        .padding(8.dp),
+                                )
+                            } else {
+                                TextFallout(
+                                    stringResource(Res.string.enemy_s_bet, if (enemy.curBets == 0) 0 else enemy.bet),
+                                    getTextColor(),
+                                    getTextStrokeColor(),
+                                    16.sp,
+                                    Modifier
+                                        .fillMaxWidth()
+                                        .padding(8.dp),
+                                )
                             }
-                            .background(getTextBackgroundColor())
-                            .padding(8.dp),
-                    )
-                    Spacer(Modifier.height(12.dp))
+                            if (!isBlitz) {
+                                TextFallout(
+                                    stringResource(Res.string.your_caps, saveGlobal.capsInHand),
+                                    getTextColor(),
+                                    getTextStrokeColor(),
+                                    16.sp,
+                                    Modifier
+                                        .fillMaxWidth()
+                                        .padding(8.dp),
+                                )
+                            } else {
+                                TextFallout(
+                                    stringResource(Res.string.your_chips, saveGlobal.sierraMadreChips),
+                                    getTextColor(),
+                                    getTextStrokeColor(),
+                                    16.sp,
+                                    Modifier
+                                        .fillMaxWidth()
+                                        .padding(8.dp),
+                                )
+                            }
+                            Spacer(Modifier.height(16.dp))
+
+                            TextFallout(
+                                stringResource(Res.string.bet_call),
+                                getTextColor(),
+                                getTextStrokeColor(),
+                                24.sp,
+                                Modifier
+                                    .let {
+                                        if (selectedOption == 1)
+                                            it.border(width = 3.dp, color = getTextBackgroundColor())
+                                        else
+                                            it
+                                    }
+                                    .padding(4.dp)
+                                    .clickable {
+                                        if (isBlitz) {
+                                            if (enemy.bet <= saveGlobal.sierraMadreChips) {
+                                                playSelectSound()
+                                                selectedOption = 1
+                                            } else {
+                                                playCloseSound()
+                                            }
+                                        } else {
+                                            if (enemy.bet <= saveGlobal.capsInHand) {
+                                                playSelectSound()
+                                                selectedOption = 1
+                                            } else {
+                                                playCloseSound()
+                                            }
+                                        }
+                                    }
+                                    .background(getTextBackgroundColor())
+                                    .padding(8.dp),
+                            )
+                            Spacer(Modifier.height(8.dp))
+
+                            TextFallout(
+                                stringResource(Res.string.bet_raise2),
+                                getTextColor(),
+                                getTextStrokeColor(),
+                                24.sp,
+                                Modifier
+                                    .let {
+                                        if (selectedOption == 2)
+                                            it.border(width = 3.dp, color = getTextBackgroundColor())
+                                        else
+                                            it
+                                    }
+                                    .padding(4.dp)
+                                    .clickable {
+                                        if (isBlitz) {
+                                            if (enemy.bet * 2 <= saveGlobal.sierraMadreChips) {
+                                                playSelectSound()
+                                                selectedOption = 2
+                                            } else {
+                                                playCloseSound()
+                                            }
+                                        } else {
+                                            if (enemy.bet * 2 <= saveGlobal.capsInHand) {
+                                                playSelectSound()
+                                                selectedOption = 2
+                                            } else {
+                                                playCloseSound()
+                                            }
+                                        }
+                                    }
+                                    .background(getTextBackgroundColor())
+                                    .padding(8.dp),
+                            )
+                        }
+
+                        Spacer(Modifier.height(16.dp))
+                        Row(
+                            Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.Center,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            TextFallout(
+                                stringResource(Res.string.time_limit_anyone),
+                                getTextColor(),
+                                getTextStrokeColor(),
+                                18.sp,
+                                Modifier.padding(8.dp),
+                            )
+                            CheckboxCustom({ isBlitz }, { isBlitz = it; selectedOption = 0 }) { true }
+
+                        }
+
+                        if (enemy is EnemyPvEWithBank) {
+                            TextFallout(
+                                stringResource(
+                                    if (isBlitz)
+                                        Res.string.your_expected_reward_chips
+                                    else
+                                        Res.string.your_expected_reward,
+                                    getMyBet() + getEnemyBet()
+                                ),
+                                getTextColor(),
+                                getTextStrokeColor(),
+                                18.sp,
+                                Modifier.fillMaxWidth().padding(8.dp),
+                            )
+                        }
+                        TextFallout(
+                            stringResource(Res.string.let_s_go),
+                            getTextColor(),
+                            getTextStrokeColor(),
+                            24.sp,
+                            Modifier
+                                .clickableOk {
+                                    setIsBlitz(isBlitz)
+                                    setBet(getMyBet())
+                                    setEnemyBet(getEnemyBet())
+                                    saveData()
+                                    goForward()
+                                }
+                                .background(getTextBackgroundColor())
+                                .padding(8.dp),
+                        )
+                        Spacer(Modifier.height(12.dp))
+                    }
                 }
-            } }
+
+                VertScrollbar(verticalScrollState)
+            }
         }
     }
 }
@@ -767,7 +762,7 @@ fun ShowBettingScreen(
 
 suspend fun winCard(back: CardBack, isBlitz: Boolean): String {
     fun isCardNew(card: CardWithPrice): Boolean {
-        return !save.isCardAvailableAlready(card)
+        return !saveGlobal.isCardAvailableAlready(card)
     }
 
     val isNew = if (back == CardBack.STANDARD) true else ((0..3).random() > 0)
@@ -779,7 +774,7 @@ suspend fun winCard(back: CardBack, isBlitz: Boolean): String {
     }
 
     val message = if (card != null) {
-        save.addCard(card)
+        saveGlobal.addCard(card)
         val rankSuit = when (card) {
             is CardFaceSuited -> getString(card.rank.nameId) to getString(card.suit.nameId)
             is CardJoker -> getString(card.rank.nameId) to card.number.n.toString()
@@ -790,10 +785,10 @@ suspend fun winCard(back: CardBack, isBlitz: Boolean): String {
     } else {
         val prize = (back.getRarityMult() * 10.0).toInt()
         if (isBlitz) {
-            save.sierraMadreChips += prize
+            saveGlobal.sierraMadreChips += prize
             getString(Res.string.prize_chips, prize.toString())
         } else {
-            save.capsInHand += prize
+            saveGlobal.capsInHand += prize
             getString(Res.string.prize_caps, prize.toString())
         }
     }

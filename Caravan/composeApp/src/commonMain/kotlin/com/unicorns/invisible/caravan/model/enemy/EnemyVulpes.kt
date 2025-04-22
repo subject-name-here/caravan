@@ -27,8 +27,10 @@ class EnemyVulpes : EnemyPvENoBank() {
         get() = Res.string.vulpes
     override val isEven
         get() = false
-    override val isAvailable: Int
+    override val level: Int
         get() = 4
+    override val isAvailable: Boolean
+        get() = true
 
     override var wins: Int = 0
     override var winsBlitz: Int = 0

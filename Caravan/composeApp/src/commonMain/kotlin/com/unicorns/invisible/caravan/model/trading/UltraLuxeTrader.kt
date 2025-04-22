@@ -6,7 +6,6 @@ import caravan.composeapp.generated.resources.ultra_luxe_trader_empty
 import caravan.composeapp.generated.resources.ultra_luxe_trader_welcome
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.primitives.CardWithPrice
-import com.unicorns.invisible.caravan.save
 import com.unicorns.invisible.caravan.utils.getNow
 import kotlinx.datetime.DayOfWeek
 import kotlinx.serialization.Serializable

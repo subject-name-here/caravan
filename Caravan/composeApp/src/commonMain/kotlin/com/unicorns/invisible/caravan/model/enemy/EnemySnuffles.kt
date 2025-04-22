@@ -25,8 +25,10 @@ class EnemySnuffles : EnemyPvEWithBank() {
         get() = Res.string.snuffles
     override val isEven
         get() = false
-    override val isAvailable: Int
+    override val level: Int
         get() = 1
+    override val isAvailable: Boolean
+        get() = true
 
     override fun createDeck(): CResources = CResources(CustomDeck().apply {
         listOf(CardBack.LUCKY_38, CardBack.GOMORRAH, CardBack.ULTRA_LUXE, CardBack.TOPS).forEach { back ->

@@ -144,9 +144,9 @@ fun TowerScreen(
     showAlertDialog: (String, String, (() -> Unit)?) -> Unit,
     goBack: () -> Unit,
 ) {
-    var level by rememberSaveable { mutableIntStateOf(save.towerLevel) }
-    var cookCook by rememberSaveable { mutableIntStateOf(save.cookCookMult) }
-    var secondChances by rememberSaveable { mutableIntStateOf(save.secondChances) }
+    var level by rememberSaveable { mutableIntStateOf(saveGlobal.towerLevel) }
+    var cookCook by rememberSaveable { mutableIntStateOf(saveGlobal.cookCookMult) }
+    var secondChances by rememberSaveable { mutableIntStateOf(saveGlobal.secondChances) }
 
     var playLevel by rememberScoped { mutableIntStateOf(0) }
     var levelMemory by rememberScoped { mutableIntStateOf(0) }
@@ -166,17 +166,17 @@ fun TowerScreen(
         StartTowerGame(enemy, showAlertDialog, {
             levelMemory = level
             level = 0
-            save.towerLevel = 0
+            saveGlobal.towerLevel = 0
             saveData()
         }, {
             level = levelMemory + 1
-            save.towerLevel = levelMemory + 1
+            saveGlobal.towerLevel = levelMemory + 1
             levelMemory = 0
             saveData()
         }, {
             levelMemory = 0
             level = 0
-            save.towerLevel = 0
+            saveGlobal.towerLevel = 0
             saveData()
         }, goBack)
     }
@@ -197,7 +197,7 @@ fun TowerScreen(
         in 1..11 -> {
             showTower(
                 when (playLevel) {
-                    3 -> if (save.papaSmurfActive) EnemyTower3A else EnemyTower3
+                    3 -> if (saveGlobal.papaSmurfActive) EnemyTower3A else EnemyTower3
                     else -> EnemyTower1
                 }
             ) { playLevel = 0 }
@@ -210,22 +210,22 @@ fun TowerScreen(
                 playFrankPhrase("files/raw/frank_on_game_start.ogg")
                 levelMemory = level
                 level = 0
-                save.towerLevel = 0
-                capsMemory = save.capsInHand
-                save.capsInHand = 0
+                saveGlobal.towerLevel = 0
+                capsMemory = saveGlobal.capsInHand
+                saveGlobal.capsInHand = 0
                 saveData()
             }, {
                 level = levelMemory + 1
-                save.towerLevel = levelMemory + 1
+                saveGlobal.towerLevel = levelMemory + 1
                 levelMemory = 0
-                save.capsInHand += capsMemory
+                saveGlobal.capsInHand += capsMemory
                 saveData()
                 stopRadio()
                 playFrankPhrase("files/raw/frank_on_defeat.ogg")
             }, {
                 levelMemory = 0
                 level = 0
-                save.towerLevel = 0
+                saveGlobal.towerLevel = 0
                 saveData()
                 stopRadio()
             }) {
@@ -255,7 +255,7 @@ fun TowerScreen(
             0 -> {
                 StartScreen({ p1, p2 -> showAlertDialog(p1, p2, null) }) {
                     level++
-                    save.towerLevel++
+                    saveGlobal.towerLevel++
                     saveData()
                 }
             }
@@ -285,8 +285,8 @@ fun TowerScreen(
                     { playLevel = level },
                     {
                         level = 0
-                        save.towerLevel = 0
-                        save.capsInHand += inBank
+                        saveGlobal.towerLevel = 0
+                        saveGlobal.capsInHand += inBank
                         saveData()
                         playCashSound()
                         scope.launch {
@@ -311,9 +311,9 @@ fun TowerScreen(
                             soundReduced = false
                             nextSong()
                         }
-                        save.towerLevel = 0
+                        saveGlobal.towerLevel = 0
                         val inBank = 512 * cookCook
-                        save.capsInHand += inBank
+                        saveGlobal.capsInHand += inBank
                         saveData()
                         playCashSound()
                         scope.launch {
@@ -329,10 +329,10 @@ fun TowerScreen(
             else -> {
                 FinalScreen {
                     level = 0
-                    save.towerLevel = 0
+                    saveGlobal.towerLevel = 0
                     val inBank = 1536 + 512 * (cookCook - 1)
-                    save.capsInHand += inBank
-                    save.towerBeaten = true
+                    saveGlobal.capsInHand += inBank
+                    saveGlobal.towerBeaten = true
                     saveData()
                     CoroutineScope(Dispatchers.Unconfined).launch {
                         repeat(4) {
@@ -455,7 +455,7 @@ fun StartScreen(
         )
         Spacer(modifier = Modifier.height(24.dp))
         TextFallout(
-            stringResource(Res.string.tickets_please_you_have_tickets, save.tickets),
+            stringResource(Res.string.tickets_please_you_have_tickets, saveGlobal.tickets),
             getTextColor(),
             getTextStrokeColor(),
             20.sp,
@@ -471,7 +471,7 @@ fun StartScreen(
             Modifier
                 .padding(4.dp)
                 .clickableOk {
-                    if (save.tickets <= 0) {
+                    if (saveGlobal.tickets <= 0) {
                         scope.launch {
                             showAlertDialog(
                                 getString(Res.string.hey),
@@ -479,7 +479,7 @@ fun StartScreen(
                             )
                         }
                     } else {
-                        save.tickets--
+                        saveGlobal.tickets--
                         nextLevel()
                     }
                 }
@@ -575,7 +575,7 @@ fun EnemyPresentedScreen(
                 showTowerCard(stringResource(Res.string.tower_enemy_2))
             }
             3 -> {
-                if (save.papaSmurfActive) {
+                if (saveGlobal.papaSmurfActive) {
                     showTowerCard(stringResource(Res.string.tower_enemy_3A))
                 } else {
                     showTowerCard(stringResource(Res.string.tower_enemy_3))
@@ -787,7 +787,7 @@ fun StartTowerGame(
             text = {
                 TextClassic(
                     stringResource(
-                        if (!save.isHeroic) {
+                        if (!saveGlobal.isHeroic) {
                             Res.string.now_playing_loyalty_to_your_people_neon_light_man
                         } else {
                             Res.string.now_playing_alt
@@ -846,9 +846,9 @@ fun StartTowerGame(
     LaunchedEffect(Unit) { startAmbient() }
     val onQuitPressed = { stopAmbient(); goBack() }
     val playerCResources = CResources(if (isFrankSequence) {
-        CustomDeck(save.selectedDeck)
+        CustomDeck(saveGlobal.selectedDeck)
     } else {
-        CustomDeck().apply { addAll(save.getCurrentCustomDeck()) }
+        CustomDeck().apply { addAll(saveGlobal.getCurrentCustomDeck()) }
     })
     val game = rememberScoped {
         if (isFrankSequence) {

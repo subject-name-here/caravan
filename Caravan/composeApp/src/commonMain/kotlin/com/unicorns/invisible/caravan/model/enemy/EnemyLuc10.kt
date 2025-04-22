@@ -16,6 +16,8 @@ class EnemyLuc10 : EnemyPvEWithBank() {
         get() = Res.string.luc10
     override val isEven
         get() = true
+    override val level: Int
+        get() = 5
 
     override fun createDeck() = CResources(CardBack.LUCKY_38_SPECIAL)
 

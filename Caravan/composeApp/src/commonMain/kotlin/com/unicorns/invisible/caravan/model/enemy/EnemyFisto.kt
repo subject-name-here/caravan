@@ -20,6 +20,8 @@ class EnemyFisto : EnemyPvEWithBank() {
         get() = Res.string.fisto
     override val isEven
         get() = false
+    override val level: Int
+        get() = 2
 
     override fun createDeck(): CResources {
         return CResources(CustomDeck(CardBack.GOMORRAH).apply {

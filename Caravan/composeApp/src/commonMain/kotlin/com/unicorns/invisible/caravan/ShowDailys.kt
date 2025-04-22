@@ -118,10 +118,10 @@ fun ShowDailys(
                     }
                 }
 
-                Challenges(stringResource(Res.string.daily_missions), save.challengesNew)
-                Challenges(stringResource(Res.string.infinite_missions), save.challengesInf)
-                Challenges(stringResource(Res.string.one_time_missions), save.challenges1)
-                Challenges(stringResource(Res.string.one_time_missions_requiem), save.challenges2)
+                Challenges(stringResource(Res.string.daily_missions), saveGlobal.challengesNew)
+                Challenges(stringResource(Res.string.infinite_missions), saveGlobal.challengesInf)
+                Challenges(stringResource(Res.string.one_time_missions), saveGlobal.challenges1)
+                Challenges(stringResource(Res.string.one_time_missions_requiem), saveGlobal.challenges2)
             }
         }
     }
@@ -191,7 +191,7 @@ fun ShowChallenge(challenge: Challenge, isCompleted: Boolean, updater: () -> Uni
                             .background(getTextBackgroundColor())
                             .clickableOk {
                                 it.second()
-                                dailyCompleted(save)
+                                dailyCompleted(saveGlobal)
                             }
                             .padding(8.dp),
                     )

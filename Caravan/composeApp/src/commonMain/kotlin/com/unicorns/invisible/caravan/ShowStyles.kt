@@ -53,8 +53,8 @@ fun ShowStyles(
     selectStyle: (Int) -> Unit,
     goBack: () -> Unit
 ) {
-    var styleInt by rememberSaveable { mutableIntStateOf(save.styleId) }
-    var currentlyWatchedStyle by rememberSaveable { mutableIntStateOf(save.styleId) }
+    var styleInt by rememberSaveable { mutableIntStateOf(saveGlobal.styleId) }
+    var currentlyWatchedStyle by rememberSaveable { mutableIntStateOf(saveGlobal.styleId) }
 
     @Composable
     fun ChangeWatchedStyle(text: String, operation: (Int) -> Int) {
@@ -123,7 +123,7 @@ fun ShowStyles(
                                     Modifier.padding(4.dp),
                                 )
                                 Spacer(Modifier.height(16.dp))
-                                if (watchedStyle in save.ownedStyles) {
+                                if (watchedStyle in saveGlobal.ownedStyles) {
                                     TextFallout(
                                         stringResource(Res.string.select),
                                         getTextColorByStyle(watchedStyle),
@@ -148,7 +148,7 @@ fun ShowStyles(
                                             Modifier
                                                 .background(getTextBackByStyle(watchedStyle))
                                                 .clickableOk {
-                                                    save.ownedStyles.add(watchedStyle)
+                                                    saveGlobal.ownedStyles.add(watchedStyle)
                                                     saveData()
                                                     playPimpBoySound()
                                                     styleInt = watchedStyle.ordinal

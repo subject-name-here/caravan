@@ -16,6 +16,8 @@ class EnemyUlysses : EnemyPvEWithBank() {
         get() = Res.string.pve_enemy_ulysses
     override val isEven
         get() = true
+    override val level: Int
+        get() = 5
 
     override fun createDeck() = CResources(CardBack.VAULT_21_NIGHT)
 

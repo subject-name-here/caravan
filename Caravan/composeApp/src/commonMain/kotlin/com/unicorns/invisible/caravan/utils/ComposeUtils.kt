@@ -499,7 +499,10 @@ fun SwitchCustomUsualBackground(
 
 private fun getStrokeWidth(textSize: TextUnit): Float {
     return when {
-        textSize >= 30.sp -> 4f
+        textSize >= 44.sp -> 6f
+        textSize >= 40.sp -> 5f
+        textSize >= 36.sp -> 4f
+        textSize >= 30.sp -> 3f
         textSize >= 24.sp -> 2f
         textSize >= 18.sp -> 1f
         else -> 0f
@@ -553,7 +556,7 @@ fun TextFallout(
     boxAlignment: Alignment = Alignment.Center
 ) {
     val textRedacted = text
-    val strokeWidth = getStrokeWidth(textSize) + 1f
+    val strokeWidth = getStrokeWidth(textSize)
     Box(boxModifier, contentAlignment = boxAlignment) {
         Text(
             text = textRedacted, color = textColor,

@@ -284,7 +284,7 @@ class Save(var playerId: String? = null) {
             enemy.curBets = if (enemy is EnemySnuffles) {
                 val fromTable = table
                 table = 0
-                fromTable / 5
+                max(0, fromTable / 5)
             } else {
                 enemy.maxBets
             }

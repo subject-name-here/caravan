@@ -30,7 +30,7 @@ class EnemyEasyPete : EnemyPvEWithBank() {
         get() = Res.string.easy_pete
     override val isEven: Boolean
         get() = true
-    override val isAvailable: Int
+    override val level: Int
         get() = 2
 
     override fun createDeck(): CResources = CResources(CustomDeck(CardBack.STANDARD).apply {
@@ -45,6 +45,8 @@ class EnemyEasyPete : EnemyPvEWithBank() {
     override var curBets: Int = maxBets
     override val bet: Int
         get() = 7
+    override val isAvailable: Boolean
+        get() = true
 
     override var winsNoBet: Int = 0
     override var winsBet: Int = 0

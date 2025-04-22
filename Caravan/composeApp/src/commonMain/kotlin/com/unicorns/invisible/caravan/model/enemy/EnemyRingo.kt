@@ -26,8 +26,10 @@ class EnemyRingo : EnemyPvEWithBank() {
         get() = Res.string.ringo
     override val isEven
         get() = true
-    override val isAvailable: Int
+    override val level: Int
         get() = 1
+    override val isAvailable: Boolean
+        get() = true
 
     override fun createDeck(): CResources {
         return CResources(CustomDeck(CardBack.TOPS))

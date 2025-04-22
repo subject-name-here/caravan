@@ -16,6 +16,8 @@ class EnemyBenny : EnemyPvEWithBank() {
         get() = Res.string.benny
     override val isEven: Boolean
         get() = true
+    override val level: Int
+        get() = 4
 
     override fun createDeck() = CResources(CardBack.TOPS_RED)
 

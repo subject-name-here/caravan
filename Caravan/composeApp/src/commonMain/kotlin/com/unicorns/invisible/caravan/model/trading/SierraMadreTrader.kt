@@ -6,14 +6,14 @@ import caravan.composeapp.generated.resources.sierra_madre_trader_empty
 import caravan.composeapp.generated.resources.sierra_madre_trader_welcome
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.primitives.CardWithPrice
-import com.unicorns.invisible.caravan.save
+import com.unicorns.invisible.caravan.saveGlobal
 import kotlinx.serialization.Serializable
 import org.jetbrains.compose.resources.getString
 
 
 @Serializable
 class SierraMadreTrader : Trader {
-    override fun isOpen() = save.storyProgress >= 11
+    override fun isOpen() = saveGlobal.storyProgress > 11
     override suspend fun openingCondition() = getString(Res.string.sierra_madre_trader_cond)
 
     override fun getUpdateRate() = 24

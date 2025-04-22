@@ -34,8 +34,10 @@ class EnemyTabitha : EnemyPvEWithBank() {
         get() = Res.string.tabitha
     override val isEven
         get() = false
-    override val isAvailable: Int
+    override val level: Int
         get() = 6
+    override val isAvailable: Boolean
+        get() = true
 
     override fun createDeck(): CResources = CResources(CustomDeck().apply {
         val backs = listOf(
@@ -93,7 +95,7 @@ class EnemyTabitha : EnemyPvEWithBank() {
             }
         }
 
-        val jack = game.enemyCResources.hand.find { it is CardFace && it.rank == RankFace.JACK }
+        val jack = hand.find { it is CardFace && it.rank == RankFace.JACK }
         val aceOfDiamonds = game.playerCaravans.flatMap { it.cards }.find { it.card.rank == RankNumber.ACE && it.card.suit == Suit.DIAMONDS }
         if (jack != null && aceOfDiamonds != null) {
             val state = gameToState(game)
@@ -105,7 +107,7 @@ class EnemyTabitha : EnemyPvEWithBank() {
             }
 
             if (checkTheOutcome(state) != 1) {
-                val jackIndex = game.enemyCResources.hand.indexOf(jack)
+                val jackIndex = hand.indexOf(jack)
                 aceOfDiamonds.addModifier(game.enemyCResources.removeFromHand(jackIndex, speed) as CardFace, speed)
                 return
             }
@@ -192,7 +194,7 @@ class EnemyTabitha : EnemyPvEWithBank() {
                         if (it.second.getValue() + it.first.getValue() in (13..26)) {
                             if (it.first.canAddModifier(card)) {
                                 val state = gameToState(game)
-                                val indexC = game.enemyCaravans.withIndex().first { cardToKing in it.value.cards }.index
+                                val indexC = game.enemyCaravans.withIndex().first { it2 -> cardToKing in it2.value.cards }.index
                                 when (indexC) {
                                     0 -> state.enemy.v1 += it.first.getValue()
                                     1 -> state.enemy.v2 += it.first.getValue()
@@ -214,9 +216,9 @@ class EnemyTabitha : EnemyPvEWithBank() {
                         if (caravan.getValue() + card.rank.value <= 26 && caravan.canPutCardOnTop(card)) {
                             val state = gameToState(game)
                             when (indexC) {
-                                0 -> state.player.v1 += card.rank.value
-                                1 -> state.player.v2 += card.rank.value
-                                2 -> state.player.v3 += card.rank.value
+                                0 -> state.enemy.v1 += card.rank.value
+                                1 -> state.enemy.v2 += card.rank.value
+                                2 -> state.enemy.v3 += card.rank.value
                             }
                             if (checkTheOutcome(state) != 1) {
                                 caravan.putCardOnTop(game.enemyCResources.removeFromHand(cardIndex, speed) as CardBase, speed)

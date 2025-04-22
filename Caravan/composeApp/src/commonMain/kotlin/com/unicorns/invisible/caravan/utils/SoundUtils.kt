@@ -1,7 +1,7 @@
 package com.unicorns.invisible.caravan.utils
 
 import com.unicorns.invisible.caravan.Style
-import com.unicorns.invisible.caravan.save
+import com.unicorns.invisible.caravan.saveGlobal
 import com.unicorns.invisible.caravan.soundReduced
 import com.unicorns.invisible.caravan.styleId
 import kotlinx.coroutines.CoroutineScope
@@ -85,7 +85,7 @@ private fun getSongsArray() = arrayOf(
     "files/radio/MUS_Big_Iron.amr" to "\"Big Iron\" - Marty Robbins",
     "files/radio/MUS_Blue_Moon.amr" to "\"Blue Moon\" - Frank Sinatra",
     "files/radio/MUS_Blues_For_You.amr" to "\"Blues For You\" - Gabriel Pares",
-    if (save.isRadioUsesPseudonyms) {
+    if (saveGlobal.isRadioUsesPseudonyms) {
         "files/radio/MUS_Cobwebs_and_Rainbows.amr" to "\"Cobwebs and Rainbows\" - Bruce Isaac"
     } else {
         "files/radio/MUS_Cobwebs_and_Rainbows.amr" to "\"Cobwebs and Rainbows\" - Joshua Sawyer/Dick Stephen Walter"
@@ -95,7 +95,7 @@ private fun getSongsArray() = arrayOf(
     "files/radio/MUS_Hallo_Mister_X.amr" to "\"Hallo Mister X\" - Gerhard Trede",
     "files/radio/MUS_Happy_Times.amr" to "\"Happy Times\" - Bert Weedon",
     "files/radio/MUS_Heartaches_by_the_Number.amr" to "\"Heartaches by the Number\" - Guy Mitchell",
-    if (save.isRadioUsesPseudonyms) {
+    if (saveGlobal.isRadioUsesPseudonyms) {
         "files/radio/MUS_HomeOnTheWastes.amr" to "\"Home on the Wastes\" - Lonesome Drifter"
     } else {
         "files/radio/MUS_HomeOnTheWastes.amr" to "\"Home on the Wastes\" - Joshua Sawyer/Nathaniel Chapman"
@@ -107,7 +107,7 @@ private fun getSongsArray() = arrayOf(
     "files/radio/MUS_Jazz_Blues_GT.amr" to "\"Jazz Blues\" - Gerhard Trede",
     "files/radio/MUS_Jazz_Club_Blues_CAS.amr" to "\"Jazz Club Blues\" - Harry Bluestone",
     "files/radio/MUS_Jingle_Jangle_Jingle.amr" to "\"Jingle, Jangle, Jingle\" - The Kay Kyser Orchestra",
-    if (save.isRadioUsesPseudonyms) {
+    if (saveGlobal.isRadioUsesPseudonyms) {
         "files/radio/MUS_Joe_Cool_CAS.amr" to "\"Joe Cool\" - Nino Nardini"
     } else {
         "files/radio/MUS_Joe_Cool_CAS.amr" to "\"Joe Cool\" - Georges Teperin"
@@ -119,7 +119,7 @@ private fun getSongsArray() = arrayOf(
     "files/radio/MUS_Love_Me_As_Though_No_Tomorrow.amr" to "\"Love Me as Though There Were No Tomorrow\" - Nat King Cole",
     "files/radio/MUS_Mad_About_The_Boy.amr" to "\"Mad About the Boy\" - Carmen Dragon and his Orchestra, featuring Helen Forrest",
     "files/radio/MUS_Manhattan.amr" to "\"Manhattan\" - Gerhard Trede",
-    if (save.isRadioUsesPseudonyms) {
+    if (saveGlobal.isRadioUsesPseudonyms) {
         "files/radio/MUS_NewVegasValley.amr" to "\"New Vegas Valley\" - Lonesome Drifter"
     } else {
         "files/radio/MUS_NewVegasValley.amr" to "\"New Vegas Valley\" - Joshua Sawyer/James Melilli"
@@ -132,7 +132,7 @@ private fun getSongsArray() = arrayOf(
     "files/radio/MUS_Somethings_Gotta_Give.amr" to "\"Something's Gotta Give\" - Bing Crosby",
     "files/radio/MUS_Stars_Of_The_Midnight_Range.amr" to "\"Stars of the Midnight Range\" - Johnny Bond and his Red River Valley Boys",
     "files/radio/MUS_Strahlende_Trompete.amr" to "\"Strahlende Trompete\" - Gerhard Trede",
-    if (save.isRadioUsesPseudonyms) {
+    if (saveGlobal.isRadioUsesPseudonyms) {
         "files/radio/MUS_StreetsOfNewReno.amr" to "\"Streets of New Reno\" - Lonesome Drifter"
     } else {
         "files/radio/MUS_StreetsOfNewReno.amr" to "\"Streets of New Reno\" - Joshua Sawyer/Nathaniel Chapman"
@@ -148,13 +148,13 @@ fun getSongByIndex(): Pair<String, String>? {
     val songsArray = getSongsArray()
     return if (pointer == -1) {
         if (styleId == Style.SIERRA_MADRE || styleId == Style.MADRE_ROJA) {
-            if (save.isRadioUsesPseudonyms) {
+            if (saveGlobal.isRadioUsesPseudonyms) {
                 "files/radio/begin_again.amr" to "\"Begin Again\" - Vera Keyes"
             } else {
                 "files/radio/begin_again.amr" to "\"Begin Again\" - Justin E. Bell, Stephanie Dowling"
             }
         } else {
-            if (save.isRadioUsesPseudonyms) {
+            if (saveGlobal.isRadioUsesPseudonyms) {
                 "files/radio/MUS_caravan_whiplash.amr" to "\"Caravan\" - Shaffer Conservatory Studio Band"
             } else {
                 "files/radio/MUS_caravan_whiplash.amr" to "\"Caravan\" - John Wasson"
@@ -175,7 +175,7 @@ fun startRadio() {
     }
     radioStartedFlag = true
     indices.shuffle()
-    if (save.useCaravanIntro) {
+    if (saveGlobal.useCaravanIntro) {
         pointer = -1
         playSongFromRadio()
     } else {
@@ -193,14 +193,14 @@ expect fun setRadioVolume(volume: Float)
 expect fun playTheme(themePath: String)
 
 fun startLevel11Theme() {
-    if (save.isHeroic) {
+    if (saveGlobal.isHeroic) {
         playTheme("files/raw/final_heroic.ogg")
     } else {
         playTheme("files/raw/frank_theme.ogg")
     }
 }
 fun startFinalBossTheme() {
-    if (save.isHeroic) {
+    if (saveGlobal.isHeroic) {
         playTheme("files/raw/final_heroic.ogg")
     } else {
         playTheme("files/raw/chapter_13.ogg")

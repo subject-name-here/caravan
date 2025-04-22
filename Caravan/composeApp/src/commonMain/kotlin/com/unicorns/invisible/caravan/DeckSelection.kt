@@ -52,10 +52,10 @@ import org.jetbrains.compose.resources.stringResource
 fun DeckSelection(
     goBack: () -> Unit,
 ) {
-    var selectedDeck by rememberScoped { mutableStateOf(save.selectedDeck) }
+    var selectedDeck by rememberScoped { mutableStateOf(saveGlobal.selectedDeck) }
     @Composable
     fun getModifier(cardBack: CardBack): Modifier {
-        if (cardBack !in save.availableDecks) {
+        if (cardBack !in saveGlobal.availableDecks) {
             return Modifier.padding(4.dp).alpha(0.33f)
         }
 
@@ -68,7 +68,7 @@ fun DeckSelection(
             .padding(4.dp)
             .clickableSelect {
                 selectedDeck = cardBack
-                save.selectedDeck = cardBack
+                saveGlobal.selectedDeck = cardBack
                 saveData()
             }
             .clip(RoundedCornerShape(6f))

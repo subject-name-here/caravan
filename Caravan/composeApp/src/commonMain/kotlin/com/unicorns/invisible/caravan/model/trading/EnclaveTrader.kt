@@ -6,14 +6,14 @@ import caravan.composeapp.generated.resources.enclave_trader_empty
 import caravan.composeapp.generated.resources.enclave_trader_welcome
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.primitives.CardWithPrice
-import com.unicorns.invisible.caravan.save
+import com.unicorns.invisible.caravan.saveGlobal
 import kotlinx.serialization.Serializable
 import org.jetbrains.compose.resources.getString
 
 
 @Serializable
 class EnclaveTrader : Trader {
-    override fun isOpen() = save.towerBeaten
+    override fun isOpen() = saveGlobal.towerBeaten
     override suspend fun openingCondition() = getString(Res.string.enclave_trader_cond)
 
     override fun getUpdateRate() = 1

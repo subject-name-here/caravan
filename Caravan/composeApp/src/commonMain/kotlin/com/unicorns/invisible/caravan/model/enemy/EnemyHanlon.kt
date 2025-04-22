@@ -15,6 +15,8 @@ class EnemyHanlon : EnemyPvENoBank() {
         get() = Res.string.pve_enemy_chief_hanlon
     override val isEven
         get() = true
+    override val level: Int
+        get() = 4
 
     override var wins: Int = 0
     override var winsBlitz: Int = 0

@@ -9,7 +9,7 @@ import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.primitives.CardWithPrice
 import com.unicorns.invisible.caravan.model.primitives.CollectibleDeck
-import com.unicorns.invisible.caravan.save
+import com.unicorns.invisible.caravan.saveGlobal
 import kotlinx.serialization.Serializable
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.getString
@@ -31,28 +31,28 @@ class ChallengeDailyAll : Challenge {
     }
 
     override fun getProgress(): String {
-        val dailys = save.challengesNew
+        val dailys = saveGlobal.challengesNew
         return "${5 - dailys.size} / 5"
     }
 
     override suspend fun reward(): List<Pair<String, () -> Unit>> {
         fun isCardNew(card: CardWithPrice): Boolean {
-            return !save.isCardAvailableAlready(card)
+            return !saveGlobal.isCardAvailableAlready(card)
         }
 
         val rewardBack = CardBack.STANDARD_UNCOMMON
         val deck = CollectibleDeck(rewardBack)
-        val card = deck.toList().filter(::isCardNew).randomOrNull(Random(save.dailyHash))
+        val card = deck.toList().filter(::isCardNew).randomOrNull(Random(saveGlobal.dailyHash))
 
         return listOf(
             if (card != null) {
-                getString(Res.string.claim_card) to { save.addCard(card) }
+                getString(Res.string.claim_card) to { saveGlobal.addCard(card) }
             } else {
                 val prize = (rewardBack.getRarityMult() * CardBack.BASE_CARD_COST).toInt()
-                getString(Res.string.claim_caps, prize.toString()) to { save.capsInHand += prize }
+                getString(Res.string.claim_caps, prize.toString()) to { saveGlobal.capsInHand += prize }
             }
         )
     }
 
-    override fun isCompleted(): Boolean = save.challengesNew.size <= 1
+    override fun isCompleted(): Boolean = saveGlobal.challengesNew.size <= 1
 }

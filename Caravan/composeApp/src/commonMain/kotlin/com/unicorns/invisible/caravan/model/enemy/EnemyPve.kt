@@ -8,5 +8,6 @@ import org.jetbrains.compose.resources.StringResource
 sealed class EnemyPve : Enemy {
     abstract val nameId: StringResource
     abstract val isEven: Boolean
-    open val isAvailable: Int = 0
+    open val level: Int = 0
+    open val isAvailable = false
 }

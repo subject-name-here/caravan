@@ -18,6 +18,8 @@ class EnemyMadnessCardinal : EnemyPvENoBank() {
         get() = Res.string.madness_cardinal
     override val isEven
         get() = false
+    override val level: Int
+        get() = 6
 
     override var wins: Int = 0
     override var winsBlitz: Int = 0

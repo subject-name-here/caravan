@@ -16,6 +16,8 @@ class EnemyTheManInTheMirror : EnemyPvEWithBank() {
         get() = Res.string.man_in_the_mirror
     override val isEven
         get() = false
+    override val level: Int
+        get() = 3
 
     override fun createDeck() = CResources(CustomDeck())
 

@@ -16,6 +16,8 @@ class EnemyGloria : EnemyPvEWithBank() {
         get() = Res.string.gloria_van_graff
     override val isEven
         get() = false
+    override val level: Int
+        get() = 4
 
     override fun createDeck(): CResources = CResources(CustomDeck())
 
