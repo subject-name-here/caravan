@@ -218,7 +218,7 @@ class EnemyTabitha : EnemyPvEWithBank() {
                             if (it.first.canAddModifier(card)) {
                                 val state = gameToState(game)
                                 val indexC = game.enemyCaravans.withIndex()
-                                    .first { it2 -> cardToKing in it2.value.cards }.index
+                                    .first { it2 -> it.first in it2.value.cards }.index
                                 when (indexC) {
                                     0 -> state.enemy.v1 += it.first.getValue()
                                     1 -> state.enemy.v2 += it.first.getValue()

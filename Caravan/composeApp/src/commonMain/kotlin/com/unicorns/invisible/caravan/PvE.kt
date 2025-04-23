@@ -261,6 +261,8 @@ fun ShowPvE(
                 }
             }
 
+            Spacer(modifier = Modifier.height(12.dp))
+
             @Composable
             fun OpponentItem(enemy: EnemyPve, onClick: () -> Unit) {
                 if (!enemy.isAvailable) {
