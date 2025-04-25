@@ -161,6 +161,8 @@ import org.jetbrains.compose.resources.getString
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import kotlin.random.Random
+import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
 
 
 var saveGlobal = Save(null)
@@ -177,6 +179,8 @@ var playingSongName by mutableStateOf("")
 val styleId
     get() = Style.entries.getOrElse(saveGlobal.styleId) { Style.PIP_BOY }
 private var styleIdMutableData by mutableStateOf(styleId)
+
+val id = Random.nextInt()
 
 @Composable
 fun App() {
