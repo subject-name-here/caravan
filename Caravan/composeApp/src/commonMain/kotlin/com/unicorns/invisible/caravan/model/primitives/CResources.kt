@@ -34,7 +34,7 @@ class CResources(private val deck: CustomDeck) {
         val numbers = cards.filter { it is CardBase }
 
         val startingHand = mutableListOf<Card>()
-        if (!nuclears.isEmpty()) {
+        if (nuclears.isNotEmpty()) {
             startingHand.add(nuclears.random())
             startingHand.addAll(faces.take(Random.nextInt(0, facesLimitExcluded - 1)))
         } else {
@@ -52,6 +52,14 @@ class CResources(private val deck: CustomDeck) {
         deck.removeAllOnce(tmpHand)
         tmpHand.shuffled().forEach { addCardToHand(it) }
     }
+    fun initResourcesPvP() {
+        shuffleDeck()
+        val tmpHand = getTopHand()
+        deck.removeAllOnce(tmpHand)
+        tmpHand.forEach {
+            deck.addOnTop(it)
+        }
+    }
 
     private fun addCardToHand(card: Card) {
         handMutable.add(card)
@@ -65,6 +73,16 @@ class CResources(private val deck: CustomDeck) {
         val card = deck.removeFirst()
         addCardToHand(card)
         processHandAddedCard(card)
+    }
+
+    fun addToHandPvP(): Card? {
+        if (deck.size == 0 || hand.size >= 5) {
+            return null
+        }
+        val card = deck.removeFirst()
+        addCardToHand(card)
+        processHandAddedCard(card)
+        return card
     }
 
     fun addCardToHandDirect(card: Card) {

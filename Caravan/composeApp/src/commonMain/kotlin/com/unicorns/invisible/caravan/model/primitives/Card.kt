@@ -7,6 +7,7 @@ import com.unicorns.invisible.caravan.model.CardBack
 import kotlinx.serialization.Serializable
 
 
+@Serializable
 sealed class Card {
     var handAnimationMark by mutableStateOf(AnimationMark.NEW)
     var caravanAnimationMark by mutableStateOf(AnimationMark.NEW)
@@ -20,8 +21,10 @@ sealed class Card {
     }
 }
 
+@Serializable
 sealed class CardModifier : Card()
 
+@Serializable
 sealed class CardBase : Card() {
     abstract val rank: RankNumber
     abstract val suit: Suit
@@ -57,6 +60,7 @@ class CardNumber(
         }
     }
 }
+@Serializable
 class CardNumberWW(
     override val rank: RankNumber,
     override val suit: Suit,
@@ -105,8 +109,14 @@ enum class WWType {
     DIFFICULT_PETE,
     FEV
 }
+@Serializable
 class CardWildWasteland(val type: WWType) : CardModifier()
 
+@Serializable
 sealed class CardNuclear : CardModifier()
-class CardAtomic(val dummy: Unit = Unit) : CardNuclear()
-class CardFBomb(val dummy: Unit = Unit) : CardNuclear()
+@Serializable
+@Suppress("CanSealedSubClassBeObject")
+class CardAtomic : CardNuclear()
+@Serializable
+@Suppress("CanSealedSubClassBeObject")
+class CardFBomb : CardNuclear()

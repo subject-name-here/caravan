@@ -335,7 +335,6 @@ fun ShowStoryChapter1(
             EnemyStory1,
             CResources(deck),
             showAlertDialog,
-            {},
             { gameResult = 1; advanceChapter() },
             { gameResult = -1 },
             { if (gameResult == 0) gameResult = -1; isGame = false }
@@ -427,7 +426,6 @@ fun ShowStoryChapter2(
             EnemyStory2(),
             CResources(deck),
             showAlertDialog,
-            {},
             { gameResult = 1; advanceChapter() },
             { gameResult = -1 },
             { if (gameResult == 0) gameResult = -1; isGame = false }
@@ -589,7 +587,6 @@ fun ShowStoryChapter3(
             EnemyStory3 { messageNumber = it },
             CResources(deck),
             showAlertDialog,
-            {},
             { gameResult = 1; advanceChapter() },
             { gameResult = -1 },
             { if (gameResult == 0) gameResult = -1; isGame = false }
@@ -730,7 +727,6 @@ fun ShowStoryChapter4(
             EnemyStory4,
             CResources(deck),
             showAlertDialog,
-            {},
             { gameResult = 1; advanceChapter() },
             { gameResult = 1; advanceChapter() },
             { if (gameResult == 0) gameResult = -1; isGame = false }
@@ -876,7 +872,6 @@ fun StartStoryGame(
     enemy: Enemy,
     playerCResources: CResources,
     showAlertDialog: (String, String, (() -> Unit)?) -> Unit,
-    onMove: (Card?) -> Unit = {},
     onWin: () -> Unit,
     onLose: () -> Unit,
     goBack: () -> Unit,
@@ -917,7 +912,7 @@ fun StartStoryGame(
         }
     }
 
-    ShowGame(game, onMove = onMove) {
+    ShowGame(game) {
         if (game.isOver()) {
             goBack()
             return@ShowGame

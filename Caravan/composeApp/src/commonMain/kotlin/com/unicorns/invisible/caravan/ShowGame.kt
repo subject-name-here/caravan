@@ -66,6 +66,7 @@ import com.sebaslogen.resaca.rememberScoped
 import com.unicorns.invisible.caravan.color.Colors
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.challenge.Challenge
+import com.unicorns.invisible.caravan.model.enemy.EnemyPlayer
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.Caravan
 import com.unicorns.invisible.caravan.model.primitives.Card
@@ -115,7 +116,8 @@ import kotlin.math.min
 fun ShowGame(
     game: Game,
     isBlitz: Boolean = false,
-    onMove: (Card?) -> Unit = {},
+    isPvP: Boolean = false,
+    onMove: (Int, Int, Int, Int) -> Unit = { _, _, _, _ -> },
     goBack: () -> Unit
 ) {
     var selectedCard by remember { mutableIntStateOf(-1) }
@@ -176,7 +178,7 @@ fun ShowGame(
             playCardFlipSound()
             game.playerCResources.dropCardFromHand(selectedCardNN, animationSpeed)
             playVatsReady()
-            onMove(null)
+            onMove(2, selectedCardNN, 0, 0)
             game.afterPlayerMove(animationSpeed)
             game.canPlayerMove = true
         }
@@ -193,13 +195,13 @@ fun ShowGame(
             game.playerCaravans[selectedCaravanNN].dropCaravan(animationSpeed)
             playVatsReady()
             processChallengesMove(Challenge.Move(moveCode = 1), game)
-            onMove(null)
+            onMove(1, 0, selectedCaravanNN, 0)
             game.afterPlayerMove(animationSpeed)
             game.canPlayerMove = true
         }
     }
 
-    fun addCardToCaravan(caravan: Caravan, position: Int, isEnemy: Boolean) {
+    fun addCardToCaravan(caravan: Caravan, caravanNum: Int, position: Int, isEnemy: Boolean) {
         if (!game.canPlayerMove) return
 
         val cardIndex = selectedCard
@@ -219,7 +221,7 @@ fun ShowGame(
                             moveCode = 4,
                             handCard = card
                         ), game)
-                        onMove(card)
+                        onMove(3, cardIndex, caravanNum, position)
 
                         game.afterPlayerMove(animationSpeed)
                         game.canPlayerMove = true
@@ -239,7 +241,7 @@ fun ShowGame(
                                 moveCode = 3,
                                 handCard = card
                             ), game)
-                            onMove(card)
+                            onMove(3, cardIndex, caravanNum, position)
 
                             game.afterPlayerMove(animationSpeed)
                             game.canPlayerMove = true
@@ -251,7 +253,7 @@ fun ShowGame(
     }
 
     ShowGameRaw(
-        false,
+        isPvP,
         isBlitz,
         game,
         goBack,
@@ -259,7 +261,7 @@ fun ShowGame(
         { "" }, { "" }, {},
         { selectedCard }, ::onCardClicked,
         { selectedCaravan }, ::onCaravanClicked,
-        { a1, _, a3, a4 -> addCardToCaravan(a1, a3, a4) },
+        ::addCardToCaravan,
         ::dropCardFromHand,
         ::dropCaravan,
     )
@@ -337,7 +339,7 @@ fun ShowGameRaw(
     val state3Player = rememberLazyListState()
 
     fun addCardToEnemyCaravan(caravanNum: Int, position: Int) {
-        addCardToCaravan(game.enemyCaravans[caravanNum], caravanNum, position, true)
+        addCardToCaravan(game.enemyCaravans[caravanNum], caravanNum + 3, position, true)
     }
     fun addCardToPlayerCaravan(caravanNum: Int, position: Int) {
         addCardToCaravan(game.playerCaravans[caravanNum], caravanNum, position, false)
@@ -505,7 +507,7 @@ fun EnemySide(
         Hand(animationSpeed, true, game.enemyCResources, -1, Color.Transparent) {}
         Box(Modifier.fillMaxSize()) {
             key (game.enemyCResources.recomposeResources) {
-                ShowDeck(game.enemyCResources, isKnown = !isPvP)
+                ShowDeck(game.enemyCResources, if (isPvP) (game.enemy as EnemyPlayer).deckSize ?: 0 else game.enemyCResources.deckSize, isKnown = !isPvP)
             }
             if (isPvP) {
                 Box(
@@ -564,7 +566,7 @@ fun PlayerSide(
         )
         Box(Modifier.fillMaxSize()) {
             key (game.playerCResources.recomposeResources) {
-                ShowDeck(game.playerCResources)
+                ShowDeck(game.playerCResources, game.playerCResources.deckSize)
             }
             if (isPvP) {
                 Box(
@@ -941,7 +943,7 @@ fun RowScope.CaravanOnField(
 }
 
 @Composable
-fun ShowDeck(cResources: CResources, isKnown: Boolean = true) {
+fun ShowDeck(cResources: CResources, deckSize: Int, isKnown: Boolean = true) {
     Column(
         Modifier
             .fillMaxWidth()
@@ -949,7 +951,7 @@ fun ShowDeck(cResources: CResources, isKnown: Boolean = true) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         TextFallout(
-            cResources.deckSize.toString(),
+            deckSize.toString(),
             getTextColor(),
             getTextStrokeColor(),
             16.sp,
@@ -973,7 +975,6 @@ fun ShowDeck(cResources: CResources, isKnown: Boolean = true) {
                     val scaleW = cardWidth / 183f
                     val scale = min(scaleW, scaleH).coerceAtMost(0.75f)
                     ShowCardBack(
-                        
                         backCard,
                         Modifier,
                         scale = scale

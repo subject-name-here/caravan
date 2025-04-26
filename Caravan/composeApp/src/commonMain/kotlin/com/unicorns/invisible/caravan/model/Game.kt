@@ -6,6 +6,7 @@ import androidx.compose.runtime.setValue
 import com.unicorns.invisible.caravan.AnimationSpeed
 import com.unicorns.invisible.caravan.model.enemy.Enemy
 import com.unicorns.invisible.caravan.model.enemy.EnemyMadnessCardinal
+import com.unicorns.invisible.caravan.model.enemy.EnemyPlayer
 import com.unicorns.invisible.caravan.model.enemy.EnemyTheManInTheMirror
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.Caravan
@@ -26,7 +27,8 @@ import kotlin.uuid.Uuid
 
 class Game(
     val playerCResources: CResources,
-    val enemy: Enemy
+    val enemy: Enemy,
+    val isDeckOperatedFromOutside: Boolean = false
 ) {
     var recomposeResources by mutableIntStateOf(0)
 
@@ -64,7 +66,12 @@ class Game(
 
     fun isOver() = isGameOver != 0
 
-    var isCorrupted = false
+    val isCorrupted: Boolean
+        get() = if (enemy is EnemyPlayer) {
+            enemy.isCorrupted
+        } else {
+            false
+        }
 
     fun isInitStage(): Boolean {
         return playerCResources.hand.size > 5 || enemyCResources.hand.size > 5
@@ -134,7 +141,7 @@ class Game(
     suspend fun afterPlayerMove(speed: AnimationSpeed) {
         delay(speed.delay.coerceAtLeast(95L))
         processField(speed)
-        if (playerCResources.hand.size < 5 && playerCResources.deckSize > 0) {
+        if (playerCResources.hand.size < 5 && playerCResources.deckSize > 0 && !isDeckOperatedFromOutside) {
             playerCResources.addToHand()
             delay(speed.delay)
         }

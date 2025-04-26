@@ -3,6 +3,7 @@ package com.unicorns.invisible.caravan
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -18,6 +19,7 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -35,9 +37,19 @@ import caravan.composeapp.generated.resources.room_number
 import caravan.composeapp.generated.resources.use_custom_deck
 import caravan.composeapp.generated.resources.use_wild_wasteland_cards
 import com.sebaslogen.resaca.rememberScoped
+import com.unicorns.invisible.caravan.model.Game
+import com.unicorns.invisible.caravan.model.enemy.EnemyPlayer
+import com.unicorns.invisible.caravan.model.enemy.Move
+import com.unicorns.invisible.caravan.model.primitives.CResources
+import com.unicorns.invisible.caravan.model.primitives.Card
+import com.unicorns.invisible.caravan.model.primitives.CardAtomic
+import com.unicorns.invisible.caravan.model.primitives.CardWildWasteland
+import com.unicorns.invisible.caravan.model.primitives.CustomDeck
+import com.unicorns.invisible.caravan.model.primitives.WWType
 import com.unicorns.invisible.caravan.utils.CheckboxCustom
 import com.unicorns.invisible.caravan.utils.MenuItemOpen
 import com.unicorns.invisible.caravan.utils.TextFallout
+import com.unicorns.invisible.caravan.utils.clickableCancel
 import com.unicorns.invisible.caravan.utils.getBackgroundColor
 import com.unicorns.invisible.caravan.utils.getDividerColor
 import com.unicorns.invisible.caravan.utils.getTextBackgroundColor
@@ -53,17 +65,21 @@ import io.ktor.client.plugins.api.createClientPlugin
 import io.ktor.client.plugins.websocket.DefaultClientWebSocketSession
 import io.ktor.client.plugins.websocket.WebSockets
 import io.ktor.client.plugins.websocket.webSocket
+import io.ktor.websocket.CloseReason
 import io.ktor.websocket.Frame
+import io.ktor.websocket.close
 import io.ktor.websocket.readText
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.serialization.json.Json
 import org.jetbrains.compose.resources.Font
 import org.jetbrains.compose.resources.stringResource
 
 
 fun isRoomNumberIncorrect(roomNumber: String): Boolean {
-    return roomNumber.toIntOrNull() !in (10..22229) && roomNumber != "" && roomNumber != "0"
+    return roomNumber.toIntOrNull() !in (10..22229)
 }
 
 val client = HttpClient(CIO) {
@@ -90,33 +106,51 @@ fun ShowPvP(
     var checkedWild by rememberScoped { mutableStateOf(false) }
     var context by rememberScoped { mutableStateOf<DefaultClientWebSocketSession?>(null) }
 
-
     if (context != null) {
-        PvPGame(context!!, { p1, p2 -> showAlertDialog(p1, p2, null) }) {
-            context = null
+        val deck = if (checkedCustomDeck) {
+            CustomDeck().apply { addAll(saveGlobal.getCurrentDeckCopy()) }
+        } else {
+            CustomDeck(saveGlobal.selectedDeck)
+        }
+        if (checkedWild) {
+            deck.apply {
+                add(CardAtomic())
+                add(CardAtomic())
+                WWType.entries.forEach { type ->
+                    add(CardWildWasteland(type))
+                }
+            }
+        }
+        PvPGame(
+            context!!,
+            deck,
+            { p1, p2 -> showAlertDialog(p1, p2, null) }
+        ) {
+            CoroutineScope(Dispatchers.Default).launch {
+                context = null
+            }
         }
         return
     }
 
     suspend fun createRoom(): String {
         isLoading = true
-        val isQueue = roomNumber == "0" || roomNumber == ""
         var closeReasonOutside = ""
         client.webSocket(
-            crvnUrl + if (isQueue) {
-                "/game/room/queue"
-            } else {
-                "/game/room/join/$roomNumber"
-            },
+            "$crvnUrl/game/room/join/$roomNumber/$checkedWild/$checkedCustomDeck",
         ) {
             try {
                 val message = incoming.receive()
                 if (message is Frame.Text && message.readText() == "LET THE GAME BEGIN") {
                     context = this
+                    isLoading = false
+                    while (context != null) {
+                        delay(1000L)
+                    }
                 } else {
                     closeReasonOutside = message.data.decodeToString()
+                    isLoading = false
                 }
-                isLoading = false
             } catch (e: Exception) {
                 closeReasonOutside = e.message ?: "UNKNOWN FAILUR"
                 isLoading = false
@@ -273,20 +307,21 @@ fun ShowPvP(
 @Composable
 fun PvPGame(
     session: DefaultClientWebSocketSession,
+    deck: CustomDeck,
     showAlertDialog: (String, String) -> Unit,
     goBack: () -> Unit,
 ) {
     var isCreator by rememberScoped { mutableStateOf<Int?>(null) }
+    var enemyDeckSize by rememberScoped { mutableStateOf<Int?>(null) }
     LaunchedEffect(Unit) {
-        showAlertDialog("PRE-RECEIVED", "")
         val message = session.incoming.receive()
         isCreator = when {
-            message is Frame.Text && message.readText() == "BEGIN THE END." -> {
-                showAlertDialog("RECEIVED", "MESSAGE 1")
+            message is Frame.Text && message.readText() == "BEGIN THE END. " -> {
+                showAlertDialog("RECEIVED", "YOU BEGIN THE GAME.")
                 1
             }
             message is Frame.Text && message.readText() == "WAIT." -> {
-                showAlertDialog("RECEIVED", "MESSAGE 0")
+                showAlertDialog("RECEIVED", "YOU GO SECOND.")
                 0
             }
             else -> {
@@ -294,19 +329,105 @@ fun PvPGame(
                 -1
             }
         }
+
+        suspend fun sendDeckSize() {
+            session.outgoing.send(Frame.Text(deck.size.toString()))
+        }
+        suspend fun receiveDeckSize() {
+            val deckSize = session.incoming.receive()
+            when {
+                deckSize is Frame.Text -> {
+                    enemyDeckSize = deckSize.readText().toIntOrNull()
+                }
+                else -> {
+                    showAlertDialog("RECEIVED BAD", "DECK SIZE is bad")
+                    goBack()
+                }
+            }
+        }
+        if (isCreator == 1) {
+            sendDeckSize()
+            receiveDeckSize()
+        } else {
+            receiveDeckSize()
+            sendDeckSize()
+        }
     }
 
     if (isCreator != null) {
-        if (isCreator == -1) {
-            goBack()
-            return
+        val game by rememberScoped { mutableStateOf(Game(
+            CResources(deck).also { it.initResourcesPvP() },
+            EnemyPlayer(enemyDeckSize, session),
+            isDeckOperatedFromOutside = true
+        )) }
+
+        LaunchedEffect(Unit) {
+            suspend fun sendCard() {
+                val card = deck.removeFirst()
+                game.playerCResources.addCardToHandDirect(card)
+                session.outgoing.send(Frame.Text(Json.encodeToString(card)))
+            }
+            suspend fun receiveCard() {
+                val cardRaw = session.incoming.receive() as Frame.Text
+                val card = Json.decodeFromString<Card>(cardRaw.readText())
+                game.enemyCResources.addCardToHandDirect(card)
+            }
+
+            when (isCreator) {
+                1 -> {
+                    repeat(8) {
+                        sendCard()
+                        receiveCard()
+                    }
+                }
+                0 -> {
+                    repeat(8) {
+                        receiveCard()
+                        sendCard()
+                    }
+                    game.enemy.makeMove(game, AnimationSpeed.NONE)
+                }
+                else -> {
+                    goBack()
+                    return@LaunchedEffect
+                }
+            }
+            game.canPlayerMove = true
         }
 
-        if (isCreator == 0) {
-            LaunchedEffect(Unit) {
-                session.outgoing.send(Frame.Text("OVER"))
-                goBack()
+        ShowGame(
+            game,
+            isBlitz = false,
+            isPvP = true,
+            onMove = { a1, a2, a3, a4 ->
+                val newCard = game.playerCResources.addToHandPvP()
+                CoroutineScope(Dispatchers.Default).launch {
+                    session.outgoing.send(
+                        Frame.Text(
+                            Json.encodeToString(Move(
+                                a1, a2, a3, a4, Json.encodeToString(newCard)
+                            ))
+                        )
+                    )
+                }
             }
+        ) { goBack() }
+    } else {
+        BoxWithConstraints(Modifier.fillMaxSize().background(getBackgroundColor()), contentAlignment = Alignment.Center) {
+            TextFallout(
+                text = "LOADING (press to exit)",
+                getTextColor(),
+                getTextStrokeColor(),
+                16.sp,
+                Modifier
+                    .fillMaxWidth(0.5f)
+                    .padding(horizontal = 8.dp)
+                    .clickableCancel {
+                        goBack()
+                    }
+                    .background(getTextBackgroundColor())
+                    .padding(4.dp),
+            )
         }
     }
 }
