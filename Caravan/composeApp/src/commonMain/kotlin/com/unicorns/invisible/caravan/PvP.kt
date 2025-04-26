@@ -313,6 +313,7 @@ fun PvPGame(
 ) {
     var isCreator by rememberScoped { mutableStateOf<Int?>(null) }
     var enemyDeckSize by rememberScoped { mutableStateOf<Int?>(null) }
+    var deckReceived by rememberScoped { mutableStateOf(false) }
     LaunchedEffect(Unit) {
         val message = session.incoming.receive()
         isCreator = when {
@@ -352,9 +353,10 @@ fun PvPGame(
             receiveDeckSize()
             sendDeckSize()
         }
+        deckReceived = true
     }
 
-    if (isCreator != null) {
+    if (deckReceived) {
         val game by rememberScoped { mutableStateOf(Game(
             CResources(deck).also { it.initResourcesPvP() },
             EnemyPlayer(enemyDeckSize, session),
@@ -392,6 +394,7 @@ fun PvPGame(
                     return@LaunchedEffect
                 }
             }
+            game.enemyCResources.recomposeResources++
             game.canPlayerMove = true
         }
 

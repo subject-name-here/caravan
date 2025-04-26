@@ -12,12 +12,16 @@ import io.ktor.websocket.Frame
 import io.ktor.websocket.readText
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
 
 
 class EnemyPlayer(var deckSize: Int?, val session: DefaultClientWebSocketSession) : Enemy {
     override fun createDeck(): CResources = CResources(CustomDeck())
 
-    var isCorrupted = deckSize == null
+    var isCorrupted = false
 
     override suspend fun makeMove(game: Game, speed: AnimationSpeed) {
         val moveRaw = session.incoming.receive()
@@ -77,10 +81,10 @@ class EnemyPlayer(var deckSize: Int?, val session: DefaultClientWebSocketSession
             isCorrupted = true
         }
 
-
         try {
             val ds = deckSize!!
             if (move.moveType in listOf(2, 3) && ds > 0) {
+                val type = Json.parseToJsonElement(move.newCardInHand).jsonObject["type"]
                 val newCard = Json.decodeFromString<Card>(move.newCardInHand)
                 game.enemyCResources.addCardToHandDirect(newCard)
                 deckSize!!.dec()
