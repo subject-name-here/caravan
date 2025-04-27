@@ -2,6 +2,7 @@ package com.unicorns.invisible.caravan.model.challenge
 
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.primitives.Card
+import com.unicorns.invisible.caravan.saveGlobal
 import kotlinx.serialization.Serializable
 import org.jetbrains.compose.resources.StringResource
 import kotlin.random.Random
@@ -34,7 +35,11 @@ sealed interface Challenge {
 
             challenges.add(ChallengePlayCard((1..14).random(rand)))
             challenges.add(ChallengeDoNotPlayCards((1..7).random(rand))) // TODO: add more variations
-            challenges.add(ChallengeBeatEnemies((1..8).random(rand))) // TODO: add more combinations, make dependence on level
+            if (false /** saveGlobal.lvl >= 6 */) { // TODO: for release
+                challenges.add(ChallengeBeatEnemiesLevel((1..8).random(rand))) // TODO: add more combinations
+            } else {
+                challenges.add(ChallengeBeatEnemiesLevel(saveGlobal.lvl))
+            }
 
             val specialCode = (1..7).random(rand)  // TODO: add more interesting things!
             when (specialCode) {

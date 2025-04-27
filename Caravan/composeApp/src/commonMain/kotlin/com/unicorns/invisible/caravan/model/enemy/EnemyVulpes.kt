@@ -16,6 +16,7 @@ import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.CardFace
 import com.unicorns.invisible.caravan.model.primitives.CardJoker
 import com.unicorns.invisible.caravan.model.primitives.CardNumber
+import com.unicorns.invisible.caravan.model.primitives.CollectibleDeck
 import com.unicorns.invisible.caravan.model.primitives.CustomDeck
 import com.unicorns.invisible.caravan.model.primitives.RankFace
 import kotlinx.serialization.Serializable
@@ -38,8 +39,9 @@ class EnemyVulpes : EnemyPvENoBank() {
     override var curCards: Int = maxCards
 
     override fun createDeck(): CResources = CResources(CustomDeck(CardBack.LEGION).apply {
+        addAll(CollectibleDeck(CardBack.GOMORRAH_DARK))
         removeAll {
-            it is CardNumber && it.rank.value <= 5 || it is CardFace && it.rank == RankFace.QUEEN
+            it is CardNumber && it.rank.value < 5 || it is CardFace && it.rank == RankFace.QUEEN
         }
     })
 

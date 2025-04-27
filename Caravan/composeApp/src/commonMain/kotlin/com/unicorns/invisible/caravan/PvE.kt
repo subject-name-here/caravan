@@ -418,6 +418,7 @@ fun StartGame(
 
             saveGlobal.gamesFinished++
             saveGlobal.wins++
+            saveGlobal.table -= myBet + enemyBet
 
             if (myBet == 0) {
                 playWinSoundAlone()
@@ -443,7 +444,6 @@ fun StartGame(
                     }
                     saveGlobal.capsInHand += reward
                 }
-                saveGlobal.table -= myBet + enemyBet
 
                 saveGlobal.capsWon += reward
                 if (reward > 0) {

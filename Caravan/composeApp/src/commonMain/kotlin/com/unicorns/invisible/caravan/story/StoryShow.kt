@@ -97,9 +97,7 @@ fun DialogLine(line: String, onClick: () -> Unit) {
 @Composable
 fun StoryShow(graph: DialogGraph, onBadEnd: () -> Unit, onGoodEnd: () -> Unit) {
     var dialogState by rememberScoped { mutableIntStateOf(0) }
-    val stableDialogState: DialogState = graph.states[dialogState]
-
-    when (stableDialogState) {
+    when (val stableDialogState: DialogState = graph.states[dialogState]) {
         is DialogFinishState -> {
             ShowDeathScreen(stableDialogState.code, onBadEnd, onGoodEnd)
         }
@@ -130,9 +128,9 @@ fun StoryShow(graph: DialogGraph, onBadEnd: () -> Unit, onGoodEnd: () -> Unit) {
                             visible = stableDialogState.intro == PicEffect.SLIDE && isSlideVisible,
                             enter = slideInHorizontally(
                                 animationSpec = spring(stiffness = Spring.StiffnessMediumLow, visibilityThreshold = IntOffset.VisibilityThreshold),
-                                initialOffsetX = { it -> -it }
+                                initialOffsetX = { -it }
                             ),
-                            exit = slideOutHorizontally(targetOffsetX = { it -> it })
+                            exit = slideOutHorizontally(targetOffsetX = { it })
                         ) {
                             Box(Modifier.fillMaxSize().paint(
                                 painterResource(stableDialogState.picId),
@@ -162,33 +160,35 @@ fun StoryShow(graph: DialogGraph, onBadEnd: () -> Unit, onGoodEnd: () -> Unit) {
 
                         Spacer(Modifier.height(16.dp))
 
-                        graph.edges.forEachIndexed { edgeIndex, edge ->
-                            if (edge.oldState == dialogState) {
+                        graph.edges.forEachIndexed { edgeIndex, e ->
+                            if (e.oldState == dialogState) {
                                 val edge = graph.edges[edgeIndex]
                                 if (graph.visitedStates[edge.newState]) {
                                     return@forEachIndexed
                                 }
                                 DialogLine(stringResource(edge.lineId)) {
-                                    CoroutineScope(Dispatchers.Unconfined).launch {
+                                    if (isSlideVisible) {
                                         isSlideVisible = false
-                                        when (stableDialogState.outro) {
-                                            PicEffect.SLIDE -> {
-                                                playSlideSound()
-                                                delay(1000L)
+                                        CoroutineScope(Dispatchers.Unconfined).launch {
+                                            when (stableDialogState.outro) {
+                                                PicEffect.SLIDE -> {
+                                                    playSlideSound()
+                                                    delay(1000L)
+                                                }
+                                                PicEffect.SELECT -> {
+                                                    playSelectSound()
+                                                }
+                                                PicEffect.NONE -> {}
                                             }
-                                            PicEffect.SELECT -> {
-                                                playSelectSound()
-                                            }
-                                            PicEffect.NONE -> {}
-                                        }
-                                        dialogState = edge.newState
-                                        graph.visitedStates[dialogState] = true
-                                        var visitedEdgeResult = edge.onVisited()
-                                        while (visitedEdgeResult in graph.edges.indices) {
-                                            val otherEdge = graph.edges[visitedEdgeResult]
-                                            dialogState = otherEdge.newState
+                                            dialogState = edge.newState
                                             graph.visitedStates[dialogState] = true
-                                            visitedEdgeResult = otherEdge.onVisited()
+                                            var visitedEdgeResult = edge.onVisited()
+                                            while (visitedEdgeResult in graph.edges.indices) {
+                                                val otherEdge = graph.edges[visitedEdgeResult]
+                                                dialogState = otherEdge.newState
+                                                graph.visitedStates[dialogState] = true
+                                                visitedEdgeResult = otherEdge.onVisited()
+                                            }
                                         }
                                     }
                                 }
@@ -249,7 +249,7 @@ fun ShowDeathScreen(code: DeathCode, onBadEnd: () -> Unit, onGoodEnd: () -> Unit
         DeathCode.STABBED_BY_CAZADORS_ON_THE_RUN to listOf(0, 1, 2, 3, 4, 7, 9, 10, 11, 12, 14, 15, 16),
         DeathCode.GOT_LOST to listOf(1, 10, 11, 13),
     )
-    val messagesInfos = map[code]?.mapNotNull { messages[it] } ?: run { onBadEnd(); return }
+    val messagesInfos = map[code]?.map { messages[it] } ?: run { onBadEnd(); return }
     val index = weightedRandom(messagesInfos.map { it.second })
     val info = messagesInfos[index]
 

@@ -1309,4 +1309,18 @@ If this helped you understand the game, thank the author Kyle! To do this, go to
     <string name="lvl_up">Level Up!</string>
     <string name="lvl_up_body">Current level: %1$s.\nXP to next level: %2$s.</string>
 
+    <string name="challenge_lvl_1_name">Level 1</string>
+    <string name="challenge_lvl_1_desc">Beat Oliver Swanick, Ringo and Snuffles.</string>
+    <string name="challenge_lvl_2_name">Level 2</string>
+    <string name="challenge_lvl_2_desc">Beat Veronica, Easy Pete and Salt-Upon-Wounds.</string>
+    <string name="challenge_lvl_3_name">Level 3</string>
+    <string name="challenge_lvl_3_desc">Beat Victor, Johnson Nash and Veronica.</string>
+    <string name="challenge_lvl_4_name">Level 4</string>
+    <string name="challenge_lvl_4_desc">Beat No-Bark, Victor and Johnson Nash.</string>
+    <string name="challenge_lvl_5_name">Level 5</string>
+    <string name="challenge_lvl_5_desc">Beat No-Bark, Vulpes Inculta and Thyra the Black.</string>
+    <string name="challenge_lvl_6_name">Level 6+</string>
+    <string name="challenge_lvl_6_desc">Beat Tabitha, Vulpes Inculta and Thyra the Black.</string>
+
+
 </resources>

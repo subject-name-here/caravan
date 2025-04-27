@@ -10,8 +10,7 @@ import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyInit
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJackToPlayer
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJackToSelfMedium
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJokerSimple
-import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJokerSuperSimple
-import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyKingToPlayer
+import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyKingHard
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyKingToSelfMedium
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyPutNumbersMedium
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyQueenToSelf
@@ -61,12 +60,12 @@ class EnemyViqueen : EnemyPvENoBank() {
                         }
                     }
                     RankFace.KING -> {
-                        if (StrategyKingToPlayer(index).move(game, speed)) {
+                        if (StrategyKingHard(index).move(game, speed)) {
                             return
                         }
                     }
                     RankFace.JOKER -> {
-                        if (StrategyJokerSuperSimple(index).move(game, speed)) {
+                        if (StrategyJokerSimple(index).move(game, speed)) {
                             return
                         }
                     }

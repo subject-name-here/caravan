@@ -467,7 +467,7 @@ fun Screen() {
                     getDialogBackground(),
                     18.sp,
                     Modifier
-                        .padding(bottom = 4.dp)
+                        .padding(bottom = 8.dp)
                         .background(getDialogTextColor())
                         .clickableCancel { onConfirmClick() }
                         .padding(4.dp),
@@ -482,7 +482,7 @@ fun Screen() {
                         getDialogBackground(),
                         getDialogBackground(), 18.sp,
                         Modifier
-                            .padding(bottom = 4.dp)
+                            .padding(bottom = 8.dp)
                             .background(getDialogTextColor())
                             .clickableCancel {
                                 onDismissClick?.invoke()
@@ -572,6 +572,7 @@ fun Screen() {
                     getDialogBackground(),
                     18.sp,
                     Modifier
+                        .padding(bottom = 8.dp)
                         .background(getDialogTextColor())
                         .clickableCancel {
                             saveData()
