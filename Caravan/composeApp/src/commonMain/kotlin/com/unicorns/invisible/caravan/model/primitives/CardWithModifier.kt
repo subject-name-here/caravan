@@ -19,7 +19,7 @@ class CardWithModifier(val card: CardBase) {
         if (card is CardNuclear) {
             hasBomb = true
         } else if (card is CardWildWasteland) {
-            when (card.type) {
+            when (card.wwType) {
                 WWType.DIFFICULT_PETE -> hasActivePete = true
                 WWType.FEV -> hasActiveFev = true
                 WWType.UFO -> hasActiveUfo = true

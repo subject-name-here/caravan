@@ -36,6 +36,7 @@ import caravan.composeapp.generated.resources.menu_settings
 import caravan.composeapp.generated.resources.monofont
 import caravan.composeapp.generated.resources.non_stop_radio
 import caravan.composeapp.generated.resources.save
+import com.unicorns.invisible.caravan.cheats.CheatBackToSquare1
 import com.unicorns.invisible.caravan.cheats.CheatChangeTrack
 import com.unicorns.invisible.caravan.cheats.CheatEraseStoryProgress
 import com.unicorns.invisible.caravan.cheats.CheatFinalBossesHeroicMusic
@@ -156,6 +157,7 @@ fun ShowTrueSettings(
                         CheatStashEventfulYear,
                         CheatStashCumpleanos,
                         CheatLaggySpeed,
+                        CheatBackToSquare1,
                     )
                     TextFallout(
                         text = stringResource(Res.string.cheats),

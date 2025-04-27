@@ -28,12 +28,14 @@ class EnemyVulpes : EnemyPvENoBank() {
     override val isEven
         get() = false
     override val level: Int
-        get() = 4
+        get() = 5
     override val isAvailable: Boolean
         get() = true
 
     override var wins: Int = 0
     override var winsBlitz: Int = 0
+
+    override var curCards: Int = maxCards
 
     override fun createDeck(): CResources = CResources(CustomDeck(CardBack.LEGION).apply {
         removeAll {

@@ -37,7 +37,7 @@ class EnemyStory2 : Enemy {
         val specials = hand.withIndex().filter { it.value is CardWildWasteland }
         specials.forEach { (index, special) ->
             special as CardWildWasteland
-            when (special.type) {
+            when (special.wwType) {
                 WWType.CAZADOR -> {
                     val candidate = game.playerCaravans
                         .filter { it.getValue() in (11..26) }

@@ -31,12 +31,14 @@ class EnemyViqueen : EnemyPvENoBank() {
     override val isEven
         get() = true
     override val level: Int
-        get() = 3
+        get() = 5
     override val isAvailable: Boolean
         get() = true
 
     override var wins: Int = 0
     override var winsBlitz: Int = 0
+
+    override var curCards: Int = maxCards
 
     override fun createDeck(): CResources {
         return CResources(CardBack.VIKING)

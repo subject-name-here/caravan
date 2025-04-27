@@ -137,7 +137,7 @@ private fun getSongsArray() = arrayOf(
     } else {
         "files/radio/MUS_StreetsOfNewReno.amr" to "\"Streets of New Reno\" - Joshua Sawyer/Nathaniel Chapman"
     },
-    "files/radio/MUS_Von_Spanien_Nach_S_damerika.amr" to "\"Von Spanien Nach Südamerika\" - Gerhard Trede",
+    "files/radio/MUS_Von_Spanien_Nach_S_damerika.amr" to "\"Von Spanien Nach Sudamerika\" - Gerhard Trede",
     "files/radio/MUS_Where_Have_You_Been_All_My_Life.amr" to "\"Where Have You Been All My Life?\" - Jeff Hooper",
     "files/radio/MUS_Why_Dont_You_Do_Right.amr" to "\"Why Don't You Do Right?\" - The Dave Barbour Quartet, featuring Peggy Lee",
 )

@@ -20,6 +20,7 @@ import com.unicorns.invisible.caravan.model.enemy.EnemyMadnessCardinal
 import com.unicorns.invisible.caravan.model.enemy.EnemyNash
 import com.unicorns.invisible.caravan.model.enemy.EnemyNoBark
 import com.unicorns.invisible.caravan.model.enemy.EnemyOliver
+import com.unicorns.invisible.caravan.model.enemy.EnemyPvENoBank
 import com.unicorns.invisible.caravan.model.enemy.EnemyPvEWithBank
 import com.unicorns.invisible.caravan.model.enemy.EnemyRingo
 import com.unicorns.invisible.caravan.model.enemy.EnemySalt
@@ -74,6 +75,10 @@ class Save(var playerId: String? = null) {
     fun addCard(card: CardWithPrice) {
         availableCards.add(card)
     }
+    fun removeCard(card: CardWithPrice) {
+        availableCards.remove(card)
+    }
+    fun availableCardsSize() = availableCards.size
 
     val availableDecks
         get() = availableCards.toList().map { it.getBack() }.distinct()
@@ -188,6 +193,10 @@ class Save(var playerId: String? = null) {
         increaseXp(xp)
         return xp
     }
+    fun dropProgress() {
+        lvl = 1
+        xp = 0
+    }
 
     @EncodeDefault
     var capsInHand = 150
@@ -243,51 +252,56 @@ class Save(var playerId: String? = null) {
     var isRadioUsesPseudonyms = false
 
     @EncodeDefault
-    val enemiesGroups3 = listOf(
+    val enemiesGroups4 = listOf(
         listOf(
             EnemyOliver(),
-            EnemyVeronica(),
-            EnemyVictor(),
-            EnemyHanlon(),
-            EnemyUlysses(),
-            EnemyBenny()
-        ),
-        listOf(
-            EnemyNash(),
-            EnemyNoBark(),
-            EnemyTabitha(),
-            EnemyVulpes(),
-            EnemyElijah(),
-            EnemyCrooker()
-        ),
-        listOf(
-            EnemySnuffles(),
-            EnemyEasyPete(),
-            EnemyTheManInTheMirror(),
-            EnemyMadnessCardinal(),
-            EnemyDrMobius(),
-            EnemyLuc10()
-        ),
-        listOf(
             EnemyRingo(),
+            EnemySnuffles(),
+        ),
+        listOf(
+            EnemyVeronica(),
+            EnemyEasyPete(),
             EnemyFisto(),
-            EnemyCaesar(),
-            EnemyViqueen(),
             EnemySalt(),
+        ),
+        listOf(
+            EnemyVictor(),
+            EnemyNash(),
+            EnemyElijah(),
+            EnemyCrooker(),
+            EnemyTheManInTheMirror(),
+        ),
+        listOf(
+            EnemyBenny(),
+            EnemyLuc10(),
+            EnemyNoBark(),
+            EnemyDrMobius(),
             EnemyGloria(),
+        ),
+        listOf(
+            EnemyHanlon(),
+            EnemyViqueen(),
+            EnemyVulpes(),
+            EnemyMadnessCardinal(),
+        ),
+        listOf(
+            EnemyUlysses(),
+            EnemyTabitha(),
+            EnemyCaesar(),
         )
-
     )
     fun updateEnemiesBanks() {
-        val enemies = enemiesGroups3.flatten()
+        val enemies = enemiesGroups4.flatten()
         enemies.filterIsInstance<EnemyPvEWithBank>().forEach { enemy ->
-            enemy.curBets = if (enemy is EnemySnuffles) {
-                val fromTable = table
-                table = 0
-                max(0, fromTable / 5)
+            if (enemy !is EnemySnuffles) {
+                enemy.curBets = enemy.maxBets
             } else {
-                enemy.maxBets
+                enemy.curBets = table / 5
+                table = 0
             }
+        }
+        enemies.filterIsInstance<EnemyPvENoBank>().forEach { enemy ->
+            enemy.curCards = enemy.maxCards
         }
     }
 

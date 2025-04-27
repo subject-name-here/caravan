@@ -201,7 +201,7 @@ fun ShowPvE(
     }
 
     if (playAgainstEnemy != -1) {
-        val enemyList = saveGlobal.enemiesGroups3.flatten()
+        val enemyList = saveGlobal.enemiesGroups4.flatten()
         if (playAgainstEnemy !in enemyList.indices) {
             playAgainstEnemy = -1
             return
@@ -291,6 +291,7 @@ fun ShowPvE(
                         }
                         stringResource(Res.string.enemy_with_card,
                             stringResource(enemy.nameId),
+                            enemy.curCards,
                             stringResource(back.nameIdWithBackFileName.first)
                         )
                     }
@@ -321,7 +322,7 @@ fun ShowPvE(
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                val enemies = saveGlobal.enemiesGroups3.flatten().filter { it.level == selectedTab + 1 }
+                val enemies = saveGlobal.enemiesGroups4.flatten().filter { it.level == selectedTab + 1 }
                 Spacer(modifier = Modifier.height(8.dp))
                 val m1 = stringResource(Res.string.closed)
                 val m2 = "This content is unavailable."
@@ -330,7 +331,7 @@ fun ShowPvE(
                     OpponentItem(it) {
                         if (it.level != 0 && it.level <= saveGlobal.lvl) {
                             playVatsEnter()
-                            playAgainstEnemy = saveGlobal.enemiesGroups3.flatten().indexOf(it)
+                            playAgainstEnemy = saveGlobal.enemiesGroups4.flatten().indexOf(it)
                         } else {
                             if (it.level == 0) {
                                 showAlertDialog(m1, m2, null)
@@ -372,15 +373,21 @@ fun StartGame(
             CResources(CustomDeck().apply { addAll(playerDeck) }),
             enemy
         ).also {
-            if (enemy is EnemyPvEWithBank) {
-                if (isBlitz) {
-                    saveGlobal.sierraMadreChips -= myBet
-                } else {
-                    saveGlobal.capsInHand -= myBet
+            when (enemy) {
+                is EnemyPvEWithBank -> {
+                    if (isBlitz) {
+                        saveGlobal.sierraMadreChips -= myBet
+                    } else {
+                        saveGlobal.capsInHand -= myBet
+                    }
+                    saveGlobal.capsBet += myBet
+                    saveGlobal.table += myBet + enemyBet
+                    enemy.curBets -= enemyBet / enemy.bet
                 }
-                saveGlobal.capsBet += myBet
-                saveGlobal.table += myBet + enemyBet
-                enemy.curBets -= enemyBet / enemy.bet
+
+                is EnemyPvENoBank -> {
+                    enemy.curCards--
+                }
             }
 
             saveGlobal.gamesStarted++
@@ -436,7 +443,7 @@ fun StartGame(
                     }
                     saveGlobal.capsInHand += reward
                 }
-                saveGlobal.table -= reward
+                saveGlobal.table -= myBet + enemyBet
 
                 saveGlobal.capsWon += reward
                 if (reward > 0) {
@@ -476,12 +483,28 @@ fun StartGame(
                 }
 
                 scope.launch {
-                    val rewardCard = winCard(back, isBlitz)
-                    showAlertDialog(
-                        getString(Res.string.result),
-                        getString(Res.string.you_win) + rewardCard + getString(Res.string.your_reward_reward_xp, xpReward),
-                        onQuitPressed
-                    )
+                    if (enemy.curCards > 0) {
+                        val rewardCard = winCard(back, isBlitz)
+                        showAlertDialog(
+                            getString(Res.string.result),
+                            getString(Res.string.you_win) + rewardCard + getString(Res.string.your_reward_reward_xp, xpReward),
+                            onQuitPressed
+                        )
+                    } else {
+                        val prize = (back.getRarityMult() * 10.0).toInt()
+                        val rewardMessage = getString(Res.string.you_have_won, if (isBlitz) {
+                            saveGlobal.sierraMadreChips += prize
+                            getString(Res.string.prize_chips, prize.toString())
+                        } else {
+                            saveGlobal.capsInHand += prize
+                            getString(Res.string.prize_caps, prize.toString())
+                        })
+                        showAlertDialog(
+                            getString(Res.string.result),
+                            getString(Res.string.you_win) + rewardMessage + getString(Res.string.your_reward_reward_xp, xpReward),
+                            onQuitPressed
+                        )
+                    }
                 }
             }
 
@@ -647,7 +670,9 @@ fun ShowBettingScreen(
                                     }
                                     .padding(4.dp)
                                     .clickable {
-                                        if (isBlitz) {
+                                        if (selectedOption == 1) {
+                                            selectedOption = 0
+                                        } else if (isBlitz) {
                                             if (enemy.bet <= saveGlobal.sierraMadreChips) {
                                                 playSelectSound()
                                                 selectedOption = 1
@@ -682,7 +707,9 @@ fun ShowBettingScreen(
                                     }
                                     .padding(4.dp)
                                     .clickable {
-                                        if (isBlitz) {
+                                        if (selectedOption == 2) {
+                                            selectedOption = 0
+                                        } else if (isBlitz) {
                                             if (enemy.bet * 2 <= saveGlobal.sierraMadreChips) {
                                                 playSelectSound()
                                                 selectedOption = 2
@@ -767,7 +794,7 @@ suspend fun winCard(back: CardBack, isBlitz: Boolean): String {
         return !saveGlobal.isCardAvailableAlready(card)
     }
 
-    val isNew = if (back == CardBack.STANDARD) true else ((0..3).random() > 0)
+    val isNew = if (back == CardBack.STANDARD_RARE) true else ((0..3).random() > 0)
     val deck = CollectibleDeck(back)
     val card = if (isNew) {
         deck.toList().filter(::isCardNew).randomOrNull()

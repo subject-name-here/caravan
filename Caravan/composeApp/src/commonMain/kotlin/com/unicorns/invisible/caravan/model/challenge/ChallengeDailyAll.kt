@@ -32,7 +32,7 @@ class ChallengeDailyAll : Challenge {
 
     override fun getProgress(): String {
         val dailys = saveGlobal.challengesNew
-        return "${5 - dailys.size} / 5"
+        return "${4 - dailys.size} / 4"
     }
 
     override suspend fun reward(): List<Pair<String, () -> Unit>> {

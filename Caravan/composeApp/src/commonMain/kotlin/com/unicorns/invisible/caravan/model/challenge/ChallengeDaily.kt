@@ -14,7 +14,7 @@ sealed interface ChallengeDaily : Challenge {
 
     override suspend fun reward(): List<Pair<String, () -> Unit>> {
         val caps = 30
-        val tickets = 2
+        val tickets = 1
         return listOf(
             getString(Res.string.claim_caps, caps.toString()) to {
                 saveGlobal.capsInHand += caps

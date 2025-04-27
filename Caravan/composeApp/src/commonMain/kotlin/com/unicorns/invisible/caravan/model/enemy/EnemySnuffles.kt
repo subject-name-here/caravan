@@ -14,6 +14,7 @@ import com.unicorns.invisible.caravan.model.primitives.CardWildWasteland
 import com.unicorns.invisible.caravan.model.primitives.CollectibleDeck
 import com.unicorns.invisible.caravan.model.primitives.CustomDeck
 import com.unicorns.invisible.caravan.model.primitives.WWType
+import com.unicorns.invisible.caravan.saveGlobal
 import kotlinx.serialization.Serializable
 import kotlin.math.max
 import kotlin.random.Random
@@ -39,8 +40,7 @@ class EnemySnuffles : EnemyPvEWithBank() {
     })
 
 
-    override val maxBets: Int
-        get() = 0
+    override var maxBets: Int = 0
     override var curBets: Int = maxBets
     override val bet: Int
         get() = 5

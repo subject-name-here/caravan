@@ -340,7 +340,7 @@ private fun getWildWastelandNumberName(card: CardNumberWW): String {
 
 private fun getWildWastelandName(card: CardWildWasteland): String {
     val prefix = "ww_deck"
-    return "$prefix/" + when (card.type) {
+    return "$prefix/" + when (card.wwType) {
         WWType.CAZADOR -> "cazador.webp"
         WWType.DIFFICULT_PETE -> "difficult_pete.webp"
         WWType.FEV -> "fev.webp"

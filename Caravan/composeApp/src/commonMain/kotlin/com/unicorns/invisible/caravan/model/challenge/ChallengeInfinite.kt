@@ -14,14 +14,10 @@ sealed interface ChallengeInfinite : Challenge {
 
     override suspend fun reward(): List<Pair<String, () -> Unit>> {
         val caps = 15
-        val tickets = 1
         return listOf(
             getString(Res.string.claim_caps, caps.toString()) to {
                 saveGlobal.capsInHand += caps
             },
-            getString(Res.string.claim_tickets, tickets.toString()) to {
-                saveGlobal.tickets += tickets
-            }
         )
     }
 

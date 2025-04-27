@@ -6,7 +6,6 @@ import androidx.compose.runtime.setValue
 import com.unicorns.invisible.caravan.AnimationSpeed
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.utils.playJokerSounds
-import com.unicorns.invisible.caravan.utils.playNukeBlownSound
 import com.unicorns.invisible.caravan.utils.playWWSound
 import kotlinx.coroutines.delay
 import kotlin.random.Random
@@ -91,7 +90,7 @@ class CResources(private val deck: CustomDeck) {
     }
 
     private fun processHandAddedCard(card: Card) {
-        if (card is CardWildWasteland && card.type == WWType.CAZADOR) {
+        if (card is CardWildWasteland && card.wwType == WWType.CAZADOR) {
             val notSpecial = handMutable.filter { it is CardBase || it is CardFace }
             notSpecial.forEach { it.handAnimationMark = Card.AnimationMark.MOVED_OUT }
             handMutable.removeAll(notSpecial)
@@ -153,7 +152,7 @@ class CResources(private val deck: CustomDeck) {
                 is CardJoker -> CardJoker(card.number, card.cardBack)
                 is CardAtomic -> CardAtomic()
                 is CardFBomb -> CardFBomb()
-                is CardWildWasteland -> CardWildWasteland(card.type)
+                is CardWildWasteland -> CardWildWasteland(card.wwType)
             })
         }
     }

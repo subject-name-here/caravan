@@ -27,7 +27,7 @@ class CustomDeck() {
             is CardNumberWW -> it is CardNumberWW && it.rank == c.rank && it.suit == c.suit
             is CardAtomic -> it is CardAtomic
             is CardFBomb -> it is CardFBomb
-            is CardWildWasteland -> it is CardWildWasteland && it.type == c.type
+            is CardWildWasteland -> it is CardWildWasteland && it.wwType == c.wwType
         }
     }
 
@@ -60,7 +60,7 @@ class CustomDeck() {
                 is CardNumberWW -> CardNumberWW(card.rank, card.suit)
                 is CardAtomic -> CardAtomic()
                 is CardFBomb -> CardFBomb()
-                is CardWildWasteland -> CardWildWasteland(card.type)
+                is CardWildWasteland -> CardWildWasteland(card.wwType)
             })
         }
         return res

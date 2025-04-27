@@ -19,8 +19,8 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -31,12 +31,18 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import caravan.composeapp.generated.resources.Res
+import caravan.composeapp.generated.resources.check_back_to_menu
+import caravan.composeapp.generated.resources.check_back_to_menu_body
 import caravan.composeapp.generated.resources.menu_pvp
 import caravan.composeapp.generated.resources.monofont
+import caravan.composeapp.generated.resources.result
 import caravan.composeapp.generated.resources.room_number
 import caravan.composeapp.generated.resources.use_custom_deck
 import caravan.composeapp.generated.resources.use_wild_wasteland_cards
+import caravan.composeapp.generated.resources.you_lose
+import caravan.composeapp.generated.resources.you_win
 import com.sebaslogen.resaca.rememberScoped
+import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.enemy.EnemyPlayer
 import com.unicorns.invisible.caravan.model.enemy.Move
@@ -46,6 +52,7 @@ import com.unicorns.invisible.caravan.model.primitives.CardAtomic
 import com.unicorns.invisible.caravan.model.primitives.CardWildWasteland
 import com.unicorns.invisible.caravan.model.primitives.CustomDeck
 import com.unicorns.invisible.caravan.model.primitives.WWType
+import com.unicorns.invisible.caravan.save.saveData
 import com.unicorns.invisible.caravan.utils.CheckboxCustom
 import com.unicorns.invisible.caravan.utils.MenuItemOpen
 import com.unicorns.invisible.caravan.utils.TextFallout
@@ -57,7 +64,9 @@ import com.unicorns.invisible.caravan.utils.getTextColor
 import com.unicorns.invisible.caravan.utils.getTextStrokeColor
 import com.unicorns.invisible.caravan.utils.playClickSound
 import com.unicorns.invisible.caravan.utils.playCloseSound
+import com.unicorns.invisible.caravan.utils.playLoseSound
 import com.unicorns.invisible.caravan.utils.playSelectSound
+import com.unicorns.invisible.caravan.utils.playWinSoundAlone
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.api.Send
@@ -65,9 +74,7 @@ import io.ktor.client.plugins.api.createClientPlugin
 import io.ktor.client.plugins.websocket.DefaultClientWebSocketSession
 import io.ktor.client.plugins.websocket.WebSockets
 import io.ktor.client.plugins.websocket.webSocket
-import io.ktor.websocket.CloseReason
 import io.ktor.websocket.Frame
-import io.ktor.websocket.close
 import io.ktor.websocket.readText
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -75,6 +82,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import org.jetbrains.compose.resources.Font
+import org.jetbrains.compose.resources.getString
 import org.jetbrains.compose.resources.stringResource
 
 
@@ -107,24 +115,26 @@ fun ShowPvP(
     var context by rememberScoped { mutableStateOf<DefaultClientWebSocketSession?>(null) }
 
     if (context != null) {
-        val deck = if (checkedCustomDeck) {
-            CustomDeck().apply { addAll(saveGlobal.getCurrentDeckCopy()) }
-        } else {
-            CustomDeck(saveGlobal.selectedDeck)
-        }
-        if (checkedWild) {
-            deck.apply {
-                add(CardAtomic())
-                add(CardAtomic())
-                WWType.entries.forEach { type ->
-                    add(CardWildWasteland(type))
+        val deck by rememberScoped { mutableStateOf(
+            if (checkedCustomDeck) {
+                CustomDeck().apply { addAll(saveGlobal.getCurrentDeckCopy()) }
+            } else {
+                CustomDeck(saveGlobal.selectedDeck)
+            }.apply {
+                if (checkedWild) {
+                    add(CardAtomic())
+                    add(CardAtomic())
+                    WWType.entries.forEach { type ->
+                        add(CardWildWasteland(type))
+                    }
                 }
             }
-        }
+        ) }
         PvPGame(
             context!!,
             deck,
-            { p1, p2 -> showAlertDialog(p1, p2, null) }
+            { p1, p2 -> showAlertDialog(p1, p2, null) },
+            showAlertDialog
         ) {
             CoroutineScope(Dispatchers.Default).launch {
                 context = null
@@ -136,26 +146,31 @@ fun ShowPvP(
     suspend fun createRoom(): String {
         isLoading = true
         var closeReasonOutside = ""
-        client.webSocket(
-            "$crvnUrl/game/room/join/$roomNumber/$checkedWild/$checkedCustomDeck",
-        ) {
-            try {
-                val message = incoming.receive()
-                if (message is Frame.Text && message.readText() == "LET THE GAME BEGIN") {
-                    context = this
-                    isLoading = false
-                    while (context != null) {
-                        delay(1000L)
+        try {
+            client.webSocket(
+                "$crvnUrl/game/room/join/$roomNumber/$checkedWild/$checkedCustomDeck",
+            ) {
+                try {
+                    val message = incoming.receive()
+                    if (message is Frame.Text && message.readText() == "LET THE GAME BEGIN") {
+                        context = this
+                        isLoading = false
+                        while (context != null) {
+                            delay(1000L)
+                        }
+                    } else {
+                        closeReasonOutside = message.data.decodeToString()
+                        isLoading = false
                     }
-                } else {
-                    closeReasonOutside = message.data.decodeToString()
+                } catch (e: Exception) {
+                    closeReasonOutside = e.message ?: "UNKNOWN FAILUR"
                     isLoading = false
                 }
-            } catch (e: Exception) {
-                closeReasonOutside = e.message ?: "UNKNOWN FAILUR"
-                isLoading = false
             }
+        } catch (e: Exception) {
+            closeReasonOutside = e.message ?: ""
         }
+
 
         return closeReasonOutside
     }
@@ -189,7 +204,7 @@ fun ShowPvP(
                         text = stringResource(Res.string.room_number),
                         getTextColor(),
                         getTextStrokeColor(),
-                        11.sp,
+                        12.sp,
                         Modifier,
                     )
                 },
@@ -214,6 +229,7 @@ fun ShowPvP(
                     .clickable {
                         if (isRoomNumberIncorrect(roomNumber)) {
                             playCloseSound()
+                            showAlertDialog("WRONG ROOM NUMBER", "room number is in [10..22229].", null)
                             return@clickable
                         }
                         playSelectSound()
@@ -292,7 +308,7 @@ fun ShowPvP(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 TextFallout(
-                    "TODO",
+                    "TODO: Rules",
                     getTextColor(),
                     getTextStrokeColor(),
                     13.sp,
@@ -309,6 +325,7 @@ fun PvPGame(
     session: DefaultClientWebSocketSession,
     deck: CustomDeck,
     showAlertDialog: (String, String) -> Unit,
+    showAlertDialogWithCallback: (String, String, () -> Unit) -> Unit,
     goBack: () -> Unit,
 ) {
     var isCreator by rememberScoped { mutableStateOf<Int?>(null) }
@@ -317,7 +334,7 @@ fun PvPGame(
     LaunchedEffect(Unit) {
         val message = session.incoming.receive()
         isCreator = when {
-            message is Frame.Text && message.readText() == "BEGIN THE END. " -> {
+            message is Frame.Text && message.readText() == "BEGIN THE END." -> {
                 showAlertDialog("RECEIVED", "YOU BEGIN THE GAME.")
                 1
             }
@@ -356,12 +373,45 @@ fun PvPGame(
         deckReceived = true
     }
 
+    val scope = rememberCoroutineScope()
     if (deckReceived) {
         val game by rememberScoped { mutableStateOf(Game(
             CResources(deck).also { it.initResourcesPvP() },
             EnemyPlayer(enemyDeckSize, session),
             isDeckOperatedFromOutside = true
-        )) }
+        ).also {
+            saveGlobal.pvpGames++
+            it.onWin = {
+                playWinSoundAlone()
+                processChallengesGameOver(it)
+
+                saveGlobal.gamesFinished++
+                saveGlobal.wins++
+                saveGlobal.pvpWins++
+
+                val back = CardBack.STANDARD_RARE
+                scope.launch {
+                    val rewardCard = winCard(back, false)
+                    showAlertDialog(
+                        getString(Res.string.result),
+                        getString(Res.string.you_win) + rewardCard,
+                    )
+                }
+                saveData()
+            }
+            it.onLose = {
+                playLoseSound()
+                saveGlobal.gamesFinished++
+                saveData()
+
+                scope.launch {
+                    showAlertDialog(
+                        getString(Res.string.result),
+                        getString(Res.string.you_lose)
+                    )
+                }
+            }
+        }) }
 
         LaunchedEffect(Unit) {
             suspend fun sendCard() {
@@ -414,7 +464,19 @@ fun PvPGame(
                     )
                 }
             }
-        ) { goBack() }
+        ) {
+            if (game.isOver()) {
+                goBack()
+            } else {
+                scope.launch {
+                    showAlertDialogWithCallback(
+                        getString(Res.string.check_back_to_menu),
+                        getString(Res.string.check_back_to_menu_body),
+                        goBack
+                    )
+                }
+            }
+        }
     } else {
         BoxWithConstraints(Modifier.fillMaxSize().background(getBackgroundColor()), contentAlignment = Alignment.Center) {
             TextFallout(

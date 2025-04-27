@@ -35,7 +35,7 @@ class EnemyNoBark : EnemyPvEWithBank() {
     override val isEven
         get() = false
     override val level: Int
-        get() = 3
+        get() = 4
     override val isAvailable: Boolean
         get() = true
 

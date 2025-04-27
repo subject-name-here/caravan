@@ -5,7 +5,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.unicorns.invisible.caravan.model.CardBack
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.Transient
 
 
 @Serializable
@@ -111,7 +110,7 @@ enum class WWType {
     FEV
 }
 @Serializable
-class CardWildWasteland(val type: WWType) : CardModifier()
+class CardWildWasteland(val wwType: WWType) : CardModifier()
 
 @Serializable
 sealed class CardNuclear : CardModifier()

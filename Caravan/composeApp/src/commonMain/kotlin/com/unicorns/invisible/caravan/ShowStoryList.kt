@@ -36,7 +36,6 @@ import com.unicorns.invisible.caravan.model.enemy.EnemyStory2
 import com.unicorns.invisible.caravan.model.enemy.EnemyStory3
 import com.unicorns.invisible.caravan.model.enemy.EnemyStory4
 import com.unicorns.invisible.caravan.model.primitives.CResources
-import com.unicorns.invisible.caravan.model.primitives.Card
 import com.unicorns.invisible.caravan.model.primitives.CardFaceSuited
 import com.unicorns.invisible.caravan.model.primitives.CardNumber
 import com.unicorns.invisible.caravan.model.primitives.CustomDeck
@@ -88,32 +87,59 @@ fun ShowStoryList(
             }
             11 -> {
                 ShowStoryChapter1(getDeck(showChapter!!), showAlertDialog, {
-                    saveGlobal.storyProgress = maxOf(saveGlobal.storyProgress, 12)
+                    val progress = 12
+                    val xpReward = 15
+                    if (saveGlobal.storyProgress < progress) {
+                        saveGlobal.storyProgress = progress
+                        saveGlobal.increaseXp(xpReward)
+                        showAlertDialog("CHAPTER COMPLETED", "You get: $xpReward XP.", null)
+                    }
                     saveData()
                 }) { showChapter = null }
             }
             12 -> {
                 ShowStoryChapter2(getDeck(showChapter!!), showAlertDialog, {
-                    saveGlobal.storyProgress = maxOf(saveGlobal.storyProgress, 13)
+                    val progress = 13
+                    val xpReward = 30
+                    if (saveGlobal.storyProgress < progress) {
+                        saveGlobal.storyProgress = progress
+                        saveGlobal.increaseXp(xpReward)
+                        showAlertDialog("CHAPTER COMPLETED", "You get: $xpReward XP.", null)
+                    }
                     saveData()
                 }) { showChapter = null }
             }
             13 -> {
                 LaunchedEffect(Unit) { stopRadio(); soundReduced = true }
                 ShowStoryChapter3(getDeck(showChapter!!), showAlertDialog, {
-                    saveGlobal.storyProgress = maxOf(saveGlobal.storyProgress, 19)
+                    val progress = 19
+                    val xpReward = 66
+                    if (saveGlobal.storyProgress < progress) {
+                        saveGlobal.storyProgress = progress
+                        saveGlobal.increaseXp(xpReward)
+                        showAlertDialog("CHAPTER COMPLETED", "You get: $xpReward XP.", null)
+                    }
                     saveData()
                 }) { soundReduced = false; nextSong(); showChapter = null }
             }
             19 -> {
                 ShowStoryEndOfPart1({
-                    saveGlobal.storyProgress = maxOf(saveGlobal.storyProgress, 24)
+                    val progress = 24
+                    if (saveGlobal.storyProgress < progress) {
+                        saveGlobal.storyProgress = progress
+                    }
                     saveData()
                 }) { showChapter = null }
             }
             24 -> {
                 ShowStoryChapter4(getDeck(showChapter!!), showAlertDialog, {
-                    saveGlobal.storyProgress = maxOf(saveGlobal.storyProgress, 25)
+                    val progress = 25
+                    val xpReward = 50
+                    if (saveGlobal.storyProgress < progress) {
+                        saveGlobal.storyProgress = progress
+                        saveGlobal.increaseXp(xpReward)
+                        showAlertDialog("CHAPTER COMPLETED", "You get: $xpReward XP.", null)
+                    }
                     saveData()
                 }) { showChapter = null }
             }
@@ -138,9 +164,10 @@ fun ShowStoryList(
                 stringResource(Res.string.select_the_chapter),
                 getTextColor(),
                 getTextStrokeColor(),
-                22.sp,
+                26.sp,
                 Modifier,
             )
+            Spacer(Modifier.height(8.dp))
 
             @Composable
             fun Intro() {

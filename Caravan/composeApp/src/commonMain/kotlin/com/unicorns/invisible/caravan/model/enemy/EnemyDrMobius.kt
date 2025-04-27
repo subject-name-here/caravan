@@ -26,7 +26,7 @@ class EnemyDrMobius : EnemyPvEWithBank() {
     override val isEven: Boolean
         get() = false
     override val level: Int
-        get() = 5
+        get() = 4
 
     override fun createDeck() = CResources(CustomDeck().apply {
         repeat(3) {

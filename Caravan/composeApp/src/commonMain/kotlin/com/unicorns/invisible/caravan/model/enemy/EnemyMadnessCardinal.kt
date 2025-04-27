@@ -19,7 +19,9 @@ class EnemyMadnessCardinal : EnemyPvENoBank() {
     override val isEven
         get() = false
     override val level: Int
-        get() = 6
+        get() = 5
+
+    override var curCards: Int = maxCards
 
     override var wins: Int = 0
     override var winsBlitz: Int = 0

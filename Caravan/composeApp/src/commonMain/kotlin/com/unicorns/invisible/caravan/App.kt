@@ -182,6 +182,8 @@ private var styleIdMutableData by mutableStateOf(styleId)
 
 val id = Random.nextInt()
 
+var levelUpMessage by mutableStateOf(false)
+
 @Composable
 fun App() {
     val advice = listOf(
@@ -250,7 +252,7 @@ fun App() {
                     )
                 }
                 Box(
-                    if (isSaveLoaded == true) {
+                    if (isSaveLoaded) {
                         Modifier
                             .fillMaxSize()
                             .background(backColor)
@@ -278,7 +280,7 @@ fun App() {
                                 verticalArrangement = Arrangement.Center,
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
-                                if (isSaveLoaded == true) {
+                                if (isSaveLoaded) {
                                     TextFallout(
                                         "CARAVAN",
                                         textColor,
@@ -433,8 +435,6 @@ fun Screen() {
     var alertGoBack: (() -> Unit)? by rememberScoped { mutableStateOf(null) }
     var isCustomDeckAlert by remember { mutableStateOf(false) }
 
-    var showAlertDialogLevelUp by remember { mutableStateOf(false) }
-
     fun showAlertDialog(header: String, message: String, goBack: (() -> Unit)?) {
         alertDialogHeader = header
         alertDialogMessage = message
@@ -539,15 +539,17 @@ fun Screen() {
         ) { hideAlertDialog(); alertGoBack?.invoke() }
     }
 
-    if (showAlertDialogLevelUp) {
-        AlertDialogCustom(
-            stringResource(Res.string.lvl_up),
-            stringResource(Res.string.lvl_up_body, saveGlobal.lvl, saveGlobal.needXpToNextLevel()),
-            { showAlertDialogLevelUp = false },
-            stringResource(Res.string.close),
-            { showAlertDialogLevelUp = false },
-            null, null
-        )
+    key(levelUpMessage) {
+        if (levelUpMessage) {
+            AlertDialogCustom(
+                stringResource(Res.string.lvl_up),
+                stringResource(Res.string.lvl_up_body, saveGlobal.lvl, saveGlobal.needXpToNextLevel()),
+                { levelUpMessage = false },
+                stringResource(Res.string.close),
+                { levelUpMessage = false },
+                null, null
+            )
+        }
     }
 
     fun hideSoundSettings() {
@@ -748,7 +750,9 @@ fun Screen() {
         Box(Modifier.padding(innerPadding)) {
             when {
                 showRules -> {
-                    ShowRules { showRules = false }
+                    showAlertDialog("[CLOSED]", "Unavailable for alpha.", null)
+                    showRules = false
+                    // ShowRules { showRules = false }
                 }
                 customDeckSelection -> {
                     isCustomDeckAlert = false

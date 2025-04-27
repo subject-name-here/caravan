@@ -16,7 +16,9 @@ class EnemyHanlon : EnemyPvENoBank() {
     override val isEven
         get() = true
     override val level: Int
-        get() = 4
+        get() = 5
+
+    override var curCards: Int = maxCards
 
     override var wins: Int = 0
     override var winsBlitz: Int = 0

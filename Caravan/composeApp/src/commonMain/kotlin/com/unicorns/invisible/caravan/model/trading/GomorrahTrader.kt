@@ -13,7 +13,7 @@ import org.jetbrains.compose.resources.getString
 
 @Serializable
 class GomorrahTrader : Trader {
-    override fun isOpen() = saveGlobal.gamesFinished >= 666
+    override fun isOpen() = saveGlobal.gamesFinished >= 366
     override suspend fun openingCondition() = getString(Res.string.gomorrah_trader_condition)
 
     override fun getUpdateRate() = 12

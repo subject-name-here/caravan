@@ -63,7 +63,7 @@
 
     <string name="gomorrah_trader_welcome">My name is Ben Broadson. I sell cards. Who are you - I don't care.</string>
     <string name="gomorrah_trader_empty">Come soon again. Restocks are happening very often.</string>
-    <string name="gomorrah_trader_condition">Finish at least 666 games.</string>
+    <string name="gomorrah_trader_condition">Finish at least 366 games.</string>
 
     <string name="lucky_38_trader_welcome">Hello, sweetie, we are Marylin &amp; Jane - companions of Mr. House! We are so happy to see you!</string>
     <string name="lucky_38_trader_empty">Sugar, come again tomorrow!</string>
@@ -385,33 +385,33 @@
     <string name="tap_to_open">UNLOCK!</string>
 
     <string name="style_desert">Desert</string>
-    <string name="style_desert_condition">Win 6 PvE games (with a bet) in a row against different enemies.</string>
+    <string name="style_desert_condition">Win 7 PvE games (with a bet) in a row against different enemies.</string>
     <string name="style_pip_boy">Pip-Boy</string>
     <string name="null_condition">It is already open, duh!</string>
     <string name="style_alaska">Alaska</string>
-    <string name="style_alaska_condition">Win 12 PvE games (with a bet) in a row against different enemies.</string>
+    <string name="style_alaska_condition">Win 15 PvE games (with a bet) in a row against different enemies.</string>
     <string name="style_pip_girl">Pip-Girl</string>
     <string name="style_pip_girl_condition">Reach Level 6.</string>
     <string name="style_old_world">Old World</string>
-    <string name="style_old_world_condition">Spend 1000 caps/chips on cards.</string>
+    <string name="style_old_world_condition">Spend 5000 caps/chips on cards.</string>
     <string name="style_new_world">New World</string>
-    <string name="style_new_world_condition">Spend 10000 caps/chips on cards.</string>
+    <string name="style_new_world_condition">Spend 20000 caps/chips on cards.</string>
     <string name="style_sierra_madre">Sierra Madre</string>
-    <string name="style_sierra_madre_condition">Complete 150 challenges.</string>
+    <string name="style_sierra_madre_condition">Complete 100 challenges.</string>
     <string name="style_madre_roja">Madre Roja</string>
-    <string name="style_madre_roja_condition">Complete 1500 challenges.</string>
+    <string name="style_madre_roja_condition">Complete 500 challenges.</string>
     <string name="style_vault_21">Vault 21</string>
     <string name="style_vault_21_condition">Win 1000 games with a bet.</string>
     <string name="style_vault_22">Vault 22</string>
-    <string name="style_vault_22_condition">Win 100 games with a bet.</string>
+    <string name="style_vault_22_condition">Win 200 games with a bet.</string>
     <string name="style_black">Monochrome</string>
     <string name="style_black_condition">Win 10 PvP games.</string>
     <string name="style_enclave">Enclave</string>
     <string name="style_enclave_condition">Complete the Tower.</string>
     <string name="style_ncr">NCR</string>
-    <string name="style_ncr_condition">Defeat all enemies in PvE in Blitz with a bet at least once.</string>
+    <string name="style_ncr_condition">Open at least 10 decks o' 54.</string>
     <string name="style_legion">Legion</string>
-    <string name="style_legion_condition">Defeat all enemies in PvE with a bet at least thrice.</string>
+    <string name="style_legion_condition">Open at least 200 cards for your custom deck.</string>
 
     <string name="pip_boy_main_screen">Device #50724: Luck-o-Meter.</string>
     <string name="heads">HEADS</string>
@@ -670,7 +670,7 @@
     </string>
     <string name="ch1_10">
         [SUCCEEDED] Terminal contains many, many secret documents regarding the location of bomb shelters: Vaults, military bases, private and public shelters.
-        You, not really interested in exploring old and dangerous places, wanted to leave, but your eyes got stuck on one word “Oasis”.
+        You want to leave: the gas is affecting your well-being, - but your eyes got stuck on one word “Oasis”.
     </string>
     <string name="ch1_10a"><![CDATA[<Read about Oasis.>]]></string>
     <string name="ch1_11">
@@ -684,7 +684,7 @@
     </string>
     <string name="ch1_12a"><![CDATA[<Take everything and leave.>]]></string>
     <string name="ch1_13">
-        You took everything from the safe. You can barely move and have decided to go back to Mojave. The bar of gold should be enough to get a New Vegas passport and even have fun in casinos. Stealth-Boys should guarantee you a safe way back.
+        You took everything from the safe and leave the house. You can barely move and have decided to go back to Mojave. The bar of gold should be enough to get a New Vegas passport and even have fun in casinos. Stealth-Boys should guarantee you a safe way back.
         All in all, this journey turned out to be successful, even though you didn't even reach the Sierra Madre casino.
     </string>
 
@@ -996,7 +996,7 @@
         Caravan. You know the rules, right?
     </string>
     <string name="ch4_223a">[Luck 7] Yes, I do!</string>
-    <string name="ch4_minus_1">Priestess looked at you and walked away, saying nothing. You are stuck forever in front of the wall.</string>
+    <string name="ch4_minus_1">Woman looked at you and walked away, saying nothing. You are stuck forever in front of the wall.</string>
     <string name="ch4_23">
         New level! What do you want to put your skill points in?
     </string>
@@ -1250,7 +1250,7 @@ If this helped you understand the game, thank the author Kyle! To do this, go to
     </string>
     <string name="this_game_will_be_counted_as_lost">This game will be counted as lost!!</string>
     <string name="enemy_with_caps">%1$s (bank: %2$s x %3$s caps)</string>
-    <string name="enemy_with_card">%1$s (%2$s cards)</string>
+    <string name="enemy_with_card">%1$s (%2$s %3$s cards)</string>
     <string name="enemy_empty" translatable="false">%1$s</string>
 
     <string name="congrats">Congrats!</string>

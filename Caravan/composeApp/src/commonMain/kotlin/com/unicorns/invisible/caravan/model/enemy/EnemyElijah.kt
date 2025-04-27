@@ -24,7 +24,7 @@ class EnemyElijah : EnemyPvEWithBank() {
     override val isEven
         get() = false
     override val level: Int
-        get() = 5
+        get() = 3
 
     override fun createDeck(): CResources = CResources(CustomDeck().apply {
         listOf(CardBack.STANDARD, CardBack.VAULT_21_DAY, CardBack.SIERRA_MADRE_DIRTY).forEach { back ->

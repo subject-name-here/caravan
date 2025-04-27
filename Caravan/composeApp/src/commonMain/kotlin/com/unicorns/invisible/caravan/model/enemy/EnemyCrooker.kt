@@ -17,7 +17,7 @@ class EnemyCrooker : EnemyPvEWithBank() {
     override val isEven: Boolean
         get() = false
     override val level: Int
-        get() = 4
+        get() = 3
 
     override fun createDeck(): CResources = CResources(CustomDeck())
 
