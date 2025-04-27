@@ -71,11 +71,54 @@ import org.jetbrains.compose.resources.stringResource
 
 
 @Composable
+fun ShowXpDialog(xpReward: Int, close: () -> Unit) {
+    AlertDialog(
+        modifier = Modifier.border(width = 4.dp, color = Colors.ColorText),
+        onDismissRequest = { close() },
+        confirmButton = {
+            TextClassic(
+                "OK",
+                Colors.ColorTextBack,
+                Colors.ColorTextBack,
+                18.sp,
+                Modifier
+                    .background(Colors.ColorText)
+                    .clickableCancel { close() }
+                    .padding(4.dp)
+            )
+        },
+        title = {
+            TextClassic(
+                "CHAPTER COMPLETED",
+                Colors.ColorText,
+                Colors.ColorText,
+                24.sp, Modifier, textAlignment = TextAlign.Start
+            )
+        },
+        text = {
+            TextClassic(
+                "You get: $xpReward XP.",
+                Colors.ColorText,
+                Colors.ColorText,
+                16.sp, Modifier, textAlignment = TextAlign.Start
+            )
+        },
+        containerColor = Color.Black,
+        textContentColor = Colors.ColorText,
+        shape = RectangleShape,
+    )
+}
+
+
+@Composable
 fun ShowStoryList(
     showAlertDialog: (String, String, (() -> Unit)?) -> Unit,
     goBack: () -> Unit
 ) {
     var showChapter by rememberScoped { mutableStateOf<Int?>(null) }
+    var showXpDialog by rememberScoped { mutableStateOf<Int?>(null) }
+
+    showXpDialog?.let { ShowXpDialog(it) { showXpDialog = null } }
 
     if (showChapter != null) {
         when (showChapter) {
@@ -92,7 +135,7 @@ fun ShowStoryList(
                     if (saveGlobal.storyProgress < progress) {
                         saveGlobal.storyProgress = progress
                         saveGlobal.increaseXp(xpReward)
-                        showAlertDialog("CHAPTER COMPLETED", "You get: $xpReward XP.", null)
+                        showXpDialog = xpReward
                     }
                     saveData()
                 }) { showChapter = null }
@@ -104,7 +147,7 @@ fun ShowStoryList(
                     if (saveGlobal.storyProgress < progress) {
                         saveGlobal.storyProgress = progress
                         saveGlobal.increaseXp(xpReward)
-                        showAlertDialog("CHAPTER COMPLETED", "You get: $xpReward XP.", null)
+                        showXpDialog = xpReward
                     }
                     saveData()
                 }) { showChapter = null }
@@ -117,7 +160,7 @@ fun ShowStoryList(
                     if (saveGlobal.storyProgress < progress) {
                         saveGlobal.storyProgress = progress
                         saveGlobal.increaseXp(xpReward)
-                        showAlertDialog("CHAPTER COMPLETED", "You get: $xpReward XP.", null)
+                        showXpDialog = xpReward
                     }
                     saveData()
                 }) { soundReduced = false; nextSong(); showChapter = null }
@@ -138,7 +181,7 @@ fun ShowStoryList(
                     if (saveGlobal.storyProgress < progress) {
                         saveGlobal.storyProgress = progress
                         saveGlobal.increaseXp(xpReward)
-                        showAlertDialog("CHAPTER COMPLETED", "You get: $xpReward XP.", null)
+                        showXpDialog = xpReward
                     }
                     saveData()
                 }) { showChapter = null }

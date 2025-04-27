@@ -34,7 +34,7 @@ sealed interface Challenge {
 
             challenges.add(ChallengePlayCard((1..14).random(rand)))
             challenges.add(ChallengeDoNotPlayCards((1..7).random(rand))) // TODO: add more variations
-            // challenges.add(ChallengeBeatEnemies((1..8).random(rand))) // TODO: add more combinations, make dependence on level
+            challenges.add(ChallengeBeatEnemies((1..8).random(rand))) // TODO: add more combinations, make dependence on level
 
             val specialCode = (1..7).random(rand)  // TODO: add more interesting things!
             when (specialCode) {

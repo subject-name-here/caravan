@@ -74,12 +74,6 @@ sealed interface Trader {
 
         val n = 7
 
-        val extra = if (rand.nextBoolean()) {
-            shuffleCards(CollectibleDeck(CardBack.STANDARD_UNCOMMON)).take(1)
-        } else {
-            emptyList()
-        }
-
-        return extra + shuffleCards(CollectibleDeck(back)).take(n)
+        return shuffleCards(CollectibleDeck(back)).take(n)
     }
 }

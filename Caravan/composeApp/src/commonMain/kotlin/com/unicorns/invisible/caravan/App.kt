@@ -561,7 +561,6 @@ fun Screen() {
         }
 
         AlertDialog(
-            modifier = Modifier.border(width = 4.dp, color = getKnobColor()),
             onDismissRequest = {
                 saveData()
                 hideSoundSettings()
@@ -633,6 +632,7 @@ fun Screen() {
                     }
                 }
             },
+            modifier = Modifier.border(width = 4.dp, color = getTextColor()),
             backgroundColor = getDialogBackground(),
             contentColor = getDialogTextColor(),
             shape = RectangleShape,

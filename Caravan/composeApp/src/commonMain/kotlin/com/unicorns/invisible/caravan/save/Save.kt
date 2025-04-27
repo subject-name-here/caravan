@@ -2,6 +2,7 @@ package com.unicorns.invisible.caravan.save
 
 import com.unicorns.invisible.caravan.AnimationSpeed
 import com.unicorns.invisible.caravan.Style
+import com.unicorns.invisible.caravan.levelUpMessage
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.challenge.Challenge
 import com.unicorns.invisible.caravan.model.challenge.ChallengePlay188
@@ -179,7 +180,7 @@ class Save(var playerId: String? = null) {
             xp -= needXpToNextLevel()
             lvl++
             updateEnemiesBanks()
-            // TODO: show message
+            levelUpMessage = true
             playFanfares()
         }
     }
