@@ -55,7 +55,10 @@ fun checkIfPlayerVictoryIsClose(state: State): Boolean {
     val o1 = check(state.player.v1, state.enemy.v1)
     val o2 = check(state.player.v2, state.enemy.v2)
     val o3 = check(state.player.v3, state.enemy.v3)
-    val isAllDifferent = o1 == 0 && o2 * o3 != 0 || o2 == 0 && o1 * o3 != 0 || o3 == 0 && o1 * o2 != 0
+    val isAllDifferent =
+        o1 == 0 && state.player.v1 >= 11 && o2 * o3 != 0 ||
+                o2 == 0 && state.player.v2 >= 11 && o1 * o3 != 0 ||
+                o3 == 0 && state.player.v3 >= 11 && o1 * o2 != 0
     return o1 + o2 + o3 >= 2 || isAllDifferent
 }
 
@@ -63,11 +66,15 @@ fun checkIfEnemyVictoryIsClose(state: State, index: Int): Boolean {
     val o1 = check(state.player.v1, state.enemy.v1)
     val o2 = check(state.player.v2, state.enemy.v2)
     val o3 = check(state.player.v3, state.enemy.v3)
-    return if (index == 0) {
-        o2 != 0 && o3 != 0
-    } else if (index == 1) {
-        o1 != 0 && o3 != 0
-    } else {
-        o1 != 0 && o2 != 0
+    return when (index) {
+        0 -> {
+            o2 != 0 && o3 != 0
+        }
+        1 -> {
+            o1 != 0 && o3 != 0
+        }
+        else -> {
+            o1 != 0 && o2 != 0
+        }
     }
 }

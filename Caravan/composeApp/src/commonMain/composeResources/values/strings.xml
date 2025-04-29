@@ -925,7 +925,7 @@
     </string>
     <string name="ch4_8a">A giant wall?</string>
     <string name="ch4_9">
-        Yes, a giant wall all along the northern shore. About 20 meters high and who knows how long - the ends are not seen.
+        Yes, a giant wall all along the northern shore. About 10 meters high and who knows how long - the ends are not seen.
         But you have to go to the other side.
     </string>
     <string name="ch4_9a">[Agility 6/8] Climb the wall.</string>
@@ -1073,7 +1073,7 @@
     <string name="no_more_challenges">There are no more challenges of ths type!</string>
     <string name="claim_caps">Claim %1$s Caps</string>
     <string name="claim_tickets">Claim %1$s Ticket</string>
-    <string name="claim_card">Claim Uncommon Card</string>
+    <string name="claim_card">Claim Uncommon card %1$s</string>
 
     <string name="your_caps_in_hand">Your caps in hand: %1$s</string>
     <string name="your_chips_in_hand">Your chips in hand: %1$s</string>

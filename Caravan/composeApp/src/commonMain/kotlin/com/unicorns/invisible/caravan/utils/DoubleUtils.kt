@@ -10,10 +10,7 @@ fun Double.toString(numOfDec: Int): String {
     if (numOfDec > 0) {
         val decimalPart = this - integerPart
         val decimalAsIntValue = (decimalPart * 10f.pow(numOfDec)).roundToInt()
-        val formattedDecimalPart = decimalAsIntValue.toDouble() / 10f.pow(numOfDec)
-        val formattedValue = integerPart + formattedDecimalPart
-
-        return "$formattedValue"
+        return "${integerPart}.$decimalAsIntValue"
     } else {
         return integerPart.toString()
     }

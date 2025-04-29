@@ -7,12 +7,16 @@ import caravan.composeapp.generated.resources.complete_all_dailys
 import caravan.composeapp.generated.resources.complete_all_dailys_descr
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
+import com.unicorns.invisible.caravan.model.primitives.CardFaceSuited
+import com.unicorns.invisible.caravan.model.primitives.CardJoker
+import com.unicorns.invisible.caravan.model.primitives.CardNumber
 import com.unicorns.invisible.caravan.model.primitives.CardWithPrice
 import com.unicorns.invisible.caravan.model.primitives.CollectibleDeck
 import com.unicorns.invisible.caravan.saveGlobal
 import kotlinx.serialization.Serializable
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.getString
+import org.jetbrains.compose.resources.stringResource
 import kotlin.random.Random
 
 
@@ -46,7 +50,12 @@ class ChallengeDailyAll : Challenge {
 
         return listOf(
             if (card != null) {
-                getString(Res.string.claim_card) to { saveGlobal.addCard(card) }
+                val cardName = when (card) {
+                    is CardNumber -> getString(card.rank.nameId) + " " + getString(card.suit.nameId)
+                    is CardFaceSuited -> getString(card.rank.nameId) + " " + getString(card.suit.nameId)
+                    is CardJoker -> getString(card.rank.nameId) + " " + card.number.n
+                }
+                getString(Res.string.claim_card, cardName) to { saveGlobal.addCard(card) }
             } else {
                 val prize = (rewardBack.getRarityMult() * CardBack.BASE_CARD_COST).toInt()
                 getString(Res.string.claim_caps, prize.toString()) to { saveGlobal.capsInHand += prize }

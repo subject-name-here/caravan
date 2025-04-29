@@ -12,7 +12,7 @@ import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJackToSelfMed
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJokerSimple
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyKingHard
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyKingToSelfMedium
-import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyPutNumbersMedium
+import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyPutNumbersHard
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyQueenToSelf
 import com.unicorns.invisible.caravan.model.enemy.strategy.checkIfPlayerVictoryIsClose
 import com.unicorns.invisible.caravan.model.enemy.strategy.checkTheOutcome
@@ -44,7 +44,11 @@ class EnemyViqueen : EnemyPvENoBank() {
     }
     override suspend fun makeMove(game: Game, speed: AnimationSpeed) {
         if (game.isInitStage()) {
-            StrategyInit(StrategyInit.Type.MIN_FIRST_TO_RANDOM).move(game, speed)
+            StrategyInit(StrategyInit.Type.MAX_FIRST_TO_RANDOM).move(game, speed)
+            return
+        }
+
+        if (StrategyPutNumbersHard().move(game, speed)) {
             return
         }
 
@@ -74,16 +78,11 @@ class EnemyViqueen : EnemyPvENoBank() {
             }
         }
 
-
-        if (StrategyPutNumbersMedium().move(game, speed)) {
-            return
-        }
-
         val modifiers = game.enemyCResources.hand.filterIsInstance<CardFace>().sortedByDescending {
             when (it.rank) {
-                RankFace.JACK -> 2
-                RankFace.QUEEN -> 1
-                RankFace.KING -> 3
+                RankFace.JACK -> 1
+                RankFace.QUEEN -> 3
+                RankFace.KING -> 2
                 RankFace.JOKER -> 0
             }
         }

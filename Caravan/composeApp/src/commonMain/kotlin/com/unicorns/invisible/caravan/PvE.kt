@@ -386,7 +386,10 @@ fun StartGame(
                 }
 
                 is EnemyPvENoBank -> {
-                    enemy.curCards--
+                    if (enemy.curCards > 0) {
+                        enemy.curCards--
+                        enemyBet = 1
+                    }
                 }
             }
 
@@ -483,7 +486,7 @@ fun StartGame(
                 }
 
                 scope.launch {
-                    if (enemy.curCards > 0) {
+                    if (enemyBet > 0) {
                         val rewardCard = winCard(back, isBlitz)
                         showAlertDialog(
                             getString(Res.string.result),
