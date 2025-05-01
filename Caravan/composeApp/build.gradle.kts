@@ -135,6 +135,8 @@ android {
 }
 
 dependencies {
+    implementation(libs.androidx.ui.graphics.android)
+    implementation(libs.androidx.ui.geometry.android)
     debugImplementation(compose.uiTooling)
 }
 

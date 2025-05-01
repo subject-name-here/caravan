@@ -37,10 +37,15 @@ import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.ColorMatrix
+import androidx.compose.ui.graphics.Outline
 import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.toArgb
@@ -51,9 +56,11 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -102,6 +109,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.Font
 import org.jetbrains.compose.resources.FontResource
+import kotlin.math.roundToInt
 import kotlin.random.Random
 
 
@@ -316,7 +324,7 @@ fun ShowCard(card: Card, modifier: Modifier, scale: Float = 1f) {
                         }
                         Suit.SPADES -> {
                             val rotation = rand.nextDouble(-10.0, 10.0)
-                            val offset = IntOffset(rand.nextInt(-5, 70).toInt(), rand.nextInt(-10, 170).toInt()) * scale
+                            val offset = IntOffset(rand.nextInt(-5, 70), rand.nextInt(-10, 170)) * scale
                             ShowImageFromDrawable(
                                 Res.drawable.ncr_stamp_usage_apprvd,
                                 Modifier.offset { offset }.rotate(rotation.toFloat())
@@ -555,11 +563,10 @@ fun TextFallout(
     textAlignment: TextAlign = TextAlign.Center,
     boxAlignment: Alignment = Alignment.Center
 ) {
-    val textRedacted = text
     val strokeWidth = getStrokeWidth(textSize)
     Box(boxModifier, contentAlignment = boxAlignment) {
         Text(
-            text = textRedacted, color = textColor,
+            text = text, color = textColor,
             fontFamily = FontFamily(Font(Res.font.monofont)),
             style = TextStyle(
                 color = textColor,
@@ -573,7 +580,7 @@ fun TextFallout(
             return@Box
         }
         Text(
-            text = textRedacted, color = strokeColor,
+            text = text, color = strokeColor,
             fontFamily = FontFamily(Font(Res.font.monofont)),
             style = TextStyle(
                 color = strokeColor,
@@ -802,4 +809,55 @@ fun BoxWithConstraintsScope.VertScrollbar(
             )
         )
     )
+}
+
+
+data class DottedBorder(
+    val step: Dp,
+    val width: Dp
+) : Shape {
+    override fun createOutline(
+        size: Size,
+        layoutDirection: LayoutDirection,
+        density: Density
+    ) = Outline.Generic(Path().apply {
+        val stepPx = with(density) { step.toPx() }
+        val widthPx = with(density) { width.toPx() }
+        val stepsCount1 = (size.width / stepPx).roundToInt()
+        val actualStep1 = size.width / stepsCount1
+        val dotSize1 = Size(width = actualStep1 / 2, height = widthPx)
+        for (i in 0 until stepsCount1) {
+            addRect(
+                Rect(
+                    offset = Offset(x = i * actualStep1, y = 0f),
+                    size = dotSize1
+                )
+            )
+            addRect(
+                Rect(
+                    offset = Offset(x = i * actualStep1, y = size.height - widthPx),
+                    size = dotSize1
+                )
+            )
+        }
+
+        val stepsCount2 = (size.height / stepPx).roundToInt()
+        val actualStep2 = size.height / stepsCount2
+        val dotSize2 = Size(width = widthPx, height = actualStep2 / 2)
+        for (i in 0 until stepsCount2) {
+            addRect(
+                Rect(
+                    offset = Offset(x = 0f, y = i * actualStep2),
+                    size = dotSize2
+                )
+            )
+            addRect(
+                Rect(
+                    offset = Offset(x = size.width - widthPx, y = i * actualStep2),
+                    size = dotSize2
+                )
+            )
+        }
+        close()
+    })
 }

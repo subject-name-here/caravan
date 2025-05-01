@@ -10,6 +10,7 @@ import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyInit
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJackToPlayer
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJackToSelfMedium
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJokerSimple
+import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJokerSimpleOnPlayer
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyKingHard
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyKingToSelfMedium
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyPutNumbersHard
@@ -48,6 +49,7 @@ class EnemyViqueen : EnemyPvENoBank() {
             return
         }
 
+        // TODO: make stronger!!
         if (StrategyPutNumbersHard().move(game, speed)) {
             return
         }
@@ -80,8 +82,8 @@ class EnemyViqueen : EnemyPvENoBank() {
 
         val modifiers = game.enemyCResources.hand.filterIsInstance<CardFace>().sortedByDescending {
             when (it.rank) {
-                RankFace.JACK -> 1
-                RankFace.QUEEN -> 3
+                RankFace.JACK -> 3
+                RankFace.QUEEN -> 1
                 RankFace.KING -> 2
                 RankFace.JOKER -> 0
             }
@@ -105,7 +107,11 @@ class EnemyViqueen : EnemyPvENoBank() {
                         return
                     }
                 }
-                RankFace.JOKER -> {}
+                RankFace.JOKER -> {
+                    if (StrategyJokerSimpleOnPlayer(index).move(game, speed)) {
+                        return
+                    }
+                }
             }
         }
 

@@ -25,6 +25,8 @@ ac3 = "1.1.1"
 coil = "2.7.0"
 
 ktor_version="3.1.2"
+uiGraphicsAndroid = "1.8.0"
+uiGeometryAndroid = "1.8.0"
 
 [libraries]
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "androidx-appcompat" }
@@ -58,7 +60,8 @@ datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version
 
 ktor1 = { group = "io.ktor", name = "ktor-client-core", version.ref = "ktor_version" }
 ktor2 = { group = "io.ktor", name = "ktor-client-cio", version.ref = "ktor_version" }
-ktor3 = { group = "io.ktor", name = "ktor-client-websockets", version.ref = "ktor_version" }
+androidx-ui-graphics-android = { group = "androidx.compose.ui", name = "ui-graphics-android", version.ref = "uiGraphicsAndroid" }
+androidx-ui-geometry-android = { group = "androidx.compose.ui", name = "ui-geometry-android", version.ref = "uiGeometryAndroid" }
 
 
 [plugins]

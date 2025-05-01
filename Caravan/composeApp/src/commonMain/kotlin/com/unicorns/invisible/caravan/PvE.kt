@@ -362,7 +362,8 @@ fun StartGame(
 
     if (showBettingScreen) {
         ShowBettingScreen(
-            enemy, { myBet = it }, { enemyBet = it }, { isBlitz = it }, goBack, {
+            enemy, { p1, p2 -> showAlertDialog(p1, p2, null) },
+            { myBet = it }, { enemyBet = it }, { isBlitz = it }, goBack, {
                 showBettingScreen = false
             }
         )
@@ -559,6 +560,7 @@ fun StartGame(
 @Composable
 fun ShowBettingScreen(
     enemy: EnemyPve,
+    showAlertDialog: (String, String) -> Unit,
     setBet: (Int) -> Unit,
     setEnemyBet: (Int) -> Unit,
     setIsBlitz: (Boolean) -> Unit,
@@ -680,14 +682,14 @@ fun ShowBettingScreen(
                                                 playSelectSound()
                                                 selectedOption = 1
                                             } else {
-                                                playCloseSound()
+                                                showAlertDialog("CAN'T BET!", "You don't have enough chips!")
                                             }
                                         } else {
                                             if (enemy.bet <= saveGlobal.capsInHand) {
                                                 playSelectSound()
                                                 selectedOption = 1
                                             } else {
-                                                playCloseSound()
+                                                showAlertDialog("CAN'T BET!", "You don't have enough caps!")
                                             }
                                         }
                                     }
@@ -717,14 +719,14 @@ fun ShowBettingScreen(
                                                 playSelectSound()
                                                 selectedOption = 2
                                             } else {
-                                                playCloseSound()
+                                                showAlertDialog("CAN'T BET!", "You don't have enough chips!")
                                             }
                                         } else {
                                             if (enemy.bet * 2 <= saveGlobal.capsInHand) {
                                                 playSelectSound()
                                                 selectedOption = 2
                                             } else {
-                                                playCloseSound()
+                                                showAlertDialog("CAN'T BET!", "You don't have enough caps!")
                                             }
                                         }
                                     }

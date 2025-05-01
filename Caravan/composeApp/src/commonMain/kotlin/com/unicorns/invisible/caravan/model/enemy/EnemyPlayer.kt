@@ -81,10 +81,10 @@ class EnemyPlayer(var deckSize: Int?, val session: DefaultClientWebSocketSession
         try {
             val ds = deckSize!!
             if (move.moveType in listOf(2, 3) && ds > 0) {
-                val type = Json.parseToJsonElement(move.newCardInHand).jsonObject["type"]
                 val newCard = Json.decodeFromString<Card>(move.newCardInHand)
                 game.enemyCResources.addCardToHandDirect(newCard)
                 deckSize!!.dec()
+                game.enemyCResources.recomposeResources++
             }
         } catch (e: Exception) {
             isCorrupted = true

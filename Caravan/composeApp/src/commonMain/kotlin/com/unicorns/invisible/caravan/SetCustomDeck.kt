@@ -51,10 +51,8 @@ import caravan.composeapp.generated.resources.custom_deck_num_of_decks
 import caravan.composeapp.generated.resources.custom_deck_size
 import caravan.composeapp.generated.resources.custom_decks_conflict
 import caravan.composeapp.generated.resources.deck_custom
-import caravan.composeapp.generated.resources.deselect_all
 import caravan.composeapp.generated.resources.empty_string
 import caravan.composeapp.generated.resources.none
-import caravan.composeapp.generated.resources.select_all
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.Card
@@ -66,11 +64,11 @@ import com.unicorns.invisible.caravan.model.primitives.CollectibleDeck
 import com.unicorns.invisible.caravan.model.primitives.RankNumber
 import com.unicorns.invisible.caravan.model.primitives.Suit
 import com.unicorns.invisible.caravan.save.saveData
+import com.unicorns.invisible.caravan.utils.DottedBorder
 import com.unicorns.invisible.caravan.utils.MenuItemOpenNoScroll
 import com.unicorns.invisible.caravan.utils.ShowCard
 import com.unicorns.invisible.caravan.utils.ShowCardBack
 import com.unicorns.invisible.caravan.utils.TextFallout
-import com.unicorns.invisible.caravan.utils.clickableSelect
 import com.unicorns.invisible.caravan.utils.getBackgroundColor
 import com.unicorns.invisible.caravan.utils.getDividerColor
 import com.unicorns.invisible.caravan.utils.getKnobColor
@@ -208,34 +206,22 @@ fun SetCustomDeck(
                     verticalAlignment = Alignment.Top
                 ) {
                     items(CardBack.entries) { back ->
-                        var updateInfo by remember { mutableStateOf(false) }
+                        fun getSelectedCode(): Int {
+                            val deck = CollectibleDeck(back).toList().filter { saveGlobal.isCardAvailableAlready(it) }
+                            return when {
+                                deck.none { it in saveGlobal.getCurrentCustomDeck() } || deck.isEmpty() -> 0
+                                deck.all { it in saveGlobal.getCurrentCustomDeck() } -> 2
+                                else -> 1
+                            }
+                        }
+
                         var updateCards by remember { mutableStateOf(false) }
                         val verticalState = rememberLazyListState()
-                        key(updateAll, updateInfo) {
-                            @Composable
-                            fun Button(text: String, action: (CardWithPrice) -> Unit) {
-                                TextFallout(
-                                    text,
-                                    getTextColor(),
-                                    getTextStrokeColor(),
-                                    18.sp,
-                                    Modifier
-                                        .fillMaxWidth()
-                                        .background(getTextBackgroundColor())
-                                        .clickableSelect {
-                                            CollectibleDeck(back).toList()
-                                                .filter { isAvailable(it) }
-                                                .forEach(action)
-                                            updateCharacteristics = !updateCharacteristics
-                                            updateCards = !updateCards
-                                        }
-                                        .padding(vertical = 4.dp),
-                                    boxAlignment = Alignment.Center
-                                )
-                            }
+                        key(updateAll) {
+                            var selectedCode by remember { mutableIntStateOf(getSelectedCode()) }
                             Column(Modifier.padding(horizontal = 8.dp), horizontalAlignment = Alignment.CenterHorizontally) {
                                 val name = stringResource(back.nameIdWithBackFileName.first)
-                                Box(Modifier.height((14.sp.spToPx() * 4).toInt().pxToDp()), contentAlignment = Alignment.Center) {
+                                Box(Modifier.height((14.sp.spToPx() * 2).toInt().pxToDp()), contentAlignment = Alignment.Center) {
                                     TextFallout(
                                         name.replace(" (", "\n("),
                                         getTextColor(),
@@ -247,21 +233,42 @@ fun SetCustomDeck(
                                 }
                                 ShowCardBack(
                                     CardNumber(RankNumber.ACE, Suit.CLUBS, back),
-                                    Modifier.align(Alignment.CenterHorizontally),
+                                    Modifier.align(Alignment.CenterHorizontally).let {
+                                        when (selectedCode) {
+                                            1 -> it
+                                                    .border(width = 4.dp, color = getSelectionColor(), shape = DottedBorder(step = 8.dp, width = 4.dp))
+                                            2 -> it
+                                                    .border(width = 4.dp, color = getSelectionColor())
+                                            else -> it
+                                        }
+                                    }
+                                        .padding(4.dp)
+                                        .clickable {
+                                            val deck = saveGlobal.getCurrentCustomDeck()
+                                            CollectibleDeck(back).toList()
+                                                .filter { isAvailable(it) }
+                                                .forEach {
+                                                    when (selectedCode)  {
+                                                        0, 1 -> {
+                                                            if (it !in deck) {
+                                                                toggleToCustomDeck(it)
+                                                            }
+                                                        }
+                                                        else -> {
+                                                            if (it in deck) {
+                                                                toggleToCustomDeck(it)
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            saveData()
+                                            updateCharacteristics = !updateCharacteristics
+                                            updateCards = !updateCards
+                                            selectedCode = getSelectedCode()
+                                        }
+                                        .alpha(if (back in saveGlobal.availableDecks) 1f else 0.55f)
                                 )
-
-                                Button(stringResource(Res.string.select_all)) {
-                                    if (!isInCustomDeck(it)) {
-                                        toggleToCustomDeck(it)
-                                    }
-                                }
-                                HorizontalDivider(color = getDividerColor())
-                                Button(stringResource(Res.string.deselect_all)) {
-                                    if (isInCustomDeck(it)) {
-                                        toggleToCustomDeck(it)
-                                    }
-                                }
-
+                                Spacer(modifier = Modifier.height(4.dp))
                                 key(updateAll, updateCards) {
                                     CardsColumn(
                                         back,
@@ -269,6 +276,7 @@ fun SetCustomDeck(
                                         {
                                             updateCharacteristics = !updateCharacteristics
                                             updateCards = !updateCards
+                                            selectedCode = getSelectedCode()
                                         },
                                         ::isInCustomDeck,
                                         ::isAvailable,
