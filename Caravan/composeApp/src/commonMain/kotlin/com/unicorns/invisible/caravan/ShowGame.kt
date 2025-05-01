@@ -50,6 +50,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import caravan.composeapp.generated.resources.Res
@@ -98,6 +99,7 @@ import com.unicorns.invisible.caravan.utils.playNoCardAlarm
 import com.unicorns.invisible.caravan.utils.playSelectSound
 import com.unicorns.invisible.caravan.utils.playVatsReady
 import com.unicorns.invisible.caravan.utils.pxToDp
+import com.unicorns.invisible.caravan.utils.toString
 import io.github.oikvpqya.compose.fastscroller.ScrollbarStyle
 import io.github.oikvpqya.compose.fastscroller.ThumbStyle
 import io.github.oikvpqya.compose.fastscroller.TrackStyle
@@ -265,52 +267,6 @@ fun ShowGame(
         ::dropCardFromHand,
         ::dropCaravan,
     )
-
-    if (isBlitz) {
-        var timeOnTimer by rememberScoped { mutableIntStateOf(
-            if (
-                game.enemyCResources.deckSize < game.playerCResources.deckSize &&
-                game.enemyCResources.deckSize > 20
-            ) {
-                game.enemyCResources.deckSize * 4 / 3
-            } else {
-                game.playerCResources.deckSize * 4 / 3
-            }
-        ) }
-        game.specialGameOverCondition = { if (timeOnTimer <= 0f) -1 else 0 }
-
-        LaunchedEffect(Unit) {
-            while (isActive && timeOnTimer > 0 && !game.isOver()) {
-                timeOnTimer--
-                if (timeOnTimer < 10) {
-                    playNoBeep()
-                }
-                delay(1000L)
-            }
-            if (timeOnTimer <= 0f) {
-                game.checkOnGameOver()
-            }
-        }
-
-        key(timeOnTimer) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color.Transparent),
-                contentAlignment = Alignment.BottomEnd
-            ) {
-                TextFallout(
-                    timeOnTimer.toString(),
-                    getTextColor(),
-                    getTextStrokeColor(),
-                    16.sp,
-                    Modifier
-                        .background(getTextBackgroundColor())
-                        .padding(8.dp),
-                )
-            }
-        }
-    }
 }
 
 @Composable
@@ -386,7 +342,7 @@ fun ShowGameRaw(
             }
             BoxWithConstraints(Modifier.padding(innerPadding)) field@ {
                 var handCardsScale by remember { mutableFloatStateOf(1f) }
-                val cardWidth = maxWidth.dpToPx().toFloat() / 5f - 8.dp.dpToPx()
+                val cardWidth = maxWidth.dpToPx() / 5f - 8.dp.dpToPx()
                 handCardsScale = (cardWidth / 183f).coerceAtMost(1f)
                 val handCardHeight = 256f * handCardsScale
 
@@ -401,6 +357,7 @@ fun ShowGameRaw(
                             PlayerSide(animationSpeed, isPvP, game, getSelectedCard(), setSelectedCard, getMySymbol, setMySymbol, fillMaxHeight = true, handCardHeight)
                         }
                         Caravans(
+                            isBlitz, game,
                             animationSpeed,
                             { game.playerCResources.hand.getOrNull(getSelectedCard()) },
                             getSelectedCaravan,
@@ -441,6 +398,7 @@ fun ShowGameRaw(
                             handCardHeight
                         )
                         Caravans(
+                            isBlitz, game,
                             animationSpeed,
                             { game.playerCResources.hand.getOrNull(getSelectedCard()) },
                             getSelectedCaravan,
@@ -638,9 +596,7 @@ fun Hand(
                     tween(animationSpeed.delay.toInt())
                 },
                 label = "$index $it"
-            ) { newOffset ->
-                prevState = it.handAnimationMark
-            }
+            ) { _ -> prevState = it.handAnimationMark }
 
             val widthOffset = index * (maxWidth.dpToPx() - 183 * scale) / max(4, cards.size - 1)
             val modifier = Modifier.offset { IntOffset(widthOffset.toInt(), (256f * scale * offsetMult).toInt()) }
@@ -762,7 +718,7 @@ fun RowScope.CaravanOnField(
                         ) {
                             var prevStateHeight by rememberScoped { mutableStateOf(modifier.caravanAnimationMark) }
                             var prevStateWidth by rememberScoped { mutableStateOf(it.card.caravanAnimationMark) }
-                            var needsSnap = prevStateHeight == modifier.caravanAnimationMark &&
+                            val needsSnap = prevStateHeight == modifier.caravanAnimationMark &&
                                     prevStateWidth == it.card.caravanAnimationMark
                             val offsetHeightMult by animateFloatAsState(when (modifier.caravanAnimationMark) {
                                 Card.AnimationMark.STABLE -> 0f
@@ -800,12 +756,12 @@ fun RowScope.CaravanOnField(
                             Box(modifier = Modifier
                                 .layout { measurable, constraints ->
                                     val placeable = measurable.measure(constraints)
-                                    val placeableHeight = placeable.height.toInt()
-                                    val placeableWidth = placeable.width.toInt()
-                                    val modifierOffset = (modifierOffset * (modifierIndex + 1)).toPx()
+                                    val placeableHeight = placeable.height
+                                    val placeableWidth = placeable.width
+                                    val modifierOffset2 = (modifierOffset * (modifierIndex + 1)).toPx()
                                     layout(placeableWidth.coerceAtLeast(0), placeableHeight) {
                                         placeable.place(
-                                            (modifierOffset + placeableWidth * offsetWidthMult).toInt(),
+                                            (modifierOffset2 + placeableWidth * offsetWidthMult).toInt(),
                                             (placeableHeight * offsetHeightMult).toInt()
                                         )
                                     }
@@ -864,8 +820,8 @@ fun RowScope.CaravanOnField(
                             val modifier = Modifier
                                 .layout { measurable, constraints ->
                                     val placeable = measurable.measure(constraints)
-                                    val placeableHeight = placeable.height.toInt()
-                                    val placeableWidth = placeable.width.toInt()
+                                    val placeableHeight = placeable.height
+                                    val placeableWidth = placeable.width
                                     val cardOffsetWidth = constraints.maxWidth / 2 - placeable.width / 2
                                     val cardOffsetHeight = placeableHeight * 3 / 7 * index
 
@@ -969,8 +925,8 @@ fun ShowDeck(cResources: CResources, deckSize: Int, isKnown: Boolean = true) {
                         .padding(bottom = 24.pxToDp()),
                     contentAlignment = Alignment.TopCenter
                 ) {
-                    val cardHeight = maxHeight.dpToPx().toFloat()
-                    val cardWidth = maxWidth.dpToPx().toFloat()
+                    val cardHeight = maxHeight.dpToPx()
+                    val cardWidth = maxWidth.dpToPx()
                     val scaleH = cardHeight / 256f
                     val scaleW = cardWidth / 183f
                     val scale = min(scaleW, scaleH).coerceAtMost(0.75f)
@@ -1030,6 +986,8 @@ fun RowScope.Score(num: Int, caravan: Caravan, opposingValue: Int) {
 
 @Composable
 fun Caravans(
+    isBlitz: Boolean,
+    game: Game,
     animationSpeed: AnimationSpeed,
     getSelectedCard: () -> Card?,
     getSelectedCaravan: () -> Int,
@@ -1067,16 +1025,15 @@ fun Caravans(
             repeat(3) {
                 val caravan = getEnemyCaravan(it)
                 CaravanOnField(
-                    
                     animationSpeed,
                     caravan,
                     isPlayersTurn,
                     isEnemyCaravan = true,
                     isInitStage = getIsInitStage(),
                     enemyStates[it],
-                    { -1 },
+                    {},
                     { index ->
-                        getSelectedCard()?.let { canPutCard(it, caravan, false, index) } == true
+                        getSelectedCard()?.let { card -> canPutCard(card, caravan, false, index) } == true
                     },
                     { card -> addCardToEnemyCaravan(it, card) },
                     getGameUpdated
@@ -1111,7 +1068,7 @@ fun Caravans(
                 else -> stringResource(Res.string.your_turn)
             }
             val modifier = Modifier
-                .fillMaxWidth(0.66f)
+                .weight(0.6f)
                 .wrapContentHeight()
                 .let {
                     if (canDiscard() && (getSelectedCard() != null || getSelectedCaravan() in (0..2))) {
@@ -1124,17 +1081,26 @@ fun Caravans(
                                     dropSelectedCaravan()
                                 }
                             }
-                            .background(getTextBackgroundColor().let {
-                                Color(it.red, it.green, it.blue, 0.81f)
+                            .background(getTextBackgroundColor().let { c ->
+                                Color(c.red, c.green, c.blue, 0.81f)
                             })
                     } else {
                         it.background(getGrayTransparent())
                     }
                 }
                 .padding(horizontal = 8.dp, vertical = 4.dp)
-            Box(Modifier
-                .fillMaxWidth()
-                .wrapContentHeight(), contentAlignment = Alignment.Center) {
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .wrapContentHeight(),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                if (isBlitz) {
+                    BlitzTimer(game, 0.2f, 16.sp)
+                } else {
+                    Box(Modifier.weight(0.2f))
+                }
                 TextFallout(
                     text,
                     getTextColor(),
@@ -1142,6 +1108,7 @@ fun Caravans(
                     16.sp,
                     modifier,
                 )
+                Box(Modifier.weight(0.2f))
             }
             Row(
                 Modifier
@@ -1188,5 +1155,54 @@ fun Caravans(
                 )
             }
         }
+    }
+}
+
+@Composable
+fun RowScope.BlitzTimer(
+    game: Game,
+    weight: Float,
+    height: TextUnit
+) {
+    var timeOnTimer by rememberScoped { mutableFloatStateOf(
+        (if (
+            game.enemyCResources.deckSize < game.playerCResources.deckSize &&
+            game.enemyCResources.deckSize > 20
+        ) {
+            game.enemyCResources.deckSize * 4 / 3
+        } else {
+            game.playerCResources.deckSize * 4 / 3
+        }).toFloat()
+    ) }
+
+    LaunchedEffect(Unit) {
+        game.specialGameOverCondition = { if (timeOnTimer <= 0f) -1 else 0 }
+        while (isActive && timeOnTimer > 0 && !game.isOver()) {
+            if (game.canPlayerMove) {
+                timeOnTimer -= 0.1f
+            }
+            if (timeOnTimer < 10) {
+                playNoBeep()
+            }
+            delay(100L)
+        }
+        if (timeOnTimer <= 0f) {
+            game.checkOnGameOver()
+        }
+    }
+
+    key(timeOnTimer) {
+        TextFallout(
+            timeOnTimer.toDouble().toString(1),
+            getTextColor(),
+            getTextStrokeColor(),
+            height,
+            Modifier
+                .weight(weight)
+                .wrapContentHeight()
+                .padding(horizontal = 4.dp)
+                .background(getGrayTransparent())
+                .padding(horizontal = 4.dp, vertical = 4.dp)
+        )
     }
 }

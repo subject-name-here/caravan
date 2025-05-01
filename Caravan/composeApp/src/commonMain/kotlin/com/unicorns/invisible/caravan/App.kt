@@ -30,7 +30,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -121,7 +120,6 @@ import com.unicorns.invisible.caravan.color.Colors
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.challenge.Challenge
 import com.unicorns.invisible.caravan.save.Save
-import com.unicorns.invisible.caravan.save.loadLocalSave
 import com.unicorns.invisible.caravan.save.saveData
 import com.unicorns.invisible.caravan.utils.SliderCustom
 import com.unicorns.invisible.caravan.utils.TextFallout
@@ -136,7 +134,6 @@ import com.unicorns.invisible.caravan.utils.getCurrentDateHashCode
 import com.unicorns.invisible.caravan.utils.getDialogBackground
 import com.unicorns.invisible.caravan.utils.getDialogTextColor
 import com.unicorns.invisible.caravan.utils.getDividerColor
-import com.unicorns.invisible.caravan.utils.getKnobColor
 import com.unicorns.invisible.caravan.utils.getMusicMarqueesColor
 import com.unicorns.invisible.caravan.utils.getMusicPanelColor
 import com.unicorns.invisible.caravan.utils.getMusicPanelColorByStyle
@@ -161,8 +158,6 @@ import org.jetbrains.compose.resources.getString
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import kotlin.random.Random
-import kotlin.uuid.ExperimentalUuidApi
-import kotlin.uuid.Uuid
 
 
 var saveGlobal = Save(null)
@@ -233,17 +228,14 @@ fun App() {
 
         ) {
             if (isIntroScreen) {
-                val localSave by produceState<Save?>(Save()) {
-                    value = loadLocalSave()
-                }
-                val (textColor, strokeColor, backColor) = if (localSave == null) {
+                val (textColor, strokeColor, backColor) = if (!isSaveLoaded) {
                     Triple(
                         Colors.ColorText,
                         Colors.ColorTextStroke,
                         Colors.ColorBack
                     )
                 } else {
-                    val style = Style.entries[localSave!!.styleId]
+                    val style = Style.entries[saveGlobal.styleId]
                     styleIdMutableData = style
                     Triple(
                         getTextColorByStyle(style),
