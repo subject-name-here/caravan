@@ -6,28 +6,17 @@ import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyDropAllButFace
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyInit
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJackToPlayer
-import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJackToSelfMedium
-import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJackToSelfSimple
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJokerSimple
-import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJokerSuperSimple
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyKingToSelfMedium
-import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyKingToSelfSimple
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyPutNumbersMedium
-import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyPutNumbersSimple
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyQueenToSelf
 import com.unicorns.invisible.caravan.model.enemy.strategy.checkTheOutcome
 import com.unicorns.invisible.caravan.model.enemy.strategy.gameToState
 import com.unicorns.invisible.caravan.model.primitives.CResources
-import com.unicorns.invisible.caravan.model.primitives.CardBase
 import com.unicorns.invisible.caravan.model.primitives.CardFace
-import com.unicorns.invisible.caravan.model.primitives.CardModifier
-import com.unicorns.invisible.caravan.model.primitives.CardWildWasteland
 import com.unicorns.invisible.caravan.model.primitives.CustomDeck
 import com.unicorns.invisible.caravan.model.primitives.RankFace
-import com.unicorns.invisible.caravan.model.primitives.RankNumber
-import com.unicorns.invisible.caravan.model.primitives.WWType
-import com.unicorns.invisible.caravan.utils.playWWSound
-import kotlin.random.Random
+
 
 data object EnemyStory4 : Enemy {
     override fun createDeck(): CResources = CResources(CustomDeck(CardBack.MADNESS))

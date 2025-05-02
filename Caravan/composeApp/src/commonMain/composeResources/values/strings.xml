@@ -995,7 +995,7 @@
     <string name="ch4_223">
         Caravan. You know the rules, right?
     </string>
-    <string name="ch4_223a">[Luck 7] Yes, I do!</string>
+    <string name="ch4_223a">[Gambling 30] Yes, I do!</string>
     <string name="ch4_minus_1">Woman looked at you and walked away, saying nothing. You are stuck forever in front of the wall.</string>
     <string name="ch4_23">
         New level! What do you want to put your skill points in?
@@ -1064,6 +1064,223 @@
         You reach the hidden passage. Alice bids you farewell and goes away. As you appear on the other side of the wall, you take your helmet on and go into invisibility.
     </string>
 
+    <string name="ch5_1">
+        You have reached Vancouver, this time the right one. But the city is vast; you're at its southern end - the former border between Canada and the US. As you stand beneath the Peace Arch, under the  light of the full moon, you feel that your journey is coming to the end, be it in success or in failure.
+    </string>
+    <string name="ch5_1a">I feel… peace.</string>
+    <string name="ch5_2">
+        You hear birds chirping nearby. They don't see you because of the stealth field, and you don't see them, because it's an old sound system near the Arch. Still, very peaceful.
+    </string>
+    <string name="ch5_2a">I could stand here forever.</string>
+    <string name="ch5_3">
+        Suddenly, your suit makes a “bdzh” sound. Your Stealth field flickers out. The suit powers down.
+    </string>
+    <string name="ch5_3a">Well, here goes the peace. <![CDATA[<Leave the suit.>]]></string>
+    <string name="ch5_4">
+        As you get out of the suit, you decide to go northwest, to where the port should be. However, instantly you hear the voice:
+        “I don't know what kind of power armor is this, but you're lucky I am not the bad guy.”
+    </string>
+    <string name="ch5_4a">Who is this?</string>
+    <string name="ch5_4b">Hey, I am not the bad guy either. I found it, not stole it.</string>
+    <string name="ch5_4c"><![CDATA[<Try to reach for the pistol.>]]></string>
+    <string name="ch5_5">
+        “Wrong choice.” As you move your hand to your holster, you get shot from behind in the head. Then - once more.
+    </string>
+    <string name="ch5_6">
+        And what's the difference? Nowadays everyone “finds” things. Usually they kill the owners before it.
+    </string>
+    <string name="ch5_7">
+        Tell me, stranger, your name, then we'll talk.
+    </string>
+    <string name="ch5_7a">The Prospector.</string>
+    <string name="ch5_8">
+        No, not this bullshit. What name did your mother give you?
+    </string>
+    <string name="ch5_8a">…</string>
+    <string name="ch5_9">
+        On the count of three I leave your skull with more holes than before. One.
+    </string>
+    <string name="ch5_9a">Ace.</string>
+    <string name="ch5_10">
+        Of Spades? Ha-ha-ha, that's the funniest name I've ever heard. Do you have the last name?
+    </string>
+    <string name="ch5_10a">No.</string>
+    <string name="ch5_11">
+        Two.
+    </string>
+    <string name="ch5_11a">No, honestly, don't have it.</string>
+    <string name="ch5_12">
+        Then Ace of Spades it is. I am Josh.
+    </string>
+    <string name="ch5_12a">Josh..?</string>
+    <string name="ch5_13">
+        Someone you know with that name? Before you answer, remember: one count remains.
+    </string>
+    <string name="ch5_13a">He was my elder brother.</string>
+    <string name="ch5_14">
+        Was, huh? Wasteland is a cruel mistress. But I am Josh Van Buren. Turn around.
+    </string>
+    <string name="ch5_14a"><![CDATA[<Turn around.>]]></string>
+    <string name="ch5_15">
+        As you turn around, you see a man with a hunting revolver in a brand new duster. He looks very stylish with the Desperado hat on his head and black sunglasses.
+    </string>
+    <string name="ch5_15a">Why the sunglasses in the night? Can you see anything?</string>
+    <string name="ch5_15b">Duster? Are you from the South?</string>
+    <string name="ch5_15c">Hunting revolver? Expensive choice.</string>
+    <string name="ch5_15d">Nice hat.</string>
+    <string name="ch5_16">
+        More than you think. It's part of the image, you know. Tough guy, shoots on the first sight of disobedience. That stuff.
+    </string>
+    <string name="ch5_17">
+        Thank you.
+    </string>
+    <string name="ch5_18">
+        Yeah, but I earned it. And this thing kills on sight almost every beast there is, from California to White Wasteland.
+    </string>
+    <string name="ch5_18a">White Wasteland?</string>
+    <string name="ch5_18b">You've been to California?</string>
+    <string name="ch5_19">
+        Yes, to the north. The lands are covered in snow there almost all year.
+    </string>
+    <string name="ch5_20">
+        I work in Happy Trails Caravan Company. Maybe you've heard of us. We work mainly in NCR, but lately we started to search for other tribes and communities.
+    </string>
+    <string name="ch5_20a">What are you doing here?</string>
+    <string name="ch5_21">
+        Venture North, establish contacts. Look for someone who might need goods from the South. And you?
+    </string>
+    <string name="ch5_21a">I must get to Anchorage.</string>
+    <string name="ch5_22">
+        And why?
+    </string>
+    <string name="ch5_22a">I need a heart transplantation. It's the only place I know with heart implants.</string>
+    <string name="ch5_23">
+        And why are you here, and not in Old Cisco?
+    </string>
+    <string name="ch5_23a">Old Cisco?</string>
+    <string name="ch5_24">
+        Yes, former San Francisco. I never visited there, but I heard they have the ship. It could take you to Anchorage.
+    </string>
+    <string name="ch5_24a">Vancouver has ships too, no?</string>
+    <string name="ch5_25">
+        Why would you think of that?
+    </string>
+    <string name="ch5_25a">…</string>
+    <string name="ch5_26">
+        Two and a quarter.
+    </string>
+    <string name="ch5_26a"><![CDATA[<Lie.>]]> A traveller told me about it.</string>
+    <string name="ch5_27">
+        But you're from the South, no? Was there someone else to travel from Vancouver to… where are you from?
+    </string>
+    <string name="ch5_27a">Mojave. Vegas and stuff.</string>
+    <string name="ch5_28">
+        Yeah, I heard you have tough times now. So, who was this traveller?
+    </string>
+    <string name="ch5_28a">I don't remember. Honestly.</string>
+    <string name="ch5_29">
+        I see. Let's pretend it wasn't a blatant lie. Changing topic: who do you support in the battle for Hoover Dam?
+    </string>
+    <string name="ch5_29a">NCR.</string>
+    <string name="ch5_29b">Legion.</string>
+    <string name="ch5_29c">I would like Mr. House to win, actually.</string>
+    <string name="ch5_29d">Nobody. If anything, Mojave must stay independent.</string>
+    <string name="ch5_29e">Can we skip this part? I don't like politics.</string>
+    <string name="ch5_30">
+        And why, may I ask?
+    </string>
+    <string name="ch5_30a">[NCR] Republic means freedom for people. It's better than all the alternatives, and good on its own.</string>
+    <string name="ch5_30b">[Legion] Caesar brings safety everywhere. Ask traders from Arizona - do they have troubles with raiders?</string>
+    <string name="ch5_30c">[Vegas] Look what was done to Vegas. Imagine what he can do to the Mojave, if he wants. And I am not even speaking about the economy.</string>
+    <string name="ch5_30d">[Mojave] When the war goes away, with a different, capable ruler in Vegas, the Mojave economy will rise up. Independent communities will prosper.</string>
+    <string name="ch5_31">
+        And what if I wanna fly my flag, with my rules and no taxes to some rich senators? I can provide my own safety. Will NCR leave me alone? No.They are throwing around words like “freedom” and “protection”, but the only people who have those are the people at power. Average Joe, or Jack, or, in your case, Ace, is negligible.
+    </string>
+    <string name="ch5_32">
+        Well, for you - capable white male - maybe, the Legion is a good choice. But if I am a woman, if I am incapable of fighting? The Legion lives to fight and die. Are you ready to die? You are nothing to anyone in Legion, unless you are Legate or Caesar himself.
+    </string>
+    <string name="ch5_33">
+        Oh, third party, huh? You say: look what he has done to Vegas. I say: look what he has done to Freeside? To Mojave? Is it safe outside Vegas? You know it better than anyone. You praise a rich douchebag, who cares only for himself. You matter to him only when he needs you. When you stop being useful - he throws you away.
+    </string>
+    <string name="ch5_34">
+        None of the above! I like it. Except… Mojave needs a ruler, yes. But can he or she protect it? Improve it? Save it? Not only from NCR, Legion or whatever comes, but from the next ruler, who comes in war or in peace? Or even… from the current ruler? You know that the mind is not a constant, it changes. Who said that The One Who Brings Freedom will not become a tyrant tomorrow?
+    </string>
+    <string name="ch5_34a">What do you propose for Mojave then?</string>
+    <string name="ch5_35">
+        If there was something that could account for every opinion, something selfless and selfish at the same time… Something that is led not by the needs of the flesh, not by the whim of the mind, but by the constant and predictable (maybe complicated) rules… Finally, something with power to establish peace in Mojave and to keep it… maybe not even for Mojave, but for the whole world…
+        That would be my choice.
+    </string>
+    <string name="ch5_35a">Can we stop dreaming?</string>
+    <string name="ch5_36">
+        Okay. Remind me: where do you go?
+    </string>
+    <string name="ch5_36a">I wanted to go to Anchorage on a ship from Vancouver…</string>
+    <string name="ch5_37">
+        There was a ship in the northern port of Vancouver, but now there is only a crater. Not even a piece left.
+        If it was 2077, I would say it's a nuclear bomb. But there are none left, at least none of that kind of power.
+    </string>
+    <string name="ch5_37a">Damn.</string>
+    <string name="ch5_38">
+        But you're lucky. In the northern part of the city there is a drakkar.
+    </string>
+    <string name="ch5_38a">What's that?</string>
+    <string name="ch5_39">
+        A viking ship. And with a crew. They can transport you to Anchorage.
+    </string>
+    <string name="ch5_39a">Really? How much do I pay?</string>
+    <string name="ch5_40">
+        They don't need bottlecaps. They are not interested in gold or money. They are vikings, which means you have to earn their respect. They are raiders, basically, but with honor.
+    </string>
+    <string name="ch5_40a">Raiders? Will they even let me close?</string>
+    <string name="ch5_41">
+        Yes, right now they are not at war or a raid.
+    </string>
+    <string name="ch5_41a">Hm… Thanks for the information! I think I should go.</string>
+    <string name="ch5_42">
+        I didn't say you could leave, Prospector.
+    </string>
+    <string name="ch5_42a">Huh?</string>
+    <string name="ch5_43">
+        You know why I am not thinking of myself as a raider?
+    </string>
+    <string name="ch5_43a">…Why?</string>
+    <string name="ch5_44">
+        Because raiders do not talk to their victims before killing them.
+    </string>
+    <string name="ch5_44a">[Perception 7] [Agility 7] <![CDATA[<DODGE!>]]></string>
+
+    <string name="ch5_minus">
+        [FAILED] “Too late you realized it, Ace, too late.” The hunting revolver was pointed at you all the time, and Josh pulled the trigger…
+        The bullet penetrated your heart. You fall down, and at least you didn't die in much pain.
+    </string>
+    <string name="ch5_45">
+        New level! What do you want to put your skill points in? Oh, maybe Unarmed and Melee Weapons, so you can fight the Vikings? Or Guns, so you can shoot them all? Or Sneak, to kidnap the wife of their leader and force him to help you? Or…
+    </string>
+    <string name="ch5_45a">Speech. All points in Speech.</string>
+    <string name="ch5_46">
+        Okay. Saved.
+    </string>
+    <string name="ch5_46a">[Continue.]</string>
+    <string name="ch5_47">
+        [SUCCEEDED] “Too late you realized it, Ace, too late.” The hunting revolver was pointed at you all the time, and Josh pulled the trigger…
+        but you dodged the bullet by moving to the right as fast as possible.
+    </string>
+    <string name="ch5_47a">Déjà Vu…</string>
+    <string name="ch5_48">
+        Your hands reach his throat before he can reload. You don’t stop until the stars fade from his sunglasses.
+    </string>
+    <string name="ch5_48a"><![CDATA[<Breathe heavily.>]]></string>
+    <string name="ch5_49">
+        After looting the body, you have hidden the broken Stealth Suit and went North, to look for the Vikings.
+    </string>
+    <string name="ch5_49a">Let's hope he didn't lie about it.</string>
+    <string name="ch5_50">
+        When you wandered far enough, you realized: your hands are still shaking.
+    </string>
+    <string name="ch5_50a">The past doesn't let me go…</string>
+    <string name="ch5_51">
+        Heartache gets a little bit stronger. Not from poison though.
+    </string>
 
     <string name="achievements">Achievements</string>
     <string name="daily_missions">Daily Missions</string>
