@@ -8,9 +8,7 @@ import com.unicorns.invisible.caravan.model.primitives.CustomDeck
 
 
 data object EnemyTower1 : Enemy {
-    override fun createDeck(): CResources = CResources(CustomDeck(CardBack.STANDARD).apply {
-        // removeAll(toList().filter { it.rank == Rank.QUEEN || it.rank == Rank.JOKER })
-    })
+    override fun createDeck(): CResources = CResources(CustomDeck())
 
 
     override suspend fun makeMove(game: Game, speed: AnimationSpeed) {

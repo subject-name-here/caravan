@@ -8,9 +8,7 @@ import com.unicorns.invisible.caravan.model.primitives.CustomDeck
 
 
 data object EnemyTower3 : Enemy {
-    override fun createDeck(): CResources = CResources(CustomDeck(CardBack.STANDARD).apply {
-        // removeAll(toList().filter { it.rank == Rank.JOKER })
-    })
+    override fun createDeck(): CResources = CResources(CustomDeck())
 
     override suspend fun makeMove(game: Game, speed: AnimationSpeed) {
 //        val hand = game.enemyCResources.hand

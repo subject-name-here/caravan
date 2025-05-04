@@ -116,7 +116,7 @@ android {
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 112
-        versionName = "3.0.A"
+        versionName = "3.0.B"
     }
     packaging {
         resources {

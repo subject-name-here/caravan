@@ -65,6 +65,7 @@ import caravan.composeapp.generated.resources.take_the_cash_alt
 import caravan.composeapp.generated.resources.tickets_please_you_have_tickets
 import caravan.composeapp.generated.resources.tower
 import caravan.composeapp.generated.resources.tower_enemy_1
+import caravan.composeapp.generated.resources.tower_enemy_10
 import caravan.composeapp.generated.resources.tower_enemy_11
 import caravan.composeapp.generated.resources.tower_enemy_12
 import caravan.composeapp.generated.resources.tower_enemy_13
@@ -100,6 +101,7 @@ import com.unicorns.invisible.caravan.model.enemy.EnemyFrank
 import com.unicorns.invisible.caravan.model.enemy.EnemyTower1
 import com.unicorns.invisible.caravan.model.enemy.EnemyTower3
 import com.unicorns.invisible.caravan.model.enemy.EnemyTower3A
+import com.unicorns.invisible.caravan.model.enemy.EnemyTowerBonus
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.CustomDeck
 import com.unicorns.invisible.caravan.save.saveData
@@ -162,7 +164,7 @@ fun TowerScreen(
     }
 
     @Composable
-    fun showTower(enemy: Enemy, goBack: () -> Unit) {
+    fun showTower(enemy: Enemy, onWinExtra: () -> Unit = {}) {
         StartTowerGame(enemy, showAlertDialog, {
             levelMemory = level
             level = 0
@@ -171,36 +173,53 @@ fun TowerScreen(
         }, {
             level = levelMemory + 1
             saveGlobal.towerLevel = levelMemory + 1
+            onWinExtra()
             levelMemory = 0
             saveData()
         }, {
+            if (secondChances > 0) {
+                secondChances--
+                saveGlobal.secondChances--
+                level = levelMemory
+                saveGlobal.towerLevel = levelMemory
+
+            } else {
+                level = 0
+                saveGlobal.towerLevel = 0
+            }
             levelMemory = 0
-            level = 0
-            saveGlobal.towerLevel = 0
             saveData()
-        }, goBack)
+        }) { playLevel = 0 }
     }
 
     when (playLevel) {
-        6 -> {
-
-        }
         10 -> {
-
+            showTower(EnemyTowerBonus) { cookCook = 2; saveGlobal.cookCookMult = 2 }
+            return
+        }
+        in 1..11 -> {
+            val enemy = when (playLevel) {
+                1 -> EnemyTower1
+                2 -> EnemyTower1
+                3 -> if (saveGlobal.papaSmurfActive) EnemyTower3A else EnemyTower3
+                4 -> EnemyTower1
+                5 -> EnemyTower1
+                7 -> EnemyTower1
+                8 -> EnemyTower1
+                9 -> EnemyTower1
+                11 -> EnemyTower1
+                else -> {
+                    playLevel = 0
+                    return
+                }
+            }
+            showTower(enemy)
+            return
         }
         12 -> {
             LaunchedEffect(Unit) {
                 startFrank = true
             }
-            return
-        }
-        in 1..11 -> {
-            showTower(
-                when (playLevel) {
-                    3 -> if (saveGlobal.papaSmurfActive) EnemyTower3A else EnemyTower3
-                    else -> EnemyTower1
-                }
-            ) { playLevel = 0 }
             return
         }
         13 -> {
@@ -260,10 +279,26 @@ fun TowerScreen(
                 }
             }
             6 -> {
-
+                RestScreen({
+                    levelMemory = level
+                    level = 0
+                    saveGlobal.towerLevel = 0
+                    saveData()
+                }) {
+                    level = levelMemory + 1
+                    saveGlobal.towerLevel = levelMemory + 1
+                    secondChances = 1
+                    saveGlobal.secondChances = 1
+                    levelMemory = 0
+                    saveData()
+                }
             }
             10 -> {
-
+                CookCookPresentedScreen(
+                    256,
+                    { level = 11; saveGlobal.towerLevel = 11; saveData() },
+                    { playLevel = level }
+                )
             }
             in 1..12 -> {
                 val inBank = when (level) {
@@ -638,6 +673,187 @@ fun EnemyPresentedScreen(
     }
 }
 
+
+@Composable
+fun CookCookPresentedScreen(
+    inBank: Int,
+    skip: () -> Unit,
+    startLevel: () -> Unit,
+) {
+    Column(
+        Modifier
+            .fillMaxSize()
+            .background(getBackgroundColor())
+            .padding(vertical = 8.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Column(
+            Modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            TextFallout(
+                stringResource(Res.string.custom_deck_only),
+                getTextColor(),
+                getTextStrokeColor(),
+                24.sp,
+                Modifier,
+            )
+            Spacer(Modifier.height(8.dp))
+            TextFallout(
+                stringResource(Res.string.you_can_change_custom_deck_between_games),
+                getTextColor(),
+                getTextStrokeColor(),
+                16.sp,
+                Modifier,
+            )
+            Spacer(Modifier.height(8.dp))
+            TextFallout(
+                stringResource(Res.string.progress_is_saved_between_sessions),
+                getTextColor(),
+                getTextStrokeColor(),
+                24.sp,
+                Modifier,
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+        }
+
+        Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+            TextFallout(
+                "BONUS ROUND!",
+                getTextColor(),
+                getTextStrokeColor(),
+                24.sp,
+                Modifier,
+            )
+            TextFallout(
+                stringResource(Res.string.currently_in_bank_caps, inBank),
+                getTextColor(),
+                getTextStrokeColor(),
+                24.sp,
+                Modifier,
+            )
+            TextFallout(
+                stringResource(Res.string.enemy, stringResource(Res.string.tower_enemy_10)),
+                getTextColor(),
+                getTextStrokeColor(),
+                24.sp,
+                Modifier,
+            )
+        }
+
+        Spacer(Modifier.height(16.dp))
+        Row(
+            Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            TextFallout(
+                "Skip",
+                getTextColor(),
+                getTextStrokeColor(),
+                24.sp,
+                Modifier
+                    .clickableOk {
+                        skip()
+                    }
+                    .background(getTextBackgroundColor())
+                    .padding(horizontal = 8.dp, vertical = 4.dp),
+            )
+
+            TextFallout(
+                stringResource(Res.string.en_garde),
+                getTextColor(),
+                getTextStrokeColor(),
+                24.sp,
+                Modifier
+                    .clickableOk {
+                        startLevel()
+                    }
+                    .background(getTextBackgroundColor())
+                    .padding(horizontal = 8.dp, vertical = 4.dp)
+            )
+        }
+    }
+}
+
+@Composable
+fun RestScreen(
+    setLevelZero: () -> Unit,
+    nextLevel: () -> Unit
+) {
+    Column(
+        Modifier
+            .fillMaxSize()
+            .background(getBackgroundColor())
+            .padding(vertical = 8.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Column(
+            Modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            TextFallout(
+                "Welcome to the REST level!",
+                getTextColor(),
+                getTextStrokeColor(),
+                24.sp,
+                Modifier,
+            )
+            Spacer(Modifier.height(8.dp))
+            TextFallout(
+                "You have found: a Second Chance.",
+                getTextColor(),
+                getTextStrokeColor(),
+                16.sp,
+                Modifier,
+            )
+            Spacer(Modifier.height(8.dp))
+            TextFallout(
+                "If you'll lose, you can try again, but only once.",
+                getTextColor(),
+                getTextStrokeColor(),
+                24.sp,
+                Modifier,
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+        }
+        Spacer(Modifier.height(16.dp))
+        Row(
+            Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            TextFallout(
+                stringResource(Res.string.take_the_cash),
+                getTextColor(),
+                getTextStrokeColor(),
+                24.sp,
+                Modifier
+                    .clickableOk {
+                        setLevelZero()
+                    }
+                    .background(getTextBackgroundColor())
+                    .padding(horizontal = 8.dp, vertical = 4.dp),
+            )
+
+            TextFallout(
+                "Let's go!",
+                getTextColor(),
+                getTextStrokeColor(),
+                24.sp,
+                Modifier
+                    .clickableOk {
+                        nextLevel()
+                    }
+                    .background(getTextBackgroundColor())
+                    .padding(horizontal = 8.dp, vertical = 4.dp)
+            )
+        }
+    }
+}
+
 @Composable
 fun FrankPresentedScreen(
     startLevel: () -> Unit,
@@ -658,6 +874,14 @@ fun FrankPresentedScreen(
             Spacer(modifier = Modifier.height(16.dp))
             TextFallout(
                 stringResource(Res.string.deck_o_54_only),
+                getTextColor(),
+                getTextStrokeColor(),
+                24.sp,
+                Modifier,
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            TextFallout(
+                "NO SECOND CHANCES!",
                 getTextColor(),
                 getTextStrokeColor(),
                 24.sp,

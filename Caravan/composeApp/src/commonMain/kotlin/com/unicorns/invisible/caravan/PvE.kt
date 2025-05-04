@@ -128,10 +128,8 @@ fun ShowSelectPvE(
             return
         }
         showTower -> {
-            showAlertDialog("[CLOSED]", "This content is unavailable.", null)
-            showTower = false
-            //TowerScreen(showAlertDialog) { showTower = false }
-            //return
+            TowerScreen(showAlertDialog) { showTower = false }
+            return
         }
         showStory -> {
             ShowStoryList(showAlertDialog) { showStory = false }

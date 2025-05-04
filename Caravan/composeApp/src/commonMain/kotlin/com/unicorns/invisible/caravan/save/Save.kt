@@ -230,6 +230,13 @@ class Save(var playerId: String? = null) {
 
     @EncodeDefault
     var towerLevel: Int = 0
+        set(value) {
+            field = value
+            if (value == 0) {
+                cookCookMult = 1
+                secondChances = 0
+            }
+        }
     @EncodeDefault
     var cookCookMult: Int = 1
     @EncodeDefault

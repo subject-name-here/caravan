@@ -78,3 +78,62 @@ fun checkIfEnemyVictoryIsClose(state: State, index: Int): Boolean {
         }
     }
 }
+
+enum class GamePossibleResult {
+    UNKNOWN,
+    IMMINENT_ENEMY_VICTORY,
+    POSSIBLE_PLAYER_VICTORY,
+    ENEMY_VICTORY_IS_POSSIBLE,
+    PLAYER_VICTORY_IS_POSSIBLE,
+    GAME_ON,
+
+}
+fun checkOnResult(game: Game, caravanIndex: Int): GamePossibleResult {
+    val otherCaravansIndices = game.enemyCaravans.indices.filter { it != caravanIndex }
+    var score = 0
+    fun checkIfWin(e0: Int, p0: Int) {
+        if (e0 in (21..26) && (e0 > p0 || p0 > 26)) {
+            score++
+        }
+    }
+    otherCaravansIndices.forEach {
+        checkIfWin(game.enemyCaravans[it].getValue(), game.playerCaravans[it].getValue())
+    }
+    if (score == 2) {
+        return GamePossibleResult.IMMINENT_ENEMY_VICTORY
+    }
+
+    score = 0
+    otherCaravansIndices.forEach {
+        checkIfWin(game.playerCaravans[it].getValue(), game.enemyCaravans[it].getValue())
+    }
+    if (score == 2) {
+        return GamePossibleResult.POSSIBLE_PLAYER_VICTORY
+    }
+
+    score = 0
+    otherCaravansIndices.forEach {
+        checkIfWin(game.enemyCaravans[it].getValue(), game.playerCaravans[it].getValue())
+    }
+    if (score == 1) {
+        otherCaravansIndices.forEach {
+            checkIfWin(game.playerCaravans[it].getValue(), game.enemyCaravans[it].getValue())
+        }
+        if (score == 2) {
+            return when {
+                game.enemyCaravans[caravanIndex].getValue() >= 11 && game.playerCaravans[caravanIndex].getValue() >= 11 -> {
+                    GamePossibleResult.GAME_ON
+                }
+                game.enemyCaravans[caravanIndex].getValue() >= 11 -> {
+                    GamePossibleResult.ENEMY_VICTORY_IS_POSSIBLE
+                }
+                game.playerCaravans[caravanIndex].getValue() >= 11 -> {
+                    GamePossibleResult.PLAYER_VICTORY_IS_POSSIBLE
+                }
+                else -> GamePossibleResult.GAME_ON
+            }
+        }
+    }
+
+    return GamePossibleResult.UNKNOWN
+}
