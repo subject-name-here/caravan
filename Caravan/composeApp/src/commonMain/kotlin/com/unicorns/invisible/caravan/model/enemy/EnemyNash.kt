@@ -93,7 +93,6 @@ class EnemyNash : EnemyPvEWithBank() {
         val queen = game.enemyCResources.hand.find { it is CardFace && it.rank == RankFace.QUEEN }
         val king = game.enemyCResources.hand.find { it is CardFace && it.rank == RankFace.KING }
 
-
         game.enemyCaravans.withIndex().forEach { (index, caravan) ->
             if (checkIfEnemyVictoryIsClose(gameToState(game), index)) {
                 if (king != null && !caravan.isEmpty() && caravan.getValue() < 21 && caravan !in overWeightCaravans) {
