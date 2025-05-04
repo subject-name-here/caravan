@@ -130,7 +130,7 @@ fun checkOnResult(game: Game, caravanIndex: Int): GamePossibleResult {
                 game.playerCaravans[caravanIndex].getValue() >= 11 -> {
                     GamePossibleResult.PLAYER_VICTORY_IS_POSSIBLE
                 }
-                else -> GamePossibleResult.GAME_ON
+                else -> GamePossibleResult.UNKNOWN
             }
         }
     }

@@ -23,6 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import caravan.composeapp.generated.resources.Res
@@ -35,6 +36,7 @@ import caravan.composeapp.generated.resources.craig_1
 import caravan.composeapp.generated.resources.craig_2
 import caravan.composeapp.generated.resources.craig_3
 import caravan.composeapp.generated.resources.craig_continue
+import caravan.composeapp.generated.resources.currently_at_stake
 import caravan.composeapp.generated.resources.currently_in_bank_caps
 import caravan.composeapp.generated.resources.custom_deck_only
 import caravan.composeapp.generated.resources.deck_o_54_only
@@ -279,14 +281,9 @@ fun TowerScreen(
                 }
             }
             6 -> {
-                RestScreen({
-                    levelMemory = level
-                    level = 0
-                    saveGlobal.towerLevel = 0
-                    saveData()
-                }) {
-                    level = levelMemory + 1
-                    saveGlobal.towerLevel = levelMemory + 1
+                RestScreen {
+                    level = 7
+                    saveGlobal.towerLevel = 7
                     secondChances = 1
                     saveGlobal.secondChances = 1
                     levelMemory = 0
@@ -404,7 +401,7 @@ fun TowerScreen(
                     Modifier
                         .background(Colors.ColorText)
                         .clickableOk {
-                            showFrankWarning = false; playLevel = 11
+                            showFrankWarning = false; playLevel = 13
                         }
                         .padding(4.dp)
                 )
@@ -779,7 +776,6 @@ fun CookCookPresentedScreen(
 
 @Composable
 fun RestScreen(
-    setLevelZero: () -> Unit,
     nextLevel: () -> Unit
 ) {
     Column(
@@ -825,19 +821,6 @@ fun RestScreen(
             horizontalArrangement = Arrangement.SpaceEvenly,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            TextFallout(
-                stringResource(Res.string.take_the_cash),
-                getTextColor(),
-                getTextStrokeColor(),
-                24.sp,
-                Modifier
-                    .clickableOk {
-                        setLevelZero()
-                    }
-                    .background(getTextBackgroundColor())
-                    .padding(horizontal = 8.dp, vertical = 4.dp),
-            )
-
             TextFallout(
                 "Let's go!",
                 getTextColor(),
@@ -890,7 +873,6 @@ fun FrankPresentedScreen(
             Spacer(modifier = Modifier.height(16.dp))
         }
 
-        val inBank = 2048
         Column(
             Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
@@ -903,7 +885,7 @@ fun FrankPresentedScreen(
                 Modifier,
             )
             TextFallout(
-                stringResource(Res.string.currently_in_bank_caps, inBank),
+                stringResource(Res.string.currently_at_stake, "your life"),
                 getTextColor(),
                 getTextStrokeColor(),
                 24.sp,
@@ -955,7 +937,7 @@ fun FrankPresentedScreen(
 
 @Composable
 fun FinalScreen(setLevelZero: () -> Unit) {
-    Column(Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center) {
+    Column(Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
         TextFallout(
             stringResource(Res.string.take_the_cash),
             getTextColor(),
@@ -997,7 +979,7 @@ fun StartTowerGame(
                     Modifier
                         .background(Colors.ColorText)
                         .clickableCancel { showIntro = false }
-                        .padding(4.dp)
+                        .padding(4.dp),
                 )
             },
             title = {
@@ -1005,7 +987,8 @@ fun StartTowerGame(
                     stringResource(Res.string.you_re_not_a_hero_you_re_just_a_walking_corpse),
                     Colors.ColorText,
                     Colors.ColorText,
-                    24.sp, Modifier
+                    24.sp, Modifier,
+                    textAlignment = TextAlign.Start
                 )
             },
             text = {
@@ -1019,7 +1002,8 @@ fun StartTowerGame(
                     ),
                     Colors.ColorText,
                     Colors.ColorText,
-                    16.sp, Modifier
+                    16.sp, Modifier,
+                    textAlignment = TextAlign.Start
                 )
             },
             containerColor = Color.Black,
@@ -1050,7 +1034,8 @@ fun StartTowerGame(
                     stringResource(Res.string.you_win),
                     Colors.ColorText,
                     Colors.ColorText,
-                    24.sp, Modifier
+                    24.sp, Modifier,
+                    textAlignment = TextAlign.Start
                 )
             },
             text = {
@@ -1058,7 +1043,8 @@ fun StartTowerGame(
                     stringResource(Res.string.frank_final_words),
                     Colors.ColorText,
                     Colors.ColorText,
-                    16.sp, Modifier
+                    16.sp, Modifier,
+                    textAlignment = TextAlign.Start
                 )
             },
             containerColor = Color.Black,
@@ -1072,7 +1058,7 @@ fun StartTowerGame(
     val playerCResources = CResources(if (isFrankSequence) {
         CustomDeck(saveGlobal.selectedDeck)
     } else {
-        CustomDeck().apply { addAll(saveGlobal.getCurrentCustomDeck()) }
+        CustomDeck().apply { addAll(saveGlobal.getCurrentDeckCopy()) }
     })
     val game = rememberScoped {
         if (isFrankSequence) {

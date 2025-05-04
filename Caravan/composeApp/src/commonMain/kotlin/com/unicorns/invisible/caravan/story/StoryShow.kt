@@ -57,6 +57,7 @@ import caravan.composeapp.generated.resources.death_message_wasteland_2
 import caravan.composeapp.generated.resources.death_message_wasteland_3
 import caravan.composeapp.generated.resources.death_screen
 import caravan.composeapp.generated.resources.finish
+import caravan.composeapp.generated.resources.frank_head
 import com.sebaslogen.resaca.rememberScoped
 import com.unicorns.invisible.caravan.Style
 import com.unicorns.invisible.caravan.utils.TextClassic
@@ -123,9 +124,11 @@ fun StoryShow(graph: DialogGraph, onBadEnd: () -> Unit, onGoodEnd: () -> Unit) {
                         isSlideVisible = true
                     }
 
-                    Box(Modifier.width(640.pxToDp()).height(480.pxToDp()).clipToBounds(), contentAlignment = Alignment.TopCenter) {
+                    val width = if (stableDialogState.picId == Res.drawable.frank_head) 803 else 640
+                    val height = if (stableDialogState.picId == Res.drawable.frank_head) 414 else 480
+                    Box(Modifier.width(width.pxToDp()).height(height.pxToDp()).clipToBounds(), contentAlignment = Alignment.TopCenter) {
                         AnimatedVisibility(
-                            visible = stableDialogState.intro == PicEffect.SLIDE && isSlideVisible,
+                            visible = stableDialogState.intro != PicEffect.SLIDE || isSlideVisible,
                             enter = slideInHorizontally(
                                 animationSpec = spring(stiffness = Spring.StiffnessMediumLow, visibilityThreshold = IntOffset.VisibilityThreshold),
                                 initialOffsetX = { -it }
@@ -137,9 +140,11 @@ fun StoryShow(graph: DialogGraph, onBadEnd: () -> Unit, onGoodEnd: () -> Unit) {
                                 contentScale = ContentScale.FillBounds,
                             ))
                         }
-                        Box(Modifier.fillMaxSize()
-                            .paint(painterResource(Res.drawable.crt_1))
-                        )
+                        if (stableDialogState.picId != Res.drawable.frank_head) {
+                            Box(Modifier.fillMaxSize()
+                                .paint(painterResource(Res.drawable.crt_1))
+                            )
+                        }
                     }
                     Column(Modifier.fillMaxWidth()) {
                         val response = stringResource(stableDialogState.responseId)

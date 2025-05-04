@@ -489,41 +489,28 @@
     <string name="complete_all_dailys_descr">Complete all daily missions.</string>
 
 
-    <string name="tower_presents">
-        VAULT-TEC
-        proudly presents
+    <string name="tower_presents">VAULT-TEC\nproudly presents
     </string>
     <string name="tower">TOWER!</string>
-    <string name="tower_starring_1">
-        Starring:
-        Dean Domino
-        Robert Edwin House
-        Sunny Smiles
-        and
-        LEGENDARY
-        LEGATE LANIUS.
+    <string name="tower_starring_1">Starring:\nDean Domino\nRobert Edwin House\nSunny Smiles\nand\nLEGENDARY\nLEGATE LANIUS.
     </string>
-    <string name="tower_starring_2">
-        Also starring: Craig Muffin,
-        3-time Caravan champ of NCR.
+    <string name="tower_starring_2">Also starring: Craig Muffin,\n3-time Caravan champ of NCR.
     </string>
     <string name="deck_o_54_only">(Deck o' 54 only!)</string>
     <string name="custom_deck_only">(Custom deck only!)</string>
     <string name="you_can_change_custom_deck_between_games">(You can change custom deck between games.)</string>
     <string name="progress_is_saved_between_sessions">(Progress is saved between sessions!).</string>
-    <string name="tickets_please_you_have_tickets">
-        Tickets, please!
-        (You have: %1$s tickets.)
-    </string>
+    <string name="tickets_please_you_have_tickets">Tickets, please!\n(You have: %1$s tickets.)</string>
     <string name="pay_1_ticket">Pay 1 ticket</string>
     <string name="hey">HEY!</string>
     <string name="you_don_t_have_a_ticket_on_you">You don't have a ticket on you.</string>
     <string name="level_10">Level: %1$s / 10</string>
     <string name="currently_in_bank_caps">Currently at stake: %1$s caps</string>
+    <string name="currently_at_stake">Currently at stake: %1$s.</string>
     <string name="enemy">Enemy: %1$s</string>
     <string name="your_reward_caps">Your reward: %1$s caps.</string>
     <string name="your_reward_caps_running">Cowardly running away, you managed to get: %1$s caps.</string>
-    <string name="your_reward_caps_finale">The final boss is defeated. By being a true hero, you have managed to earn: %1$s caps.</string>
+    <string name="your_reward_caps_finale">The TOWER boss is defeated. By being a true hero, you have managed to earn: %1$s caps.</string>
 
     <string name="tower_enemy_1">Sunny Smiles</string>
     <string name="tower_enemy_2">Yes Man</string>

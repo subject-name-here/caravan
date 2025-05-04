@@ -19,12 +19,14 @@ import com.unicorns.invisible.caravan.model.primitives.CardNumber
 import com.unicorns.invisible.caravan.model.primitives.CustomDeck
 import com.unicorns.invisible.caravan.model.primitives.RankFace
 import com.unicorns.invisible.caravan.model.primitives.RankNumber
+import com.unicorns.invisible.caravan.saveGlobal
 import kotlin.math.max
 
 
 data object EnemyFrank : Enemy {
     override fun createDeck(): CResources = CResources(CustomDeck(CardBack.ENCLAVE).apply {
-        repeat(3) { add(CardAtomic()) }
+        val times = if (saveGlobal.towerBeaten) 4 else 3
+        repeat(times) { add(CardAtomic()) }
     })
 
     private fun checkMoveOnProbableDefeat(game: Game, caravanIndex: Int): Boolean {
@@ -141,10 +143,13 @@ data object EnemyFrank : Enemy {
 
         // 2) If not and if player is abt to win, destroy player ready and almost ready caravans (on right columns!)
         game.enemyCaravans.withIndex().forEach { (caravanIndex, caravan) ->
-            val isLosing = checkOnResult(game, caravanIndex) in listOf(GamePossibleResult.POSSIBLE_PLAYER_VICTORY, GamePossibleResult.GAME_ON)
+            val isLosing = checkOnResult(game, caravanIndex) in listOf(
+                GamePossibleResult.POSSIBLE_PLAYER_VICTORY,
+                GamePossibleResult.PLAYER_VICTORY_IS_POSSIBLE,
+                GamePossibleResult.GAME_ON
+            )
             if (isLosing) {
-                hand
-                    .filterIsInstance<CardAtomic>()
+                hand.filterIsInstance<CardAtomic>()
                     .forEach { bomb ->
                         val bombIndex = hand.indexOf(bomb)
                         val caravans = game.enemyCaravans.withIndex().reversed()
