@@ -82,7 +82,7 @@ fun checkIfEnemyVictoryIsClose(state: State, index: Int): Boolean {
 enum class GamePossibleResult {
     UNKNOWN,
     IMMINENT_ENEMY_VICTORY,
-    POSSIBLE_PLAYER_VICTORY,
+    IMMINENT_PLAYER_VICTORY,
     ENEMY_VICTORY_IS_POSSIBLE,
     PLAYER_VICTORY_IS_POSSIBLE,
     GAME_ON,
@@ -108,7 +108,7 @@ fun checkOnResult(game: Game, caravanIndex: Int): GamePossibleResult {
         checkIfWin(game.playerCaravans[it].getValue(), game.enemyCaravans[it].getValue())
     }
     if (score == 2) {
-        return GamePossibleResult.POSSIBLE_PLAYER_VICTORY
+        return GamePossibleResult.IMMINENT_PLAYER_VICTORY
     }
 
     score = 0

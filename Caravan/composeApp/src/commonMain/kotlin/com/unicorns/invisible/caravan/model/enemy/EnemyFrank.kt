@@ -67,7 +67,7 @@ data object EnemyFrank : Enemy {
             val isWinningMovePossible = checkOnResult(game, caravan.index)
             val rivalCaravanValue = game.playerCaravans[caravan.index].getValue()
             val lowerBound = max(21, rivalCaravanValue + 1)
-            if (isWinningMovePossible == GamePossibleResult.IMMINENT_ENEMY_VICTORY || isWinningMovePossible == GamePossibleResult.ENEMY_VICTORY_IS_POSSIBLE) {
+            if (isWinningMovePossible in listOf(GamePossibleResult.GAME_ON, GamePossibleResult.IMMINENT_ENEMY_VICTORY, GamePossibleResult.ENEMY_VICTORY_IS_POSSIBLE, )) {
                 // If caravan is overweight, check on Jacks
                 val jack = hand.filterIsInstance<CardFace>().find { card -> card.rank == RankFace.JACK }
                 if (jack != null) {
@@ -144,7 +144,7 @@ data object EnemyFrank : Enemy {
         // 2) If not and if player is abt to win, destroy player ready and almost ready caravans (on right columns!)
         game.enemyCaravans.withIndex().forEach { (caravanIndex, caravan) ->
             val isLosing = checkOnResult(game, caravanIndex) in listOf(
-                GamePossibleResult.POSSIBLE_PLAYER_VICTORY,
+                GamePossibleResult.IMMINENT_PLAYER_VICTORY,
                 GamePossibleResult.PLAYER_VICTORY_IS_POSSIBLE,
                 GamePossibleResult.GAME_ON
             )
@@ -355,7 +355,7 @@ data object EnemyFrank : Enemy {
                         if (newSum <= 26 &&
                             caravan.canPutCardOnTop(card) &&
                             !(checkMoveOnProbableDefeat(game, caravanIndex) && newSum in (21..26)) &&
-                            !(checkOnResult(game, caravanIndex) == GamePossibleResult.POSSIBLE_PLAYER_VICTORY && newSum in (21..26))
+                            !(checkOnResult(game, caravanIndex) == GamePossibleResult.IMMINENT_PLAYER_VICTORY && newSum in (21..26))
                         ) {
                             caravan.putCardOnTop(game.enemyCResources.removeFromHand(cardIndex, speed) as CardBase, speed)
                             return
