@@ -102,8 +102,15 @@ import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.enemy.Enemy
 import com.unicorns.invisible.caravan.model.enemy.EnemyFrank
 import com.unicorns.invisible.caravan.model.enemy.EnemyTower1
+import com.unicorns.invisible.caravan.model.enemy.EnemyTower2
 import com.unicorns.invisible.caravan.model.enemy.EnemyTower3
 import com.unicorns.invisible.caravan.model.enemy.EnemyTower3A
+import com.unicorns.invisible.caravan.model.enemy.EnemyTower4
+import com.unicorns.invisible.caravan.model.enemy.EnemyTower5
+import com.unicorns.invisible.caravan.model.enemy.EnemyTower6
+import com.unicorns.invisible.caravan.model.enemy.EnemyTower7
+import com.unicorns.invisible.caravan.model.enemy.EnemyTower8
+import com.unicorns.invisible.caravan.model.enemy.EnemyTower9
 import com.unicorns.invisible.caravan.model.enemy.EnemyTowerBonus
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.CustomDeck
@@ -185,10 +192,6 @@ fun TowerScreen(
                 saveGlobal.secondChances--
                 level = levelMemory
                 saveGlobal.towerLevel = levelMemory
-
-            } else {
-                level = 0
-                saveGlobal.towerLevel = 0
             }
             levelMemory = 0
             saveData()
@@ -203,14 +206,14 @@ fun TowerScreen(
         in 1..11 -> {
             val enemy = when (playLevel) {
                 1 -> EnemyTower1
-                2 -> EnemyTower1
+                2 -> EnemyTower2
                 3 -> if (saveGlobal.papaSmurfActive) EnemyTower3A else EnemyTower3
-                4 -> EnemyTower1
-                5 -> EnemyTower1
-                7 -> EnemyTower1
-                8 -> EnemyTower1
-                9 -> EnemyTower1
-                11 -> EnemyTower1
+                4 -> EnemyTower4
+                5 -> EnemyTower5
+                7 -> EnemyTower6
+                8 -> EnemyTower7
+                9 -> EnemyTower8
+                11 -> EnemyTower9
                 else -> {
                     playLevel = 0
                     return
@@ -1070,7 +1073,6 @@ fun StartTowerGame(
     }
 
     LaunchedEffect(Unit) { startAmbient() }
-    val onQuitPressed = { stopAmbient(); goBack() }
     val playerCResources = CResources(if (isFrankSequence) {
         CustomDeck(saveGlobal.selectedDeck)
     } else {
@@ -1087,6 +1089,13 @@ fun StartTowerGame(
             onStart()
             it.startGame()
         }
+    }
+    val onQuitPressed = {
+        if (!game.isOver()) {
+            onLose()
+        }
+        stopAmbient()
+        goBack()
     }
 
     val scope = rememberCoroutineScope()

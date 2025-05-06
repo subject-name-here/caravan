@@ -1,60 +1,63 @@
 package com.unicorns.invisible.caravan.model.enemy
 
-import caravan.composeapp.generated.resources.Res
-import caravan.composeapp.generated.resources.pve_enemy_victor
 import com.unicorns.invisible.caravan.AnimationSpeed
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyDropLadiesFirst
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyInit
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJackMedium
+import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJokerSimpleOnPlayer
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyKingMedium
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyPutNumbersMedium
+import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyQueenToSelfSimple
 import com.unicorns.invisible.caravan.model.enemy.strategy.checkTheOutcome
 import com.unicorns.invisible.caravan.model.enemy.strategy.gameToState
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.CardFace
 import com.unicorns.invisible.caravan.model.primitives.CardModifier
+import com.unicorns.invisible.caravan.model.primitives.CardNumberWW
+import com.unicorns.invisible.caravan.model.primitives.CardWildWasteland
+import com.unicorns.invisible.caravan.model.primitives.CustomDeck
 import com.unicorns.invisible.caravan.model.primitives.RankFace
-import kotlinx.serialization.Serializable
+import com.unicorns.invisible.caravan.model.primitives.RankNumber
+import com.unicorns.invisible.caravan.model.primitives.Suit
+import com.unicorns.invisible.caravan.model.primitives.WWType
+import kotlin.random.Random
 
 
-@Serializable
-class EnemyVictor : EnemyPvEWithBank() {
-    override val nameId
-        get() = Res.string.pve_enemy_victor
-    override val isEven
-        get() = true
-    override val level: Int
-        get() = 3
-    override val isAvailable: Boolean
-        get() = true
-
-    override fun createDeck() = CResources(CardBack.LUCKY_38)
-
-    override val maxBets: Int
-        get() = 2
-    override var curBets: Int = maxBets
-    override val bet: Int
-        get() = 25
-
-    override var winsNoBet: Int = 0
-    override var winsBet: Int = 0
-    override var winsBlitzNoBet: Int = 0
-    override var winsBlitzBet: Int = 0
-
+data object EnemyTower4 : Enemy {
+    override fun createDeck(): CResources = CResources(CustomDeck(CardBack.STANDARD_UNCOMMON).apply {
+        RankNumber.entries.forEach { rank ->
+            Suit.entries.forEach { suit ->
+                add(CardNumberWW(rank, suit))
+            }
+        }
+        add(CardWildWasteland(WWType.FEV))
+    })
 
     override suspend fun makeMove(game: Game, speed: AnimationSpeed) {
         if (game.isInitStage()) {
-            StrategyInit(StrategyInit.Type.RANDOM).move(game, speed)
+            StrategyInit(StrategyInit.Type.MIN_FIRST_TO_RANDOM).move(game, speed)
             return
         }
+
+        val fev = game.enemyCResources.hand.filterIsInstance<CardWildWasteland>().find { it.wwType == WWType.FEV }
+        if (Random.nextBoolean() && game.playerCaravans.any { it.getValue() >= 11 } && fev != null) {
+            val index = game.enemyCResources.hand.indexOf(fev)
+            val card = game.playerCaravans.flatMap { it.cards }.filter { it.canAddModifier(fev) }.minByOrNull { it.card.rank.value }
+            if (card != null) {
+                card.addModifier(game.enemyCResources.removeFromHand(index, speed) as CardModifier, speed)
+                return
+            }
+        }
+
 
         if (StrategyPutNumbersMedium().move(game, speed)) {
             return
         }
 
         val modifiers = game.enemyCResources.hand.filterIsInstance<CardFace>().shuffled()
+
         modifiers.forEach { modifier ->
             val index = game.enemyCResources.hand.indexOf(modifier)
             when (modifier.rank) {
@@ -64,8 +67,9 @@ class EnemyVictor : EnemyPvEWithBank() {
                     }
                 }
                 RankFace.QUEEN -> {
-                    game.enemyCResources.dropCardFromHand(index, speed)
-                    return
+                    if (StrategyQueenToSelfSimple(index).move(game, speed)) {
+                        return
+                    }
                 }
                 RankFace.KING -> {
                     if (StrategyKingMedium(index).move(game, speed)) {
@@ -73,9 +77,7 @@ class EnemyVictor : EnemyPvEWithBank() {
                     }
                 }
                 RankFace.JOKER -> {
-                    val cards = game.enemyCaravans.flatMap { it.cards }.shuffled()
-                    if (cards.isNotEmpty()) {
-                        cards.random().addModifier(game.enemyCResources.removeFromHand(index, speed) as CardModifier, speed)
+                    if (StrategyJokerSimpleOnPlayer(index).move(game, speed)) {
                         return
                     }
                 }
