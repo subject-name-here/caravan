@@ -7,6 +7,7 @@ import com.unicorns.invisible.caravan.model.primitives.CardModifier
 class StrategyKingToSelfMedium(val index: Int) : Strategy {
     override suspend fun move(game: Game, speed: AnimationSpeed): Boolean {
         val cardB = game.enemyCaravans
+            .asSequence()
             .filter { it.getValue() < 26 }
             .flatMap { it.cards }
             .filter { it.canAddModifier(game.enemyCResources.hand[index] as CardModifier) }

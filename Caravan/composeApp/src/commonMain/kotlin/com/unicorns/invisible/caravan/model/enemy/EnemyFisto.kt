@@ -6,30 +6,21 @@ import com.unicorns.invisible.caravan.AnimationSpeed
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyInit
-import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJackToSelfSimple
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJokerSimpleOnPlayer
-import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyKingToSelfSimple
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyPutNumbersSimple
 import com.unicorns.invisible.caravan.model.enemy.strategy.checkTheOutcome
 import com.unicorns.invisible.caravan.model.enemy.strategy.gameToState
 import com.unicorns.invisible.caravan.model.primitives.CResources
-import com.unicorns.invisible.caravan.model.primitives.CardAtomic
 import com.unicorns.invisible.caravan.model.primitives.CardBase
-import com.unicorns.invisible.caravan.model.primitives.CardFBomb
 import com.unicorns.invisible.caravan.model.primitives.CardFace
 import com.unicorns.invisible.caravan.model.primitives.CardFaceSuited
 import com.unicorns.invisible.caravan.model.primitives.CardJoker
 import com.unicorns.invisible.caravan.model.primitives.CardModifier
 import com.unicorns.invisible.caravan.model.primitives.CardNuclear
-import com.unicorns.invisible.caravan.model.primitives.CardNumber
-import com.unicorns.invisible.caravan.model.primitives.CardNumberWW
 import com.unicorns.invisible.caravan.model.primitives.CardWildWasteland
 import com.unicorns.invisible.caravan.model.primitives.CustomDeck
-import com.unicorns.invisible.caravan.model.primitives.RankFace
 import com.unicorns.invisible.caravan.model.primitives.WWType
 import kotlinx.serialization.Serializable
-import kotlin.math.abs
-import kotlin.math.min
 import kotlin.random.Random
 
 
