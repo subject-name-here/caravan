@@ -8,6 +8,7 @@ import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyInit
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJackToPlayer
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyKingToPlayer
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyPutNumbersHard
+import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyPutNumbersSimpleSafe
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyQueenToSelf
 import com.unicorns.invisible.caravan.model.enemy.strategy.checkTheOutcome
 import com.unicorns.invisible.caravan.model.enemy.strategy.gameToState
@@ -58,6 +59,10 @@ data object EnemyTower3 : Enemy {
                     }
                 }
             }
+        }
+
+        if (StrategyPutNumbersSimpleSafe().move(game, speed)) {
+            return
         }
 
         game.enemyCaravans.forEachIndexed { indexC, caravan ->

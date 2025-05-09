@@ -53,7 +53,6 @@ data object EnemyTower3A : Enemy {
         }
 
         val modifiers = game.enemyCResources.hand.filterIsInstance<CardFace>().shuffled()
-
         modifiers.forEach { modifier ->
             val index = game.enemyCResources.hand.indexOf(modifier)
             when (modifier.rank) {
@@ -94,6 +93,24 @@ data object EnemyTower3A : Enemy {
                     caravan.dropCaravan(speed)
                     return
                 }
+            }
+        }
+
+        modifiers.forEach { modifier ->
+            val index = game.enemyCResources.hand.indexOf(modifier)
+            when (modifier.rank) {
+                RankFace.QUEEN -> {
+                    val cards = game.enemyCaravans
+                        .filter { !it.isEmpty() }
+                        .map { it.cards.last() }
+                        .filter { it.canAddModifier(modifier) }
+                        .shuffled()
+                    if (cards.isNotEmpty()) {
+                        cards.random().addModifier(game.enemyCResources.removeFromHand(index, speed) as CardModifier, speed)
+                        return
+                    }
+                }
+                else -> {}
             }
         }
 
