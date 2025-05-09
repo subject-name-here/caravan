@@ -73,7 +73,7 @@ class EnemyVictor : EnemyPvEWithBank() {
                     }
                 }
                 RankFace.JOKER -> {
-                    val cards = game.enemyCaravans.flatMap { it.cards }.shuffled()
+                    val cards = game.enemyCaravans.flatMap { it.cards }.filter { it.canAddModifier(modifier) }.shuffled()
                     if (cards.isNotEmpty()) {
                         cards.random().addModifier(game.enemyCResources.removeFromHand(index, speed) as CardModifier, speed)
                         return

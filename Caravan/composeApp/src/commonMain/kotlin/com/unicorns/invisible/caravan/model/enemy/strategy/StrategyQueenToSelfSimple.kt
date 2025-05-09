@@ -12,8 +12,9 @@ class StrategyQueenToSelfSimple(val index: Int) : Strategy {
         if (hand.isEmpty()) {
             return false
         }
+        val queen = game.enemyCResources.hand[index] as CardModifier
         game.enemyCaravans.filter { it.getValue() < 26 }.shuffled().forEach { caravan ->
-            if (caravan.size > 1 && hand.all { !caravan.canPutCardOnTop(it) }) {
+            if (caravan.size > 1 && hand.all { !caravan.canPutCardOnTop(it) } && caravan.cards.last().canAddModifier(queen)) {
                 val last = caravan.cards[caravan.cards.lastIndex]
                 val preLast = caravan.cards[caravan.cards.lastIndex - 1]
                 when {

@@ -64,10 +64,14 @@ data object EnemyFrank : Enemy {
 
         // 1) Check if we have winning move
         game.enemyCaravans.withIndex().forEach { caravan ->
-            val isWinningMovePossible = checkOnResult(game, caravan.index)
+            val isWinningMovePossible = checkOnResult(game, caravan.index) in listOf(
+                GamePossibleResult.GAME_ON,
+                GamePossibleResult.IMMINENT_ENEMY_VICTORY,
+                GamePossibleResult.ENEMY_VICTORY_IS_POSSIBLE
+            )
             val rivalCaravanValue = game.playerCaravans[caravan.index].getValue()
             val lowerBound = max(21, rivalCaravanValue + 1)
-            if (isWinningMovePossible in listOf(GamePossibleResult.GAME_ON, GamePossibleResult.IMMINENT_ENEMY_VICTORY, GamePossibleResult.ENEMY_VICTORY_IS_POSSIBLE, )) {
+            if (isWinningMovePossible) {
                 // If caravan is overweight, check on Jacks
                 val jack = hand.filterIsInstance<CardFace>().find { card -> card.rank == RankFace.JACK }
                 if (jack != null) {

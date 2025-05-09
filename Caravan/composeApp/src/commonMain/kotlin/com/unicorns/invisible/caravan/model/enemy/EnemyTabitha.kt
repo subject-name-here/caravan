@@ -13,6 +13,7 @@ import com.unicorns.invisible.caravan.model.enemy.strategy.checkIfEnemyVictoryIs
 import com.unicorns.invisible.caravan.model.enemy.strategy.checkTheOutcome
 import com.unicorns.invisible.caravan.model.enemy.strategy.gameToState
 import com.unicorns.invisible.caravan.model.primitives.CResources
+import com.unicorns.invisible.caravan.model.primitives.Card
 import com.unicorns.invisible.caravan.model.primitives.CardBase
 import com.unicorns.invisible.caravan.model.primitives.CardFace
 import com.unicorns.invisible.caravan.model.primitives.CardFaceSuited
@@ -97,7 +98,7 @@ class EnemyTabitha : EnemyPvEWithBank() {
         val jack = hand.find { it is CardFace && it.rank == RankFace.JACK }
         val aceOfDiamonds = game.playerCaravans.flatMap { it.cards }
             .find { it.card.rank == RankNumber.ACE && it.card.suit == Suit.DIAMONDS }
-        if (jack != null && aceOfDiamonds != null) {
+        if (jack != null && aceOfDiamonds != null && aceOfDiamonds.canAddModifier(jack as CardModifier)) {
             val state = gameToState(game)
             val index = game.playerCaravans.indexOfFirst { aceOfDiamonds in it.cards }
             when (index) {
@@ -240,10 +241,7 @@ class EnemyTabitha : EnemyPvEWithBank() {
                 game.enemyCaravans
                     .sortedByDescending { it.getValue() }
                     .forEachIndexed { indexC, caravan ->
-                        if (caravan.getValue() + card.rank.value <= 26 && caravan.canPutCardOnTop(
-                                card
-                            )
-                        ) {
+                        if (caravan.getValue() + card.rank.value <= 26 && caravan.canPutCardOnTop(card)) {
                             val state = gameToState(game)
                             when (indexC) {
                                 0 -> state.enemy.v1 += card.rank.value

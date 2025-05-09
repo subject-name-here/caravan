@@ -9,6 +9,7 @@ class StrategyKingToPlayer(val index: Int) : Strategy {
         val cardA = game.playerCaravans
             .filter { it.getValue() in (21..26) }
             .flatMap { it.cards }
+            .filter { it.canAddModifier(game.enemyCResources.hand[index] as CardModifier) }
             .filter { cardA ->
                 val state = gameToState(game)
                 val indexC = game.playerCaravans.withIndex().first { cardA in it.value.cards }.index

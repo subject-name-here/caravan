@@ -16,6 +16,7 @@ import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.CardBase
 import com.unicorns.invisible.caravan.model.primitives.CardFace
 import com.unicorns.invisible.caravan.model.primitives.CardFaceSuited
+import com.unicorns.invisible.caravan.model.primitives.CardModifier
 import com.unicorns.invisible.caravan.model.primitives.CardNumber
 import com.unicorns.invisible.caravan.model.primitives.CardWithModifier
 import com.unicorns.invisible.caravan.model.primitives.CustomDeck
@@ -96,9 +97,9 @@ class EnemyNash : EnemyPvEWithBank() {
             if (checkIfEnemyVictoryIsClose(gameToState(game), index)) {
                 if (king != null && !caravan.isEmpty() && caravan.getValue() < 21 && caravan !in overWeightCaravans) {
                     val card = caravan.cards[0]
-                    if (card.canAddModifier(king as CardFace)) {
+                    if (card.canAddModifier(king as CardModifier)) {
                         val kingIndex = game.enemyCResources.hand.indexOf(king)
-                        card.addModifier(game.enemyCResources.removeFromHand(kingIndex, speed) as CardFace, speed)
+                        card.addModifier(game.enemyCResources.removeFromHand(kingIndex, speed) as CardModifier, speed)
                         return
                     }
                 }

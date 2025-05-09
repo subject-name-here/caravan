@@ -69,7 +69,6 @@ class EnemyDrMobius : EnemyPvEWithBank() {
 
     fun generateCardNumber(): CardNumber {
         val rank = RankNumber.entries.random()
-        val back =
         return CardNumber(rank, Suit.entries.random(), generateBack())
     }
 
@@ -78,6 +77,5 @@ class EnemyDrMobius : EnemyPvEWithBank() {
         CardBack.STANDARD_UNCOMMON,
         CardBack.STANDARD_RARE,
         CardBack.STANDARD_MYTHIC,
-        CardBack.STANDARD_LEGENDARY,
     ).random()
 }

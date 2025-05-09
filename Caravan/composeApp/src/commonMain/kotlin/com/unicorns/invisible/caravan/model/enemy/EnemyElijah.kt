@@ -82,11 +82,8 @@ class EnemyElijah : EnemyPvEWithBank() {
         }
 
         val king = hand.filterIsInstance<CardFace>().find { it.rank == RankFace.KING }
-        val jack = hand.filterIsInstance<CardFace>().find { it.rank == RankFace.JACK }
-        val joker = hand.filterIsInstance<CardJoker>().firstOrNull()
 
         // 1. Check if adding king will cause victory.
-
         if (king != null) {
             val kingIndex = hand.indexOf(king)
             game.enemyCaravans.withIndex().shuffled().forEach { (caravanIndex, enemyCaravan) ->
@@ -147,8 +144,7 @@ class EnemyElijah : EnemyPvEWithBank() {
                 if (enemyCaravan.getValue() in listOf(10, 16)) {
                     val ten = enemyCaravan.cards.find { it.card.rank == RankNumber.TEN && it.getValue() == 10 && it.canAddModifier(king) }
                     val res = checkOnResult(game, caravanIndex) == GamePossibleResult.IMMINENT_PLAYER_VICTORY
-                    if (ten != null && !(res && enemyCaravan.getValue() == 16)
-                    ) {
+                    if (ten != null && !(res && enemyCaravan.getValue() == 16)) {
                         ten.addModifier(game.enemyCResources.removeFromHand(index, speed) as CardModifier, speed)
                         return
                     }

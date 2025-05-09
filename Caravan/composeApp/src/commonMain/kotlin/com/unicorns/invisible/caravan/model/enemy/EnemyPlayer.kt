@@ -14,7 +14,7 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 
 
-class EnemyPlayer(var deckSize: Int?, val session: DefaultClientWebSocketSession) : Enemy {
+class EnemyPlayer(var deckSize: Int?, private val session: DefaultClientWebSocketSession) : Enemy {
     override fun createDeck(): CResources = CResources(CustomDeck())
 
     var isCorrupted = false
@@ -39,6 +39,9 @@ class EnemyPlayer(var deckSize: Int?, val session: DefaultClientWebSocketSession
                     val caravan = game.enemyCaravans[move.caravanNumber]
                     if (!caravan.isEmpty()) {
                         caravan.dropCaravan(speed)
+                    } else {
+                        isCorrupted = true
+                        return
                     }
                 }
                 else -> {
@@ -75,6 +78,7 @@ class EnemyPlayer(var deckSize: Int?, val session: DefaultClientWebSocketSession
             }
         } catch (_: Exception) {
             isCorrupted = true
+            return
         }
 
         try {

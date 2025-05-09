@@ -6,9 +6,11 @@ import com.unicorns.invisible.caravan.model.primitives.CardModifier
 
 class StrategyJackToSelfMedium(val index: Int) : Strategy {
     override suspend fun move(game: Game, speed: AnimationSpeed): Boolean {
+        val jack = game.enemyCResources.hand[index] as CardModifier
         val cardA = game.enemyCaravans
             .filter { it.getValue() > 26 }
             .flatMap { it.cards }
+            .filter { it.canAddModifier(jack) }
             .filter { cardA ->
                 val state = gameToState(game)
                 val indexC = game.enemyCaravans.withIndex().first { cardA in it.value.cards }.index
@@ -38,6 +40,7 @@ class StrategyJackToSelfMedium(val index: Int) : Strategy {
         val cardB = game.enemyCaravans
             .filter { it.getValue() > 26 }
             .flatMap { it.cards }
+            .filter { it.canAddModifier(jack) }
             .filter { cardB ->
                 val state = gameToState(game)
                 val indexC = game.enemyCaravans.withIndex().first { cardB in it.value.cards }.index

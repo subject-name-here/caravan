@@ -65,7 +65,9 @@ class EnemyEasyPete : EnemyPvEWithBank() {
             if (atomics.isNotEmpty()) {
                 val atomic = atomics.first()
                 val index = hand.indexOf(atomic)
-                val card = game.enemyCaravans.flatMap { it.cards }.firstOrNull()
+                val card = game.enemyCaravans
+                    .flatMap { it.cards }
+                    .firstOrNull { it.canAddModifier(atomic) }
                 if (card != null) {
                     card.addModifier(game.enemyCResources.removeFromHand(index, speed) as CardModifier, speed)
                     return
@@ -76,9 +78,11 @@ class EnemyEasyPete : EnemyPvEWithBank() {
             if (dps.isNotEmpty()) {
                 val dp = dps.first()
                 val index = hand.indexOf(dp)
-                val card = (game.enemyCaravans + game.playerCaravans).flatMap { it.cards }.first()
-                card.addModifier(game.enemyCResources.removeFromHand(index, speed) as CardModifier, speed)
-                return
+                val card = (game.enemyCaravans + game.playerCaravans).flatMap { it.cards }.firstOrNull { it.canAddModifier(dp) }
+                if (card != null) {
+                    card.addModifier(game.enemyCResources.removeFromHand(index, speed) as CardModifier, speed)
+                    return
+                }
             }
         }
 
@@ -108,7 +112,7 @@ class EnemyEasyPete : EnemyPvEWithBank() {
                 }
                 RankFace.JOKER -> {
                     if (Random.nextBoolean()) {
-                        val cards = game.enemyCaravans.flatMap { it.cards }.shuffled()
+                        val cards = game.enemyCaravans.flatMap { it.cards }.filter { it.canAddModifier(modifier) }.shuffled()
                         if (cards.isNotEmpty()) {
                             cards.random().addModifier(game.enemyCResources.removeFromHand(index, speed) as CardModifier, speed)
                             return

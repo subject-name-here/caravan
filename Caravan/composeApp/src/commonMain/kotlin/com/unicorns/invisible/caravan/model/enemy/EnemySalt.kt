@@ -12,6 +12,7 @@ import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.CardFace
 import com.unicorns.invisible.caravan.model.primitives.CardFaceSuited
 import com.unicorns.invisible.caravan.model.primitives.CardJoker
+import com.unicorns.invisible.caravan.model.primitives.CardModifier
 import com.unicorns.invisible.caravan.model.primitives.CardNumber
 import com.unicorns.invisible.caravan.model.primitives.CustomDeck
 import com.unicorns.invisible.caravan.model.primitives.RankFace
@@ -69,7 +70,7 @@ class EnemySalt : EnemyPvEWithBank() {
         val jack = hand.find { it is CardFace && it.rank == RankFace.JACK }
         val joker = hand.find { it is CardJoker }
         val fiveToEight = game.playerCaravans.flatMap { it.cards }.find { it.card.rank.value in (5..8) }
-        if (fiveToEight != null && jack != null) {
+        if (fiveToEight != null && jack != null && fiveToEight.canAddModifier(jack as CardModifier)) {
             val jackIndex = hand.indexOf(jack)
             fiveToEight.addModifier(game.enemyCResources.removeFromHand(jackIndex, speed) as CardFace, speed)
             return

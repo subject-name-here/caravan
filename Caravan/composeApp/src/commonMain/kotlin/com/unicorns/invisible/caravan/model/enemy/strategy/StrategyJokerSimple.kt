@@ -13,9 +13,7 @@ class StrategyJokerSimple(val index: Int) : Strategy {
         val joker = game.enemyCResources.hand[index] as CardJoker
         val cards = (game.playerCaravans + game.enemyCaravans)
             .flatMap { it.cards }
-            .filter {
-                it.canAddModifier(joker)
-            }
+            .filter { it.canAddModifier(joker) }
 
         fun getValue(card: CardWithModifier): Int {
             val state = gameToState(game)
