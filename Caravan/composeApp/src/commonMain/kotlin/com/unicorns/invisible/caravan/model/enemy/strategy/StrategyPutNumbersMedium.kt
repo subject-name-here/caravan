@@ -3,7 +3,6 @@ package com.unicorns.invisible.caravan.model.enemy.strategy
 import com.unicorns.invisible.caravan.AnimationSpeed
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.primitives.CardBase
-import com.unicorns.invisible.caravan.model.primitives.CardNumber
 import kotlin.math.abs
 
 
@@ -39,7 +38,7 @@ class StrategyPutNumbersMedium : Strategy {
 
         if (best != null && best.second > 0) {
             val index = game.enemyCResources.hand.indexOf(best.first.second)
-            best.first.first.putCardOnTop(game.enemyCResources.removeFromHand(index, speed) as CardNumber, speed)
+            best.first.first.putCardOnTop(game.enemyCResources.removeFromHand(index, speed) as CardBase, speed)
             return true
         }
 

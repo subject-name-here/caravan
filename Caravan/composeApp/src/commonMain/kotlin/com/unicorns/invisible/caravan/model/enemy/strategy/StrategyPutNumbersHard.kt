@@ -3,7 +3,6 @@ package com.unicorns.invisible.caravan.model.enemy.strategy
 import com.unicorns.invisible.caravan.AnimationSpeed
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.primitives.CardBase
-import com.unicorns.invisible.caravan.model.primitives.CardNumber
 import kotlin.math.abs
 
 
@@ -24,7 +23,7 @@ class StrategyPutNumbersHard : Strategy {
 
                     suspend fun putCard() {
                         val index = game.enemyCResources.hand.indexOf(card)
-                        caravan.putCardOnTop(game.enemyCResources.removeFromHand(index, speed) as CardNumber, speed)
+                        caravan.putCardOnTop(game.enemyCResources.removeFromHand(index, speed) as CardBase, speed)
                     }
 
                     if (checkTheOutcome(state) == -1) {

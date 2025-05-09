@@ -94,8 +94,7 @@ fun CardToBuy(card: CardWithPrice, price: Int, update: () -> Unit) {
             val backName = card.getBack().nameIdWithBackFileName.first
 
             TextFallout(
-                "${rankToSuit.first} ${rankToSuit.second}\n" +
-                        "${stringResource(backName)}",
+                "${rankToSuit.first} ${rankToSuit.second}\n" + stringResource(backName),
                 getTextColor(),
                 getTextStrokeColor(),
                 16.sp,
@@ -217,9 +216,7 @@ fun ChipsToBuy(price: Int, update: () -> Unit) {
                     } else {
                         saveGlobal.capsInHand -= price
                         saveGlobal.capsWasted += price
-
                         saveGlobal.sierraMadreChips += 10
-                        saveGlobal.tickets++
                         playCashSound()
                         saveData()
                         update()

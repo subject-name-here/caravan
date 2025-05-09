@@ -13,7 +13,6 @@ import caravan.composeapp.generated.resources.challenge_lvl_5_desc
 import caravan.composeapp.generated.resources.challenge_lvl_5_name
 import caravan.composeapp.generated.resources.challenge_lvl_6_desc
 import caravan.composeapp.generated.resources.challenge_lvl_6_name
-import caravan.composeapp.generated.resources.empty_string
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.enemy.EnemyEasyPete
 import com.unicorns.invisible.caravan.model.enemy.EnemyNash

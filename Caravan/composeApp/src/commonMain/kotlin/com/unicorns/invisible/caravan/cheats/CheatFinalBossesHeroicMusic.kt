@@ -4,8 +4,8 @@ import caravan.composeapp.generated.resources.Res
 import caravan.composeapp.generated.resources.easter_egg
 import caravan.composeapp.generated.resources.supreme_leader_and_tower_boss_have_default_music
 import caravan.composeapp.generated.resources.supreme_leader_and_tower_boss_have_new_music
-import com.unicorns.invisible.caravan.saveGlobal
 import com.unicorns.invisible.caravan.save.saveData
+import com.unicorns.invisible.caravan.saveGlobal
 import com.unicorns.invisible.caravan.utils.playYesBeep
 import org.jetbrains.compose.resources.getString
 

@@ -7,7 +7,6 @@ import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.CustomDeck
 import kotlinx.serialization.Serializable
-import kotlin.math.min
 
 
 @Serializable

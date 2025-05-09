@@ -2,7 +2,6 @@ package com.unicorns.invisible.caravan.model.challenge
 
 import caravan.composeapp.generated.resources.Res
 import caravan.composeapp.generated.resources.claim_caps
-import caravan.composeapp.generated.resources.claim_tickets
 import com.unicorns.invisible.caravan.saveGlobal
 import kotlinx.serialization.Serializable
 import org.jetbrains.compose.resources.getString

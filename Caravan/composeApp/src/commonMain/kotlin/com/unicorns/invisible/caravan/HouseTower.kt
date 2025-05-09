@@ -320,15 +320,10 @@ fun TowerScreen(
                     { level },
                     { playLevel = level },
                     {
-                        val xpReward = 1 shl (when (level) {
-                            in (1..5) -> level - 1
-                            in (7..9) -> level - 2
-                            else -> level - 3
-                        } + cookCook - 1)
                         level = 0
                         saveGlobal.towerLevel = 0
                         saveGlobal.capsInHand += inBank
-                        saveGlobal.increaseXp(xpReward)
+                        saveGlobal.increaseXp(inBank)
                         saveData()
                         playCashSound()
                         scope.launch {
@@ -339,7 +334,7 @@ fun TowerScreen(
                                     inBank.toString()
                                 ) + getString(
                                     Res.string.your_reward_reward_xp,
-                                    100 * xpReward
+                                    inBank.toString()
                                 ),
                                 null
                             )
@@ -359,7 +354,7 @@ fun TowerScreen(
                         saveGlobal.towerLevel = 0
                         val inBank = if (cookCook == 2) 1024 else 512
                         saveGlobal.capsInHand += inBank
-                        saveGlobal.increaseXp(if (cookCook == 2) 1024 else 512)
+                        saveGlobal.increaseXp(inBank)
                         saveData()
                         playCashSound()
                         scope.launch {
@@ -378,7 +373,7 @@ fun TowerScreen(
                     saveGlobal.towerLevel = 0
                     val inBank = if (cookCook == 2) 2048 else 1536
                     saveGlobal.capsInHand += inBank
-                    saveGlobal.increaseXp(if (cookCook == 2) 2048 else 1536)
+                    saveGlobal.increaseXp(inBank)
                     saveGlobal.towerBeaten = true
                     saveData()
                     CoroutineScope(Dispatchers.Unconfined).launch {
@@ -393,7 +388,7 @@ fun TowerScreen(
                             getString(
                                 Res.string.your_reward_caps_finale, inBank.toString()
                             ) + getString(
-                                Res.string.your_reward_caps_finale, inBank.toString()
+                                Res.string.your_reward_reward_xp, inBank.toString()
                             ),
                             null
                         )

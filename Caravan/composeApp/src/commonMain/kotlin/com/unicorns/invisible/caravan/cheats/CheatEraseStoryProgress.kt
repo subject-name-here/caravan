@@ -2,8 +2,8 @@ package com.unicorns.invisible.caravan.cheats
 
 import caravan.composeapp.generated.resources.Res
 import caravan.composeapp.generated.resources.story_progress_is_deleted
-import com.unicorns.invisible.caravan.saveGlobal
 import com.unicorns.invisible.caravan.save.saveData
+import com.unicorns.invisible.caravan.saveGlobal
 import com.unicorns.invisible.caravan.utils.playYesBeep
 import org.jetbrains.compose.resources.getString
 

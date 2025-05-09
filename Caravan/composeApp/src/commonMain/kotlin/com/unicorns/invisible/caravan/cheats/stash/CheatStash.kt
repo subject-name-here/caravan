@@ -3,8 +3,8 @@ package com.unicorns.invisible.caravan.cheats.stash
 import caravan.composeapp.generated.resources.Res
 import caravan.composeapp.generated.resources.congrats
 import com.unicorns.invisible.caravan.cheats.Cheat
-import com.unicorns.invisible.caravan.saveGlobal
 import com.unicorns.invisible.caravan.save.saveData
+import com.unicorns.invisible.caravan.saveGlobal
 import com.unicorns.invisible.caravan.utils.playYesBeep
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.getString

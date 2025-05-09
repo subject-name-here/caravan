@@ -304,7 +304,7 @@ class Save(var playerId: String? = null) {
             if (enemy !is EnemySnuffles) {
                 enemy.curBets = enemy.maxBets
             } else {
-                enemy.curBets = table / 5
+                enemy.curBets = max(table / 5, 0)
                 table = 0
             }
         }

@@ -16,7 +16,6 @@ import com.unicorns.invisible.caravan.model.primitives.CardModifier
 import com.unicorns.invisible.caravan.model.primitives.CustomDeck
 import com.unicorns.invisible.caravan.model.primitives.RankFace
 import kotlinx.serialization.Serializable
-import kotlin.math.min
 import kotlin.random.Random
 
 

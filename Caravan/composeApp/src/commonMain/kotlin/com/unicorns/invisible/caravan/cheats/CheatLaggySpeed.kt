@@ -5,8 +5,8 @@ import caravan.composeapp.generated.resources.easter_egg
 import caravan.composeapp.generated.resources.laggy_speed_off
 import caravan.composeapp.generated.resources.laggy_speed_on
 import com.unicorns.invisible.caravan.AnimationSpeed
-import com.unicorns.invisible.caravan.saveGlobal
 import com.unicorns.invisible.caravan.save.saveData
+import com.unicorns.invisible.caravan.saveGlobal
 import com.unicorns.invisible.caravan.utils.playYesBeep
 import org.jetbrains.compose.resources.getString
 

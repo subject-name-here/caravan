@@ -7,7 +7,6 @@ import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyInit
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJackToPlayer
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJokerSuperSimple
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyKingToPlayer
-import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyPutNumbersSimple
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyPutNumbersSimpleSafe
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyQueenToSelf
 import com.unicorns.invisible.caravan.model.primitives.CResources

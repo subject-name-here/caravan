@@ -12,7 +12,6 @@ import io.ktor.websocket.Frame
 import io.ktor.websocket.readText
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.jsonObject
 
 
 class EnemyPlayer(var deckSize: Int?, val session: DefaultClientWebSocketSession) : Enemy {

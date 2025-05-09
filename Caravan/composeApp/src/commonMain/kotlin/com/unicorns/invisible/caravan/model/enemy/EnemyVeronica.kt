@@ -10,12 +10,10 @@ import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJackToSelfSim
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyKingToSelfSimple
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyPutNumbersSimple
 import com.unicorns.invisible.caravan.model.primitives.CResources
-import com.unicorns.invisible.caravan.model.primitives.CardBase
 import com.unicorns.invisible.caravan.model.primitives.CardFace
 import com.unicorns.invisible.caravan.model.primitives.CardModifier
 import com.unicorns.invisible.caravan.model.primitives.RankFace
 import kotlinx.serialization.Serializable
-import kotlin.math.min
 import kotlin.random.Random
 
 

@@ -31,7 +31,6 @@ import caravan.composeapp.generated.resources.no_more_challenges
 import caravan.composeapp.generated.resources.one_time_missions
 import caravan.composeapp.generated.resources.one_time_missions_requiem
 import com.unicorns.invisible.caravan.model.challenge.Challenge
-import com.unicorns.invisible.caravan.model.challenge.ChallengeDailyAll
 import com.unicorns.invisible.caravan.model.challenge.ChallengeInfinite
 import com.unicorns.invisible.caravan.save.Save
 import com.unicorns.invisible.caravan.save.saveData

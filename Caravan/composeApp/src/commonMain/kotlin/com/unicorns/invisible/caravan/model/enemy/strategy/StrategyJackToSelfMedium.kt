@@ -11,7 +11,7 @@ class StrategyJackToSelfMedium(val index: Int) : Strategy {
             .flatMap { it.cards }
             .filter { cardA ->
                 val state = gameToState(game)
-                val indexC = game.playerCaravans.withIndex().first { cardA in it.value.cards }.index
+                val indexC = game.enemyCaravans.withIndex().first { cardA in it.value.cards }.index
                 val res = when (indexC) {
                     0 -> {
                         state.player.v1 -= cardA.getValue()
@@ -40,7 +40,7 @@ class StrategyJackToSelfMedium(val index: Int) : Strategy {
             .flatMap { it.cards }
             .filter { cardB ->
                 val state = gameToState(game)
-                val indexC = game.playerCaravans.withIndex().first { cardB in it.value.cards }.index
+                val indexC = game.enemyCaravans.withIndex().first { cardB in it.value.cards }.index
                 when (indexC) {
                     0 -> {
                         state.player.v1 -= cardB.getValue()

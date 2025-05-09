@@ -7,7 +7,6 @@ import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import kotlinx.serialization.Serializable
-import kotlin.math.min
 
 
 @Serializable
