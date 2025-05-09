@@ -1269,6 +1269,200 @@
         Heartache gets a little bit stronger. Not from poison though.
     </string>
 
+
+    <string name="ch6_0">
+        You see a high wooden fence with sharp ends. The sky is red, but the sun hasn't risen yet. Behind the fence you see no one.
+    </string>
+    <string name="ch6_0a"><![CDATA[<Come closer to the fence.>]]></string>
+    <string name="ch6_1">
+        As you come closer to the fence, someone yells to you: “Another step, and you are dead!”
+        From behind the fence two watchers stand up, each holding a loaded bow.
+    </string>
+    <string name="ch6_1a"><![CDATA[<Submit.>]]></string>
+    <string name="ch6_1b">[Energy Weapons 17/60] Give up! I have a magic gun!</string>
+    <string name="ch6_2">
+        [FAILED] Watchers are not impressed.
+    </string>
+    <string name="ch6_3">
+        You raise your hands in the air, as one of the watchers comes near you and ties your hands.
+    </string>
+    <string name="ch6_3a">[Continue.]</string>
+    <string name="ch6_4">
+        You are brought into a large hall. On the pedestal there are two chairs: a big one and a smaller one. The former is occupied by a blond man in metallic armor with spikes; the latter - by a black woman in reworked Brotherhood of Steel power armor. The man looks sleepy, while the woman looks at you sharply.
+        “So”, says the man, “who are you?” The woman adds: “If Jarl Haraldr or I consider your answer not satisfying, you are dead in a second.”
+    </string>
+    <string name="ch6_4a">The Prospector.</string>
+    <string name="ch6_4b">I am just a traveller.</string>
+    <string name="ch6_4c">My name is Ace. Remember that.</string>
+    <string name="ch6_5">
+        You see how the woman barely moved her hand. Moments later, an arrow penetrates your head from behind.
+    </string>
+    <string name="ch6_6">
+        The man said with a steel voice: “I will not tolerate impudence. Kill him.” You try to run, but suddenly a forest of arrows stabs you from everywhere.
+    </string>
+    <string name="ch6_7">
+        What are you doing here?
+    </string>
+    <string name="ch6_7a">I need to get to Anchorage.</string>
+    <string name="ch6_7b">Just passing by.</string>
+    <string name="ch6_7c">None of your business.</string>
+    <string name="ch6_8">
+        Where are you from?
+    </string>
+    <string name="ch6_8a">Mojave.</string>
+    <string name="ch6_8b">South.</string>
+    <string name="ch6_8c">I am not gonna tell you.</string>
+    <string name="ch6_9">
+        “Let's just sacrifice him!” The woman's voice is, surprisingly, harder than her husband's. “Why are you here, outsider?! Answer at once, because your life depends on it!”
+    </string>
+    <string name="ch6_9a">I need to get to Anchorage to replace my heart, because mine is damaged by the Cazadors’ poison.</string>
+    <string name="ch6_10">
+        The woman leans to your side. “Your heart is damaged in a fight? Are the Cassadoors fierce? Dangerous?”
+    </string>
+    <string name="ch6_10a">The toughest motherfuckers ever seen.</string>
+    <string name="ch6_10b">Seen a deathclaw? Cazadors are stronger.</string>
+    <string name="ch6_10c">Dangerous? You have no idea what danger is if you haven't seen a Cazador swarm.</string>
+    <string name="ch6_11">
+        “A warrior?” The woman is surprised. “Why didn't you say earlier that you are a brave warrior?”
+        The man interrupted her: “A warrior from Mojave?”, and his voice was suddenly joyous and happy: “I am from New Reno!”
+    </string>
+    <string name="ch6_11a">Oh, a fellow Californian?!</string>
+    <string name="ch6_11b">Wow, you are a long way from home!</string>
+    <string name="ch6_11c">How did you end up here?</string>
+    <string name="ch6_12">
+        Yes, fellow Nevada-man! Oh, it feels so good to meet someone from home!
+    </string>
+    <string name="ch6_13">
+        So are you! Who could have thought two southerners can meet here!
+    </string>
+    <string name="ch6_14">
+        My story is a long one. From the outcast of Mordinos I became a Jarl of my own neo-vikings tribe!
+        By the way, how is my clan doing? Is there even a Mordino family in New Reno?
+    </string>
+    <string name="ch6_14a">From what I have heard, no.</string>
+    <string name="ch6_15">
+        Ah, I told you, Thyra, they will pay! This is Thyra, my wife, by the way. She is a shieldmaiden - a viking woman.
+    </string>
+    <string name="ch6_15a">Nice to meet you.</string>
+    <string name="ch6_16">
+        By the way? By the way?!! Your wife? Are you again, Haraldr?
+    </string>
+    <string name="ch6_16a">What's wrong?</string>
+    <string name="ch6_17">
+        Don't pay attention. She thinks of herself as equal to me.
+        Listen, wifey, I! Provide technology and medicine! I! Taught your tribe how to take care of weapons. Respect me, or else…
+    </string>
+    <string name="ch6_17a">Tu-tu-du, I think I have to go…</string>
+    <string name="ch6_18">
+        No, stay here, warrior. Stay by my side, and my crew will get you wherever you want.
+    </string>
+    <string name="ch6_18a">That's a good offer. I am fighting for you, Thyra.</string>
+    <string name="ch6_18b">Haraldr, any counteroffers?</string>
+    <string name="ch6_18c">Nope, I stand with Haraldr.</string>
+    <string name="ch6_19">
+        No-no-no, it's not “stay with me, and have this and that”. It's “stay with me, or else, when my wife will be dead, you'll be dead too”. Understand?
+    </string>
+    <string name="ch6_19a">Okay, convincing. Sorry, Thyra.</string>
+    <string name="ch6_19b">Bad offer. Thyra, I am with you.</string>
+    <string name="ch6_20">
+        “So, you have chosen death.” You don't have time to react: you feel the whoosh of arrows as you're yanked down behind a shield. Haraldr wasn't so lucky.
+    </string>
+    <string name="ch6_20a">Hey! Okay, I give up!</string>
+    <string name="ch6_21">
+        Lucky you, warrior. You have one chance to redeem yourself. Can you pick the lock of my late husband’s safe? It contains the key to the ship.
+        If you do, we will forget your allegiance to Haraldr. Yes or no?
+    </string>
+    <string name="ch6_21a">[Lockpick 75] Yes.</string>
+    <string name="ch6_21b">No.</string>
+    <string name="ch6_22">
+        Then we have no use for you. Guards! Take him to the dungeon!
+    </string>
+    <string name="ch6_23">
+        It’s over before it can even start: Haraldr is taken alive by a dozen vikings.
+        “So, warrior, we need your help. The main key to the ship is in the safe,” Thyra says.
+        Haraldr scoffs. “My safe.”
+        “Then open it.”
+        “I’d rather die.”
+        She turns to you. “Can you pick it?”
+        Haraldr grits his teeth. “Touch it, and you’re next.”
+    </string>
+    <string name="ch6_23a">[Lockpick 75] I will open it.</string>
+    <string name="ch6_23b">No.</string>
+    <string name="ch6_minus">
+        [FAILED] The lock breaks with the pin stuck inside. When you try to get it out, the defensive mechanism of the safe is activated. You hear ticking, then the grenades falling behind you. Then you and Thyra get blown to atoms.
+    </string>
+    <string name="ch6_24">
+        New level! What do you want to put the skill points in? Anything but Speech, please.
+    </string>
+    <string name="ch6_24a">Ehmm, I split them between Unarmed and Science.</string>
+    <string name="ch6_25">
+        Really? Finally…
+    </string>
+    <string name="ch6_25a">Changed my mind. All in Speech.</string>
+    <string name="ch6_26">
+        *sigh* Saved.
+    </string>
+    <string name="ch6_26a">[Continue.]</string>
+    <string name="ch6_27">
+        [SUCCEEDED] When the safe is open, there is an old rusty key card inside. “Well done, warrior. Now get to the ship. We are setting sail to Anchorage!”
+    </string>
+    <string name="ch6_27a">Before we go…</string>
+    <string name="ch6_28">
+        Don't wanna hear, Warrior! No speeches, no goodbyes. The horns of war will howl! We raid now!
+    </string>
+
+    <string name="p2e_0">
+        As the ship was closing to Anchorage, you went for a walk on the deck. As you look up, you see…
+    </string>
+    <string name="p2e_0a">So beautiful…</string>
+    <string name="p2e_1">
+        Aurora Borealis. You have no words to describe the beauty of sky fires. It makes you think about…
+    </string>
+    <string name="p2e_1a">Peace.</string>
+    <string name="p2e_1b">Safety.</string>
+    <string name="p2e_1c">Future.</string>
+    <string name="p2e_1d">Home.</string>
+    <string name="p2e_2">
+        Perhaps, you'll find it in Oasis.
+    </string>
+    <string name="p2e_2a">With my luck… maybe just ruins. Maybe no help at all. But still - I hope.</string>
+    <string name="p2e_2b">We'll see what's to be found.</string>
+    <string name="p2e_3">
+        It's only you and the ship, and Aurora Borealis. No choices to be made, no branching paths to follow. A moment of peace. A moment of self-reflection.
+
+        What will you do on this Deck of Tranquility?
+    </string>
+    <string name="p2e_3a"><![CDATA[<Talk to Thyra.>]]></string>
+    <string name="p2e_3b"><![CDATA[<Go to your room.>]]></string>
+    <string name="p2e_4">
+        Greetings, warrior. We are arriving in Anchorage next night. The weather is not very blissful, but worry not, for you have got the best captain in the Pacific!
+    </string>
+    <string name="p2e_4a">Hey, Thyra…</string>
+    <string name="p2e_5">
+        Yes, warrior of Mojave. Is something wrong?
+    </string>
+    <string name="p2e_5a">Why don't you settle down somewhere on the shore?</string>
+    <string name="p2e_6">
+        Why don't I… what? The path of the Viking is in my blood. We have been like this long before Haraldr arrived. My ancestors are from Alaska. We are fighting, so we can be strong. One day, we will reclaim our home.
+    </string>
+    <string name="p2e_6a">Don't you want to let go of the old? To find something new?</string>
+    <string name="p2e_6b">Reclaim from whom?</string>
+    <string name="p2e_7">
+        The Attila tribe. They have arrived from the other side of the Pacific. They were three meters tall and had thousands of teeth. At least, that is what my grandmother told me.
+    </string>
+    <string name="p2e_8">
+        Let go? But… that would mean my whole life, my whole purpose has been nothing! Let go of what? Of my life? Of my roots?
+    </string>
+    <string name="p2e_8a">Yes.</string>
+    <string name="p2e_9">
+        Go to your room, warrior. I have a huge respect for you, but you are about to overstep a line.
+    </string>
+    <string name="p2e_9a"><![CDATA[<Go to your room.>]]></string>
+    <string name="p2e_10">
+        As you go, you look at Aurora Borealis for the last time. It has acquired a red tint.
+        Near it, down below, there is Mars, shining with the red color all over the Earth.
+    </string>
+
     <string name="achievements">Achievements</string>
     <string name="daily_missions">Daily Missions</string>
     <string name="infinite_missions">Recurring Missions</string>

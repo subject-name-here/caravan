@@ -25,376 +25,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import caravan.composeapp.generated.resources.Res
-import caravan.composeapp.generated.resources.act_1_name
-import caravan.composeapp.generated.resources.act_2_name
-import caravan.composeapp.generated.resources.act_3_name
-import caravan.composeapp.generated.resources.act_4_name
-import caravan.composeapp.generated.resources.act_5_name
-import caravan.composeapp.generated.resources.black_back
-import caravan.composeapp.generated.resources.c4_t1
-import caravan.composeapp.generated.resources.ch1_1
-import caravan.composeapp.generated.resources.ch1_10
-import caravan.composeapp.generated.resources.ch1_10a
-import caravan.composeapp.generated.resources.ch1_11
-import caravan.composeapp.generated.resources.ch1_11a
-import caravan.composeapp.generated.resources.ch1_12
-import caravan.composeapp.generated.resources.ch1_12a
-import caravan.composeapp.generated.resources.ch1_13
-import caravan.composeapp.generated.resources.ch1_1a
-import caravan.composeapp.generated.resources.ch1_1b
-import caravan.composeapp.generated.resources.ch1_2
-import caravan.composeapp.generated.resources.ch1_2a
-import caravan.composeapp.generated.resources.ch1_2b
-import caravan.composeapp.generated.resources.ch1_3
-import caravan.composeapp.generated.resources.ch1_4
-import caravan.composeapp.generated.resources.ch1_4a
-import caravan.composeapp.generated.resources.ch1_4b
-import caravan.composeapp.generated.resources.ch1_5
-import caravan.composeapp.generated.resources.ch1_6
-import caravan.composeapp.generated.resources.ch1_6a
-import caravan.composeapp.generated.resources.ch1_6b
-import caravan.composeapp.generated.resources.ch1_6c
-import caravan.composeapp.generated.resources.ch1_7
-import caravan.composeapp.generated.resources.ch1_8
-import caravan.composeapp.generated.resources.ch1_9
-import caravan.composeapp.generated.resources.ch2_1
-import caravan.composeapp.generated.resources.ch2_10
-import caravan.composeapp.generated.resources.ch2_10a
-import caravan.composeapp.generated.resources.ch2_10b
-import caravan.composeapp.generated.resources.ch2_11
-import caravan.composeapp.generated.resources.ch2_11a
-import caravan.composeapp.generated.resources.ch2_11b
-import caravan.composeapp.generated.resources.ch2_12
-import caravan.composeapp.generated.resources.ch2_13
-import caravan.composeapp.generated.resources.ch2_14
-import caravan.composeapp.generated.resources.ch2_14a
-import caravan.composeapp.generated.resources.ch2_15
-import caravan.composeapp.generated.resources.ch2_1a
-import caravan.composeapp.generated.resources.ch2_1b
-import caravan.composeapp.generated.resources.ch2_1c
-import caravan.composeapp.generated.resources.ch2_2
-import caravan.composeapp.generated.resources.ch2_3
-import caravan.composeapp.generated.resources.ch2_3a
-import caravan.composeapp.generated.resources.ch2_4
-import caravan.composeapp.generated.resources.ch2_4a
-import caravan.composeapp.generated.resources.ch2_4b
-import caravan.composeapp.generated.resources.ch2_5
-import caravan.composeapp.generated.resources.ch2_5a
-import caravan.composeapp.generated.resources.ch2_6
-import caravan.composeapp.generated.resources.ch2_6a
-import caravan.composeapp.generated.resources.ch2_6b
-import caravan.composeapp.generated.resources.ch2_7
-import caravan.composeapp.generated.resources.ch2_7a
-import caravan.composeapp.generated.resources.ch2_8
-import caravan.composeapp.generated.resources.ch2_8a
-import caravan.composeapp.generated.resources.ch2_8b
-import caravan.composeapp.generated.resources.ch2_9
-import caravan.composeapp.generated.resources.ch2_9a
-import caravan.composeapp.generated.resources.ch4_1
-import caravan.composeapp.generated.resources.ch4_10
-import caravan.composeapp.generated.resources.ch4_11
-import caravan.composeapp.generated.resources.ch4_11a
-import caravan.composeapp.generated.resources.ch4_11b
-import caravan.composeapp.generated.resources.ch4_11c
-import caravan.composeapp.generated.resources.ch4_12
-import caravan.composeapp.generated.resources.ch4_12a
-import caravan.composeapp.generated.resources.ch4_13
-import caravan.composeapp.generated.resources.ch4_13a
-import caravan.composeapp.generated.resources.ch4_14
-import caravan.composeapp.generated.resources.ch4_14a
-import caravan.composeapp.generated.resources.ch4_15
-import caravan.composeapp.generated.resources.ch4_15a
-import caravan.composeapp.generated.resources.ch4_16
-import caravan.composeapp.generated.resources.ch4_16a
-import caravan.composeapp.generated.resources.ch4_17
-import caravan.composeapp.generated.resources.ch4_17a
-import caravan.composeapp.generated.resources.ch4_18
-import caravan.composeapp.generated.resources.ch4_19
-import caravan.composeapp.generated.resources.ch4_19a
-import caravan.composeapp.generated.resources.ch4_19b
-import caravan.composeapp.generated.resources.ch4_19c
-import caravan.composeapp.generated.resources.ch4_1a
-import caravan.composeapp.generated.resources.ch4_2
-import caravan.composeapp.generated.resources.ch4_20
-import caravan.composeapp.generated.resources.ch4_21
-import caravan.composeapp.generated.resources.ch4_22
-import caravan.composeapp.generated.resources.ch4_221
-import caravan.composeapp.generated.resources.ch4_221a
-import caravan.composeapp.generated.resources.ch4_222
-import caravan.composeapp.generated.resources.ch4_222a
-import caravan.composeapp.generated.resources.ch4_223
-import caravan.composeapp.generated.resources.ch4_223a
-import caravan.composeapp.generated.resources.ch4_22a
-import caravan.composeapp.generated.resources.ch4_22b
-import caravan.composeapp.generated.resources.ch4_22c
-import caravan.composeapp.generated.resources.ch4_23
-import caravan.composeapp.generated.resources.ch4_23a
-import caravan.composeapp.generated.resources.ch4_24
-import caravan.composeapp.generated.resources.ch4_24a
-import caravan.composeapp.generated.resources.ch4_25
-import caravan.composeapp.generated.resources.ch4_25a
-import caravan.composeapp.generated.resources.ch4_26
-import caravan.composeapp.generated.resources.ch4_26a
-import caravan.composeapp.generated.resources.ch4_26b
-import caravan.composeapp.generated.resources.ch4_27
-import caravan.composeapp.generated.resources.ch4_27a
-import caravan.composeapp.generated.resources.ch4_28
-import caravan.composeapp.generated.resources.ch4_28a
-import caravan.composeapp.generated.resources.ch4_29
-import caravan.composeapp.generated.resources.ch4_29a
-import caravan.composeapp.generated.resources.ch4_2a
-import caravan.composeapp.generated.resources.ch4_3
-import caravan.composeapp.generated.resources.ch4_30
-import caravan.composeapp.generated.resources.ch4_30a
-import caravan.composeapp.generated.resources.ch4_31
-import caravan.composeapp.generated.resources.ch4_31a
-import caravan.composeapp.generated.resources.ch4_32
-import caravan.composeapp.generated.resources.ch4_32a
-import caravan.composeapp.generated.resources.ch4_33
-import caravan.composeapp.generated.resources.ch4_33a
-import caravan.composeapp.generated.resources.ch4_33b
-import caravan.composeapp.generated.resources.ch4_34
-import caravan.composeapp.generated.resources.ch4_34a
-import caravan.composeapp.generated.resources.ch4_35
-import caravan.composeapp.generated.resources.ch4_35a
-import caravan.composeapp.generated.resources.ch4_36
-import caravan.composeapp.generated.resources.ch4_36a
-import caravan.composeapp.generated.resources.ch4_37
-import caravan.composeapp.generated.resources.ch4_37a
-import caravan.composeapp.generated.resources.ch4_38
-import caravan.composeapp.generated.resources.ch4_3a
-import caravan.composeapp.generated.resources.ch4_4
-import caravan.composeapp.generated.resources.ch4_4a
-import caravan.composeapp.generated.resources.ch4_5
-import caravan.composeapp.generated.resources.ch4_5a
-import caravan.composeapp.generated.resources.ch4_6
-import caravan.composeapp.generated.resources.ch4_6a
-import caravan.composeapp.generated.resources.ch4_7
-import caravan.composeapp.generated.resources.ch4_7a
-import caravan.composeapp.generated.resources.ch4_8
-import caravan.composeapp.generated.resources.ch4_8a
-import caravan.composeapp.generated.resources.ch4_9
-import caravan.composeapp.generated.resources.ch4_9a
-import caravan.composeapp.generated.resources.ch4_9b
-import caravan.composeapp.generated.resources.ch4_m1
-import caravan.composeapp.generated.resources.ch4_m2
-import caravan.composeapp.generated.resources.ch4_m3
-import caravan.composeapp.generated.resources.ch4_m4
-import caravan.composeapp.generated.resources.ch4_mh
-import caravan.composeapp.generated.resources.ch4_minus_1
-import caravan.composeapp.generated.resources.ch4_q1
-import caravan.composeapp.generated.resources.ch4_r1
-import caravan.composeapp.generated.resources.ch4_r2
-import caravan.composeapp.generated.resources.ch4_r3
-import caravan.composeapp.generated.resources.ch4_r4
-import caravan.composeapp.generated.resources.ch4_t2
-import caravan.composeapp.generated.resources.ch5_1
-import caravan.composeapp.generated.resources.ch5_10
-import caravan.composeapp.generated.resources.ch5_10a
-import caravan.composeapp.generated.resources.ch5_11
-import caravan.composeapp.generated.resources.ch5_11a
-import caravan.composeapp.generated.resources.ch5_12
-import caravan.composeapp.generated.resources.ch5_12a
-import caravan.composeapp.generated.resources.ch5_13
-import caravan.composeapp.generated.resources.ch5_13a
-import caravan.composeapp.generated.resources.ch5_14
-import caravan.composeapp.generated.resources.ch5_14a
-import caravan.composeapp.generated.resources.ch5_15
-import caravan.composeapp.generated.resources.ch5_15a
-import caravan.composeapp.generated.resources.ch5_15b
-import caravan.composeapp.generated.resources.ch5_15c
-import caravan.composeapp.generated.resources.ch5_15d
-import caravan.composeapp.generated.resources.ch5_16
-import caravan.composeapp.generated.resources.ch5_17
-import caravan.composeapp.generated.resources.ch5_18
-import caravan.composeapp.generated.resources.ch5_18a
-import caravan.composeapp.generated.resources.ch5_18b
-import caravan.composeapp.generated.resources.ch5_19
-import caravan.composeapp.generated.resources.ch5_1a
-import caravan.composeapp.generated.resources.ch5_2
-import caravan.composeapp.generated.resources.ch5_20
-import caravan.composeapp.generated.resources.ch5_20a
-import caravan.composeapp.generated.resources.ch5_21
-import caravan.composeapp.generated.resources.ch5_21a
-import caravan.composeapp.generated.resources.ch5_22
-import caravan.composeapp.generated.resources.ch5_22a
-import caravan.composeapp.generated.resources.ch5_23
-import caravan.composeapp.generated.resources.ch5_23a
-import caravan.composeapp.generated.resources.ch5_24
-import caravan.composeapp.generated.resources.ch5_24a
-import caravan.composeapp.generated.resources.ch5_25
-import caravan.composeapp.generated.resources.ch5_25a
-import caravan.composeapp.generated.resources.ch5_26
-import caravan.composeapp.generated.resources.ch5_26a
-import caravan.composeapp.generated.resources.ch5_27
-import caravan.composeapp.generated.resources.ch5_27a
-import caravan.composeapp.generated.resources.ch5_28
-import caravan.composeapp.generated.resources.ch5_28a
-import caravan.composeapp.generated.resources.ch5_29
-import caravan.composeapp.generated.resources.ch5_29a
-import caravan.composeapp.generated.resources.ch5_29b
-import caravan.composeapp.generated.resources.ch5_29c
-import caravan.composeapp.generated.resources.ch5_29d
-import caravan.composeapp.generated.resources.ch5_29e
-import caravan.composeapp.generated.resources.ch5_2a
-import caravan.composeapp.generated.resources.ch5_3
-import caravan.composeapp.generated.resources.ch5_30
-import caravan.composeapp.generated.resources.ch5_30a
-import caravan.composeapp.generated.resources.ch5_30b
-import caravan.composeapp.generated.resources.ch5_30c
-import caravan.composeapp.generated.resources.ch5_30d
-import caravan.composeapp.generated.resources.ch5_31
-import caravan.composeapp.generated.resources.ch5_32
-import caravan.composeapp.generated.resources.ch5_33
-import caravan.composeapp.generated.resources.ch5_34
-import caravan.composeapp.generated.resources.ch5_34a
-import caravan.composeapp.generated.resources.ch5_35
-import caravan.composeapp.generated.resources.ch5_35a
-import caravan.composeapp.generated.resources.ch5_36
-import caravan.composeapp.generated.resources.ch5_36a
-import caravan.composeapp.generated.resources.ch5_37
-import caravan.composeapp.generated.resources.ch5_37a
-import caravan.composeapp.generated.resources.ch5_38
-import caravan.composeapp.generated.resources.ch5_38a
-import caravan.composeapp.generated.resources.ch5_39
-import caravan.composeapp.generated.resources.ch5_39a
-import caravan.composeapp.generated.resources.ch5_3a
-import caravan.composeapp.generated.resources.ch5_4
-import caravan.composeapp.generated.resources.ch5_40
-import caravan.composeapp.generated.resources.ch5_40a
-import caravan.composeapp.generated.resources.ch5_41
-import caravan.composeapp.generated.resources.ch5_41a
-import caravan.composeapp.generated.resources.ch5_42
-import caravan.composeapp.generated.resources.ch5_42a
-import caravan.composeapp.generated.resources.ch5_43
-import caravan.composeapp.generated.resources.ch5_43a
-import caravan.composeapp.generated.resources.ch5_44
-import caravan.composeapp.generated.resources.ch5_44a
-import caravan.composeapp.generated.resources.ch5_45
-import caravan.composeapp.generated.resources.ch5_45a
-import caravan.composeapp.generated.resources.ch5_46
-import caravan.composeapp.generated.resources.ch5_46a
-import caravan.composeapp.generated.resources.ch5_47
-import caravan.composeapp.generated.resources.ch5_47a
-import caravan.composeapp.generated.resources.ch5_48
-import caravan.composeapp.generated.resources.ch5_48a
-import caravan.composeapp.generated.resources.ch5_49
-import caravan.composeapp.generated.resources.ch5_49a
-import caravan.composeapp.generated.resources.ch5_4a
-import caravan.composeapp.generated.resources.ch5_4b
-import caravan.composeapp.generated.resources.ch5_4c
-import caravan.composeapp.generated.resources.ch5_5
-import caravan.composeapp.generated.resources.ch5_50
-import caravan.composeapp.generated.resources.ch5_50a
-import caravan.composeapp.generated.resources.ch5_51
-import caravan.composeapp.generated.resources.ch5_6
-import caravan.composeapp.generated.resources.ch5_7
-import caravan.composeapp.generated.resources.ch5_7a
-import caravan.composeapp.generated.resources.ch5_8
-import caravan.composeapp.generated.resources.ch5_8a
-import caravan.composeapp.generated.resources.ch5_9
-import caravan.composeapp.generated.resources.ch5_9a
-import caravan.composeapp.generated.resources.ch5_minus
-import caravan.composeapp.generated.resources.chapter_10_name
-import caravan.composeapp.generated.resources.chapter_11_name
-import caravan.composeapp.generated.resources.chapter_12_name
-import caravan.composeapp.generated.resources.chapter_13_name
-import caravan.composeapp.generated.resources.chapter_1_name
-import caravan.composeapp.generated.resources.chapter_2_name
-import caravan.composeapp.generated.resources.chapter_3_name
-import caravan.composeapp.generated.resources.chapter_4_name
-import caravan.composeapp.generated.resources.chapter_5_name
-import caravan.composeapp.generated.resources.chapter_6_name
-import caravan.composeapp.generated.resources.chapter_7_name
-import caravan.composeapp.generated.resources.chapter_8_name
-import caravan.composeapp.generated.resources.chapter_9_name
-import caravan.composeapp.generated.resources.chapter_end_name
-import caravan.composeapp.generated.resources.check_back_to_menu
-import caravan.composeapp.generated.resources.end_1_name
-import caravan.composeapp.generated.resources.end_2_name
-import caravan.composeapp.generated.resources.end_3_name
-import caravan.composeapp.generated.resources.end_4_name
-import caravan.composeapp.generated.resources.finish
-import caravan.composeapp.generated.resources.intro
-import caravan.composeapp.generated.resources.intro_0
-import caravan.composeapp.generated.resources.intro_1
-import caravan.composeapp.generated.resources.intro_10
-import caravan.composeapp.generated.resources.intro_2
-import caravan.composeapp.generated.resources.intro_3
-import caravan.composeapp.generated.resources.intro_4
-import caravan.composeapp.generated.resources.intro_5
-import caravan.composeapp.generated.resources.intro_6
-import caravan.composeapp.generated.resources.intro_7
-import caravan.composeapp.generated.resources.intro_8
-import caravan.composeapp.generated.resources.intro_9
-import caravan.composeapp.generated.resources.next_slide
-import caravan.composeapp.generated.resources.p1e_1
-import caravan.composeapp.generated.resources.p1e_10
-import caravan.composeapp.generated.resources.p1e_10a
-import caravan.composeapp.generated.resources.p1e_11
-import caravan.composeapp.generated.resources.p1e_11a
-import caravan.composeapp.generated.resources.p1e_11b
-import caravan.composeapp.generated.resources.p1e_12
-import caravan.composeapp.generated.resources.p1e_12a
-import caravan.composeapp.generated.resources.p1e_13
-import caravan.composeapp.generated.resources.p1e_13a
-import caravan.composeapp.generated.resources.p1e_13b
-import caravan.composeapp.generated.resources.p1e_14
-import caravan.composeapp.generated.resources.p1e_15
-import caravan.composeapp.generated.resources.p1e_15a
-import caravan.composeapp.generated.resources.p1e_15b
-import caravan.composeapp.generated.resources.p1e_15c
-import caravan.composeapp.generated.resources.p1e_15d
-import caravan.composeapp.generated.resources.p1e_16
-import caravan.composeapp.generated.resources.p1e_17
-import caravan.composeapp.generated.resources.p1e_17a
-import caravan.composeapp.generated.resources.p1e_18
-import caravan.composeapp.generated.resources.p1e_18a
-import caravan.composeapp.generated.resources.p1e_19
-import caravan.composeapp.generated.resources.p1e_19a
-import caravan.composeapp.generated.resources.p1e_1a
-import caravan.composeapp.generated.resources.p1e_2
-import caravan.composeapp.generated.resources.p1e_20
-import caravan.composeapp.generated.resources.p1e_20a
-import caravan.composeapp.generated.resources.p1e_20b
-import caravan.composeapp.generated.resources.p1e_20c
-import caravan.composeapp.generated.resources.p1e_21
-import caravan.composeapp.generated.resources.p1e_21a
-import caravan.composeapp.generated.resources.p1e_21b
-import caravan.composeapp.generated.resources.p1e_22
-import caravan.composeapp.generated.resources.p1e_23
-import caravan.composeapp.generated.resources.p1e_23a
-import caravan.composeapp.generated.resources.p1e_24
-import caravan.composeapp.generated.resources.p1e_24a
-import caravan.composeapp.generated.resources.p1e_25
-import caravan.composeapp.generated.resources.p1e_25a
-import caravan.composeapp.generated.resources.p1e_26
-import caravan.composeapp.generated.resources.p1e_26a
-import caravan.composeapp.generated.resources.p1e_27
-import caravan.composeapp.generated.resources.p1e_2a
-import caravan.composeapp.generated.resources.p1e_3
-import caravan.composeapp.generated.resources.p1e_3a
-import caravan.composeapp.generated.resources.p1e_4
-import caravan.composeapp.generated.resources.p1e_4a
-import caravan.composeapp.generated.resources.p1e_5
-import caravan.composeapp.generated.resources.p1e_5a
-import caravan.composeapp.generated.resources.p1e_5b
-import caravan.composeapp.generated.resources.p1e_6
-import caravan.composeapp.generated.resources.p1e_6a
-import caravan.composeapp.generated.resources.p1e_7
-import caravan.composeapp.generated.resources.p1e_7a
-import caravan.composeapp.generated.resources.p1e_8
-import caravan.composeapp.generated.resources.p1e_8a
-import caravan.composeapp.generated.resources.p1e_9
-import caravan.composeapp.generated.resources.p1e_9a
-import caravan.composeapp.generated.resources.p1e_9b
-import caravan.composeapp.generated.resources.p1e_9c
-import caravan.composeapp.generated.resources.result
-import caravan.composeapp.generated.resources.select_the_chapter
-import caravan.composeapp.generated.resources.story_mode
-import caravan.composeapp.generated.resources.this_game_will_be_counted_as_lost
-import caravan.composeapp.generated.resources.you_lose
-import caravan.composeapp.generated.resources.you_win
+import caravan.composeapp.generated.resources.*
 import com.sebaslogen.resaca.rememberScoped
 import com.unicorns.invisible.caravan.color.Colors
 import com.unicorns.invisible.caravan.model.CardBack
@@ -405,8 +36,10 @@ import com.unicorns.invisible.caravan.model.enemy.EnemyStory2
 import com.unicorns.invisible.caravan.model.enemy.EnemyStory3
 import com.unicorns.invisible.caravan.model.enemy.EnemyStory4
 import com.unicorns.invisible.caravan.model.enemy.EnemyStory5
+import com.unicorns.invisible.caravan.model.enemy.EnemyStory6
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.CardFaceSuited
+import com.unicorns.invisible.caravan.model.primitives.CardJoker
 import com.unicorns.invisible.caravan.model.primitives.CardNumber
 import com.unicorns.invisible.caravan.model.primitives.CustomDeck
 import com.unicorns.invisible.caravan.model.primitives.RankFace
@@ -564,6 +197,27 @@ fun ShowStoryList(
                         saveGlobal.storyProgress = progress
                         saveGlobal.increaseXp(xpReward)
                         showXpDialog = xpReward
+                    }
+                    saveData()
+                }) { showChapter = null }
+            }
+            26 -> {
+                ShowStoryChapter6(getDeck(showChapter!!), showAlertDialog, {
+                    val progress = 29
+                    val xpReward = 100
+                    if (saveGlobal.storyProgress < progress) {
+                        saveGlobal.storyProgress = progress
+                        saveGlobal.increaseXp(xpReward)
+                        showXpDialog = xpReward
+                    }
+                    saveData()
+                }) { showChapter = null }
+            }
+            29 -> {
+                ShowStoryEndOfPart2({
+                    val progress = 37
+                    if (saveGlobal.storyProgress < progress) {
+                        saveGlobal.storyProgress = progress
                     }
                     saveData()
                 }) { showChapter = null }
@@ -739,10 +393,38 @@ fun getDeck(chapterNumber: Int): CustomDeck {
                 add(CardFaceSuited(RankFace.KING, Suit.HEARTS, CardBack.STANDARD_UNCOMMON))
                 add(CardNumber(RankNumber.TWO, Suit.HEARTS, CardBack.STANDARD))
                 RankNumber.entries.forEach { rank ->
-                    Suit.entries.forEach { suit ->
-                        add(CardNumber(rank, suit, CardBack.MADNESS))
+                    if (rank.value > 4) {
+                        Suit.entries.forEach { suit ->
+                            add(CardNumber(rank, suit, CardBack.MADNESS))
+                        }
                     }
                 }
+            }
+        }
+        26 -> {
+            CustomDeck(CardBack.STANDARD_RARE).apply {
+                add(CardNumber(RankNumber.ACE, Suit.SPADES, CardBack.SIERRA_MADRE_CLEAN))
+                add(CardFaceSuited(RankFace.KING, Suit.SPADES, CardBack.SIERRA_MADRE_CLEAN))
+                add(CardFaceSuited(RankFace.QUEEN, Suit.SPADES, CardBack.SIERRA_MADRE_CLEAN))
+                add(CardFaceSuited(RankFace.JACK, Suit.SPADES, CardBack.SIERRA_MADRE_CLEAN))
+                add(CardNumber(RankNumber.TEN, Suit.SPADES, CardBack.SIERRA_MADRE_CLEAN))
+                add(CardFaceSuited(RankFace.KING, Suit.HEARTS, CardBack.STANDARD_UNCOMMON))
+                add(CardNumber(RankNumber.TWO, Suit.HEARTS, CardBack.STANDARD))
+                RankNumber.entries.forEach { rank ->
+                    if (rank.value > 4) {
+                        Suit.entries.forEach { suit ->
+                            add(CardNumber(rank, suit, CardBack.MADNESS))
+                        }
+                    }
+                }
+                RankNumber.entries.forEach { rank ->
+                    add(CardNumber(rank, Suit.CLUBS, CardBack.ULTRA_LUXE_CRIME))
+                }
+                add(CardFaceSuited(RankFace.JACK, Suit.CLUBS, CardBack.ULTRA_LUXE_CRIME))
+                add(CardFaceSuited(RankFace.QUEEN, Suit.CLUBS, CardBack.ULTRA_LUXE_CRIME))
+                add(CardFaceSuited(RankFace.KING, Suit.CLUBS, CardBack.ULTRA_LUXE_CRIME))
+                add(CardNumber(RankNumber.ACE, Suit.SPADES, CardBack.ULTRA_LUXE_CRIME))
+                add(CardJoker(CardJoker.Number.ONE, CardBack.ULTRA_LUXE_CRIME))
             }
         }
         else -> CustomDeck()
@@ -1094,7 +776,6 @@ fun ShowStoryChapter3(
         isGame = true
     }
 }
-
 
 
 @Composable
@@ -1518,6 +1199,191 @@ fun ShowStoryChapter5(
     }
 }
 
+
+
+@Composable
+fun ShowStoryChapter6(
+    deck: CustomDeck,
+    showAlertDialog: (String, String, (() -> Unit)?) -> Unit,
+    advanceChapter: () -> Unit,
+    goBack: () -> Unit,
+) {
+    var isGame by rememberSaveable { mutableStateOf(false) }
+    var gameResult by rememberSaveable { mutableIntStateOf(0) }
+
+    if (isGame) {
+        StartStoryGame(
+            EnemyStory6,
+            CResources(deck),
+            showAlertDialog,
+            { gameResult = 1; advanceChapter() },
+            { gameResult = -1 },
+            { if (gameResult == 0) gameResult = -1; isGame = false }
+        )
+        return
+    }
+
+
+    when (gameResult) {
+        1 -> {
+            StoryShow(DialogGraph(
+                listOf(
+                    DialogMiddleState(Res.drawable.black_back, Res.string.ch6_24),
+                    DialogMiddleState(Res.drawable.black_back, Res.string.ch6_25),
+                    DialogMiddleState(Res.drawable.black_back, Res.string.ch6_26),
+                    DialogMiddleState(Res.drawable.black_back, Res.string.ch6_27),
+                    DialogMiddleState(Res.drawable.black_back, Res.string.ch6_28),
+                    DialogFinishState(DeathCode.ALIVE),
+                ),
+                listOf(
+                    DialogEdge(0, 1, Res.string.ch6_24a),
+                    DialogEdge(1, 2, Res.string.ch6_25a),
+                    DialogEdge(2, 3, Res.string.ch6_26a),
+                    DialogEdge(3, 4, Res.string.ch6_27a),
+                    DialogEdge(3, 5, Res.string.finish),
+                    DialogEdge(4, 5, Res.string.finish),
+                )
+            ), goBack) { goBack() }
+            return
+        }
+        -1 -> {
+            StoryShow(DialogGraph(
+                listOf(
+                    DialogMiddleState(Res.drawable.black_back, Res.string.ch6_minus),
+                    DialogFinishState(DeathCode.EXPLODED)
+                ),
+                listOf(
+                    DialogEdge(0, 1, Res.string.finish),
+                )
+            ), goBack) { goBack() }
+            return
+        }
+        else -> {}
+    }
+
+    StoryShow(DialogGraph(
+        listOf(
+            DialogMiddleState(Res.drawable.black_back, Res.string.ch6_0),
+            DialogMiddleState(Res.drawable.black_back, Res.string.ch6_1),
+            DialogMiddleState(Res.drawable.black_back, Res.string.ch6_2),
+            DialogMiddleState(Res.drawable.black_back, Res.string.ch6_3),
+            DialogMiddleState(Res.drawable.black_back, Res.string.ch6_4),
+            DialogMiddleState(Res.drawable.black_back, Res.string.ch6_5),
+            DialogMiddleState(Res.drawable.black_back, Res.string.ch6_6),
+            DialogMiddleState(Res.drawable.black_back, Res.string.ch6_7),
+            DialogMiddleState(Res.drawable.black_back, Res.string.ch6_8),
+            DialogMiddleState(Res.drawable.black_back, Res.string.ch6_9),
+            DialogMiddleState(Res.drawable.black_back, Res.string.ch6_10),
+            DialogMiddleState(Res.drawable.black_back, Res.string.ch6_11),
+            DialogMiddleState(Res.drawable.black_back, Res.string.ch6_12),
+            DialogMiddleState(Res.drawable.black_back, Res.string.ch6_13),
+            DialogMiddleState(Res.drawable.black_back, Res.string.ch6_14),
+            DialogMiddleState(Res.drawable.black_back, Res.string.ch6_15),
+            DialogMiddleState(Res.drawable.black_back, Res.string.ch6_16),
+            DialogMiddleState(Res.drawable.black_back, Res.string.ch6_17),
+            DialogMiddleState(Res.drawable.black_back, Res.string.ch6_18),
+            DialogMiddleState(Res.drawable.black_back, Res.string.ch6_19),
+            DialogMiddleState(Res.drawable.black_back, Res.string.ch6_20),
+            DialogMiddleState(Res.drawable.black_back, Res.string.ch6_21),
+            DialogMiddleState(Res.drawable.black_back, Res.string.ch6_22),
+            DialogMiddleState(Res.drawable.black_back, Res.string.ch6_23),
+            DialogFinishState(DeathCode.ALIVE),
+            DialogFinishState(DeathCode.SHOT),
+            DialogFinishState(DeathCode.PRISON)
+        ),
+        listOf(
+            DialogEdge(0, 1, Res.string.ch6_0a),
+            DialogEdge(1, 3, Res.string.ch6_1a),
+            DialogEdge(1, 2, Res.string.ch6_1b),
+            DialogEdge(2, 3, Res.string.ch6_1a),
+            DialogEdge(3, 4, Res.string.ch6_3a),
+            DialogEdge(4, 7, Res.string.ch6_4a),
+            DialogEdge(4, 5, Res.string.ch6_4b),
+            DialogEdge(4, 6, Res.string.ch6_4c),
+            DialogEdge(5, 25, Res.string.finish),
+            DialogEdge(6, 25, Res.string.finish),
+            DialogEdge(7, 8, Res.string.ch6_7a),
+            DialogEdge(7, 5, Res.string.ch6_7b),
+            DialogEdge(7, 6, Res.string.ch6_7c),
+            DialogEdge(8, 9, Res.string.ch6_8a),
+            DialogEdge(8, 5, Res.string.ch6_8b),
+            DialogEdge(8, 6, Res.string.ch6_8c),
+            DialogEdge(9, 10, Res.string.ch6_9a),
+            DialogEdge(10, 11, Res.string.ch6_10a),
+            DialogEdge(10, 11, Res.string.ch6_10b),
+            DialogEdge(10, 11, Res.string.ch6_10c),
+            DialogEdge(11, 12, Res.string.ch6_11a),
+            DialogEdge(11, 13, Res.string.ch6_11b),
+            DialogEdge(11, 14, Res.string.ch6_11c),
+            DialogEdge(12, 13, Res.string.ch6_11b),
+            DialogEdge(12, 14, Res.string.ch6_11c),
+            DialogEdge(13, 12, Res.string.ch6_11a),
+            DialogEdge(13, 14, Res.string.ch6_11c),
+            DialogEdge(14, 15, Res.string.ch6_14a),
+            DialogEdge(15, 16, Res.string.ch6_15a),
+            DialogEdge(16, 17, Res.string.ch6_16a),
+            DialogEdge(17, 18, Res.string.ch6_17a),
+            DialogEdge(18, 23, Res.string.ch6_18a),
+            DialogEdge(18, 19, Res.string.ch6_18b),
+            DialogEdge(18, 20, Res.string.ch6_18a),
+            DialogEdge(19, 20, Res.string.ch6_19a),
+            DialogEdge(19, 23, Res.string.ch6_19b),
+            DialogEdge(20, 21, Res.string.ch6_20a),
+            DialogEdge(21, 24, Res.string.ch6_21a),
+            DialogEdge(21, 22, Res.string.ch6_21b),
+            DialogEdge(22, 26, Res.string.ch6_21b),
+            DialogEdge(23, 24, Res.string.ch6_23a),
+            DialogEdge(23, 22, Res.string.ch6_23b),
+        )
+    ), goBack) {
+        isGame = true
+    }
+}
+
+
+@Composable
+fun ShowStoryEndOfPart2(
+    advanceChapter: () -> Unit,
+    goBack: () -> Unit,
+) {
+    StoryShow(DialogGraph(
+        listOf(
+            DialogMiddleState(Res.drawable.black_back, Res.string.p2e_0),
+            DialogMiddleState(Res.drawable.black_back, Res.string.p2e_1),
+            DialogMiddleState(Res.drawable.black_back, Res.string.p2e_2),
+            DialogMiddleState(Res.drawable.black_back, Res.string.p2e_3),
+            DialogMiddleState(Res.drawable.black_back, Res.string.p2e_4),
+            DialogMiddleState(Res.drawable.black_back, Res.string.p2e_5),
+            DialogMiddleState(Res.drawable.black_back, Res.string.p2e_6),
+            DialogMiddleState(Res.drawable.black_back, Res.string.p2e_7),
+            DialogMiddleState(Res.drawable.black_back, Res.string.p2e_8),
+            DialogMiddleState(Res.drawable.black_back, Res.string.p2e_9),
+            DialogMiddleState(Res.drawable.black_back, Res.string.p2e_10),
+            DialogFinishState(DeathCode.ALIVE)
+        ),
+        listOf(
+            DialogEdge(0, 1, Res.string.p2e_0a),
+            DialogEdge(1, 2, Res.string.p2e_1a),
+            DialogEdge(1, 2, Res.string.p2e_1b),
+            DialogEdge(1, 2, Res.string.p2e_1c),
+            DialogEdge(1, 2, Res.string.p2e_1d),
+            DialogEdge(2, 3, Res.string.p2e_2a),
+            DialogEdge(2, 3, Res.string.p2e_2b),
+            DialogEdge(3, 4, Res.string.p2e_3a),
+            DialogEdge(3, 10, Res.string.p2e_3b),
+            DialogEdge(4, 5, Res.string.p2e_4a),
+            DialogEdge(5, 6, Res.string.p2e_5a),
+            DialogEdge(6, 8, Res.string.p2e_6a),
+            DialogEdge(6, 7, Res.string.p2e_6b),
+            DialogEdge(7, 8, Res.string.p2e_6a),
+            DialogEdge(8, 9, Res.string.p2e_8a),
+            DialogEdge(9, 10, Res.string.p2e_9a),
+            DialogEdge(10, 11, Res.string.finish),
+        )
+    ), goBack) {
+        advanceChapter(); goBack()
+    }
+}
 
 
 @Composable
