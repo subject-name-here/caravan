@@ -153,6 +153,7 @@ data object EnemyFrank : Enemy {
                 GamePossibleResult.GAME_ON
             )
             if (isLosing) {
+                // TODO: Maybe atomic as the last mean of survival?
                 hand.filterIsInstance<CardAtomic>()
                     .forEach { bomb ->
                         val bombIndex = hand.indexOf(bomb)

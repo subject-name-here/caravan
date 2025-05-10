@@ -17,6 +17,8 @@ class EnemyUlysses : EnemyPvEWithBank() {
         get() = true
     override val level: Int
         get() = 6
+    override val isAvailable: Boolean
+        get() = true
 
     override fun createDeck() = CResources(CardBack.VAULT_21_NIGHT)
 
@@ -32,5 +34,7 @@ class EnemyUlysses : EnemyPvEWithBank() {
     override var winsBlitzBet: Int = 0
 
 
-    override suspend fun makeMove(game: Game, speed: AnimationSpeed) {}
+    override suspend fun makeMove(game: Game, speed: AnimationSpeed) {
+        EnemyFrank.makeMove(game, speed)
+    }
 }
