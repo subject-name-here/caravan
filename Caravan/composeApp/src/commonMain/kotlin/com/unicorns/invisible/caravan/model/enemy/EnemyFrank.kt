@@ -284,6 +284,33 @@ data object EnemyFrank : Enemy {
             }
         }
 
+
+        if (game.playerCResources.deckSize >= game.enemyCResources.deckSize) {
+            if (overWeightCaravans.isNotEmpty()) {
+                overWeightCaravans.maxBy { it.getValue() }.dropCaravan(speed)
+                return
+            }
+            val caravan = game.enemyCaravans
+                .filter { it.getValue() < 11 && !it.isEmpty() }
+                .minByOrNull { it.getValue() }
+            if (caravan != null) {
+                caravan.dropCaravan(speed)
+                return
+            }
+
+            if (game.enemyCResources.deckSize == 0) {
+                val caravanC = game.enemyCaravans
+                    .filter { !it.isEmpty() }
+                    .minByOrNull { it.getValue() }
+                val state = gameToState(game)
+                state.enemy[game.enemyCaravans.indexOf(caravanC)] = 0
+                if (caravanC != null && (0..2).none { checkOnResult(state, it).isPlayerMoveWins() }) {
+                    caravanC.dropCaravan(speed)
+                    return
+                }
+            }
+        }
+
         // 4) only then try to put card on our caravan.
         game.enemyCaravans
             .withIndex()
@@ -335,38 +362,13 @@ data object EnemyFrank : Enemy {
                         state.enemy[caravanIndex] += card.rank.value
                         val isStateBad = (0..2).any { checkOnResult(state, it).isPlayerMoveWins() }
                         val wasStateBad = (0..2).any { checkOnResult(gameToState(game), it).isPlayerMoveWins() }
-                        if (newSum <= 26 && caravan.canPutCardOnTop(card) && (!isStateBad || wasStateBad)) {
+                        if (newSum <= 26 && caravan.canPutCardOnTop(card) && (!isStateBad || wasStateBad) && checkTheOutcome(state) != 1) {
                             caravan.putCardOnTop(game.enemyCResources.removeFromHand(cardIndex, speed) as CardBase, speed)
                             return
                         }
                     }
             }
 
-        if (game.playerCResources.deckSize >= game.enemyCResources.deckSize) {
-            if (overWeightCaravans.isNotEmpty()) {
-                overWeightCaravans.maxBy { it.getValue() }.dropCaravan(speed)
-                return
-            }
-            val caravan = game.enemyCaravans
-                .filter { it.getValue() < 11 && !it.isEmpty() }
-                .minByOrNull { it.getValue() }
-            if (caravan != null) {
-                caravan.dropCaravan(speed)
-                return
-            }
-
-            if (game.enemyCResources.deckSize == 0) {
-                val caravanC = game.enemyCaravans
-                    .filter { !it.isEmpty() }
-                    .minByOrNull { it.getValue() }
-                val state = gameToState(game)
-                state.enemy[game.enemyCaravans.indexOf(caravanC)] = 0
-                if (caravanC != null && (0..2).none { checkOnResult(state, it).isPlayerMoveWins() }) {
-                    caravanC.dropCaravan(speed)
-                    return
-                }
-            }
-        }
 
         // 3) Try king on underweightCaravans and jacks on overweightCaravans.
         val jack = hand.filterIsInstance<CardFace>().find { it.rank == RankFace.JACK }
@@ -382,7 +384,7 @@ data object EnemyFrank : Enemy {
                         val afterJackValue = it.value.getValue() - card.getValue()
                         val isStateBad = (0..2).any { i -> checkOnResult(state, i).isPlayerMoveWins() }
                         val wasStateBad = (0..2).any { i -> checkOnResult(gameToState(game), i).isPlayerMoveWins() }
-                        if (afterJackValue <= 26 && (!isStateBad || wasStateBad)) {
+                        if (afterJackValue <= 26 && (!isStateBad || wasStateBad) && checkTheOutcome(state) != 1) {
                             card.addModifier(game.enemyCResources.removeFromHand(jackIndex, speed) as CardModifier, speed)
                             return
                         }
@@ -407,7 +409,7 @@ data object EnemyFrank : Enemy {
                                 state.player[indexC] -= it.value.getValue()
                                 val isStateBad = (0..2).any { i -> checkOnResult(state, i).isPlayerMoveWins() }
                                 val wasStateBad = (0..2).any { i -> checkOnResult(gameToState(game), i).isPlayerMoveWins() }
-                                if (!isStateBad || wasStateBad) {
+                                if ((!isStateBad || wasStateBad) && checkTheOutcome(state) != 1) {
                                     it.value.addModifier(game.enemyCResources.removeFromHand(jackIndex, speed) as CardModifier, speed)
                                     return
                                 }
@@ -429,7 +431,7 @@ data object EnemyFrank : Enemy {
                         state.enemy[it.index] += card.card.rank.value
                         val isStateBad = (0..2).any { i -> checkOnResult(state, i).isPlayerMoveWins() }
                         val wasStateBad = (0..2).any { i -> checkOnResult(gameToState(game), i).isPlayerMoveWins() }
-                        if (afterKingValue <= 26 && (!isStateBad || wasStateBad)) {
+                        if (afterKingValue <= 26 && (!isStateBad || wasStateBad) && checkTheOutcome(state) != 1) {
                             card.addModifier(game.enemyCResources.removeFromHand(kingIndex, speed) as CardModifier, speed)
                             return
                         }
@@ -449,7 +451,7 @@ data object EnemyFrank : Enemy {
                                 state.player[indexC] += it.value.getValue()
                                 val isStateBad = (0..2).any { i -> checkOnResult(state, i).isPlayerMoveWins() }
                                 val wasStateBad = (0..2).any { i -> checkOnResult(gameToState(game), i).isPlayerMoveWins() }
-                                if (state.player[indexC] > 26 && (!isStateBad || wasStateBad)) {
+                                if (state.player[indexC] > 26 && (!isStateBad || wasStateBad) && checkTheOutcome(state) != 1) {
                                     it.value.addModifier(game.enemyCResources.removeFromHand(kingIndex, speed) as CardModifier, speed)
                                     return
                                 }

@@ -331,7 +331,7 @@ class EnemyUlysses : EnemyPvEWithBank() {
                         state.enemy[caravanIndex] += card.rank.value
                         val isStateBad = (0..2).any { checkOnResult(state, it).isPlayerMoveWins() }
                         val wasStateBad = (0..2).any { checkOnResult(gameToState(game), it).isPlayerMoveWins() }
-                        if (newSum <= 26 && caravan.canPutCardOnTop(card) && (!isStateBad || wasStateBad)) {
+                        if (newSum <= 26 && caravan.canPutCardOnTop(card) && (!isStateBad || wasStateBad) && checkTheOutcome(state) != 1) {
                             caravan.putCardOnTop(game.enemyCResources.removeFromHand(cardIndex, speed) as CardBase, speed)
                             return
                         }
@@ -353,7 +353,7 @@ class EnemyUlysses : EnemyPvEWithBank() {
                         val afterJackValue = it.value.getValue() - card.getValue()
                         val isStateBad = (0..2).any { i -> checkOnResult(state, i).isPlayerMoveWins() }
                         val wasStateBad = (0..2).any { i -> checkOnResult(gameToState(game), i).isPlayerMoveWins() }
-                        if (afterJackValue <= 26 && (!isStateBad || wasStateBad)) {
+                        if (afterJackValue <= 26 && (!isStateBad || wasStateBad) && checkTheOutcome(state) != 1) {
                             card.addModifier(game.enemyCResources.removeFromHand(jackIndex, speed) as CardModifier, speed)
                             return
                         }
@@ -378,7 +378,7 @@ class EnemyUlysses : EnemyPvEWithBank() {
                                 state.player[indexC] -= it.value.getValue()
                                 val isStateBad = (0..2).any { i -> checkOnResult(state, i).isPlayerMoveWins() }
                                 val wasStateBad = (0..2).any { i -> checkOnResult(gameToState(game), i).isPlayerMoveWins() }
-                                if (!isStateBad || wasStateBad) {
+                                if ((!isStateBad || wasStateBad) && checkTheOutcome(state) != 1) {
                                     it.value.addModifier(game.enemyCResources.removeFromHand(jackIndex, speed) as CardModifier, speed)
                                     return
                                 }
@@ -400,7 +400,7 @@ class EnemyUlysses : EnemyPvEWithBank() {
                         state.enemy[it.index] += card.card.rank.value
                         val isStateBad = (0..2).any { i -> checkOnResult(state, i).isPlayerMoveWins() }
                         val wasStateBad = (0..2).any { i -> checkOnResult(gameToState(game), i).isPlayerMoveWins() }
-                        if (afterKingValue <= 26 && (!isStateBad || wasStateBad)) {
+                        if (afterKingValue <= 26 && (!isStateBad || wasStateBad) && checkTheOutcome(state) != 1) {
                             card.addModifier(game.enemyCResources.removeFromHand(kingIndex, speed) as CardModifier, speed)
                             return
                         }
@@ -420,7 +420,7 @@ class EnemyUlysses : EnemyPvEWithBank() {
                                 state.player[indexC] += it.value.getValue()
                                 val isStateBad = (0..2).any { i -> checkOnResult(state, i).isPlayerMoveWins() }
                                 val wasStateBad = (0..2).any { i -> checkOnResult(gameToState(game), i).isPlayerMoveWins() }
-                                if (state.player[indexC] > 26 && (!isStateBad || wasStateBad)) {
+                                if (state.player[indexC] > 26 && (!isStateBad || wasStateBad) && checkTheOutcome(state) != 1) {
                                     it.value.addModifier(game.enemyCResources.removeFromHand(kingIndex, speed) as CardModifier, speed)
                                     return
                                 }
