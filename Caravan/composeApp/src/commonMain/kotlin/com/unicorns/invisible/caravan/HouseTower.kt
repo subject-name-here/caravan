@@ -374,7 +374,7 @@ fun TowerScreen(
                     val inBank = if (cookCook == 2) 2048 else 1536
                     saveGlobal.capsInHand += inBank
                     saveGlobal.increaseXp(inBank)
-                    saveGlobal.towerBeaten = true
+                    saveGlobal.towerBeatenN = true
                     saveData()
                     CoroutineScope(Dispatchers.Unconfined).launch {
                         repeat(4) {

@@ -279,7 +279,7 @@ fun ShowDeathScreen(code: DeathCode, onBadEnd: () -> Unit, onGoodEnd: () -> Unit
                     .padding(8.dp)
                     .paint(
                         painterResource(Res.drawable.death_screen),
-                        contentScale = ContentScale.Fit
+                        contentScale = ContentScale.FillWidth
                     ))
 
             LaunchedEffect(Unit) {

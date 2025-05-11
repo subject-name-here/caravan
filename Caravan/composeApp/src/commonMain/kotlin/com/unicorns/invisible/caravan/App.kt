@@ -743,7 +743,7 @@ fun Screen() {
         Box(Modifier.padding(innerPadding)) {
             when {
                 showRules -> {
-                    showAlertDialog("[CLOSED]", "Unavailable for alpha.", null)
+                    showAlertDialog("[CLOSED]", "Unavailable for beta.", null)
                     showRules = false
                     // ShowRules { showRules = false }
                 }

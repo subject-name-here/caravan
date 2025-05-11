@@ -250,11 +250,13 @@ fun SetCustomDeck(
                                                 .forEach {
                                                     when (selectedCode)  {
                                                         0, 1 -> {
+                                                            playSelectSound()
                                                             if (it !in deck) {
                                                                 toggleToCustomDeck(it)
                                                             }
                                                         }
                                                         else -> {
+                                                            playCloseSound()
                                                             if (it in deck) {
                                                                 toggleToCustomDeck(it)
                                                             }

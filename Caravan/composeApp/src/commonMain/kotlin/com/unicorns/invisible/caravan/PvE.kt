@@ -265,7 +265,7 @@ fun ShowPvE(
             fun OpponentItem(enemy: EnemyPve, onClick: () -> Unit) {
                 if (!enemy.isAvailable) {
                     TextFallout(
-                        "NOT AVAILABLE IN ALPHA",
+                        "NOT AVAILABLE IN BETA",
                         getTextColor(),
                         getTextStrokeColor(),
                         18.sp,

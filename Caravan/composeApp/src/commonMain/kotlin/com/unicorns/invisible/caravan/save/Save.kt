@@ -242,7 +242,7 @@ class Save(var playerId: String? = null) {
     @EncodeDefault
     var secondChances: Int = 0
     @EncodeDefault
-    var towerBeaten: Boolean = false
+    var towerBeatenN: Boolean = false
 
     @EncodeDefault
     var storyProgress = 0

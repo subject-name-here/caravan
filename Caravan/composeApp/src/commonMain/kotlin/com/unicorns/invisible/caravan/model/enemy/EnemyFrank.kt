@@ -24,7 +24,7 @@ import kotlin.random.Random
 
 data object EnemyFrank : Enemy {
     override fun createDeck(): CResources = CResources(CustomDeck(CardBack.ENCLAVE).apply {
-        val times = if (saveGlobal.towerBeaten) 4 else 3
+        val times = if (saveGlobal.towerBeatenN) 4 else 3
         repeat(times) { add(CardAtomic()) }
     })
 
