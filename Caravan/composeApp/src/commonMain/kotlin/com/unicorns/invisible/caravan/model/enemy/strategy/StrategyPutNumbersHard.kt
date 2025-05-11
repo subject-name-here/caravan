@@ -29,7 +29,7 @@ class StrategyPutNumbersHard : Strategy {
                     if (checkTheOutcome(state) == -1) {
                         putCard()
                         return true
-                    } else if (checkTheOutcome(state) != 1 && !checkIfPlayerVictoryIsClose(state)) {
+                    } else if (checkTheOutcome(state) != 1 && (0..2).none { checkOnResult(state, it).isPlayerMoveWins() }) {
                         if (caravan.isEmpty() || caravan.getValue() + card.rank.value in (21..26)) {
                             putCard()
                             return true

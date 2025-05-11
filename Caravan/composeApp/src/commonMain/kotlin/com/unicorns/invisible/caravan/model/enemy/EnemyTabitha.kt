@@ -263,7 +263,7 @@ class EnemyTabitha : EnemyPvEWithBank() {
             }
 
             if (card is CardJoker) {
-                if (StrategyJokerSimple(cardIndex).move(game, speed)) {
+                if (StrategyJokerSimple(cardIndex, isHard = true).move(game, speed)) {
                     return
                 }
             }

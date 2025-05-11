@@ -7,7 +7,7 @@ import com.unicorns.invisible.caravan.model.primitives.CardModifier
 import com.unicorns.invisible.caravan.model.primitives.CardWithModifier
 import com.unicorns.invisible.caravan.model.primitives.RankNumber
 
-class StrategyJokerSimpleOnPlayer(val index: Int) : Strategy {
+class StrategyJokerSimpleOnPlayer(val index: Int, val isHard: Boolean = false) : Strategy {
     override suspend fun move(game: Game, speed: AnimationSpeed): Boolean {
         val joker = game.enemyCResources.hand[index] as CardJoker
         val cards = (game.playerCaravans + game.enemyCaravans)
@@ -90,6 +90,8 @@ class StrategyJokerSimpleOnPlayer(val index: Int) : Strategy {
             }
             return if (checkTheOutcome(state) == 1) {
                 -5000
+            } else if (isHard && (0..2).any { checkOnResult(state, it).isPlayerMoveWins() }) {
+                -2500
             } else if (checkTheOutcome(state) == -1) {
                 5000
             } else {

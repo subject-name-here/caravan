@@ -58,7 +58,7 @@ class StrategyDestructiveClever : Strategy {
 
         val indexJoker = game.enemyCResources.hand.indexOfFirst { it is CardJoker }
         return if (indexJoker != -1) {
-            StrategyJokerSimple(indexJoker).move(game, speed)
+            StrategyJokerSimple(indexJoker, isHard = true).move(game, speed)
         } else {
             false
         }

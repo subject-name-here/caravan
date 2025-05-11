@@ -72,7 +72,7 @@ data object EnemyTower8 : Enemy {
             val jokers = game.enemyCResources.hand.filterIsInstance<CardJoker>()
             jokers.forEach { joker ->
                 val index = game.enemyCResources.hand.indexOf(joker)
-                if (StrategyJokerSimple(index).move(game, speed)) {
+                if (StrategyJokerSimple(index, isHard = true).move(game, speed)) {
                     return
                 }
             }
@@ -119,7 +119,7 @@ data object EnemyTower8 : Enemy {
                     }
                 }
                 RankFace.JOKER -> {
-                    if (StrategyJokerSimpleOnPlayer(index).move(game, speed)) {
+                    if (StrategyJokerSimpleOnPlayer(index, isHard = true).move(game, speed)) {
                         return
                     }
                 }

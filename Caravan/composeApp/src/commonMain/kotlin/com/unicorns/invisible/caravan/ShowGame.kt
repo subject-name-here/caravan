@@ -577,7 +577,15 @@ fun Hand(
             val modifier = Modifier.offset { IntOffset(widthOffset.toInt(), (256f * scale * offsetMult).toInt()) }
 
             if (isEnemy) {
-                ShowCardBack(it, modifier.padding(4.dp), scale)
+                // TODO: remove!
+                // ShowCardBack(it, modifier.padding(4.dp), scale)
+                Box(modifier.padding(4.dp)) {
+                    ShowCard(
+                        it,
+                        Modifier,
+                        scale
+                    )
+                }
             } else {
                 Box(modifier
                         .border(

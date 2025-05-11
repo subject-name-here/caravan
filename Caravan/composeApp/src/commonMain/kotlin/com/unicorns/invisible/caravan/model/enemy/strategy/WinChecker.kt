@@ -12,6 +12,14 @@ class Guild(var v1: Int, var v2: Int, var v3: Int) {
             else -> throw NoSuchElementException()
         }
     }
+    operator fun set(index: Int, v: Int) {
+        when (index) {
+            0 -> { v1 = v }
+            1 -> { v2 = v }
+            2 -> { v3 = v }
+            else -> throw NoSuchElementException()
+        }
+    }
 }
 class State(val player: Guild, val enemy: Guild)
 
@@ -92,12 +100,10 @@ enum class GamePossibleResult {
     UNKNOWN,
     IMMINENT_ENEMY_VICTORY,
     IMMINENT_PLAYER_VICTORY,
-    ENEMY_VICTORY_IS_POSSIBLE,
-    PLAYER_VICTORY_IS_POSSIBLE,
     GAME_ON;
 
-    fun isPlayerMoveWins(): Boolean = this in listOf(GAME_ON, PLAYER_VICTORY_IS_POSSIBLE, IMMINENT_PLAYER_VICTORY)
-    fun isEnemyMoveWins(): Boolean = this in listOf(GAME_ON, ENEMY_VICTORY_IS_POSSIBLE, IMMINENT_ENEMY_VICTORY)
+    fun isPlayerMoveWins(): Boolean = this in listOf(GAME_ON, IMMINENT_PLAYER_VICTORY)
+    fun isEnemyMoveWins(): Boolean = this in listOf(GAME_ON, IMMINENT_ENEMY_VICTORY)
 }
 fun checkOnResult(state: State, caravanIndex: Int): GamePossibleResult {
     val otherCaravansIndices = (0..2).filter { it != caravanIndex }
@@ -110,7 +116,7 @@ fun checkOnResult(state: State, caravanIndex: Int): GamePossibleResult {
     otherCaravansIndices.forEach {
         checkIfWin(state.enemy[it], state.player[it])
     }
-    if (score == 2 && state.enemy[caravanIndex] >= 11) {
+    if (score == 2 && (state.enemy[caravanIndex] >= 11 || state.player[caravanIndex] >= 11)) {
         return GamePossibleResult.IMMINENT_ENEMY_VICTORY
     }
 
@@ -118,7 +124,7 @@ fun checkOnResult(state: State, caravanIndex: Int): GamePossibleResult {
     otherCaravansIndices.forEach {
         checkIfWin(state.player[it], state.enemy[it])
     }
-    if (score == 2 && state.player[caravanIndex] >= 11) {
+    if (score == 2 && (state.enemy[caravanIndex] >= 11 || state.player[caravanIndex] >= 11)) {
         return GamePossibleResult.IMMINENT_PLAYER_VICTORY
     }
 
@@ -136,10 +142,10 @@ fun checkOnResult(state: State, caravanIndex: Int): GamePossibleResult {
                     GamePossibleResult.GAME_ON
                 }
                 state.enemy[caravanIndex] >= 11 -> {
-                    GamePossibleResult.ENEMY_VICTORY_IS_POSSIBLE
+                    GamePossibleResult.IMMINENT_ENEMY_VICTORY
                 }
                 state.player[caravanIndex] >= 11 -> {
-                    GamePossibleResult.PLAYER_VICTORY_IS_POSSIBLE
+                    GamePossibleResult.IMMINENT_PLAYER_VICTORY
                 }
                 else -> GamePossibleResult.UNKNOWN
             }

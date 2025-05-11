@@ -6,7 +6,7 @@ import com.unicorns.invisible.caravan.model.primitives.CardBase
 import kotlin.math.abs
 
 
-class StrategyPutNumbersMedium : Strategy {
+class StrategyPutNumbersMedium(val isHard: Boolean = false) : Strategy {
     override suspend fun move(game: Game, speed: AnimationSpeed): Boolean {
         val numbers = game.enemyCResources.hand.filterIsInstance<CardBase>()
         val caravans = game.enemyCaravans
@@ -24,6 +24,8 @@ class StrategyPutNumbersMedium : Strategy {
                         -500
                     } else if (checkTheOutcome(state) == -1) {
                         500
+                    } else if (isHard && (0..2).any { checkOnResult(state, it).isPlayerMoveWins() }) {
+                        -250
                     } else {
                         val v = card.rank.value
                         if (caravan.isEmpty()) 3 + abs(v - 5) else 6 - abs(v - caravan.cards.last().card.rank.value)

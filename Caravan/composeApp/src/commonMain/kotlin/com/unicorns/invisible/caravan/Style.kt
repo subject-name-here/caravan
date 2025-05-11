@@ -95,16 +95,16 @@ enum class Style(
     ALASKA_FRONTIER(Res.string.style_alaska, Res.string.style_alaska_condition, { saveGlobal.maxStrike to 15 }),
     PIP_BOY(Res.string.style_pip_boy, Res.string.null_condition, { 0 to 0 }),
     PIP_GIRL(Res.string.style_pip_girl, Res.string.style_pip_girl_condition, { saveGlobal.lvl to 6 }),
-    OLD_WORLD(Res.string.style_old_world, Res.string.style_old_world_condition, { saveGlobal.capsWasted + saveGlobal.chipsWasted to 5000 }),
+    OLD_WORLD(Res.string.style_old_world, Res.string.style_old_world_condition, { saveGlobal.capsWasted + saveGlobal.chipsWasted to 7500 }),
     NEW_WORLD(Res.string.style_new_world, Res.string.style_new_world_condition, { saveGlobal.capsWasted + saveGlobal.chipsWasted to 20000 }),
     SIERRA_MADRE(Res.string.style_sierra_madre, Res.string.style_sierra_madre_condition, { saveGlobal.challengesCompleted to 100 }),
     MADRE_ROJA(Res.string.style_madre_roja, Res.string.style_madre_roja_condition, { saveGlobal.challengesCompleted to 500 }),
-    VAULT_21(Res.string.style_vault_21, Res.string.style_vault_21_condition, { saveGlobal.winsWithBet to 1000 }),
+    VAULT_21(Res.string.style_vault_21, Res.string.style_vault_21_condition, { saveGlobal.winsWithBet to 600 }),
     VAULT_22(Res.string.style_vault_22, Res.string.style_vault_22_condition, { saveGlobal.winsWithBet to 200 }),
     BLACK(Res.string.style_black, Res.string.style_black_condition, { saveGlobal.pvpWins to 10 }),
     ENCLAVE(Res.string.style_enclave, Res.string.style_enclave_condition, { (if (saveGlobal.towerBeaten) 1 else 0) to 1 }),
-    NCR(Res.string.style_ncr, Res.string.style_ncr_condition, { saveGlobal.availableDecks.size to 10 }),
-    LEGION(Res.string.style_legion, Res.string.style_legion_condition, { saveGlobal.availableCardsSize() to 200 });
+    NCR(Res.string.style_ncr, Res.string.style_ncr_condition, { saveGlobal.availableDecks.size to 12 }),
+    LEGION(Res.string.style_legion, Res.string.style_legion_condition, { saveGlobal.availableCardsSize() to 333 });
 }
 
 

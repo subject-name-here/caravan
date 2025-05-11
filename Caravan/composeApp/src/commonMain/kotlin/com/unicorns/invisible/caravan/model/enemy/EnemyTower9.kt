@@ -84,7 +84,7 @@ data object EnemyTower9 : Enemy {
                     }
                 }
                 RankFace.JOKER -> {
-                    if (StrategyJokerSimple(index).move(game, speed)) {
+                    if (StrategyJokerSimple(index, isHard = true).move(game, speed)) {
                          return
                     }
                 }

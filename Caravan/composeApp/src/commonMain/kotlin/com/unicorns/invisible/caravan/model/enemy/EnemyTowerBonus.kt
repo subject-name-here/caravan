@@ -60,7 +60,7 @@ data object EnemyTowerBonus : Enemy {
                     }
                 }
                 RankFace.JOKER -> {
-                    if (StrategyJokerSimpleOnPlayer(index).move(game, speed)) {
+                    if (StrategyJokerSimpleOnPlayer(index, isHard = true).move(game, speed)) {
                         return
                     }
                 }
@@ -68,7 +68,7 @@ data object EnemyTowerBonus : Enemy {
             }
         }
 
-        if (StrategyPutNumbersMedium().move(game, speed)) {
+        if (StrategyPutNumbersMedium(isHard = true).move(game, speed)) {
             return
         }
 

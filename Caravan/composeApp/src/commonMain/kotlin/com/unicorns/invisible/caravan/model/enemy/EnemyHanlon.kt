@@ -69,7 +69,7 @@ class EnemyHanlon : EnemyPvENoBank() {
                         }
                     }
                     RankFace.JOKER -> {
-                        if (StrategyJokerSimpleOnPlayer(index).move(game, speed)) {
+                        if (StrategyJokerSimpleOnPlayer(index, isHard = true).move(game, speed)) {
                             return
                         }
                     }
@@ -102,7 +102,7 @@ class EnemyHanlon : EnemyPvENoBank() {
         }
         if (jokers.size > 1 || numbers.isEmpty()) {
             val jokerIndex = hand.indexOf(jokers.first())
-            if (StrategyJokerSimple(jokerIndex).move(game, speed)) {
+            if (StrategyJokerSimple(jokerIndex, isHard = true).move(game, speed)) {
                 return
             }
         }

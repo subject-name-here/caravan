@@ -63,7 +63,7 @@ class EnemyViqueen : EnemyPvENoBank() {
                         }
                     }
                     RankFace.JOKER -> {
-                        if (StrategyJokerSimple(index).move(game, speed)) {
+                        if (StrategyJokerSimple(index, isHard = true).move(game, speed)) {
                             return
                         }
                     }
@@ -108,7 +108,7 @@ class EnemyViqueen : EnemyPvENoBank() {
                     }
                 }
                 RankFace.JOKER -> {
-                    if (StrategyJokerSimpleOnPlayer(index).move(game, speed)) {
+                    if (StrategyJokerSimpleOnPlayer(index, isHard = true).move(game, speed)) {
                         return
                     }
                 }

@@ -57,7 +57,7 @@ class EnemyVulpes : EnemyPvENoBank() {
         val modifiers = hand.filterIsInstance<CardFace>().sortedByDescending { it.rank }
         val joker = modifiers.find { it is CardJoker }
         if (joker != null) {
-            if (StrategyJokerSimple(hand.indexOf(joker)).move(game, speed)) {
+            if (StrategyJokerSimple(hand.indexOf(joker), isHard = true).move(game, speed)) {
                 return
             }
         }
@@ -76,7 +76,7 @@ class EnemyVulpes : EnemyPvENoBank() {
             }
         }
 
-        if (StrategyPutNumbersMedium().move(game, speed)) {
+        if (StrategyPutNumbersMedium(isHard = true).move(game, speed)) {
             return
         }
 

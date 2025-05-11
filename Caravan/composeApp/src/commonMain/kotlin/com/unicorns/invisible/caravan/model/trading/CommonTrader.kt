@@ -21,7 +21,7 @@ class CommonTrader : Trader {
     override fun getWelcomeMessage() = Res.string.common_trader_welcome
     override fun getEmptyStoreMessage() = Res.string.common_trader_empty
 
-    override fun getSymbol() = "*"
+    override fun getSymbol() = "?"
 
     override fun getCards(): List<CardWithPrice> = emptyList()
 }
