@@ -5,7 +5,7 @@ import caravan.composeapp.generated.resources.johnson_nash
 import com.unicorns.invisible.caravan.AnimationSpeed
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
-import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyDestructiveCleverNoJoker
+import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyDestructiveCleverNash
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyDropNashOrder
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyInit
 import com.unicorns.invisible.caravan.model.enemy.strategy.checkIfEnemyVictoryIsClose
@@ -83,7 +83,7 @@ class EnemyNash : EnemyPvEWithBank() {
 
 
         if (checkIfPlayerVictoryIsClose(gameToState(game))) {
-            if (StrategyDestructiveCleverNoJoker().move(game, speed)) {
+            if (StrategyDestructiveCleverNash().move(game, speed)) {
                 return
             }
         }

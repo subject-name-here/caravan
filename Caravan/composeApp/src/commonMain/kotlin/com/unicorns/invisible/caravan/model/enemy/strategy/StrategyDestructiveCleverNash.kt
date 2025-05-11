@@ -6,7 +6,7 @@ import com.unicorns.invisible.caravan.model.primitives.CardFace
 import com.unicorns.invisible.caravan.model.primitives.CardModifier
 import com.unicorns.invisible.caravan.model.primitives.RankFace
 
-class StrategyDestructiveCleverNoJoker : Strategy {
+class StrategyDestructiveCleverNash : Strategy {
     override suspend fun move(game: Game, speed: AnimationSpeed): Boolean {
         val indexJack = game.enemyCResources.hand.indexOfFirst { it is CardFace && it.rank == RankFace.JACK }
         if (indexJack in game.enemyCResources.hand.indices) {

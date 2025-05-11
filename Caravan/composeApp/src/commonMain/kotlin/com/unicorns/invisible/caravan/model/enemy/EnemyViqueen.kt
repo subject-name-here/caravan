@@ -7,16 +7,13 @@ import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyDropAllButFace
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyInit
-import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJackToPlayer
-import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJackToSelfMedium
+import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJackHard
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJokerSimple
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJokerSimpleOnPlayer
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyKingHard
-import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyKingToSelfMedium
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyPutNumbersHard
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyQueenToSelf
 import com.unicorns.invisible.caravan.model.enemy.strategy.checkIfPlayerVictoryIsClose
-import com.unicorns.invisible.caravan.model.enemy.strategy.checkTheOutcome
 import com.unicorns.invisible.caravan.model.enemy.strategy.gameToState
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.CardFace
@@ -49,11 +46,6 @@ class EnemyViqueen : EnemyPvENoBank() {
             return
         }
 
-        // TODO: make stronger!!
-        if (StrategyPutNumbersHard().move(game, speed)) {
-            return
-        }
-
         if (checkIfPlayerVictoryIsClose(gameToState(game))) {
             val modifiers = game.enemyCResources.hand.filterIsInstance<CardFace>().shuffled()
 
@@ -61,7 +53,7 @@ class EnemyViqueen : EnemyPvENoBank() {
                 val index = game.enemyCResources.hand.indexOf(modifier)
                 when (modifier.rank) {
                     RankFace.JACK -> {
-                        if (StrategyJackToPlayer(index).move(game, speed)) {
+                        if (StrategyJackHard(index, StrategyJackHard.Direction.TO_PLAYER).move(game, speed)) {
                             return
                         }
                     }
@@ -80,20 +72,25 @@ class EnemyViqueen : EnemyPvENoBank() {
             }
         }
 
+        if (StrategyPutNumbersHard().move(game, speed)) {
+            return
+        }
+
         val modifiers = game.enemyCResources.hand.filterIsInstance<CardFace>().sortedByDescending {
             when (it.rank) {
                 RankFace.JACK -> 3
-                RankFace.QUEEN -> 1
-                RankFace.KING -> 2
+                RankFace.QUEEN -> 2
+                RankFace.KING -> 1
                 RankFace.JOKER -> 0
             }
         }
 
+        val hand = game.enemyCResources.hand
         modifiers.forEach { modifier ->
             val index = game.enemyCResources.hand.indexOf(modifier)
             when (modifier.rank) {
                 RankFace.JACK -> {
-                    if (StrategyJackToSelfMedium(index).move(game, speed)) {
+                    if (StrategyJackHard(index, StrategyJackHard.Direction.TO_SELF).move(game, speed)) {
                         return
                     }
                 }
@@ -103,7 +100,10 @@ class EnemyViqueen : EnemyPvENoBank() {
                     }
                 }
                 RankFace.KING -> {
-                    if (StrategyKingToSelfMedium(index).move(game, speed)) {
+                    if (
+                        hand.count { it is CardFace && it.rank == RankFace.KING } > 1 &&
+                        StrategyKingHard(index, StrategyKingHard.Direction.TO_SELF).move(game, speed)
+                    ) {
                         return
                     }
                 }
@@ -117,16 +117,8 @@ class EnemyViqueen : EnemyPvENoBank() {
 
         game.enemyCaravans.forEachIndexed { indexC, caravan ->
             if (caravan.getValue() > 26) {
-                val state = gameToState(game)
-                when (indexC) {
-                    0 -> state.enemy.v1 = 0
-                    1 -> state.enemy.v2 = 0
-                    2 -> state.enemy.v3 = 0
-                }
-                if (checkTheOutcome(state) != 1) {
-                    caravan.dropCaravan(speed)
-                    return
-                }
+                caravan.dropCaravan(speed)
+                return
             }
         }
 

@@ -10,11 +10,11 @@ import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyDropLadiesFir
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyInit
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyKingRuiner
 import com.unicorns.invisible.caravan.model.enemy.strategy.checkOnResult
+import com.unicorns.invisible.caravan.model.enemy.strategy.gameToState
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.CardBase
 import com.unicorns.invisible.caravan.model.primitives.CardFace
 import com.unicorns.invisible.caravan.model.primitives.CardFaceSuited
-import com.unicorns.invisible.caravan.model.primitives.CardJoker
 import com.unicorns.invisible.caravan.model.primitives.CardModifier
 import com.unicorns.invisible.caravan.model.primitives.CardNumber
 import com.unicorns.invisible.caravan.model.primitives.CustomDeck
@@ -80,6 +80,7 @@ class EnemyElijah : EnemyPvEWithBank() {
                 else -> 0
             }
         }
+        val state = gameToState(game)
 
         val king = hand.filterIsInstance<CardFace>().find { it.rank == RankFace.KING }
 
@@ -92,7 +93,7 @@ class EnemyElijah : EnemyPvEWithBank() {
                     val playerValue = game.playerCaravans[caravanIndex].getValue()
                     if (
                         card.canAddModifier(king) &&
-                        checkOnResult(game, caravanIndex) in listOf(
+                        checkOnResult(state, caravanIndex) in listOf(
                             GamePossibleResult.GAME_ON,
                             GamePossibleResult.ENEMY_VICTORY_IS_POSSIBLE,
                             GamePossibleResult.IMMINENT_ENEMY_VICTORY
@@ -115,7 +116,7 @@ class EnemyElijah : EnemyPvEWithBank() {
                     val playerValue = game.playerCaravans[caravanIndex].getValue()
                     if (
                         caravan.canPutCardOnTop(card) &&
-                        checkOnResult(game, caravanIndex) in listOf(
+                        checkOnResult(state, caravanIndex) in listOf(
                             GamePossibleResult.GAME_ON,
                             GamePossibleResult.ENEMY_VICTORY_IS_POSSIBLE,
                             GamePossibleResult.IMMINENT_ENEMY_VICTORY
@@ -143,7 +144,7 @@ class EnemyElijah : EnemyPvEWithBank() {
             game.enemyCaravans.withIndex().shuffled().forEach { (caravanIndex, enemyCaravan) ->
                 if (enemyCaravan.getValue() in listOf(10, 16)) {
                     val ten = enemyCaravan.cards.find { it.card.rank == RankNumber.TEN && it.getValue() == 10 && it.canAddModifier(king) }
-                    val res = checkOnResult(game, caravanIndex) == GamePossibleResult.IMMINENT_PLAYER_VICTORY
+                    val res = checkOnResult(state, caravanIndex) == GamePossibleResult.IMMINENT_PLAYER_VICTORY
                     if (ten != null && !(res && enemyCaravan.getValue() == 16)) {
                         ten.addModifier(game.enemyCResources.removeFromHand(index, speed) as CardModifier, speed)
                         return
@@ -157,7 +158,7 @@ class EnemyElijah : EnemyPvEWithBank() {
             game.enemyCaravans.withIndex().sortedByDescending { it.value.getValue() }
                 .forEach { (caravanIndex, caravan) ->
                     if (caravan.size < 2 && caravan.getValue() + card.rank.value <= 26 && caravan.canPutCardOnTop(card)) {
-                        if (!(checkOnResult(game, caravanIndex) == GamePossibleResult.IMMINENT_PLAYER_VICTORY && caravan.getValue() + card.rank.value in (21..26))) {
+                        if (!(checkOnResult(state, caravanIndex) == GamePossibleResult.IMMINENT_PLAYER_VICTORY && caravan.getValue() + card.rank.value in (21..26))) {
                             caravan.putCardOnTop(game.enemyCResources.removeFromHand(cardIndex, speed) as CardBase, speed)
                             return
                         }

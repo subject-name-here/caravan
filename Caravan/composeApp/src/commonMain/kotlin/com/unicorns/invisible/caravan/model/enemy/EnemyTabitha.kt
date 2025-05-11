@@ -10,6 +10,7 @@ import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyDropAllButFac
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyInit
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJokerSimple
 import com.unicorns.invisible.caravan.model.enemy.strategy.checkIfEnemyVictoryIsClose
+import com.unicorns.invisible.caravan.model.enemy.strategy.checkOnResult
 import com.unicorns.invisible.caravan.model.enemy.strategy.checkTheOutcome
 import com.unicorns.invisible.caravan.model.enemy.strategy.gameToState
 import com.unicorns.invisible.caravan.model.primitives.CResources
@@ -107,7 +108,7 @@ class EnemyTabitha : EnemyPvEWithBank() {
                 2 -> state.player.v3 -= aceOfDiamonds.getValue()
             }
 
-            if (checkTheOutcome(state) != 1) {
+            if (checkTheOutcome(state) != 1 && (0..2).none { checkOnResult(state, it).isPlayerMoveWins() }) {
                 val jackIndex = hand.indexOf(jack)
                 aceOfDiamonds.addModifier(
                     game.enemyCResources.removeFromHand(
@@ -173,7 +174,7 @@ class EnemyTabitha : EnemyPvEWithBank() {
                         1 -> state.player.v2 -= cardToJack.getValue()
                         2 -> state.player.v3 -= cardToJack.getValue()
                     }
-                    if (checkTheOutcome(state) != 1) {
+                    if (checkTheOutcome(state) != 1 && (0..2).none { checkOnResult(state, it).isPlayerMoveWins() }) {
                         cardToJack.addModifier(
                             game.enemyCResources.removeFromHand(
                                 cardIndex,
@@ -198,7 +199,7 @@ class EnemyTabitha : EnemyPvEWithBank() {
                         1 -> state.player.v2 -= cardToKing.getValue()
                         2 -> state.player.v3 -= cardToKing.getValue()
                     }
-                    if (checkTheOutcome(state) != 1) {
+                    if (checkTheOutcome(state) != 1 && (0..2).none { checkOnResult(state, it).isPlayerMoveWins() }) {
                         cardToKing.addModifier(
                             game.enemyCResources.removeFromHand(
                                 cardIndex,
@@ -223,7 +224,7 @@ class EnemyTabitha : EnemyPvEWithBank() {
                                     1 -> state.enemy.v2 += it.first.getValue()
                                     2 -> state.enemy.v3 += it.first.getValue()
                                 }
-                                if (checkTheOutcome(state) != 1) {
+                                if (checkTheOutcome(state) != 1 && (0..2).none { checkOnResult(state, it).isPlayerMoveWins() }) {
                                     it.first.addModifier(
                                         game.enemyCResources.removeFromHand(
                                             cardIndex,
@@ -248,7 +249,7 @@ class EnemyTabitha : EnemyPvEWithBank() {
                                 1 -> state.enemy.v2 += card.rank.value
                                 2 -> state.enemy.v3 += card.rank.value
                             }
-                            if (checkTheOutcome(state) != 1) {
+                            if (checkTheOutcome(state) != 1 && (0..2).none { checkOnResult(state, it).isPlayerMoveWins() }) {
                                 caravan.putCardOnTop(
                                     game.enemyCResources.removeFromHand(
                                         cardIndex,
@@ -278,7 +279,7 @@ class EnemyTabitha : EnemyPvEWithBank() {
                         1 -> state.enemy.v2 -= cardToDelete.getValue()
                         2 -> state.enemy.v3 -= cardToDelete.getValue()
                     }
-                    if (checkTheOutcome(state) != 1) {
+                    if (checkTheOutcome(state) != 1 && (0..2).none { checkOnResult(state, it).isPlayerMoveWins() }) {
                         cardToDelete.addModifier(
                             game.enemyCResources.removeFromHand(
                                 cardIndex,
@@ -293,16 +294,8 @@ class EnemyTabitha : EnemyPvEWithBank() {
 
         game.enemyCaravans.forEachIndexed { indexC, caravan ->
             if (caravan.getValue() > 26) {
-                val state = gameToState(game)
-                when (indexC) {
-                    0 -> state.enemy.v1 = 0
-                    1 -> state.enemy.v2 = 0
-                    2 -> state.enemy.v3 = 0
-                }
-                if (checkTheOutcome(state) != 1) {
-                    caravan.dropCaravan(speed)
-                    return
-                }
+                caravan.dropCaravan(speed)
+                return
             }
         }
 

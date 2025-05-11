@@ -8,7 +8,6 @@ import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyInit
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJokerSimple
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyQueenToSelf
 import com.unicorns.invisible.caravan.model.enemy.strategy.checkOnResult
-import com.unicorns.invisible.caravan.model.enemy.strategy.checkTheOutcome
 import com.unicorns.invisible.caravan.model.enemy.strategy.gameToState
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.CardAtomic
@@ -61,10 +60,11 @@ data object EnemyFrank : Enemy {
             StrategyInit(StrategyInit.Type.MIN_FIRST_TO_RANDOM).move(game, speed)
             return
         }
+        val state = gameToState(game)
 
         // 1) Check if we have winning move
         game.enemyCaravans.withIndex().forEach { caravan ->
-            val isWinningMovePossible = checkOnResult(game, caravan.index) in listOf(
+            val isWinningMovePossible = checkOnResult(state, caravan.index) in listOf(
                 GamePossibleResult.GAME_ON,
                 GamePossibleResult.IMMINENT_ENEMY_VICTORY,
                 GamePossibleResult.ENEMY_VICTORY_IS_POSSIBLE
@@ -86,7 +86,7 @@ data object EnemyFrank : Enemy {
                             }
                         }
                     if (
-                        checkOnResult(game, caravan.index) == GamePossibleResult.IMMINENT_ENEMY_VICTORY &&
+                        checkOnResult(state, caravan.index) == GamePossibleResult.IMMINENT_ENEMY_VICTORY &&
                         rivalCaravanValue > 26 || caravan.value.getValue() == rivalCaravanValue
                     ) {
                         game.playerCaravans.forEach { playerCaravan ->
@@ -113,7 +113,7 @@ data object EnemyFrank : Enemy {
                                 return
                             }
                         }
-                    if (checkOnResult(game, caravan.index) == GamePossibleResult.IMMINENT_ENEMY_VICTORY && rivalCaravanValue < 21) {
+                    if (checkOnResult(state, caravan.index) == GamePossibleResult.IMMINENT_ENEMY_VICTORY && rivalCaravanValue < 21) {
                         game.playerCaravans.forEach { playerCaravan ->
                             playerCaravan.cards.forEach { card ->
                                 if (playerCaravan.getValue() + card.getValue() > 26 || caravan.value.getValue() == rivalCaravanValue) {
@@ -137,7 +137,7 @@ data object EnemyFrank : Enemy {
 
 
                 // maybe even drop a caravan!
-                if (rivalCaravanValue == caravan.value.getValue() && checkOnResult(game, caravan.index) == GamePossibleResult.IMMINENT_ENEMY_VICTORY) {
+                if (rivalCaravanValue == caravan.value.getValue() && checkOnResult(state, caravan.index) == GamePossibleResult.IMMINENT_ENEMY_VICTORY) {
                     caravan.value.dropCaravan(speed)
                     return
                 }
@@ -147,7 +147,7 @@ data object EnemyFrank : Enemy {
 
         // 2) If not and if player is abt to win, destroy player ready and almost ready caravans (on right columns!)
         game.enemyCaravans.withIndex().forEach { (caravanIndex, caravan) ->
-            val isLosing = checkOnResult(game, caravanIndex) in listOf(
+            val isLosing = checkOnResult(state, caravanIndex) in listOf(
                 GamePossibleResult.IMMINENT_PLAYER_VICTORY,
                 GamePossibleResult.PLAYER_VICTORY_IS_POSSIBLE,
                 GamePossibleResult.GAME_ON
@@ -314,7 +314,7 @@ data object EnemyFrank : Enemy {
             .sortedByDescending {
                 val ourValue = it.value.getValue()
                 val playerValue = game.playerCaravans[it.index].getValue()
-                val isLastCaravanInContention = checkOnResult(game, it.index) in listOf(
+                val isLastCaravanInContention = checkOnResult(state, it.index) in listOf(
                     GamePossibleResult.IMMINENT_ENEMY_VICTORY,
                     GamePossibleResult.ENEMY_VICTORY_IS_POSSIBLE
                 )
@@ -360,7 +360,7 @@ data object EnemyFrank : Enemy {
                         if (newSum <= 26 &&
                             caravan.canPutCardOnTop(card) &&
                             !(checkMoveOnProbableDefeat(game, caravanIndex) && newSum in (21..26)) &&
-                            !(checkOnResult(game, caravanIndex) == GamePossibleResult.IMMINENT_PLAYER_VICTORY && newSum in (21..26))
+                            !(checkOnResult(state, caravanIndex) == GamePossibleResult.IMMINENT_PLAYER_VICTORY && newSum in (21..26))
                         ) {
                             caravan.putCardOnTop(game.enemyCResources.removeFromHand(cardIndex, speed) as CardBase, speed)
                             return
@@ -424,18 +424,10 @@ data object EnemyFrank : Enemy {
             }
         }
 
-        game.enemyCaravans.sortedByDescending { it.getValue() }.forEachIndexed { indexC, caravan ->
+        game.enemyCaravans.sortedByDescending { it.getValue() }.forEach { caravan ->
             if (caravan.getValue() > 26) {
-                val state = gameToState(game)
-                when (indexC) {
-                    0 -> state.enemy.v1 = 0
-                    1 -> state.enemy.v2 = 0
-                    2 -> state.enemy.v3 = 0
-                }
-                if (checkTheOutcome(state) != 1) {
-                    caravan.dropCaravan(speed)
-                    return
-                }
+                caravan.dropCaravan(speed)
+                return
             }
         }
 

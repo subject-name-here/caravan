@@ -6,6 +6,7 @@ import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyDestructiveClever
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyDropLadiesFirst
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyInit
+import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJackHard
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJackMedium
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJokerSimple
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyKingHard
@@ -58,11 +59,9 @@ data object EnemyTower9 : Enemy {
             return
         }
 
-        game.enemyCaravans.withIndex().forEach { (index, _) ->
-            if (checkIfEnemyVictoryIsClose(gameToState(game), index)) {
-                if (StrategyDestructiveClever().move(game, speed)) {
-                    return
-                }
+        if ((0..2).any { checkIfEnemyVictoryIsClose(gameToState(game), it) }) {
+            if (StrategyDestructiveClever().move(game, speed)) {
+                return
             }
         }
 
@@ -75,7 +74,7 @@ data object EnemyTower9 : Enemy {
             val index = game.enemyCResources.hand.indexOf(modifier)
             when (modifier.rank) {
                 RankFace.JACK -> {
-                    if (StrategyJackMedium(index).move(game, speed)) {
+                    if (StrategyJackHard(index).move(game, speed)) {
                         return
                     }
                 }

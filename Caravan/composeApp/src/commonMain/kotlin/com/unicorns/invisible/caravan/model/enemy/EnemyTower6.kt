@@ -44,7 +44,7 @@ data object EnemyTower6 : Enemy {
             return
         }
 
-        val isProblem = (0..2).map { checkOnResult(game, it) }.any { it in listOf(
+        val isProblem = (0..2).map { checkOnResult(gameToState(game), it) }.any { it in listOf(
             GamePossibleResult.IMMINENT_PLAYER_VICTORY,
             GamePossibleResult.PLAYER_VICTORY_IS_POSSIBLE,
             GamePossibleResult.GAME_ON

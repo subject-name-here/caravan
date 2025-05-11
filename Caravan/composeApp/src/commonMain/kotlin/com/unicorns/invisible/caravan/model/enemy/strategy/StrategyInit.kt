@@ -22,7 +22,6 @@ class StrategyInit(val type: Type) : Strategy {
                 val caravan = game.enemyCaravans.filter { it.isEmpty() }.random()
                 caravan to card
             }
-
             Type.RANDOM_TO_LTR -> {
                 val card = game.enemyCResources.hand.filterIsInstance<CardBase>().random()
                 val caravan = game.enemyCaravans.first { it.isEmpty() }

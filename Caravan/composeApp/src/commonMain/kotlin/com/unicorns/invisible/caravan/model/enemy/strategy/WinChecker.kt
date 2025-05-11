@@ -3,7 +3,16 @@ package com.unicorns.invisible.caravan.model.enemy.strategy
 import com.unicorns.invisible.caravan.model.Game
 
 
-class Guild(var v1: Int, var v2: Int, var v3: Int)
+class Guild(var v1: Int, var v2: Int, var v3: Int) {
+    operator fun get(index: Int): Int {
+        return when (index) {
+            0 -> v1
+            1 -> v2
+            2 -> v3
+            else -> throw NoSuchElementException()
+        }
+    }
+}
 class State(val player: Guild, val enemy: Guild)
 
 fun gameToState(game: Game): State {
@@ -85,11 +94,13 @@ enum class GamePossibleResult {
     IMMINENT_PLAYER_VICTORY,
     ENEMY_VICTORY_IS_POSSIBLE,
     PLAYER_VICTORY_IS_POSSIBLE,
-    GAME_ON,
+    GAME_ON;
 
+    fun isPlayerMoveWins(): Boolean = this in listOf(GAME_ON, PLAYER_VICTORY_IS_POSSIBLE, IMMINENT_PLAYER_VICTORY)
+    fun isEnemyMoveWins(): Boolean = this in listOf(GAME_ON, ENEMY_VICTORY_IS_POSSIBLE, IMMINENT_ENEMY_VICTORY)
 }
-fun checkOnResult(game: Game, caravanIndex: Int): GamePossibleResult {
-    val otherCaravansIndices = game.enemyCaravans.indices.filter { it != caravanIndex }
+fun checkOnResult(state: State, caravanIndex: Int): GamePossibleResult {
+    val otherCaravansIndices = (0..2).filter { it != caravanIndex }
     var score = 0
     fun checkIfWin(e0: Int, p0: Int) {
         if (e0 in (21..26) && (e0 > p0 || p0 > 26)) {
@@ -97,37 +108,37 @@ fun checkOnResult(game: Game, caravanIndex: Int): GamePossibleResult {
         }
     }
     otherCaravansIndices.forEach {
-        checkIfWin(game.enemyCaravans[it].getValue(), game.playerCaravans[it].getValue())
+        checkIfWin(state.enemy[it], state.player[it])
     }
-    if (score == 2) {
+    if (score == 2 && state.enemy[caravanIndex] >= 11) {
         return GamePossibleResult.IMMINENT_ENEMY_VICTORY
     }
 
     score = 0
     otherCaravansIndices.forEach {
-        checkIfWin(game.playerCaravans[it].getValue(), game.enemyCaravans[it].getValue())
+        checkIfWin(state.player[it], state.enemy[it])
     }
-    if (score == 2) {
+    if (score == 2 && state.player[caravanIndex] >= 11) {
         return GamePossibleResult.IMMINENT_PLAYER_VICTORY
     }
 
     score = 0
     otherCaravansIndices.forEach {
-        checkIfWin(game.enemyCaravans[it].getValue(), game.playerCaravans[it].getValue())
+        checkIfWin(state.enemy[it], state.player[it])
     }
     if (score == 1) {
         otherCaravansIndices.forEach {
-            checkIfWin(game.playerCaravans[it].getValue(), game.enemyCaravans[it].getValue())
+            checkIfWin(state.player[it], state.enemy[it])
         }
         if (score == 2) {
             return when {
-                game.enemyCaravans[caravanIndex].getValue() >= 11 && game.playerCaravans[caravanIndex].getValue() >= 11 -> {
+                state.enemy[caravanIndex] >= 11 && state.player[caravanIndex] >= 11 -> {
                     GamePossibleResult.GAME_ON
                 }
-                game.enemyCaravans[caravanIndex].getValue() >= 11 -> {
+                state.enemy[caravanIndex] >= 11 -> {
                     GamePossibleResult.ENEMY_VICTORY_IS_POSSIBLE
                 }
-                game.playerCaravans[caravanIndex].getValue() >= 11 -> {
+                state.player[caravanIndex] >= 11 -> {
                     GamePossibleResult.PLAYER_VICTORY_IS_POSSIBLE
                 }
                 else -> GamePossibleResult.UNKNOWN

@@ -7,6 +7,7 @@ import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyDropAllButFace
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyInit
+import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJackHard
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJackMedium
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJackToPlayer
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJokerSimple
@@ -58,12 +59,12 @@ class EnemyHanlon : EnemyPvENoBank() {
                 val index = hand.indexOf(modifier)
                 when (modifier.rank) {
                     RankFace.JACK -> {
-                        if (StrategyJackToPlayer(index).move(game, speed)) {
+                        if (StrategyJackHard(index, StrategyJackHard.Direction.TO_PLAYER).move(game, speed)) {
                             return
                         }
                     }
                     RankFace.KING -> {
-                        if (StrategyKingRuiner(index).move(game, speed)) {
+                        if (StrategyKingRuiner(index, isHard = true).move(game, speed)) {
                             return
                         }
                     }
@@ -107,7 +108,7 @@ class EnemyHanlon : EnemyPvENoBank() {
         }
         if (jacks.size > 1 || numbers.isEmpty()) {
             val jackIndex = hand.indexOf(jacks.first())
-            if (StrategyJackMedium(jackIndex).move(game, speed)) {
+            if (StrategyJackHard(jackIndex).move(game, speed)) {
                 return
             }
         }

@@ -5,8 +5,10 @@ import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyDropLadiesFirst
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyInit
+import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJackHard
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJackToPlayer
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJokerSimpleOnPlayer
+import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyKingHard
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyKingRuiner
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyKingToPlayer
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyPutNumbersMedium
@@ -48,12 +50,12 @@ data object EnemyTowerBonus : Enemy {
             val index = game.enemyCResources.hand.indexOf(modifier)
             when (modifier.rank) {
                 RankFace.JACK -> {
-                    if (StrategyJackToPlayer(index).move(game, speed)) {
+                    if (StrategyJackHard(index, StrategyJackHard.Direction.TO_PLAYER).move(game, speed)) {
                         return
                     }
                 }
                 RankFace.KING -> {
-                    if (StrategyKingRuiner(index).move(game, speed) || StrategyKingToPlayer(index).move(game, speed)) {
+                    if (StrategyKingRuiner(index, isHard = true).move(game, speed) || StrategyKingHard(index, StrategyKingHard.Direction.TO_PLAYER).move(game, speed)) {
                         return
                     }
                 }

@@ -7,6 +7,7 @@ import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyDropLadiesFirst
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyInit
+import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJackHard
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJackMedium
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJokerSimple
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyKingHard
@@ -70,7 +71,7 @@ class EnemyVulpes : EnemyPvENoBank() {
 
         val jack = modifiers.find { it.rank == RankFace.JACK }
         if (jack != null) {
-            if (StrategyJackMedium(hand.indexOf(jack)).move(game, speed)) {
+            if (StrategyJackHard(hand.indexOf(jack)).move(game, speed)) {
                 return
             }
         }

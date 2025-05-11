@@ -7,6 +7,7 @@ import com.unicorns.invisible.caravan.model.primitives.CardModifier
 import com.unicorns.invisible.caravan.model.primitives.CardWithModifier
 import com.unicorns.invisible.caravan.model.primitives.RankNumber
 
+
 class StrategyJokerMedium(val index: Int) : Strategy {
     override suspend fun move(game: Game, speed: AnimationSpeed): Boolean {
         val joker = game.enemyCResources.hand[index] as CardJoker
