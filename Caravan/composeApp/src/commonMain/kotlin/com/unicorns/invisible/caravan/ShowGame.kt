@@ -104,6 +104,7 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.Font
 import org.jetbrains.compose.resources.stringResource
+import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
 
@@ -577,15 +578,7 @@ fun Hand(
             val modifier = Modifier.offset { IntOffset(widthOffset.toInt(), (256f * scale * offsetMult).toInt()) }
 
             if (isEnemy) {
-                // TODO: remove!
-                // ShowCardBack(it, modifier.padding(4.dp), scale)
-                Box(modifier.padding(4.dp)) {
-                    ShowCard(
-                        it,
-                        Modifier,
-                        scale
-                    )
-                }
+                ShowCardBack(it, modifier.padding(4.dp), scale)
             } else {
                 Box(modifier
                         .border(
@@ -1141,7 +1134,7 @@ fun RowScope.BlitzTimer(
             if (game.canPlayerMove) {
                 timeOnTimer -= 0.1f
             }
-            if (timeOnTimer < 10) {
+            if (timeOnTimer < 10 && abs(timeOnTimer.toInt() - timeOnTimer) < 0.05) {
                 playNoBeep()
             }
             delay(100L)

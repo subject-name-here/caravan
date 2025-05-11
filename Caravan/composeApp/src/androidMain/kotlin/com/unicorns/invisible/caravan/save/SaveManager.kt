@@ -29,7 +29,7 @@ val json = Json {
 }
 
 private fun getOldLocalSaveFile(activity: MainActivity): ByteArray? {
-    val file = activity.filesDir.resolve("saveMkII") // TODO
+    val file = activity.filesDir.resolve("saveMkII")
     return if (file.exists()) file.readBytes() else null
 }
 
@@ -39,7 +39,7 @@ private fun getLocalSaveFile(activity: MainActivity): File {
 
 actual fun saveData() {
     val act = activity
-    if (isSaveLoaded != true || act == null) {
+    if (!isSaveLoaded || act == null) {
         return
     }
 
