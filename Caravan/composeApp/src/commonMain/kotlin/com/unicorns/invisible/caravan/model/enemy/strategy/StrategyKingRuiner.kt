@@ -28,7 +28,7 @@ class StrategyKingRuiner(val index: Int, val isHard: Boolean = false) : Strategy
 
                     cardA.canAddModifier(king) &&
                             checkTheOutcome(state) != 1 &&
-                            (!isHard ||(0..2).none { checkOnResult(state, it).isPlayerMoveWins() }) &&
+                            (!isHard || !checkOnResult(state).isPlayerMoveWins()) &&
                             playerCaravan.getValue() + cardA.getValue() > 26 &&
                             playerCaravan.getValue() - cardA.getValue() !in (21..26)
                 }
@@ -50,7 +50,7 @@ class StrategyKingRuiner(val index: Int, val isHard: Boolean = false) : Strategy
 
                     cardA.canAddModifier(king) &&
                             checkTheOutcome(state) != 1 &&
-                            (!isHard ||(0..2).none { checkOnResult(state, it).isPlayerMoveWins() }) &&
+                            (!isHard || !checkOnResult(state).isPlayerMoveWins()) &&
                             playerCaravan.getValue() + cardA.getValue() > 26
                 }
                 .maxByOrNull { it.getValue() }

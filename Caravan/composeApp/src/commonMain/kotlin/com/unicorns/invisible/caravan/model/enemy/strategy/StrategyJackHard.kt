@@ -28,7 +28,7 @@ class StrategyJackHard(val index: Int, val direction: Direction = Direction.BOTH
                         1 -> state.player.v2 -= cardA.getValue()
                         2 -> state.player.v3 -= cardA.getValue()
                     }
-                    checkTheOutcome(state) != 1 && (0..2).none { checkOnResult(state, it).isPlayerMoveWins() }
+                    checkTheOutcome(state) != 1 && !checkOnResult(state).isPlayerMoveWins()
                 }
                 .maxByOrNull { it.getValue() }
             if (cardA != null) {
@@ -50,7 +50,7 @@ class StrategyJackHard(val index: Int, val direction: Direction = Direction.BOTH
                         1 -> state.enemy.v2 -= cardB.getValue()
                         2 -> state.enemy.v3 -= cardB.getValue()
                     }
-                    checkTheOutcome(state) != 1 && (0..2).none { checkOnResult(state, it).isPlayerMoveWins() }
+                    checkTheOutcome(state) != 1 && !checkOnResult(state).isPlayerMoveWins()
                 }
                 .maxByOrNull { cardB ->
                     val state = gameToState(game)

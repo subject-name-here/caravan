@@ -230,7 +230,8 @@ fun TowerScreen(
         }
         13 -> {
             var capsMemory by rememberScoped { mutableIntStateOf(0) }
-            StartTowerGame(EnemyFrank, showAlertDialog, {
+            // TODO!
+            StartTowerGame(EnemyFrank(if (saveGlobal.towerBeatenN) 3 else 2), showAlertDialog, {
                 startLevel11Theme()
                 playFrankPhrase("files/raw/frank_on_game_start.ogg")
                 levelMemory = level
@@ -255,8 +256,6 @@ fun TowerScreen(
                 stopRadio()
             }) {
                 playLevel = 0
-                soundReduced = false
-
                 CoroutineScope(Dispatchers.Unconfined).launch {
                     if (level == 0) {
                         playTowerFailed()
@@ -264,9 +263,8 @@ fun TowerScreen(
                         playTowerCompleted()
                     }
                     delay(14000L)
-                    if (!soundReduced) {
-                        nextSong()
-                    }
+                    soundReduced = false
+                    nextSong()
                 }
             }
             return

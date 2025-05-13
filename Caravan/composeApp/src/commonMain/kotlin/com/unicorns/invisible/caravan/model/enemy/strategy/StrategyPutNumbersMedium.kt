@@ -24,7 +24,7 @@ class StrategyPutNumbersMedium(val isHard: Boolean = false) : Strategy {
                         -500
                     } else if (checkTheOutcome(state) == -1) {
                         500
-                    } else if (isHard && (0..2).any { checkOnResult(state, it).isPlayerMoveWins() }) {
+                    } else if (isHard && checkOnResult(state).isPlayerMoveWins()) {
                         -250
                     } else {
                         val v = card.rank.value

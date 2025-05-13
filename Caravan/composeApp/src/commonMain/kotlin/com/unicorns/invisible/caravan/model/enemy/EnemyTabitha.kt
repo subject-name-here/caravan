@@ -14,7 +14,6 @@ import com.unicorns.invisible.caravan.model.enemy.strategy.checkOnResult
 import com.unicorns.invisible.caravan.model.enemy.strategy.checkTheOutcome
 import com.unicorns.invisible.caravan.model.enemy.strategy.gameToState
 import com.unicorns.invisible.caravan.model.primitives.CResources
-import com.unicorns.invisible.caravan.model.primitives.Card
 import com.unicorns.invisible.caravan.model.primitives.CardBase
 import com.unicorns.invisible.caravan.model.primitives.CardFace
 import com.unicorns.invisible.caravan.model.primitives.CardFaceSuited
@@ -108,7 +107,7 @@ class EnemyTabitha : EnemyPvEWithBank() {
                 2 -> state.player.v3 -= aceOfDiamonds.getValue()
             }
 
-            if (checkTheOutcome(state) != 1 && (0..2).none { checkOnResult(state, it).isPlayerMoveWins() }) {
+            if (checkTheOutcome(state) != 1 && !checkOnResult(state).isPlayerMoveWins()) {
                 val jackIndex = hand.indexOf(jack)
                 aceOfDiamonds.addModifier(
                     game.enemyCResources.removeFromHand(
@@ -174,7 +173,7 @@ class EnemyTabitha : EnemyPvEWithBank() {
                         1 -> state.player.v2 -= cardToJack.getValue()
                         2 -> state.player.v3 -= cardToJack.getValue()
                     }
-                    if (checkTheOutcome(state) != 1 && (0..2).none { checkOnResult(state, it).isPlayerMoveWins() }) {
+                    if (checkTheOutcome(state) != 1 && !checkOnResult(state).isPlayerMoveWins()) {
                         cardToJack.addModifier(
                             game.enemyCResources.removeFromHand(
                                 cardIndex,
@@ -199,7 +198,7 @@ class EnemyTabitha : EnemyPvEWithBank() {
                         1 -> state.player.v2 -= cardToKing.getValue()
                         2 -> state.player.v3 -= cardToKing.getValue()
                     }
-                    if (checkTheOutcome(state) != 1 && (0..2).none { checkOnResult(state, it).isPlayerMoveWins() }) {
+                    if (checkTheOutcome(state) != 1 && !checkOnResult(state).isPlayerMoveWins()) {
                         cardToKing.addModifier(
                             game.enemyCResources.removeFromHand(
                                 cardIndex,
@@ -224,7 +223,7 @@ class EnemyTabitha : EnemyPvEWithBank() {
                                     1 -> state.enemy.v2 += it.first.getValue()
                                     2 -> state.enemy.v3 += it.first.getValue()
                                 }
-                                if (checkTheOutcome(state) != 1 && (0..2).none { checkOnResult(state, it).isPlayerMoveWins() }) {
+                                if (checkTheOutcome(state) != 1 && !checkOnResult(state).isPlayerMoveWins()) {
                                     it.first.addModifier(
                                         game.enemyCResources.removeFromHand(
                                             cardIndex,
@@ -249,7 +248,7 @@ class EnemyTabitha : EnemyPvEWithBank() {
                                 1 -> state.enemy.v2 += card.rank.value
                                 2 -> state.enemy.v3 += card.rank.value
                             }
-                            if (checkTheOutcome(state) != 1 && (0..2).none { checkOnResult(state, it).isPlayerMoveWins() }) {
+                            if (checkTheOutcome(state) != 1 && !checkOnResult(state).isPlayerMoveWins()) {
                                 caravan.putCardOnTop(
                                     game.enemyCResources.removeFromHand(
                                         cardIndex,
@@ -279,7 +278,7 @@ class EnemyTabitha : EnemyPvEWithBank() {
                         1 -> state.enemy.v2 -= cardToDelete.getValue()
                         2 -> state.enemy.v3 -= cardToDelete.getValue()
                     }
-                    if (checkTheOutcome(state) != 1 && (0..2).none { checkOnResult(state, it).isPlayerMoveWins() }) {
+                    if (checkTheOutcome(state) != 1 && !checkOnResult(state).isPlayerMoveWins()) {
                         cardToDelete.addModifier(
                             game.enemyCResources.removeFromHand(
                                 cardIndex,

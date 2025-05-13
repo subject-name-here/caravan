@@ -67,7 +67,7 @@ data object EnemyTower8 : Enemy {
             }
         }
 
-        val isProblem = (0..2).any { checkOnResult(gameToState(game), it).isPlayerMoveWins() }
+        val isProblem = checkOnResult(gameToState(game)).isPlayerMoveWins()
         if (isProblem) {
             val jokers = game.enemyCResources.hand.filterIsInstance<CardJoker>()
             jokers.forEach { joker ->

@@ -189,7 +189,7 @@ class StrategyJokerMedium(val index: Int) : Strategy {
             }
             return if (checkTheOutcome(state) == 1) {
                 -5000
-            } else if ((0..2).any { checkOnResult(state, it).isPlayerMoveWins() }) {
+            } else if (checkOnResult(state).isPlayerMoveWins()) {
                 -2500
             } else if (checkTheOutcome(state) == -1) {
                 5000

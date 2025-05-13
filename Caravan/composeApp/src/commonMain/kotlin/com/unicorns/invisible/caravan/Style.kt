@@ -92,7 +92,7 @@ enum class Style(
     val progress: () -> Pair<Int, Int>
 ) {
     DESERT(Res.string.style_desert, Res.string.style_desert_condition, { saveGlobal.maxStrike to 7 }),
-    ALASKA_FRONTIER(Res.string.style_alaska, Res.string.style_alaska_condition, { saveGlobal.maxStrike to 15 }),
+    ALASKA_FRONTIER(Res.string.style_alaska, Res.string.style_alaska_condition, { saveGlobal.maxStrike to 14 }),
     PIP_BOY(Res.string.style_pip_boy, Res.string.null_condition, { 0 to 0 }),
     PIP_GIRL(Res.string.style_pip_girl, Res.string.style_pip_girl_condition, { saveGlobal.lvl to 6 }),
     OLD_WORLD(Res.string.style_old_world, Res.string.style_old_world_condition, { saveGlobal.capsWasted + saveGlobal.chipsWasted to 7500 }),

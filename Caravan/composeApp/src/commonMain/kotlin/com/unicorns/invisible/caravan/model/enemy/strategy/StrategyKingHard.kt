@@ -26,7 +26,7 @@ class StrategyKingHard(val index: Int, val direction: Direction = Direction.BOTH
                         2 -> state.player.v3 += cardA.getValue()
                     }
                     checkTheOutcome(state) != 1 && game.playerCaravans[indexC].getValue() + cardA.getValue() > 26 &&
-                            (0..2).none { checkOnResult(state, it).isPlayerMoveWins() }
+                            !checkOnResult(state).isPlayerMoveWins()
                 }
                 .maxByOrNull { it.getValue() }
             if (cardA != null) {
@@ -49,7 +49,7 @@ class StrategyKingHard(val index: Int, val direction: Direction = Direction.BOTH
                         2 -> state.enemy.v3 += cardB.getValue()
                     }
                     checkTheOutcome(state) != 1 && game.enemyCaravans[indexC].getValue() + cardB.getValue() <= 26 &&
-                            (0..2).none { checkOnResult(state, it).isPlayerMoveWins() }
+                            !checkOnResult(state).isPlayerMoveWins()
                 }
                 .maxByOrNull { it.getValue() }
             if (cardB != null) {

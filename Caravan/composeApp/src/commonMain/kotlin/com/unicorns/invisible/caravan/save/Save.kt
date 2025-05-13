@@ -258,6 +258,8 @@ class Save(var playerId: String? = null) {
     var isHeroic = false
     @EncodeDefault
     var isRadioUsesPseudonyms = false
+    @EncodeDefault
+    var frankChallenge = false
 
     @EncodeDefault
     val enemiesGroups4 = listOf(

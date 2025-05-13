@@ -115,8 +115,6 @@ class CardWildWasteland(val wwType: WWType) : CardModifier()
 @Serializable
 sealed class CardNuclear : CardModifier()
 @Serializable
-@Suppress("CanSealedSubClassBeObject")
-class CardAtomic : CardNuclear()
+class CardAtomic(val dummy: Unit = Unit) : CardNuclear()
 @Serializable
-@Suppress("CanSealedSubClassBeObject")
-class CardFBomb : CardNuclear()
+class CardFBomb(val dummy: Unit = Unit) : CardNuclear()

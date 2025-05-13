@@ -44,7 +44,7 @@ data object EnemyTower6 : Enemy {
             return
         }
 
-        val isProblem = (0..2).map { checkOnResult(gameToState(game), it) }.any { it.isPlayerMoveWins() }
+        val isProblem = checkOnResult(gameToState(game)).isPlayerMoveWins()
 
         if (isProblem) {
             val jokers = game.enemyCResources.hand.filterIsInstance<CardJoker>()

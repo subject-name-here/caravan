@@ -103,7 +103,6 @@ enum class RadioState {
 private val radioPlayers = HashSet<MediaPlayer>()
 private val radioLock = ReentrantLock()
 private var radioState = RadioState.PLAYING
-@OptIn(ExperimentalResourceApi::class)
 actual fun playSongFromRadio() {
     val vol = saveGlobal.radioVolume
     val act = activity ?: return

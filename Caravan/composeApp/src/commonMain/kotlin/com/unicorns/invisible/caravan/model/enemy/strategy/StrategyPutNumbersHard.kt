@@ -15,11 +15,7 @@ class StrategyPutNumbersHard : Strategy {
             numbers.forEach { card ->
                 if (caravan.canPutCardOnTop(card) && caravan.getValue() + card.rank.value <= 26) {
                     val state = gameToState(game)
-                    when (indexC) {
-                        0 -> state.enemy.v1 += card.rank.value
-                        1 -> state.enemy.v2 += card.rank.value
-                        2 -> state.enemy.v3 += card.rank.value
-                    }
+                    state.enemy[indexC] += card.rank.value
 
                     suspend fun putCard() {
                         val index = game.enemyCResources.hand.indexOf(card)
@@ -29,7 +25,7 @@ class StrategyPutNumbersHard : Strategy {
                     if (checkTheOutcome(state) == -1) {
                         putCard()
                         return true
-                    } else if (checkTheOutcome(state) != 1 && (0..2).none { checkOnResult(state, it).isPlayerMoveWins() }) {
+                    } else if (checkTheOutcome(state) != 1 && !checkOnResult(state).isPlayerMoveWins()) {
                         if (caravan.isEmpty() || caravan.getValue() + card.rank.value in (21..26)) {
                             putCard()
                             return true

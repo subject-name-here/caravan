@@ -91,7 +91,7 @@ class StrategyJokerSimple(val index: Int, val isHard: Boolean = false) : Strateg
             }
             return if (checkTheOutcome(state) == 1) {
                 -5000
-            } else if (isHard && (0..2).any { checkOnResult(state, it).isPlayerMoveWins() }) {
+            } else if (isHard && checkOnResult(state).isPlayerMoveWins()) {
                 -2500
             } else if (checkTheOutcome(state) == -1) {
                 5000

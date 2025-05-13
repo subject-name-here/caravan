@@ -112,7 +112,7 @@ class EnemyHanlon : EnemyPvENoBank() {
                 return
             }
         }
-        if (queens.isNotEmpty() || numbers.isEmpty()) {
+        if (queens.isNotEmpty()) {
             val queenIndex = hand.indexOf(queens.first())
             if (StrategyQueenToSelf(queenIndex).move(game, speed)) {
                 return

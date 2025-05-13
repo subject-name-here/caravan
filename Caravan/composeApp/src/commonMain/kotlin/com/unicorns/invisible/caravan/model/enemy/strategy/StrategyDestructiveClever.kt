@@ -23,7 +23,7 @@ class StrategyDestructiveClever : Strategy {
                         1 -> state.player.v2 -= cardA.getValue()
                         2 -> state.player.v3 -= cardA.getValue()
                     }
-                    checkTheOutcome(state) != 1 && cardA.canAddModifier(jack) && (0..2).none { checkOnResult(state, it).isPlayerMoveWins() }
+                    checkTheOutcome(state) != 1 && cardA.canAddModifier(jack) && !checkOnResult(state).isPlayerMoveWins()
                 }
                 .maxByOrNull { it.getValue() }
             if (cardToJack != null) {
@@ -47,7 +47,7 @@ class StrategyDestructiveClever : Strategy {
                         1 -> state.player.v2 += cardA.getValue()
                         2 -> state.player.v3 += cardA.getValue()
                     }
-                    checkTheOutcome(state) != 1 && cardA.canAddModifier(king) && (0..2).none { checkOnResult(state, it).isPlayerMoveWins() }
+                    checkTheOutcome(state) != 1 && cardA.canAddModifier(king) && !checkOnResult(state).isPlayerMoveWins()
                 }
                 .maxByOrNull { it.getValue() }
             if (cardToKing != null) {

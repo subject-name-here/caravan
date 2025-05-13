@@ -105,52 +105,58 @@ enum class GamePossibleResult {
     fun isPlayerMoveWins(): Boolean = this in listOf(GAME_ON, IMMINENT_PLAYER_VICTORY)
     fun isEnemyMoveWins(): Boolean = this in listOf(GAME_ON, IMMINENT_ENEMY_VICTORY)
 }
-fun checkOnResult(state: State, caravanIndex: Int): GamePossibleResult {
-    val otherCaravansIndices = (0..2).filter { it != caravanIndex }
-    var score = 0
-    fun checkIfWin(e0: Int, p0: Int) {
-        if (e0 in (21..26) && (e0 > p0 || p0 > 26)) {
-            score++
-        }
-    }
-    otherCaravansIndices.forEach {
-        checkIfWin(state.enemy[it], state.player[it])
-    }
-    if (score == 2 && (state.enemy[caravanIndex] >= 11 || state.player[caravanIndex] >= 11)) {
+fun checkOnResult(state: State, checkIndex: Int? = null): GamePossibleResult {
+    val outcome = checkTheOutcome(state)
+    if (outcome == -1) {
         return GamePossibleResult.IMMINENT_ENEMY_VICTORY
-    }
-
-    score = 0
-    otherCaravansIndices.forEach {
-        checkIfWin(state.player[it], state.enemy[it])
-    }
-    if (score == 2 && (state.enemy[caravanIndex] >= 11 || state.player[caravanIndex] >= 11)) {
+    } else if (outcome == 1) {
         return GamePossibleResult.IMMINENT_PLAYER_VICTORY
     }
 
-    score = 0
-    otherCaravansIndices.forEach {
-        checkIfWin(state.enemy[it], state.player[it])
+    fun checkCaravans(e0: Int, p0: Int): Boolean {
+        return (
+            e0 in (21..26) && (e0 > p0 || p0 > 26) ||
+            p0 in (21..26) && (p0 > e0 || e0 > 26)
+        )
     }
-    if (score == 1) {
-        otherCaravansIndices.forEach {
-            checkIfWin(state.player[it], state.enemy[it])
+    var score = 0
+    (0..2).forEach {
+        if (checkCaravans(state.enemy[it], state.player[it])) {
+            score++
         }
-        if (score == 2) {
-            return when {
-                state.enemy[caravanIndex] >= 11 && state.player[caravanIndex] >= 11 -> {
-                    GamePossibleResult.GAME_ON
-                }
-                state.enemy[caravanIndex] >= 11 -> {
-                    GamePossibleResult.IMMINENT_ENEMY_VICTORY
-                }
-                state.player[caravanIndex] >= 11 -> {
-                    GamePossibleResult.IMMINENT_PLAYER_VICTORY
-                }
-                else -> GamePossibleResult.UNKNOWN
-            }
-        }
+    }
+    if (score < 2) {
+        return GamePossibleResult.UNKNOWN
     }
 
-    return GamePossibleResult.UNKNOWN
+    val index = (0..2).find { !checkCaravans(state.enemy[it], state.player[it]) }!!
+    if (checkIndex != null && index != checkIndex) {
+        return GamePossibleResult.UNKNOWN
+    }
+    if (state.enemy[index] < 11 && state.player[index] < 11) {
+        return GamePossibleResult.UNKNOWN
+    }
+    val contCaravanResult = when {
+        state.enemy[index] >= 11 && state.player[index] >= 11 -> {
+            0
+        }
+        state.enemy[index] >= 11 -> {
+            -1
+        }
+        state.player[index] >= 11 -> {
+            1
+        }
+        else -> throw Exception()
+    }
+
+    val otherIndices = (0..2).filter { it != index }
+    val otherResults = otherIndices.map { check(state.player[it], state.enemy[it]) }
+    return when {
+        otherResults[0] == 1 && otherResults[1] == 1 -> GamePossibleResult.IMMINENT_PLAYER_VICTORY
+        otherResults[0] == -1 && otherResults[1] == -1 -> GamePossibleResult.IMMINENT_ENEMY_VICTORY
+        contCaravanResult == 0 -> GamePossibleResult.GAME_ON
+        contCaravanResult == 1 -> GamePossibleResult.IMMINENT_PLAYER_VICTORY
+        contCaravanResult == -1 -> GamePossibleResult.IMMINENT_ENEMY_VICTORY
+        else -> throw Exception()
+    }
 }
