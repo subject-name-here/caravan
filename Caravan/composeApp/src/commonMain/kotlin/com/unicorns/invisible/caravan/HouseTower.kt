@@ -230,8 +230,7 @@ fun TowerScreen(
         }
         13 -> {
             var capsMemory by rememberScoped { mutableIntStateOf(0) }
-            // TODO!
-            StartTowerGame(EnemyFrank(if (saveGlobal.towerBeatenN) 3 else 2), showAlertDialog, {
+            StartTowerGame(EnemyFrank(isHard = saveGlobal.towerBeatenN), showAlertDialog, {
                 startLevel11Theme()
                 playFrankPhrase("files/raw/frank_on_game_start.ogg")
                 levelMemory = level
@@ -975,7 +974,7 @@ fun StartTowerGame(
     goBack: () -> Unit,
 ) {
     val isFrankSequence = enemy is EnemyFrank
-    var showIntro by rememberSaveable { mutableStateOf(false) }
+    var showIntro by rememberSaveable { mutableStateOf(isFrankSequence) }
     var showFrankOutro by rememberSaveable { mutableStateOf(false) }
     if (showIntro) {
         playNotificationSound()

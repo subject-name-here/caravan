@@ -5,7 +5,6 @@ import com.unicorns.invisible.caravan.activity
 import com.unicorns.invisible.caravan.playingSongName
 import com.unicorns.invisible.caravan.saveGlobal
 import com.unicorns.invisible.caravan.soundReduced
-import org.jetbrains.compose.resources.ExperimentalResourceApi
 import java.util.concurrent.locks.ReentrantLock
 import kotlin.concurrent.withLock
 
@@ -19,7 +18,6 @@ actual fun stopSoundEffects() {
     }
 }
 
-@OptIn(ExperimentalResourceApi::class)
 actual fun playEffectPlayerSound(soundPath: String, volumeFraction: Int) {
     val vol = saveGlobal.soundVolume / volumeFraction
     val act = activity ?: return
@@ -60,16 +58,15 @@ actual fun setAmbientVolume(volume: Float) {
     }
 }
 
-@OptIn(ExperimentalResourceApi::class)
 actual fun startAmbient() {
     if (soundReduced) return
 
     val act = activity ?: return
     val vol = saveGlobal.ambientVolume / 2
 
-    val soundPath = "files/raw/ambient${(1..8).random()}.ogg"
+    val soundPath = "raw/ambient${(1..8).random()}.ogg"
     val player = MediaPlayer()
-    val afd = act.assets.openFd(soundPath.removePrefix("files/"))
+    val afd = act.assets.openFd(soundPath)
     player.apply {
         setDataSource(afd.fileDescriptor, afd.startOffset, afd.length)
         setVolume(vol, vol)
@@ -213,7 +210,6 @@ actual fun setRadioVolume(volume: Float) {
     }
 }
 
-@OptIn(ExperimentalResourceApi::class)
 actual fun playTheme(themePath: String) {
     stopRadio()
     val vol = saveGlobal.radioVolume
@@ -243,7 +239,6 @@ actual fun playTheme(themePath: String) {
     }
 }
 
-@OptIn(ExperimentalResourceApi::class)
 actual fun playFrankPhrase(phrasePath: String) {
     val vol = saveGlobal.soundVolume / 2
     val player = MediaPlayer()
@@ -268,7 +263,6 @@ actual fun playFrankPhrase(phrasePath: String) {
     }
 }
 
-@OptIn(ExperimentalResourceApi::class)
 actual fun playDeathPhrase(phrasePath: String) {
     val vol = saveGlobal.radioVolume
     val player = MediaPlayer()

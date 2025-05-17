@@ -231,15 +231,15 @@ fun ChipsToBuy(price: Int, update: () -> Unit) {
 @Composable
 fun ShowTraders(goBack: () -> Unit) {
     val traders = listOf<Trader>(
-        CommonTrader(),
-        UltraLuxeTrader(),
-        TopsTrader(),
-        GomorrahTrader(),
-        Lucky38Trader(),
-        Vault21Trader(),
-        SierraMadreTrader(),
-        EnclaveTrader(),
-        ChineseTrader(),
+        CommonTrader,
+        UltraLuxeTrader,
+        TopsTrader,
+        GomorrahTrader,
+        Lucky38Trader,
+        Vault21Trader,
+        SierraMadreTrader,
+        EnclaveTrader,
+        ChineseTrader,
     )
 
     MenuItemOpenNoScroll(stringResource(Res.string.market), "<-", goBack) {

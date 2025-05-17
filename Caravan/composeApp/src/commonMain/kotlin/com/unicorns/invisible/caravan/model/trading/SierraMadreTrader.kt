@@ -12,7 +12,7 @@ import org.jetbrains.compose.resources.getString
 
 
 @Serializable
-class SierraMadreTrader : Trader {
+data object SierraMadreTrader : Trader {
     override fun isOpen() = saveGlobal.storyProgress > 11
     override suspend fun openingCondition() = getString(Res.string.sierra_madre_trader_cond)
 

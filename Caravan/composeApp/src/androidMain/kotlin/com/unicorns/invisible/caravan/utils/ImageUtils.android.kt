@@ -10,10 +10,8 @@ import coil.compose.AsyncImage
 import coil.decode.SvgDecoder
 import coil.request.ImageRequest
 import com.unicorns.invisible.caravan.activity
-import org.jetbrains.compose.resources.ExperimentalResourceApi
 
 
-@OptIn(ExperimentalResourceApi::class)
 @Composable
 actual fun ShowImageFromPath(
     path: String,

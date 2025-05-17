@@ -209,7 +209,7 @@ fun App() {
         Res.string.intro_tip_l10,
         Res.string.intro_tip_l11,
     ).random(Random(id.hashCode()))
-    // TODO: more advices!!!!
+    // TODO 3.0: more advices!!!!
 
 
     var isIntroScreen by rememberScoped { mutableStateOf(true) }
@@ -1085,12 +1085,12 @@ fun MainMenu(
 }
 
 fun processChallengesMove(move: Challenge.Move, game: Game) {
-    (saveGlobal.challengesNew + saveGlobal.challengesInf).forEach { challenge ->
+    (saveGlobal.challengesDaily + saveGlobal.challengesInf).forEach { challenge ->
         challenge.processMove(move, game)
     }
 }
 fun processChallengesGameOver(game: Game) {
-    (saveGlobal.challengesNew + saveGlobal.challengesInf).forEach { challenge ->
+    (saveGlobal.challengesDaily + saveGlobal.challengesInf).forEach { challenge ->
         challenge.processGameResult(game)
     }
 }

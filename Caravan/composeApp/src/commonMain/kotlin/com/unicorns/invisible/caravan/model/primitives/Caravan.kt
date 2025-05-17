@@ -52,7 +52,8 @@ class Caravan {
             val card = getCard(cardCopy)
             cardsMutable.add(
                 CardWithModifier(CardNumberWW(card.first, card.second)).apply {
-                    copyModifiersFrom(mods); copyWild(cardCopy)
+                    copyModifiersFrom(mods)
+                    copyWild(cardCopy)
                 }
             )
         }
@@ -103,7 +104,6 @@ class Caravan {
             last.card.rank == preLast.card.rank -> {
                 return true
             }
-
             last.card.rank > preLast.card.rank -> {
                 if (
                     last.isQueenReversingSequence() && card.rank < last.card.rank ||
@@ -112,7 +112,6 @@ class Caravan {
                     return true
                 }
             }
-
             last.card.rank < preLast.card.rank -> {
                 if (
                     last.isQueenReversingSequence() && card.rank > last.card.rank ||

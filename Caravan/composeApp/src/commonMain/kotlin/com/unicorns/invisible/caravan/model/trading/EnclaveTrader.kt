@@ -12,11 +12,11 @@ import org.jetbrains.compose.resources.getString
 
 
 @Serializable
-class EnclaveTrader : Trader {
+data object EnclaveTrader : Trader {
     override fun isOpen() = saveGlobal.towerBeatenN
     override suspend fun openingCondition() = getString(Res.string.enclave_trader_cond)
 
-    override fun getUpdateRate() = 1
+    override fun getUpdateRate() = 24
 
     override fun getWelcomeMessage() = Res.string.enclave_trader_welcome
     override fun getEmptyStoreMessage() = Res.string.enclave_trader_empty

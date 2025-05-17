@@ -128,7 +128,7 @@ fun getStyleCities(style: Style): List<String> {
 }
 
 
-// TODO: check everything!!!
+// TODO 3.0: check everything!!!
 @Composable
 fun BoxWithConstraintsScope.StylePicture(
     style: Style,
@@ -276,10 +276,10 @@ fun BoxWithConstraintsScope.StylePicture(
 
         Style.BLACK -> {}
         NCR -> {
-            // TODO
+
         }
         LEGION -> {
-            // TODO
+
         }
     }
 }

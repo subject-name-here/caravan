@@ -6,7 +6,7 @@ import com.unicorns.invisible.caravan.color.Colors
 import com.unicorns.invisible.caravan.styleId
 
 
-// TODO: test it all
+// TODO 3.0: test it all
 
 fun getBackgroundColor(): Color {
     return getBackByStyle(styleId)
@@ -199,7 +199,6 @@ fun getDialogTextColor(): Color {
 }
 
 fun getDividerColor(): Color = getTextColor()
-fun getDividerColorByStyle(style: Style): Color = getTextColorByStyle(style)
 
 fun getCheckBoxBorderColor(): Color = getSelectionColor()
 
@@ -220,7 +219,7 @@ fun getCheckBoxFillColor(): Color = when (styleId) {
     Style.LEGION -> Colors.LegionStroke
 }
 
-fun getTrackColor(): Color = getDividerColor()
+fun getTrackColor(): Color = getTrackColorByStyle(styleId)
 fun getTrackColorByStyle(style: Style): Color = when (style) {
     Style.DESERT -> Colors.DesertAccent
     Style.PIP_BOY -> Colors.ColorTextBack

@@ -59,7 +59,7 @@ import com.unicorns.invisible.caravan.utils.playSelectSound
 import org.jetbrains.compose.resources.stringResource
 
 
-// TODO: check everything, update FAQ from discord!!!!
+// TODO 3.0: check everything, update FAQ from discord!!!!
 @Composable
 fun ShowRules(goBack: () -> Unit) {
     var selectedTab by rememberSaveable { mutableIntStateOf(0) }

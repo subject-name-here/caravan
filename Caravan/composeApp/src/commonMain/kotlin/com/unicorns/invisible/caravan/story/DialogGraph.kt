@@ -19,12 +19,12 @@ class DialogMiddleState(
 data class DialogEdge(
     val oldState: Int, val newState: Int,
     val lineId: StringResource,
-    val onVisited: suspend () -> Int = { -1 } // returns edge to visit
+    val onVisited: suspend () -> Int = { -1 } // returns edge to visit; useful for Frank appearance
 )
 
 class DialogGraph(
     val states: List<DialogState>,
     val edges: List<DialogEdge>,
 ) {
-    val visitedStates = Array<Boolean>(states.size) { false }
+    val visitedStates = Array(states.size) { false }
 }

@@ -34,14 +34,11 @@ sealed interface Challenge {
             challenges.add(ChallengeDailyAll())
 
             challenges.add(ChallengePlayCard((1..14).random(rand)))
-            challenges.add(ChallengeDoNotPlayCards((1..7).random(rand))) // TODO: add more variations
-            if (false /** saveGlobal.lvl >= 6 */) { // TODO: for release
-                challenges.add(ChallengeBeatEnemiesLevel((1..8).random(rand))) // TODO: add more combinations
-            } else {
-                challenges.add(ChallengeBeatEnemiesLevel(saveGlobal.lvl))
-            }
+            challenges.add(ChallengeDoNotPlayCards((1..7).random(rand))) // TODO 3.0: add more variations
+            // challenges.add(ChallengeBeatEnemies((1..).random(rand))) // TODO 3.0: add more combinations
+            challenges.add(ChallengeBeatEnemies(listOf(1, 2, 4, 5, 6, 7, 9, 10, 11).random(rand)))
 
-            val specialCode = (1..7).random(rand)  // TODO: add more interesting things!
+            val specialCode = (1..7).random(rand)  // TODO 3.0: add more interesting things!
             when (specialCode) {
                 1 -> challenges.add(ChallengeWinByDiscard())
                 2 -> challenges.add(ChallengeWinByPlayingJoker())

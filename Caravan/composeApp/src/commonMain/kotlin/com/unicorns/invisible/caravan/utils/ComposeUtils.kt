@@ -123,6 +123,8 @@ fun TextUnit.spToPx() = with(LocalDensity.current) { this@spToPx.toPx() }
 fun Dp.dpToPx() = with(LocalDensity.current) { this@dpToPx.toPx() }
 
 
+// TODO 3.0: check everything
+
 
 fun getFilter(back: CardBack): ColorFilter {
     return when (back) {
@@ -263,16 +265,12 @@ fun getBackFilter(back: CardBack): ColorFilter {
             )))
         }
         STANDARD_MYTHIC -> {
-            ColorFilter.colorMatrix(
-                ColorMatrix(
-                    floatArrayOf(
-                        1f, 0f, 0f, 0f, 0f,
-                        0f, 1f, 0f, 0f, 0f,
-                        1f, 0f, 0f, 0f, 0f,
-                        0f, 0f, 0f, 1f, 0f
-                    )
-                )
-            )
+            ColorFilter.colorMatrix(ColorMatrix(floatArrayOf(
+                1f, 0f, 0f, 0f, 0f,
+                0f, 1f, 0f, 0f, 0f,
+                1f, 0f, 0f, 0f, 0f,
+                0f, 0f, 0f, 1f, 0f
+            )))
         }
         STANDARD_LEGENDARY -> {
             ColorFilter.colorMatrix(ColorMatrix(floatArrayOf(
@@ -491,11 +489,11 @@ fun SwitchCustomUsualBackground(
             uncheckedBorderColor = Color.Transparent,
             uncheckedIconColor = Color.Transparent,
             disabledCheckedThumbColor = Colors.Red,
-            disabledCheckedTrackColor = Colors.White,
+            disabledCheckedTrackColor = Colors.DarkGreen,
             disabledCheckedBorderColor = Color.Transparent,
             disabledCheckedIconColor = Color.Transparent,
             disabledUncheckedThumbColor = Colors.Red,
-            disabledUncheckedTrackColor = Colors.White,
+            disabledUncheckedTrackColor = Colors.DarkGreen,
             disabledUncheckedBorderColor = Color.Transparent,
             disabledUncheckedIconColor = Color.Transparent,
         ),

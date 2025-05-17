@@ -70,15 +70,8 @@ class Save(var playerId: String? = null) {
 
     @EncodeDefault
     private val availableCards = CollectibleDeck(CardBack.STANDARD)
-    fun isCardAvailableAlready(it: CardWithPrice): Boolean {
-        return it in availableCards
-    }
-    fun addCard(card: CardWithPrice) {
-        availableCards.add(card)
-    }
-    fun removeCard(card: CardWithPrice) {
-        availableCards.remove(card)
-    }
+    fun isCardAvailableAlready(it: CardWithPrice) = it in availableCards
+    fun addCard(card: CardWithPrice) = availableCards.add(card)
     fun availableCardsSize() = availableCards.size
 
     val availableDecks
@@ -145,7 +138,7 @@ class Save(var playerId: String? = null) {
         private set
 
 
-    // TODO: more stats
+    // TODO 3.0: more stats
     // END STATS
 
 
@@ -197,6 +190,10 @@ class Save(var playerId: String? = null) {
     fun dropProgress() {
         lvl = 1
         xp = 0
+        storyProgress = 0
+        storyCompleted = false
+        towerBeatenN = false
+        ownedStyles.clear()
     }
 
     @EncodeDefault
@@ -209,23 +206,24 @@ class Save(var playerId: String? = null) {
     @EncodeDefault
     var dailyHash = 0
     @EncodeDefault
-    var challengesNew: MutableList<Challenge> = mutableListOf()
+    var challengesDaily: MutableList<Challenge> = mutableListOf()
     fun updateChallenges() {
-        challengesNew = Challenge.initChallenges(dailyHash)
+        challengesDaily = Challenge.initChallenges(dailyHash)
     }
 
     @EncodeDefault
     val challengesInf: MutableList<Challenge> = mutableListOf(
         ChallengeWin6Games(),
-        ChallengePlay188()
+        ChallengePlay188(),
+        // TODO 3.0: add one more
     )
     @EncodeDefault
     var challenges1: MutableList<Challenge> = mutableListOf(
-
+        // TODO 3.1: add one-time Challenges
     )
     @EncodeDefault
     var challenges2: MutableList<Challenge> = mutableListOf(
-
+        // TODO 3.1: add Road To Requiem.
     )
 
     @EncodeDefault

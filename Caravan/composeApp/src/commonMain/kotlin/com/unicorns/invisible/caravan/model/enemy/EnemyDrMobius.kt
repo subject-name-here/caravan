@@ -5,6 +5,17 @@ import caravan.composeapp.generated.resources.dr_mobius
 import com.unicorns.invisible.caravan.AnimationSpeed
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
+import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyDropLadiesFirst
+import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyInit
+import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJackHard
+import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJokerSimple
+import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJokerSimpleOnPlayer
+import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyKingHard
+import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyPutNumbersHard
+import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyPutNumbersMedium
+import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyQueenToSelf
+import com.unicorns.invisible.caravan.model.enemy.strategy.checkIfPlayerVictoryIsClose
+import com.unicorns.invisible.caravan.model.enemy.strategy.gameToState
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.CardFace
 import com.unicorns.invisible.caravan.model.primitives.CardFaceSuited
@@ -26,6 +37,8 @@ class EnemyDrMobius : EnemyPvEWithBank() {
         get() = false
     override val level: Int
         get() = 4
+    override val isAvailable: Boolean
+        get() = true
 
     override fun createDeck() = CResources(CustomDeck().apply {
         repeat(3) {
@@ -40,7 +53,7 @@ class EnemyDrMobius : EnemyPvEWithBank() {
         get() = 8
     override var curBets: Int = maxBets
     override val bet: Int
-        get() = 88
+        get() = 11
 
     override var winsNoBet: Int = 0
     override var winsBet: Int = 0
@@ -48,14 +61,81 @@ class EnemyDrMobius : EnemyPvEWithBank() {
     override var winsBlitzBet: Int = 0
 
     override suspend fun makeMove(game: Game, speed: AnimationSpeed) {
-        makeMoveInner(game)
+        makeMoveInner(game, speed)
         if (game.enemyCResources.hand.size < 5) {
             game.enemyCResources.addOnTop(if (Random.nextInt(14) < 10) generateCardNumber() else generateCardFace())
         }
     }
 
-    private fun makeMoveInner(game: Game) {
+    private suspend fun makeMoveInner(game: Game, speed: AnimationSpeed) {
+        if (game.isInitStage()) {
+            StrategyInit(StrategyInit.Type.RANDOM).move(game, speed)
+            return
+        }
 
+        if (checkIfPlayerVictoryIsClose(gameToState(game))) {
+            val modifiers = game.enemyCResources.hand.filterIsInstance<CardFace>().shuffled()
+
+            modifiers.forEach { modifier ->
+                val index = game.enemyCResources.hand.indexOf(modifier)
+                when (modifier.rank) {
+                    RankFace.JACK -> {
+                        if (StrategyJackHard(index).move(game, speed)) {
+                            return
+                        }
+                    }
+                    RankFace.KING -> {
+                        if (StrategyKingHard(index).move(game, speed)) {
+                            return
+                        }
+                    }
+                    RankFace.JOKER -> {
+                        if (StrategyJokerSimple(index, isHard = true).move(game, speed)) {
+                            return
+                        }
+                    }
+                    else -> {}
+                }
+            }
+        }
+
+        if (StrategyPutNumbersHard().move(game, speed)) {
+            return
+        }
+
+        game.enemyCResources.hand.filterIsInstance<CardFace>().shuffled().forEach { modifier ->
+            val index = game.enemyCResources.hand.indexOf(modifier)
+            when (modifier.rank) {
+                RankFace.JACK -> {
+                    if (StrategyJackHard(index).move(game, speed)) {
+                        return
+                    }
+                }
+                RankFace.QUEEN -> {
+                    if (StrategyQueenToSelf(index).move(game, speed)) {
+                        return
+                    }
+                }
+                RankFace.KING -> {
+                    if (StrategyKingHard(index).move(game, speed)) {
+                        return
+                    }
+                }
+                RankFace.JOKER -> {
+                    if (StrategyJokerSimpleOnPlayer(index, isHard = true).move(game, speed)) {
+                        return
+                    }
+                }
+            }
+        }
+
+        val overWeightCaravans = game.enemyCaravans.filter { it.getValue() > 26 }
+        if (overWeightCaravans.isNotEmpty()) {
+            overWeightCaravans.maxBy { it.getValue() }.dropCaravan(speed)
+            return
+        }
+
+        StrategyDropLadiesFirst().move(game, speed)
     }
 
     fun generateCardFace(): CardFace {

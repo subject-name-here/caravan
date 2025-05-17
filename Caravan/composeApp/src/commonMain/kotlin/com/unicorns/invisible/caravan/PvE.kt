@@ -70,6 +70,7 @@ import caravan.composeapp.generated.resources.your_reward_reward_chips
 import caravan.composeapp.generated.resources.your_reward_reward_xp
 import com.sebaslogen.resaca.rememberScoped
 import com.unicorns.invisible.caravan.model.CardBack
+import com.unicorns.invisible.caravan.model.Currency
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.enemy.EnemyFrank
 import com.unicorns.invisible.caravan.model.enemy.EnemyHanlon
@@ -130,7 +131,8 @@ fun ShowSelectPvE(
 
     when {
         frankChallenge2 -> {
-            StartTowerGame(EnemyFrank(2), showAlertDialog, {
+            // TODO 3.0: replace with hard version.
+            StartTowerGame(EnemyFrank(false), showAlertDialog, {
                 soundReduced = true
                 startLevel11Theme()
                 playFrankPhrase("files/raw/frank_on_game_start.ogg")
@@ -199,7 +201,7 @@ fun ShowSelectPvE(
             SubMenuItem(stringResource(Res.string.tutorial)) { showTutorial = true }
             if (saveGlobal.frankChallenge) {
                 Spacer(modifier = Modifier.height(12.dp))
-                SubMenuItem("Frank Challenge 2") { frankChallenge2 = true }
+                SubMenuItem("Frank Challenge") { frankChallenge2 = true }
             }
             Spacer(modifier = Modifier.height(12.dp))
         }
@@ -844,7 +846,7 @@ suspend fun winCard(back: CardBack, isBlitz: Boolean): String {
         "${rankSuit.first} ${rankSuit.second} (${getString(backName)})"
     } else {
         val prize = (back.getRarityMult() * 10.0).toInt()
-        if (isBlitz) {
+        if (back.currency == Currency.SIERRA_MADRE_CHIPS || isBlitz) {
             saveGlobal.sierraMadreChips += prize
             getString(Res.string.prize_chips, prize.toString())
         } else {

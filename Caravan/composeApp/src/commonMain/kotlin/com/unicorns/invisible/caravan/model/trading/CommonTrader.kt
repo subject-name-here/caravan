@@ -9,11 +9,12 @@ import com.unicorns.invisible.caravan.utils.getNow
 import kotlinx.datetime.DayOfWeek
 import org.jetbrains.compose.resources.getString
 
-class CommonTrader : Trader {
+data object CommonTrader : Trader {
     override fun isOpen(): Boolean {
         val dayNumber = getNow().dayOfWeek
         return dayNumber != DayOfWeek.SUNDAY
     }
+
     override suspend fun openingCondition() = getString(Res.string.common_trader_cond)
 
     override fun getUpdateRate() = 24
@@ -21,7 +22,7 @@ class CommonTrader : Trader {
     override fun getWelcomeMessage() = Res.string.common_trader_welcome
     override fun getEmptyStoreMessage() = Res.string.common_trader_empty
 
-    override fun getSymbol() = "?"
+    override fun getSymbol() = "J"
 
     override fun getCards(): List<CardWithPrice> = emptyList()
 }

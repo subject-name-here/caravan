@@ -34,7 +34,7 @@ class ChallengeDailyAll : Challenge {
     }
 
     override fun getProgress(): String {
-        val dailys = saveGlobal.challengesNew
+        val dailys = saveGlobal.challengesDaily
         return "${5 - dailys.size} / 4"
     }
 
@@ -62,5 +62,5 @@ class ChallengeDailyAll : Challenge {
         )
     }
 
-    override fun isCompleted(): Boolean = saveGlobal.challengesNew.size <= 1
+    override fun isCompleted(): Boolean = saveGlobal.challengesDaily.size <= 1
 }

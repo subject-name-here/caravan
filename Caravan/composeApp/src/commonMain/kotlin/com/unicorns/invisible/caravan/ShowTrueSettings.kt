@@ -36,9 +36,8 @@ import caravan.composeapp.generated.resources.menu_settings
 import caravan.composeapp.generated.resources.monofont
 import caravan.composeapp.generated.resources.non_stop_radio
 import caravan.composeapp.generated.resources.save
-import com.unicorns.invisible.caravan.cheats.CheatBackToSquare1
 import com.unicorns.invisible.caravan.cheats.CheatChangeTrack
-import com.unicorns.invisible.caravan.cheats.CheatEraseStoryProgress
+import com.unicorns.invisible.caravan.cheats.CheatEraseProgress
 import com.unicorns.invisible.caravan.cheats.CheatFinalBossesHeroicMusic
 import com.unicorns.invisible.caravan.cheats.CheatFrankChallenge
 import com.unicorns.invisible.caravan.cheats.CheatLaggySpeed
@@ -76,7 +75,9 @@ fun ShowTrueSettings(
     val scope = rememberCoroutineScope()
 
     MenuItemOpen(stringResource(Res.string.menu_settings), stringResource(Res.string.save), Alignment.TopCenter, {
-        saveGlobal.animationSpeed = speed
+        if (saveGlobal.animationSpeed != AnimationSpeed.LAGGY) {
+            saveGlobal.animationSpeed = speed
+        }
         saveGlobal.useCaravanIntro = intro
         saveGlobal.playRadioInBack = playInBack
         saveData()
@@ -148,7 +149,7 @@ fun ShowTrueSettings(
                     var secretCode by remember { mutableStateOf<Int?>(null) }
                     val cheats = listOf(
                         CheatChangeTrack,
-                        CheatEraseStoryProgress,
+                        CheatEraseProgress,
                         CheatFinalBossesHeroicMusic,
                         CheatLevel10,
                         CheatPapaSmurf,
@@ -158,7 +159,6 @@ fun ShowTrueSettings(
                         CheatStashEventfulYear,
                         CheatStashCumpleanos,
                         CheatLaggySpeed,
-                        CheatBackToSquare1,
                         CheatFrankChallenge
                     )
                     TextFallout(

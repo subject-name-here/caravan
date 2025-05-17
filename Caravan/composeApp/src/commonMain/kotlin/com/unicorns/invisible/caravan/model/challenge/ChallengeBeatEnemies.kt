@@ -1,6 +1,10 @@
 package com.unicorns.invisible.caravan.model.challenge
 
 import caravan.composeapp.generated.resources.Res
+import caravan.composeapp.generated.resources.beat_enemies_10_desc
+import caravan.composeapp.generated.resources.beat_enemies_10_name
+import caravan.composeapp.generated.resources.beat_enemies_11_desc
+import caravan.composeapp.generated.resources.beat_enemies_11_name
 import caravan.composeapp.generated.resources.beat_enemies_1_desc
 import caravan.composeapp.generated.resources.beat_enemies_1_name
 import caravan.composeapp.generated.resources.beat_enemies_2_desc
@@ -17,6 +21,8 @@ import caravan.composeapp.generated.resources.beat_enemies_7_desc
 import caravan.composeapp.generated.resources.beat_enemies_7_name
 import caravan.composeapp.generated.resources.beat_enemies_8_desc
 import caravan.composeapp.generated.resources.beat_enemies_8_name
+import caravan.composeapp.generated.resources.beat_enemies_9_desc
+import caravan.composeapp.generated.resources.beat_enemies_9_name
 import caravan.composeapp.generated.resources.empty_string
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.enemy.EnemyBenny
@@ -24,17 +30,21 @@ import com.unicorns.invisible.caravan.model.enemy.EnemyCrooker
 import com.unicorns.invisible.caravan.model.enemy.EnemyDrMobius
 import com.unicorns.invisible.caravan.model.enemy.EnemyEasyPete
 import com.unicorns.invisible.caravan.model.enemy.EnemyElijah
+import com.unicorns.invisible.caravan.model.enemy.EnemyFisto
+import com.unicorns.invisible.caravan.model.enemy.EnemyGloria
 import com.unicorns.invisible.caravan.model.enemy.EnemyHanlon
 import com.unicorns.invisible.caravan.model.enemy.EnemyLuc10
 import com.unicorns.invisible.caravan.model.enemy.EnemyMadnessCardinal
 import com.unicorns.invisible.caravan.model.enemy.EnemyNash
 import com.unicorns.invisible.caravan.model.enemy.EnemyNoBark
+import com.unicorns.invisible.caravan.model.enemy.EnemyRingo
 import com.unicorns.invisible.caravan.model.enemy.EnemySnuffles
 import com.unicorns.invisible.caravan.model.enemy.EnemyTabitha
 import com.unicorns.invisible.caravan.model.enemy.EnemyTheManInTheMirror
 import com.unicorns.invisible.caravan.model.enemy.EnemyUlysses
 import com.unicorns.invisible.caravan.model.enemy.EnemyVeronica
 import com.unicorns.invisible.caravan.model.enemy.EnemyVictor
+import com.unicorns.invisible.caravan.model.enemy.EnemyViqueen
 import com.unicorns.invisible.caravan.model.enemy.EnemyVulpes
 import kotlinx.serialization.Serializable
 import org.jetbrains.compose.resources.StringResource
@@ -53,6 +63,9 @@ class ChallengeBeatEnemies(private val code: Int) : ChallengeDaily {
             6 -> listOf(EnemyUlysses::class.simpleName, EnemyDrMobius::class.simpleName)
             7 -> listOf(EnemyVeronica::class.simpleName, EnemyVictor::class.simpleName, EnemyVulpes::class.simpleName)
             8 -> listOf(EnemyMadnessCardinal::class.simpleName, EnemyTheManInTheMirror::class.simpleName)
+            9 -> listOf(EnemyViqueen::class.simpleName, EnemyGloria::class.simpleName, EnemyVeronica::class.simpleName)
+            10 -> listOf(EnemyRingo::class.simpleName, EnemyEasyPete::class.simpleName, EnemyVictor::class.simpleName)
+            11 -> listOf(EnemyVictor::class.simpleName, EnemyFisto::class.simpleName, EnemyDrMobius::class.simpleName)
             else -> emptyList()
         }
     private val isBeaten = Array(enemyList.size) { false }
@@ -78,6 +91,9 @@ class ChallengeBeatEnemies(private val code: Int) : ChallengeDaily {
             6 -> Res.string.beat_enemies_6_name
             7 -> Res.string.beat_enemies_7_name
             8 -> Res.string.beat_enemies_8_name
+            9 -> Res.string.beat_enemies_9_name
+            10 -> Res.string.beat_enemies_10_name
+            11 -> Res.string.beat_enemies_11_name
             else -> Res.string.empty_string
         }
     }
@@ -92,6 +108,9 @@ class ChallengeBeatEnemies(private val code: Int) : ChallengeDaily {
             6 -> getString(Res.string.beat_enemies_6_desc)
             7 -> getString(Res.string.beat_enemies_7_desc)
             8 -> getString(Res.string.beat_enemies_8_desc)
+            9 -> getString(Res.string.beat_enemies_9_desc)
+            10 -> getString(Res.string.beat_enemies_10_desc)
+            11 -> getString(Res.string.beat_enemies_11_desc)
             else -> ""
         }
     }

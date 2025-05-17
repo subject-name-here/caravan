@@ -61,8 +61,8 @@
     <string name="tops_trader_empty">Hey, the store is empty, but that will change faster than the Mojave weather. Come again soooooon.</string>
     <string name="tops_trader_condition">Reach level 5.</string>
 
-    <string name="gomorrah_trader_welcome">My name is Ben Broadson. I sell cards. Who are you - I don't care.</string>
-    <string name="gomorrah_trader_empty">Come soon again. Restocks are happening very often.</string>
+    <string name="gomorrah_trader_welcome">My name is Ben Broadson. I sell cards. Who you are - I don't care.</string>
+    <string name="gomorrah_trader_empty">Come again. Restocks are happening twice per day.</string>
     <string name="gomorrah_trader_condition">Finish at least 366 games.</string>
 
     <string name="lucky_38_trader_welcome">Hello, sweetie, we are Marylin &amp; Jane - companions of Mr. House! We are so happy to see you!</string>
@@ -79,7 +79,7 @@
 
     <string name="common_trader_welcome">Name's Johnny Cheaps, but you know what? My goods ain't no cheap.</string>
     <string name="common_trader_empty">Come later, when I print new tickets and chips.</string>
-    <string name="common_trader_cond">The Sunday is a day off. Come tomorrow.</string>
+    <string name="common_trader_cond">The Sunday's a day off. Come tomorrow.</string>
 
 
     <string name="menu_pve">Single player</string>
@@ -389,7 +389,7 @@
     <string name="style_pip_boy">Pip-Boy</string>
     <string name="null_condition">It is already open, duh!</string>
     <string name="style_alaska">Alaska</string>
-    <string name="style_alaska_condition">Win 15 PvE games (with a bet) in a row against different enemies.</string>
+    <string name="style_alaska_condition">Win 14 PvE games (with a bet) in a row against different enemies.</string>
     <string name="style_pip_girl">Pip-Girl</string>
     <string name="style_pip_girl_condition">Reach Level 6.</string>
     <string name="style_old_world">Old World</string>
@@ -433,6 +433,12 @@
     <string name="beat_enemies_7_desc">Beat Veronica, Victor and Vulpes Inculta.</string>
     <string name="beat_enemies_8_name">Heaven Sent?</string>
     <string name="beat_enemies_8_desc">Beat Madness Cardinal and The Man In The Mirror.</string>
+    <string name="beat_enemies_9_name">You Won't See Me Cry</string>
+    <string name="beat_enemies_9_desc">Beat Thyra the Black, Gloria Van Graff and Veronica.</string>
+    <string name="beat_enemies_10_name">Goodsprings Boys</string>
+    <string name="beat_enemies_10_desc">Beat Ringo, Easy Pete and Victor.</string>
+    <string name="beat_enemies_11_name">BEEP-BOOP.</string>
+    <string name="beat_enemies_11_desc">Beat Victor, FISTO and Dr. Mobius.</string>
 
     <string name="play_cards_of_rank">Play %1$s cards of rank %2$s.</string>
     <string name="ace_in_the_hole">Ace in the Hole</string>
@@ -1656,7 +1662,7 @@ If this helped you understand the game, thank the author Kyle! To do this, go to
     <string name="prize2_body">You have found a secret stash! It was an eventful year, huh? +2024 caps!</string>
     <string name="prize3_body">You have found a badly hidden stash! +123 caps!</string>
     <string name="prize5_body">You have found a birthday gift! +500 caps!</string>
-    <string name="story_progress_is_deleted">Story progress is deleted.</string>
+    <string name="progress_is_deleted">Your progress is deleted.</string>
     <string name="you_have_found_cards_from_standard_alt_deck">You have found cards from Standard ALT deck!</string>
     <string name="you_have_found_cards_from_enclave_deck">You have found cards from Enclave deck!</string>
     <string name="_1921_is_the_year_ccp_was_formed">1921 is the year CCP was formed.</string>
@@ -1706,19 +1712,6 @@ If this helped you understand the game, thank the author Kyle! To do this, go to
 
     <string name="lvl_up">Level Up!</string>
     <string name="lvl_up_body">Current level: %1$s.\nXP to next level: %2$s.</string>
-
-    <string name="challenge_lvl_1_name">Level 1</string>
-    <string name="challenge_lvl_1_desc">Beat Oliver Swanick, Ringo and Snuffles.</string>
-    <string name="challenge_lvl_2_name">Level 2</string>
-    <string name="challenge_lvl_2_desc">Beat Veronica, Easy Pete and Salt-Upon-Wounds.</string>
-    <string name="challenge_lvl_3_name">Level 3</string>
-    <string name="challenge_lvl_3_desc">Beat Victor, Johnson Nash and Veronica.</string>
-    <string name="challenge_lvl_4_name">Level 4</string>
-    <string name="challenge_lvl_4_desc">Beat No-Bark, Victor and Johnson Nash.</string>
-    <string name="challenge_lvl_5_name">Level 5</string>
-    <string name="challenge_lvl_5_desc">Beat No-Bark, Vulpes Inculta and Thyra the Black.</string>
-    <string name="challenge_lvl_6_name">Level 6+</string>
-    <string name="challenge_lvl_6_desc">Beat Tabitha, Vulpes Inculta and Thyra the Black.</string>
 
 
 </resources>

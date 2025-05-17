@@ -43,15 +43,15 @@ enum class CardBack(
     ),
     STANDARD_RARE(
         Res.string.standard_deck_name_3 to "FNV_Caravan_card_back_-_standard.webp",
-        Currency.NOT_FOR_SALE
+        Currency.SIERRA_MADRE_CHIPS
     ),
     STANDARD_MYTHIC(
         Res.string.standard_deck_name_4 to "FNV_Caravan_card_back_-_standard.webp",
-        Currency.NOT_FOR_SALE
+        Currency.SIERRA_MADRE_CHIPS
     ),
     STANDARD_LEGENDARY(
         Res.string.standard_deck_name_5 to "FNV_Caravan_card_back_-_standard.webp",
-        Currency.NOT_FOR_SALE
+        Currency.SIERRA_MADRE_CHIPS
     ),
     TOPS(Res.string.tops_deck_name to "FNV_Caravan_card_back_-_Tops.webp"),
     TOPS_RED(Res.string.tops_deck_alt_name to "tops_alt.webp"),

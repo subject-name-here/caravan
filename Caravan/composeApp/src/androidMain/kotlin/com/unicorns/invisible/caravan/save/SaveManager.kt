@@ -38,8 +38,8 @@ private fun getLocalSaveFile(activity: MainActivity): File {
 }
 
 actual fun saveData() {
-    val act = activity
-    if (!isSaveLoaded || act == null) {
+    val act = activity ?: return
+    if (!isSaveLoaded) {
         return
     }
 
@@ -88,8 +88,7 @@ actual suspend fun loadGDSave(): Save? {
 }
 
 actual suspend fun loadLocalSave(): Save? {
-    val act = activity
-    if (act == null) return null
+    val act = activity ?: return null
     val saveFile = getLocalSaveFile(act)
     return try {
         saveFile.bufferedReader().use {

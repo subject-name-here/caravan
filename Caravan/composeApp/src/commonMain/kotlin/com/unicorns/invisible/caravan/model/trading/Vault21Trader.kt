@@ -13,11 +13,12 @@ import org.jetbrains.compose.resources.getString
 
 
 @Serializable
-class Vault21Trader : Trader {
+data object Vault21Trader : Trader {
     override fun isOpen(): Boolean {
         val dayNumber = getNow().dayOfMonth
         return dayNumber == 21 || saveGlobal.wins >= 21
     }
+
     override suspend fun openingCondition() =
         getString(Res.string.vault_21_trader_condition)
 

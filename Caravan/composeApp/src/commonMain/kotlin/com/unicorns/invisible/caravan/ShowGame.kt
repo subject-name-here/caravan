@@ -90,6 +90,7 @@ import com.unicorns.invisible.caravan.utils.getGrayTransparent
 import com.unicorns.invisible.caravan.utils.getTextBackgroundColor
 import com.unicorns.invisible.caravan.utils.getTextColor
 import com.unicorns.invisible.caravan.utils.getTextStrokeColor
+import com.unicorns.invisible.caravan.utils.isJubilee
 import com.unicorns.invisible.caravan.utils.playCardFlipSound
 import com.unicorns.invisible.caravan.utils.playCloseSound
 import com.unicorns.invisible.caravan.utils.playJokerReceivedSounds
@@ -104,7 +105,6 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.Font
 import org.jetbrains.compose.resources.stringResource
-import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
 
@@ -473,7 +473,7 @@ fun PlayerSide(
     fillMaxHeight: Boolean,
     height: Float,
 ) {
-    if (game.playerCResources.deckSize == 0) { // TODO: make size mutableStateOf
+    if (game.playerCResources.deckSize == 0) {
         LaunchedEffect(Unit) { playNoCardAlarm() }
     }
 
@@ -1117,25 +1117,19 @@ fun RowScope.BlitzTimer(
     weight: Float,
     height: TextUnit
 ) {
-    var timeOnTimer by rememberScoped { mutableFloatStateOf(
-        (if (
-            game.enemyCResources.deckSize < game.playerCResources.deckSize &&
-            game.enemyCResources.deckSize > 20
-        ) {
-            game.enemyCResources.deckSize * 4 / 3
-        } else {
-            game.playerCResources.deckSize * 4 / 3
-        }).toFloat()
-    ) }
+    var timeOnTimer by rememberScoped { mutableFloatStateOf(10f) }
 
     LaunchedEffect(Unit) {
         game.specialGameOverCondition = { if (timeOnTimer <= 0f) -1 else 0 }
+        game.onPlayerMoveEnd = { timeOnTimer = min(timeOnTimer + 1f, 15f) }
         while (isActive && timeOnTimer > 0 && !game.isOver()) {
             if (game.canPlayerMove) {
                 timeOnTimer -= 0.1f
             }
-            if (timeOnTimer < 10 && abs(timeOnTimer.toInt() - timeOnTimer) < 0.05) {
-                playNoBeep()
+            if (timeOnTimer <= 3f) {
+                if (timeOnTimer.toDouble().isJubilee()) {
+                    playNoBeep()
+                }
             }
             delay(100L)
         }

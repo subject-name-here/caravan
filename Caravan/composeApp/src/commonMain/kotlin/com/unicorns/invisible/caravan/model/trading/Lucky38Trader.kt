@@ -12,7 +12,7 @@ import org.jetbrains.compose.resources.getString
 
 
 @Serializable
-class Lucky38Trader : Trader {
+data object Lucky38Trader : Trader {
     override fun isOpen() = saveGlobal.capsInHand >= 1000
     override suspend fun openingCondition() = getString(Res.string.lucky_38_trader_cond)
 

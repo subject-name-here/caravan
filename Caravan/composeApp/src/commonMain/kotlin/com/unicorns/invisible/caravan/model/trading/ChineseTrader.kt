@@ -12,11 +12,11 @@ import org.jetbrains.compose.resources.getString
 
 
 @Serializable
-class ChineseTrader : Trader {
+data object ChineseTrader : Trader {
     override fun isOpen() = saveGlobal.storyCompleted
     override suspend fun openingCondition() = getString(Res.string.chinese_trader_condition)
 
-    override fun getUpdateRate() = 1
+    override fun getUpdateRate() = 24
 
     override fun getWelcomeMessage() = Res.string.chinese_trader_welcome
     override fun getEmptyStoreMessage() = Res.string.chinese_trader_empty

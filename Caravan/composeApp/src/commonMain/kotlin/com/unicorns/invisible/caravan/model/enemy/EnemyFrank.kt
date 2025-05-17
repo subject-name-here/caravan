@@ -6,6 +6,7 @@ import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyInit
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJokerSimple
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyQueenToSelf
+import com.unicorns.invisible.caravan.model.enemy.strategy.canJokerCrashTheParty
 import com.unicorns.invisible.caravan.model.enemy.strategy.checkOnResult
 import com.unicorns.invisible.caravan.model.enemy.strategy.checkTheOutcome
 import com.unicorns.invisible.caravan.model.enemy.strategy.gameToState
@@ -22,9 +23,12 @@ import com.unicorns.invisible.caravan.model.primitives.RankNumber
 import kotlin.random.Random
 
 
-class EnemyFrank(private val bombs: Int) : Enemy {
+class EnemyFrank(val isHard: Boolean) : Enemy {
     override fun createDeck(): CResources = CResources(CustomDeck(CardBack.ENCLAVE).apply {
         add(CardAtomic())
+        if (!isHard) {
+            removeAll { it is CardJoker }
+        }
     })
 
 
@@ -36,9 +40,7 @@ class EnemyFrank(private val bombs: Int) : Enemy {
         if (game.isInitStage()) {
             StrategyInit(StrategyInit.Type.MAX_FIRST_TO_RANDOM).move(game, speed)
             if (game.enemyCaravans.none { it.isEmpty() }) {
-                repeat(bombs - 1) {
-                    game.enemyCResources.addOnTop(CardAtomic())
-                }
+                game.enemyCResources.addOnTop(CardAtomic())
             }
             return
         }
@@ -133,7 +135,7 @@ class EnemyFrank(private val bombs: Int) : Enemy {
         }
 
         // 2) If not and if player is abt to win, destroy player ready and almost ready caravans (on right columns!)
-        val isLosing = checkOnResult(gameToState(game)).isPlayerMoveWins()
+        val isLosing = checkOnResult(gameToState(game)).isPlayerMoveWins() || canJokerCrashTheParty(gameToState(game))
         if (isLosing) {
             game.enemyCaravans.withIndex().forEach { (caravanIndex, _) ->
                 hand.filterIsInstance<CardFace>()
@@ -149,7 +151,7 @@ class EnemyFrank(private val bombs: Int) : Enemy {
                                         val state = gameToState(game)
                                         val indexC = game.playerCaravans.indexOf(otherCaravan)
                                         state.player[indexC] -= it.value.getValue()
-                                        if (!checkOnResult(state).isPlayerMoveWins()) {
+                                        if (!checkOnResult(state).isPlayerMoveWins() && !canJokerCrashTheParty(state)) {
                                             it.value.addModifier(game.enemyCResources.removeFromHand(jackIndex, speed) as CardModifier, speed)
                                             return
                                         }
@@ -163,7 +165,7 @@ class EnemyFrank(private val bombs: Int) : Enemy {
                                         val state = gameToState(game)
                                         val indexC = game.enemyCaravans.indexOf(otherCaravan)
                                         state.enemy[indexC] -= it.value.getValue()
-                                        if (!checkOnResult(state).isPlayerMoveWins()) {
+                                        if (!checkOnResult(state).isPlayerMoveWins() && !canJokerCrashTheParty(state)) {
                                             it.value.addModifier(game.enemyCResources.removeFromHand(jackIndex, speed) as CardModifier, speed)
                                             return
                                         }
@@ -185,7 +187,7 @@ class EnemyFrank(private val bombs: Int) : Enemy {
                                         val state = gameToState(game)
                                         val indexC = game.playerCaravans.indexOf(otherCaravan)
                                         state.player[indexC] += it.value.getValue()
-                                        if (!checkOnResult(state).isPlayerMoveWins()) {
+                                        if (!checkOnResult(state).isPlayerMoveWins() && !canJokerCrashTheParty(state)) {
                                             it.value.addModifier(game.enemyCResources.removeFromHand(kingIndex, speed) as CardModifier, speed)
                                             return
                                         }
@@ -199,7 +201,7 @@ class EnemyFrank(private val bombs: Int) : Enemy {
                                     val state = gameToState(game)
                                     val indexC = game.enemyCaravans.indexOf(otherCaravan)
                                     state.enemy[indexC] += it.value.getValue()
-                                    if (!checkOnResult(state).isPlayerMoveWins()) {
+                                    if (!checkOnResult(state).isPlayerMoveWins() && !canJokerCrashTheParty(state)) {
                                         it.value.addModifier(game.enemyCResources.removeFromHand(kingIndex, speed) as CardModifier, speed)
                                         return
                                     }
@@ -223,7 +225,7 @@ class EnemyFrank(private val bombs: Int) : Enemy {
                             .forEach { (otherCaravanIndex, otherCaravan) ->
                                 val state = gameToState(game)
                                 state.enemy[otherCaravanIndex] += card.rank.value
-                                if (!checkOnResult(state).isPlayerMoveWins()) {
+                                if (!checkOnResult(state).isPlayerMoveWins() && !canJokerCrashTheParty(state)) {
                                     otherCaravan.putCardOnTop(game.enemyCResources.removeFromHand(cardIndex, speed) as CardBase, speed)
                                     return
                                 }
@@ -234,7 +236,7 @@ class EnemyFrank(private val bombs: Int) : Enemy {
                     .forEach { (otherCaravanIndex, otherCaravan) ->
                         val state = gameToState(game)
                         state.enemy[otherCaravanIndex] = 0
-                        if (!checkOnResult(state).isPlayerMoveWins()) {
+                        if (!checkOnResult(state).isPlayerMoveWins() && !canJokerCrashTheParty(state)) {
                             otherCaravan.dropCaravan(speed)
                             return
                         }
@@ -309,7 +311,7 @@ class EnemyFrank(private val bombs: Int) : Enemy {
                 if (caravanC != null) {
                     val state = gameToState(game)
                     state.enemy[game.enemyCaravans.indexOf(caravanC)] = 0
-                    if (!checkOnResult(state).isPlayerMoveWins()) {
+                    if (!checkOnResult(state).isPlayerMoveWins() && !canJokerCrashTheParty(state)) {
                         caravanC.dropCaravan(speed)
                         return
                     }
@@ -366,8 +368,8 @@ class EnemyFrank(private val bombs: Int) : Enemy {
                         val newSum = caravan.getValue() + card.rank.value
                         val state = gameToState(game)
                         state.enemy[caravanIndex] += card.rank.value
-                        val isStateBad = checkOnResult(state).isPlayerMoveWins()
-                        val wasStateBad = checkOnResult(gameToState(game)).isPlayerMoveWins()
+                        val isStateBad = checkOnResult(state).isPlayerMoveWins() || canJokerCrashTheParty(state)
+                        val wasStateBad = checkOnResult(gameToState(game)).isPlayerMoveWins() || canJokerCrashTheParty(gameToState(game))
                         if (newSum <= 26 && caravan.canPutCardOnTop(card) && (!isStateBad || wasStateBad) && checkTheOutcome(state) != 1) {
                             caravan.putCardOnTop(game.enemyCResources.removeFromHand(cardIndex, speed) as CardBase, speed)
                             return
@@ -388,8 +390,8 @@ class EnemyFrank(private val bombs: Int) : Enemy {
                         val state = gameToState(game)
                         state.enemy[it.index] += card.card.rank.value
                         val afterJackValue = it.value.getValue() - card.getValue()
-                        val isStateBad = checkOnResult(state).isPlayerMoveWins()
-                        val wasStateBad = checkOnResult(gameToState(game)).isPlayerMoveWins()
+                        val isStateBad = checkOnResult(state).isPlayerMoveWins() || canJokerCrashTheParty(state)
+                        val wasStateBad = checkOnResult(gameToState(game)).isPlayerMoveWins() || canJokerCrashTheParty(gameToState(game))
                         if (afterJackValue <= 26 && (!isStateBad || wasStateBad) && checkTheOutcome(state) != 1) {
                             card.addModifier(game.enemyCResources.removeFromHand(jackIndex, speed) as CardModifier, speed)
                             return
@@ -413,8 +415,8 @@ class EnemyFrank(private val bombs: Int) : Enemy {
                                 val state = gameToState(game)
                                 val indexC = game.playerCaravans.indexOf(otherCaravan)
                                 state.player[indexC] -= it.value.getValue()
-                                val isStateBad = checkOnResult(state).isPlayerMoveWins()
-                                val wasStateBad = checkOnResult(gameToState(game)).isPlayerMoveWins()
+                                val isStateBad = checkOnResult(state).isPlayerMoveWins() || canJokerCrashTheParty(state)
+                                val wasStateBad = checkOnResult(gameToState(game)).isPlayerMoveWins() || canJokerCrashTheParty(gameToState(game))
                                 if ((!isStateBad || wasStateBad) && checkTheOutcome(state) != 1) {
                                     it.value.addModifier(game.enemyCResources.removeFromHand(jackIndex, speed) as CardModifier, speed)
                                     return
@@ -434,8 +436,8 @@ class EnemyFrank(private val bombs: Int) : Enemy {
                     .forEach { card ->
                         val state = gameToState(game)
                         state.enemy[it.index] += card.getValue()
-                        val isStateBad = checkOnResult(state).isPlayerMoveWins()
-                        val wasStateBad = checkOnResult(gameToState(game)).isPlayerMoveWins()
+                        val isStateBad = checkOnResult(state).isPlayerMoveWins() || canJokerCrashTheParty(state)
+                        val wasStateBad = checkOnResult(gameToState(game)).isPlayerMoveWins() || canJokerCrashTheParty(gameToState(game))
                         if (state.enemy[it.index] <= 26 && (!isStateBad || wasStateBad) && checkTheOutcome(state) != 1) {
                             card.addModifier(game.enemyCResources.removeFromHand(kingIndex, speed) as CardModifier, speed)
                             return
@@ -454,8 +456,8 @@ class EnemyFrank(private val bombs: Int) : Enemy {
                                 val state = gameToState(game)
                                 val indexC = game.playerCaravans.indexOf(otherCaravan)
                                 state.player[indexC] += it.value.getValue()
-                                val isStateBad = checkOnResult(state).isPlayerMoveWins()
-                                val wasStateBad = checkOnResult(gameToState(game)).isPlayerMoveWins()
+                                val isStateBad = checkOnResult(state).isPlayerMoveWins() || canJokerCrashTheParty(state)
+                                val wasStateBad = checkOnResult(gameToState(game)).isPlayerMoveWins() || canJokerCrashTheParty(gameToState(game))
                                 if (state.player[indexC] > 26 && (!isStateBad || wasStateBad) && checkTheOutcome(state) != 1) {
                                     it.value.addModifier(game.enemyCResources.removeFromHand(kingIndex, speed) as CardModifier, speed)
                                     return

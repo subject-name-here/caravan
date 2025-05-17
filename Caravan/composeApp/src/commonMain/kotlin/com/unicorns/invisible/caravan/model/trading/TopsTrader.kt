@@ -12,7 +12,7 @@ import org.jetbrains.compose.resources.getString
 
 
 @Serializable
-class TopsTrader : Trader {
+data object TopsTrader : Trader {
     override fun isOpen() = saveGlobal.lvl >= 5
     override suspend fun openingCondition() = getString(Res.string.tops_trader_condition)
 

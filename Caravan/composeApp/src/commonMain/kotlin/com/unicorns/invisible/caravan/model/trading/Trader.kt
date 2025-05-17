@@ -19,7 +19,7 @@ sealed interface Trader {
     suspend fun openingCondition(): String
 
     fun getUpdateRate(): Int
-    fun getUpdatePartOfHash() = getNow().hour / getUpdateRate()
+    private fun getUpdatePartOfHash() = getNow().hour / getUpdateRate()
 
     fun getWelcomeMessage(): StringResource
     fun getEmptyStoreMessage(): StringResource
@@ -32,48 +32,10 @@ sealed interface Trader {
         val todayHash = saveGlobal.dailyHash
         val rand = Random(todayHash xor (b * 31 + 22229) xor (b * b * b + 13))
 
-        fun shuffleCards(deck: CollectibleDeck) = deck.toList().sortedWith { o1, o2 ->
-            when (o1) {
-                is CardNumber -> {
-                    if (o2 !is CardNumber) {
-                        1
-                    } else {
-                        if (o1.rank != o2.rank) {
-                            o2.rank.value - o1.rank.value
-                        } else {
-                            o1.suit.ordinal - o2.suit.ordinal
-                        }
-                    }
-                }
-                is CardFaceSuited -> {
-                    when (o2) {
-                        is CardJoker -> {
-                            1
-                        }
-                        is CardFaceSuited -> {
-                            if (o1.rank != o2.rank) {
-                                o2.rank.value - o1.rank.value
-                            } else {
-                                o1.suit.ordinal - o2.suit.ordinal
-                            }
-                        }
-                        is CardNumber -> {
-                            -1
-                        }
-                    }
-                }
-                is CardJoker -> {
-                    if (o2 is CardJoker) {
-                        o2.number.ordinal - o1.number.ordinal
-                    } else {
-                        -1
-                    }
-                }
-            }
-        }.shuffled(rand)
+        // TODO: test if shuffle is always the same.
+        fun shuffleCards(deck: CollectibleDeck) = deck.toList().shuffled(rand)
 
         val n = 7
-
         return shuffleCards(CollectibleDeck(back)).take(n)
     }
 }

@@ -118,7 +118,7 @@ fun ShowDailys(
                     }
                 }
 
-                Challenges(stringResource(Res.string.daily_missions), saveGlobal.challengesNew)
+                Challenges(stringResource(Res.string.daily_missions), saveGlobal.challengesDaily)
                 Challenges(stringResource(Res.string.infinite_missions), saveGlobal.challengesInf)
                 Challenges(stringResource(Res.string.one_time_missions), saveGlobal.challenges1)
                 Challenges(stringResource(Res.string.one_time_missions_requiem), saveGlobal.challenges2)
@@ -168,7 +168,7 @@ fun ShowChallenge(challenge: Challenge, isCompleted: Boolean, updater: () -> Uni
                 if (challenge is ChallengeInfinite) {
                     challenge.restartChallenge()
                 } else {
-                    save.challengesNew.remove(challenge)
+                    save.challengesDaily.remove(challenge)
                 }
                 save.challengesCompleted++
                 save.increaseXp(challenge.getXp())

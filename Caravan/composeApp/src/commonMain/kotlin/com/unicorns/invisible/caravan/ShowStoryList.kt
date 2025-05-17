@@ -66,6 +66,7 @@ import com.unicorns.invisible.caravan.utils.nextSong
 import com.unicorns.invisible.caravan.utils.playHeartbeatSound
 import com.unicorns.invisible.caravan.utils.playLoseSound
 import com.unicorns.invisible.caravan.utils.playWinSound
+import com.unicorns.invisible.caravan.utils.playWinSoundAlone
 import com.unicorns.invisible.caravan.utils.stopRadio
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -214,13 +215,14 @@ fun ShowStoryList(
                 }) { showChapter = null }
             }
             29 -> {
+                LaunchedEffect(Unit) { stopRadio(); soundReduced = true }
                 ShowStoryEndOfPart2({
                     val progress = 37
                     if (saveGlobal.storyProgress < progress) {
                         saveGlobal.storyProgress = progress
                     }
                     saveData()
-                }) { showChapter = null }
+                }) { soundReduced = false; nextSong(); showChapter = null }
             }
             else -> {
                 showAlertDialog("[CLOSED]", "The chapter is not done yet.", null)
@@ -1408,7 +1410,7 @@ fun StartStoryGame(
     game.also {
         it.onWin = {
             processChallengesGameOver(it)
-            playWinSound()
+            playWinSoundAlone()
             onWin()
             scope.launch {
                 showAlertDialog(

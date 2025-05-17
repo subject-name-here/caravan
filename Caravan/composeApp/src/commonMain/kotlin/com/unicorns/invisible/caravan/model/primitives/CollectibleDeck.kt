@@ -60,6 +60,7 @@ class CollectibleDeck() {
     fun isCustomDeckValid(): Boolean {
         val hasNCR = cards.any { it.getBack() == CardBack.NCR }
         val hasLegion = cards.any { it.getBack() == CardBack.LEGION }
+        // TODO: 4.0? : Brotherhood deck is incompatible with NCR or Legion
         val numOfDecks = cards.distinctBy { it.getBack() }.size
         val numOfNumbers = cards.count { it is CardNumber }
         return size >= MIN_DECK_SIZE &&

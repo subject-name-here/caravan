@@ -160,3 +160,46 @@ fun checkOnResult(state: State, checkIndex: Int? = null): GamePossibleResult {
         else -> throw Exception()
     }
 }
+
+fun canJokerCrashTheParty(state: State): Boolean {
+    fun checkCaravans(e0: Int, p0: Int): Boolean {
+        return e0 >= 21 || p0 >= 21
+    }
+    var score = 0
+    (0..2).forEach {
+        if (checkCaravans(state.enemy[it], state.player[it])) {
+            score++
+        }
+    }
+    if (score < 2) {
+        return false
+    }
+    if (score == 3) {
+        return (0..2).count { state.player[it] >= 21 } >= 2
+    }
+
+    val index = (0..2).find { !checkCaravans(state.enemy[it], state.player[it]) }!!
+    if (state.enemy[index] < 21 && state.player[index] < 21) {
+        return false
+    }
+    val contCaravanResult = when {
+        state.enemy[index] >= 21 && state.player[index] >= 21 -> {
+            0
+        }
+        state.enemy[index] >= 21 -> {
+            -1
+        }
+        state.player[index] >= 21 -> {
+            1
+        }
+        else -> throw Exception()
+    }
+
+    val otherIndices = (0..2).filter { it != index }
+    val otherResults = otherIndices.map { state.player[it] >= 21 }
+    return when {
+        otherResults[0] && otherResults[1] -> true
+        (otherResults[0] || otherResults[1]) && contCaravanResult != -1 -> true
+        else -> false
+    }
+}

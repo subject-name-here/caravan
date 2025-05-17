@@ -105,7 +105,7 @@ import com.unicorns.invisible.caravan.utils.stopAmbient
 import org.jetbrains.compose.resources.stringResource
 
 
-// TODO: check all the things!!
+// TODO 3.0: check all the things!!
 @Composable
 fun Tutorial(
     goBack: () -> Unit

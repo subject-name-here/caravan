@@ -13,7 +13,6 @@ import kotlin.random.Random
 
 class CResources(private val deck: CustomDeck) {
     constructor(back: CardBack) : this(CustomDeck(back))
-
     var recomposeResources by mutableIntStateOf(0)
 
     private val handMutable: MutableList<Card> = mutableListOf()
@@ -28,13 +27,14 @@ class CResources(private val deck: CustomDeck) {
     private fun getTopHand(facesLimitExcluded: Int = 6): List<Card> {
         val cards = deck.toList().toMutableList()
         cards.removeAll { it is CardWildWasteland }
-        val nuclears = cards.filter { it is CardNuclear }
-        val faces = cards.filter { it is CardFace }
-        val numbers = cards.filter { it is CardBase }
+        val nuclears = cards.filterIsInstance<CardNuclear>()
+        val faces = cards.filterIsInstance<CardFace>()
+        val numbers = cards.filterIsInstance<CardBase>()
 
         val startingHand = mutableListOf<Card>()
         if (nuclears.isNotEmpty()) {
             startingHand.add(nuclears.random())
+            // TODO 3.0: it's not quite fair. Determine number of faces better way.
             startingHand.addAll(faces.take(Random.nextInt(0, facesLimitExcluded - 1)))
         } else {
             startingHand.addAll(faces.take(Random.nextInt(0, facesLimitExcluded)))
@@ -55,9 +55,7 @@ class CResources(private val deck: CustomDeck) {
         shuffleDeck()
         val tmpHand = getTopHand()
         deck.removeAllOnce(tmpHand)
-        tmpHand.forEach {
-            deck.addOnTop(it)
-        }
+        tmpHand.shuffled().forEach { deck.addOnTop(it) }
     }
 
     private fun addCardToHand(card: Card) {

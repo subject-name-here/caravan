@@ -16,19 +16,24 @@ class CardWithModifier(val card: CardBase) {
         recomposeResources++
         delay(speed.delay)
 
-        if (card is CardNuclear) {
-            hasBomb = true
-        } else if (card is CardWildWasteland) {
-            when (card.wwType) {
-                WWType.DIFFICULT_PETE -> hasActivePete = true
-                WWType.FEV -> hasActiveFev = true
-                WWType.UFO -> hasActiveUfo = true
-                WWType.CAZADOR -> hasActiveCazador = true
-                WWType.MUGGY -> hasActiveMuggy = true
-                WWType.YES_MAN -> hasActiveYesMan = true
+        when (card) {
+            is CardNuclear -> {
+                hasBomb = true
             }
-        } else if (card is CardJoker) {
-            hasActiveJoker = true
+            is CardWildWasteland -> {
+                when (card.wwType) {
+                    WWType.DIFFICULT_PETE -> hasActivePete = true
+                    WWType.FEV -> hasActiveFev = true
+                    WWType.UFO -> hasActiveUfo = true
+                    WWType.CAZADOR -> hasActiveCazador = true
+                    WWType.MUGGY -> hasActiveMuggy = true
+                    WWType.YES_MAN -> hasActiveYesMan = true
+                }
+            }
+            is CardJoker -> {
+                hasActiveJoker = true
+            }
+            else -> {}
         }
     }
     fun copyModifiersFrom(mods: List<CardModifier>) {
@@ -81,9 +86,7 @@ class CardWithModifier(val card: CardBase) {
 
     fun hasJacks() = modifiers.any { it is CardFace && it.rank == RankFace.JACK }
 
-    fun modifiersCopy(): List<CardModifier> {
-        return modifiers.toList()
-    }
+    fun modifiersCopy() = modifiers.toList()
 
     fun getValue(): Int {
         return card.rank.value * (2.0.pow(modifiers.count { it is CardFace && it.rank == RankFace.KING })).toInt()

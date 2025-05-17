@@ -65,6 +65,7 @@ import com.unicorns.invisible.caravan.utils.clickableOk
 import com.unicorns.invisible.caravan.utils.getStrokeColorByStyle
 import com.unicorns.invisible.caravan.utils.getTextBackByStyle
 import com.unicorns.invisible.caravan.utils.getTextColorByStyle
+import com.unicorns.invisible.caravan.utils.playCloseSound
 import com.unicorns.invisible.caravan.utils.playDeathPhrase
 import com.unicorns.invisible.caravan.utils.playSelectSound
 import com.unicorns.invisible.caravan.utils.playSlideSound
@@ -95,6 +96,7 @@ fun DialogLine(line: String, onClick: () -> Unit) {
     Spacer(Modifier.height(12.dp))
 }
 
+// TODO 3.0: test this on Intro, any chapter and Frank.
 @Composable
 fun StoryShow(graph: DialogGraph, onBadEnd: () -> Unit, onGoodEnd: () -> Unit) {
     var dialogState by rememberScoped { mutableIntStateOf(0) }
@@ -117,6 +119,37 @@ fun StoryShow(graph: DialogGraph, onBadEnd: () -> Unit, onGoodEnd: () -> Unit) {
                     state = lazyListState
                 ) { item {
                     var isSlideVisible by rememberScoped { mutableStateOf(false) }
+                    val width = if (stableDialogState.picId == Res.drawable.frank_head) 803 else 640
+                    val height = if (stableDialogState.picId == Res.drawable.frank_head) 414 else 480
+                    Box(Modifier.width(width.pxToDp()).height(height.pxToDp()).clipToBounds(), contentAlignment = Alignment.TopCenter) {
+                        @Composable
+                        fun SlideShow(content: @Composable () -> Unit) {
+                            AnimatedVisibility(
+                                visible = isSlideVisible,
+                                enter = slideInHorizontally(
+                                    animationSpec = spring(stiffness = Spring.StiffnessMediumLow, visibilityThreshold = IntOffset.VisibilityThreshold),
+                                    initialOffsetX = { -it }
+                                ),
+                                exit = slideOutHorizontally(targetOffsetX = { it })
+                            ) { content() }
+                        }
+                        @Composable
+                        fun BoxWithPicture() {
+                            Box(Modifier.fillMaxSize().paint(
+                                painterResource(stableDialogState.picId),
+                                contentScale = ContentScale.FillBounds,
+                            ))
+                        }
+                        if (stableDialogState.intro == PicEffect.SLIDE) {
+                            SlideShow { BoxWithPicture() }
+                        } else {
+                            BoxWithPicture()
+                        }
+                        if (stableDialogState.picId != Res.drawable.frank_head) {
+                            Box(Modifier.fillMaxSize().paint(painterResource(Res.drawable.crt_1)))
+                        }
+                    }
+
                     LaunchedEffect(dialogState) {
                         if (stableDialogState.intro == PicEffect.SLIDE) {
                             playSlideSound()
@@ -124,28 +157,6 @@ fun StoryShow(graph: DialogGraph, onBadEnd: () -> Unit, onGoodEnd: () -> Unit) {
                         isSlideVisible = true
                     }
 
-                    val width = if (stableDialogState.picId == Res.drawable.frank_head) 803 else 640
-                    val height = if (stableDialogState.picId == Res.drawable.frank_head) 414 else 480
-                    Box(Modifier.width(width.pxToDp()).height(height.pxToDp()).clipToBounds(), contentAlignment = Alignment.TopCenter) {
-                        AnimatedVisibility(
-                            visible = stableDialogState.intro != PicEffect.SLIDE || isSlideVisible,
-                            enter = slideInHorizontally(
-                                animationSpec = spring(stiffness = Spring.StiffnessMediumLow, visibilityThreshold = IntOffset.VisibilityThreshold),
-                                initialOffsetX = { -it }
-                            ),
-                            exit = slideOutHorizontally(targetOffsetX = { it })
-                        ) {
-                            Box(Modifier.fillMaxSize().paint(
-                                painterResource(stableDialogState.picId),
-                                contentScale = ContentScale.FillBounds,
-                            ))
-                        }
-                        if (stableDialogState.picId != Res.drawable.frank_head) {
-                            Box(Modifier.fillMaxSize()
-                                .paint(painterResource(Res.drawable.crt_1))
-                            )
-                        }
-                    }
                     Column(Modifier.fillMaxWidth()) {
                         val response = stringResource(stableDialogState.responseId)
                         if (response.isNotEmpty()) {
@@ -165,8 +176,8 @@ fun StoryShow(graph: DialogGraph, onBadEnd: () -> Unit, onGoodEnd: () -> Unit) {
 
                         Spacer(Modifier.height(16.dp))
 
-                        graph.edges.forEachIndexed { edgeIndex, e ->
-                            if (e.oldState == dialogState) {
+                        graph.edges.forEachIndexed { edgeIndex, candidateEdge ->
+                            if (candidateEdge.oldState == dialogState) {
                                 val edge = graph.edges[edgeIndex]
                                 if (graph.visitedStates[edge.newState]) {
                                     return@forEachIndexed
@@ -187,6 +198,8 @@ fun StoryShow(graph: DialogGraph, onBadEnd: () -> Unit, onGoodEnd: () -> Unit) {
                                             }
                                             dialogState = edge.newState
                                             graph.visitedStates[dialogState] = true
+
+                                            // Frank sequence, do not delete!
                                             var visitedEdgeResult = edge.onVisited()
                                             while (visitedEdgeResult in graph.edges.indices) {
                                                 val otherEdge = graph.edges[visitedEdgeResult]
@@ -300,7 +313,7 @@ fun ShowDeathScreen(code: DeathCode, onBadEnd: () -> Unit, onGoodEnd: () -> Unit
 
                 Spacer(Modifier.height(16.dp))
 
-                DialogLine(stringResource(Res.string.finish)) { onBadEnd() }
+                DialogLine(stringResource(Res.string.finish)) { playCloseSound(); onBadEnd() }
             }
         } }
     }

@@ -314,7 +314,7 @@ fun ShowPvP(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 TextFallout(
-                    "TODO: Rules",
+                    "TODO 3.0: Rules",
                     getTextColor(),
                     getTextStrokeColor(),
                     13.sp,

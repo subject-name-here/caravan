@@ -42,8 +42,12 @@ class Game(
             field = value
             recomposeResources++
         }
+    var onPlayerMoveEnd: () -> Unit = {}
     var canPlayerMove = false
         set(value) {
+            if (field && !value) {
+                onPlayerMoveEnd()
+            }
             field = value
             recomposeResources++
         }
@@ -224,7 +228,7 @@ class Game(
             CoroutineScope(Dispatchers.Unconfined).launch {
                 if (bombOwner !in it.cards) {
                     if (isFBomb) {
-                        // TODO: some bonus
+                        // TODO 3.0: some bonus
                         it.dropCaravan(speed)
                     } else {
                         if (it.cards.all { card -> !card.isProtectedByMuggy }) {
