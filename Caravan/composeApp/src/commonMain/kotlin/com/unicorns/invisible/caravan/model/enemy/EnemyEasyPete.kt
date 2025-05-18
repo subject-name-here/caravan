@@ -9,7 +9,7 @@ import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyInit
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJackToSelfSimple
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyKingToSelfSimple
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyPutNumbersSimple
-import com.unicorns.invisible.caravan.model.enemy.strategy.checkIfPlayerVictoryIsClose
+import com.unicorns.invisible.caravan.model.enemy.strategy.checkOnResult
 import com.unicorns.invisible.caravan.model.enemy.strategy.gameToState
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.CardAtomic
@@ -60,7 +60,7 @@ class EnemyEasyPete : EnemyPvEWithBank() {
         }
 
         val hand = game.enemyCResources.hand
-        if (checkIfPlayerVictoryIsClose(gameToState(game))) {
+        if (checkOnResult(gameToState(game)).isPlayerMoveWins()) {
             val atomics = hand.filterIsInstance<CardAtomic>()
             if (atomics.isNotEmpty()) {
                 val atomic = atomics.first()

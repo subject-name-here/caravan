@@ -16,7 +16,7 @@ import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyKingHard
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyKingRuiner
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyPutNumbersHard
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyQueenToSelf
-import com.unicorns.invisible.caravan.model.enemy.strategy.checkIfPlayerVictoryIsClose
+import com.unicorns.invisible.caravan.model.enemy.strategy.checkOnResult
 import com.unicorns.invisible.caravan.model.enemy.strategy.checkTheOutcome
 import com.unicorns.invisible.caravan.model.enemy.strategy.gameToState
 import com.unicorns.invisible.caravan.model.primitives.CResources
@@ -52,7 +52,7 @@ class EnemyHanlon : EnemyPvENoBank() {
         }
 
         val hand = game.enemyCResources.hand
-        if (checkIfPlayerVictoryIsClose(gameToState(game))) {
+        if (checkOnResult(gameToState(game)).isPlayerMoveWins()) {
             val modifiers = hand.filterIsInstance<CardFace>().sortedByDescending { it.rank.value }
 
             modifiers.forEach { modifier ->

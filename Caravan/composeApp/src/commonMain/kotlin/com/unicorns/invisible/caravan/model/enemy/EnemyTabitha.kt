@@ -5,11 +5,11 @@ import caravan.composeapp.generated.resources.tabitha
 import com.unicorns.invisible.caravan.AnimationSpeed
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
-import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyDestructiveClever
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyDropAllButFace
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyInit
+import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJackHard
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJokerSimple
-import com.unicorns.invisible.caravan.model.enemy.strategy.checkIfEnemyVictoryIsClose
+import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyKingHard
 import com.unicorns.invisible.caravan.model.enemy.strategy.checkOnResult
 import com.unicorns.invisible.caravan.model.enemy.strategy.checkTheOutcome
 import com.unicorns.invisible.caravan.model.enemy.strategy.gameToState
@@ -87,10 +87,27 @@ class EnemyTabitha : EnemyPvEWithBank() {
         val playersReadyCaravans = game.playerCaravans.filter { it.getValue() in (21..26) }
         val hand = game.enemyCResources.hand
 
-        game.enemyCaravans.withIndex().forEach { (index, _) ->
-            if (checkIfEnemyVictoryIsClose(gameToState(game), index)) {
-                if (StrategyDestructiveClever().move(game, speed)) {
-                    return
+        if (checkOnResult(gameToState(game)).isEnemyMoveWins()) {
+            val modifiers = hand.filterIsInstance<CardFace>().sortedByDescending { it.rank.value }
+            modifiers.forEach { modifier ->
+                val index = hand.indexOf(modifier)
+                when (modifier.rank) {
+                    RankFace.JACK -> {
+                        if (StrategyJackHard(index).move(game, speed)) {
+                            return
+                        }
+                    }
+                    RankFace.KING -> {
+                        if (StrategyKingHard(index).move(game, speed)) {
+                            return
+                        }
+                    }
+                    RankFace.JOKER -> {
+                        if (StrategyJokerSimple(index, isHard = true).move(game, speed)) {
+                            return
+                        }
+                    }
+                    else -> {}
                 }
             }
         }

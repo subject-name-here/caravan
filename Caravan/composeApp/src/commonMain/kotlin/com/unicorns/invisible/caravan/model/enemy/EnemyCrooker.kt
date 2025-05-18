@@ -13,7 +13,7 @@ import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJokerSuperSim
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyKingRuiner
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyKingToPlayer
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyQueenToSelf
-import com.unicorns.invisible.caravan.model.enemy.strategy.checkIfPlayerVictoryIsClose
+import com.unicorns.invisible.caravan.model.enemy.strategy.checkOnResult
 import com.unicorns.invisible.caravan.model.enemy.strategy.checkTheOutcome
 import com.unicorns.invisible.caravan.model.enemy.strategy.gameToState
 import com.unicorns.invisible.caravan.model.primitives.CResources
@@ -60,7 +60,7 @@ class EnemyCrooker : EnemyPvEWithBank() {
         }
 
         val modifiers = game.enemyCResources.hand.filterIsInstance<CardFace>().shuffled()
-        if (checkIfPlayerVictoryIsClose(gameToState(game))) {
+        if (checkOnResult(gameToState(game)).isPlayerMoveWins()) {
             modifiers.forEach { modifier ->
                 val index = game.enemyCResources.hand.indexOf(modifier)
                 when (modifier.rank) {
@@ -104,7 +104,7 @@ class EnemyCrooker : EnemyPvEWithBank() {
                         caravan.putCardOnTop(game.enemyCResources.removeFromHand(index, speed) as CardBase, speed)
                     }
 
-                    if (checkTheOutcome(state) != 1 && !checkIfPlayerVictoryIsClose(state)) {
+                    if (checkTheOutcome(state) != 1 && !checkOnResult(state).isPlayerMoveWins()) {
                         if (caravan.isEmpty() || caravan.getValue() + card.rank.value in (21..26)) {
                             putCard()
                             return

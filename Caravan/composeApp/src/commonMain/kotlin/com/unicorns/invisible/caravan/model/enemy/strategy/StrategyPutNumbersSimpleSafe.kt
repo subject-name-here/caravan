@@ -12,11 +12,7 @@ class StrategyPutNumbersSimpleSafe : Strategy {
             caravans.forEach { (indexC, caravan) ->
                 if (caravan.canPutCardOnTop(card) && caravan.getValue() + card.rank.value <= 26) {
                     val state = gameToState(game)
-                    when (indexC) {
-                        0 -> state.enemy.v1 += card.rank.value
-                        1 -> state.enemy.v2 += card.rank.value
-                        2 -> state.enemy.v3 += card.rank.value
-                    }
+                    state.enemy[indexC] += card.rank.value
                     if (checkTheOutcome(state) != 1) {
                         val index = game.enemyCResources.hand.indexOf(card)
                         caravan.putCardOnTop(game.enemyCResources.removeFromHand(index, speed) as CardBase, speed)

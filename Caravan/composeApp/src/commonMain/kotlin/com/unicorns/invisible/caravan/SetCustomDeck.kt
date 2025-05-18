@@ -245,28 +245,31 @@ fun SetCustomDeck(
                                         .padding(4.dp)
                                         .clickable {
                                             val deck = saveGlobal.getCurrentCustomDeck()
-                                            CollectibleDeck(back).toList()
-                                                .filter { isAvailable(it) }
-                                                .forEach {
-                                                    when (selectedCode)  {
-                                                        0, 1 -> {
-                                                            playSelectSound()
+                                            val available = CollectibleDeck(back).toList().filter { isAvailable(it) }
+                                            if (available.isNotEmpty()) {
+                                                when (selectedCode)  {
+                                                    0, 1 -> {
+                                                        playSelectSound()
+                                                        available.forEach {
                                                             if (it !in deck) {
                                                                 toggleToCustomDeck(it)
                                                             }
                                                         }
-                                                        else -> {
-                                                            playCloseSound()
+                                                    }
+                                                    else -> {
+                                                        playCloseSound()
+                                                        available.forEach {
                                                             if (it in deck) {
                                                                 toggleToCustomDeck(it)
                                                             }
                                                         }
                                                     }
                                                 }
-                                            saveData()
-                                            updateCharacteristics = !updateCharacteristics
-                                            updateCards = !updateCards
-                                            selectedCode = getSelectedCode()
+                                                saveData()
+                                                updateCharacteristics = !updateCharacteristics
+                                                updateCards = !updateCards
+                                                selectedCode = getSelectedCode()
+                                            }
                                         }
                                         .alpha(if (back in saveGlobal.availableDecks) 1f else 0.55f)
                                 )

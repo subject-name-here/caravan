@@ -15,11 +15,7 @@ class StrategyPutNumbersMedium(val isHard: Boolean = false) : Strategy {
             numbers.map { card ->
                 caravan to card to if (caravan.canPutCardOnTop(card) && caravan.getValue() + card.rank.value <= 26) {
                     val state = gameToState(game)
-                    when (indexC) {
-                        0 -> state.enemy.v1 += card.rank.value
-                        1 -> state.enemy.v2 += card.rank.value
-                        2 -> state.enemy.v3 += card.rank.value
-                    }
+                    state.enemy[indexC] += card.rank.value
                     if (checkTheOutcome(state) == 1) {
                         -500
                     } else if (checkTheOutcome(state) == -1) {
@@ -37,7 +33,6 @@ class StrategyPutNumbersMedium(val isHard: Boolean = false) : Strategy {
         }
 
         val best = candidates.maxByOrNull { it.second }
-
         if (best != null && best.second > 0) {
             val index = game.enemyCResources.hand.indexOf(best.first.second)
             best.first.first.putCardOnTop(game.enemyCResources.removeFromHand(index, speed) as CardBase, speed)

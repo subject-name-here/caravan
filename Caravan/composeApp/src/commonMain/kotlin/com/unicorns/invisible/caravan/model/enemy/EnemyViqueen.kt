@@ -13,7 +13,7 @@ import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJokerSimpleOn
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyKingHard
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyPutNumbersHard
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyQueenToSelf
-import com.unicorns.invisible.caravan.model.enemy.strategy.checkIfPlayerVictoryIsClose
+import com.unicorns.invisible.caravan.model.enemy.strategy.checkOnResult
 import com.unicorns.invisible.caravan.model.enemy.strategy.gameToState
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.CardFace
@@ -46,7 +46,7 @@ class EnemyViqueen : EnemyPvENoBank() {
             return
         }
 
-        if (checkIfPlayerVictoryIsClose(gameToState(game))) {
+        if (checkOnResult(gameToState(game)).isPlayerMoveWins()) {
             val modifiers = game.enemyCResources.hand.filterIsInstance<CardFace>().shuffled()
 
             modifiers.forEach { modifier ->

@@ -12,15 +12,14 @@ class StrategyQueenToSelf(val index: Int) : Strategy {
     override suspend fun move(game: Game, speed: AnimationSpeed): Boolean {
         val hand = game.enemyCResources.hand
         val queen = hand[index] as CardFace
-        val caravan = game.enemyCaravans.withIndex()
-            .filter { ci ->
-                val c = ci.value
+        val caravan = game.enemyCaravans
+            .filter { c ->
                 c.size >= 2 && c.getValue() < 26 && hand.all { it !is CardBase || !c.canPutCardOnTop(it) } && c.cards.last().canAddModifier(queen)
-            }.maxByOrNull { (_, caravan) ->
+            }.maxByOrNull { caravan ->
                 abs(5 - caravan.cards.last().card.rank.value)
             }
         if (caravan != null) {
-            caravan.value.cards.last().addModifier(game.enemyCResources.removeFromHand(index, speed) as CardModifier, speed)
+            caravan.cards.last().addModifier(game.enemyCResources.removeFromHand(index, speed) as CardModifier, speed)
             return true
         }
         return false

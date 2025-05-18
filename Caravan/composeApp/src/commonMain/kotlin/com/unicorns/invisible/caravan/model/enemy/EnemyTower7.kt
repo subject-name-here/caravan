@@ -10,7 +10,7 @@ import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJackToPlayer
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyKingMedium
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyKingRuiner
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyPutNumbersMedium
-import com.unicorns.invisible.caravan.model.enemy.strategy.checkIfPlayerVictoryIsClose
+import com.unicorns.invisible.caravan.model.enemy.strategy.checkOnResult
 import com.unicorns.invisible.caravan.model.enemy.strategy.checkTheOutcome
 import com.unicorns.invisible.caravan.model.enemy.strategy.gameToState
 import com.unicorns.invisible.caravan.model.primitives.CResources
@@ -39,7 +39,7 @@ data object EnemyTower7 : Enemy {
             return
         }
 
-        val isBad = !checkIfPlayerVictoryIsClose(gameToState(game))
+        val isBad = checkOnResult(gameToState(game)).isPlayerMoveWins()
         if (!isBad && Random.nextBoolean() && StrategyPutNumbersMedium().move(game, speed)) {
             return
         }

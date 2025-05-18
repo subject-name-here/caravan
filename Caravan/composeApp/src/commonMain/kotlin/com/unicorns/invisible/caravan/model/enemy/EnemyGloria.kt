@@ -15,7 +15,7 @@ import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyKingHard
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyKingToSelfMedium
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyPutNumbersMedium
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyQueenToSelf
-import com.unicorns.invisible.caravan.model.enemy.strategy.checkIfPlayerVictoryIsClose
+import com.unicorns.invisible.caravan.model.enemy.strategy.checkOnResult
 import com.unicorns.invisible.caravan.model.enemy.strategy.checkTheOutcome
 import com.unicorns.invisible.caravan.model.enemy.strategy.gameToState
 import com.unicorns.invisible.caravan.model.primitives.CResources
@@ -84,7 +84,7 @@ class EnemyGloria : EnemyPvEWithBank() {
         }
 
         val modifiers = game.enemyCResources.hand.filterIsInstance<CardFace>().shuffled()
-        if (checkIfPlayerVictoryIsClose(gameToState(game))) {
+        if (checkOnResult(gameToState(game)).isPlayerMoveWins()) {
             modifiers.forEach { modifier ->
                 val index = game.enemyCResources.hand.indexOf(modifier)
                 when (modifier.rank) {

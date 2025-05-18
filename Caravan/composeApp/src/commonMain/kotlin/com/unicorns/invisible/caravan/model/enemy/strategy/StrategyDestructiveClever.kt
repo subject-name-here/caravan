@@ -32,7 +32,6 @@ class StrategyDestructiveClever : Strategy {
             }
         }
 
-
         val indexKing = game.enemyCResources.hand.indexOfFirst { it is CardFace && it.rank == RankFace.KING }
         if (indexKing in game.enemyCResources.hand.indices) {
             val king = game.enemyCResources.hand[indexKing] as CardModifier

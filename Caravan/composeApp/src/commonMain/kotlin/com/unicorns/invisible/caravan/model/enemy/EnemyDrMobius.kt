@@ -12,9 +12,8 @@ import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJokerSimple
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJokerSimpleOnPlayer
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyKingHard
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyPutNumbersHard
-import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyPutNumbersMedium
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyQueenToSelf
-import com.unicorns.invisible.caravan.model.enemy.strategy.checkIfPlayerVictoryIsClose
+import com.unicorns.invisible.caravan.model.enemy.strategy.checkOnResult
 import com.unicorns.invisible.caravan.model.enemy.strategy.gameToState
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.CardFace
@@ -73,7 +72,7 @@ class EnemyDrMobius : EnemyPvEWithBank() {
             return
         }
 
-        if (checkIfPlayerVictoryIsClose(gameToState(game))) {
+        if (checkOnResult(gameToState(game)).isPlayerMoveWins()) {
             val modifiers = game.enemyCResources.hand.filterIsInstance<CardFace>().shuffled()
 
             modifiers.forEach { modifier ->
@@ -138,7 +137,7 @@ class EnemyDrMobius : EnemyPvEWithBank() {
         StrategyDropLadiesFirst().move(game, speed)
     }
 
-    fun generateCardFace(): CardFace {
+    private fun generateCardFace(): CardFace {
         val rank = RankFace.entries.random()
         return if (rank == RankFace.JOKER) {
             CardJoker(CardJoker.Number.entries.random(), generateBack())
@@ -147,12 +146,12 @@ class EnemyDrMobius : EnemyPvEWithBank() {
         }
     }
 
-    fun generateCardNumber(): CardNumber {
+    private fun generateCardNumber(): CardNumber {
         val rank = RankNumber.entries.random()
         return CardNumber(rank, Suit.entries.random(), generateBack())
     }
 
-    fun generateBack() = listOf(
+    private fun generateBack() = listOf(
         CardBack.STANDARD,
         CardBack.STANDARD_UNCOMMON,
         CardBack.STANDARD_RARE,

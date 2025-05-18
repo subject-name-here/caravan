@@ -8,8 +8,7 @@ import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyDestructiveCleverNash
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyDropNashOrder
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyInit
-import com.unicorns.invisible.caravan.model.enemy.strategy.checkIfEnemyVictoryIsClose
-import com.unicorns.invisible.caravan.model.enemy.strategy.checkIfPlayerVictoryIsClose
+import com.unicorns.invisible.caravan.model.enemy.strategy.checkOnResult
 import com.unicorns.invisible.caravan.model.enemy.strategy.checkTheOutcome
 import com.unicorns.invisible.caravan.model.enemy.strategy.gameToState
 import com.unicorns.invisible.caravan.model.primitives.CResources
@@ -82,7 +81,7 @@ class EnemyNash : EnemyPvEWithBank() {
                     }.toSet()
 
 
-        if (checkIfPlayerVictoryIsClose(gameToState(game))) {
+        if (checkOnResult(gameToState(game)).isPlayerMoveWins()) {
             if (StrategyDestructiveCleverNash().move(game, speed)) {
                 return
             }
@@ -93,8 +92,8 @@ class EnemyNash : EnemyPvEWithBank() {
         val queen = game.enemyCResources.hand.find { it is CardFace && it.rank == RankFace.QUEEN }
         val king = game.enemyCResources.hand.find { it is CardFace && it.rank == RankFace.KING }
 
-        game.enemyCaravans.withIndex().forEach { (index, caravan) ->
-            if (checkIfEnemyVictoryIsClose(gameToState(game), index)) {
+        game.enemyCaravans.forEach { caravan ->
+            if (checkOnResult(gameToState(game)).isEnemyMoveWins()) {
                 if (king != null && !caravan.isEmpty() && caravan.getValue() < 21 && caravan !in overWeightCaravans) {
                     val card = caravan.cards[0]
                     if (card.canAddModifier(king as CardModifier)) {

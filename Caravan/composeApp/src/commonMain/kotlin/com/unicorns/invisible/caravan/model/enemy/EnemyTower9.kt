@@ -3,15 +3,13 @@ package com.unicorns.invisible.caravan.model.enemy
 import com.unicorns.invisible.caravan.AnimationSpeed
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
-import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyDestructiveClever
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyDropLadiesFirst
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyInit
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJackHard
-import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJackMedium
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJokerSimple
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyKingHard
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyPutNumbersHard
-import com.unicorns.invisible.caravan.model.enemy.strategy.checkIfEnemyVictoryIsClose
+import com.unicorns.invisible.caravan.model.enemy.strategy.checkOnResult
 import com.unicorns.invisible.caravan.model.enemy.strategy.checkTheOutcome
 import com.unicorns.invisible.caravan.model.enemy.strategy.gameToState
 import com.unicorns.invisible.caravan.model.primitives.CResources
@@ -59,37 +57,43 @@ data object EnemyTower9 : Enemy {
             return
         }
 
-        if ((0..2).any { checkIfEnemyVictoryIsClose(gameToState(game), it) }) {
-            if (StrategyDestructiveClever().move(game, speed)) {
-                return
+        suspend fun applyModifier(): Boolean {
+            val hand = game.enemyCResources.hand
+            val modifiers = hand.filterIsInstance<CardFace>().sortedByDescending { it.rank.value }
+            modifiers.forEach { modifier ->
+                val index = hand.indexOf(modifier)
+                when (modifier.rank) {
+                    RankFace.JACK -> {
+                        if (StrategyJackHard(index).move(game, speed)) {
+                            return true
+                        }
+                    }
+                    RankFace.KING -> {
+                        if (StrategyKingHard(index).move(game, speed)) {
+                            return true
+                        }
+                    }
+                    RankFace.JOKER -> {
+                        if (StrategyJokerSimple(index, isHard = true).move(game, speed)) {
+                            return true
+                        }
+                    }
+                    else -> {}
+                }
             }
+            return false
+        }
+
+        if (checkOnResult(gameToState(game)).isEnemyMoveWins() && applyModifier()) {
+            return
         }
 
         if (StrategyPutNumbersHard().move(game, speed)) {
             return
         }
 
-        val modifiers = game.enemyCResources.hand.filterIsInstance<CardFace>().sortedByDescending { it.rank.value }
-        modifiers.forEach { modifier ->
-            val index = game.enemyCResources.hand.indexOf(modifier)
-            when (modifier.rank) {
-                RankFace.JACK -> {
-                    if (StrategyJackHard(index).move(game, speed)) {
-                        return
-                    }
-                }
-                RankFace.KING -> {
-                    if (StrategyKingHard(index).move(game, speed)) {
-                        return
-                    }
-                }
-                RankFace.JOKER -> {
-                    if (StrategyJokerSimple(index, isHard = true).move(game, speed)) {
-                         return
-                    }
-                }
-                else -> {}
-            }
+        if (applyModifier()) {
+            return
         }
 
         game.enemyCaravans.forEachIndexed { indexC, caravan ->
