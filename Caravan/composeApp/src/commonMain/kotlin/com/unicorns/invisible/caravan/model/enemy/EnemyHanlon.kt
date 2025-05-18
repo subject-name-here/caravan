@@ -8,8 +8,6 @@ import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyDropAllButFace
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyInit
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJackHard
-import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJackMedium
-import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJackToPlayer
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJokerSimple
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJokerSimpleOnPlayer
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyKingHard
@@ -17,7 +15,6 @@ import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyKingRuiner
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyPutNumbersHard
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyQueenToSelf
 import com.unicorns.invisible.caravan.model.enemy.strategy.checkOnResult
-import com.unicorns.invisible.caravan.model.enemy.strategy.checkTheOutcome
 import com.unicorns.invisible.caravan.model.enemy.strategy.gameToState
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.CardBase

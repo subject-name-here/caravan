@@ -5,11 +5,11 @@ import caravan.composeapp.generated.resources.elijah
 import com.unicorns.invisible.caravan.AnimationSpeed
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
-import com.unicorns.invisible.caravan.model.enemy.strategy.GamePossibleResult
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyDropLadiesFirst
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyInit
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyKingRuiner
 import com.unicorns.invisible.caravan.model.enemy.strategy.checkOnResult
+import com.unicorns.invisible.caravan.model.enemy.strategy.checkTheOutcome
 import com.unicorns.invisible.caravan.model.enemy.strategy.gameToState
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.CardBase
@@ -73,15 +73,6 @@ class EnemyElijah : EnemyPvEWithBank() {
             return
         }
 
-        fun checkAnyReady(p0: Int, e0: Int): Int {
-            return when {
-                p0 in (21..26) && (p0 > e0 || e0 > 26) -> 1
-                e0 in (21..26) && (e0 > p0 || p0 > 26) -> 1
-                else -> 0
-            }
-        }
-        val state = gameToState(game)
-
         val king = hand.filterIsInstance<CardFace>().find { it.rank == RankFace.KING }
 
         // 1. Check if adding king will cause victory.
@@ -89,13 +80,9 @@ class EnemyElijah : EnemyPvEWithBank() {
             val kingIndex = hand.indexOf(king)
             game.enemyCaravans.withIndex().shuffled().forEach { (caravanIndex, enemyCaravan) ->
                 enemyCaravan.cards.forEach { card ->
-                    val futureValue = enemyCaravan.getValue() + card.getValue()
-                    val playerValue = game.playerCaravans[caravanIndex].getValue()
-                    if (
-                        card.canAddModifier(king) &&
-                        checkOnResult(state, caravanIndex).isEnemyMoveWins()
-                        && futureValue in (21..26) && (futureValue > playerValue || playerValue > 26)
-                    ) {
+                    val state = gameToState(game)
+                    state.enemy[caravanIndex] += card.getValue()
+                    if (card.canAddModifier(king) && checkTheOutcome(state) == -1) {
                         card.addModifier(game.enemyCResources.removeFromHand(kingIndex, speed) as CardModifier, speed)
                         return
                     }
@@ -104,28 +91,20 @@ class EnemyElijah : EnemyPvEWithBank() {
         }
 
         // Check if adding base card will cause victory
-
         hand.filterIsInstance<CardBase>().forEach { card ->
             val cardIndex = hand.indexOf(card)
             game.enemyCaravans.withIndex().sortedByDescending { it.value.getValue() }
                 .forEach { (caravanIndex, caravan) ->
-                    val futureValue = caravan.getValue() + card.rank.value
-                    val playerValue = game.playerCaravans[caravanIndex].getValue()
-                    if (
-                        caravan.canPutCardOnTop(card) &&
-                        checkOnResult(state, caravanIndex).isEnemyMoveWins() && futureValue in (21..26) && (futureValue > playerValue || playerValue > 26)
-                    ) {
+                    val state = gameToState(game)
+                    state.enemy[caravanIndex] += card.rank.value
+                    if (caravan.canPutCardOnTop(card) && checkTheOutcome(state) == -1) {
                         caravan.putCardOnTop(game.enemyCResources.removeFromHand(cardIndex, speed) as CardBase, speed)
                         return
                     }
                 }
         }
 
-        val needsRuiner = (0..2)
-            .sumOf { checkAnyReady(
-                game.playerCaravans[it].getValue(), game.enemyCaravans[it].getValue()
-            ) } >= 2
-        if (needsRuiner && king != null) {
+        if (checkOnResult(gameToState(game)).isPlayerMoveWins() && king != null) {
             val index = hand.indexOf(king)
             if (StrategyKingRuiner(index).move(game, speed)) {
                 return
@@ -137,10 +116,13 @@ class EnemyElijah : EnemyPvEWithBank() {
             game.enemyCaravans.withIndex().shuffled().forEach { (caravanIndex, enemyCaravan) ->
                 if (enemyCaravan.getValue() in listOf(10, 16)) {
                     val ten = enemyCaravan.cards.find { it.card.rank == RankNumber.TEN && it.getValue() == 10 && it.canAddModifier(king) }
-                    val res = checkOnResult(state, caravanIndex).isPlayerMoveWins()
-                    if (ten != null && !(res && enemyCaravan.getValue() == 16)) {
-                        ten.addModifier(game.enemyCResources.removeFromHand(index, speed) as CardModifier, speed)
-                        return
+                    if (ten != null) {
+                        val state = gameToState(game)
+                        state.enemy[caravanIndex] += ten.getValue()
+                        if (!checkOnResult(state, caravanIndex).isPlayerMoveWins()) {
+                            ten.addModifier(game.enemyCResources.removeFromHand(index, speed) as CardModifier, speed)
+                            return
+                        }
                     }
                 }
             }
@@ -151,7 +133,9 @@ class EnemyElijah : EnemyPvEWithBank() {
             game.enemyCaravans.withIndex().sortedByDescending { it.value.getValue() }
                 .forEach { (caravanIndex, caravan) ->
                     if (caravan.size < 2 && caravan.getValue() + card.rank.value <= 26 && caravan.canPutCardOnTop(card)) {
-                        if (!(checkOnResult(state, caravanIndex).isPlayerMoveWins() && caravan.getValue() + card.rank.value in (21..26))) {
+                        val state = gameToState(game)
+                        state.enemy[caravanIndex] += card.rank.value
+                        if (!(checkOnResult(state, caravanIndex).isPlayerMoveWins())) {
                             caravan.putCardOnTop(game.enemyCResources.removeFromHand(cardIndex, speed) as CardBase, speed)
                             return
                         }

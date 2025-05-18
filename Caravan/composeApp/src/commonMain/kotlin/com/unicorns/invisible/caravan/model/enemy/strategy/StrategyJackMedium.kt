@@ -13,7 +13,7 @@ class StrategyJackMedium(val index: Int) : Strategy {
             .filter { it.canAddModifier(jack) }
             .filter { cardA ->
                 val state = gameToState(game)
-                val indexC = game.playerCaravans.withIndex().first { cardA in it.value.cards }.index
+                val indexC = game.playerCaravans.indexOfFirst { cardA in it.cards }
                 when (indexC) {
                     0 -> state.player.v1 -= cardA.getValue()
                     1 -> state.player.v2 -= cardA.getValue()

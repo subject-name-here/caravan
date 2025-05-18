@@ -6,11 +6,9 @@ import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyDropLadiesFirst
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyInit
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJackHard
-import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJackToPlayer
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJokerSimpleOnPlayer
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyKingHard
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyKingRuiner
-import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyKingToPlayer
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyPutNumbersMedium
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.CardFace
@@ -55,7 +53,10 @@ data object EnemyTowerBonus : Enemy {
                     }
                 }
                 RankFace.KING -> {
-                    if (StrategyKingRuiner(index, isHard = true).move(game, speed) || StrategyKingHard(index, StrategyKingHard.Direction.TO_PLAYER).move(game, speed)) {
+                    if (
+                        StrategyKingRuiner(index, isHard = true).move(game, speed) ||
+                        StrategyKingHard(index, StrategyKingHard.Direction.TO_PLAYER).move(game, speed)
+                    ) {
                         return
                     }
                 }
@@ -70,6 +71,13 @@ data object EnemyTowerBonus : Enemy {
 
         if (StrategyPutNumbersMedium(isHard = true).move(game, speed)) {
             return
+        }
+
+        game.enemyCaravans.forEach { caravan ->
+            if (caravan.getValue() > 26) {
+                caravan.dropCaravan(speed)
+                return
+            }
         }
 
         StrategyDropLadiesFirst().move(game, speed)

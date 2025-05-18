@@ -10,8 +10,6 @@ import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJokerSuperSim
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyKingMedium
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyPutNumbersMedium
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyQueenToSelfSimple
-import com.unicorns.invisible.caravan.model.enemy.strategy.checkTheOutcome
-import com.unicorns.invisible.caravan.model.enemy.strategy.gameToState
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.CardFace
 import com.unicorns.invisible.caravan.model.primitives.CardFaceSuited
@@ -85,18 +83,10 @@ data object EnemyTower5 : Enemy {
             }
         }
 
-        game.enemyCaravans.forEachIndexed { indexC, caravan ->
+        game.enemyCaravans.forEach { caravan ->
             if (caravan.getValue() > 26) {
-                val state = gameToState(game)
-                when (indexC) {
-                    0 -> state.enemy.v1 = 0
-                    1 -> state.enemy.v2 = 0
-                    2 -> state.enemy.v3 = 0
-                }
-                if (checkTheOutcome(state) != 1) {
-                    caravan.dropCaravan(speed)
-                    return
-                }
+                caravan.dropCaravan(speed)
+                return
             }
         }
 

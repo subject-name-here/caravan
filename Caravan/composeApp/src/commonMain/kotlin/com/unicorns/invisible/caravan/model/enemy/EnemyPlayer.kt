@@ -98,7 +98,7 @@ class EnemyPlayer(var deckSize: Int?, private val session: DefaultClientWebSocke
 
 @Serializable
 data class Move(
-    // 1 - drop caravan, 2 - drop card, 3 - put card in caravan; 0 - take card from deck (used only before init stage)
+    // 1 - drop caravan, 2 - drop card, 3 - put card in caravan
     val moveType: Int,
     val cardNumberInHand: Int,
     val caravanNumber: Int,

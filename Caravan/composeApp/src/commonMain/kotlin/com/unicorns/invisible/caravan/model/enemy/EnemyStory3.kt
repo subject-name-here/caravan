@@ -123,7 +123,7 @@ class EnemyStory3(val showMessage: (Int) -> Unit) : Enemy {
                 }
             }
 
-            if (card is CardFace && card is CardJoker) {
+            if (card is CardJoker) {
                 val cards = (game.playerCaravans + game.enemyCaravans).flatMap { it.cards }.groupBy { it.card.rank }
                 val maxRank = cards.entries.maxBy { it.value.size }
                 val cardsRank = maxRank.value

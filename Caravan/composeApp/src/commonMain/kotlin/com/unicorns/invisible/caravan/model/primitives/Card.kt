@@ -13,11 +13,13 @@ sealed class Card {
     var caravanAnimationMark by mutableStateOf(AnimationMark.NEW)
 
     enum class AnimationMark {
-        STABLE,
         NEW,
+        STABLE,
         MOVING_OUT,
         MOVING_OUT_ALT,
         MOVED_OUT;
+
+        fun isOut(): Boolean = this !in listOf(NEW, STABLE)
     }
 }
 

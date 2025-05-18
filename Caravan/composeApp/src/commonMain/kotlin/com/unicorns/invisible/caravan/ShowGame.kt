@@ -779,7 +779,12 @@ fun RowScope.CaravanOnField(
                         } else {
                             tween(animationSpeed.delay.toInt())
                         }
-                        ) { _ -> prevState = it.card.caravanAnimationMark }
+                        ) { _ ->
+                            prevState = it.card.caravanAnimationMark
+                            if (prevState.isOut()) {
+                                caravan.recomposeResources++
+                            }
+                        }
 
                         val offsetWidthMult by animateFloatAsState(when (it.card.caravanAnimationMark) {
                             Card.AnimationMark.STABLE -> 0f

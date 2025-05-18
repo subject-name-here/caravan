@@ -3,7 +3,6 @@ package com.unicorns.invisible.caravan.model.enemy
 import com.unicorns.invisible.caravan.AnimationSpeed
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
-import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyDropAllButFace
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyDropLadiesFirst
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyInit
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJackMedium
@@ -13,13 +12,9 @@ import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyKingMedium
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyKingToPlayer
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyPutNumbersMedium
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyQueenToSelf
-import com.unicorns.invisible.caravan.model.enemy.strategy.checkTheOutcome
-import com.unicorns.invisible.caravan.model.enemy.strategy.gameToState
 import com.unicorns.invisible.caravan.model.primitives.CResources
-import com.unicorns.invisible.caravan.model.primitives.CardBase
 import com.unicorns.invisible.caravan.model.primitives.CardFace
 import com.unicorns.invisible.caravan.model.primitives.CardFaceSuited
-import com.unicorns.invisible.caravan.model.primitives.CardJoker
 import com.unicorns.invisible.caravan.model.primitives.CustomDeck
 import com.unicorns.invisible.caravan.model.primitives.RankFace
 import com.unicorns.invisible.caravan.model.primitives.Suit

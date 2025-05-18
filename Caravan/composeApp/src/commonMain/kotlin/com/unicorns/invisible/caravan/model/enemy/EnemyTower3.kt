@@ -5,13 +5,11 @@ import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyDropAllButFace
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyInit
-import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJackToPlayer
+import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJackMedium
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyKingToPlayer
-import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyPutNumbersHard
+import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyPutNumbersMedium
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyPutNumbersSimpleSafe
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyQueenToSelf
-import com.unicorns.invisible.caravan.model.enemy.strategy.checkTheOutcome
-import com.unicorns.invisible.caravan.model.enemy.strategy.gameToState
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.CardFace
 import com.unicorns.invisible.caravan.model.primitives.CardModifier
@@ -27,17 +25,16 @@ data object EnemyTower3 : Enemy {
             return
         }
 
-        if (StrategyPutNumbersHard().move(game, speed)) {
+        if (StrategyPutNumbersMedium().move(game, speed)) {
             return
         }
 
         val modifiers = game.enemyCResources.hand.filterIsInstance<CardFace>().shuffled()
-
         modifiers.forEach { modifier ->
             val index = game.enemyCResources.hand.indexOf(modifier)
             when (modifier.rank) {
                 RankFace.JACK -> {
-                    if (StrategyJackToPlayer(index).move(game, speed)) {
+                    if (StrategyJackMedium(index).move(game, speed)) {
                         return
                     }
                 }
@@ -65,7 +62,7 @@ data object EnemyTower3 : Enemy {
             return
         }
 
-        game.enemyCaravans.forEachIndexed { indexC, caravan ->
+        game.enemyCaravans.forEach { caravan ->
             if (caravan.getValue() > 26) {
                 caravan.dropCaravan(speed)
                 return

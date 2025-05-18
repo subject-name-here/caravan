@@ -12,18 +12,16 @@ import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJokerSimpleOn
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJokerSuperSimple
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyKingRuiner
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyKingToPlayer
+import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyPutNumbersHard
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyQueenToSelf
 import com.unicorns.invisible.caravan.model.enemy.strategy.checkOnResult
-import com.unicorns.invisible.caravan.model.enemy.strategy.checkTheOutcome
 import com.unicorns.invisible.caravan.model.enemy.strategy.gameToState
 import com.unicorns.invisible.caravan.model.primitives.CResources
-import com.unicorns.invisible.caravan.model.primitives.CardBase
 import com.unicorns.invisible.caravan.model.primitives.CardFace
 import com.unicorns.invisible.caravan.model.primitives.CollectibleDeck
 import com.unicorns.invisible.caravan.model.primitives.CustomDeck
 import com.unicorns.invisible.caravan.model.primitives.RankFace
 import kotlinx.serialization.Serializable
-import kotlin.math.abs
 
 
 @Serializable
@@ -84,40 +82,8 @@ class EnemyCrooker : EnemyPvEWithBank() {
             }
         }
 
-        val numbers = game.enemyCResources.hand.filterIsInstance<CardBase>()
-        val caravans = game.enemyCaravans
-            .filter { it.getValue() < 26 }
-            .sortedByDescending { it.getValue() }
-
-        caravans.forEachIndexed { indexC, caravan ->
-            numbers.shuffled().forEach { card ->
-                if (caravan.canPutCardOnTop(card) && caravan.getValue() + card.rank.value <= 26) {
-                    val state = gameToState(game)
-                    when (indexC) {
-                        0 -> state.enemy.v1 += card.rank.value
-                        1 -> state.enemy.v2 += card.rank.value
-                        2 -> state.enemy.v3 += card.rank.value
-                    }
-
-                    suspend fun putCard() {
-                        val index = game.enemyCResources.hand.indexOf(card)
-                        caravan.putCardOnTop(game.enemyCResources.removeFromHand(index, speed) as CardBase, speed)
-                    }
-
-                    if (checkTheOutcome(state) != 1 && !checkOnResult(state).isPlayerMoveWins()) {
-                        if (caravan.isEmpty() || caravan.getValue() + card.rank.value in (21..26)) {
-                            putCard()
-                            return
-                        } else {
-                            val last = caravan.cards.last().card
-                            if (abs(card.rank.value - last.rank.value) <= 2) {
-                                putCard()
-                                return
-                            }
-                        }
-                    }
-                }
-            }
+        if (StrategyPutNumbersHard().move(game, speed)) {
+            return
         }
 
         modifiers.forEach { modifier ->
@@ -146,18 +112,10 @@ class EnemyCrooker : EnemyPvEWithBank() {
             }
         }
 
-        game.enemyCaravans.forEachIndexed { indexC, caravan ->
+        game.enemyCaravans.forEach { caravan ->
             if (caravan.getValue() > 26) {
-                val state = gameToState(game)
-                when (indexC) {
-                    0 -> state.enemy.v1 = 0
-                    1 -> state.enemy.v2 = 0
-                    2 -> state.enemy.v3 = 0
-                }
-                if (checkTheOutcome(state) != 1) {
-                    caravan.dropCaravan(speed)
-                    return
-                }
+                caravan.dropCaravan(speed)
+                return
             }
         }
 

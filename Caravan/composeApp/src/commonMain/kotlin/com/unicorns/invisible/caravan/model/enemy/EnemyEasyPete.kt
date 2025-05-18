@@ -5,10 +5,12 @@ import caravan.composeapp.generated.resources.easy_pete
 import com.unicorns.invisible.caravan.AnimationSpeed
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Game
+import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyDropLadiesFirst
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyInit
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJackToSelfSimple
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyKingToSelfSimple
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyPutNumbersSimple
+import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyQueenToSelfSimple
 import com.unicorns.invisible.caravan.model.enemy.strategy.checkOnResult
 import com.unicorns.invisible.caravan.model.enemy.strategy.gameToState
 import com.unicorns.invisible.caravan.model.primitives.CResources
@@ -21,7 +23,6 @@ import com.unicorns.invisible.caravan.model.primitives.CustomDeck
 import com.unicorns.invisible.caravan.model.primitives.RankFace
 import com.unicorns.invisible.caravan.model.primitives.WWType
 import kotlinx.serialization.Serializable
-import kotlin.random.Random
 
 
 @Serializable
@@ -100,8 +101,7 @@ class EnemyEasyPete : EnemyPvEWithBank() {
                     }
                 }
                 RankFace.QUEEN -> {
-                    if (Random.nextBoolean()) {
-                        game.enemyCResources.dropCardFromHand(index, speed)
+                    if (StrategyQueenToSelfSimple(index).move(game, speed)) {
                         return
                     }
                 }
@@ -110,15 +110,7 @@ class EnemyEasyPete : EnemyPvEWithBank() {
                         return
                     }
                 }
-                RankFace.JOKER -> {
-                    if (Random.nextBoolean()) {
-                        val cards = game.enemyCaravans.flatMap { it.cards }.filter { it.canAddModifier(modifier) }.shuffled()
-                        if (cards.isNotEmpty()) {
-                            cards.random().addModifier(game.enemyCResources.removeFromHand(index, speed) as CardModifier, speed)
-                            return
-                        }
-                    }
-                }
+                RankFace.JOKER -> {}
             }
         }
 
@@ -129,6 +121,6 @@ class EnemyEasyPete : EnemyPvEWithBank() {
             }
         }
 
-        game.enemyCResources.dropCardFromHand(game.enemyCResources.hand.indices.random(), speed)
+        StrategyDropLadiesFirst().move(game, speed)
     }
 }

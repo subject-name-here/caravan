@@ -51,7 +51,7 @@ class EnemyFisto : EnemyPvEWithBank() {
             removeAll { it is CardFaceSuited }
             removeAll { it is CardBase && it.rank.value < 5 }
 
-            repeat(6) {
+            repeat(5) {
                 add(CardWildWasteland(WWType.YES_MAN))
                 add(CardWildWasteland(WWType.MUGGY))
             }
@@ -88,11 +88,7 @@ class EnemyFisto : EnemyPvEWithBank() {
                                 if (card != null) {
                                     val state = gameToState(game)
                                     val indexC = game.enemyCaravans.indexOf(caravan)
-                                    when (indexC) {
-                                        0 -> state.enemy.v1 = 26
-                                        1 -> state.enemy.v2 = 26
-                                        2 -> state.enemy.v3 = 26
-                                    }
+                                    state.enemy[indexC] = 26
                                     if (checkTheOutcome(state) != 1) {
                                         card.addModifier(game.enemyCResources.removeFromHand(index, speed) as CardModifier, speed)
                                         return

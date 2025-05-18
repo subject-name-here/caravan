@@ -7,7 +7,7 @@ import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyDropLadiesFir
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyInit
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJackMedium
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJokerSimple
-import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyKingHard
+import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyKingMedium
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyPutNumbersMedium
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.CardFace
@@ -42,7 +42,7 @@ data object EnemyStory5 : Enemy {
 
         val king = modifiers.find { it.rank == RankFace.KING }
         if (king != null) {
-            if (StrategyKingHard(hand.indexOf(king)).move(game, speed)) {
+            if (StrategyKingMedium(hand.indexOf(king)).move(game, speed)) {
                 return
             }
         }

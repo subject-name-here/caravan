@@ -38,7 +38,8 @@ class EnemySnuffles : EnemyPvEWithBank() {
     })
 
 
-    override var maxBets: Int = 0
+    override val maxBets: Int
+        get() = 0
     override var curBets: Int = maxBets
     override val bet: Int
         get() = 5
@@ -86,8 +87,8 @@ class EnemySnuffles : EnemyPvEWithBank() {
             val modifiers = game.enemyCResources.hand.withIndex()
                 .filter { it.value is CardModifier }
                 .shuffled()
-            val cards = (game.playerCaravans + game.enemyCaravans).flatMap { it.cards }.shuffled()
-            cards.forEach { card ->
+            val cards2 = (game.playerCaravans + game.enemyCaravans).flatMap { it.cards }.shuffled()
+            cards2.forEach { card ->
                 modifiers.forEach { modifier ->
                     if (card.canAddModifier(modifier.value as CardModifier) && Random.nextBoolean()) {
                         card.addModifier(game.enemyCResources.removeFromHand(modifier.index, speed) as CardModifier, speed)

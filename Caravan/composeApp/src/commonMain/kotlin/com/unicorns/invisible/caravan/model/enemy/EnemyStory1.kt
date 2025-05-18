@@ -53,8 +53,7 @@ data object EnemyStory1 : Enemy {
                 }
             }
             if (card is CardFace && card.rank == RankFace.KING) {
-                val caravan =
-                    game.enemyCaravans.filter { it.getValue() < 21 }.randomOrNull()
+                val caravan = game.enemyCaravans.filter { it.getValue() < 21 }.randomOrNull()
                 if (caravan != null) {
                     val cardToKing = caravan.cards.filter { it.canAddModifier(card) }
                         .filter { caravan.getValue() + it.getValue() <= 26 }

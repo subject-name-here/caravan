@@ -92,8 +92,8 @@ class EnemyNash : EnemyPvEWithBank() {
         val queen = game.enemyCResources.hand.find { it is CardFace && it.rank == RankFace.QUEEN }
         val king = game.enemyCResources.hand.find { it is CardFace && it.rank == RankFace.KING }
 
-        game.enemyCaravans.forEach { caravan ->
-            if (checkOnResult(gameToState(game)).isEnemyMoveWins()) {
+        game.enemyCaravans.forEachIndexed { index, caravan ->
+            if (checkOnResult(gameToState(game), index).isEnemyMoveWins()) {
                 if (king != null && !caravan.isEmpty() && caravan.getValue() < 21 && caravan !in overWeightCaravans) {
                     val card = caravan.cards[0]
                     if (card.canAddModifier(king as CardModifier)) {
@@ -107,11 +107,7 @@ class EnemyNash : EnemyPvEWithBank() {
 
         suspend fun putJack(index: Int, cardToJack: CardWithModifier): Boolean {
             val state = gameToState(game)
-            when (index) {
-                0 -> state.player.v1 -= cardToJack.getValue()
-                1 -> state.player.v2 -= cardToJack.getValue()
-                2 -> state.player.v3 -= cardToJack.getValue()
-            }
+            state.player[index] -= cardToJack.getValue()
 
             if (checkTheOutcome(state) != 1 && jack != null) {
                 val jackIndex = game.enemyCResources.hand.indexOf(jack)
@@ -159,11 +155,7 @@ class EnemyNash : EnemyPvEWithBank() {
                     val card = caravan.cards[0]
                     if (card.canAddModifier(king as CardFace)) {
                         val state = gameToState(game)
-                        when (index) {
-                            0 -> state.player.v1 += card.getValue()
-                            1 -> state.player.v2 += card.getValue()
-                            2 -> state.player.v3 += card.getValue()
-                        }
+                        state.enemy[index] += card.getValue()
                         if (checkTheOutcome(state) != 1) {
                             val kingIndex = game.enemyCResources.hand.indexOf(king)
                             card.addModifier(game.enemyCResources.removeFromHand(kingIndex, speed) as CardFace, speed)

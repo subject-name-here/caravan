@@ -115,7 +115,7 @@ class EnemyViqueen : EnemyPvENoBank() {
             }
         }
 
-        game.enemyCaravans.forEachIndexed { indexC, caravan ->
+        game.enemyCaravans.forEach { caravan ->
             if (caravan.getValue() > 26) {
                 caravan.dropCaravan(speed)
                 return

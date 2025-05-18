@@ -6,15 +6,14 @@ import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyDropAllButFace
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyInit
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyJackToPlayer
-import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyKingToPlayer
+import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyKingMedium
+import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyPutNumbersHard
 import com.unicorns.invisible.caravan.model.enemy.strategy.StrategyQueenToSelf
-import com.unicorns.invisible.caravan.model.enemy.strategy.checkTheOutcome
-import com.unicorns.invisible.caravan.model.enemy.strategy.gameToState
 import com.unicorns.invisible.caravan.model.primitives.CResources
-import com.unicorns.invisible.caravan.model.primitives.CardBase
 import com.unicorns.invisible.caravan.model.primitives.CardFace
 import com.unicorns.invisible.caravan.model.primitives.CardModifier
 import com.unicorns.invisible.caravan.model.primitives.RankFace
+import kotlin.math.abs
 
 
 data object EnemyTower3A : Enemy {
@@ -26,33 +25,11 @@ data object EnemyTower3A : Enemy {
             return
         }
 
-        val baseCards = game.enemyCResources.hand.filterIsInstance<CardBase>().shuffled()
-        val caravans = game.enemyCaravans.withIndex().shuffled()
-        baseCards.forEach { card ->
-            caravans.forEach { (indexC, caravan) ->
-                if (caravan.canPutCardOnTop(card) && caravan.getValue() + card.rank.value <= 26) {
-                    val state = gameToState(game)
-                    when (indexC) {
-                        0 -> state.enemy.v1 += card.rank.value
-                        1 -> state.enemy.v2 += card.rank.value
-                        2 -> state.enemy.v3 += card.rank.value
-                    }
-                    if (checkTheOutcome(state) != 1) {
-                        val last = caravan.cards.lastOrNull()
-                        val isLastGood = last == null ||
-                                !last.isQueenReversingSequence() && last.card.rank.value > card.rank.value ||
-                                last.isQueenReversingSequence() && last.card.rank.value < card.rank.value
-                        if (isLastGood) {
-                            val index = game.enemyCResources.hand.indexOf(card)
-                            caravan.putCardOnTop(game.enemyCResources.removeFromHand(index, speed) as CardBase, speed)
-                            return
-                        }
-                    }
-                }
-            }
+        if (StrategyPutNumbersHard().move(game, speed)) {
+            return
         }
 
-        val modifiers = game.enemyCResources.hand.filterIsInstance<CardFace>().shuffled()
+        val modifiers = game.enemyCResources.hand.filterIsInstance<CardFace>().sortedBy { abs(12 - it.rank.value) }
         modifiers.forEach { modifier ->
             val index = game.enemyCResources.hand.indexOf(modifier)
             when (modifier.rank) {
@@ -67,7 +44,7 @@ data object EnemyTower3A : Enemy {
                     }
                 }
                 RankFace.KING -> {
-                    if (StrategyKingToPlayer(index).move(game, speed)) {
+                    if (StrategyKingMedium(index).move(game, speed)) {
                         return
                     }
                 }
@@ -81,36 +58,10 @@ data object EnemyTower3A : Enemy {
             }
         }
 
-        game.enemyCaravans.forEachIndexed { indexC, caravan ->
+        game.enemyCaravans.forEach { caravan ->
             if (caravan.getValue() > 26) {
-                val state = gameToState(game)
-                when (indexC) {
-                    0 -> state.enemy.v1 = 0
-                    1 -> state.enemy.v2 = 0
-                    2 -> state.enemy.v3 = 0
-                }
-                if (checkTheOutcome(state) != 1) {
-                    caravan.dropCaravan(speed)
-                    return
-                }
-            }
-        }
-
-        modifiers.forEach { modifier ->
-            val index = game.enemyCResources.hand.indexOf(modifier)
-            when (modifier.rank) {
-                RankFace.QUEEN -> {
-                    val cards = game.enemyCaravans
-                        .filter { !it.isEmpty() }
-                        .map { it.cards.last() }
-                        .filter { it.canAddModifier(modifier) }
-                        .shuffled()
-                    if (cards.isNotEmpty()) {
-                        cards.random().addModifier(game.enemyCResources.removeFromHand(index, speed) as CardModifier, speed)
-                        return
-                    }
-                }
-                else -> {}
+                caravan.dropCaravan(speed)
+                return
             }
         }
 

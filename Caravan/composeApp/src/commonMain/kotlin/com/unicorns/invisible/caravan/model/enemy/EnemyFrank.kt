@@ -31,7 +31,6 @@ class EnemyFrank(val isHard: Boolean) : Enemy {
         }
     })
 
-
     override suspend fun makeMove(game: Game, speed: AnimationSpeed) {
         val overWeightCaravans = game.enemyCaravans.filter { it.getValue() > 26 }
         val underWeightCaravans = game.enemyCaravans.filter { it.getValue() < 21 }
@@ -46,12 +45,11 @@ class EnemyFrank(val isHard: Boolean) : Enemy {
         }
 
         // 1) Check if we have winning move
-        val isWinningMovePossible = checkOnResult(gameToState(game)).isEnemyMoveWins()
-        if (isWinningMovePossible) {
-            game.enemyCaravans.withIndex().forEach { caravan ->
-                val jack = hand.filterIsInstance<CardFace>().find { card -> card.rank == RankFace.JACK }
-                if (jack != null) {
-                    val jackIndex = hand.indexOf(jack)
+        if (checkOnResult(gameToState(game)).isEnemyMoveWins()) {
+            val jack = hand.filterIsInstance<CardFace>().find { card -> card.rank == RankFace.JACK }
+            if (jack != null) {
+                val jackIndex = hand.indexOf(jack)
+                game.enemyCaravans.withIndex().forEach { caravan ->
                     caravan.value.cards
                         .filter { card -> card.canAddModifier(jack) }
                         .sortedBy { card -> card.getValue() }
@@ -63,41 +61,44 @@ class EnemyFrank(val isHard: Boolean) : Enemy {
                                 return
                             }
                         }
-                    game.playerCaravans
-                        .sortedByDescending { it.getValue() }
-                        .forEach {
-                            it.cards
-                                .filter { card -> card.canAddModifier(jack) }
-                                .sortedBy { card -> card.getValue() }
-                                .forEach { card ->
-                                    val state = gameToState(game)
-                                    state.player[caravan.index] -= card.getValue()
-                                    if (checkTheOutcome(state) == -1) {
-                                        card.addModifier(game.enemyCResources.removeFromHand(jackIndex, speed) as CardModifier, speed)
-                                        return
-                                    }
-                                }
-                        }
                 }
+
+                game.playerCaravans.withIndex()
+                    .sortedByDescending { it.value.getValue() }
+                    .forEach { caravan ->
+                        caravan.value.cards
+                            .filter { card -> card.canAddModifier(jack) }
+                            .sortedBy { card -> card.getValue() }
+                            .forEach { card ->
+                                val state = gameToState(game)
+                                state.player[caravan.index] -= card.getValue()
+                                if (checkTheOutcome(state) == -1) {
+                                    card.addModifier(game.enemyCResources.removeFromHand(jackIndex, speed) as CardModifier, speed)
+                                    return
+                                }
+                            }
+                    }
 
                 val king = hand.filterIsInstance<CardFace>().find { card -> card.rank == RankFace.KING }
                 if (king != null) {
                     val kingIndex = hand.indexOf(king)
-                    caravan.value.cards
-                        .filter { card -> card.canAddModifier(king) }
-                        .sortedBy { card -> card.getValue() }
-                        .forEach { card ->
-                            val state = gameToState(game)
-                            state.enemy[caravan.index] += card.getValue()
-                            if (checkTheOutcome(state) == -1) {
-                                card.addModifier(game.enemyCResources.removeFromHand(kingIndex, speed) as CardModifier, speed)
-                                return
+                    game.enemyCaravans.withIndex().forEach { caravan ->
+                        caravan.value.cards
+                            .filter { card -> card.canAddModifier(king) }
+                            .sortedBy { card -> card.getValue() }
+                            .forEach { card ->
+                                val state = gameToState(game)
+                                state.enemy[caravan.index] += card.getValue()
+                                if (checkTheOutcome(state) == -1) {
+                                    card.addModifier(game.enemyCResources.removeFromHand(kingIndex, speed) as CardModifier, speed)
+                                    return
+                                }
                             }
-                        }
-                    game.playerCaravans
-                        .sortedByDescending { it.getValue() }
-                        .forEach {
-                            it.cards
+                    }
+                    game.playerCaravans.withIndex()
+                        .sortedByDescending { it.value.getValue() }
+                        .forEach { caravan ->
+                            caravan.value.cards
                                 .filter { card -> card.canAddModifier(king) }
                                 .sortedBy { card -> card.getValue() }
                                 .forEach { card ->
@@ -112,24 +113,26 @@ class EnemyFrank(val isHard: Boolean) : Enemy {
                 }
 
                 // Put a card on top!
-                hand.filterIsInstance<CardNumber>()
-                    .filter { caravan.value.canPutCardOnTop(it) }
-                    .forEach { card ->
-                        val cardIndex = hand.indexOf(card)
-                        val state = gameToState(game)
-                        state.enemy[caravan.index] += card.rank.value
-                        if (checkTheOutcome(state) == -1) {
-                            caravan.value.putCardOnTop(game.enemyCResources.removeFromHand(cardIndex, speed) as CardBase, speed)
-                            return
+                game.enemyCaravans.withIndex().shuffled().forEach { caravan ->
+                    hand.filterIsInstance<CardNumber>()
+                        .filter { caravan.value.canPutCardOnTop(it) }
+                        .forEach { card ->
+                            val cardIndex = hand.indexOf(card)
+                            val state = gameToState(game)
+                            state.enemy[caravan.index] += card.rank.value
+                            if (checkTheOutcome(state) == -1) {
+                                caravan.value.putCardOnTop(game.enemyCResources.removeFromHand(cardIndex, speed) as CardBase, speed)
+                                return
+                            }
                         }
-                    }
 
-                // maybe even drop a caravan!
-                val state = gameToState(game)
-                state.enemy[caravan.index] = 0
-                if (checkTheOutcome(state) == -1) {
-                    caravan.value.dropCaravan(speed)
-                    return
+                    // maybe even drop a caravan!
+                    val state = gameToState(game)
+                    state.enemy[caravan.index] = 0
+                    if (checkTheOutcome(state) == -1) {
+                        caravan.value.dropCaravan(speed)
+                        return
+                    }
                 }
             }
         }
@@ -137,136 +140,139 @@ class EnemyFrank(val isHard: Boolean) : Enemy {
         // 2) If not and if player is abt to win, destroy player ready and almost ready caravans (on right columns!)
         val isLosing = checkOnResult(gameToState(game)).isPlayerMoveWins() || canJokerCrashTheParty(gameToState(game))
         if (isLosing) {
-            game.enemyCaravans.withIndex().forEach { (caravanIndex, _) ->
-                hand.filterIsInstance<CardFace>()
-                    .filter { it.rank == RankFace.JACK }
-                    .forEach { jack ->
-                        val jackIndex = hand.indexOf(jack)
-                        game.playerCaravans
-                            .sortedByDescending { it.getValue() }
-                            .forEach { otherCaravan ->
-                                otherCaravan.cards.withIndex()
-                                    .filter { it.value.canAddModifier(jack) }
-                                    .forEach {
-                                        val state = gameToState(game)
-                                        val indexC = game.playerCaravans.indexOf(otherCaravan)
-                                        state.player[indexC] -= it.value.getValue()
-                                        if (!checkOnResult(state).isPlayerMoveWins() && !canJokerCrashTheParty(state)) {
-                                            it.value.addModifier(game.enemyCResources.removeFromHand(jackIndex, speed) as CardModifier, speed)
-                                            return
-                                        }
+            hand.filterIsInstance<CardFace>()
+                .filter { it.rank == RankFace.JACK }
+                .forEach { jack ->
+                    val jackIndex = hand.indexOf(jack)
+                    game.playerCaravans
+                        .sortedByDescending { it.getValue() }
+                        .forEach { otherCaravan ->
+                            otherCaravan.cards.withIndex()
+                                .filter { it.value.canAddModifier(jack) }
+                                .forEach {
+                                    val state = gameToState(game)
+                                    val indexC = game.playerCaravans.indexOf(otherCaravan)
+                                    state.player[indexC] -= it.value.getValue()
+                                    if (!checkOnResult(state).isPlayerMoveWins() && !canJokerCrashTheParty(state)) {
+                                        it.value.addModifier(game.enemyCResources.removeFromHand(jackIndex, speed) as CardModifier, speed)
+                                        return
                                     }
-                            }
-                        game.enemyCaravans
-                            .forEach { otherCaravan ->
-                                otherCaravan.cards.withIndex()
-                                    .filter { it.value.canAddModifier(jack) }
-                                    .forEach {
-                                        val state = gameToState(game)
-                                        val indexC = game.enemyCaravans.indexOf(otherCaravan)
-                                        state.enemy[indexC] -= it.value.getValue()
-                                        if (!checkOnResult(state).isPlayerMoveWins() && !canJokerCrashTheParty(state)) {
-                                            it.value.addModifier(game.enemyCResources.removeFromHand(jackIndex, speed) as CardModifier, speed)
-                                            return
-                                        }
+                                }
+                        }
+                    game.enemyCaravans
+                        .forEach { otherCaravan ->
+                            otherCaravan.cards.withIndex()
+                                .filter { it.value.canAddModifier(jack) }
+                                .forEach {
+                                    val state = gameToState(game)
+                                    val indexC = game.enemyCaravans.indexOf(otherCaravan)
+                                    state.enemy[indexC] -= it.value.getValue()
+                                    if (!checkOnResult(state).isPlayerMoveWins() && !canJokerCrashTheParty(state)) {
+                                        it.value.addModifier(game.enemyCResources.removeFromHand(jackIndex, speed) as CardModifier, speed)
+                                        return
                                     }
-                            }
-                    }
+                                }
+                        }
+                }
 
-                hand.filterIsInstance<CardFace>()
-                    .filter { it.rank == RankFace.KING }
-                    .forEach { king ->
-                        val kingIndex = hand.indexOf(king)
-                        game.playerCaravans
-                            .sortedByDescending { it.getValue() }
-                            .forEach { otherCaravan ->
-                                otherCaravan.cards.withIndex()
-                                    .filter { it.value.canAddModifier(king) }
-                                    .sortedByDescending { it.value.getValue() }
-                                    .forEach {
-                                        val state = gameToState(game)
-                                        val indexC = game.playerCaravans.indexOf(otherCaravan)
-                                        state.player[indexC] += it.value.getValue()
-                                        if (!checkOnResult(state).isPlayerMoveWins() && !canJokerCrashTheParty(state)) {
-                                            it.value.addModifier(game.enemyCResources.removeFromHand(kingIndex, speed) as CardModifier, speed)
-                                            return
-                                        }
-                                    }
-                            }
-                        game.enemyCaravans.forEach { otherCaravan ->
+            hand.filterIsInstance<CardFace>()
+                .filter { it.rank == RankFace.KING }
+                .forEach { king ->
+                    val kingIndex = hand.indexOf(king)
+                    game.playerCaravans
+                        .sortedByDescending { it.getValue() }
+                        .forEach { otherCaravan ->
                             otherCaravan.cards.withIndex()
                                 .filter { it.value.canAddModifier(king) }
                                 .sortedByDescending { it.value.getValue() }
                                 .forEach {
                                     val state = gameToState(game)
-                                    val indexC = game.enemyCaravans.indexOf(otherCaravan)
-                                    state.enemy[indexC] += it.value.getValue()
+                                    val indexC = game.playerCaravans.indexOf(otherCaravan)
+                                    state.player[indexC] += it.value.getValue()
                                     if (!checkOnResult(state).isPlayerMoveWins() && !canJokerCrashTheParty(state)) {
                                         it.value.addModifier(game.enemyCResources.removeFromHand(kingIndex, speed) as CardModifier, speed)
                                         return
                                     }
                                 }
                         }
+                    game.enemyCaravans.forEach { otherCaravan ->
+                        otherCaravan.cards.withIndex()
+                            .filter { it.value.canAddModifier(king) }
+                            .sortedByDescending { it.value.getValue() }
+                            .forEach {
+                                val state = gameToState(game)
+                                val indexC = game.enemyCaravans.indexOf(otherCaravan)
+                                state.enemy[indexC] += it.value.getValue()
+                                if (!checkOnResult(state).isPlayerMoveWins() && !canJokerCrashTheParty(state)) {
+                                    it.value.addModifier(game.enemyCResources.removeFromHand(kingIndex, speed) as CardModifier, speed)
+                                    return
+                                }
+                            }
                     }
+                }
 
-                val joker = hand.indexOfFirst { it is CardJoker }
-                if (joker != -1) {
-                    if (StrategyJokerSimple(joker, isHard = true).move(game, speed)) {
+            // Try creating a draw!
+            hand.filterIsInstance<CardNumber>()
+                .sortedByDescending { it.rank.value }
+                .forEach { card ->
+                    val cardIndex = hand.indexOf(card)
+                    game.enemyCaravans.withIndex()
+                        .forEach { (otherCaravanIndex, otherCaravan) ->
+                            val state = gameToState(game)
+                            state.enemy[otherCaravanIndex] += card.rank.value
+                            if (!checkOnResult(state).isPlayerMoveWins() && !canJokerCrashTheParty(state)) {
+                                otherCaravan.putCardOnTop(game.enemyCResources.removeFromHand(cardIndex, speed) as CardBase, speed)
+                                return
+                            }
+                        }
+                }
+
+            val joker = hand.indexOfFirst { it is CardJoker }
+            if (joker != -1) {
+                if (StrategyJokerSimple(joker, isHard = true).move(game, speed)) {
+                    return
+                }
+            }
+
+            game.enemyCaravans.withIndex()
+                .forEach { (otherCaravanIndex, otherCaravan) ->
+                    val state = gameToState(game)
+                    state.enemy[otherCaravanIndex] = 0
+                    if (!checkOnResult(state).isPlayerMoveWins() && !canJokerCrashTheParty(state)) {
+                        otherCaravan.dropCaravan(speed)
                         return
                     }
                 }
 
-                // Try creating a draw!
-                hand.filterIsInstance<CardNumber>()
-                    .sortedByDescending { it.rank.value }
-                    .forEach { card ->
-                        val cardIndex = hand.indexOf(card)
-                        game.enemyCaravans.withIndex()
-                            .forEach { (otherCaravanIndex, otherCaravan) ->
-                                val state = gameToState(game)
-                                state.enemy[otherCaravanIndex] += card.rank.value
-                                if (!checkOnResult(state).isPlayerMoveWins() && !canJokerCrashTheParty(state)) {
-                                    otherCaravan.putCardOnTop(game.enemyCResources.removeFromHand(cardIndex, speed) as CardBase, speed)
-                                    return
-                                }
-                            }
+            hand.filterIsInstance<CardAtomic>()
+                .forEach { bomb ->
+                    val bombIndex = hand.indexOf(bomb)
+                    val caravans = game.enemyCaravans.withIndex().shuffled()
+                    val caravanToSave = if (caravans.all { it.value.getValue() > 26 }) {
+                        caravans.minBy { it.value.getValue() }
+                    } else {
+                        caravans.filter {
+                            it.value.getValue() <= 26 && it.value.cards.any { card -> card.canAddModifier(bomb) }
+                        }.maxByOrNull { it.value.getValue() }
                     }
-
-                game.enemyCaravans.withIndex()
-                    .forEach { (otherCaravanIndex, otherCaravan) ->
-                        val state = gameToState(game)
-                        state.enemy[otherCaravanIndex] = 0
-                        if (!checkOnResult(state).isPlayerMoveWins() && !canJokerCrashTheParty(state)) {
-                            otherCaravan.dropCaravan(speed)
+                    if (caravanToSave == null) {
+                        val card = game.playerCaravans.flatMap { it.cards }.shuffled().find { it.canAddModifier(bomb) }
+                        if (card != null) {
+                            card.addModifier(game.enemyCResources.removeFromHand(bombIndex, speed) as CardModifier, speed)
                             return
                         }
-                    }
-
-                hand.filterIsInstance<CardAtomic>()
-                    .forEach { bomb ->
-                        val bombIndex = hand.indexOf(bomb)
-                        val caravans = game.enemyCaravans.withIndex().reversed()
-                        val caravanToSave = if (caravans.all { it.value.getValue() > 26 }) {
-                            caravans.minBy { it.value.getValue() }
-                        } else {
-                            caravans.filter {
-                                it.value.getValue() <= 26 && it.value.cards.any {
-                                        card -> card.canAddModifier(bomb)
-                                }
-                            }.maxBy { it.value.getValue() }
-                        }
-                        if (caravanToSave.value.getValue() > 0) {
-                            caravanToSave.value.cards.reversed().forEach {
-                                if (it.canAddModifier(bomb)) {
-                                    it.addModifier(game.enemyCResources.removeFromHand(bombIndex, speed) as CardModifier, speed)
-                                    return
-                                }
+                    } else if (caravanToSave.value.getValue() > 0) {
+                        caravanToSave.value.cards.shuffled().forEach {
+                            if (it.canAddModifier(bomb)) {
+                                it.addModifier(game.enemyCResources.removeFromHand(bombIndex, speed) as CardModifier, speed)
+                                return
                             }
                         }
                     }
+                }
 
-                // 2.75) Maybe try a Queen!
-                val playerCaravan = game.playerCaravans[caravanIndex]
+            // 2.75) Maybe try a Queen!
+            game.playerCaravans.forEach { playerCaravan ->
                 hand.filterIsInstance<CardFace>().filter { it.rank == RankFace.QUEEN }.forEach { card ->
                     val cardIndex = hand.indexOf(card)
                     if (playerCaravan.size >= 2) {
@@ -289,7 +295,6 @@ class EnemyFrank(val isHard: Boolean) : Enemy {
                 }
             }
         }
-
 
         if (game.playerCResources.deckSize >= game.enemyCResources.deckSize) {
             if (overWeightCaravans.isNotEmpty()) {
@@ -332,7 +337,7 @@ class EnemyFrank(val isHard: Boolean) : Enemy {
                 } else if (ourValue !in (21..26) && playerValue !in (21..26)) {
                     ourValue
                 } else if (ourValue !in (21..26) && playerValue in (21..26)) {
-                    ourValue + 100
+                    100 + ourValue
                 } else if (ourValue in (21..26) && playerValue !in (21..26)) {
                     playerValue
                 } else {
@@ -388,11 +393,10 @@ class EnemyFrank(val isHard: Boolean) : Enemy {
                     .sortedBy { card -> card.getValue() }
                     .forEach { card ->
                         val state = gameToState(game)
-                        state.enemy[it.index] += card.card.rank.value
-                        val afterJackValue = it.value.getValue() - card.getValue()
+                        state.enemy[it.index] -= card.getValue()
                         val isStateBad = checkOnResult(state).isPlayerMoveWins() || canJokerCrashTheParty(state)
                         val wasStateBad = checkOnResult(gameToState(game)).isPlayerMoveWins() || canJokerCrashTheParty(gameToState(game))
-                        if (afterJackValue <= 26 && (!isStateBad || wasStateBad) && checkTheOutcome(state) != 1) {
+                        if (state.enemy[it.index] <= 26 && (!isStateBad || wasStateBad) && checkTheOutcome(state) != 1) {
                             card.addModifier(game.enemyCResources.removeFromHand(jackIndex, speed) as CardModifier, speed)
                             return
                         }
