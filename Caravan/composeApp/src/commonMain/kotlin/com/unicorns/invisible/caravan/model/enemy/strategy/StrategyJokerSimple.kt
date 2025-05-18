@@ -23,34 +23,14 @@ class StrategyJokerSimple(val index: Int, val isHard: Boolean = false) : Strateg
                     val caravanDelta = caravan.cards
                         .filter { it.card.suit == card.card.suit && it != card }
                         .sumOf { it.getValue() }
-                    when (index) {
-                        0 -> {
-                            state.player.v1 -= caravanDelta
-                        }
-                        1 -> {
-                            state.player.v2 -= caravanDelta
-                        }
-                        2 -> {
-                            state.player.v3 -= caravanDelta
-                        }
-                    }
+                    state.player[index] -= caravanDelta
                     sum += caravanDelta
                 }
                 game.enemyCaravans.forEachIndexed { index, caravan ->
                     val caravanDelta = caravan.cards
                         .filter { it.card.suit == card.card.suit && it != card }
                         .sumOf { it.getValue() }
-                    when (index) {
-                        0 -> {
-                            state.enemy.v1 -= caravanDelta
-                        }
-                        1 -> {
-                            state.enemy.v2 -= caravanDelta
-                        }
-                        2 -> {
-                            state.enemy.v3 -= caravanDelta
-                        }
-                    }
+                    state.enemy[index] -= caravanDelta
                     sum -= caravanDelta / 3
                 }
             } else {
@@ -58,34 +38,14 @@ class StrategyJokerSimple(val index: Int, val isHard: Boolean = false) : Strateg
                     val caravanDelta = caravan.cards
                         .filter { it.card.rank == card.card.rank && it != card }
                         .sumOf { it.getValue() }
-                    when (index) {
-                        0 -> {
-                            state.player.v1 -= caravanDelta
-                        }
-                        1 -> {
-                            state.player.v2 -= caravanDelta
-                        }
-                        2 -> {
-                            state.player.v3 -= caravanDelta
-                        }
-                    }
+                    state.player[index] -= caravanDelta
                     sum += caravanDelta
                 }
                 game.enemyCaravans.forEachIndexed { index, caravan ->
                     val caravanDelta = caravan.cards
                         .filter { it.card.rank == card.card.rank && it != card }
                         .sumOf { it.getValue() }
-                    when (index) {
-                        0 -> {
-                            state.enemy.v1 -= caravanDelta
-                        }
-                        1 -> {
-                            state.enemy.v2 -= caravanDelta
-                        }
-                        2 -> {
-                            state.enemy.v3 -= caravanDelta
-                        }
-                    }
+                    state.enemy[index] -= caravanDelta
                     sum -= caravanDelta / 3
                 }
             }
