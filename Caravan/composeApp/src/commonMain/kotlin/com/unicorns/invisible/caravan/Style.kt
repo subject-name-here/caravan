@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -28,6 +29,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.ColorMatrix
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -80,6 +82,7 @@ import com.unicorns.invisible.caravan.Style.VAULT_21
 import com.unicorns.invisible.caravan.Style.VAULT_22
 import com.unicorns.invisible.caravan.save.saveData
 import com.unicorns.invisible.caravan.utils.ShowImageFromPath
+import com.unicorns.invisible.caravan.utils.TextCustom
 import com.unicorns.invisible.caravan.utils.TextFallout
 import com.unicorns.invisible.caravan.utils.getTextBackgroundColor
 import com.unicorns.invisible.caravan.utils.getTextColor
@@ -160,7 +163,53 @@ fun BoxWithConstraintsScope.StylePicture(
                     }
 
                     VAULT_22 -> {
+                        Box(Modifier.wrapContentSize()) {
+                            ShowImageFromPath(
+                                path = "menu_items/vault_22/v22sign.webp",
+                                IntSize(512, 356),
+                                Modifier
+                                    .fillMaxWidth()
+                                    .align(Alignment.TopCenter)
+                                    .padding(end = 8.dp, bottom = 48.dp),
+                                ColorFilter.colorMatrix(ColorMatrix()),
+                                alignment = Alignment.TopCenter,
+                                scale = ContentScale.Inside
+                            )
+                            val mossUp = listOf(
+                                "vault_22/v22moss2.webp" to IntSize(136, 76),
+                                "vault_22/v22moss4.webp" to IntSize(139, 139),
+                                "vault_22/v22moss5.webp" to IntSize(141, 73),
+                                "vault_22/v22moss3.webp" to IntSize(187, 151),
+                            )
 
+                            var currentWidth = 0
+                            Row(
+                                Modifier
+                                    .fillMaxSize()
+                                    .offset((-5).dp, 0.dp),
+                                horizontalArrangement = Arrangement.Start
+                            ) {
+                                while (currentWidth < width) {
+                                    val curMossUp = mossUp.random(rand)
+                                    ShowImageFromPath(
+                                        "menu_items/" + curMossUp.first,
+                                        curMossUp.second,
+                                        Modifier
+                                            .rotate(if (curMossUp.first == "vault_22/v22moss3.webp") 90f else 0f)
+                                            .offset {
+                                                if (curMossUp.first == "vault_22/v22moss3.webp")
+                                                    IntOffset(-20, 0)
+                                                else
+                                                    IntOffset(0, -5)
+                                            },
+                                        colorFilter = ColorFilter.colorMatrix(ColorMatrix()),
+                                        scale = ContentScale.Inside,
+                                        alignment = Alignment.TopStart
+                                    )
+                                    currentWidth += curMossUp.second.width
+                                }
+                            }
+                        }
                     }
 
                     SIERRA_MADRE -> {
@@ -223,7 +272,6 @@ fun BoxWithConstraintsScope.StylePicture(
                                 delay(25000L)
                                 cnt = 0
                             }
-
                         }
                         var side by rememberSaveable { mutableStateOf(Random.nextBoolean()) }
 

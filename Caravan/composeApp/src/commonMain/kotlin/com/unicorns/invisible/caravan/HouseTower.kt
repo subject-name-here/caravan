@@ -101,6 +101,7 @@ import com.unicorns.invisible.caravan.color.Colors
 import com.unicorns.invisible.caravan.model.Game
 import com.unicorns.invisible.caravan.model.enemy.Enemy
 import com.unicorns.invisible.caravan.model.enemy.EnemyFrank
+import com.unicorns.invisible.caravan.model.enemy.EnemyFrank2
 import com.unicorns.invisible.caravan.model.enemy.EnemyTower1
 import com.unicorns.invisible.caravan.model.enemy.EnemyTower2
 import com.unicorns.invisible.caravan.model.enemy.EnemyTower3
@@ -136,6 +137,7 @@ import com.unicorns.invisible.caravan.utils.playFrankPhrase
 import com.unicorns.invisible.caravan.utils.playLoseSound
 import com.unicorns.invisible.caravan.utils.playMinigunSound
 import com.unicorns.invisible.caravan.utils.playNotificationSound
+import com.unicorns.invisible.caravan.utils.playNukeBlownSound
 import com.unicorns.invisible.caravan.utils.playTowerCompleted
 import com.unicorns.invisible.caravan.utils.playTowerFailed
 import com.unicorns.invisible.caravan.utils.playWinSound
@@ -994,9 +996,21 @@ fun StartTowerGame(
     onLose: () -> Unit,
     goBack: () -> Unit,
 ) {
-    val isFrankSequence = enemy is EnemyFrank
-    var showIntro by rememberSaveable { mutableStateOf(isFrankSequence) }
+    val isFrankSequence = enemy is EnemyFrank || enemy is EnemyFrank2
+    var showIntro by rememberSaveable { mutableStateOf(enemy is EnemyFrank) }
+    var showFrankMidtro by rememberSaveable { mutableStateOf(false) }
     var showFrankOutro by rememberSaveable { mutableStateOf(false) }
+    var isFrankSecondPhase by rememberSaveable { mutableStateOf(false) }
+
+    if (isFrankSecondPhase) {
+        StartTowerGame(
+            EnemyFrank2,
+            showAlertDialog,
+            {}, onWin, { playNukeBlownSound(); onLose() }, goBack
+        )
+        return
+    }
+
     if (showIntro) {
         playNotificationSound()
         AlertDialog(
@@ -1032,6 +1046,55 @@ fun StartTowerGame(
                             Res.string.now_playing_alt
                         }
                     ),
+                    Colors.ColorText,
+                    Colors.ColorText,
+                    16.sp, Modifier,
+                    textAlignment = TextAlign.Start
+                )
+            },
+            containerColor = Color.Black,
+            textContentColor = Colors.ColorText,
+            shape = RectangleShape,
+        )
+    }
+
+
+    if (showFrankMidtro) {
+        playNotificationSound()
+        LaunchedEffect(Unit) {
+            playFrankPhrase("files/raw/frank_phase_2.ogg")
+        }
+        fun onDismiss() {
+            showFrankMidtro = false
+            isFrankSecondPhase = true
+        }
+        AlertDialog(
+            modifier = Modifier.border(width = 4.dp, color = Colors.ColorText),
+            onDismissRequest = ::onDismiss,
+            confirmButton = {
+                TextClassic(
+                    stringResource(Res.string.finish),
+                    Colors.ColorTextBack,
+                    Colors.ColorTextBack,
+                    18.sp,
+                    Modifier
+                        .background(Colors.ColorText)
+                        .clickableCancel(::onDismiss)
+                        .padding(4.dp)
+                )
+            },
+            title = {
+                TextClassic(
+                    "Bet you didn't expect this!",
+                    Colors.ColorText,
+                    Colors.ColorText,
+                    24.sp, Modifier,
+                    textAlignment = TextAlign.Start
+                )
+            },
+            text = {
+                TextClassic(
+                    "You (cough), you haven't won here... I've just triggered the self-destruct... Heh, heh, heh (cough)... Pity you won't live long enough to see it.",
                     Colors.ColorText,
                     Colors.ColorText,
                     16.sp, Modifier,
@@ -1092,7 +1155,7 @@ fun StartTowerGame(
         CustomDeck().apply { addAll(saveGlobal.getCurrentDeckCopy()) }
     })
     val game = rememberScoped {
-        if (isFrankSequence) {
+        if (enemy is EnemyFrank) {
             showIntro = true
         }
         Game(
@@ -1115,11 +1178,11 @@ fun StartTowerGame(
     game.also {
         it.onWin = {
             processChallengesGameOver(it)
-            playWinSound()
-            onWin()
-            if (isFrankSequence) {
-                showFrankOutro = true
+            if (enemy is EnemyFrank) {
+                showFrankMidtro = true
             } else {
+                playWinSound()
+                onWin()
                 scope.launch {
                     showAlertDialog(
                         getString(Res.string.result),
@@ -1143,9 +1206,7 @@ fun StartTowerGame(
         }
     }
 
-    ShowGame(
-        game
-    ) {
+    ShowGame(game) {
         if (game.isOver()) {
             onQuitPressed()
         } else {
