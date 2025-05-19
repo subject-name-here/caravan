@@ -8,8 +8,10 @@ import androidx.compose.foundation.layout.BoxWithConstraintsScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -21,7 +23,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.paint
+import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.ColorMatrix
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import caravan.composeapp.generated.resources.Res
@@ -72,6 +79,7 @@ import com.unicorns.invisible.caravan.Style.SIERRA_MADRE
 import com.unicorns.invisible.caravan.Style.VAULT_21
 import com.unicorns.invisible.caravan.Style.VAULT_22
 import com.unicorns.invisible.caravan.save.saveData
+import com.unicorns.invisible.caravan.utils.ShowImageFromPath
 import com.unicorns.invisible.caravan.utils.TextFallout
 import com.unicorns.invisible.caravan.utils.getTextBackgroundColor
 import com.unicorns.invisible.caravan.utils.getTextColor
@@ -132,154 +140,190 @@ fun getStyleCities(style: Style): List<String> {
 @Composable
 fun BoxWithConstraintsScope.StylePicture(
     style: Style,
+    showAlertDialog: (String, String) -> Unit,
     width: Int,
     height: Int
 ) {
-    val prefix = "file:///android_asset/menu_items/"
     val rand by rememberScoped { mutableStateOf(Random(Random.nextInt())) }
-    when (style) {
-        OLD_WORLD -> {
-
-        }
-
-        VAULT_22 -> {
-
-        }
-
-        SIERRA_MADRE -> {
-
-        }
-
-        MADRE_ROJA -> {
-
-        }
-
-        DESERT -> {
-
-        }
-
-        ALASKA_FRONTIER -> {
-
-        }
-
-        NEW_WORLD -> {
-
-        }
-
-        PIP_BOY -> {
-            Row(
-                Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.CenterEnd)
-                    .padding(top = 48.dp, bottom = 48.dp, end = 8.dp)
-            ) {
-                Box(Modifier.weight(1f))
-                Column(
-                    Modifier.weight(1f),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    val numberOfRounds = 10
-                    var cnt by rememberSaveable { mutableIntStateOf(0) }
-                    if (cnt == numberOfRounds) {
-                        LaunchedEffect(Unit) {
-                            playFanfares()
-                            saveGlobal.capsInHand += 777
-                            saveData()
-                            delay(25000L)
-                            cnt = 0
-                        }
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .align(Alignment.CenterEnd)) {
+        Box(Modifier.weight(1f))
+        Box(
+            Modifier
+                .weight(1f)
+                .padding(top = 32.dp, end = 20.dp, bottom = 48.dp)) {
+                when (style) {
+                    OLD_WORLD -> {
 
                     }
-                    var side by rememberSaveable { mutableStateOf(Random.nextBoolean()) }
 
-                    TextFallout(
-                        stringResource(Res.string.pip_boy_main_screen),
-                        getTextColor(),
-                        getTextStrokeColor(),
-                        12.sp,
-                        Modifier.fillMaxWidth(),
-                    )
-                    Spacer(Modifier.height(4.dp))
-                    TextFallout(
-                        "$cnt / $numberOfRounds",
-                        getTextColor(),
-                        getTextStrokeColor(),
-                        14.sp,
-                        Modifier.fillMaxWidth(),
-                    )
-                    Spacer(Modifier.height(4.dp))
-                    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
-                        TextFallout(
-                            stringResource(Res.string.heads),
-                            getTextColor(),
-                            getTextStrokeColor(),
-                            16.sp,
-                            Modifier
-                                .background(getTextBackgroundColor())
-                                .padding(4.dp)
-                                .clickable {
-                                    if (cnt == numberOfRounds) return@clickable
-                                    if (side) {
-                                        cnt++
-                                        playYesBeep()
-                                    } else {
-                                        cnt = 0
-                                        playNoBeep()
-                                    }
-                                    side = Random.nextBoolean()
-                                },
+                    VAULT_22 -> {
+
+                    }
+
+                    SIERRA_MADRE -> {
+
+                    }
+
+                    MADRE_ROJA -> {
+
+                    }
+
+                    DESERT -> {
+                        Column {
+                            ShowImageFromPath(
+                                path = "menu_items/desert/nv_graffiti_02.webp",
+                                IntSize(512, 512),
+                                Modifier,
+                                ColorFilter.colorMatrix(ColorMatrix()),
+                                alignment = Alignment.CenterEnd,
+                                scale = ContentScale.Fit
+                            )
+                            val extras = listOf(
+                                "ligas.webp" to IntSize(293, 107),
+                                "raders_ahead.webp" to IntSize(289, 105),
+                                "stop_whining.webp" to IntSize(499, 100)
+                            )
+                            if (rand.nextBoolean()) {
+                                val extra = extras.random()
+                                ShowImageFromPath(
+                                    path = "menu_items/desert/" + extra.first,
+                                    IntSize(512, 512),
+                                    Modifier
+                                        .fillMaxWidth()
+                                        .rotate(-20f + rand.nextFloat() * 40f)
+                                        .offset(x = ((-4..4).random(rand).dp)),
+                                    ColorFilter.tint(Color.Black),
+                                    alignment = Alignment.Center,
+                                    scale = ContentScale.Fit
+                                )
+                            }
+                        }
+                    }
+
+                    ALASKA_FRONTIER -> {
+
+                    }
+
+                    NEW_WORLD -> {
+
+                    }
+
+                    PIP_BOY -> {
+                        val numberOfRounds = 10
+                        var cnt by rememberSaveable { mutableIntStateOf(0) }
+                        if (cnt == numberOfRounds) {
+                            LaunchedEffect(Unit) {
+                                playFanfares()
+                                showAlertDialog("Jackpot!", "You have won 777 caps!")
+                                saveGlobal.capsInHand += 777
+                                saveData()
+                                delay(25000L)
+                                cnt = 0
+                            }
+
+                        }
+                        var side by rememberSaveable { mutableStateOf(Random.nextBoolean()) }
+
+                        Column(
+                            Modifier.fillMaxSize(),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center
+                        ) {
+                            TextFallout(
+                                stringResource(Res.string.pip_boy_main_screen),
+                                getTextColor(),
+                                getTextStrokeColor(),
+                                12.sp,
+                                Modifier.fillMaxWidth(),
+                            )
+                            Spacer(Modifier.height(4.dp))
+                            TextFallout(
+                                "$cnt / $numberOfRounds",
+                                getTextColor(),
+                                getTextStrokeColor(),
+                                14.sp,
+                                Modifier.fillMaxWidth(),
+                            )
+                            Spacer(Modifier.height(4.dp))
+                            Row(
+                                Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceEvenly
+                            ) {
+                                TextFallout(
+                                    stringResource(Res.string.heads),
+                                    getTextColor(),
+                                    getTextStrokeColor(),
+                                    16.sp,
+                                    Modifier
+                                        .background(getTextBackgroundColor())
+                                        .padding(4.dp)
+                                        .clickable {
+                                            if (cnt == numberOfRounds) return@clickable
+                                            if (side) {
+                                                cnt++
+                                                playYesBeep()
+                                            } else {
+                                                cnt = 0
+                                                playNoBeep()
+                                            }
+                                            side = Random.nextBoolean()
+                                        },
+                                )
+                                TextFallout(
+                                    stringResource(Res.string.tails),
+                                    getTextColor(),
+                                    getTextStrokeColor(),
+                                    16.sp,
+                                    Modifier
+                                        .background(getTextBackgroundColor())
+                                        .padding(4.dp)
+                                        .clickable {
+                                            if (cnt == numberOfRounds) return@clickable
+                                            if (!side) {
+                                                cnt++
+                                                playYesBeep()
+                                            } else {
+                                                cnt = 0
+                                                playNoBeep()
+                                            }
+                                            side = Random.nextBoolean()
+                                        },
+                                )
+                            }
+                        }
+                    }
+
+                    PIP_GIRL -> {
+                        // Do not extract those.
+                        val phrases = listOf(
+                            "6-28-69\nRemember.",
+                            "Storms come and go,\nBut you\'re still standing.",
+                            "War never changes.\n\nBut people do, through the roads they walk.",
+                            "...about\n2.8 times 10^7\npeople...",
+                            "Billie pondered: \"What's Pip-Boy?\""
                         )
-                        TextFallout(
-                            stringResource(Res.string.tails),
-                            getTextColor(),
-                            getTextStrokeColor(),
-                            16.sp,
-                            Modifier
-                                .background(getTextBackgroundColor())
-                                .padding(4.dp)
-                                .clickable {
-                                    if (cnt == numberOfRounds) return@clickable
-                                    if (!side) {
-                                        cnt++
-                                        playYesBeep()
-                                    } else {
-                                        cnt = 0
-                                        playNoBeep()
-                                    }
-                                    side = Random.nextBoolean()
-                                },
-                        )
+                    }
+
+                    VAULT_21 -> {
+
+                    }
+
+                    ENCLAVE -> {
+
+                    }
+
+                    Style.BLACK -> {}
+                    NCR -> {
+
+                    }
+
+                    LEGION -> {
+
                     }
                 }
-            }
-        }
-
-        PIP_GIRL -> {
-            // Do not extract those.
-            val phrases = listOf(
-                "6-28-69\nRemember.",
-                "Storms come and go,\nBut you\'re still standing.",
-                "War never changes.\n\nBut people do, through the roads they walk.",
-                "...about\n2.8 times 10^7\npeople...",
-                "Billie pondered: \"What's Pip-Boy?\""
-            )
-        }
-
-        VAULT_21 -> {
-
-        }
-
-        ENCLAVE -> {
-
-        }
-
-        Style.BLACK -> {}
-        NCR -> {
-
-        }
-        LEGION -> {
-
         }
     }
 }

@@ -46,7 +46,7 @@
     <string name="fnv_deck_east_name">Legion deck</string>
 
     <string name="ultra_luxe_trader_welcome">Greetings. I am Martin Luther. Welcome to Ultra-Luxe card market.</string>
-    <string name="ultra_luxe_trader_empty">Apologies, but there are no valuable items for you. Please, wait for a resupply.</string>
+    <string name="ultra_luxe_trader_empty">Apologies, but there are no valuable items for you. Please, wait until the end of hour.</string>
     <string name="ultra_luxe_trader_condition">Ultra-Luxe card market is open only on Mondays and Thursdays. We apologize for any inconvenience.</string>
 
     <string name="vault_21_trader_welcome">Hola, sweetheart!!! Name's Melanie Martinez, but you can call me Mel!</string>
@@ -170,6 +170,7 @@
     <string name="pve_chips_wasted">Chips wasted: %1$s</string>
     <string name="pve_challenges_completed">Challenges completed: %1$s</string>
     <string name="pve_max_strike">Max different enemies defeated in a row: %1$s</string>
+    <string name="pve_current_strike">Current different enemies defeated in a row: %1$s</string>
 
     <string name="custom_deck_is_illegal">Custom deck is illegal!</string>
     <string name="deck_illegal_body">Deck uses conflicting decks or more than 6 backs, has less than 30 cards or less than 15 numbered cards!</string>
@@ -490,6 +491,8 @@
     <string name="simple_challenge_descr">Defeat 6 different enemies.</string>
     <string name="play_188_challenge">188 - Challenge</string>
     <string name="play_188_challenge_descr">Play 188 cards.</string>
+    <string name="play_777_challenge">No Luck, Just Skill</string>
+    <string name="play_777_challenge_descr">Play number cards of total value greater or equal to 777.</string>
 
     <string name="complete_all_dailys">Up To The Challenge</string>
     <string name="complete_all_dailys_descr">Complete all daily missions.</string>

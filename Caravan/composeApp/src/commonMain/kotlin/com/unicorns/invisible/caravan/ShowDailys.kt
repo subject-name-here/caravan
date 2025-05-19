@@ -119,7 +119,7 @@ fun ShowDailys(
                 }
 
                 Challenges(stringResource(Res.string.daily_missions), saveGlobal.challengesDaily)
-                Challenges(stringResource(Res.string.infinite_missions), saveGlobal.challengesInf)
+                Challenges(stringResource(Res.string.infinite_missions), saveGlobal.challengesInfinite)
                 Challenges(stringResource(Res.string.one_time_missions), saveGlobal.challenges1)
                 Challenges(stringResource(Res.string.one_time_missions_requiem), saveGlobal.challenges2)
             }
@@ -178,9 +178,7 @@ fun ShowChallenge(challenge: Challenge, isCompleted: Boolean, updater: () -> Uni
             }
             Spacer(Modifier.height(8.dp))
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
-                val reward by produceState(emptyList()) {
-                    value = challenge.reward()
-                }
+                val reward by produceState(emptyList()) { value = challenge.reward() }
                 reward.forEach {
                     TextFallout(
                         it.first,

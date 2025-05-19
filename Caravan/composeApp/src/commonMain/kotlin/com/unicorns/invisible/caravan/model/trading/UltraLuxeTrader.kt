@@ -20,7 +20,7 @@ data object UltraLuxeTrader : Trader {
     }
 
     override suspend fun openingCondition() = getString(Res.string.ultra_luxe_trader_condition)
-    override fun getUpdateRate() = 6
+    override fun getUpdateRate() = 1
 
     override fun getWelcomeMessage() = Res.string.ultra_luxe_trader_welcome
     override fun getEmptyStoreMessage() = Res.string.ultra_luxe_trader_empty

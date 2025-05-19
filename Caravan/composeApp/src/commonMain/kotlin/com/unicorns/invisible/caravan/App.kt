@@ -814,7 +814,7 @@ fun Screen() {
                         val width = maxWidth.dpToPx().toInt()
                         val height = maxHeight.dpToPx().toInt()
                         MainMenu(
-                            { StylePicture(styleId, width, height) },
+                            { StylePicture(styleId, { p1, p2 -> showAlertDialog(p1, p2, null) }, width, height) },
                             { deckSelection = true },
                             { showAbout = true },
                             { showPvE = true },
@@ -1085,12 +1085,12 @@ fun MainMenu(
 }
 
 fun processChallengesMove(move: Challenge.Move, game: Game) {
-    (saveGlobal.challengesDaily + saveGlobal.challengesInf).forEach { challenge ->
+    (saveGlobal.challengesDaily + saveGlobal.challengesInfinite).forEach { challenge ->
         challenge.processMove(move, game)
     }
 }
 fun processChallengesGameOver(game: Game) {
-    (saveGlobal.challengesDaily + saveGlobal.challengesInf).forEach { challenge ->
+    (saveGlobal.challengesDaily + saveGlobal.challengesInfinite).forEach { challenge ->
         challenge.processGameResult(game)
     }
 }

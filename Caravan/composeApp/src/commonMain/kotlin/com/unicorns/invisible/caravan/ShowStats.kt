@@ -18,6 +18,7 @@ import caravan.composeapp.generated.resources.pve_caps_wasted
 import caravan.composeapp.generated.resources.pve_caps_won
 import caravan.composeapp.generated.resources.pve_challenges_completed
 import caravan.composeapp.generated.resources.pve_chips_wasted
+import caravan.composeapp.generated.resources.pve_current_strike
 import caravan.composeapp.generated.resources.pve_finished_to_started
 import caravan.composeapp.generated.resources.pve_games_finished
 import caravan.composeapp.generated.resources.pve_games_started
@@ -159,6 +160,8 @@ fun ShowStats(goBack: () -> Unit) {
             StatsItem(text = stringResource(Res.string.pve_challenges_completed, saveGlobal.challengesCompleted))
             Spacer(modifier = Modifier.height(8.dp))
             StatsItem(text = stringResource(Res.string.pve_max_strike, saveGlobal.maxStrike))
+            Spacer(modifier = Modifier.height(8.dp))
+            StatsItem(text = stringResource(Res.string.pve_current_strike, saveGlobal.currentStrike))
             Spacer(modifier = Modifier.height(12.dp))
         }
     }

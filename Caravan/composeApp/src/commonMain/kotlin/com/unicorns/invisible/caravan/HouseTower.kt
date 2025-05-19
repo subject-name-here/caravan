@@ -294,6 +294,7 @@ fun TowerScreen(
             10 -> {
                 CookCookPresentedScreen(
                     256,
+                    { secondChances },
                     { level = 11; saveGlobal.towerLevel = 11; saveData() },
                     { playLevel = level }
                 )
@@ -314,6 +315,7 @@ fun TowerScreen(
                 } * cookCook
                 EnemyPresentedScreen(
                     inBank,
+                    { secondChances },
                     { level },
                     { playLevel = level },
                     {
@@ -536,6 +538,7 @@ fun StartScreen(
 @Composable
 fun EnemyPresentedScreen(
     inBank: Int,
+    secondChances: () -> Int,
     getLevel: () -> Int,
     startLevel: () -> Unit,
     setLevelZero: () -> Unit,
@@ -601,6 +604,16 @@ fun EnemyPresentedScreen(
                     24.sp,
                     Modifier,
                 )
+                val secondChanceNumber = secondChances()
+                if (getLevel() > 6) {
+                    TextFallout(
+                        "Second chances: $secondChanceNumber.",
+                        getTextColor(),
+                        getTextStrokeColor(),
+                        20.sp,
+                        Modifier,
+                    )
+                }
                 TextFallout(
                     stringResource(Res.string.enemy, enemyName),
                     getTextColor(),
@@ -685,6 +698,7 @@ fun EnemyPresentedScreen(
 @Composable
 fun CookCookPresentedScreen(
     inBank: Int,
+    secondChances: () -> Int,
     skip: () -> Unit,
     startLevel: () -> Unit,
 ) {
@@ -739,6 +753,13 @@ fun CookCookPresentedScreen(
                 getTextColor(),
                 getTextStrokeColor(),
                 24.sp,
+                Modifier,
+            )
+            TextFallout(
+                "Second chances: ${secondChances()}.",
+                getTextColor(),
+                getTextStrokeColor(),
+                20.sp,
                 Modifier,
             )
             TextFallout(

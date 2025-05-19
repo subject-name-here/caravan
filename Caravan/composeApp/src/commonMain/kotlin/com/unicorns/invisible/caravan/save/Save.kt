@@ -6,6 +6,7 @@ import com.unicorns.invisible.caravan.levelUpMessage
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.challenge.Challenge
 import com.unicorns.invisible.caravan.model.challenge.ChallengePlay188
+import com.unicorns.invisible.caravan.model.challenge.ChallengePlay777
 import com.unicorns.invisible.caravan.model.challenge.ChallengeWin6Games
 import com.unicorns.invisible.caravan.model.enemy.EnemyBenny
 import com.unicorns.invisible.caravan.model.enemy.EnemyCaesar
@@ -212,10 +213,10 @@ class Save(var playerId: String? = null) {
     }
 
     @EncodeDefault
-    val challengesInf: MutableList<Challenge> = mutableListOf(
+    val challengesInfinite: MutableList<Challenge> = mutableListOf(
         ChallengeWin6Games(),
         ChallengePlay188(),
-        // TODO 3.0: add one more
+        ChallengePlay777()
     )
     @EncodeDefault
     var challenges1: MutableList<Challenge> = mutableListOf(
