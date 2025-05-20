@@ -21,15 +21,17 @@ import com.unicorns.invisible.caravan.model.primitives.RankFace
 import com.unicorns.invisible.caravan.model.primitives.WWType
 import kotlin.random.Random
 
-data object EnemyTower2 : Enemy {
-    override fun createDeck(): CResources = CResources(CustomDeck(CardBack.TOPS).apply {
-        repeat(9) { add(CardWildWasteland(WWType.YES_MAN)) }
-    })
+class EnemyTower2 : Enemy {
+    override fun createDeck(): CResources = CResources(CustomDeck(CardBack.TOPS))
 
+    private var moves = 0
     override suspend fun makeMove(game: Game, speed: AnimationSpeed) {
         if (game.isInitStage()) {
             StrategyInit(StrategyInit.Type.RANDOM).move(game, speed)
             return
+        }
+        if (moves++ % 10 == 0) {
+            game.enemyCResources.addOnTop(CardWildWasteland(WWType.YES_MAN))
         }
 
         val wws = game.enemyCResources.hand.filterIsInstance<CardWildWasteland>().shuffled()

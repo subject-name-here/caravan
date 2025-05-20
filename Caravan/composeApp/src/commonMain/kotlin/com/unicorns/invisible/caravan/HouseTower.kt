@@ -208,7 +208,7 @@ fun TowerScreen(
         in 1..11 -> {
             val enemy = when (playLevel) {
                 1 -> EnemyTower1
-                2 -> EnemyTower2
+                2 -> EnemyTower2()
                 3 -> if (saveGlobal.papaSmurfActive) EnemyTower3A else EnemyTower3
                 4 -> EnemyTower4
                 5 -> EnemyTower5

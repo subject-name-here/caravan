@@ -261,6 +261,18 @@ class Save(var playerId: String? = null) {
     var frankChallenge = false
 
     @EncodeDefault
+    var pipBoyPrizeWon = false
+    @EncodeDefault
+    var v22PrizeWon = false
+    @EncodeDefault
+    var pipGirlPrizeWon = false
+
+    fun updateStyles() {
+        pipBoyPrizeWon = false
+        v22PrizeWon = false
+    }
+
+    @EncodeDefault
     val enemiesGroups4 = listOf(
         listOf(
             EnemyOliver(),

@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.BoxWithConstraintsScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -13,15 +14,19 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.BiasAlignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.paint
 import androidx.compose.ui.draw.rotate
@@ -29,12 +34,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.ColorMatrix
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.FixedScale
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import caravan.composeapp.generated.resources.Res
 import caravan.composeapp.generated.resources.heads
+import caravan.composeapp.generated.resources.help
 import caravan.composeapp.generated.resources.null_condition
 import caravan.composeapp.generated.resources.pip_boy_main_screen
 import caravan.composeapp.generated.resources.style_alaska
@@ -82,18 +91,26 @@ import com.unicorns.invisible.caravan.Style.VAULT_21
 import com.unicorns.invisible.caravan.Style.VAULT_22
 import com.unicorns.invisible.caravan.save.saveData
 import com.unicorns.invisible.caravan.utils.ShowImageFromPath
-import com.unicorns.invisible.caravan.utils.TextCustom
 import com.unicorns.invisible.caravan.utils.TextFallout
+import com.unicorns.invisible.caravan.utils.dpToPx
 import com.unicorns.invisible.caravan.utils.getTextBackgroundColor
 import com.unicorns.invisible.caravan.utils.getTextColor
 import com.unicorns.invisible.caravan.utils.getTextStrokeColor
 import com.unicorns.invisible.caravan.utils.playFanfares
 import com.unicorns.invisible.caravan.utils.playNoBeep
+import com.unicorns.invisible.caravan.utils.playSporePlantSound
 import com.unicorns.invisible.caravan.utils.playYesBeep
+import com.unicorns.invisible.caravan.utils.pxToDp
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.Font
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
+import kotlin.math.min
 import kotlin.random.Random
 
 
@@ -144,8 +161,8 @@ fun getStyleCities(style: Style): List<String> {
 fun BoxWithConstraintsScope.StylePicture(
     style: Style,
     showAlertDialog: (String, String) -> Unit,
-    width: Int,
-    height: Int
+    screenWidth: Int,
+    screenHeight: Int
 ) {
     val rand by rememberScoped { mutableStateOf(Random(Random.nextInt())) }
     Row(
@@ -163,50 +180,88 @@ fun BoxWithConstraintsScope.StylePicture(
                     }
 
                     VAULT_22 -> {
-                        Box(Modifier.wrapContentSize()) {
-                            ShowImageFromPath(
-                                path = "menu_items/vault_22/v22sign.webp",
-                                IntSize(512, 356),
-                                Modifier
-                                    .fillMaxWidth()
-                                    .align(Alignment.TopCenter)
-                                    .padding(end = 8.dp, bottom = 48.dp),
-                                ColorFilter.colorMatrix(ColorMatrix()),
-                                alignment = Alignment.TopCenter,
-                                scale = ContentScale.Inside
-                            )
-                            val mossUp = listOf(
-                                "vault_22/v22moss2.webp" to IntSize(136, 76),
-                                "vault_22/v22moss4.webp" to IntSize(139, 139),
-                                "vault_22/v22moss5.webp" to IntSize(141, 73),
-                                "vault_22/v22moss3.webp" to IntSize(187, 151),
-                            )
+                        // TODO: fix
+                        Column(Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center) {
+                            BoxWithConstraints(Modifier.size(600.pxToDp(), 666.pxToDp()).offset(y = 60.pxToDp()), contentAlignment = Alignment.BottomCenter) {
+                                val w = maxWidth.dpToPx()
+                                !saveGlobal.v22PrizeWon
+                                if (true) {
+                                    Box(Modifier.wrapContentSize()) {
+                                        var v22scaleDiff by rememberScoped { mutableFloatStateOf(0f) }
+                                        var scaleDiffTrue by rememberScoped { mutableFloatStateOf(0f) }
+                                        val clicksTotal = 200f
+                                        val scaleMaxFactor = min(1f, w / 600f)
+                                        val scale = scaleMaxFactor * (clicksTotal - scaleDiffTrue / 2) / clicksTotal
+                                        ShowImageFromPath(
+                                            path = "menu_items/vault_22/spore_plant.webp",
+                                            IntSize(600, 666),
+                                            Modifier
+                                                .clickable {
+                                                    if (v22scaleDiff.toInt() % 50 == 5) {
+                                                        playSporePlantSound()
+                                                        scaleDiffTrue = v22scaleDiff
+                                                    }
+                                                    if (v22scaleDiff >= clicksTotal) {
+                                                        playSporePlantSound()
+                                                        showAlertDialog("Knockout!", "You have won 22 caps!")
+                                                        saveGlobal.capsInHand += 22
+                                                        saveGlobal.v22PrizeWon = true
+                                                        saveData()
+                                                    }
+                                                    v22scaleDiff++
+                                                },
+                                            ColorFilter.colorMatrix(ColorMatrix()),
+                                            alignment = BiasAlignment(0f, 1f),
+                                            scale = FixedScale(scale)
+                                        )
+                                    }
+                                }
+                            }
 
-                            var currentWidth = 0
-                            Row(
-                                Modifier
-                                    .fillMaxSize()
-                                    .offset((-5).dp, 0.dp),
-                                horizontalArrangement = Arrangement.Start
-                            ) {
-                                while (currentWidth < width) {
-                                    val curMossUp = mossUp.random(rand)
-                                    ShowImageFromPath(
-                                        "menu_items/" + curMossUp.first,
-                                        curMossUp.second,
-                                        Modifier
-                                            .rotate(if (curMossUp.first == "vault_22/v22moss3.webp") 90f else 0f)
-                                            .offset {
-                                                if (curMossUp.first == "vault_22/v22moss3.webp")
-                                                    IntOffset(-20, 0)
-                                                else
-                                                    IntOffset(0, -5)
-                                            },
-                                        colorFilter = ColorFilter.colorMatrix(ColorMatrix()),
-                                        scale = ContentScale.Inside,
-                                        alignment = Alignment.TopStart
-                                    )
-                                    currentWidth += curMossUp.second.width
+                            Box(Modifier.wrapContentSize()) {
+                                ShowImageFromPath(
+                                    path = "menu_items/vault_22/v22sign.webp",
+                                    IntSize(512, 356),
+                                    Modifier
+                                        .fillMaxWidth()
+                                        .align(Alignment.BottomCenter),
+                                    ColorFilter.colorMatrix(ColorMatrix()),
+                                    alignment = Alignment.TopCenter,
+                                    scale = ContentScale.Inside
+                                )
+                                val mossUp = listOf(
+                                    "vault_22/v22moss2.webp" to IntSize(136, 76),
+                                    "vault_22/v22moss4.webp" to IntSize(139, 139),
+                                    "vault_22/v22moss5.webp" to IntSize(141, 73),
+                                    "vault_22/v22moss3.webp" to IntSize(187, 151),
+                                )
+
+                                var currentWidth = 0
+                                Row(
+                                    Modifier
+                                        .wrapContentSize()
+                                        .offset((-5).dp, 0.dp),
+                                    horizontalArrangement = Arrangement.Start,
+                                ) {
+                                    while (currentWidth < screenWidth) {
+                                        val curMossUp = mossUp.random(rand)
+                                        ShowImageFromPath(
+                                            "menu_items/" + curMossUp.first,
+                                            curMossUp.second,
+                                            Modifier
+                                                .rotate(if (curMossUp.first == "vault_22/v22moss3.webp") 90f else 0f)
+                                                .offset {
+                                                    if (curMossUp.first == "vault_22/v22moss3.webp")
+                                                        IntOffset(-20, 0)
+                                                    else
+                                                        IntOffset(0, -5)
+                                                },
+                                            colorFilter = ColorFilter.colorMatrix(ColorMatrix()),
+                                            scale = ContentScale.Inside,
+                                            alignment = Alignment.TopStart
+                                        )
+                                        currentWidth += curMossUp.second.width
+                                    }
                                 }
                             }
                         }
@@ -266,9 +321,12 @@ fun BoxWithConstraintsScope.StylePicture(
                         if (cnt == numberOfRounds) {
                             LaunchedEffect(Unit) {
                                 playFanfares()
-                                showAlertDialog("Jackpot!", "You have won 777 caps!")
-                                saveGlobal.capsInHand += 777
-                                saveData()
+                                if (!saveGlobal.pipBoyPrizeWon) {
+                                    showAlertDialog("Jackpot!", "You have won 777 caps!")
+                                    saveGlobal.capsInHand += 777
+                                    saveGlobal.pipBoyPrizeWon = true
+                                    saveData()
+                                }
                                 delay(25000L)
                                 cnt = 0
                             }
@@ -351,8 +409,139 @@ fun BoxWithConstraintsScope.StylePicture(
                             "Storms come and go,\nBut you\'re still standing.",
                             "War never changes.\n\nBut people do, through the roads they walk.",
                             "...about\n2.8 times 10^7\npeople...",
-                            "Billie pondered: \"What's Pip-Boy?\""
+                            "Billie pondered: \"What's Pip-Boy?\"",
                         )
+                        Column(
+                            Modifier.fillMaxSize(),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center
+                        ) {
+                            BoxWithConstraints(Modifier.wrapContentSize()) {
+                                val numberOfRounds = 10
+                                var cnt by rememberSaveable { mutableIntStateOf(0) }
+                                if (cnt == numberOfRounds) {
+                                    LaunchedEffect(Unit) {
+                                        playFanfares()
+                                        if (!saveGlobal.pipGirlPrizeWon) {
+                                            showAlertDialog("Jackpot!", "You have won 100 caps!")
+                                            saveGlobal.capsInHand += 100
+                                            saveGlobal.pipGirlPrizeWon = true
+                                            saveData()
+                                        }
+                                        delay(25000L)
+                                        cnt = 0
+                                    }
+                                }
+                                var side by rememberSaveable { mutableIntStateOf((0..2).random()) }
+                                var isButtonPressed by rememberSaveable { mutableIntStateOf(-1) }
+                                Column(
+                                    Modifier.wrapContentSize(),
+                                    horizontalAlignment = Alignment.CenterHorizontally,
+                                    verticalArrangement = Arrangement.Center
+                                ) {
+                                    TextFallout(
+                                        "Device #62869: CharisMeter",
+                                        getTextColor(),
+                                        getTextStrokeColor(),
+                                        12.sp,
+                                        Modifier.fillMaxWidth(),
+                                    )
+                                    Spacer(Modifier.height(4.dp))
+                                    TextFallout(
+                                        "$cnt / $numberOfRounds",
+                                        getTextColor(),
+                                        getTextStrokeColor(),
+                                        14.sp,
+                                        Modifier.fillMaxWidth(),
+                                    )
+                                    Spacer(Modifier.height(4.dp))
+
+                                    BoxWithConstraints(Modifier.fillMaxWidth().padding(4.dp)) {
+                                        LaunchedEffect(Unit) {
+                                            while (isActive) {
+                                                if (isButtonPressed != -1) {
+                                                    if (isButtonPressed == 2 && side == 0 || side - isButtonPressed == 1) {
+                                                        cnt = 0
+                                                        playNoBeep()
+                                                    } else if (isButtonPressed != side) {
+                                                        cnt++
+                                                        playYesBeep()
+                                                    }
+                                                    delay(500L)
+                                                    side = (0..2).random()
+                                                    isButtonPressed = -1
+                                                }
+                                                delay(150L)
+                                                side = (0..2).random()
+                                                delay(150L)
+                                            }
+                                        }
+                                        TextFallout(
+                                            when (side) {
+                                                0 -> "Flirt"
+                                                1 -> "Roast"
+                                                else -> "Joke"
+                                            },
+                                            getTextColor(),
+                                            getTextStrokeColor(),
+                                            16.sp,
+                                            Modifier.align(Alignment.Center),
+                                        )
+                                    }
+
+                                    fun onSidePressed(thisSide: Int) {
+                                        if (cnt < numberOfRounds) {
+                                            isButtonPressed = thisSide
+                                        }
+                                    }
+                                    @Composable
+                                    fun Button(name: String, num: Int) {
+                                        TextFallout(
+                                            name,
+                                            getTextColor(),
+                                            getTextStrokeColor(),
+                                            16.sp,
+                                            Modifier
+                                                .background(getTextBackgroundColor())
+                                                .padding(4.dp)
+                                                .clickable {
+                                                    onSidePressed(num)
+                                                },
+                                        )
+                                    }
+                                    Row(
+                                        Modifier.fillMaxWidth(),
+                                        horizontalArrangement = Arrangement.SpaceEvenly
+                                    ) {
+                                        Button("Flirt", 0)
+                                        Button("Roast", 1)
+                                    }
+                                    Row(
+                                        Modifier.fillMaxWidth(),
+                                        horizontalArrangement = Arrangement.SpaceEvenly
+                                    ) {
+                                        Button("Joke", 2)
+                                    }
+                                }
+                            }
+                            Spacer(Modifier.height(16.dp))
+                            BoxWithConstraints(Modifier, contentAlignment = Alignment.BottomCenter) {
+                                val text = phrases.random(rand)
+                                Text(
+                                    text = text,
+                                    textAlign = TextAlign.Center,
+                                    color = Color.Black,
+                                    fontFamily = FontFamily(Font(Res.font.help)),
+                                    modifier = Modifier
+                                        .rotate(-20f + rand.nextFloat() * 40f)
+                                        .offset(
+                                            x = ((-5..5).random(rand).dp),
+                                            y = ((-5..5).random(rand).dp)
+                                        ),
+                                    fontSize = 12.sp,
+                                )
+                            }
+                        }
                     }
 
                     VAULT_21 -> {

@@ -48,15 +48,12 @@ data object EnemyTowerBonus : Enemy {
             val index = game.enemyCResources.hand.indexOf(modifier)
             when (modifier.rank) {
                 RankFace.JACK -> {
-                    if (StrategyJackHard(index, StrategyJackHard.Direction.TO_PLAYER).move(game, speed)) {
+                    if (StrategyJackHard(index).move(game, speed)) {
                         return
                     }
                 }
                 RankFace.KING -> {
-                    if (
-                        StrategyKingRuiner(index, isHard = true).move(game, speed) ||
-                        StrategyKingHard(index, StrategyKingHard.Direction.TO_PLAYER).move(game, speed)
-                    ) {
+                    if (StrategyKingHard(index).move(game, speed)) {
                         return
                     }
                 }

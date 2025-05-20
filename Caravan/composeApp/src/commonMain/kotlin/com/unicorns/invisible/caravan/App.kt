@@ -805,6 +805,7 @@ fun Screen() {
                             saveGlobal.dailyHash = currentHash
                             saveGlobal.updateChallenges()
                             saveGlobal.updateEnemiesBanks()
+                            saveGlobal.updateStyles()
                             saveGlobal.capsInHand += capsFound
                             saveData()
                         }

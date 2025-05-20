@@ -74,6 +74,7 @@ fun playHeartbeatSound() = playEffectPlayerSound("files/raw/sfx_heartbeat.ogg")
 fun playSlideSound() = playEffectPlayerSound("files/raw/slide.ogg")
 fun playMinigunSound() = playEffectPlayerSound("files/raw/minigun_f2.ogg")
 fun playNotificationSound() = playEffectPlayerSound("files/raw/notification.mp3")
+fun playSporePlantSound() = playEffectPlayerSound("files/raw/sporeplant_scream.ogg", 3)
 
 expect fun stopAmbient()
 expect fun setAmbientVolume(volume: Float)
