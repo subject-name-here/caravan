@@ -257,8 +257,6 @@ class Save(var playerId: String? = null) {
     var isHeroic = false
     @EncodeDefault
     var isRadioUsesPseudonyms = false
-    @EncodeDefault
-    var frankChallenge = false
 
     @EncodeDefault
     var pipBoyPrizeWon = false
@@ -270,6 +268,7 @@ class Save(var playerId: String? = null) {
     fun updateStyles() {
         pipBoyPrizeWon = false
         v22PrizeWon = false
+        pipGirlPrizeWon = false
     }
 
     @EncodeDefault

@@ -1178,17 +1178,25 @@ fun StartTowerGame(
     game.also {
         it.onWin = {
             processChallengesGameOver(it)
-            if (enemy is EnemyFrank) {
-                showFrankMidtro = true
-            } else {
-                playWinSound()
-                onWin()
-                scope.launch {
-                    showAlertDialog(
-                        getString(Res.string.result),
-                        getString(Res.string.you_win),
-                        onQuitPressed
-                    )
+            when (enemy) {
+                is EnemyFrank -> {
+                    showFrankMidtro = true
+                }
+                is EnemyFrank2 -> {
+                    playWinSound()
+                    onWin()
+                    showFrankOutro = true
+                }
+                else -> {
+                    playWinSound()
+                    onWin()
+                    scope.launch {
+                        showAlertDialog(
+                            getString(Res.string.result),
+                            getString(Res.string.you_win),
+                            onQuitPressed
+                        )
+                    }
                 }
             }
             saveData()
@@ -1206,7 +1214,7 @@ fun StartTowerGame(
         }
     }
 
-    ShowGame(game) {
+    ShowGame(game, hasGlobalTimer = if (enemy is EnemyFrank2) 120 else -1) {
         if (game.isOver()) {
             onQuitPressed()
         } else {

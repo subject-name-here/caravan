@@ -25,23 +25,35 @@ class CResources(private val deck: CustomDeck) {
      * 2) if there is a bomb in a deck, there must be exactly one in the hand
      */
     private fun getTopHand(facesLimitExcluded: Int = 6): List<Card> {
+        val minNumbers = 8 - facesLimitExcluded + 1
         val cards = deck.toList().toMutableList()
         cards.removeAll { it is CardWildWasteland }
         val nuclears = cards.filterIsInstance<CardNuclear>()
-        val faces = cards.filterIsInstance<CardFace>()
-        val numbers = cards.filterIsInstance<CardBase>()
+        cards.removeAll { it is CardNuclear }
 
         val startingHand = mutableListOf<Card>()
-        if (nuclears.isNotEmpty()) {
+        val remainingCards = if (nuclears.isNotEmpty()) {
             startingHand.add(nuclears.random())
-            // TODO 3.0: it's not quite fair. Determine number of faces better way.
-            startingHand.addAll(faces.take(Random.nextInt(0, facesLimitExcluded - 1)))
+            7
         } else {
-            startingHand.addAll(faces.take(Random.nextInt(0, facesLimitExcluded)))
+            8
         }
-
-        val remaining = 8 - startingHand.size
-        startingHand.addAll(numbers.take(remaining))
+        var cnt = 229
+        while (cnt > 0) {
+            cards.shuffle()
+            val tmpHand = cards.take(remainingCards)
+            val numsInTmpHand = tmpHand.count { it is CardBase }
+            if (numsInTmpHand >= minNumbers) {
+                startingHand.addAll(tmpHand)
+                break
+            }
+            cnt--
+        }
+        if (cnt == 0) {
+            val numbers = cards.filterIsInstance<CardBase>()
+            startingHand.addAll(numbers.take(remainingCards))
+            startingHand.shuffle()
+        }
 
         return startingHand
     }
@@ -49,13 +61,13 @@ class CResources(private val deck: CustomDeck) {
         shuffleDeck()
         val tmpHand = getTopHand()
         deck.removeAllOnce(tmpHand)
-        tmpHand.shuffled().forEach { addCardToHand(it) }
+        tmpHand.forEach { addCardToHand(it) }
     }
     fun initResourcesPvP() {
         shuffleDeck()
         val tmpHand = getTopHand()
         deck.removeAllOnce(tmpHand)
-        tmpHand.shuffled().forEach { deck.addOnTop(it) }
+        tmpHand.forEach { deck.addOnTop(it) }
     }
 
     private fun addCardToHand(card: Card) {

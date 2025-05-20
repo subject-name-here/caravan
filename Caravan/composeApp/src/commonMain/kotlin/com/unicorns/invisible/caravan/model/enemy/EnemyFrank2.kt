@@ -28,10 +28,10 @@ import kotlin.random.Random
 
 data object EnemyFrank2 : Enemy {
     override fun createDeck(): CResources = CResources(CustomDeck(CardBack.ENCLAVE).apply {
-        add(CardFBomb())
         removeAll { it is CardFaceSuited && it.suit == Suit.HEARTS }
         removeAll { it is CardBase && it.suit == Suit.HEARTS }
-        removeAll { it is CardBase && it.rank.value in (2..4) }
+        removeAll { it is CardJoker }
+        add(CardFBomb())
     })
 
     override suspend fun makeMove(game: Game, speed: AnimationSpeed) {

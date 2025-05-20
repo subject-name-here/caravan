@@ -325,7 +325,7 @@ fun ShowCard(card: Card, modifier: Modifier, scale: Float = 1f) {
                             val offset = IntOffset(rand.nextInt(-5, 70), rand.nextInt(-10, 170)) * scale
                             ShowImageFromDrawable(
                                 Res.drawable.ncr_stamp_usage_apprvd,
-                                Modifier.offset { offset }.rotate(rotation.toFloat())
+                                Modifier.scale(0.8f).offset { offset }.rotate(rotation.toFloat())
                             )
                         }
                         Suit.DIAMONDS -> {

@@ -114,6 +114,7 @@ fun ShowGame(
     game: Game,
     isBlitz: Boolean = false,
     isPvP: Boolean = false,
+    hasGlobalTimer: Int = -1,
     onMove: (Int, Int, Int, Int) -> Unit = { _, _, _, _ -> },
     goBack: () -> Unit
 ) {
@@ -252,6 +253,7 @@ fun ShowGame(
     ShowGameRaw(
         isPvP,
         isBlitz,
+        hasGlobalTimer,
         game,
         goBack,
         animationSpeed,
@@ -268,6 +270,7 @@ fun ShowGame(
 fun ShowGameRaw(
     isPvP: Boolean,
     isBlitz: Boolean,
+    hasGlobalTimer: Int,
     game: Game,
     goBack: () -> Unit,
     animationSpeed: AnimationSpeed,
@@ -345,7 +348,8 @@ fun ShowGameRaw(
                             PlayerSide(animationSpeed, isPvP, game, getSelectedCard(), setSelectedCard, getMySymbol, setMySymbol, fillMaxHeight = true, handCardHeight)
                         }
                         Caravans(
-                            isBlitz, game,
+                            isBlitz, hasGlobalTimer,
+                            game,
                             animationSpeed,
                             { game.playerCResources.hand.getOrNull(getSelectedCard()) },
                             getSelectedCaravan,
@@ -380,7 +384,8 @@ fun ShowGameRaw(
                             handCardHeight
                         )
                         Caravans(
-                            isBlitz, game,
+                            isBlitz, hasGlobalTimer,
+                            game,
                             animationSpeed,
                             { game.playerCResources.hand.getOrNull(getSelectedCard()) },
                             getSelectedCaravan,
@@ -955,6 +960,7 @@ fun RowScope.Score(num: Int, caravan: Caravan, opposingValue: Int) {
 @Composable
 fun Caravans(
     isBlitz: Boolean,
+    hasGlobalTimer: Int,
     game: Game,
     animationSpeed: AnimationSpeed,
     getSelectedCard: () -> Card?,
@@ -1067,7 +1073,11 @@ fun Caravans(
                     16.sp,
                     modifier,
                 )
-                Box(Modifier.weight(0.2f))
+                if (hasGlobalTimer > 0) {
+                    GlobalTimer(game, hasGlobalTimer,0.2f, 16.sp)
+                } else {
+                    Box(Modifier.weight(0.2f))
+                }
             }
             Row(
                 Modifier
@@ -1132,6 +1142,50 @@ fun RowScope.BlitzTimer(
                 timeOnTimer -= 0.1f
             }
             if (timeOnTimer <= 3f) {
+                if (timeOnTimer.toDouble().isJubilee()) {
+                    playNoBeep()
+                }
+            }
+            delay(100L)
+        }
+        if (timeOnTimer <= 0f) {
+            game.checkOnGameOver()
+        }
+    }
+
+    key(timeOnTimer) {
+        TextFallout(
+            timeOnTimer.toDouble().toString(1),
+            getTextColor(),
+            getTextStrokeColor(),
+            height,
+            Modifier
+                .weight(weight)
+                .wrapContentHeight()
+                .padding(horizontal = 4.dp)
+                .background(getGrayTransparent())
+                .padding(horizontal = 4.dp, vertical = 4.dp)
+        )
+    }
+}
+
+@Composable
+fun RowScope.GlobalTimer(
+    game: Game,
+    time: Int,
+    weight: Float,
+    height: TextUnit
+) {
+    var timeOnTimer by rememberScoped { mutableFloatStateOf(time.toFloat()) }
+
+    LaunchedEffect(Unit) {
+        game.specialGameOverCondition = { if (timeOnTimer <= 0f) -1 else 0 }
+        // game.onPlayerMoveEnd = { timeOnTimer = min(timeOnTimer + 1f, 15f) }
+        while (isActive && timeOnTimer > 0 && !game.isOver()) {
+            if (game.canPlayerMove) {
+                timeOnTimer -= 0.1f
+            }
+            if (timeOnTimer <= 10f) {
                 if (timeOnTimer.toDouble().isJubilee()) {
                     playNoBeep()
                 }

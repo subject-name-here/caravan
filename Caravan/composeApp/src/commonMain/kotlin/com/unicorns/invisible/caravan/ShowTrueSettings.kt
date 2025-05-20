@@ -39,7 +39,6 @@ import caravan.composeapp.generated.resources.save
 import com.unicorns.invisible.caravan.cheats.CheatChangeTrack
 import com.unicorns.invisible.caravan.cheats.CheatEraseProgress
 import com.unicorns.invisible.caravan.cheats.CheatFinalBossesHeroicMusic
-import com.unicorns.invisible.caravan.cheats.CheatFrankChallenge
 import com.unicorns.invisible.caravan.cheats.CheatLaggySpeed
 import com.unicorns.invisible.caravan.cheats.CheatLevel10
 import com.unicorns.invisible.caravan.cheats.CheatPapaSmurf
@@ -158,8 +157,7 @@ fun ShowTrueSettings(
                         CheatStash1969,
                         CheatStashEventfulYear,
                         CheatStashCumpleanos,
-                        CheatLaggySpeed,
-                        CheatFrankChallenge
+                        CheatLaggySpeed
                     )
                     TextFallout(
                         text = stringResource(Res.string.cheats),

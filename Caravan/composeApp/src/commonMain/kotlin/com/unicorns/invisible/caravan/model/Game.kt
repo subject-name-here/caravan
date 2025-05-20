@@ -228,8 +228,8 @@ class Game(
             CoroutineScope(Dispatchers.Unconfined).launch {
                 if (bombOwner !in it.cards) {
                     if (isFBomb) {
-                        // TODO 3.0: some bonus
                         it.dropCaravan(speed)
+                        it.incrementDeficit()
                     } else {
                         if (it.cards.all { card -> !card.isProtectedByMuggy }) {
                             it.dropCaravan(speed)

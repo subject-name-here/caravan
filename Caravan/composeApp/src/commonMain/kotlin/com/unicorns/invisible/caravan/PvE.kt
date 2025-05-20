@@ -72,7 +72,6 @@ import com.sebaslogen.resaca.rememberScoped
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.Currency
 import com.unicorns.invisible.caravan.model.Game
-import com.unicorns.invisible.caravan.model.enemy.EnemyFrank
 import com.unicorns.invisible.caravan.model.enemy.EnemyHanlon
 import com.unicorns.invisible.caravan.model.enemy.EnemyMadnessCardinal
 import com.unicorns.invisible.caravan.model.enemy.EnemyPvENoBank
@@ -101,18 +100,14 @@ import com.unicorns.invisible.caravan.utils.getSelectionColor
 import com.unicorns.invisible.caravan.utils.getTextBackgroundColor
 import com.unicorns.invisible.caravan.utils.getTextColor
 import com.unicorns.invisible.caravan.utils.getTextStrokeColor
-import com.unicorns.invisible.caravan.utils.nextSong
 import com.unicorns.invisible.caravan.utils.playCloseSound
-import com.unicorns.invisible.caravan.utils.playFrankPhrase
 import com.unicorns.invisible.caravan.utils.playLoseSound
 import com.unicorns.invisible.caravan.utils.playSelectSound
 import com.unicorns.invisible.caravan.utils.playVatsEnter
 import com.unicorns.invisible.caravan.utils.playWinSound
 import com.unicorns.invisible.caravan.utils.playWinSoundAlone
 import com.unicorns.invisible.caravan.utils.startAmbient
-import com.unicorns.invisible.caravan.utils.startLevel11Theme
 import com.unicorns.invisible.caravan.utils.stopAmbient
-import com.unicorns.invisible.caravan.utils.stopRadio
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.getString
 import org.jetbrains.compose.resources.stringResource
@@ -127,28 +122,8 @@ fun ShowSelectPvE(
     var showSelectEnemy by rememberScoped { mutableStateOf(false) }
     var showTower by rememberScoped { mutableStateOf(false) }
     var showTutorial by rememberScoped { mutableStateOf(false) }
-    var frankChallenge2 by rememberScoped { mutableStateOf(false) }
 
     when {
-        frankChallenge2 -> {
-            // TODO 3.0: replace with hard version.
-            StartTowerGame(EnemyFrank(false), showAlertDialog, {
-                soundReduced = true
-                startLevel11Theme()
-                playFrankPhrase("files/raw/frank_on_game_start.ogg")
-            }, {
-                saveData()
-                stopRadio()
-                playFrankPhrase("files/raw/frank_on_defeat.ogg")
-            }, {
-                stopRadio()
-            }) {
-                frankChallenge2 = false
-                soundReduced = false
-                nextSong()
-            }
-            return
-        }
         showSelectEnemy -> {
             ShowPvE(showAlertDialog) { showSelectEnemy = false }
             return
@@ -199,10 +174,6 @@ fun ShowSelectPvE(
             SubMenuItem(stringResource(Res.string.story_mode)) { showStory = true }
             Spacer(modifier = Modifier.height(12.dp))
             SubMenuItem(stringResource(Res.string.tutorial)) { showTutorial = true }
-            if (saveGlobal.frankChallenge) {
-                Spacer(modifier = Modifier.height(12.dp))
-                SubMenuItem("Frank Challenge") { frankChallenge2 = true }
-            }
             Spacer(modifier = Modifier.height(12.dp))
         }
     }

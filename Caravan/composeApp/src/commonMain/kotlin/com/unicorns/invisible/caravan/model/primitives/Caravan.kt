@@ -82,7 +82,7 @@ class Caravan {
         return if (cards.any { it.hasActiveYesMan }) {
             26
         } else {
-            cards.sumOf { it.getValue() }
+            cards.sumOf { it.getValue() } - deficit
         }
     }
 
@@ -129,5 +129,11 @@ class Caravan {
         cardsMutable.add(CardWithModifier(card))
         recomposeResources++
         delay(speed.delay)
+    }
+
+    var deficit = 0
+        private set
+    fun incrementDeficit() {
+        deficit++
     }
 }

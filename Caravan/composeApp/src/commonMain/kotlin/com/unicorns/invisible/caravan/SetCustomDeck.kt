@@ -205,7 +205,7 @@ fun SetCustomDeck(
                     horizontalArrangement = Arrangement.Start,
                     verticalAlignment = Alignment.Top
                 ) {
-                    items(CardBack.entries) { back ->
+                    items(CardBack.entries.minus(listOf(CardBack.STANDARD_MYTHIC, CardBack.STANDARD_LEGENDARY))) { back ->
                         fun getSelectedCode(): Int {
                             val deck = CollectibleDeck(back).toList().filter { saveGlobal.isCardAvailableAlready(it) }
                             return when {

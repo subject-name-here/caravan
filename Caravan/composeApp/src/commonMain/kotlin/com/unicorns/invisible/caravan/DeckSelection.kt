@@ -119,17 +119,18 @@ fun DeckSelection(
                 )
             }
 
-            CardBack.entries.chunked(cardsInRow).forEach { chunk ->
-                Row(
-                    Modifier.fillMaxWidth().wrapContentHeight(),
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    chunk.forEach { back ->
-                        showDeckBack(back)
+            CardBack.entries.minus(listOf(CardBack.STANDARD_MYTHIC, CardBack.STANDARD_LEGENDARY))
+                .chunked(cardsInRow).forEach { chunk ->
+                    Row(
+                        Modifier.fillMaxWidth().wrapContentHeight(),
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        chunk.forEach { back ->
+                            showDeckBack(back)
+                        }
                     }
                 }
-            }
         }
     }
 }

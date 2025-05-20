@@ -180,24 +180,21 @@ fun BoxWithConstraintsScope.StylePicture(
                     }
 
                     VAULT_22 -> {
-                        // TODO: fix
                         Column(Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center) {
                             BoxWithConstraints(Modifier.size(600.pxToDp(), 666.pxToDp()).offset(y = 60.pxToDp()), contentAlignment = Alignment.BottomCenter) {
-                                val w = maxWidth.dpToPx()
-                                !saveGlobal.v22PrizeWon
-                                if (true) {
+                                if (!saveGlobal.v22PrizeWon) {
                                     Box(Modifier.wrapContentSize()) {
                                         var v22scaleDiff by rememberScoped { mutableFloatStateOf(0f) }
                                         var scaleDiffTrue by rememberScoped { mutableFloatStateOf(0f) }
                                         val clicksTotal = 200f
-                                        val scaleMaxFactor = min(1f, w / 600f)
+                                        val scaleMaxFactor = min(1f, this@BoxWithConstraints.maxWidth.dpToPx() / 600f)
                                         val scale = scaleMaxFactor * (clicksTotal - scaleDiffTrue / 2) / clicksTotal
                                         ShowImageFromPath(
                                             path = "menu_items/vault_22/spore_plant.webp",
                                             IntSize(600, 666),
                                             Modifier
-                                                .clickable {
-                                                    if (v22scaleDiff.toInt() % 50 == 5) {
+                                                .clickable(interactionSource = null, indication = null) {
+                                                    if (v22scaleDiff.toInt() % 50 == 10) {
                                                         playSporePlantSound()
                                                         scaleDiffTrue = v22scaleDiff
                                                     }
@@ -322,8 +319,8 @@ fun BoxWithConstraintsScope.StylePicture(
                             LaunchedEffect(Unit) {
                                 playFanfares()
                                 if (!saveGlobal.pipBoyPrizeWon) {
-                                    showAlertDialog("Jackpot!", "You have won 777 caps!")
-                                    saveGlobal.capsInHand += 777
+                                    showAlertDialog("Jackpot!", "You have won 77 caps!")
+                                    saveGlobal.capsInHand += 77
                                     saveGlobal.pipBoyPrizeWon = true
                                     saveData()
                                 }
@@ -423,8 +420,8 @@ fun BoxWithConstraintsScope.StylePicture(
                                     LaunchedEffect(Unit) {
                                         playFanfares()
                                         if (!saveGlobal.pipGirlPrizeWon) {
-                                            showAlertDialog("Jackpot!", "You have won 100 caps!")
-                                            saveGlobal.capsInHand += 100
+                                            showAlertDialog("Jackpot!", "You have won 69 caps!")
+                                            saveGlobal.capsInHand += 69
                                             saveGlobal.pipGirlPrizeWon = true
                                             saveData()
                                         }
