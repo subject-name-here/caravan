@@ -1,9 +1,6 @@
 package com.unicorns.invisible.caravan.model.trading
 
 import com.unicorns.invisible.caravan.model.CardBack
-import com.unicorns.invisible.caravan.model.primitives.CardFaceSuited
-import com.unicorns.invisible.caravan.model.primitives.CardJoker
-import com.unicorns.invisible.caravan.model.primitives.CardNumber
 import com.unicorns.invisible.caravan.model.primitives.CardWithPrice
 import com.unicorns.invisible.caravan.model.primitives.CollectibleDeck
 import com.unicorns.invisible.caravan.saveGlobal
@@ -32,10 +29,15 @@ sealed interface Trader {
         val todayHash = saveGlobal.dailyHash
         val rand = Random(todayHash xor (b * 31 + 22229) xor (b * b * b + 13))
 
-        // TODO: test if shuffle is always the same.
-        fun shuffleCards(deck: CollectibleDeck) = deck.toList().shuffled(rand)
-
+        val deck = CollectibleDeck(back).toList().shuffled(rand).map { it to rand.nextBoolean() }
         val n = 7
-        return shuffleCards(CollectibleDeck(back)).take(n)
+
+        val cards = mutableListOf<CardWithPrice>()
+        deck.forEach { card ->
+            if (!saveGlobal.isCardAvailableAlready(card.first) || card.second) {
+                cards.add(card.first)
+            }
+        }
+        return cards.take(n)
     }
 }

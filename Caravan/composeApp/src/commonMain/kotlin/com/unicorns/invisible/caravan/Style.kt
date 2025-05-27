@@ -1,6 +1,7 @@
 package com.unicorns.invisible.caravan
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -9,6 +10,7 @@ import androidx.compose.foundation.layout.BoxWithConstraintsScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -20,6 +22,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -101,11 +104,8 @@ import com.unicorns.invisible.caravan.utils.playNoBeep
 import com.unicorns.invisible.caravan.utils.playSporePlantSound
 import com.unicorns.invisible.caravan.utils.playYesBeep
 import com.unicorns.invisible.caravan.utils.pxToDp
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
-import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.Font
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.painterResource
@@ -130,7 +130,7 @@ enum class Style(
     VAULT_21(Res.string.style_vault_21, Res.string.style_vault_21_condition, { saveGlobal.winsWithBet to 600 }),
     VAULT_22(Res.string.style_vault_22, Res.string.style_vault_22_condition, { saveGlobal.winsWithBet to 200 }),
     BLACK(Res.string.style_black, Res.string.style_black_condition, { saveGlobal.pvpWins to 10 }),
-    ENCLAVE(Res.string.style_enclave, Res.string.style_enclave_condition, { (if (saveGlobal.towerBeatenN) 1 else 0) to 1 }),
+    ENCLAVE(Res.string.style_enclave, Res.string.style_enclave_condition, { (if (saveGlobal.towerBeatenN2) 1 else 0) to 1 }),
     NCR(Res.string.style_ncr, Res.string.style_ncr_condition, { saveGlobal.availableDecks.size to 12 }),
     LEGION(Res.string.style_legion, Res.string.style_legion_condition, { saveGlobal.availableCardsSize() to 333 });
 }
@@ -164,7 +164,7 @@ fun BoxWithConstraintsScope.StylePicture(
     screenWidth: Int,
     screenHeight: Int
 ) {
-    val rand by rememberScoped { mutableStateOf(Random(Random.nextInt())) }
+    val rand by rememberScoped { mutableStateOf(Random(id)) }
     Row(
         Modifier
             .fillMaxWidth()
@@ -182,7 +182,8 @@ fun BoxWithConstraintsScope.StylePicture(
                     VAULT_22 -> {
                         Column(Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center) {
                             BoxWithConstraints(Modifier.size(600.pxToDp(), 666.pxToDp()).offset(y = 60.pxToDp()), contentAlignment = Alignment.BottomCenter) {
-                                if (!saveGlobal.v22PrizeWon) {
+                                var flag by rememberScoped { mutableStateOf(saveGlobal.v22PrizeWon) }
+                                key(flag) { if (!saveGlobal.v22PrizeWon) {
                                     Box(Modifier.wrapContentSize()) {
                                         var v22scaleDiff by rememberScoped { mutableFloatStateOf(0f) }
                                         var scaleDiffTrue by rememberScoped { mutableFloatStateOf(0f) }
@@ -203,6 +204,7 @@ fun BoxWithConstraintsScope.StylePicture(
                                                         showAlertDialog("Knockout!", "You have won 22 caps!")
                                                         saveGlobal.capsInHand += 22
                                                         saveGlobal.v22PrizeWon = true
+                                                        flag = true
                                                         saveData()
                                                     }
                                                     v22scaleDiff++
@@ -212,7 +214,7 @@ fun BoxWithConstraintsScope.StylePicture(
                                             scale = FixedScale(scale)
                                         )
                                     }
-                                }
+                                } }
                             }
 
                             Box(Modifier.wrapContentSize()) {
@@ -546,7 +548,50 @@ fun BoxWithConstraintsScope.StylePicture(
                     }
 
                     ENCLAVE -> {
+                        val posterPathToSize = if (screenHeight > screenWidth) {
+                            "menu_items/enclave/enclave_poster_v.webp" to IntSize(195, 512)
+                        } else {
+                            "menu_items/enclave/enclave_poster_h.webp" to IntSize(512, 256)
+                        }
+                        Column(Modifier.fillMaxHeight(), verticalArrangement = Arrangement.Center) {
+                            Box(Modifier.fillMaxWidth().weight(1f), contentAlignment = Alignment.Center) {
+                                ShowImageFromPath(
+                                    "menu_items/enclave/enclave_flag.webp",
+                                    IntSize(1000, 527),
+                                    Modifier.border(width = 4.dp, color = Color.White).padding(4.dp),
+                                    ColorFilter.colorMatrix(ColorMatrix()),
+                                    scale = ContentScale.Inside,
+                                    alignment = Alignment.Center
+                                )
+                            }
 
+                            Spacer(Modifier.height(16.dp))
+                            ShowImageFromPath(
+                                posterPathToSize.first,
+                                posterPathToSize.second,
+                                Modifier.fillMaxWidth().weight(1f),
+                                ColorFilter.colorMatrix(ColorMatrix()),
+                                scale = ContentScale.Inside,
+                                alignment = Alignment.TopCenter
+                            )
+                        }
+
+                        ShowImageFromPath(
+                            "menu_items/enclave/enclave_seal.webp",
+                            IntSize(400, 400),
+                            Modifier.align(if (screenHeight > screenWidth) {
+                                Alignment.BottomCenter
+                            } else {
+                                Alignment.CenterEnd
+                            }),
+                            ColorFilter.colorMatrix(ColorMatrix()),
+                            alignment = if (screenHeight > screenWidth) {
+                                BiasAlignment(0f, 0f)
+                            } else {
+                                BiasAlignment(1f, 0f)
+                            },
+                            scale = FixedScale(0.5f)
+                        )
                     }
 
                     Style.BLACK -> {}

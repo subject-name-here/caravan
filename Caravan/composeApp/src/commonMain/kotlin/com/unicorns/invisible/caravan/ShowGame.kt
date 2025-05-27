@@ -170,12 +170,14 @@ fun ShowGame(
 
         val selectedCardNN = selectedCard
         if (selectedCardNN !in game.playerCResources.hand.indices) return
+        val card = game.playerCResources.hand.getOrNull(selectedCardNN) ?: return
         game.canPlayerMove = false
         resetSelected()
         scope.launch {
             playCardFlipSound()
             game.playerCResources.dropCardFromHand(selectedCardNN, animationSpeed)
             playVatsReady()
+            processChallengesMove(Challenge.Move(moveCode = 2, handCard = card), game)
             onMove(2, selectedCardNN, 0, 0)
             game.afterPlayerMove(animationSpeed)
             game.canPlayerMove = true
@@ -1182,15 +1184,8 @@ fun RowScope.GlobalTimer(
         game.specialGameOverCondition = { if (timeOnTimer <= 0f) -1 else 0 }
         // game.onPlayerMoveEnd = { timeOnTimer = min(timeOnTimer + 1f, 15f) }
         while (isActive && timeOnTimer > 0 && !game.isOver()) {
-            if (game.canPlayerMove) {
-                timeOnTimer -= 0.1f
-            }
-            if (timeOnTimer <= 10f) {
-                if (timeOnTimer.toDouble().isJubilee()) {
-                    playNoBeep()
-                }
-            }
-            delay(100L)
+            timeOnTimer -= 1f
+            delay(1000L)
         }
         if (timeOnTimer <= 0f) {
             game.checkOnGameOver()

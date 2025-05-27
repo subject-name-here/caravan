@@ -143,6 +143,7 @@ import com.unicorns.invisible.caravan.utils.playTowerFailed
 import com.unicorns.invisible.caravan.utils.playWinSound
 import com.unicorns.invisible.caravan.utils.startAmbient
 import com.unicorns.invisible.caravan.utils.startLevel11Theme
+import com.unicorns.invisible.caravan.utils.startLevel11Theme2
 import com.unicorns.invisible.caravan.utils.stopAmbient
 import com.unicorns.invisible.caravan.utils.stopRadio
 import kotlinx.coroutines.CoroutineScope
@@ -232,7 +233,7 @@ fun TowerScreen(
         }
         13 -> {
             var capsMemory by rememberScoped { mutableIntStateOf(0) }
-            StartTowerGame(EnemyFrank(isHard = saveGlobal.towerBeatenN), showAlertDialog, {
+            StartTowerGame(EnemyFrank(isHard = saveGlobal.towerBeatenN2), showAlertDialog, {
                 startLevel11Theme()
                 playFrankPhrase("files/raw/frank_on_game_start.ogg")
                 levelMemory = level
@@ -375,7 +376,7 @@ fun TowerScreen(
                     val inBank = if (cookCook == 2) 2048 else 1536
                     saveGlobal.capsInHand += inBank
                     saveGlobal.increaseXp(inBank)
-                    saveGlobal.towerBeatenN = true
+                    saveGlobal.towerBeatenN2 = true
                     saveData()
                     CoroutineScope(Dispatchers.Unconfined).launch {
                         repeat(4) {
@@ -1003,6 +1004,7 @@ fun StartTowerGame(
     var isFrankSecondPhase by rememberSaveable { mutableStateOf(false) }
 
     if (isFrankSecondPhase) {
+        startLevel11Theme2()
         StartTowerGame(
             EnemyFrank2,
             showAlertDialog,

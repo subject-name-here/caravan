@@ -491,8 +491,8 @@
     <string name="simple_challenge_descr">Defeat 6 different enemies.</string>
     <string name="play_188_challenge">188 - Challenge</string>
     <string name="play_188_challenge_descr">Play 188 cards.</string>
-    <string name="play_777_challenge">No Luck, Just Skill</string>
-    <string name="play_777_challenge_descr">Play number cards of total value greater or equal to 777.</string>
+    <string name="play_86_challenge">86ed</string>
+    <string name="play_86_challenge_descr">Drop 86 cards from hand.</string>
 
     <string name="complete_all_dailys">Up To The Challenge</string>
     <string name="complete_all_dailys_descr">Complete all daily missions.</string>
@@ -1471,6 +1471,145 @@
         As you go, you look at Aurora Borealis for the last time. It has acquired a red tint.
         Near it, down below, there is Mars, shining with the red color all over the Earth.
     </string>
+
+    <string name="ch7_0">
+        Warrior! We have arrived!
+    </string>
+    <string name="ch7_0a">Thyra?</string>
+    <string name="ch7_1">
+        Yes, Cazadoor killer, we are near Anchorage. But we are not going anywhere near the shores.
+    </string>
+    <string name="ch7_1a">Why?</string>
+    <string name="ch7_2">
+        Look for yourself. It's Attila and his tribe! They can't see us through the fog, but we have heat-seeking binoculars.
+    </string>
+    <string name="ch7_2a"><![CDATA[<Look through binoculars at the shore.>]]></string>
+    <string name="ch7_3">
+        You see: a lot of humanoids. They march around, guarding the coast as if there is something valuable in Anchorage.
+    </string>
+    <string name="ch7_3a">[Stealth 65] Okay, put me in the boat and leave before they have spotted you.</string>
+    <string name="ch7_4">
+        [FAILED] No matter how hard you try it, the coast guards notice that something's wrong with the boat. You have to jump into the cold salty water.
+    </string>
+    <string name="ch7_4a">Swim away from the bullets.</string>
+    <string name="ch7_5">
+        You try to swim, but really soon your legs cramp up badly. Suddenly, you feel someone grabbing your feet and pulling you into the deep. As you're out of your breath, you see a giant fish, ready to feast on your bones.
+    </string>
+    <string name="ch7_6">
+        [?] The boat with you inside was brought by the tide to the shore. Curious soldier (ghoul) in a dark green uniform with a Chinese chevron came to check what kind of junk was washed ashore.
+    </string>
+    <string name="ch7_6a">[Stealth 69/70] <![CDATA[<Don't move.>]]></string>
+    <string name="ch7_6b">[Charisma 7] I give up! Bring me to your leader!</string>
+    <string name="ch7_7_1">
+        [FAILED] Ghoul is not impressed and sounds an alarm by shouting some gibberish. The boat does not absorb all the bullets that fly towards it. Your body, though, does it very well. You, however, don't bleed to death - you just thrown in jail.
+    </string>
+    <string name="ch7_7_2">
+        [SUCCEEDED?] You have overpowered the ghoul soldier, but at what cost? The shore is swarming with Chinese soldiers, and all of them are hostile to you. You have picked the battle with no chance of winning, and soon your dead body falls on the sand.
+    </string>
+    <string name="ch7_8">
+        New level! What do you want to put the skill points in? Speech or Speech? Or will it be Speech?
+    </string>
+    <string name="ch7_8a">Nope, it's Speech.</string>
+    <string name="ch7_8b">I am thinking about Speech.</string>
+    <string name="ch7_8c">Speech.</string>
+    <string name="ch7_9">
+        *Sigh* Saved.
+    </string>
+    <string name="ch7_9a">[CONTINUE]</string>
+    <string name="ch7_10">
+        [SUCCEEDED] Ghoul points gun at you.
+    </string>
+    <string name="ch7_10a"><![CDATA[<Submit.>]]></string>
+    <string name="ch7_11">
+        You slowly put your hands in the air, as they are getting tied. Your eyes are being shut, there is a gun pointed at your head.
+    </string>
+    <string name="ch7_11a">Hey, careful!</string>
+    <string name="ch7_12">
+        All your weapons and your supplies are confiscated. What comes next?
+    </string>
+
+    <string name="ch8_0">
+        You are thrown into a jail cell, and you aren't the only prisoner here. The other guy is looking at you, silently.
+    </string>
+    <string name="ch8_0a"><![CDATA[<Stare back at him.>]]></string>
+    <string name="ch8_0b">Hi!</string>
+    <string name="ch8_0c">Whatcha looking at?</string>
+    <string name="ch8_1">
+        Do you know how to disarm a standard frag mine?
+    </string>
+    <string name="ch8_1a">What are you talking about?</string>
+    <string name="ch8_1b">Who are you?</string>
+    <string name="ch8_1c">What is going on around?</string>
+    <string name="ch8_2">
+        Doesn't matter. Do you know or not?
+    </string>
+    <string name="ch8_2a">[Traps 35] Yes.</string>
+    <string name="ch8_2b">No.</string>
+    <string name="ch8_3">
+        Then I have no interest in you.
+    </string>
+    <string name="ch8_3a">Wha…</string>
+    <string name="ch8_4">
+        Soon after, your cellmate vanished.
+
+        After this, you weren't brought any food, all you had was water from the sink. But you'll definitely die in this cell. When you tried to escape, guards broke your legs and put you back. That’s it. The end.
+
+        Have a nice day.
+    </string>
+    <string name="ch8_3">
+        [FAILED] No, you don't cut the red wire. It's the opposite of what needs to be done.
+    </string>
+    <string name="ch8_3a">Hey, can I try again?</string>
+    <string name="ch8_4">
+        No.
+    </string>
+    <string name="ch8_4a">[Continue.]</string>
+    <string name="ch8_5">
+        New level!
+    </string>
+    <string name="ch8_5a">…</string>
+    <string name="ch8_6">
+        …
+    </string>
+    <string name="ch8_6a">…</string>
+    <string name="ch8_7">
+        How about…
+    </string>
+    <string name="ch8_7a">Speech.</string>
+    <string name="ch8_8">
+        Ok.
+    </string>
+    <string name="ch8_8a">[Continue.]</string>
+    <string name="ch8_9">
+        [SUCCEEDED] Nice! Your experience shows. What's your name?
+    </string>
+    <string name="ch8_9a">The Prospector.</string>
+    <string name="ch8_10">
+        Nice to meet you, The Prospector. Call me Paladin.
+    </string>
+    <string name="ch8_10a">Paladin? That is a weird name.</string>
+    <string name="ch8_10b">Paladin? As in Brotherhood?</string>
+    <string name="ch8_10c">Paladin? Your mom loved you.</string>
+    <string name="ch8_10d">Paladin? More of a rank than a name.</string>
+    <string name="ch8_11">
+        Yeah, it's a rank. I serve in Brotherhood, ever heard of them?
+    </string>
+    <string name="ch8_11a">Wait? Brotherhood? As in “Brotherhood of Steel”?</string>
+    <string name="ch8_11b">Never heard of ‘em.</string>
+    <string name="ch8_12">
+        It's not a name! I don't have a name, only rank. I serve in Brotherhood, ever heard of them?
+    </string>
+    <string name="ch8_13">
+        Yes, but keep quiet. Many of my comrades were killed as soon as they disclosed their allegiance.
+    </string>
+    <string name="ch8_13a">What's the Brotherhood doing here?</string>
+    <string name="ch8_14">
+        Really? Brotherhood of Steel? The ones that stopped the mutant army of The Master? People don't know the history these days…
+    </string>
+    <string name="ch8_15">
+        It's a long story. Once upon a time we received a radio message from across the Pacific Ocean…
+    </string>
+
 
     <string name="achievements">Achievements</string>
     <string name="daily_missions">Daily Missions</string>

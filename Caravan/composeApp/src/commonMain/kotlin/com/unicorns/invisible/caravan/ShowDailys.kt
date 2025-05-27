@@ -119,7 +119,7 @@ fun ShowDailys(
                 }
 
                 Challenges(stringResource(Res.string.daily_missions), saveGlobal.challengesDaily)
-                Challenges(stringResource(Res.string.infinite_missions), saveGlobal.challengesInfinite)
+                Challenges(stringResource(Res.string.infinite_missions), saveGlobal.challengesInfinite2)
                 Challenges(stringResource(Res.string.one_time_missions), saveGlobal.challenges1)
                 Challenges(stringResource(Res.string.one_time_missions_requiem), saveGlobal.challenges2)
             }

@@ -231,7 +231,7 @@ fun getTrackColorByStyle(style: Style): Color = when (style) {
     Style.MADRE_ROJA -> Colors.MadreRojaTextBack
     Style.VAULT_21 -> Colors.Vault21Accent
     Style.VAULT_22 -> Colors.Vault22Accent
-    Style.ENCLAVE -> Colors.EnclaveStroke
+    Style.ENCLAVE -> Colors.EnclaveText
     Style.BLACK -> Color.Black
     Style.NCR -> Colors.NcrAccent
     Style.LEGION -> Colors.LegionTextBack

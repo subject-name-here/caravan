@@ -44,7 +44,7 @@ data object EnemyTower5 : Enemy {
         val king = hand.filterIsInstance<CardFace>().find { it.rank == RankFace.KING }
         val playerReadyCaravan = game.playerCaravans.shuffled().find { it.getValue() in (21..26) }
         if (king != null && playerReadyCaravan != null) {
-            val card = playerReadyCaravan.cards.find { it.canAddModifier(king) }
+            val card = playerReadyCaravan.cards.shuffled().find { it.canAddModifier(king) }
             if (card != null) {
                 val index = hand.indexOf(king)
                 card.addModifier(game.enemyCResources.removeFromHand(index, speed) as CardModifier, speed)

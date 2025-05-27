@@ -1086,12 +1086,12 @@ fun MainMenu(
 }
 
 fun processChallengesMove(move: Challenge.Move, game: Game) {
-    (saveGlobal.challengesDaily + saveGlobal.challengesInfinite).forEach { challenge ->
+    (saveGlobal.challengesDaily + saveGlobal.challengesInfinite2).forEach { challenge ->
         challenge.processMove(move, game)
     }
 }
 fun processChallengesGameOver(game: Game) {
-    (saveGlobal.challengesDaily + saveGlobal.challengesInfinite).forEach { challenge ->
+    (saveGlobal.challengesDaily + saveGlobal.challengesInfinite2).forEach { challenge ->
         challenge.processGameResult(game)
     }
 }

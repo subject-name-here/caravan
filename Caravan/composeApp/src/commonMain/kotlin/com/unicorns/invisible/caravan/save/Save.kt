@@ -5,8 +5,8 @@ import com.unicorns.invisible.caravan.Style
 import com.unicorns.invisible.caravan.levelUpMessage
 import com.unicorns.invisible.caravan.model.CardBack
 import com.unicorns.invisible.caravan.model.challenge.Challenge
+import com.unicorns.invisible.caravan.model.challenge.Challenge86
 import com.unicorns.invisible.caravan.model.challenge.ChallengePlay188
-import com.unicorns.invisible.caravan.model.challenge.ChallengePlay777
 import com.unicorns.invisible.caravan.model.challenge.ChallengeWin6Games
 import com.unicorns.invisible.caravan.model.enemy.EnemyBenny
 import com.unicorns.invisible.caravan.model.enemy.EnemyCaesar
@@ -193,7 +193,7 @@ class Save(var playerId: String? = null) {
         xp = 0
         storyProgress = 0
         storyCompleted = false
-        towerBeatenN = false
+        towerBeatenN2 = false
         ownedStyles.clear()
     }
 
@@ -213,10 +213,10 @@ class Save(var playerId: String? = null) {
     }
 
     @EncodeDefault
-    val challengesInfinite: MutableList<Challenge> = mutableListOf(
+    val challengesInfinite2: MutableList<Challenge> = mutableListOf(
         ChallengeWin6Games(),
         ChallengePlay188(),
-        ChallengePlay777()
+        Challenge86()
     )
     @EncodeDefault
     var challenges1: MutableList<Challenge> = mutableListOf(
@@ -241,7 +241,7 @@ class Save(var playerId: String? = null) {
     @EncodeDefault
     var secondChances: Int = 0
     @EncodeDefault
-    var towerBeatenN: Boolean = false
+    var towerBeatenN2: Boolean = false
 
     @EncodeDefault
     var storyProgress = 0

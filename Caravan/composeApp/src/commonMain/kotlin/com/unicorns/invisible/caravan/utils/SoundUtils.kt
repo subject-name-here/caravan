@@ -200,6 +200,9 @@ fun startLevel11Theme() {
         playTheme("files/raw/frank_theme.ogg")
     }
 }
+fun startLevel11Theme2() {
+    playTheme("files/raw/frank_countdown.ogg")
+}
 fun startFinalBossTheme() {
     if (saveGlobal.isHeroic) {
         playTheme("files/raw/final_heroic.ogg")
