@@ -1556,14 +1556,14 @@
 
         Have a nice day.
     </string>
-    <string name="ch8_3">
+    <string name="ch8_3_1">
         [FAILED] No, you don't cut the red wire. It's the opposite of what needs to be done.
     </string>
-    <string name="ch8_3a">Hey, can I try again?</string>
-    <string name="ch8_4">
+    <string name="ch8_3_1a">Hey, can I try again?</string>
+    <string name="ch8_3_2">
         No.
     </string>
-    <string name="ch8_4a">[Continue.]</string>
+    <string name="ch8_3_2a">[Continue.]</string>
     <string name="ch8_5">
         New level!
     </string>

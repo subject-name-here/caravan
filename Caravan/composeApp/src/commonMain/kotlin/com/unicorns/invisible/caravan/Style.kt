@@ -290,7 +290,7 @@ fun BoxWithConstraintsScope.StylePicture(
                                 "stop_whining.webp" to IntSize(499, 100)
                             )
                             if (rand.nextBoolean()) {
-                                val extra = extras.random()
+                                val extra = extras.random(rand)
                                 ShowImageFromPath(
                                     path = "menu_items/desert/" + extra.first,
                                     IntSize(512, 512),
@@ -431,7 +431,7 @@ fun BoxWithConstraintsScope.StylePicture(
                                         cnt = 0
                                     }
                                 }
-                                var side by rememberSaveable { mutableIntStateOf((0..2).random()) }
+                                var side by rememberSaveable { mutableIntStateOf((0..2).random(rand)) }
                                 var isButtonPressed by rememberSaveable { mutableIntStateOf(-1) }
                                 Column(
                                     Modifier.wrapContentSize(),
@@ -467,11 +467,11 @@ fun BoxWithConstraintsScope.StylePicture(
                                                         playYesBeep()
                                                     }
                                                     delay(500L)
-                                                    side = (0..2).random()
+                                                    side = (0..2).random(rand)
                                                     isButtonPressed = -1
                                                 }
                                                 delay(150L)
-                                                side = (0..2).random()
+                                                side = (0..2).random(rand)
                                                 delay(150L)
                                             }
                                         }
