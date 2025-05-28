@@ -130,7 +130,7 @@ enum class Style(
     VAULT_21(Res.string.style_vault_21, Res.string.style_vault_21_condition, { saveGlobal.winsWithBet to 600 }),
     VAULT_22(Res.string.style_vault_22, Res.string.style_vault_22_condition, { saveGlobal.winsWithBet to 200 }),
     BLACK(Res.string.style_black, Res.string.style_black_condition, { saveGlobal.pvpWins to 10 }),
-    ENCLAVE(Res.string.style_enclave, Res.string.style_enclave_condition, { (if (saveGlobal.towerBeatenN2) 1 else 0) to 1 }),
+    ENCLAVE(Res.string.style_enclave, Res.string.style_enclave_condition, { (if (saveGlobal.towerCompleted) 1 else 0) to 1 }),
     NCR(Res.string.style_ncr, Res.string.style_ncr_condition, { saveGlobal.availableDecks.size to 12 }),
     LEGION(Res.string.style_legion, Res.string.style_legion_condition, { saveGlobal.availableCardsSize() to 333 });
 }
@@ -164,6 +164,7 @@ fun BoxWithConstraintsScope.StylePicture(
     screenWidth: Int,
     screenHeight: Int
 ) {
+    // TODO: maybe = instead of remember?
     val rand by rememberScoped { mutableStateOf(Random(id)) }
     Row(
         Modifier

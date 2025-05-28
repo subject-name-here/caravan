@@ -29,7 +29,7 @@ import kotlin.random.Random
 data object EnemyFrank2 : Enemy {
     override fun createDeck(): CResources = CResources(CustomDeck(CardBack.ENCLAVE).apply {
         removeAll { it is CardFaceSuited && it.suit == Suit.HEARTS }
-        removeAll { it is CardBase && it.suit == Suit.HEARTS }
+        removeAll { it is CardBase && it.rank.value < 3 }
         removeAll { it is CardJoker }
         add(CardFBomb())
     })

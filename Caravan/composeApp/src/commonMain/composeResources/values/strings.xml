@@ -680,7 +680,7 @@
     </string>
     <string name="ch1_12a"><![CDATA[<Take everything and leave.>]]></string>
     <string name="ch1_13">
-        You took everything from the safe and leave the house. You can barely move and have decided to go back to Mojave. The bar of gold should be enough to get a New Vegas passport and even have fun in casinos. Stealth-Boys should guarantee you a safe way back.
+        You has taken everything from the safe and left the house. You can barely move and have decided to go back to Mojave. The bar of gold should be enough to get a New Vegas passport and even have fun in casinos. Stealth-Boys should guarantee you a safe way back.
         All in all, this journey turned out to be successful, even though you didn't even reach the Sierra Madre casino.
     </string>
 
@@ -1190,7 +1190,7 @@
     <string name="ch5_30c">[Vegas] Look what was done to Vegas. Imagine what he can do to the Mojave, if he wants. And I am not even speaking about the economy.</string>
     <string name="ch5_30d">[Mojave] When the war goes away, with a different, capable ruler in Vegas, the Mojave economy will rise up. Independent communities will prosper.</string>
     <string name="ch5_31">
-        And what if I wanna fly my flag, with my rules and no taxes to some rich senators? I can provide my own safety. Will NCR leave me alone? No.They are throwing around words like “freedom” and “protection”, but the only people who have those are the people at power. Average Joe, or Jack, or, in your case, Ace, is negligible.
+        And what if I wanna fly my flag, with my rules and no taxes to some rich senators? I can provide my own safety. Will NCR leave me alone? No. They are throwing around words like “freedom” and “protection”, but the only people who have those are the people at power. Average Joe, or Jack, or, in your case, Ace, is negligible.
     </string>
     <string name="ch5_32">
         Well, for you - capable white male - maybe, the Legion is a good choice. But if I am a woman, if I am incapable of fighting? The Legion lives to fight and die. Are you ready to die? You are nothing to anyone in Legion, unless you are Legate or Caesar himself.
@@ -1324,7 +1324,7 @@
     <string name="ch6_9">
         “Let's just sacrifice him!” The woman's voice is, surprisingly, harder than her husband's. “Why are you here, outsider?! Answer at once, because your life depends on it!”
     </string>
-    <string name="ch6_9a">I need to get to Anchorage to replace my heart, because mine is damaged by the Cazadors’ poison.</string>
+    <string name="ch6_9a">I need to get to Anchorage to replace the heart, because mine is damaged by the Cazadors’ poison.</string>
     <string name="ch6_10">
         The woman leans to your side. “Your heart is damaged in a fight? Are the Cassadoors fierce? Dangerous?”
     </string>
@@ -1610,6 +1610,102 @@
         It's a long story. Once upon a time we received a radio message from across the Pacific Ocean…
     </string>
 
+    <string name="p3e_0">
+        Once upon a time we received a radio message from across the Pacific Ocean. It was a simple coded message, which, deciphered, contained one word - “OASIS” - and coordinates.
+    </string>
+    <string name="p3e_continue">[Continue.]</string>
+    <string name="p3e_1">
+        After receiving the message, we started to dig, and… we were looking for copper, and we found not gold, but uranium.
+
+        So, before the Great War the Chinese government, using bribes and blackmail, created a system of bunkers in the middle of Alaska before the war.
+    </string>
+    <string name="p3e_2">
+        Those bunkers were host to a system codenamed Firewall. It was assumed that this Firewall was to prevent anyone from crossing the Bering Strait and getting into China from the USA.
+        It was a protection system, and the Brotherhood was (in fact, still is) in need of one.
+    </string>
+    <string name="p3e_3">
+        When we arrived in Anchorage, we were caught by those ghouls - the remnants of the Chinese army. Some of my comrades escaped, and I got imprisoned.
+        Soon we have established here a spy network, we can even maintain contact with Brotherhood northernmost bunker, even though barely.
+    </string>
+    <string name="p3e_4">
+        My comrades have learnt a lot.
+
+        Turns out China has gone through a rebirth under the leadership of an AI that calls itself the Supreme Leader. This Supreme Leader is the pre-war Chinese project. Basically, you have an AI, you feed people to it, and AI gets more clever. With the Supreme Leader, China wanted to win the war.
+    </string>
+    <string name="p3e_5">
+        Now this AI wants to begin again. It wants to bomb the shit out of the world, America included. He restocked nuclear bombs from old Chinese rocket silos, rearmed the remaining Chinese people. Hell, he even launched a satellite!
+    </string>
+    <string name="p3e_6">
+        This is where I enter. Since China has little to no good nuclear vaults, the Supreme Leader's main server is in Oasis now. It's playing in our hands - there are four objectives:
+    </string>
+    <string name="p3e_7">
+        One: get access to the radio system here in Anchorage.
+    </string>
+    <string name="p3e_8">
+        Two: organise a diversion with my comrades, distracting Chinese from the tunnel to Oasis (yes, there is a tunnel to Oasis right here, in Anchorage!).
+    </string>
+    <string name="p3e_9">
+        Three: arrive at Oasis and cut the power supply from China to the Supreme Leader. We should do that by rerouting all energy to the previously mentioned Firewall.
+    </string>
+    <string name="p3e_10">
+        Finally, four: deal with the Supreme Leader before it unleashes hell on Earth.
+    </string>
+    <string name="p3e_10a">[Finish.]</string>
+    <string name="p3e_11">
+        Any questions?
+    </string>
+    <string name="p3e_11a">Is it a coincidence that I already was going for Oasis?</string>
+    <string name="p3e_11b">How was it possible: Chinese fortification system in US in the middle of war?</string>
+    <string name="p3e_11c">What is Firewall, exactly?</string>
+    <string name="p3e_11d">How are your comrades not found by this almighty AI?</string>
+    <string name="p3e_11e">Tell me more about the Supreme Leader.</string>
+    <string name="p3e_11f">Can't we protect ourselves against the bombs? Vegas did it once.</string>
+    <string name="p3e_11g">So, this Supreme Leader has hidden himself in Oasis, right?</string>
+    <string name="p3e_11h">No questions.</string>
+    <string name="p3e_12">
+        Considering that I would probably need someone's help on my way, and here you are - no, not a coincidence. Brotherhood is all about science, but things like this make me believe in fate.
+    </string>
+    <string name="p3e_13">
+        The US (just like NCR nowadays) was corrupted to the core. You probably could kill the president and buy your way out of it.
+    </string>
+    <string name="p3e_14">
+        Firewall is a complex defence system that shoots down all that flies above and comes towards Oasis. It was supposed to cover the whole of Alaska, including the Bering Strait. But the project was too ambitious. The Firewall covers only the area around Oasis.
+    </string>
+    <string name="p3e_15">
+        We don't know. Firewall might be glitching… or maybe there’s a quiet mutiny brewing in the Chinese camp.
+    </string>
+    <string name="p3e_16">
+        The Supreme Leader replaced the Chinese Communist Party right after the war. It slowly but surely united the survivors, most of which are ghouls, around itself, promising them things like prosperity and peace. Many were absorbed into him, but many more, like our captors, still serve him.
+    </string>
+    <string name="p3e_17">
+        Vegas did it barely, and then it was a massive area bombing. Now he plans a pinpoint bombing—targeting what little has been reborn. Not even House stands a chance.
+    </string>
+    <string name="p3e_18">
+        Yes. We are incredibly lucky, because his original station was in China. No way there across the sea, from what I've heard in San Francisco.
+    </string>
+    <string name="p3e_19">
+        Then I have to ask you: will you join us? You will be following my orders.
+    </string>
+    <string name="p3e_19a">Yes.</string>
+    <string name="p3e_19b">No.</string>
+    <string name="p3e_20">
+        That’s a shame. I can’t risk you walking out with what you know.
+    </string>
+    <string name="p3e_20a">Wait, I won't tell anyone…</string>
+    <string name="p3e_21">
+        Guards! Help me! This man is planning an escape! He has dug a hole under his bed! Guards!
+    </string>
+    <string name="p3e_21a">Wha…</string>
+    <string name="p3e_22">
+        You were put into a solitary cell. There is no food, the only water source is the drops from the ceiling, rats are trying to eat you. Have a nice day.
+    </string>
+    <string name="p3e_23">
+        Then listen closely—because what we do next will determine the fate of the world.
+    </string>
+    <string name="p3e_23a">Okay.</string>
+    <string name="p3e_24">
+        Part one of the plan: get to the radio system…
+    </string>
 
     <string name="achievements">Achievements</string>
     <string name="daily_missions">Daily Missions</string>

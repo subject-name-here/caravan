@@ -13,7 +13,7 @@ import org.jetbrains.compose.resources.getString
 
 @Serializable
 data object EnclaveTrader : Trader {
-    override fun isOpen() = saveGlobal.towerBeatenN2
+    override fun isOpen() = saveGlobal.towerCompleted
     override suspend fun openingCondition() = getString(Res.string.enclave_trader_cond)
 
     override fun getUpdateRate() = 24

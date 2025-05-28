@@ -193,7 +193,7 @@ class Save(var playerId: String? = null) {
         xp = 0
         storyProgress = 0
         storyCompleted = false
-        towerBeatenN2 = false
+        towerCompleted = false
         ownedStyles.clear()
     }
 
@@ -241,7 +241,7 @@ class Save(var playerId: String? = null) {
     @EncodeDefault
     var secondChances: Int = 0
     @EncodeDefault
-    var towerBeatenN2: Boolean = false
+    var towerCompleted: Boolean = false
 
     @EncodeDefault
     var storyProgress = 0

@@ -785,10 +785,9 @@ fun RowScope.CaravanOnField(
                             SnapSpec()
                         } else {
                             tween(animationSpeed.delay.toInt())
-                        }
-                        ) { _ ->
+                        }) { _ ->
                             prevState = it.card.caravanAnimationMark
-                            if (prevState.isOut()) {
+                            if (it.card.caravanAnimationMark.isOut()) {
                                 caravan.recomposeResources++
                             }
                         }

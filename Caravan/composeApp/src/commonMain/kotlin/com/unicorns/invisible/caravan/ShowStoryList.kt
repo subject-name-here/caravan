@@ -1327,7 +1327,7 @@ fun ShowStoryChapter6(
             DialogEdge(17, 18, Res.string.ch6_17a),
             DialogEdge(18, 23, Res.string.ch6_18a),
             DialogEdge(18, 19, Res.string.ch6_18b),
-            DialogEdge(18, 20, Res.string.ch6_18a),
+            DialogEdge(18, 20, Res.string.ch6_18c),
             DialogEdge(19, 20, Res.string.ch6_19a),
             DialogEdge(19, 23, Res.string.ch6_19b),
             DialogEdge(20, 21, Res.string.ch6_20a),

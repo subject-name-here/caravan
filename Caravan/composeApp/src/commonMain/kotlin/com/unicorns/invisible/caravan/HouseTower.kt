@@ -233,7 +233,7 @@ fun TowerScreen(
         }
         13 -> {
             var capsMemory by rememberScoped { mutableIntStateOf(0) }
-            StartTowerGame(EnemyFrank(isHard = saveGlobal.towerBeatenN2), showAlertDialog, {
+            StartTowerGame(EnemyFrank(isHard = saveGlobal.towerCompleted), showAlertDialog, {
                 startLevel11Theme()
                 playFrankPhrase("files/raw/frank_on_game_start.ogg")
                 levelMemory = level
@@ -376,7 +376,7 @@ fun TowerScreen(
                     val inBank = if (cookCook == 2) 2048 else 1536
                     saveGlobal.capsInHand += inBank
                     saveGlobal.increaseXp(inBank)
-                    saveGlobal.towerBeatenN2 = true
+                    saveGlobal.towerCompleted = true
                     saveData()
                     CoroutineScope(Dispatchers.Unconfined).launch {
                         repeat(4) {
