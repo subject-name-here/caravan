@@ -37,6 +37,8 @@ import com.unicorns.invisible.caravan.model.enemy.EnemyStory3
 import com.unicorns.invisible.caravan.model.enemy.EnemyStory4
 import com.unicorns.invisible.caravan.model.enemy.EnemyStory5
 import com.unicorns.invisible.caravan.model.enemy.EnemyStory6
+import com.unicorns.invisible.caravan.model.enemy.EnemyStory7A
+import com.unicorns.invisible.caravan.model.enemy.EnemyStory7B
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.CardFaceSuited
 import com.unicorns.invisible.caravan.model.primitives.CardJoker
@@ -222,6 +224,18 @@ fun ShowStoryList(
                     }
                     saveData()
                 }) { soundReduced = false; nextSong(); showChapter = null }
+            }
+            37 -> {
+                ShowStoryChapter7(getDeck(showChapter!!), showAlertDialog, {
+                    val progress = 38
+                    val xpReward = 200
+                    if (saveGlobal.storyProgress < progress) {
+                        saveGlobal.storyProgress = progress
+                        saveGlobal.increaseXp(xpReward)
+                        showXpDialog = xpReward
+                    }
+                    saveData()
+                }) { showChapter = null }
             }
             else -> {
                 showAlertDialog("[CLOSED]", "The chapter is not done yet.", null)
@@ -428,6 +442,46 @@ fun getDeck(chapterNumber: Int): CustomDeck {
                 add(CardJoker(CardJoker.Number.ONE, CardBack.ULTRA_LUXE_CRIME))
             }
         }
+        37 -> {
+            CustomDeck(CardBack.STANDARD_RARE).apply {
+                add(CardNumber(RankNumber.ACE, Suit.SPADES, CardBack.SIERRA_MADRE_CLEAN))
+                add(CardFaceSuited(RankFace.KING, Suit.SPADES, CardBack.SIERRA_MADRE_CLEAN))
+                add(CardFaceSuited(RankFace.QUEEN, Suit.SPADES, CardBack.SIERRA_MADRE_CLEAN))
+                add(CardFaceSuited(RankFace.JACK, Suit.SPADES, CardBack.SIERRA_MADRE_CLEAN))
+                add(CardNumber(RankNumber.TEN, Suit.SPADES, CardBack.SIERRA_MADRE_CLEAN))
+                add(CardFaceSuited(RankFace.KING, Suit.HEARTS, CardBack.STANDARD_UNCOMMON))
+                add(CardNumber(RankNumber.TWO, Suit.HEARTS, CardBack.STANDARD))
+                RankNumber.entries.forEach { rank ->
+                    if (rank.value > 4) {
+                        Suit.entries.forEach { suit ->
+                            add(CardNumber(rank, suit, CardBack.MADNESS))
+                        }
+                    }
+                }
+                RankNumber.entries.forEach { rank ->
+                    add(CardNumber(rank, Suit.CLUBS, CardBack.ULTRA_LUXE_CRIME))
+                }
+                add(CardFaceSuited(RankFace.JACK, Suit.CLUBS, CardBack.ULTRA_LUXE_CRIME))
+                add(CardFaceSuited(RankFace.QUEEN, Suit.CLUBS, CardBack.ULTRA_LUXE_CRIME))
+                add(CardFaceSuited(RankFace.KING, Suit.CLUBS, CardBack.ULTRA_LUXE_CRIME))
+                add(CardNumber(RankNumber.ACE, Suit.SPADES, CardBack.ULTRA_LUXE_CRIME))
+                add(CardJoker(CardJoker.Number.ONE, CardBack.ULTRA_LUXE_CRIME))
+                RankNumber.entries.forEach { rank ->
+                    listOf(Suit.HEARTS, Suit.SPADES).forEach { suit ->
+                        add(CardNumber(rank, suit, CardBack.VIKING))
+                    }
+                }
+            }
+        }
+        38 -> {
+            CustomDeck(CardBack.STANDARD_UNCOMMON).apply {
+                add(CardFaceSuited(RankFace.JACK, Suit.SPADES, CardBack.SIERRA_MADRE_CLEAN))
+                add(CardNumber(RankNumber.TWO, Suit.HEARTS, CardBack.STANDARD))
+                add(CardNumber(RankNumber.NINE, Suit.CLUBS, CardBack.MADNESS))
+                add(CardNumber(RankNumber.ACE, Suit.SPADES, CardBack.ULTRA_LUXE_CRIME))
+                add(CardNumber(RankNumber.SEVEN, Suit.DIAMONDS, CardBack.VIKING))
+            }
+        }
         else -> CustomDeck()
     }
 }
@@ -488,6 +542,7 @@ fun ShowStoryChapter1(
             showAlertDialog,
             { gameResult = 1; advanceChapter() },
             { gameResult = -1 },
+            null,
             { if (gameResult == 0) gameResult = -1; isGame = false }
         )
         return
@@ -579,6 +634,7 @@ fun ShowStoryChapter2(
             showAlertDialog,
             { gameResult = 1; advanceChapter() },
             { gameResult = -1 },
+            null,
             { if (gameResult == 0) gameResult = -1; isGame = false }
         )
         return
@@ -740,6 +796,7 @@ fun ShowStoryChapter3(
             showAlertDialog,
             { gameResult = 1; advanceChapter() },
             { gameResult = -1 },
+            null,
             { if (gameResult == 0) gameResult = -1; isGame = false }
         )
         return
@@ -878,6 +935,7 @@ fun ShowStoryChapter4(
             showAlertDialog,
             { gameResult = 1; advanceChapter() },
             { gameResult = 1; advanceChapter() },
+            null,
             { if (gameResult == 0) gameResult = -1; isGame = false }
         )
         return
@@ -1033,6 +1091,7 @@ fun ShowStoryChapter5(
             showAlertDialog,
             { gameResult = 1; advanceChapter() },
             { gameResult = -1 },
+            null,
             { if (gameResult == 0) gameResult = -1; isGame = false }
         )
         return
@@ -1219,11 +1278,11 @@ fun ShowStoryChapter6(
             showAlertDialog,
             { gameResult = 1; advanceChapter() },
             { gameResult = -1 },
+            null,
             { if (gameResult == 0) gameResult = -1; isGame = false }
         )
         return
     }
-
 
     when (gameResult) {
         1 -> {
@@ -1387,6 +1446,144 @@ fun ShowStoryEndOfPart2(
 }
 
 
+
+@Composable
+fun ShowStoryChapter7(
+    deck: CustomDeck,
+    showAlertDialog: (String, String, (() -> Unit)?) -> Unit,
+    advanceChapter: () -> Unit,
+    goBack: () -> Unit,
+) {
+    var isGame1 by rememberSaveable { mutableStateOf(false) }
+    var isGame2 by rememberSaveable { mutableStateOf(false) }
+    var gameResult by rememberSaveable { mutableIntStateOf(0) }
+
+    if (isGame1) {
+        StartStoryGame(
+            EnemyStory7A,
+            CResources(deck),
+            showAlertDialog,
+            { gameResult = 1 },
+            { gameResult = -1 },
+            null,
+            { if (gameResult == 0) gameResult = -1; isGame1 = false }
+        )
+        return
+    }
+    if (isGame2) {
+        StartStoryGame(
+            EnemyStory7B,
+            CResources(deck),
+            showAlertDialog,
+            { gameResult = -3 },
+            { gameResult = -2 },
+            { gameResult = 2; advanceChapter() },
+            { if (gameResult == 0) gameResult = -2; isGame2 = false }
+        )
+        return
+    }
+
+    when (gameResult) {
+        1 -> {
+            StoryShow(DialogGraph(
+                listOf(
+                    DialogMiddleState(Res.drawable.black_back, Res.string.ch7_6),
+                    DialogMiddleState(Res.drawable.black_back, Res.string.ch7_7_1),
+                    DialogFinishState(DeathCode.PRISON),
+                    DialogFinishState(DeathCode.ALIVE),
+                ),
+                listOf(
+                    DialogEdge(0, 1, Res.string.ch7_6a),
+                    DialogEdge(1, 2, Res.string.finish),
+                    DialogEdge(0, 3, Res.string.ch7_6b),
+                )
+            ), goBack) { gameResult = 0; isGame2 = true }
+            return
+        }
+        2 -> {
+            StoryShow(DialogGraph(
+                listOf(
+                    DialogMiddleState(Res.drawable.black_back, Res.string.ch7_8),
+                    DialogMiddleState(Res.drawable.black_back, Res.string.ch7_9),
+                    DialogMiddleState(Res.drawable.black_back, Res.string.ch7_10),
+                    DialogMiddleState(Res.drawable.black_back, Res.string.ch7_11),
+                    DialogMiddleState(Res.drawable.black_back, Res.string.ch7_12),
+                    DialogFinishState(DeathCode.ALIVE),
+                ),
+                listOf(
+                    DialogEdge(0, 1, Res.string.ch7_8a),
+                    DialogEdge(0, 1, Res.string.ch7_8b),
+                    DialogEdge(0, 1, Res.string.ch7_8c),
+                    DialogEdge(1, 2, Res.string.ch7_9a),
+                    DialogEdge(2, 3, Res.string.ch7_10a),
+                    DialogEdge(3, 4, Res.string.ch7_11a),
+                    DialogEdge(4, 5, Res.string.finish),
+
+                )
+            ), goBack) { goBack() }
+            return
+        }
+        -1 -> {
+            StoryShow(DialogGraph(
+                listOf(
+                    DialogMiddleState(Res.drawable.black_back, Res.string.ch7_4),
+                    DialogMiddleState(Res.drawable.black_back, Res.string.ch7_5),
+                    DialogFinishState(DeathCode.DROWNED)
+                ),
+                listOf(
+                    DialogEdge(0, 1, Res.string.ch7_4a),
+                    DialogEdge(1, 2, Res.string.finish),
+                )
+            ), goBack) { goBack() }
+            return
+        }
+        -2 -> {
+            StoryShow(DialogGraph(
+                listOf(
+                    DialogMiddleState(Res.drawable.black_back, Res.string.ch7_7_1),
+                    DialogFinishState(DeathCode.PRISON)
+                ),
+                listOf(
+                    DialogEdge(0, 1, Res.string.finish),
+                )
+            ), goBack) { goBack() }
+            return
+        }
+        -3 -> {
+            StoryShow(DialogGraph(
+                listOf(
+                    DialogMiddleState(Res.drawable.black_back, Res.string.ch7_7_2),
+                    DialogFinishState(DeathCode.SHOT_IN_BATTLE)
+                ),
+                listOf(
+                    DialogEdge(0, 1, Res.string.finish),
+                )
+            ), goBack) { goBack() }
+            return
+        }
+        else -> {}
+    }
+
+    StoryShow(DialogGraph(
+        listOf(
+            DialogMiddleState(Res.drawable.black_back, Res.string.ch7_0),
+            DialogMiddleState(Res.drawable.black_back, Res.string.ch7_1),
+            DialogMiddleState(Res.drawable.black_back, Res.string.ch7_2),
+            DialogMiddleState(Res.drawable.black_back, Res.string.ch7_3),
+            DialogFinishState(DeathCode.ALIVE),
+        ),
+        listOf(
+            DialogEdge(0, 1, Res.string.ch7_0a),
+            DialogEdge(1, 2, Res.string.ch7_1a),
+            DialogEdge(2, 3, Res.string.ch7_2a),
+            DialogEdge(3, 4, Res.string.ch7_3a),
+        )
+    ), goBack) {
+        isGame1 = true
+    }
+}
+
+
 @Composable
 fun StartStoryGame(
     enemy: Enemy,
@@ -1394,6 +1591,7 @@ fun StartStoryGame(
     showAlertDialog: (String, String, (() -> Unit)?) -> Unit,
     onWin: () -> Unit,
     onLose: () -> Unit,
+    onGiveUp: (() -> Unit)?,
     goBack: () -> Unit,
 ) {
     val game = rememberScoped {
@@ -1404,6 +1602,8 @@ fun StartStoryGame(
             it.startGame()
         }
     }
+
+    var wasUsefulMove by rememberScoped { mutableStateOf(false) }
 
     val scope = rememberCoroutineScope()
     game.also {
@@ -1421,7 +1621,11 @@ fun StartStoryGame(
         }
         it.onLose = {
             playLoseSound()
-            onLose()
+            if (onGiveUp != null && !wasUsefulMove) {
+                onGiveUp()
+            } else {
+                onLose()
+            }
             scope.launch {
                 showAlertDialog(
                     getString(Res.string.result),
@@ -1432,7 +1636,11 @@ fun StartStoryGame(
         }
     }
 
-    ShowGame(game) {
+    ShowGame(game, onMove = { p1, _, _, _ ->
+        if (!game.isInitStage() && p1 != 2) {
+            wasUsefulMove = true
+        }
+    }) {
         if (game.isOver()) {
             goBack()
             return@ShowGame

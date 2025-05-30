@@ -1491,7 +1491,7 @@
     <string name="ch7_4">
         [FAILED] No matter how hard you try it, the coast guards notice that something's wrong with the boat. You have to jump into the cold salty water.
     </string>
-    <string name="ch7_4a">Swim away from the bullets.</string>
+    <string name="ch7_4a"><![CDATA[<Swim away from the bullets.>]]></string>
     <string name="ch7_5">
         You try to swim, but really soon your legs cramp up badly. Suddenly, you feel someone grabbing your feet and pulling you into the deep. As you're out of your breath, you see a giant fish, ready to feast on your bones.
     </string>
