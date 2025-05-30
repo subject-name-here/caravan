@@ -65,7 +65,6 @@ import com.unicorns.invisible.caravan.utils.getTextStrokeColor
 import com.unicorns.invisible.caravan.utils.nextSong
 import com.unicorns.invisible.caravan.utils.playHeartbeatSound
 import com.unicorns.invisible.caravan.utils.playLoseSound
-import com.unicorns.invisible.caravan.utils.playWinSound
 import com.unicorns.invisible.caravan.utils.playWinSoundAlone
 import com.unicorns.invisible.caravan.utils.stopRadio
 import kotlinx.coroutines.delay

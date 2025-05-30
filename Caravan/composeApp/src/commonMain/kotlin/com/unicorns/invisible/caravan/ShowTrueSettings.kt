@@ -38,6 +38,7 @@ import caravan.composeapp.generated.resources.non_stop_radio
 import caravan.composeapp.generated.resources.save
 import com.unicorns.invisible.caravan.cheats.CheatChangeTrack
 import com.unicorns.invisible.caravan.cheats.CheatChapter13A
+import com.unicorns.invisible.caravan.cheats.CheatDropTower
 import com.unicorns.invisible.caravan.cheats.CheatEraseProgress
 import com.unicorns.invisible.caravan.cheats.CheatFinalBossesHeroicMusic
 import com.unicorns.invisible.caravan.cheats.CheatLaggySpeed
@@ -149,6 +150,7 @@ fun ShowTrueSettings(
                     var secretCode by remember { mutableStateOf<Int?>(null) }
                     val cheats = listOf(
                         CheatChangeTrack,
+                        CheatDropTower,
                         CheatEraseProgress,
                         CheatFinalBossesHeroicMusic,
                         CheatLevel10,

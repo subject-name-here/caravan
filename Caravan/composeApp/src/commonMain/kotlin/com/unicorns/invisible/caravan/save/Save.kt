@@ -220,22 +220,15 @@ class Save(var playerId: String? = null) {
     )
     @EncodeDefault
     var challenges1: MutableList<Challenge> = mutableListOf(
-        // TODO 3.1: add one-time Challenges
+        // TODO 4.1: add one-time Challenges
     )
     @EncodeDefault
     var challenges2: MutableList<Challenge> = mutableListOf(
-        // TODO 3.1: add Road To Requiem.
+        // TODO 4.1: add Road To Requiem.
     )
 
     @EncodeDefault
     var towerLevel: Int = 0
-        set(value) {
-            field = value
-            if (value == 0) {
-                cookCookMult = 1
-                secondChances = 0
-            }
-        }
     @EncodeDefault
     var cookCookMult: Int = 1
     @EncodeDefault

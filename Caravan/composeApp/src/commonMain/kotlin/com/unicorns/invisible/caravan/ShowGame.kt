@@ -633,11 +633,10 @@ fun RowScope.CaravanOnField(
     canPutSelectedCardOn: (Int) -> Boolean,
     addSelectedCardOnPosition: (Int) -> Unit,
     getGameUpdated: () -> Int,
-) {
+) { key (caravan.recomposeResources) {
     val modifierOffset = 16.dp
     Column(Modifier.wrapContentHeight().weight(0.25f)) {
         if (!isEnemyCaravan && !isInitStage && !caravan.isEmpty()) {
-            LaunchedEffect(caravan.recomposeResources) {}
             TextFallout(
                 stringResource(Res.string.discard),
                 getTextColor(),
@@ -659,7 +658,6 @@ fun RowScope.CaravanOnField(
             )
         }
         if (!isEnemyCaravan && caravan.isEmpty()) {
-            LaunchedEffect(caravan.recomposeResources) {}
             Box(modifier = Modifier
                 .fillMaxWidth()
                 .height(20.dp)
@@ -672,7 +670,6 @@ fun RowScope.CaravanOnField(
             )
         }
         BoxWithConstraints(Modifier.fillMaxHeight().wrapContentWidth()) {
-            LaunchedEffect(caravan.recomposeResources) {}
             val scrollState = rememberScrollState()
             Column(
                 verticalArrangement = Arrangement.Top,
@@ -689,7 +686,6 @@ fun RowScope.CaravanOnField(
                     .wrapContentWidth(align = Alignment.CenterHorizontally)
             ) {
                 Box(Modifier.wrapContentHeight(unbounded = true)) {
-                    LaunchedEffect(caravan.recomposeResources) {}
                     val sideMult = if (isPlayerTurn()) {
                         if (isEnemyCaravan) {
                             -1
@@ -787,9 +783,6 @@ fun RowScope.CaravanOnField(
                             tween(animationSpeed.delay.toInt())
                         }) { _ ->
                             prevState = it.card.caravanAnimationMark
-                            if (it.card.caravanAnimationMark.isOut()) {
-                                caravan.recomposeResources++
-                            }
                         }
 
                         val offsetWidthMult by animateFloatAsState(when (it.card.caravanAnimationMark) {
@@ -870,7 +863,7 @@ fun RowScope.CaravanOnField(
             VertScrollbar(scrollState)
         }
     }
-}
+} }
 
 @Composable
 fun ShowDeck(cResources: CResources, deckSize: Int, isKnown: Boolean = true) {

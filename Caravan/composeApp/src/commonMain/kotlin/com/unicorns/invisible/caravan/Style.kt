@@ -164,7 +164,7 @@ fun BoxWithConstraintsScope.StylePicture(
     screenWidth: Int,
     screenHeight: Int
 ) {
-    // TODO: maybe = instead of remember?
+    // TODO: style is unstable when turning the phone!
     val rand by rememberScoped { mutableStateOf(Random(id)) }
     Row(
         Modifier

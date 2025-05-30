@@ -154,22 +154,43 @@ import org.jetbrains.compose.resources.getString
 import org.jetbrains.compose.resources.stringResource
 
 
+data class TowerState(
+    var level: Int,
+    var cookCook: Int,
+    var secondChances: Int
+) {
+    fun drop() {
+        level = 0
+        cookCook = 1
+        secondChances = 0
+    }
+}
+
 @Composable
 fun TowerScreen(
     showAlertDialog: (String, String, (() -> Unit)?) -> Unit,
     goBack: () -> Unit,
 ) {
-    var level by rememberSaveable { mutableIntStateOf(saveGlobal.towerLevel) }
-    var cookCook by rememberSaveable { mutableIntStateOf(saveGlobal.cookCookMult) }
-    var secondChances by rememberSaveable { mutableIntStateOf(saveGlobal.secondChances) }
+    var state by rememberScoped { mutableStateOf(TowerState(
+        saveGlobal.towerLevel,
+        saveGlobal.cookCookMult,
+        saveGlobal.secondChances
+    )) }
+    var stateMemory by rememberScoped { mutableStateOf(TowerState(0, 1, 0)) }
+
+    fun toMemory() {
+        stateMemory.copy(state.level, state.cookCook, state.secondChances)
+    }
+    fun fromMemory() {
+        state.copy(stateMemory.level, stateMemory.cookCook, stateMemory.secondChances)
+    }
 
     var playLevel by rememberScoped { mutableIntStateOf(0) }
-    var levelMemory by rememberScoped { mutableIntStateOf(0) }
 
     var startFrank by rememberSaveable { mutableStateOf(false) }
     if (startFrank) {
         ShowFrank {
-            level++
+            state.level++
             playLevel = 0
             startFrank = false
         }
@@ -179,31 +200,32 @@ fun TowerScreen(
     @Composable
     fun showTower(enemy: Enemy, onWinExtra: () -> Unit = {}) {
         StartTowerGame(enemy, showAlertDialog, {
-            levelMemory = level
-            level = 0
+            toMemory()
+            state.drop()
             saveGlobal.towerLevel = 0
             saveData()
         }, {
-            level = levelMemory + 1
-            saveGlobal.towerLevel = levelMemory + 1
+            fromMemory()
+            state.level++
+            saveGlobal.towerLevel = state.level
             onWinExtra()
-            levelMemory = 0
+            stateMemory.drop()
             saveData()
         }, {
-            if (secondChances > 0) {
-                secondChances--
+            if (stateMemory.secondChances > 0) {
+                stateMemory.secondChances--
                 saveGlobal.secondChances--
-                level = levelMemory
-                saveGlobal.towerLevel = levelMemory
+                fromMemory()
+                saveGlobal.towerLevel = state.level
             }
-            levelMemory = 0
+            stateMemory.drop()
             saveData()
         }) { playLevel = 0 }
     }
 
     when (playLevel) {
         10 -> {
-            showTower(EnemyTowerBonus) { cookCook = 2; saveGlobal.cookCookMult = 2 }
+            showTower(EnemyTowerBonus) { state.cookCook = 2; saveGlobal.cookCookMult = 2; saveData() }
             return
         }
         in 1..11 -> {
@@ -236,30 +258,31 @@ fun TowerScreen(
             StartTowerGame(EnemyFrank(isHard = saveGlobal.towerCompleted), showAlertDialog, {
                 startLevel11Theme()
                 playFrankPhrase("files/raw/frank_on_game_start.ogg")
-                levelMemory = level
-                level = 0
+                toMemory()
+                state.drop()
                 saveGlobal.towerLevel = 0
                 capsMemory = saveGlobal.capsInHand
                 saveGlobal.capsInHand = 0
                 saveData()
             }, {
-                level = levelMemory + 1
-                saveGlobal.towerLevel = levelMemory + 1
-                levelMemory = 0
+                fromMemory()
+                state.level++
+                saveGlobal.towerLevel = state.level
+                stateMemory.drop()
                 saveGlobal.capsInHand += capsMemory
                 saveData()
                 stopRadio()
                 playFrankPhrase("files/raw/frank_on_defeat.ogg")
             }, {
-                levelMemory = 0
-                level = 0
+                state.drop()
+                stateMemory.drop()
                 saveGlobal.towerLevel = 0
                 saveData()
                 stopRadio()
             }) {
                 playLevel = 0
                 CoroutineScope(Dispatchers.Unconfined).launch {
-                    if (level == 0) {
+                    if (state.level == 0) {
                         playTowerFailed()
                     } else {
                         playTowerCompleted()
@@ -274,36 +297,36 @@ fun TowerScreen(
     }
 
     var showFrankWarning by rememberSaveable { mutableStateOf(false) }
-    MenuItemOpen(stringResource(Res.string.tower), "<-", Alignment.Center, { if (level != 13) goBack() }) {
+    MenuItemOpen(stringResource(Res.string.tower), "<-", Alignment.Center, { if (state.level != 13) goBack() }) {
         val scope = rememberCoroutineScope()
-        when (level) {
+        when (state.level) {
             0 -> {
                 StartScreen({ p1, p2 -> showAlertDialog(p1, p2, null) }) {
-                    level++
+                    state.level++
                     saveGlobal.towerLevel++
                     saveData()
                 }
             }
             6 -> {
                 RestScreen {
-                    level = 7
+                    state.level = 7
                     saveGlobal.towerLevel = 7
-                    secondChances = 1
+                    state.secondChances = 1
                     saveGlobal.secondChances = 1
-                    levelMemory = 0
+                    stateMemory.drop()
                     saveData()
                 }
             }
             10 -> {
                 CookCookPresentedScreen(
                     256,
-                    { secondChances },
-                    { level = 11; saveGlobal.towerLevel = 11; saveData() },
-                    { playLevel = level }
+                    { state.secondChances },
+                    { state.level = 11; saveGlobal.towerLevel = 11; saveData() },
+                    { playLevel = state.level }
                 )
             }
             in 1..12 -> {
-                val inBank = when (level) {
+                val inBank = when (state.level) {
                     1 -> 1
                     2 -> 2
                     3 -> 4
@@ -315,14 +338,14 @@ fun TowerScreen(
                     11 -> 256
                     12 -> 512
                     else -> 0
-                } * cookCook
+                } * state.cookCook
                 EnemyPresentedScreen(
                     inBank,
-                    { secondChances },
-                    { level },
-                    { playLevel = level },
+                    { state.secondChances },
+                    { state.level },
+                    { playLevel = state.level },
                     {
-                        level = 0
+                        state.level = 0
                         saveGlobal.towerLevel = 0
                         saveGlobal.capsInHand += inBank
                         saveGlobal.increaseXp(inBank)
@@ -348,13 +371,13 @@ fun TowerScreen(
                 FrankPresentedScreen(
                     { showFrankWarning = true },
                     {
-                        level = 0
+                        state.level = 0
                         if (soundReduced) {
                             soundReduced = false
                             nextSong()
                         }
                         saveGlobal.towerLevel = 0
-                        val inBank = if (cookCook == 2) 1024 else 512
+                        val inBank = if (state.cookCook == 2) 1024 else 512
                         saveGlobal.capsInHand += inBank
                         saveGlobal.increaseXp(inBank)
                         saveData()
@@ -371,9 +394,9 @@ fun TowerScreen(
             }
             else -> {
                 FinalScreen {
-                    level = 0
+                    state.level = 0
                     saveGlobal.towerLevel = 0
-                    val inBank = if (cookCook == 2) 2048 else 1536
+                    val inBank = if (state.cookCook == 2) 2048 else 1536
                     saveGlobal.capsInHand += inBank
                     saveGlobal.increaseXp(inBank)
                     saveGlobal.towerCompleted = true
@@ -1087,7 +1110,7 @@ fun StartTowerGame(
             },
             title = {
                 TextClassic(
-                    "Bet you didn't expect this!",
+                    "You (cough), you haven't won here...",
                     Colors.ColorText,
                     Colors.ColorText,
                     24.sp, Modifier,
@@ -1096,7 +1119,7 @@ fun StartTowerGame(
             },
             text = {
                 TextClassic(
-                    "You (cough), you haven't won here... I've just triggered the self-destruct... Heh, heh, heh (cough)... Pity you won't live long enough to see it.",
+                    "I've just triggered the self-destruct... Heh, heh, heh (cough)... Pity you won't live long enough to see it.",
                     Colors.ColorText,
                     Colors.ColorText,
                     16.sp, Modifier,

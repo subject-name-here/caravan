@@ -221,19 +221,19 @@ fun getCheckBoxFillColor(): Color = when (styleId) {
 
 fun getTrackColor(): Color = getTrackColorByStyle(styleId)
 fun getTrackColorByStyle(style: Style): Color = when (style) {
-    Style.DESERT -> Colors.DesertAccent
+    Style.DESERT -> Colors.DesertTextBack
     Style.PIP_BOY -> Colors.ColorTextBack
-    Style.ALASKA_FRONTIER -> Colors.AlaskaYellow
-    Style.PIP_GIRL -> Colors.PipGirlWhite
+    Style.ALASKA_FRONTIER -> Colors.AlaskaBlue
+    Style.PIP_GIRL -> Colors.PipGirlBlack
     Style.OLD_WORLD -> Colors.OldWorldTextBack
-    Style.NEW_WORLD -> Colors.NewWorldStroke
+    Style.NEW_WORLD -> Colors.NewWorldTextBack
     Style.SIERRA_MADRE -> Colors.SierraMadreTextBack
     Style.MADRE_ROJA -> Colors.MadreRojaTextBack
-    Style.VAULT_21 -> Colors.Vault21Accent
-    Style.VAULT_22 -> Colors.Vault22Accent
+    Style.VAULT_21 -> Colors.Vault21TextBack
+    Style.VAULT_22 -> Colors.Vault22TextBack
     Style.ENCLAVE -> Colors.EnclaveText
-    Style.BLACK -> Color.Black
-    Style.NCR -> Colors.NcrAccent
+    Style.BLACK -> Color.White
+    Style.NCR -> Colors.NcrTextBack
     Style.LEGION -> Colors.LegionTextBack
 }
 fun getKnobColor(): Color = getKnobColorByStyle(styleId)
@@ -242,16 +242,16 @@ fun getKnobColorByStyle(style: Style): Color = when (style) {
     Style.PIP_BOY -> Colors.ColorTextStroke
     Style.ALASKA_FRONTIER -> Colors.AlaskaYellow
     Style.PIP_GIRL -> Colors.PipGirlWhite
-    Style.OLD_WORLD -> Colors.OldWorldTextBack
+    Style.OLD_WORLD -> Colors.OldWorldText
     Style.NEW_WORLD -> Colors.NewWorldStroke
-    Style.SIERRA_MADRE -> Colors.SierraMadreTextBack
-    Style.MADRE_ROJA -> Colors.MadreRojaTextBack
+    Style.SIERRA_MADRE -> Colors.SierraMadreAccent
+    Style.MADRE_ROJA -> Colors.MadreRojaAccent
     Style.VAULT_21 -> Colors.Vault21Accent
     Style.VAULT_22 -> Colors.Vault22Accent
     Style.ENCLAVE -> Colors.EnclaveStroke
     Style.BLACK -> Color.Black
     Style.NCR -> Colors.NcrAccent
-    Style.LEGION -> Colors.LegionTextBack
+    Style.LEGION -> Colors.LegionAccent
 }
 
 fun getSwitchTrackColor(): Color = when (styleId) {
