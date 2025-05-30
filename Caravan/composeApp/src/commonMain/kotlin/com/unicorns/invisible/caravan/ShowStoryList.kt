@@ -39,6 +39,7 @@ import com.unicorns.invisible.caravan.model.enemy.EnemyStory5
 import com.unicorns.invisible.caravan.model.enemy.EnemyStory6
 import com.unicorns.invisible.caravan.model.enemy.EnemyStory7A
 import com.unicorns.invisible.caravan.model.enemy.EnemyStory7B
+import com.unicorns.invisible.caravan.model.enemy.EnemyStory8
 import com.unicorns.invisible.caravan.model.primitives.CResources
 import com.unicorns.invisible.caravan.model.primitives.CardFaceSuited
 import com.unicorns.invisible.caravan.model.primitives.CardJoker
@@ -233,6 +234,27 @@ fun ShowStoryList(
                         saveGlobal.storyProgress = progress
                         saveGlobal.increaseXp(xpReward)
                         showXpDialog = xpReward
+                    }
+                    saveData()
+                }) { showChapter = null }
+            }
+            38 -> {
+                ShowStoryChapter8(getDeck(showChapter!!), showAlertDialog, {
+                    val progress = 39
+                    val xpReward = 150
+                    if (saveGlobal.storyProgress < progress) {
+                        saveGlobal.storyProgress = progress
+                        saveGlobal.increaseXp(xpReward)
+                        showXpDialog = xpReward
+                    }
+                    saveData()
+                }) { showChapter = null }
+            }
+            39 -> {
+                ShowStoryEndOfPart3({
+                    val progress = 409
+                    if (saveGlobal.storyProgress < progress) {
+                        saveGlobal.storyProgress = progress
                     }
                     saveData()
                 }) { showChapter = null }
@@ -1260,7 +1282,6 @@ fun ShowStoryChapter5(
 }
 
 
-
 @Composable
 fun ShowStoryChapter6(
     deck: CustomDeck,
@@ -1446,7 +1467,6 @@ fun ShowStoryEndOfPart2(
 }
 
 
-
 @Composable
 fun ShowStoryChapter7(
     deck: CustomDeck,
@@ -1580,6 +1600,233 @@ fun ShowStoryChapter7(
         )
     ), goBack) {
         isGame1 = true
+    }
+}
+
+
+
+@Composable
+fun ShowStoryChapter8(
+    deck: CustomDeck,
+    showAlertDialog: (String, String, (() -> Unit)?) -> Unit,
+    advanceChapter: () -> Unit,
+    goBack: () -> Unit,
+) {
+    var isGame by rememberSaveable { mutableStateOf(false) }
+    var gameResult by rememberSaveable { mutableIntStateOf(0) }
+
+    if (isGame) {
+        StartStoryGame(
+            EnemyStory8,
+            CResources(deck),
+            showAlertDialog,
+            { gameResult = 1; advanceChapter() },
+            { gameResult = -1 },
+            null,
+            { if (gameResult == 0) gameResult = -1; isGame = false }
+        )
+        return
+    }
+
+    when (gameResult) {
+        1 -> {
+            StoryShow(DialogGraph(
+                listOf(
+                    DialogMiddleState(Res.drawable.black_back, Res.string.ch8_5),
+                    DialogMiddleState(Res.drawable.black_back, Res.string.ch8_6),
+                    DialogMiddleState(Res.drawable.black_back, Res.string.ch8_7),
+                    DialogMiddleState(Res.drawable.black_back, Res.string.ch8_8),
+                    DialogMiddleState(Res.drawable.black_back, Res.string.ch8_9),
+                    DialogMiddleState(Res.drawable.black_back, Res.string.ch8_10),
+                    DialogMiddleState(Res.drawable.black_back, Res.string.ch8_11),
+                    DialogMiddleState(Res.drawable.black_back, Res.string.ch8_12),
+                    DialogMiddleState(Res.drawable.black_back, Res.string.ch8_13),
+                    DialogMiddleState(Res.drawable.black_back, Res.string.ch8_14),
+                    DialogMiddleState(Res.drawable.black_back, Res.string.ch8_15),
+                    DialogFinishState(DeathCode.ALIVE),
+                ),
+                listOf(
+                    DialogEdge(0, 1, Res.string.ch8_5a),
+                    DialogEdge(1, 2, Res.string.ch8_6a),
+                    DialogEdge(2, 3, Res.string.ch8_7a),
+                    DialogEdge(3, 4, Res.string.ch8_8a),
+                    DialogEdge(4, 5, Res.string.ch8_9a),
+                    DialogEdge(5, 7, Res.string.ch8_10a),
+                    DialogEdge(5, 8, Res.string.ch8_10b),
+                    DialogEdge(5, 7, Res.string.ch8_10c),
+                    DialogEdge(5, 6, Res.string.ch8_10d),
+                    DialogEdge(6, 8, Res.string.ch8_11a),
+                    DialogEdge(6, 9, Res.string.ch8_11b),
+                    DialogEdge(7, 8, Res.string.ch8_11a),
+                    DialogEdge(7, 9, Res.string.ch8_11b),
+                    DialogEdge(8, 10, Res.string.ch8_13a),
+                    DialogEdge(9, 10, Res.string.ch8_13a),
+                    DialogEdge(10, 11, Res.string.finish),
+                )
+            ), goBack) { goBack() }
+            return
+        }
+        -1 -> {
+            StoryShow(DialogGraph(
+                listOf(
+                    DialogMiddleState(Res.drawable.black_back, Res.string.ch8_3_1),
+                    DialogMiddleState(Res.drawable.black_back, Res.string.ch8_3_2),
+                    DialogMiddleState(Res.drawable.black_back, Res.string.ch8_4),
+                    DialogFinishState(DeathCode.PRISON)
+                ),
+                listOf(
+                    DialogEdge(0, 1, Res.string.ch8_3_1a),
+                    DialogEdge(1, 2, Res.string.ch8_3_2a),
+                    DialogEdge(2, 3, Res.string.finish),
+                )
+            ), goBack) { goBack() }
+            return
+        }
+        else -> {}
+    }
+
+    StoryShow(DialogGraph(
+        listOf(
+            DialogMiddleState(Res.drawable.black_back, Res.string.ch8_0),
+            DialogMiddleState(Res.drawable.black_back, Res.string.ch8_1),
+            DialogMiddleState(Res.drawable.black_back, Res.string.ch8_2),
+            DialogMiddleState(Res.drawable.black_back, Res.string.ch8_3),
+            DialogMiddleState(Res.drawable.black_back, Res.string.ch8_4),
+            DialogFinishState(DeathCode.ALIVE),
+            DialogFinishState(DeathCode.PRISON)
+        ),
+        listOf(
+            DialogEdge(0, 1, Res.string.ch8_0a),
+            DialogEdge(0, 1, Res.string.ch8_0b),
+            DialogEdge(0, 1, Res.string.ch8_0c),
+            DialogEdge(1, 2, Res.string.ch8_1a),
+            DialogEdge(1, 2, Res.string.ch8_1b),
+            DialogEdge(1, 2, Res.string.ch8_1c),
+            DialogEdge(2, 5, Res.string.ch8_2a),
+            DialogEdge(2, 3, Res.string.ch8_2b),
+            DialogEdge(3, 4, Res.string.ch8_3a),
+            DialogEdge(4, 6, Res.string.finish),
+        )
+    ), goBack) {
+        isGame = true
+    }
+}
+
+
+@Composable
+fun ShowStoryEndOfPart3(
+    advanceChapter: () -> Unit,
+    goBack: () -> Unit,
+) {
+    StoryShow(DialogGraph(
+        listOf(
+            DialogMiddleState(Res.drawable.black_back, Res.string.p3e_0),
+            DialogMiddleState(Res.drawable.black_back, Res.string.p3e_1),
+            DialogMiddleState(Res.drawable.black_back, Res.string.p3e_2),
+            DialogMiddleState(Res.drawable.black_back, Res.string.p3e_3),
+            DialogMiddleState(Res.drawable.black_back, Res.string.p3e_4),
+            DialogMiddleState(Res.drawable.black_back, Res.string.p3e_5),
+            DialogMiddleState(Res.drawable.black_back, Res.string.p3e_6),
+            DialogMiddleState(Res.drawable.black_back, Res.string.p3e_7),
+            DialogMiddleState(Res.drawable.black_back, Res.string.p3e_8),
+            DialogMiddleState(Res.drawable.black_back, Res.string.p3e_9),
+            DialogMiddleState(Res.drawable.black_back, Res.string.p3e_10),
+            DialogMiddleState(Res.drawable.black_back, Res.string.p3e_11),
+            DialogMiddleState(Res.drawable.black_back, Res.string.p3e_12),
+            DialogMiddleState(Res.drawable.black_back, Res.string.p3e_13),
+            DialogMiddleState(Res.drawable.black_back, Res.string.p3e_14),
+            DialogMiddleState(Res.drawable.black_back, Res.string.p3e_15),
+            DialogMiddleState(Res.drawable.black_back, Res.string.p3e_16),
+            DialogMiddleState(Res.drawable.black_back, Res.string.p3e_17),
+            DialogMiddleState(Res.drawable.black_back, Res.string.p3e_18),
+            DialogMiddleState(Res.drawable.black_back, Res.string.p3e_19),
+            DialogMiddleState(Res.drawable.black_back, Res.string.p3e_20),
+            DialogMiddleState(Res.drawable.black_back, Res.string.p3e_21),
+            DialogMiddleState(Res.drawable.black_back, Res.string.p3e_22),
+            DialogMiddleState(Res.drawable.black_back, Res.string.p3e_23),
+            DialogMiddleState(Res.drawable.black_back, Res.string.p3e_24),
+            DialogFinishState(DeathCode.ALIVE),
+            DialogFinishState(DeathCode.PRISON),
+        ),
+        listOf(
+            DialogEdge(0, 1, Res.string.p3e_continue),
+            DialogEdge(1, 2, Res.string.p3e_continue),
+            DialogEdge(2, 3, Res.string.p3e_continue),
+            DialogEdge(3, 4, Res.string.p3e_continue),
+            DialogEdge(4, 5, Res.string.p3e_continue),
+            DialogEdge(5, 6, Res.string.p3e_continue),
+            DialogEdge(6, 7, Res.string.p3e_continue),
+            DialogEdge(7, 8, Res.string.p3e_continue),
+            DialogEdge(8, 9, Res.string.p3e_continue),
+            DialogEdge(9, 10, Res.string.p3e_continue),
+            DialogEdge(10, 11, Res.string.p3e_10a),
+            DialogEdge(11, 12, Res.string.p3e_11a),
+            DialogEdge(11, 13, Res.string.p3e_11b),
+            DialogEdge(11, 14, Res.string.p3e_11c),
+            DialogEdge(11, 15, Res.string.p3e_11d),
+            DialogEdge(11, 16, Res.string.p3e_11e),
+            DialogEdge(11, 17, Res.string.p3e_11f),
+            DialogEdge(11, 18, Res.string.p3e_11g),
+            DialogEdge(11, 19, Res.string.p3e_11h),
+            DialogEdge(12, 13, Res.string.p3e_11b),
+            DialogEdge(12, 14, Res.string.p3e_11c),
+            DialogEdge(12, 15, Res.string.p3e_11d),
+            DialogEdge(12, 16, Res.string.p3e_11e),
+            DialogEdge(12, 17, Res.string.p3e_11f),
+            DialogEdge(12, 18, Res.string.p3e_11g),
+            DialogEdge(12, 19, Res.string.p3e_11h),
+            DialogEdge(13, 12, Res.string.p3e_11a),
+            DialogEdge(13, 14, Res.string.p3e_11c),
+            DialogEdge(13, 15, Res.string.p3e_11d),
+            DialogEdge(13, 16, Res.string.p3e_11e),
+            DialogEdge(13, 17, Res.string.p3e_11f),
+            DialogEdge(13, 18, Res.string.p3e_11g),
+            DialogEdge(13, 19, Res.string.p3e_11h),
+            DialogEdge(14, 12, Res.string.p3e_11a),
+            DialogEdge(14, 13, Res.string.p3e_11b),
+            DialogEdge(14, 15, Res.string.p3e_11d),
+            DialogEdge(14, 16, Res.string.p3e_11e),
+            DialogEdge(14, 17, Res.string.p3e_11f),
+            DialogEdge(14, 18, Res.string.p3e_11g),
+            DialogEdge(14, 19, Res.string.p3e_11h),
+            DialogEdge(15, 12, Res.string.p3e_11a),
+            DialogEdge(15, 13, Res.string.p3e_11b),
+            DialogEdge(15, 14, Res.string.p3e_11c),
+            DialogEdge(15, 16, Res.string.p3e_11e),
+            DialogEdge(15, 17, Res.string.p3e_11f),
+            DialogEdge(15, 18, Res.string.p3e_11g),
+            DialogEdge(15, 19, Res.string.p3e_11h),
+            DialogEdge(16, 12, Res.string.p3e_11a),
+            DialogEdge(16, 13, Res.string.p3e_11b),
+            DialogEdge(16, 14, Res.string.p3e_11c),
+            DialogEdge(16, 15, Res.string.p3e_11d),
+            DialogEdge(16, 17, Res.string.p3e_11f),
+            DialogEdge(16, 18, Res.string.p3e_11g),
+            DialogEdge(16, 19, Res.string.p3e_11h),
+            DialogEdge(17, 12, Res.string.p3e_11a),
+            DialogEdge(17, 13, Res.string.p3e_11b),
+            DialogEdge(17, 14, Res.string.p3e_11c),
+            DialogEdge(17, 15, Res.string.p3e_11d),
+            DialogEdge(17, 16, Res.string.p3e_11e),
+            DialogEdge(17, 18, Res.string.p3e_11g),
+            DialogEdge(17, 19, Res.string.p3e_11h),
+            DialogEdge(18, 12, Res.string.p3e_11a),
+            DialogEdge(18, 13, Res.string.p3e_11b),
+            DialogEdge(18, 14, Res.string.p3e_11c),
+            DialogEdge(18, 15, Res.string.p3e_11d),
+            DialogEdge(18, 16, Res.string.p3e_11e),
+            DialogEdge(18, 17, Res.string.p3e_11f),
+            DialogEdge(18, 19, Res.string.p3e_11h),
+            DialogEdge(19, 20, Res.string.p3e_19b),
+            DialogEdge(19, 23, Res.string.p3e_19a),
+            DialogEdge(20, 21, Res.string.p3e_20a),
+            DialogEdge(21, 22, Res.string.p3e_21a),
+            DialogEdge(22, 26, Res.string.finish),
+            DialogEdge(23, 24, Res.string.p3e_23a),
+            DialogEdge(24, 25, Res.string.finish),
+        )
+    ), goBack) {
+        advanceChapter(); goBack()
     }
 }
 
