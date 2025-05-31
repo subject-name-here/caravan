@@ -173,7 +173,7 @@ var playingSongName by mutableStateOf("")
 
 val styleId
     get() = Style.entries.getOrElse(saveGlobal.styleId) { Style.PIP_BOY }
-private var styleIdMutableData by mutableStateOf(styleId)
+var styleIdMutableData by mutableStateOf(styleId)
 
 val id = Random.nextInt()
 

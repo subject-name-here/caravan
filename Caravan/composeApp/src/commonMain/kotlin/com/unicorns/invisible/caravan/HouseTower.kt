@@ -179,10 +179,14 @@ fun TowerScreen(
     var stateMemory by rememberScoped { mutableStateOf(TowerState(0, 1, 0)) }
 
     fun toMemory() {
-        stateMemory.copy(state.level, state.cookCook, state.secondChances)
+        stateMemory.level = state.level
+        stateMemory.cookCook = state.cookCook
+        stateMemory.secondChances = state.secondChances
     }
     fun fromMemory() {
-        state.copy(stateMemory.level, stateMemory.cookCook, stateMemory.secondChances)
+        state.level = stateMemory.level
+        state.cookCook = stateMemory.cookCook
+        state.secondChances = stateMemory.secondChances
     }
 
     var playLevel by rememberScoped { mutableIntStateOf(0) }
@@ -203,20 +207,25 @@ fun TowerScreen(
             toMemory()
             state.drop()
             saveGlobal.towerLevel = 0
+            saveGlobal.secondChances = 0
+            saveGlobal.cookCookMult = 1
             saveData()
         }, {
             fromMemory()
             state.level++
             saveGlobal.towerLevel = state.level
+            saveGlobal.cookCookMult = state.cookCook
+            saveGlobal.secondChances = state.secondChances
             onWinExtra()
             stateMemory.drop()
             saveData()
         }, {
             if (stateMemory.secondChances > 0) {
                 stateMemory.secondChances--
-                saveGlobal.secondChances--
                 fromMemory()
                 saveGlobal.towerLevel = state.level
+                saveGlobal.cookCookMult = state.cookCook
+                saveGlobal.secondChances = state.secondChances
             }
             stateMemory.drop()
             saveData()
@@ -261,23 +270,24 @@ fun TowerScreen(
                 toMemory()
                 state.drop()
                 saveGlobal.towerLevel = 0
+                saveGlobal.cookCookMult = 1
+                saveGlobal.secondChances = 0
                 capsMemory = saveGlobal.capsInHand
                 saveGlobal.capsInHand = 0
                 saveData()
             }, {
                 fromMemory()
+                stateMemory.drop()
                 state.level++
                 saveGlobal.towerLevel = state.level
-                stateMemory.drop()
+                saveGlobal.cookCookMult = state.cookCook
+                saveGlobal.secondChances = state.secondChances
                 saveGlobal.capsInHand += capsMemory
                 saveData()
                 stopRadio()
                 playFrankPhrase("files/raw/frank_on_defeat.ogg")
             }, {
-                state.drop()
                 stateMemory.drop()
-                saveGlobal.towerLevel = 0
-                saveData()
                 stopRadio()
             }) {
                 playLevel = 0
@@ -394,9 +404,11 @@ fun TowerScreen(
             }
             else -> {
                 FinalScreen {
-                    state.level = 0
-                    saveGlobal.towerLevel = 0
                     val inBank = if (state.cookCook == 2) 2048 else 1536
+                    state.drop()
+                    saveGlobal.towerLevel = 0
+                    saveGlobal.cookCookMult = 1
+                    saveGlobal.secondChances = 0
                     saveGlobal.capsInHand += inBank
                     saveGlobal.increaseXp(inBank)
                     saveGlobal.towerCompleted = true
