@@ -510,6 +510,7 @@ private fun getStrokeWidth(textSize: TextUnit): Float {
         textSize >= 36.sp -> 4f
         textSize >= 30.sp -> 3f
         textSize >= 24.sp -> 2f
+        textSize >= 20.sp -> 1.5f
         textSize >= 18.sp -> 1f
         else -> 0f
     }

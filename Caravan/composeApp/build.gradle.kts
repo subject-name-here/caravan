@@ -54,7 +54,7 @@ kotlin {
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)
 
-            val composeBom = project.dependencies.platform("androidx.compose:compose-bom:2025.03.00")
+            val composeBom = project.dependencies.platform("androidx.compose:compose-bom:2025.05.01")
             implementation(composeBom)
 
             implementation(project.dependencies.platform(libs.firebase.bom))
@@ -116,7 +116,7 @@ android {
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 112
-        versionName = "3.0.B"
+        versionName = "3.0.Б"
     }
     packaging {
         resources {

@@ -154,11 +154,17 @@ import org.jetbrains.compose.resources.getString
 import org.jetbrains.compose.resources.stringResource
 
 
-data class TowerState(
-    var level: Int,
-    var cookCook: Int,
-    var secondChances: Int
-) {
+class TowerState() {
+    var level by mutableIntStateOf(0)
+    var cookCook by mutableIntStateOf(1)
+    var secondChances by mutableIntStateOf(0)
+
+    constructor(level: Int, cookCook: Int, secondChances: Int) : this() {
+        this.level = level
+        this.cookCook = cookCook
+        this.secondChances = secondChances
+    }
+
     fun drop() {
         level = 0
         cookCook = 1
@@ -176,7 +182,7 @@ fun TowerScreen(
         saveGlobal.cookCookMult,
         saveGlobal.secondChances
     )) }
-    var stateMemory by rememberScoped { mutableStateOf(TowerState(0, 1, 0)) }
+    var stateMemory by rememberScoped { mutableStateOf(TowerState()) }
 
     fun toMemory() {
         stateMemory.level = state.level
@@ -308,6 +314,7 @@ fun TowerScreen(
 
     var showFrankWarning by rememberSaveable { mutableStateOf(false) }
     MenuItemOpen(stringResource(Res.string.tower), "<-", Alignment.Center, { if (state.level != 13) goBack() }) {
+        LaunchedEffect(state.level) {}
         val scope = rememberCoroutineScope()
         when (state.level) {
             0 -> {
@@ -317,6 +324,7 @@ fun TowerScreen(
                     saveData()
                 }
             }
+
             6 -> {
                 RestScreen {
                     state.level = 7
@@ -327,6 +335,7 @@ fun TowerScreen(
                     saveData()
                 }
             }
+
             10 -> {
                 CookCookPresentedScreen(
                     256,
@@ -335,6 +344,7 @@ fun TowerScreen(
                     { playLevel = state.level }
                 )
             }
+
             in 1..12 -> {
                 val inBank = when (state.level) {
                     1 -> 1
@@ -377,6 +387,7 @@ fun TowerScreen(
                     }
                 )
             }
+
             13 -> {
                 FrankPresentedScreen(
                     { showFrankWarning = true },
@@ -402,6 +413,7 @@ fun TowerScreen(
                     }
                 )
             }
+
             else -> {
                 FinalScreen {
                     val inBank = if (state.cookCook == 2) 2048 else 1536
