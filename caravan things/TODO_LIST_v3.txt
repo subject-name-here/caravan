@@ -1,0 +1,65 @@
+GAMMA:
+Make Mr.House more difficult.
+Frank Intro: disable back button!!
+Blitz, Stage 2 of Frank: make timer more pronounced.
+Line for traders if they have no more new cards.
+Traders: chips back to caps.
+Story mode: chapter 9; leave stub for GGlitch 
+Story mode: chapter 10
+Story mode: chapter 11
+Story mode: chapter 12
+Story mode: end of part 4.
+Story chapter 7: add messages asking to give up.
+All enemies!!
+More challenges!! Challenges according to the level!!! Challenges are in tabs, not in the list!
+Make Sierra Madre and Madre Roja styles.
+Make NCR and Legions styles.
+Make Alaska and Vault 21 styles!
+Explain Raise better.
+Goodsprings Boys -> Good guys of Goodsprings
+
+—------
+
+RELEASE
+Multiplayer: Queue
+Multiplayer: corrupted.
+Finish NCR deck. Add tint to standard decks black cards.
+Story mode - finish!! pictures!! jokes!!
+Restart Story progress.
+Tutorial!!
+Radio app mode - work properly
+Betting screen: horizontal orientation should be different.
+Horizontal orientation
+Make Old World, New World and Monochrome styles!
+Pip-Girl and Vault 22 Styles have tamagotchi now: a garden (buy trees, watch them grow and die) and (a Spore Plant (watch it grow, feed it, watch it die.) + 2 Vault 22 Flowers).
+Traders: sell stuff for tamagotchi
+Save - add Player's name
+Update FAQ from Discord
+FAQ and rules - recheck everything
+Explanations of decks whereabouts, deck customization and caps; tutorial on Wasteland cards, Enemies characteristics??
+Check translation, extract all string resources
+About - more thanks
+Achievements!!! Count achievements if they are already completed.
+Leave clues to cheats!!
+Known cheats list in Settings.
+More intro messages
+____
+
+3.1
+GGlitch, Chapter 13A.
+Video tráiler
+Make Blitz challenges!
+Bigger interface!
+Test Web!
+Test PC!
+Migrate to Google Drive only!
+
+4.0
+Damboree, Realtime, Rewind.
+Español
+
+4.1
+Rad Infinitum (endgame content.)
+Legendary cards - RtR.
+Mystic cards available for buying in Rad Infinitum.
+

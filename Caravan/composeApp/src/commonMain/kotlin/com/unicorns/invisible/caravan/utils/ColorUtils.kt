@@ -307,3 +307,6 @@ fun getGameSelectionColor(): Color {
 fun getGrayTransparent(): Color {
     return Colors.GrayHalfTransparent
 }
+fun getRedTransparent(): Color {
+    return Colors.RedHalfTransparent
+}

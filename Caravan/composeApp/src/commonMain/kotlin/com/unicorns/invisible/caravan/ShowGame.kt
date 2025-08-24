@@ -125,7 +125,7 @@ fun ShowGame(
 
     val animationSpeed by rememberSaveable {
         mutableStateOf(
-            if (isBlitz || game.enemy.isSpeedOverriding())
+            if (isBlitz || hasGlobalTimer >= 0 || game.enemy.isSpeedOverriding())
                 AnimationSpeed.NONE
             else
                 saveGlobal.animationSpeed

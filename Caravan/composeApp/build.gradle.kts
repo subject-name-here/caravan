@@ -115,8 +115,8 @@ android {
         applicationId = "com.unicorns.invisible.caravan"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
-        versionCode = 113
-        versionName = "3.0.Б"
+        versionCode = 114
+        versionName = "3.0.Г"
     }
     packaging {
         resources {

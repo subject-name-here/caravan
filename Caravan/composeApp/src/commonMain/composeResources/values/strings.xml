@@ -410,7 +410,7 @@
     <string name="style_enclave">Enclave</string>
     <string name="style_enclave_condition">Complete the Tower.</string>
     <string name="style_ncr">NCR</string>
-    <string name="style_ncr_condition">Open at least 10 decks o' 54.</string>
+    <string name="style_ncr_condition">Open at least 12 decks o' 54.</string>
     <string name="style_legion">Legion</string>
     <string name="style_legion_condition">Open at least 200 cards for your custom deck.</string>
 
@@ -699,12 +699,12 @@
 
     <string name="ch2_1">
         Before going to New Vegas you have to exchange the gold bar for bottle caps.
-        Your destination is Hub - one of the richest markets of West America. You have chosen the safest road - famous Long 15.
+        Your destination is The Hub - one of the richest markets of West America. You have chosen the safest road - famous Long 15.
         As you go, you see a dust cloud in front. Probably, some wind gusts.
         On the side of the road, there is a half-destroyed house.
     </string>
     <string name="ch2_1a"><![CDATA[[Science 53/75] <Try to analyze the weather.>]]></string>
-    <string name="ch2_1b"><![CDATA[<Continue going to Hub.>]]></string>
+    <string name="ch2_1b"><![CDATA[<Continue going to The Hub.>]]></string>
     <string name="ch2_1c"><![CDATA[<Hide in the house.>]]></string>
     <string name="ch2_2">
         [FAILED] All you can say is that the storm is coming from the Divide. Will it be of danger or not - you have no idea.

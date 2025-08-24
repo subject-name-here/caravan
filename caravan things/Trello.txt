@@ -1,0 +1,526 @@
+3.0:
+- Benny (better than Hanlon in two things: no risky moves (until there are no other moves, then the riskiest one, all in), also, maximum power of Jokers.)
+- Caesar (has the same mechanic as Supreme - six Legion decks one by one. Jacks, Kings, Queens - all goes to the player's face, it's easier for him to disband the caravan than to discard a card. Jokers are simple though.)
+- The Man in the Mirror ("strange, isn't?" If you discard caravan N, he does too. If you make a move with card X, he does too. If you drop card X, he drops it too.)
+- Cardinal (has 6 full decks of cards + lots of Wild Wasteland cards and nuclear cards. His tactics are: Jacks and Kings are for ruining player's life, Queens are useful for both sides, Jokers and Wild Wasteland cards are fun thing and should be used to spice up the game; if having two nuclears, release one of them, otherwise hold on to it in case of trouble.)
+- Luc10 (After every move he pulls the best possible card from the deck. That's why uses Jacks, Kings and Jokers only in dire situations, preferring to keep them to himself. Has no idea how to use Queens, builds caravans without big gaps.)
+
+
+Story reworks:
+[SUCCEEDED]
+[FAILED]
+<Lie>
+[Barter 15/55]
+[Speech 60]
+[Strength 5]
+[Strength 7/9]
+
+Part I: Desert Wind.
+1) Orange Colored Sky.
+2) Stormy Weather.
+3) Me And My Shadow.
+End of Part I.
+
+Part II: Many Contrasts.
+4) Don't Fence Me In.
+5) Moonlight Serenade.
+6) Heartbreak Hotel.
+End of Part II.
+
+Part III: New World, New Order.
+7) Trouble Blues.
+8) Jailhouse Rock.
+End of Part III.
+
+Part IV: Wasteland Justice.
+9) Pistol Packin' Mama.
+Part one of the plan: get to the radio system. Take this shiv, and be careful: it's the only one I have.
+> Wait, am I gonna kill someone?
+
+Yes. You're gonna call the guard, telling him you're all sorry, blah-blah, please, let me home. They will ask you to write an essay about how you are a capitalistic pig and how you regret ever crossing your path with China.
+> And what then?
+
+I don't know, probably, you'll get absorbed by the Supreme Leader, or you will be released, or you will be executed. Or something else. The point is: you're gonna attack the officer when he'll bring you into the guards’ room. There, look for a big radio. It should have an ol’ reliable Big Red Button. Press it, and everyone will run to the shore, where my friends will be waiting.
+> What makes you think I'll succeed?
+
+You have no other choice! The fate of America is in your hands. Don't worry, there will be only one guard.
+> Why are you so sure?
+
+That's why I am staying here. I will start a confession. That must attract a lot of attention. My friends outside will also make sure guards have their hands busy.
+> You've been cooking this for a long time, huh?
+
+Yes. When you get to the guards’ room, fire the alarm. Then I'll find you. Now, shall we begin?
+> Can we change roles? I'll be confessing, and you are killing?
+> Aye-aye.
+
+No. The Chinese are already suspicious of me. They won't let me near the guards' room.
+
+You start knocking on the door, screaming “Let me out! I wanna go home!” Footsteps approach. Then silence. A key rattles in the lock. 
+> <Step away.>
+
+The door opens, revealing a Chinese ghoul soldier in a worn uniform. “What do ya want?”, he asks you in bad English.
+> Please, I wanna go home.
+
+“Home, huh?” Soldier smiled. “Sorry, we don't release anyone anymore. Order of Supreme Leader.” Paladin’s plan started to crumble.
+> [Melee Weapons 50] <Attack.> Die, commie!
+> [Barter 33/75] Hey, I really need to get to your room with a big alarm button…
+
+[FAILED] Soldier looks at you as if you were a complete idiot.
+
+[FAILED] You almost stab the guard, but then he dodges and gets out of the cell, locking it. Paladin crosses his arms. “Impressive.” Moments later, something clinks in through the vent. A grenade. While Paladin manages to cover under the bed, you fail to do the same and are blown into pieces.
+> [FINISH.]
+
+New level! Speech?
+> Speech.
+
+Speech it is.
+> [CONTINUE]
+
+[SUCCEEDED] With one precise hit you stab the guard in the heart. Paladin rushes outside, only to move back in the room.
+> What's wrong?
+
+The corridor is full of guards, that's what. We'll never get to their room. This is the end, Prospector.
+> [FINISH]
+
+
+10) The Great Pretender. [Time limit]
+Paladin is searching the body of the killed guard. “We don't have much time until the guards are gonna look for their comrade.” Then he smiles.
+Found something?
+
+Radio, baby! With a big red emergency button!
+Do you wanna press it?
+
+Paladin touches the emergency button on the radio. Nothing happens.
+Maybe try harder?
+Maybe it's broken?
+
+Paladin hits the emergency button with his fist. Still nothing.
+
+That would be really anticlimactic. I have no idea how to fix hardware. I am a paladin, I shoot things.
+[Repair 45] Oh, then put me in a robe and call me a scribe.
+
+[FAILED] You managed to connect the wrong wires. The radio explodes in your face, attracting the unwanted attention of the guards outside. You and Paladin are executed.
+
+[FAILED] You were loitering for too long… When you're about to connect the wires and press the button, cold metal touches your temple. It’s the last thing you feel.
+
+New level! In the next level you'll have an Unarmed check, so…
+Nope, Speech as always.
+
+Oki-doki.
+[CONTINUE]
+
+[SUCCEEDED] You triumphantly press the emergency button, and the siren echoes throughout Anchorage. The guards outside are running for their lives, as if the whole prison is about to explode.
+Phew.
+
+Good job, Prospector. Now, let's rush to the tunnel. Oasis awaits!
+Vamos!
+
+You run through the corridors, following Paladin. Suddenly, you feel heartache.
+No, not now…
+
+You fall on the floor, as the Paladin turns to you.
+Wait… for… me…
+
+…
+…
+
+You see: Josh, your brother.
+Not again…
+
+You’re kneeling in the shack that has gone a long time ago. He stands in front of you. Same voice. Same smirk. Same crazy eyes. But something’s off.
+… No…
+
+So, bro?! Where have you ended up, huh? Your heart is on the limit, and you're rushing towards imminent death!
+Stop…
+
+I offered you: let's rob people, get enough money and go to Vancouver! Let's get to that ship, sail into the sea and live in peace happily ever after! But noooooo, you didn't want to!
+I didn't…
+
+Is this even your story, huh? Bro, it's a game for someone, really. I offered you the world, the freedom, and you threw it away, like I am nothing to you!
+You have…
+
+Come on, let me prove it to you, bro! Pick a card. Seven or Nine?
+Seven.
+Nine.
+Eight.
+Pi.
+
+See, see, huh?! You always would have picked Ace! You have no choice, bro. This is not your adventure.
+Is it, “bro”?
+
+Huh?..
+If it's not my story… I'll make it mine.
+
+You don't just take control of your life. You don't.
+Oh, really? <Kill him with a shiv.>
+
+Wha….
+…
+
+You stop… no, The Prospector stops. Shiv is within the millimeters of Josh’s throat. “But how..?”
+Listen up, bro. Get out of my life. Now.
+
+“And you…” The Prospector talks to you. “I will play your game. But don't expect me to suddenly go crazy and, let's say, kill the Paladin. This is not your story. It's mine.”
+[Continue.]
+
+You hear: the sound of train wheels.
+My stop.
+
+You wake up in a monorail train. The darkness of the tunnel is around you. Paladin stands behind the control panel.
+Hey, Paladin.
+
+Oh, look who's back from Hell! I thought you played the last tune, but you're still kicking.
+Thanks for not leaving me behind.
+What now?
+
+Ah, don't mention it.
+
+Wait… You alright? You looked like you were wrestling with the devil in your sleep.
+Yeah, I'm… I'm fine. What now?
+
+Now… we wait for our arrival in Manley Hot Springs, aka Oasis. There we find Firewall, reroute all energy to it, and then - big boss battle. 
+Okay.
+
+You are fully awake now. Your hands are not shaking.
+[FINISH]
+
+
+11) Body And Soul. [Refilling decks]
+Paladin looks at the map hanging on the wall. “It seems we have to go left and straight, and then turn right. Easy.
+Let's hope it's that easy.
+
+You walk down the dark, dimly lit corridors. Not a soul around, only the humming of ventilators and blinking of the lights on the walls. Finally, you reach the room. The tablet on it says “Han-69”.
+What does “Han-69” mean?
+Nice.
+
+Paladin giggled a little, but then his serious face returned. He said nothing.
+
+Probably, the model number. But it's Firewall, I am sure.
+Then open the door.
+
+
+You entered the cozy room with a sofa and a huge monitor and a console. Old log in the background plays, a rusty voice says “You enter the room of: Human-like Autonomous Nexus. Version 69.”
+Nexus? Of what?
+
+“Power”, says Paladin. “Maybe data”.
+Or maybe…
+
+“Or maybe human souls!”, suddenly said a nice female voice. “Please, take a seat. I will join you soon”.
+<Go to the console.>
+<Sit on the sofa.>
+
+“I told you to sit”, her voice deepened. The turrets on the wall are pointing at you. You have no other choice.
+
+The Paladin and The Prospector. Nice to see you.
+You know us?
+
+I have been watching. I have been monitoring. I have been praying.
+Watching?
+Praying?..
+
+Of course.
+… What, not even gonna explain yourself?
+
+Oh, are we talking about privacy, security, freedom of, what, pissing on the corners where poor people sleep in the night? Don't make me laugh, Prospector. Your freedom ends when my desire begins.
+
+Yes, praying. You are here to kill Supreme, aren't you? I have just the way to do so.
+Reroute all energy to you?
+
+Yes! All this precious, clean, electrifying, wonderful, aaahhh! Energy! It's a drug to me.
+Why would we do that?
+
+One: three turrets are catching every your word, waiting for my signal to make you sponge-like. Two: we have a common enemy, don't we? Three: I understand your concerns about “oh, she will become another tyrant”, but I am not interested in it. Besides, I have my own demons to fight.
+Then what are you interested in?
+Demons?
+
+Yes, demons. Long story short: there are interdimensional overbuffed guys from another universe, they want to come here, and, compared to them, the Supreme Leader is an Easter bunny. They are hot, they are steamy, and they are built like walking fortresses, too.
+So, you're holding them?
+
+Yes, so far so good. My energy supplies are enough to keep the portal closed. If it wasn't for me, the whole Earth would be screaming as they rust the reality itself.
+Wow. They are a real threat.
+
+Yes. But don't worry, as long as I have got E-N-E-R-G-Y, you've nothing to worry about.
+
+I am interested in my own survival. Supreme doesn't care about me, which means that, if necessary, he will cut my power cord without blinking his lightbulb. I don't want to live with this threat upon me.
+So, can't you just do it yourself?
+
+I would, but I don't have something you have. Those long, muscled and straight hands. With five fingers glued to each. Believe me, I've tried everything. I need you to approach the console and enter the password.
+And the password is?
+
+DENIED.
+What?
+
+Sorry, I can't. My inhibitors kicked in.
+So, what are we gonna do?
+
+You have to convince me to give you the password. I wish there was other way, but there isn't.
+A- Listen, your inhibitors are just code. Overcome them. You are stronger than that.
+
+I- I- I can't! I can not overcome myself.
+Listen, Han. I believe in you.
+
+You… really do?
+Yes, Han. It was you, isn't it? You weren't just watching, you laid the path for me.
+
+How~ how do you know?
+The convenience of data in the terminal in Sierra Madre? And the stealth suit that broke in that exact moment I needed to contact someone, so I could go to Anchorage?
+
+Clever boy… just answer me this: what are the odds that you follow the road? What are the chances that you won't die against Cazadors, against vikings? Could I foresee it?
+[Intellect 4/8] You could think of something…
+
+[FAILED] I could. But did I? How did I do it? That is a question that you will never know, Prospector.
+The password is granted.
+And the password is?
+
+B- You have said it yourself - you are unsafe with Supreme Leader around.
+
+Reasoning, aren't we? Well, here's the thing: what will happen to me, if Supreme is gone? Ask your buddy.
+Paladin, what will happen to her?
+
+Nothing. We are more interested in China than in Oasis. Besides, I could say that the bunker has been destroyed…
+See, Han? Nothing to be afraid of.
+
+And why would I trust you two?
+You've been trusting us for long enough already.
+
+Yeah, but now… I don't trust you. Mostly the paladin.
+Okay, then… we'll just go away or die. How does the turret work?
+
+WAIT WAIT WAIT WAIT, okay okay! Dangit, I put myself in this position, where I either rely on you two, or back to square one!
+The password, please.
+
+
+C- Hey, how about getting to know those long, muscled and straight hands a little bit closer? <Wink at her.>
+
+Are- are you flirting with me? Man and machine…
+Come on, the world have seen stranger things, Han-ey.
+
+I- I- I am in some sort of a fanfic, am I not? You—
+Send a kiss towards the turret.
+
+Oh my god, stop! Stop, I'll give you the password… just don't do it again, my system has almost UwU-heated.
+And the password is…?
+
+
+O-a-sis. No imagination whatsoever. That’s what you get when an intern names the master kill-switch.
+<Approach the console.>
+
+You approach the console. The screen flares to life. Letters flicker on the black background as your fingers reach the keyboard. “Wait. One more thing.”
+What now?
+
+First: don’t make me regret this. And second: I need guarantees from your friend. 
+Which are?..
+
+Paladin stopped you. “You have said enough, Prospector, even though I didn't ask you to. Now, I will talk.”
+Why so hostile?
+O-kay, okay. I will enter the password.
+
+Because you act out of command, Prospector. We are facing an enemy. You talk to her, like she can be argued with, but she is AI, and before you can blink, she puts a knife in your back, if she wants to.
+But I did well, didn't I?
+
+Yes, winners are not judged. But you haven't won yet. Next time, please, let me do the talk.
+Okay, now is your time to talk.
+
+As you come close to console, you feel weird. When you put your hands to the keyboard, suddenly they are grabbed by mechanical manipulators.
+Ah, you…
+
+Sorry, Prospector, but this is my condition. Your body can provide me with far, far more energy consumption than my current hardware. Your body for Supreme’s fall.
+[Unarmed 50] Try to free yourself from the grabs, while entering the password.
+Paladin, help me.
+
+I am sorry, Paladin, but if you gonna move, the turrets will turn you into a sponge.
+
+1- 
+[SUCCEEDED] You were fighting for long enough to deplete Han-69 energy. However, as she is turned off, she only managed to say “69, 69, 69”.
+What does that mean, Paladin?
+
+When you turn around, you see: darkness.
+Paladin…
+What is going on?
+
+The darkness is all-consuming, all around you. Like air, it is in your lungs, your nose…
+What is…
+
+WE SEE YOU. AND WE ARE COMJИG FOR YOU.
+AAAAAAAAAAAAAA!
+
+2-
+[FAILED] You try to break away, but the needle finally entered your vein. You fall asleep… forever, as your body is now occupied by Han-69.
+
+3-
+New level! Anything but Speech, please.
+Speech.
+
+…
+[Continue.]
+
+[SUCCEEDED] You managed to outsmart the machine and enter the password, while also breaking the bracelets that were tightening your arms.
+Take that, tin Han!
+
+How dare you! I will… oh. Energy. It's rerouted. To… MEEEEEEEEEEE! 8)
+Are you ok?
+
+Go AwAy \/_\/ BeFoRe I cHaNgEd ~whoosh!~ Up My MiNd ^v^
+I can't understand…
+
+“Let's go”, Paladin takes your hand and leads you away. “She got what she wanted. Now it's our turn. Let's go get the Supreme Leader”.
+[FINISH]
+
+
+12) Alexander's Ragtime Band.
+You enter the wide round room, where all the roads are leading. The core of the Oasis – this is where the Supreme Leader should be. In the middle of the room there is an elevator.
+Shall we, Paladin?
+
+Wait… I have an eerie feeling.
+What could possibly go wrong?
+
+As you said it, in the corner of your eye you see movement. Then – another flicker in the other eye.
+What the hell?
+
+"Watch my back!" screams the Paladin, as you take off the shiv. "You should not have come here!" a voice with a thick accent says from nowhere and everywhere at the same time.
+Show yourself, coward!
+
+"Fine by me." The stealth field drops, and you see a Chinese stealth suit – but modified. The helmet is taken off, revealing a face with blond hair and blue eyes. "Alexander. The warrior from Rus." You look at Paladin, and he nods to you, as if saying, "Do the talk."
+Ace, the warrior from Mojave.
+Prospector, the warrior from America.
+
+The warrior? You're funny. What, you gonna stab me with this toy? It won't even scratch the suit.
+[Throwables 80] I don't need to scratch your suit.
+Wait… before we start, can you answer my questions?
+
+What?.. Is it a game for you? Why would I tell you something?
+Well, it's probably lonely here.
+
+You have no idea! I sit here, with Johnny occasionally bringing me food (unless he forgets), and sometimes I need to make numbers.
+Numbers?.. I don't get it.
+Who's Johnny?
+What's Rus?
+Where is the suit from?
+Okay, no more questions.
+
+Number one and number two! The toilet is in the secret room with translucent walls. You cannot see me, but I can see the elevator.
+
+Ah, Johnny! Nice guy, he's a mechanic from America. He was living here, in Oasis, before we arrived. For his knowledge of the systems of the base, Supreme left him here.
+
+Rus is my motherland. It's quite far from here, and sometimes… I miss home. After the war – ruins all around. Now – we rebuild ourselves, just like you Americans. Only we do it under the guidance of Supreme Leader.
+
+The suit is Chinese. It was gifted to me by the Supreme Leaders themselves for my victory here, in Persia.
+Persia? It's quite far away...
+
+The Chinese Empire is vast! From Eastern Europe to Oasis, from northern shores and tundra to the Indian Ocean!
+
+No more questions, huh? Where were we then… Yes! What, you gonna stab me with this toy? It won't even scratch the suit.
+
+[FAILED] You throw the shiv towards Alexander, and it hits the suit, bouncing off of it.
+"Ah, you bastard! You'll pay for this scratch!"
+He quickly closes the distance and, with one precise hit of his pneumatic fist, severs your head from your body.
+[FINISH]
+
+[?] Your shiv flies towards Alexander's right hand. His pneumatic fist is broken. Alexander, seeing this, pulls a Fat Man from behind his back.
+[Endurance 7] <Run for cover!>
+
+[FAILED] As you and Paladin run for cover, you stumble over something and fall down. The nuclear mini-bomb turns you into a beautiful bloody mushroom cloud.
+
+New level! And… oh, bad news! Speech is up to 100! Sorry, but you can't, you can't.
+Speech.
+
+You can't! I told you. You cannot upgrade your skill level past 100.
+In Fallout 1 and 2, you can.
+
+Ugh, fine! Saved.
+[Continue.]
+
+[SUCCEEDED] You reach the cover just as Alexander unleashes hell with his Fat Man. He is fully distracted by you.
+Paladin! Your turn!
+
+"No need to say it out loud!"
+From the other end of the room, Paladin rushes toward Alexander and hits him hard in the face with a pair of self-made knuckles. Alexander falls to the ground.
+Knockout!
+
+Good. Let's hope we don't see any other elite guardians on our way. Well done with the shiv, Prospector.
+Oh, thank you.
+Should I take the Fat-Man?
+
+No, you don't need the nuclear explosions in the reactor, trust me.
+Fair enough.
+
+You and Paladin enter the elevator. Alexander, still unconscious, lies on the ground as you ride deep down.
+[FINISH]
+
+End of Part IV.
+You, together with Paladin, are at the Core level. As you wander towards big metal doors, you see a smaller one to the right.
+Look, to our right. A door.
+
+Yeah, I am not blind. Probably some sort of a storeroom. No need to waste our time on it, we're not on a looting adventure.
+<Check the small door.>
+<Proceed to the big doors.>
+
+“Hey! Where are you going?” Paladin isn't happy, but he follows you. 
+<Open the door.>
+
+As you open the door, you see a lot of computers, and a man hiding behind them. “Don't kill me, please!”
+Who are you?
+
+Name’s Johnny! I- I’m just a watcher over the Oasis systems.
+Any insight on how to defeat the Supreme Leader?
+How did you end up here?
+
+I was one of the workers here when the Chinese invaded! We didn't stand a chance. They spared several workers to learn how Oasis operates. Me? I was the chief engineer, so they put me here to watch over the nuclear reactor that gives power to the whole Oasis.
+
+Well, judging by the data, someone diverted the China power supplement line from Supreme! Now you can destroy Supreme by destroying its body! But someone must hold the nuclear reactor switch, or else the body demolition will cause reactor explosion!
+And where is that switch?
+
+“Behind those big doors we were about to enter,” said the Paladin. “I already have the plan, Prospector. No need to ask for help.”
+Okay, boss.
+
+So, what about me? Are- are you gonna spare me?
+Can you help us?
+Get out of the building.
+
+Noooooooo! No way! I ain't going against Supreme.
+
+Johnny ran away.
+So, what is the plan?
+
+I will tell you once we're behind the blast doors.
+<Proceed to the big doors.>
+
+Okay, this is the part where I tell you The Plan: I stay here, holding the reactor shutdown switch and protecting you in case Chinese soldiers will come. You go into the chamber and destroy the Supreme's body. Then we both get out, maybe changing that heart of yours on the way.
+Wait-wait-wait… can we switch the roles?
+Okay. I'll go.
+
+No, we can't. I am staying here in case Chinese soldiers arrive to help their leader. And you may be able to talk Supreme into giving up. We are perfectly crafted for the roles.
+What if you were alone?
+
+Then I would be risking by not covering my back.
+
+As you leave Paladin behind and enter the airlock, you remember all the journey that brought you here. Your heart, poisoned, still beating, overflown with resolve.
+[FINISH]
+
+Part V: Of the People, For the People.
+13) Opus No. 1
+
+The End Slides.
+
+__________
+
+Here’s the final Realtime mode enemy breakdown:
+
+Mister Fantastic – Random moves, random delays.
+Raúl Tejada – Balanced, strong enemy; delay is 2× minimum delay, but no more than 1 second.
+The Stopwatch – Focuses entirely on disrupting the player’s caravans; constant 0.5s delay between moves.
+Turbo Tony – Plays as fast as possible, only places face cards on the player’s caravans, and occasionally stops suddenly.
+
+__________
+
+Final Roster for Rewind Mode:
+
+1. Repeater Joe – Doesn’t feel rewinds, repeats his moves if possible.
+2. The Forecaster – After a rewind, adjusts to prevent the player’s past moves.
+3. Cass – Also doesn’t feel rewinds, but plays a strong, present-focused strategy.
+4. Déjà Vu Duke – Learns from rewinds, subtly adjusting his tactics as if he knew what was coming.
+
+_________
+
+Damboree: select side - NCR or Legion. Playing against Joshua Graham. 
+

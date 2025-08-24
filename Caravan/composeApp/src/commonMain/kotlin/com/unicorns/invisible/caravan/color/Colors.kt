@@ -5,6 +5,7 @@ import androidx.compose.ui.graphics.Color
 
 data object Colors {
     val GrayHalfTransparent = Color(0xCC707070)
+    val RedHalfTransparent = Color(0xCCFF0000)
     val Red = Color(0xFFFF0000)
     val Green = Color(0xFF00FF00)
     val DarkGreen = Color(0xFF009900)

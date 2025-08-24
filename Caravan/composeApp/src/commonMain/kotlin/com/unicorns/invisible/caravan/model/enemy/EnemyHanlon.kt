@@ -91,19 +91,19 @@ class EnemyHanlon : EnemyPvENoBank() {
         val kings = hand.filter { it is CardFace && it.rank == RankFace.KING }
         val jokers = hand.filterIsInstance<CardJoker>()
         val numbers = hand.filterIsInstance<CardBase>()
-        if (kings.size > 1 || numbers.isEmpty()) {
+        if (kings.size > 1 || kings.isNotEmpty() && numbers.isEmpty()) {
             val kingIndex = hand.indexOf(kings.first())
             if (StrategyKingHard(kingIndex).move(game, speed)) {
                 return
             }
         }
-        if (jokers.size > 1 || numbers.isEmpty()) {
+        if (jokers.size > 1 || jokers.isNotEmpty() && numbers.isEmpty()) {
             val jokerIndex = hand.indexOf(jokers.first())
             if (StrategyJokerSimple(jokerIndex, isHard = true).move(game, speed)) {
                 return
             }
         }
-        if (jacks.size > 1 || numbers.isEmpty()) {
+        if (jacks.size > 1 || jacks.isNotEmpty() && numbers.isEmpty()) {
             val jackIndex = hand.indexOf(jacks.first())
             if (StrategyJackHard(jackIndex).move(game, speed)) {
                 return

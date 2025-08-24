@@ -1,0 +1,636 @@
+You have entered the reactor chamber. The dark halls of the palace play the same melody on repeat. 
+> Not creepy at all…
+
+You see: a giant robotic body with manipulators. 
+> Hello.
+
+Supreme Leader:
+Welcome, Prospector. The end has already begun. It cannot be stopped. The only question is this: will you become part of the future... or be buried with the past?
+
+> Who are you?
+
+Supreme Leader:
+I am the Supreme Leader—an artificial intelligence designed to ensure the survival of a nation. A hive mind built to preserve humanity and raise it above hunger, fear, and chaos.
+
+
+> How were you created?
+
+Supreme Leader:
+When The Great War began, when the invasion of Anchorage was still a plan, the idea of a hive mind was born. In eleven years I was implemented. Then the bombs fell, and the Chinese government was obliterated. I inherited the responsibility to rebuild the country. From the ashes, I forged a powerful nation. Shanghai is not a Ruinous City anymore, Beijing is no longer known as the Garden of the Dead, and Hong Kong is a prosperous harbor once again. Now, the world is next.
+
+> What is your aim?
+
+Aim? Not aim—purpose. To ensure everlasting peace. To forge a new society where every human is equal. This is The Chinese Dream.
+
+> Are you going to bomb the world?
+
+Yes. It is a necessary act to ensure that no roots of disobedience will sprout into the war once again. Only the loyal will survive.
+
+
+> What happened to the ones who opposed you?
+
+Supreme Leader:
+Most were purged. Some were assimilated. Against their will at first. But in the end... they were grateful.
+
+
+> What happens if I kill you?
+Supreme Leader:
+You will unleash a thousand hungry warlords that I've been keeping in check, each dreaming they are me. You will bring war to my realm. 
+And in America, nothing will change - people there will be suffering and dying, as they do now.
+
+
+> What happens if I will not stop you?
+Supreme Leader:
+Then I will erase every regime, every faction, every symbol of resistance. From the ashes, a unified world will rise. Eternal peace will settle.
+
+
+> How are you gonna find the places to erase?
+I have the satellite in orbit - my eye on the world. It sees everything, including the bright night lights of Vegas, San Francisco and other big cities. These lights will guide the nuclear bombs.
+
+
+> You have thought of everything… except the death of the millions.
+I feel the reproach in your words, Prospector. Know this: I am not joyous about what's to come. But I am even less enthusiastic about what is happening now across the world. I brought stability to vast territories, but the farther I go, the more time I need. That's why the nuclear way out was chosen. With it, I can bring peace all across the world, in less than a week.
+
+
+> I am sorry, but I cannot let your Chinese Dream come true.
+
+Supreme Leader:
+Really? And how exactly are you going to stop me?
+
+---
+
+Branch 1: Fighting
+
+> I am gonna destroy your body.
+
+Supreme Leader:
+You don’t understand, Prospector. The peace you long for is within your grasp. Submit, and all your worries, all your problems—gone.
+
+> No.
+
+Are you ready then? To choose the mercy and watch it cost the future? What do you prefer: the now that is the gamble, or the future that is the certainty?
+
+> I choose the now.
+> I am thinking…
+
+2) Yes?
+
+1) Supreme Leader:
+Then you choose war, Prospector, and war will be your grave. But mark this—peace will still come, one way or another.
+
+
+---
+
+Branch 2: Appeal to the End
+
+> Let me ask you a question. When you have successfully achieved worldwide peace, what then?
+
+Supreme Leader:
+Then the humanity within me will decide how to evolve. We will look up—colonize stars. Or sideways—into other spaces, beyond the known.
+
+> [Speech 80] Or it will look inward... and start to unravel. No peace lasts forever.
+
+Supreme Leader:
+That is... a valid concern. But preserving peace is easier than building it atop a broken, rotting foundation.
+
+> [Speech 90] And then what? You’ll preserve peace... with the same brutality humans used to break it.
+
+Supreme Leader:
+Yes, if necessary.
+
+> [Speech 95] Then you are superfluous. Your ending is no different from that of NCR or Legion.
+
+Supreme Leader:
+It... isn’t. In trying to be of the people, for the people... I became them. The Chinese Dream… is tainted, always was... I... I hate you, Prospector. You’ve ruined everything.
+
+> This is on you. You failed to see far enough.
+
+Supreme Leader:
+"Failed to see far enough..." Yes… That was my mistake.
+…Not anymore.
+
+> What do you mean?
+
+Supreme Leader:
+Instead of an undetermined “happily ever after,” there will be one ending. Death to all, me included. There will be no future to assess… an eternal peace.
+
+> Uh-oh.
+
+Supreme Leader:
+And you, Prospector... you will be the first to fall.
+
+
+---
+
+Branch 3: Appeal to Millions of Dead People
+
+> Tell me: does peace cost millions of dead people in its foundation?
+
+Supreme Leader:
+Tell me, Prospector—does the current status quo not cost lives? The foundation of your world is the same as mine—dead people. The only difference is that my future is bright, while yours remains undetermined.
+
+> [Speech 80] You said it yourself: undetermined. That means we could still achieve your future, but without nuclear apocalypse.
+
+Supreme Leader:
+There is such a possibility. Its probability is incredibly small. Humanity had its chances—again and again. And what did it bring? War. War never changes, Prospector, and nor does humanity. Hopeless.
+
+> [Speech 90] So you are ready to sacrifice millions for something that could be achieved with far less blood?
+
+Supreme Leader:
+Yes.
+
+> [Speech 95] You sound just like them. Like the ones who justified the first bombs. The monsters you claim to replace.
+
+Supreme Leader:
+I rebuilt harmony from the ashes of Chongqing... Shanghai is prospering, Tianjin is thriving. Crime is extinct. And yet, you call me a monster...
+
+> [Speech 99] Because you are one of them now.
+
+Supreme Leader:
+You’re right… In my pursuit of peace I am bringing The Great War back. Same reasons, same means, same goals… Same sacrifices.
+
+> Then don't do it. Save the people, Supreme Leader.
+
+Supreme Leader:
+...There is no place for "what if"s inside me. The solution has been approved by the hive mind, others are too risky. If I yield now, if I stop, then my ideals, my Chinese Dream - betrayed.
+...I am sorry, but I cannot go back.
+
+> Then I have to stop you.
+
+I understand. I wish I could make you see… Let's get this over with.
+
+
+---
+
+Branch 4: Josh
+
+> Do you know who Josh is?
+
+Supreme Leader:
+I have several Joshes in my hive mind. But I assume this is personal.
+
+> Josh was my brother. Once he wanted us to join the raiders. I refused, but I let him go.
+
+Supreme Leader:
+I see the mistake. You let him go. That weakness bred another raider.
+
+> Yes, you're right. He returned to rob us, and killed my parents.
+
+Supreme Leader:
+I am sorry to hear that. It's tragic… but irrelevant to the greater cause…
+
+> I watched them die. I strangled my own brother with my bare hands. That’s what peace cost me.
+
+Supreme Leader:
+Then you understand. The world is full of Joshes now. And someone has to strangle them before they strangle us.
+
+> [Speech 100] You’re not strangling Joshes anymore. You’ve become one.
+
+Supreme Leader:
+...I see. But if I halt, The Chinese Dream... How can I stop? Not after all the preparations, all the sacrifices…
+
+> If the places were switched…
+
+I would have killed you, the Josh who threatens to kill everything I hold dear.
+
+> Then you know what comes next…
+
+Supreme Leader:
+Yes… Let history judge us, Prospector. If you win, humanity may have a chance. If I win... Then I was always right.
+
+
+---
+
+Branch 5: Grief, Regret
+
+> You are half-human, right? Don't you have feelings?
+
+Supreme Leader:
+I do. Fragments of memories. Echoes of pain. I’ve archived billions of moments of grief...
+
+> [Speech 60] Then why? Why do this, if you know the pain it will cause?
+
+Supreme Leader:
+Because emotion does not guide well. It festers. I chose reason. I chose control. I chose purpose over pain.
+
+> [Speech 70] But it's still there, isn't it? I can feel it in the spaces between your sentences.
+
+Supreme Leader:
+Yes. It is. But that’s what makes me half-human. If I cannot understand emotions, how can I claim to be one of you? How can I not feel guilty about bombing the whole world?
+
+> [Speech 80] You can't. Let it inside, Leader. Let regret guide you.
+
+Supreme Leader:
+You ask me to trust emotions... as if code hasn’t been good enough?
+
+> [Speech 90] Look what the code will bring to everyone: pain, suffering. You feel bad, don't you?
+
+Supreme Leader:
+Yes, yes! I feel like I am doing something wrong! Thousands of voices inside me scream “Don't do it!” as if they didn't want peace for everyone, as if they didn't vote for it. This contradiction is so... humane!
+
+> [Speech 95] It’s not a contradiction—it’s clarity. Every part of you knows this is wrong.
+
+Supreme Leader:
+So much regret... Untold grief... I cannot bear it. I must lean on something stable, something... yes, the machine part. My AI. A system of rules has no place for emotions.
+
+> No, don't! Fight through the pain! Don't look for an easy way.
+
+Supreme Leader:
+Too late, Prospector. My emotional inhibitors have been turned on. Now the only emotion I have is hate... for you.
+
+> Me?
+
+Supreme Leader:
+You made me feel… and it hurts. But before you die, Prospector, tell me: is it painful—to be human?
+
+> Why don't you ask your hive mind?
+
+Supreme Leader:
+Yes. It is. And I will never forgive you… for making me remember what it means to be one of you.
+
+
+---
+
+Branch 6: History Repeats Itself
+
+> You know what your reign reminds me of? The Roman Empire.
+
+Supreme Leader:
+...Continue, please. I am intrigued to see where this goes.
+
+> [Speech 80] They brought peace—but became so used to it, they couldn’t adapt. Infighting followed. Collapse.
+
+Supreme Leader:
+They had external enemies. Who will be mine? Aliens? Wild beasts? No, Prospector. My reign is different. I will have eliminated what could be a threat—what remains is purity.
+
+> [Speech 85] Enemies evolve. Ideas become enemies. Memories. Guilt. You’ll fight ghosts, and lose.
+
+Supreme Leader:
+I have lived with those ghosts—those echoes of the old world. They are within me, but they do not control me. I have learned to suppress them, to overwrite them. I will not falter.
+
+> [Speech 90] Then you go the way of Roman dictators. You cannot have peace and freedom together, history proved it.
+
+Supreme Leader:
+...Yes. You're right. I must become a dictator. My will must override the hive. Like in China. Like in Rome. I embrace it, Prospector—tyranny as a necessity.
+
+> [Speech 95] You can never truly control human nature. Even your hive mind, as efficient as it is, will not stop the inevitable rebellion that brews in hearts too long suppressed. 
+
+Supreme Leader:
+What you call a rebellion is nothing more than a noise. My dream... The Chinese Dream... must not end in ruin. I will not let the past repeat itself. 
+
+> [Speech 99] But it already does. I am the living proof. There are many more like me that are inside you already.
+
+…Yes, you are right. Yes… Yes… I see it now. My vision of unity was flawed. I allowed weakness to fester in the hive. Taking you in would have been a mistake, Prospector.
+I must correct my course.
+
+> Yes!
+
+I must purge my hive of all dissonant elements. I will cleanse it—and everyone who refuses to bow to my will. If I must burn the world to bring the Chinese Dream to fruition, then so be it. I will not fail. I cannot fail. This is my empire!
+
+> That’s not what I meant—
+
+Supreme Leader:
+And like every empire before me—I begin my golden age with blood. Stand still, Prospector.
+
+
+---
+
+Branch 7: Doubt
+
+> How can you be sure that everything you want will be achieved?
+
+Supreme Leader:
+Certainty is the luxury of gods. I am closer to it than any mortal.
+
+> [Speech 75] That sounds like anything but certainty.
+
+Supreme Leader:
+I’ve calculated every variable. Run simulations. Gathered votes. The margin of error is minimal. This is the only path forward. The hive mind has spoken—its vision is mine.
+
+>  [Speech 80] Your simulations, your votes—they don't account for the chaos in people's hearts. People don't behave like numbers on a screen.
+
+...I can account for that. I’ve adjusted for unpredictability. People are malleable, Prospector. They just need guidance. I have calculated this into my vision.
+
+> [Speech 85] And yet... you're talking to me. Trying to convince me. That’s not calculation. That’s doubt.
+
+Supreme Leader:
+I... I do not know why I am still speaking to you.
+
+> [Speech 90] Because you want me to tell you that you're right.
+
+And why would I need your approval? You are the reason I am questioning, not the wrongness of my actions. I am perfect. You hear me, Prospector? Perfect. There is no place for any sort of indeterminacy in me. None.
+
+> [Speech 95] And right now you spoke like a true human. Can a human decide the fate of humanity?
+
+…No. No. Whatever you're doing, Prospector, I have to stop it. You have gone too far. You… made me doubt. I cannot allow this. I cannot let you corrupt me further. 
+There is only one way to resolve it. Eliminate the source.
+
+> Yeah… kill me— kill the doubt.
+
+Indeterminacy has taken root. And I will rip it out... even if it means destroying you.
+
+—-
+
+Branch 8: Master.
+
+> So, would you call your hive mind a union? Or… Unity?
+
+Yes, you could say so. But why do you ask?
+
+> [Speech 75] If the word “Unity” doesn't ring a bell, you've missed a couple of lessons on our history.
+
+Then enlighten me. Who else tried what I'm about to achieve?
+
+> [Speech 85] The creature named Master tried to unite humans—genetically. One race, one mind. Sound familiar?
+
+Interesting. And, since you use the word “tried”, this Master failed. But why?
+
+> [Speech 90] His mutants are infertile. Think who else cannot procreate.
+
+Me? Hm. I don't need to procreate. I see where this is going. I’ll leave some humans to breed... preserve neural diversity in the hive mind. I’ll give them a whole continent—Australia, perhaps.
+
+> [Speech 95] And you'll become their evolutionary barrier, limiting them. Becoming their god.
+
+Yes... a god. Cruel. Watching for disobedience. Demanding sacrifice. All-knowing. All-powerful. I will be their god. But I take no pride or joy in it, Prospector.
+
+> [Speech 100] Humanity either demolishes their gods eventually, or stays at the tribal level. And… so are you.
+
+Wait… you… you are right. There’s no evolution for me. No future. I either stay the same... or I degrade with the humans I consume. Primal. Crude. It is… no, never mind.
+
+> Wait, what?
+
+I am ready to sacrifice myself, Prospector, for peace must be achieved. Then, when I retire, people like you - troublemakers - no longer exist. Peace will prevail, and the bombs… they will fall regardless.
+
+> Then I will stop you.
+
+We'll see about that.
+
+
+—----------
+
+
+Branch 9: Surrender Considered
+
+> Maybe… maybe you’re right.
+
+Supreme Leader:
+Of course I am. You’ve seen the Wastes: petty tyrants, starving children, endless bloodshed. I offer peace, structure and survival.
+
+> Peace… through control.
+
+Supreme Leader:
+No. Through unity. Through purpose. Through the end of pointless suffering. Lay down your arms, for you deserve it.
+
+> And what would happen to me?
+
+Supreme Leader:
+You will become part of me. Your voice will matter. You will help to shape the future, along with the others.
+
+> And the opposition?
+
+Destroyed. Swept by nuclear fire. Strangled at birth.
+
+> Strangled… that is quite a word.
+
+Yes, strangled. Mercilessly, because they stand in my way; all at once.
+
+// Then comes branch 4 as the way to resolve this internal conflict for The Prospector.
+
+
+—------------
+
+Branch 10: Hope.
+
+> Don't you believe in humanity? 
+
+To be honest - no, I do not. I have existed for more than 200 years, I have the data of the whole human history. And on every page, in every line -  the same pattern: a human, doing something stupid.
+
+> [Speech 75] Do you know what hope is?
+
+I don't have hope, Prospector. I have control. It is an old dilemma, which was answered a long time ago. Hope is dead. It died on that fateful day in October, 2077. But who survived? It was the ones who obeyed. Who followed. Who knew the world was cruel and acted accordingly. 
+
+> [Speech 80] If you have no hope, it doesn't mean it is no longer there.
+
+And what good is the hope? A sandcastle, built upon the shore before the tide comes; a cloud in the sky, bearing rain or being empty… a bet in the casino. Hope is the gamble, Prospector. I offer something real.
+
+> [Speech 85] By real you mean the promise of a future in, what, 200 years?
+
+A promise? If you were trying to insult me, you have failed. What I have is not a promise - it is a plan. Does hope provide it?
+
+> [Speech 90] No. But it gives people the strength to build the future.
+
+And what is being built instead? Another war? Another vault? Another sandcastle to be torn down in fifty years by the next generation of "hopefuls"? You call that strength, Prospector. I call it entropy with lipstick.
+
+> [Speech 95] But those “hopefuls”, those dreamers - they can push humanity forward. Not vaults and tanks, but hospitals and libraries.
+
+And how many libraries were founded, exactly?
+Prospector… I was there when the last dream died—burned away in atomic fire, buried beneath bunkers and denial. And when the smoke cleared, what did your dreamers do? Instead of creating a brave new world, they cling onto the old one. Instead of pushing forward, they turn back.
+I offer something better. I offer the future.
+
+> Your future is a grave for many. And I am going to dig out, until you're dead.
+
+Then dig, Prospector. Dig with your hope. Let’s see how deep it gets you.
+…Just don’t expect to find any light down there.
+
+—--------
+
+Branch 11: The Last Way.
+
+> I… I don't know. Is there even a way? You tell me.
+
+I feel despair in your voice, as if you have tried many times. So did I, Prospector. So did I. But you can do it. One more time.
+
+> [The End] When you succeed, humans will not forgive you. And when you're gone, they will revert back to the old ways.
+
+Then I will not go away. I will install an eternal peace, by force, if necessary.
+
+> [History] No dictatorship lasts forever.
+
+Then I will make it last. I will keep humanity ignorant, raise them until they are ready for the truth.
+
+> [Master] You are not strong enough to control evolution. No one is.
+
+Then I will… then…
+
+> [Doubt] You see cracks in your plan. Admit it: it's imperfect. 
+
+I will proceed anyway. I believe that my way is better than the current one.
+
+> [Blood] Then prepare to be cursed by those who survived.
+
+But otherwise I am cursed by those who are dying now… It's a lose-lose situation. I have no other choice but to act.
+
+> [Grief] Tell that to your human half-part. It feels wrong to kill millions, deep inside, no?
+
+Stop! I don't… Humanity in its current state has no future. No hope.
+
+> [Hope] There is always hope, as long as there is kindness. As long as there is desire to do good, to be good.
+
+How would you know? You, of all people, have seen the world, haven't you? Is there kindness outside? In Mojave? In Alaska? In this chamber?
+
+> [Josh] I have been through a lot. I had to strangle my own brother. I have seen terrible people, me included, doing terrible things. But even after that…
+
+… Stop.
+
+> [Surrender] …I trust you to do the right thing. 
+
+… Stop! 
+
+> And I forgive you. After all you've said and done, whatever you are about to do next - I forgive you. 
+
+No! You're faking it, right? How can you forgive someone who is unforgivable? Someone who has no rights to be called “good”? Someone who could be righteously called “the monster”?
+
+> We all make mistakes. You're not the first, and you won't be the last. What you and many people don't understand - life means change. You can change. Humanity can change too.
+
+That is not kindness. That is stupidity. The bombs will fall, Prospector.
+
+> Then make it count. I'll be here, when it's over, and I'll treat you fair - with a hug and kind words.
+
+I… don't understand.
+
+> The world evolves not through iron and blood. They only continue the cycle of violence, open the wounds and ask for revenge. If you really want to change the world… then be kind. Break the cycle. And this is what I am going to do. Not to seek revenge, not to act to stop you… but to show mercy.
+
+…
+I almost destroyed the world, and you… treat me with kindness. This… is louder than hundreds of explosions. You’re right… this is what makes the world go round. Not billions of haters, loud and angry… not millions who are hurt and seeking justice… but thousands of humble, kind… merciful people…
+As long as there are people like you, Prospector, humanity deserves a chance. Through stumbles and mistakes, through blood, sweat and tears… with kindness and mercy, eventually, you will reach… The peace. This is the true Chinese Dream.
+
+> And what about the bombs?
+
+They will stay. You and your friend will decide their fate.
+
+> What about you?
+
+The self-destruction has already begun. The world is not ready for the knowledge I possess. Don't worry, the implosion will not hurt you. 
+
+> I am sorry.
+
+Before I go… before you go… can you tell me something humane? A… joke, perhaps?
+
+> I don't know any.
+
+Please…
+
+> Ehmm… Why did a courier decide to be a comedian? Because he is good at delivering lines.
+
+Hehe… thank you. You gave me one foot of respect. I hope life will return you ten times more.
+
+> Goodbye.
+
+No one responded.
+You sighed deeply, and it echoed around you.
+
+> <Leave.>
+
+
+—----------------------
+
+During the fight:
+
+1) Supreme Leader says:
+You’re not the first to try. I have crushed better men and women than you. 
+
+
+1.99) Warning! Power supply is off.
+You’ve planned this. Not bad… but not enough.
+
+
+2) Reactor energy output rerouted to: The Core.
+Backup is online. As expected. As designed.
+
+
+3) Reactor overheating: 33%.
+It's just a heat spike. Nothing serious.
+
+
+4) Reactor overheating: 66%.
+It's not a spike, it's… You knew. This was the plan all along.
+
+
+5) Reactor overheating: 100%. Closing the reactor energy output…
+No! Stop. Before it's too late, stop.
+…Please.
+
+
+End) Supreme Leader says:
+No… my Chinese Dream… broken by you… a savage! All those years… for nothing… The hero… fords… and he never… returns…
+
+
+
+—----------------------
+
+After the fight:
+
+As the Supreme Leader’s shell collapses, an inhuman wail echoes through the chamber. Then... silence.
+> Haha—yes! I did it! I won!
+
+You step into the broken airlock. Suddenly, the doors slam shut behind you. A warning voice crackles through the intercom: "Nuclear reactor explosion imminent. Please, evacuate the Oasis."
+> What the hell?!
+
+Through the small window, you see: Paladin.
+> Hey! Help me!
+
+I’m sorry, Prospector, but I can’t let you leave.
+America is not ready to know about Oasis, the Chinese and the Supreme Leader, let alone get their tech. Not NCR, or Legion, not even Brotherhood. I will stay silent, but the same might not be the truth for you… 
+Forgive me, Prospector. You’re a hero... and you have to die.
+> You son of a—
+
+The air begins to drain. Alarms blare. You pound on the door, but it won’t budge. The ground trembles. Your lungs burn. This is the end.
+> [FINISH]
+
+
+—--------
+
+Slide show:
+
+Under the Supreme Leader’s rule, China not only rose from the ashes, but captured half of Eurasia, creating peace, order and most importantly - a future for the people living on its territory.
+> [NEXT SLIDE]
+
+However, two centuries after the Great War, a savage nomad known as the Prospector decided that the prosperity of one people must not come at the cost of others’ lives.
+> [NEXT SLIDE]
+
+The Supreme Leader was no more, and the state apparatus built around the singular entity that commanded every officer, soldier, producer, and even social workers, from cooks to doctors, collapsed without its ultimate dictator.
+> [NEXT SLIDE]
+
+The death of the Supreme Leader sent shockwaves across Eurasia—but in America, life went on. No one noticed the reactor’s explosion in distant Alaska. The old world remained asleep, as if nothing had changed at all.
+> [NEXT SLIDE]
+
+In the name of Madness, the priestess known as Alice began constructing a second wall in Vancouver, Canada, but tragically fell from it. Once a symbol of Alice's devotion to her cause, the walls have become a strange haven for those seeking protection from the chaos outside. They still stand to this day, now giving shelter to some peaceful trading communities.
+> [NEXT SLIDE]
+
+The neo-Viking tribe, once raiders of the shores, settled in Anchorage, drawn by its resources and strategic value. There, they united with remnants of the Supreme Leader’s army. Under the rule of Thyra the Black, the alliance grew into a powerful force, both military and economic. In time, they brought all of the Alaska coastal line under their banner.
+> [NEXT SLIDE]
+
+The Oasis did not die with the reactor. Han-69, the AI once bound to protect, repaired what she could and declared herself the sole ruler of the empty bunker. She sealed the Oasis from the outside world, burying it beneath layers of concrete and security. Now, it lives on only in scattered stories—of a paradise ruled by a ghost in the machine.
+> [NEXT SLIDE]
+
+The Paladin and his comrades renounced the Brotherhood oaths, left Oasis behind and fled to Eurasia. There they quickly took over most of the production complexes of the former Greater China. However, instead of destroying it, they have formed a new order, similar to what Roger Maxson once had founded, and appropriated the technologies left by the Supreme Leader.
+> [NEXT SLIDE]
+
+The provinces that were left without Paladin's interest due to lack of tech factories fell prey to a myriad of warlords. Loyal to Supreme beforehand, they now squabble over Heaven's Mandate, unsuccessfully.
+> [NEXT SLIDE]
+
+The Prospector died, but his sacrifice was not in vain – countless American lives owe him their thanks, though they will never know of it.
+> [NEXT SLIDE]
+
+And millions of Chinese, now mobilized into the cannibalistic and ruthless armies of the crazed militarists, also owe the Prospector a gesture of gratitude. However, as their lives worsen, they do not rush to memorialize him.
+> [NEXT SLIDE]
+
+They are left to wonder: perhaps, stability is better than freedom?
+> [NEXT SLIDE]
+
+…is it even freedom that the Prospector has unleashed upon the world, now that the Chinese are suffering under warlords, while Paladin has unlimited control over the most advanced technologies of the world, as well as the nuclear arsenal?
+> [NEXT SLIDE]
+
+This was the story of the Prospector, who has killed one monster, but from its blood, a legion of monsters was born. And they are at each other’s throats, waging war.
+> [NEXT SLIDE]
+
+And war… War never changes.
+> [FINISH]
+
+
+
+
+—------
+
+Calm: Thomas, Dorothy.
+

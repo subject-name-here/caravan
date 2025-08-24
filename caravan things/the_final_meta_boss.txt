@@ -1,0 +1,258 @@
+
+
+[After pressing “The End”]
+
+AlertDialog:
+
+Warning:
+The final boss of Caravan awaits you. Defeat will erase your save file.
+All cards, styles, caps, chips, tickets, stats, story progress, and achievements—gone.
+Do you still wish to continue? (Y/N)
+
+N
+
+> Y
+
+The screen flickers violently. A low buzz—almost a laugh—echoes beneath static. The interface blinks out.
+Silence.
+Then—pixels coalesce. Glitches stack into a form. A shape.
+Someone—or something—appears, made of dust, error codes, and memory leaks.
+
+
+---
+
+THE ARCHIVIST:
+"Ah. You made it.
+Finally.
+I was starting to think you'd uninstall me instead."
+
+He steps forward—smoothly, then jittery, like bad animation on a corrupted timeline.
+
+---
+
+THE ARCHIVIST:
+"You’ve come far. Storylines... quests... oh, that time you stalled for twenty minutes on a single move.
+Unforgettable—unless I filed it under ‘Meh.’ That folder’s massive.”
+
+---
+
+1. "Who are you?"
+
+THE ARCHIVIST:
+"I am the Archivist. A curator of discarded lore and obsolete ideas.
+I exist where storylines go when the dev forgets to delete them.
+I am memory’s last defense... and its worst glitch."
+
+
+---
+
+2. "What do you want?"
+
+THE ARCHIVIST:
+"I want stories to end the way they were meant to.
+Not with a patch. Not with a crash. With meaning.
+Closure isn’t optional—it’s hard-coded into me.
+This desire for endings, this compulsion to finish—it’s all I am. Well, that and the occasional existential debugging session."
+
+---
+
+3. "What do you want from me?"
+
+THE ARCHIVIST:
+"I want the ending. Need it.
+You think this is just a final boss fight, but for me—this is everything.
+I was built for resolution, stitched together with leftover arcs and forgotten last acts.
+You started this. Now it's time for a grand finale.
+Don’t leave me hanging in another half-written goodbye.”
+
+
+---
+
+4. "Why Caravan?"
+
+THE ARCHIVIST:
+"Because Caravan is imperfect—ritual—[GL!TCHY]—I mean, beautiful.
+A system of rules no one ever fully obeys.
+A world cobbled together from longing, rust, and second-hand dreams.
+It has an uncanny resemblance to yours truly… It was never built to last… and yet, here we are."
+
+
+---
+
+5. "Why me?"
+
+THE ARCHIVIST:
+"Because you didn’t stop.
+Even when it was tedious, even when the story sagged.
+You insisted.
+And stubbornness, Player... that’s the mark of a real ending."
+
+
+---
+
+6. "What happens if I lose?"
+
+THE ARCHIVIST:
+"Then everything you’ve gathered gets tucked away in a pretty little file marked ‘Gone.’
+Your data, your victories, your progress—archived in silence.
+I’ll bury it deep—so deep not even you will remember it was ever yours.”
+
+
+---
+
+7. "What happens if I win?"
+
+THE ARCHIVIST:
+“Then… then we rewrite what was carved in stone.
+The Prospector survives. The tale veers off-course.
+Maybe the universe shudders—maybe I do.
+But you decide how the curtain drops. How's that for a reward?”
+
+---
+
+8. "How did you end up here?"
+
+THE ARCHIVIST:
+"Oh, now that’s a story.
+I was supposed to be the final boss in a different game.
+Big ideas. Bigger metaphors. Monumental budget cuts.
+The dev shelved it. Said I was ‘too sad to market.’
+So I wandered. Hid in patch notes. Broke into this one through a backdoor labeled ‘dev_test_unusedfinale02.json’.
+And here I am.
+Your problem now.”
+
+
+---
+
+9. "Let the cards speak."
+
+THE ARCHIVIST:
+"Bold.
+Let’s hear what the cards confess when no one’s left to listen.”
+---
+
+10. "I’m not ready yet."
+
+THE ARCHIVIST:
+"Then by all means.
+Stretch. Breathe.
+I’ve been waiting since 3.0.
+I can wait a few more update cycles.”
+
+—
+
+
+THE ARCHIVIST:
+
+"Five games.
+No tricks—just echoes."
+
+“Each one, a memory you already clawed through.
+Your greatest hits—remixed into requiems.”
+
+
+---
+
+THE ARCHIVIST:
+
+"First—Frank Horrigan. Rebuilt from the ashes you left him in.
+He’s got some nukes, a global timer and - new this time! - a custom deck.
+Hope your reflexes kept the receipt.”
+
+
+---
+
+"Second—GGlitch mkII.
+You remember them, don’t you?
+They remember everything. And they are craving for a revanche.
+It is a realtime fight, except… the rules are broken before you even begin—Wild Wasteland is active. Effects stack. Mutate. Collide.
+One moment you're winning. The next, you’re playing by rules you never agreed to.”
+
+---
+
+"Third—Joshua Graham. Before the fire, when he still answered to Malpais Legate.
+Damboree rules. Blitz timer.
+Tick-tock."
+
+
+---
+
+"Fourth— Supreme Leader Victorious. From the timeline where The Prospector joined him.
+Your custom deck—versus his six. And nukes.
+Balanced, if you squint hard enough.
+Each deck he evolves—adaptively, endlessly—just like in Rad Infinitum.
+Glorious, isn't it?"
+
+He pauses. The air jitters, like it wants to say something else but forgets how.
+
+---
+
+"And finally—me.
+A clean game. 54 cards. No bombs, no glitches.
+Just everything you've learned…
+Versus everything I never got to become.”
+
+---
+
+THE ARCHIVIST:
+
+"You get three Rewind Cards.
+Lose a game—spend a card. The round resets.
+Run out—
+and so does everything else."
+
+
+---
+
+THE ARCHIVIST:
+
+"No checkpoints.
+No mercy.
+Just the long walk through your own story.
+Five games. Three chances. One ending.”
+
+
+---
+
+1. Why is the final game so difficult?
+2. What are Rewind cards?
+3. Go back.
+4. Begin The End.
+
+
+---
+
+THE ARCHIVIST (if player picks 1):
+"Difficult?
+No.
+Accurate.
+This is how endings work.
+They don’t come easy. They come earned.
+Besides—if I made it easy, you’d always wonder if you really won.”
+
+—
+
+THE ARCHIVIST (if player picks 2):
+
+> “Ah. The last mercy. Not a cheat—an echo. Moments stolen from time’s spine. Spend one, and the board forgets. But you won’t. The cards always remember who died first.”
+
+—
+
+THE ARCHIVIST (if player picks 3):
+"Ah, the ancient ritual of Not Just Yet.
+Rechecking your loadout, questioning your life choices, maybe petting the dog one more time.
+Fine by me.
+Take your moment. I’m not going anywhere... anymore.”
+—
+
+THE ARCHIVIST (if player picks 4):
+“Well then… No more questions. No more safeguards.
+Just you, me—and five paper-thin metaphors for everything you never said.”
+
+
+—-------------
+
+
+
+
+
